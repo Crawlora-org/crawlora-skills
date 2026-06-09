@@ -1,0 +1,21 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Lint SKILL.md frontmatter + body
+        run: node scripts/validate.mjs
+      - name: Generator parity (reference/ + bundled helper up to date)
+        run: node scripts/generate.mjs --check
+      - name: Shell helper syntax
+        run: bash -n lib/crawlora.sh

@@ -1,0 +1,30 @@
+{
+  "name": "crawlora-skills",
+  "owner": {
+    "name": "Crawlora",
+    "email": "hello@crawlora.net"
+  },
+  "metadata": {
+    "description": "Crawlora Agent Skills — structured public web data (search, e-commerce, social, finance, app stores, media, reviews) via the Crawlora REST API.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "crawlora-skills",
+      "description": "Five Agent Skills for fetching structured public web data with the Crawlora API: an umbrella catalog skill plus product/price, YouTube, app-review, and SERP/keyword research recipes.",
+      "source": "./",
+      "homepage": "https://crawlora.net",
+      "repository": "https://github.com/Crawlora-org/crawlora-skills",
+      "license": "MIT",
+      "keywords": ["crawlora", "web-scraping", "agent-skills", "web-data", "mcp"],
+      "strict": false,
+      "skills": [
+        "./skills/crawlora",
+        "./skills/product-price-research",
+        "./skills/youtube-research",
+        "./skills/app-review-mining",
+        "./skills/serp-keyword-research"
+      ]
+    }
+  ]
+}
