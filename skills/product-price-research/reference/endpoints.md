@@ -14,13 +14,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /amazon/product/{asin}`
 - **What:** Retrieve Amazon product details. Returns normalized product details for an Amazon ASIN on `amazon.com`, including pricing, availability, overview data, inline review samples, and descriptive content.
-- **Params:** `asin` (string, **required**) — Amazon ASIN; `language` (string, optional) — Amazon language; `currency` (string, optional) — Amazon currency
+- **Params:** `asin` (string, **required**) — Amazon ASIN; `currency` (string, optional) — Amazon currency; `language` (string, optional) — Amazon language
 
 ### `amazon_search`
 
 - **HTTP:** `GET /amazon/search`
 - **What:** Search Amazon products. Returns normalized Amazon search result cards for `amazon.com`.
-- **Params:** `k` (string, **required**) — Search keyword; `s` (string, optional) — Sort order; `page` (integer, optional) — 1-based page number
+- **Params:** `k` (string, **required**) — Search keyword; `page` (integer, optional) — 1-based page number; `s` (string, optional) — Sort order
 
 ### `amazon_suggest`
 
@@ -58,13 +58,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /ebay/seller/{seller}/feedback`
 - **What:** Get eBay seller feedback. Returns normalized seller feedback summary, detailed ratings, and recent review cards from the public eBay seller feedback tab.
-- **Params:** `seller` (string, **required**) — eBay seller username; `page` (integer, optional) — Feedback page number; `per_page` (integer, optional) — Reviews per page
+- **Params:** `page` (integer, optional) — Feedback page number; `per_page` (integer, optional) — Reviews per page; `seller` (string, **required**) — eBay seller username
 
 ### `ebay_seller_shop`
 
 - **HTTP:** `GET /ebay/seller/{seller}/shop`
 - **What:** Get eBay seller shop listings. Returns normalized listings from the public eBay seller shop tab, with pagination backed by the store odtRefresh response.
-- **Params:** `seller` (string, **required**) — eBay seller username; `page` (integer, optional) — Shop page number
+- **Params:** `page` (integer, optional) — Shop page number; `seller` (string, **required**) — eBay seller username
 
 ## Shopify (11)
 
@@ -72,13 +72,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /shopify/collections/{handle}/products`
 - **What:** List Shopify collection products. Returns normalized products from a public Shopify collection `/products.json` endpoint.
-- **Params:** `handle` (string, **required**) — Collection handle; `url` (string, **required**) — Shopify storefront URL; `page` (integer, optional) — 1-based page, defaults to 1; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_collections`
 
 - **HTTP:** `GET /shopify/collections`
 - **What:** List Shopify collections. Returns normalized collections from a public Shopify `/collections.json` endpoint. Valid empty result pages return `200` with an empty collections array.
-- **Params:** `url` (string, **required**) — Shopify storefront URL; `page` (integer, optional) — 1-based page, defaults to 1; `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_page`
 
@@ -90,7 +90,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /shopify/pages`
 - **What:** List Shopify pages. Returns normalized static pages from a public Shopify `/pages.json` endpoint. Page body HTML is returned as cleaned text only.
-- **Params:** `url` (string, **required**) — Shopify storefront URL; `page` (integer, optional) — 1-based page, defaults to 1; `limit` (integer, optional) — Maximum pages, defaults to 50 and supports up to 250
+- **Params:** `limit` (integer, optional) — Maximum pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_product`
 
@@ -102,25 +102,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /shopify/products/{handle}/recommendations`
 - **What:** List Shopify product recommendations. Returns normalized recommended products from Shopify's credential-free recommendations Ajax endpoint. The route handle is resolved to a Shopify product id before fetching recommendations.
-- **Params:** `handle` (string, **required**) — Product handle; `url` (string, **required**) — Shopify storefront URL; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_products`
 
 - **HTTP:** `GET /shopify/products`
 - **What:** List Shopify products. Returns normalized products from a public Shopify `/products.json` endpoint. Valid empty result pages return `200` with an empty products array.
-- **Params:** `url` (string, **required**) — Shopify storefront URL; `page` (integer, optional) — 1-based page, defaults to 1; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_search_suggest`
 
 - **HTTP:** `GET /shopify/search/suggest`
 - **What:** Get Shopify search suggestions. Returns products, collections, and query suggestions from Shopify's credential-free predictive search Ajax endpoint.
-- **Params:** `url` (string, **required**) — Shopify storefront URL; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query; `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_sitemap_urls`
 
 - **HTTP:** `GET /shopify/sitemap/urls`
 - **What:** List Shopify sitemap URLs. Fetches capped URL entries from Shopify child sitemaps matching the requested type.
-- **Params:** `url` (string, **required**) — Shopify storefront URL; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other; `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_sitemaps`
 
@@ -140,7 +140,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /shop-app/analysis`
 - **What:** Analyze Shop.app query results. Returns a market snapshot derived from Shop.app search results, including price ranges, currencies, sale counts, discounts, and top shops. Limit defaults to 20 and accepts values up to 50.
-- **Params:** `query` (string, **required**) — Search query; `limit` (integer, optional) — Maximum products to analyze, defaults to 20 and supports up to 50; `in_stock` (boolean, optional) — Request in-stock products; `on_sale` (boolean, optional) — Request sale products; `deep_search` (boolean, optional) — Enable Shop.app deep search mode
+- **Params:** `deep_search` (boolean, optional) — Enable Shop.app deep search mode; `in_stock` (boolean, optional) — Request in-stock products; `limit` (integer, optional) — Maximum products to analyze, defaults to 20 and supports up to 50; `on_sale` (boolean, optional) — Request sale products; `query` (string, **required**) — Search query
 
 ### `shop_app_categories`
 
@@ -152,7 +152,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /shop-app/shops/{handle}/collections/{collection_id}/products`
 - **What:** List Shop.app collection products. Returns public product cards from a Shop.app merchant collection. sort_by allowed values: MOST_SALES, PRICE_LOW_TO_HIGH, PRICE_HIGH_TO_LOW, RELEVANCE.
-- **Params:** `handle` (string, **required**) — Shop handle; `collection_id` (string, **required**) — Collection id; `limit` (integer, optional) — Maximum products, defaults to 30 and supports up to 60; `sort_by` (string, optional) — Sort mode; `in_stock` (boolean, optional) — Request in-stock products
+- **Params:** `collection_id` (string, **required**) — Collection id; `handle` (string, **required**) — Shop handle; `in_stock` (boolean, optional) — Request in-stock products; `limit` (integer, optional) — Maximum products, defaults to 30 and supports up to 60; `sort_by` (string, optional) — Sort mode
 
 ### `shop_app_product`
 
@@ -188,13 +188,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /shop-app/products/{id}/variants`
 - **What:** List Shop.app product variants. Returns adjacent variants for a Shop.app product. selected_options must be a JSON object when provided. Repeated option filters may also be sent as option.Name=value or option[Name]=value.
-- **Params:** `id` (string, **required**) — Product id; `selected_options` (string, optional) — Selected options JSON object; `limit` (integer, optional) — Maximum variants, defaults to 50 and supports up to 100
+- **Params:** `id` (string, **required**) — Product id; `limit` (integer, optional) — Maximum variants, defaults to 50 and supports up to 100; `selected_options` (string, optional) — Selected options JSON object
 
 ### `shop_app_search`
 
 - **HTTP:** `GET /shop-app/search`
 - **What:** Search Shop.app products. Searches Shop.app product results using the credential-free public web search flow. Limit defaults to 20 and accepts values up to 50.
-- **Params:** `query` (string, **required**) — Search query; `limit` (integer, optional) — Maximum products, defaults to 20 and supports up to 50; `in_stock` (boolean, optional) — Request in-stock products; `on_sale` (boolean, optional) — Request sale products; `deep_search` (boolean, optional) — Enable Shop.app deep search mode
+- **Params:** `deep_search` (boolean, optional) — Enable Shop.app deep search mode; `in_stock` (boolean, optional) — Request in-stock products; `limit` (integer, optional) — Maximum products, defaults to 20 and supports up to 50; `on_sale` (boolean, optional) — Request sale products; `query` (string, **required**) — Search query
 
 ### `shop_app_shop`
 
@@ -212,7 +212,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /shop-app/shops/{handle}/products`
 - **What:** List Shop.app shop products. Returns public product cards from a Shop.app merchant profile. sort_by allowed values: MOST_SALES, PRICE_LOW_TO_HIGH, PRICE_HIGH_TO_LOW, RELEVANCE.
-- **Params:** `handle` (string, **required**) — Shop handle; `limit` (integer, optional) — Maximum products, defaults to 30 and supports up to 60; `sort_by` (string, optional) — Sort mode; `in_stock` (boolean, optional) — Request in-stock products
+- **Params:** `handle` (string, **required**) — Shop handle; `in_stock` (boolean, optional) — Request in-stock products; `limit` (integer, optional) — Maximum products, defaults to 30 and supports up to 60; `sort_by` (string, optional) — Sort mode
 
 ### `shop_app_shop_reviews`
 
@@ -224,10 +224,10 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /shop-app/shops/{handle}/typeahead`
 - **What:** Suggest products and collections inside a Shop.app shop. Returns public store typeahead suggestions for a Shop.app merchant profile.
-- **Params:** `handle` (string, **required**) — Shop handle; `query` (string, **required**) — Typeahead query; `limit` (integer, optional) — Maximum suggestions, defaults to 20 and supports up to 20
+- **Params:** `handle` (string, **required**) — Shop handle; `limit` (integer, optional) — Maximum suggestions, defaults to 20 and supports up to 20; `query` (string, **required**) — Typeahead query
 
 ### `shop_app_suggestions`
 
 - **HTTP:** `GET /shop-app/suggestions`
 - **What:** Suggest Shop.app searches. Returns Shop.app autocomplete suggestions. Limit defaults to 10 and supports up to 20.
-- **Params:** `query` (string, **required**) — Search query; `limit` (integer, optional) — Maximum suggestions, defaults to 10 and supports up to 20
+- **Params:** `limit` (integer, optional) — Maximum suggestions, defaults to 10 and supports up to 20; `query` (string, **required**) — Search query
