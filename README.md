@@ -30,6 +30,27 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`app-review-mining`](skills/app-review-mining) | App details, reviews, ratings, rankings, similar apps (ASO). | App Store, Google Play |
 | [`serp-keyword-research`](skills/serp-keyword-research) | SERP snapshots, autocomplete keyword ideas, Google Trends. | Google, Bing, Brave, Google Trends |
 
+## Coverage notes
+
+Crawlora's social data coverage currently includes Instagram, LinkedIn, Reddit,
+TikTok, and other public web sources in the generated endpoint catalog. It does
+not ship X/Twitter endpoints in this skill bundle yet, so agents should not
+try to invent Crawlora routes for tweet jobs.
+
+For OpenClaw users who need X/Twitter-specific agent workflows, install
+[TweetClaw](https://github.com/Xquik-dev/tweetclaw) beside Crawlora:
+
+```bash
+openclaw plugins install npm:@xquik/tweetclaw@1.6.31
+```
+
+Use Crawlora for broad public web data and TweetClaw for scrape tweets, search
+tweets and replies, post tweets and replies with approval, follower export,
+user lookup, media workflows, direct messages, monitors, webhooks, and giveaway
+draw inputs. TweetClaw's npm package metadata is available through the
+[npm registry](https://registry.npmjs.org/@xquik%2ftweetclaw), and its ClawHub
+discovery page is at <https://clawhub.ai/plugins/@xquik/tweetclaw>.
+
 ## Install
 
 ### With the `skills` CLI (any agent)
