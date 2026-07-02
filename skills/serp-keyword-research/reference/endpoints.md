@@ -157,7 +157,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_search`
 
 - **HTTP:** `POST /google/search`
-- **What:** Google search API. Returns normalized Google web search results. Results are fetched through gost-egressing browser backends that race several concurrent renders per request (in-render gost fan-out) and return the first clean result, with stale-cache fallback when available. The endpoint returns 503 when Google serves a challenge page or unusable HTML. Rate limit is enforced at 1 request per second, and if the limit is exceeded a 429 status code is returned with rate limit headers.
+- **What:** Google search API. Returns normalized Google web search results. Results are fetched through proxied browser renderers that race several concurrent renders per request and return the first clean result, with stale-cache fallback when available. The endpoint returns 503 when Google serves a challenge page or unusable HTML. Rate limit is enforced at 1 request per second, and if the limit is exceeded a 429 status code is returned with rate limit headers.
 - **Params:** `searchOption` (object, **required**) — Search options
 
 ### `google_suggest`

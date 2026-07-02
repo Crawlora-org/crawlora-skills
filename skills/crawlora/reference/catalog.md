@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**445 endpoints across 38 platform group(s).**
+**467 endpoints across 40 platform group(s).**
 
 ## Airbnb (4)
 
@@ -313,7 +313,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `brand_retrieve`
 
 - **HTTP:** `GET /brand/retrieve`
-- **What:** Retrieve brand data by domain. Fetches a domain's homepage and extracts a normalized brand profile (title, description, colors, logos, backdrops, socials, links, and any schema.org organization data). Enrichment-only fields that are not present in the page markup are returned as null.
+- **What:** Retrieve brand data by domain. Fetches a domain's homepage and Web App Manifest and extracts a normalized brand profile (title, description, brand colors normalized to hex, logos and icons ranked best-first, backdrops, socials, links, and any schema.org organization data). Enrichment-only fields that are not present in the page markup are returned as null.
 - **Params:** `domain` (string, **required**) — Domain to retrieve brand data for, e.g. context.dev; `force_language` (string, optional) — Accepted for compatibility; not applied in HTML-only mode; `maxAgeMs` (integer, optional) — Cache freshness window in milliseconds, clamps to 1 day..1 year; `maxSpeed` (boolean, optional) — Optimize for speed by skipping schema.org and footer-link extraction; `timeoutMS` (integer, optional) — Upstream fetch timeout in milliseconds, clamps to 1000..300000
 
 ## Brave (5)
@@ -476,31 +476,55 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** CoinGecko trending highlights. Returns deduped trending coins and categories from the public CoinGecko highlights page. This endpoint supports the documented `vs_currency` enum.
 - **Params:** `limit` (integer, optional) — Rows per section to return, default 20, max 50; `vs_currency` (string, optional) — Quote currency
 
-## Datasets (5)
+## Datasets (9)
+
+### `datasets_github_users_facets`
+
+- **HTTP:** `GET /datasets/github-users/facets`
+- **What:** Facet the GitHub users dataset. Returns terms aggregation counts for the GitHub users dataset. Facet enum: `influence_tier`, `type`, `country`, `country_code`, `state`, `city`, `domains`, `company`, `reachable`, `has_email`, `has_twitter`, `has_blog`, `active_90d`, `is_org`, `is_bot`. influence_tier enum: `nano`, `micro`, `mid`, `macro`, `mega`.
+- **Params:** `active_90d` (boolean, optional) — Filter by activity within the last 90 days; `city` (string, optional) — Exact geocoded city filter, max 128 characters; `company` (string, optional) — Exact normalized-company filter, max 128 characters; `country` (string, optional) — Exact geocoded country filter, max 128 characters; `country_code` (string, optional) — Exact ISO country-code filter, max 128 characters; `domain` (string, optional) — Interest-domain tag filter, max 128 characters; `facet` (string, **required**) — Facet enum: influence_tier, type, country, country_code, state, city, domains, company, reachable, has_email, has_twitter, has_blog, active_90d, is_org, is_bot; `has_blog` (boolean, optional) — Filter by public blog/website presence; `has_email` (boolean, optional) — Filter by public email presence; `has_twitter` (boolean, optional) — Filter by public Twitter/X handle presence; `hireable` (boolean, optional) — Filter by the GitHub available-for-hire flag; `influence_tier` (string, optional) — Follower-tier enum: nano, micro, mid, macro, mega; `is_bot` (boolean, optional) — Bot filter; `is_org` (boolean, optional) — Organization filter; `lat` (number, optional) — Latitude for radius filtering; `login` (string, optional) — Exact login filter, max 128 characters; `lon` (number, optional) — Longitude for radius filtering; `max_account_age_years` (number, optional) — Maximum account age in years; `max_followers` (integer, optional) — Maximum follower count; `min_account_age_years` (number, optional) — Minimum account age in years; `min_followers` (integer, optional) — Minimum follower count; `min_rank_score` (integer, optional) — Minimum composite rank score; `min_repos` (integer, optional) — Minimum public repository count; `q` (string, optional) — Full-text query over login, name, company, bio and location, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `reachable` (boolean, optional) — Filter by any public contact channel; `sort` (string, optional) — Sort enum: relevance, rank_score_desc, followers_desc, account_age_desc, account_age_asc, distance_asc; `state` (string, optional) — Exact geocoded state filter, max 128 characters
+
+### `datasets_github_users_item`
+
+- **HTTP:** `GET /datasets/github-users/items/{login}`
+- **What:** Get a GitHub user from the dataset. Returns one enriched GitHub user record by login from dataset id enum value `github-users`.
+- **Params:** `login` (string, **required**) — GitHub login, max 128 characters
+
+### `datasets_github_users_nearby`
+
+- **HTTP:** `GET /datasets/github-users/nearby`
+- **What:** Search nearby GitHub users. Searches enriched GitHub users near a coordinate, sorted by distance, in dataset id enum value `github-users`. influence_tier enum: `nano`, `micro`, `mid`, `macro`, `mega`.
+- **Params:** `influence_tier` (string, optional) — Follower-tier enum: nano, micro, mid, macro, mega; `lat` (number, **required**) — Latitude; `lon` (number, **required**) — Longitude; `min_followers` (integer, optional) — Minimum follower count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `radius_m` (integer, **required**) — Radius in meters, max 50000; `reachable` (boolean, optional) — Filter by any public contact channel
+
+### `datasets_github_users_search`
+
+- **HTTP:** `GET /datasets/github-users/search`
+- **What:** Search the GitHub users dataset. Searches enriched public GitHub user profiles stored in a search index. influence_tier enum: `nano`, `micro`, `mid`, `macro`, `mega`. Sort enum: `relevance`, `rank_score_desc`, `followers_desc`, `account_age_desc`, `account_age_asc`, `distance_asc`.
+- **Params:** `active_90d` (boolean, optional) — Filter by activity within the last 90 days; `city` (string, optional) — Exact geocoded city filter, max 128 characters; `company` (string, optional) — Exact normalized-company filter, max 128 characters; `country` (string, optional) — Exact geocoded country filter, max 128 characters; `country_code` (string, optional) — Exact ISO country-code filter, max 128 characters; `domain` (string, optional) — Interest-domain tag filter (e.g. ml-ai, web, devops), max 128 characters; `has_blog` (boolean, optional) — Filter by public blog/website presence; `has_email` (boolean, optional) — Filter by public email presence; `has_twitter` (boolean, optional) — Filter by public Twitter/X handle presence; `hireable` (boolean, optional) — Filter by the GitHub available-for-hire flag; `influence_tier` (string, optional) — Follower-tier enum: nano, micro, mid, macro, mega; `is_bot` (boolean, optional) — Bot filter (normally false; the crawl skips bots); `is_org` (boolean, optional) — Organization filter (normally false; the crawl indexes individuals); `lat` (number, optional) — Latitude for radius filtering or distance sort; `login` (string, optional) — Exact login filter, max 128 characters; `lon` (number, optional) — Longitude for radius filtering or distance sort; `max_account_age_years` (number, optional) — Maximum account age in years; `max_followers` (integer, optional) — Maximum follower count; `min_account_age_years` (number, optional) — Minimum account age in years; `min_followers` (integer, optional) — Minimum follower count; `min_rank_score` (integer, optional) — Minimum composite rank score; `min_repos` (integer, optional) — Minimum public repository count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over login, name, company, bio and location, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `reachable` (boolean, optional) — Filter by any public contact channel; `sort` (string, optional) — Sort enum: relevance, rank_score_desc, followers_desc, account_age_desc, account_age_asc, distance_asc; `state` (string, optional) — Exact geocoded state filter, max 128 characters
 
 ### `datasets_google_map_facets`
 
 - **HTTP:** `GET /datasets/google-map-businesses/facets`
-- **What:** Facet stored Google Maps businesses. Returns terms aggregation counts for Google Maps businesses. Facet enum: `category`, `country`, `state`, `county`, `city`, `town`, `website_status`.
-- **Params:** `category` (string, optional) — Exact category filter, max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `facet` (string, **required**) — Facet enum: category, country, state, county, city, town, website_status; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering; `lon` (number, optional) — Longitude for radius filtering; `min_rating` (number, optional) — Minimum rating, 0 through 5; `min_review_count` (integer, optional) — Minimum review count; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
+- **What:** Facet stored Google Maps businesses. Returns terms aggregation counts for Google Maps businesses. Facet enum: `category`, `country`, `state`, `county`, `city`, `town`, `website_status`. `category` values (as a facet or filter) are Google Maps type tokens in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`).
+- **Params:** `category` (string, optional) — Exact category filter: a Google Maps type token in lower-case snake_case (e.g. dentist, bus_stop), max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `facet` (string, **required**) — Facet enum: category, country, state, county, city, town, website_status; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering; `lon` (number, optional) — Longitude for radius filtering; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are stored as rating 0, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
 
 ### `datasets_google_map_item`
 
 - **HTTP:** `GET /datasets/google-map-businesses/items/{place_id}`
-- **What:** Get a stored Google Maps business. Returns one stored Google Maps business by Google place_id from dataset id enum value `google-map-businesses`.
+- **What:** Get a stored Google Maps business. Returns one stored Google Maps business by Google place_id from dataset id enum value `google-map-businesses`. The `category` field is a Google Maps type token in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`). A `rating` of `0` means no aggregate rating is available for that business (not a literal zero-star score); read it together with `review_count`.
 - **Params:** `place_id` (string, **required**) — Google Place ID, max 256 characters
 
 ### `datasets_google_map_nearby`
 
 - **HTTP:** `GET /datasets/google-map-businesses/nearby`
-- **What:** Search nearby stored Google Maps businesses. Searches stored Google Maps businesses near a coordinate in dataset id enum value `google-map-businesses`.
-- **Params:** `category` (string, optional) — Exact category filter, max 128 characters; `lat` (number, **required**) — Latitude; `lon` (number, **required**) — Longitude; `min_rating` (number, optional) — Minimum rating, 0 through 5; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `radius_m` (integer, **required**) — Radius in meters, max 50000
+- **What:** Search nearby stored Google Maps businesses. Searches stored Google Maps businesses near a coordinate in dataset id enum value `google-map-businesses`. `category` is a Google Maps type token in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`), both as the `category` filter and in each result's `category` field. A `rating` of `0` means no aggregate rating is available for that business (not a literal zero-star score); read it together with `review_count`, and note that `min_rating` above 0 excludes unrated businesses.
+- **Params:** `category` (string, optional) — Exact category filter: a Google Maps type token in lower-case snake_case (e.g. dentist, bus_stop), max 128 characters; `lat` (number, **required**) — Latitude; `lon` (number, **required**) — Longitude; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are stored as rating 0, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `radius_m` (integer, **required**) — Radius in meters, max 50000
 
 ### `datasets_google_map_search`
 
 - **HTTP:** `GET /datasets/google-map-businesses/search`
-- **What:** Search stored Google Maps businesses. Searches Google Maps business records stored in Elasticsearch. Sort enum: `relevance`, `updated_at_desc`, `rating_desc`, `review_count_desc`, `distance_asc`.
-- **Params:** `category` (string, optional) — Exact category filter, max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering or distance sort; `lon` (number, optional) — Longitude for radius filtering or distance sort; `min_rating` (number, optional) — Minimum rating, 0 through 5; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
+- **What:** Search stored Google Maps businesses. Searches Google Maps business records stored in a search index. Sort enum: `relevance`, `updated_at_desc`, `rating_desc`, `review_count_desc`, `distance_asc`. `category` is a Google Maps type token in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`), both as the `category` filter and in each result's `category` field. A `rating` of `0` means no aggregate rating is available for that business (too few reviews, or a place type Google does not rate) — it is not a literal zero-star score; read it together with `review_count`, and note that `rating_desc` sorts unrated businesses last and `min_rating` above 0 excludes them.
+- **Params:** `category` (string, optional) — Exact category filter: a Google Maps type token in lower-case snake_case (e.g. dentist, bus_stop), max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering or distance sort; `lon` (number, optional) — Longitude for radius filtering or distance sort; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are stored as rating 0, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
 
 ### `datasets_list`
 
@@ -565,6 +589,104 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /geocoding/search`
 - **What:** Search Nominatim places. Returns typed Nominatim JSONv2 forward geocoding results. Use either q or structured fields, not both.
 - **Params:** `accept_language` (string, optional) — Preferred result language, forwarded to Nominatim; `addressdetails` (boolean, optional) — Include address details, defaults to true; `city` (string, optional) — Structured city; `country` (string, optional) — Structured country; `countrycodes` (string, optional) — Comma-separated ISO 3166-1 alpha-2 country filters; `county` (string, optional) — Structured county; `extratags` (boolean, optional) — Include OSM extra tags; `limit` (integer, optional) — Maximum results, defaults to 10 and clamps to 20; `namedetails` (boolean, optional) — Include multilingual name details; `postalcode` (string, optional) — Structured postal code; `q` (string, optional) — Free-text search query; `state` (string, optional) — Structured state; `street` (string, optional) — Structured street or house number
+
+## GitHub (16)
+
+### `github_org`
+
+- **HTTP:** `GET /github/org/{org}`
+- **What:** Retrieve a GitHub organization profile. Returns a public GitHub organization profile (company-side enrichment).
+- **Params:** `org` (string, **required**) — GitHub organization login
+
+### `github_org_repos`
+
+- **HTTP:** `GET /github/org/{org}/repos`
+- **What:** List a GitHub organization's public repositories. Returns a page of an organization's public repositories (company tech stack).
+- **Params:** `direction` (string, optional) — Sort direction; `org` (string, **required**) — GitHub organization login; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `sort` (string, optional) — Sort field; `type` (string, optional) — Repository type
+
+### `github_repo`
+
+- **HTTP:** `GET /github/repo/{owner}/{repo}`
+- **What:** Retrieve a GitHub repository. Returns public detail for a single repository (the core project object).
+- **Params:** `owner` (string, **required**) — Repository owner (user or org login); `repo` (string, **required**) — Repository name
+
+### `github_repo_contributors`
+
+- **HTTP:** `GET /github/repo/{owner}/{repo}/contributors`
+- **What:** List a repository's contributors. Returns a page of a repository's contributors (who builds a project).
+- **Params:** `owner` (string, **required**) — Repository owner (user or org login); `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `repo` (string, **required**) — Repository name
+
+### `github_repo_forks`
+
+- **HTTP:** `GET /github/repo/{owner}/{repo}/forks`
+- **What:** List a repository's public forks. Returns a page of a repository's public forks (adopter signal).
+- **Params:** `owner` (string, **required**) — Repository owner (user or org login); `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `repo` (string, **required**) — Repository name; `sort` (string, optional) — Sort order
+
+### `github_repo_languages`
+
+- **HTTP:** `GET /github/repo/{owner}/{repo}/languages`
+- **What:** Retrieve a repository's language breakdown. Returns the language byte breakdown for a repository, sorted by bytes descending (tech fingerprint).
+- **Params:** `owner` (string, **required**) — Repository owner (user or org login); `repo` (string, **required**) — Repository name
+
+### `github_repo_releases`
+
+- **HTTP:** `GET /github/repo/{owner}/{repo}/releases`
+- **What:** List a repository's releases. Returns a page of a repository's releases (momentum/health signal).
+- **Params:** `owner` (string, **required**) — Repository owner (user or org login); `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `repo` (string, **required**) — Repository name
+
+### `github_repo_stargazers`
+
+- **HTTP:** `GET /github/repo/{owner}/{repo}/stargazers`
+- **What:** List users who starred a repository. Returns a page of users who starred a repository (buyer-intent signal).
+- **Params:** `owner` (string, **required**) — Repository owner (user or org login); `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `repo` (string, **required**) — Repository name
+
+### `github_search_repositories`
+
+- **HTTP:** `GET /github/search/repositories`
+- **What:** Search public GitHub repositories. Searches public GitHub repositories (market/competitive discovery). Unauthenticated search is rate limited to roughly 10 requests per minute.
+- **Params:** `order` (string, optional) — Sort order; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `q` (string, **required**) — GitHub repository search query; `sort` (string, optional) — Sort field
+
+### `github_search_users`
+
+- **HTTP:** `GET /github/search/users`
+- **What:** Search public GitHub users. Searches public GitHub users (developer discovery). Unauthenticated search is rate limited to roughly 10 requests per minute.
+- **Params:** `order` (string, optional) — Sort order; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `q` (string, **required**) — GitHub user search query; `sort` (string, optional) — Sort field
+
+### `github_trending`
+
+- **HTTP:** `GET /github/trending`
+- **What:** List trending GitHub repositories. Returns the repositories on GitHub's trending page (market discovery).
+- **Params:** `language` (string, optional) — Programming language filter (e.g. go, python); `since` (string, optional) — Time window
+
+### `github_trending_developers`
+
+- **HTTP:** `GET /github/trending/developers`
+- **What:** List trending GitHub developers. Returns the developers on GitHub's trending developers page (market discovery).
+- **Params:** `language` (string, optional) — Programming language filter (e.g. go, python); `since` (string, optional) — Time window
+
+### `github_user`
+
+- **HTTP:** `GET /github/user/{username}`
+- **What:** Retrieve a GitHub user profile. Returns a public GitHub user's profile plus user-published social links. Email is included only when the user has made it public on their profile.
+- **Params:** `username` (string, **required**) — GitHub username
+
+### `github_user_events`
+
+- **HTTP:** `GET /github/user/{username}/events`
+- **What:** List a GitHub user's recent public activity. Returns a page of a user's recent public events, normalized to type, repository, and timestamp (freshness signal).
+- **Params:** `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `username` (string, **required**) — GitHub username
+
+### `github_user_pinned`
+
+- **HTTP:** `GET /github/user/{username}/pinned`
+- **What:** List a GitHub user's pinned repositories. Returns the repositories a user pinned on their public profile (showcase signal). Empty when the user pinned nothing.
+- **Params:** `username` (string, **required**) — GitHub username
+
+### `github_user_repos`
+
+- **HTTP:** `GET /github/user/{username}/repos`
+- **What:** List a GitHub user's public repositories. Returns a page of a user's public repositories (tech-stack signal).
+- **Params:** `direction` (string, optional) — Sort direction; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `sort` (string, optional) — Sort field; `type` (string, optional) — Repository type; `username` (string, **required**) — GitHub username
 
 ## Google (38)
 
@@ -715,7 +837,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_search`
 
 - **HTTP:** `POST /google/search`
-- **What:** Google search API. Returns normalized Google web search results. Results are fetched through gost-egressing browser backends that race several concurrent renders per request (in-render gost fan-out) and return the first clean result, with stale-cache fallback when available. The endpoint returns 503 when Google serves a challenge page or unusable HTML. Rate limit is enforced at 1 request per second, and if the limit is exceeded a 429 status code is returned with rate limit headers.
+- **What:** Google search API. Returns normalized Google web search results. Results are fetched through proxied browser renderers that race several concurrent renders per request and return the first clean result, with stale-cache fallback when available. The endpoint returns 503 when Google serves a challenge page or unusable HTML. Rate limit is enforced at 1 request per second, and if the limit is exceeded a 429 status code is returned with rate limit headers.
 - **Params:** `searchOption` (object, **required**) — Search options
 
 ### `google_suggest`
@@ -1594,67 +1716,67 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /reddit/comments/{id}`
 - **What:** Get Reddit post comments. Returns flat public comment entries from a Reddit post.
-- **Params:** `depth` (integer, optional) — Accepted for compatibility. Public comment data is flat and may ignore depth.; `id` (string, **required**) — Reddit post id or t3_ id; `limit` (integer, optional) — Maximum comments returned, defaults to 25 and clamps to 100; `sort` (string, optional) — Accepted for compatibility: confidence, top, new, controversial, old, or qa. Public comment data is flat and may ignore sort.
+- **Params:** `depth` (integer, optional) — Accepted for compatibility. Public comment data is flat and may ignore depth.; `id` (string, **required**) — Reddit post id or t3_ id; `limit` (integer, optional) — Maximum comments returned, defaults to 25 and clamps to 100; `sort` (string, optional) — Accepted for compatibility: confidence, top, new, controversial, old, or qa. Public comment data is flat and may ignore sort.; `with_scores` (boolean, optional) — When true, source comment scores and nested replies from old.reddit HTML rather than the default (slower)
 
 ### `reddit_domain_posts`
 
 - **HTTP:** `GET /reddit/domain/{domain}/posts`
 - **What:** List Reddit domain posts. Returns normalized public posts submitted from a linked domain.
-- **Params:** `after` (string, optional) — Reddit pagination token; `domain` (string, **required**) — Domain hostname, without scheme or path; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
+- **Params:** `after` (string, optional) — Reddit pagination token; `domain` (string, **required**) — Domain hostname, without scheme or path; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all; `with_scores` (boolean, optional) — When true, source score and comment_count from old.reddit HTML rather than the default (slower)
 
 ### `reddit_post`
 
 - **HTTP:** `GET /reddit/post/{id}`
 - **What:** Get Reddit post. Returns a normalized public Reddit post entry.
-- **Params:** `id` (string, **required**) — Reddit post id or t3_ id
+- **Params:** `id` (string, **required**) — Reddit post id or t3_ id; `with_scores` (boolean, optional) — When true, source score, upvote_ratio, and comment_count from old.reddit HTML rather than the default (slower)
 
 ### `reddit_search`
 
 - **HTTP:** `GET /reddit/search`
 - **What:** Search Reddit posts. Searches public Reddit content and returns normalized public post entries.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `q` (string, **required**) — Search keywords; `sort` (string, optional) — Sort: relevance, hot, new, top, or comments; `subreddit` (string, optional) — Restrict search to a subreddit name, without r/; `time` (string, optional) — Time window for top/comments sorts: hour, day, week, month, year, or all
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `q` (string, **required**) — Search keywords; `sort` (string, optional) — Sort: relevance, hot, new, top, or comments; `subreddit` (string, optional) — Restrict search to a subreddit name, without r/; `time` (string, optional) — Time window for top/comments sorts: hour, day, week, month, year, or all; `with_scores` (boolean, optional) — When true, source score and comment_count from old.reddit HTML rather than the default (slower)
 
 ### `reddit_subreddit_about`
 
 - **HTTP:** `GET /reddit/subreddit/{subreddit}/about`
-- **What:** Get Reddit subreddit metadata. Returns RSS-derived public metadata and sample posts for a subreddit. Subscriber counts, icons, and banners are omitted because Reddit no-auth about JSON is not reliably reachable.
-- **Params:** `limit` (integer, optional) — Maximum sample posts inspected, defaults to 25 and clamps to 100; `subreddit` (string, **required**) — Subreddit name, without r/
+- **What:** Get Reddit subreddit metadata. Returns public metadata and sample posts for a subreddit. Subscriber counts, icons, and banners are omitted because they are not available on anonymous Reddit pages.
+- **Params:** `limit` (integer, optional) — Maximum sample posts inspected, defaults to 25 and clamps to 100; `subreddit` (string, **required**) — Subreddit name, without r/; `with_scores` (boolean, optional) — When true, source the sample posts (with score and comment_count) from old.reddit HTML rather than the default (slower); subscriber counts remain unavailable
 
 ### `reddit_subreddit_comments`
 
 - **HTTP:** `GET /reddit/subreddit/{subreddit}/comments`
 - **What:** List Reddit subreddit comments. Returns flat public comment entries from a subreddit latest-comments feed.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `subreddit` (string, **required**) — Subreddit name, without r/
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `subreddit` (string, **required**) — Subreddit name, without r/; `with_scores` (boolean, optional) — When true, source comment scores from old.reddit HTML rather than the default (slower)
 
 ### `reddit_subreddit_posts`
 
 - **HTTP:** `GET /reddit/subreddit/{subreddit}/posts`
 - **What:** List Reddit subreddit posts. Returns normalized public posts from a subreddit.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `subreddit` (string, **required**) — Subreddit name, without r/; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `subreddit` (string, **required**) — Subreddit name, without r/; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all; `with_scores` (boolean, optional) — When true, source score and comment_count from old.reddit HTML rather than the default (slower)
 
 ### `reddit_subreddits_posts`
 
 - **HTTP:** `GET /reddit/subreddits/posts`
 - **What:** List Reddit multi-subreddit posts. Returns normalized public posts from a combined multi-subreddit feed.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `subreddits` (string, **required**) — Comma-separated subreddit names, without r/, maximum 10; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `subreddits` (string, **required**) — Comma-separated subreddit names, without r/, maximum 10; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all; `with_scores` (boolean, optional) — When true, source score and comment_count from old.reddit HTML rather than the default (slower)
 
 ### `reddit_trends`
 
 - **HTTP:** `GET /reddit/trends`
 - **What:** List Reddit trends. Returns normalized public posts from broad Reddit hot, new, rising, or top feeds. For subreddit-specific trends, use `/reddit/subreddit/{subreddit}/posts` with `sort=hot`, `sort=new`, `sort=rising`, or `sort=top`.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, rising, or top; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, rising, or top; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all; `with_scores` (boolean, optional) — When true, source score and comment_count from old.reddit HTML rather than the default (slower)
 
 ### `reddit_user_comments`
 
 - **HTTP:** `GET /reddit/user/{username}/comments`
 - **What:** List Reddit user comments. Returns flat public comment entries from a public Reddit user's comments feed.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/; `with_scores` (boolean, optional) — When true, source comment scores from old.reddit HTML rather than the default (slower)
 
 ### `reddit_user_posts`
 
 - **HTTP:** `GET /reddit/user/{username}/posts`
 - **What:** List Reddit user posts. Returns normalized public posts from a public Reddit user's submitted feed.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/; `with_scores` (boolean, optional) — When true, source score and comment_count from old.reddit HTML rather than the default (slower)
 
 ## Redfin (5)
 
@@ -2156,7 +2278,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve Spotify podcast recommendations. Returns normalized related Spotify shows and episodes from Spotify's show recommendations response.
 - **Params:** `uri` (string, optional) — Spotify show URI
 
-## TikTok (24)
+## TikTok (23)
 
 ### `tiktok_category`
 
@@ -2193,12 +2315,6 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /tiktok/popular-trend/country-industry-meta`
 - **What:** Retrieve TikTok popular-trend country and industry metadata. Returns the country and industry metadata used by the TikTok Creative Center popular-trend endpoints.
 - **Params:** _none_
-
-### `tiktok_popular_trend_creator`
-
-- **HTTP:** `GET /tiktok/popular-trend/creator`
-- **What:** Retrieve TikTok popular-trend creators. Returns trending creators from TikTok Creative Center. The service clamps `page` to 1-10 and `limit` to at most 100.
-- **Params:** `audience_count` (integer, optional) — Accepted for compatibility but currently ignored by the upstream request; `creator_country` (string, optional) — Creator country code; `limit` (integer, optional) — Maximum number of creators to return; `page` (integer, optional) — Page number; `sort_by` (string, optional) — Sort order
 
 ### `tiktok_post`
 
@@ -2417,6 +2533,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /web/scrape`
 - **What:** Scrape a URL into markdown, HTML, links or metadata. Fetches a single public URL and returns clean content in the requested formats (markdown, html, raw_html, links, metadata). With render=auto the request starts as a fast HTTP fetch and escalates to a real browser when the page is blocked or rendered with JavaScript. only_main_content (default true) strips navigation, headers, footers and other boilerplate before conversion. Only public pages are supported; respect each site's terms of use and robots directives.
 - **Params:** `scrapeOption` (object, **required**) — Scrape options
+
+## X (3)
+
+### `x_post`
+
+- **HTTP:** `GET /x/post/{id}`
+- **What:** Retrieve an X post. Returns a public X post by numeric post id, including author, text, visible metrics, and a quoted post preview when present.
+- **Params:** `id` (string, **required**) — X post id; `username` (string, optional) — Expected author username. When provided, mismatched authors return 404.
+
+### `x_profile`
+
+- **HTTP:** `GET /x/profile/{username}`
+- **What:** Retrieve an X profile. Returns public profile details for an X username, including visible counts and profile media when available.
+- **Params:** `username` (string, **required**) — X username
+
+### `x_profile_posts`
+
+- **HTTP:** `GET /x/profile/{username}/posts`
+- **What:** List public X profile posts. Returns posts present in the first public profile page payload for an X username. The endpoint does not paginate replies, media-only tabs, or search results.
+- **Params:** `limit` (integer, optional) — Maximum posts returned from the first page payload. Defaults to 20 and must be 1-50.; `username` (string, **required**) — X username
 
 ## Yahoo Finance (39)
 
