@@ -6,9 +6,27 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**467 endpoints across 40 platform group(s).**
+**683 endpoints across 59 platform group(s).**
 
-## Airbnb (4)
+## Airbnb (7)
+
+### `airbnb_host`
+
+- **HTTP:** `GET /airbnb/host/{id}`
+- **What:** Get Airbnb host profile. Returns a normalized Airbnb public host profile — display name, Superhost and identity-verification status, location, bio, hosting tenure, total guest-review count, and total listing count.
+- **Params:** `id` (string, **required**) — Host id (numeric)
+
+### `airbnb_host_listings`
+
+- **HTTP:** `GET /airbnb/host/{id}/listings`
+- **What:** Get Airbnb host listings. Returns the listings an Airbnb host manages, paginated. Page 1 comes from the host profile; deeper pages page through the host's full portfolio.
+- **Params:** `id` (string, **required**) — Host id (numeric); `page` (integer, optional) — 1-based page
+
+### `airbnb_host_reviews`
+
+- **HTTP:** `GET /airbnb/host/{id}/reviews`
+- **What:** Get Airbnb host reviews. Returns reviews guests left for an Airbnb host, paginated, including the reviewer name and location.
+- **Params:** `id` (string, **required**) — Host id (numeric); `page` (integer, optional) — 1-based page
 
 ### `airbnb_room`
 
@@ -53,6 +71,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /amazon/suggest/{keyword}`
 - **What:** Retrieve Amazon search suggestions. Returns typeahead keyword suggestions from Amazon's public suggestion API for `amazon.com`.
 - **Params:** `keyword` (string, **required**) — Suggestion prefix
+
+## Anime (9)
+
+### `anime_airing_schedule`
+
+- **HTTP:** `GET /anime/airing-schedule`
+- **What:** Upcoming anime airing schedule. Returns upcoming anime episode broadcasts (episode number, air time, countdown, and the normalized title), soonest first, paginated. Credential-free public AniList data.
+- **Params:** `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 20, max 50
+
+### `anime_character`
+
+- **HTTP:** `GET /anime/character/{id}`
+- **What:** Get an anime/manga character. Returns a normalized character profile by AniList id: names, image, description, gender, age, blood type, birthday, favourites, and the titles the character appears in with their billed role. Credential-free public AniList data.
+- **Params:** `id` (string, **required**) — AniList character id
+
+### `anime_character_search`
+
+- **HTTP:** `GET /anime/character/search`
+- **What:** Search anime & manga characters. Searches anime and manga characters by name. Returns character summaries (name, native name, image, favourites), paginated. Credential-free public AniList data.
+- **Params:** `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50; `query` (string, **required**) — Search text
+
+### `anime_rankings`
+
+- **HTTP:** `GET /anime/rankings`
+- **What:** Rank anime. Returns a filterable, sorted anime ranking. Credential-free public AniList data. Filter by season, year, format, genre, and status.
+- **Params:** `format` (string, optional) — Format filter: TV, TV_SHORT, MOVIE, SPECIAL, OVA, ONA, MUSIC.; `genre` (string, optional) — Genre filter, e.g. Fantasy.; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 20, max 50; `season` (string, optional) — Airing season filter: WINTER, SPRING, SUMMER, FALL.; `season_year` (integer, optional) — Airing year filter, 1940-2100.; `sort` (string, optional) — Order: TRENDING_DESC, POPULARITY_DESC, SCORE_DESC, FAVOURITES_DESC, START_DATE_DESC, UPDATED_AT_DESC. Default TRENDING_DESC.; `status` (string, optional) — Status filter: FINISHED, RELEASING, NOT_YET_RELEASED, CANCELLED, HIATUS.
+
+### `anime_search`
+
+- **HTTP:** `GET /anime/search`
+- **What:** Search anime. Searches anime by free-text query. Credential-free public anime data from AniList. Returns normalized entries: titles, scores, popularity, format, status, season, genres, tags, and studios.
+- **Params:** `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50; `query` (string, **required**) — Search text; `sort` (string, optional) — Ordering: SEARCH_MATCH, POPULARITY_DESC, SCORE_DESC, TRENDING_DESC, FAVOURITES_DESC, START_DATE_DESC. Default SEARCH_MATCH.
+
+### `anime_title`
+
+- **HTTP:** `GET /anime/title/{id}`
+- **What:** Get an anime. Returns a normalized anime by AniList id: titles (romaji/english/native), MyAnimeList id, scores, popularity, favourites, format, status, season, episodes, duration, genres, ranked tags, studios, dates, description, images, and next-airing countdown. Pass mal=true to additionally enrich the response with the MyAnimeList community score (mal block: score on a 0-10 scale, plus scored-by count), scraped credential-free from the public MAL page. Credential-free public AniList data.
+- **Params:** `id` (string, **required**) — AniList anime id; `mal` (boolean, optional) — Enrich with the MyAnimeList community score (adds one fetch; omitted when the title has no MAL id)
+
+### `anime_title_characters`
+
+- **HTTP:** `GET /anime/title/{id}/characters`
+- **What:** List an anime's characters. Returns an anime's cast (character name, native name, billed role, image, favourites), paginated. Credential-free public AniList data.
+- **Params:** `id` (string, **required**) — AniList anime id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50
+
+### `anime_title_recommendations`
+
+- **HTTP:** `GET /anime/title/{id}/recommendations`
+- **What:** List an anime's recommendations. Returns community-recommended titles for an anime, each with a recommendation rating and the full normalized media entry, paginated. Credential-free public AniList data.
+- **Params:** `id` (string, **required**) — AniList anime id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50
+
+### `anime_title_staff`
+
+- **HTTP:** `GET /anime/title/{id}/staff`
+- **What:** List an anime's staff. Returns the people credited on an anime (name, production role, occupations, image), paginated. Credential-free public AniList data.
+- **Params:** `id` (string, **required**) — AniList anime id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50
 
 ## ApplePodcasts (5)
 
@@ -165,7 +239,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bing_search`
 
 - **HTTP:** `GET /bing/search`
-- **What:** Search Bing web results. Returns normalized Bing web search results for a query string, including organic results, optional context panel data, related queries, people-also-ask questions, news modules, video modules, and page-based pagination. Empty optional blocks are omitted from the JSON response. Locale defaults to country=us and lang=en-us. Results are fetched with the repo's Chrome-impersonated request client and return 503 when Bing serves a challenge page or unusable HTML.
+- **What:** Search Bing web results. Returns normalized Bing web search results for a query string, including organic results, optional context panel data, related queries, people-also-ask questions, news modules, video modules, and page-based pagination. Empty optional blocks are omitted from the JSON response. Locale defaults to country=us and lang=en-us. Results are fetched with a Chrome-impersonated request client and return 503 when Bing serves a challenge page or unusable HTML. Queries that use the site: operator (for example site:gov.hu) are not supported: Bing serves a bot-verification challenge for them, so they are rejected with 400 before any request is made. Use the Google search endpoint (/api/v1/google/search) for domain-restricted searches.
 - **Params:** `count` (integer, optional) — Results per page; defaults to 10, clamped to 1..50; `country` (string, optional) — Two-letter country code; defaults to us; `lang` (string, optional) — Bing UI language; defaults to en-us; `page` (integer, optional) — 1-based page number; defaults to 1; `q` (string, **required**) — Search query
 
 ### `bing_suggest`
@@ -348,6 +422,100 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Brave video results. Returns normalized Brave video search results for a query string. Locale defaults to country=us and lang=en-us. Results are fetched from public Brave Search video HTML and return 503 when Brave serves a challenge page or unusable HTML.
 - **Params:** `count` (integer, optional) — Results to return; defaults to 10, clamped to 1..50; `country` (string, optional) — Brave result country; defaults to us; `date_from` (string, optional) — Custom start date in YYYY-MM-DD; requires date_to; `date_to` (string, optional) — Custom end date in YYYY-MM-DD; requires date_from; `lang` (string, optional) — Brave UI language; defaults to en-us; `offset` (integer, optional) — Zero-based Brave result page; defaults to 0; `q` (string, **required**) — Search query; `time_range` (string, optional) — Preset time filter: any, day, week, month, year, or custom
 
+## Capterra (3)
+
+### `capterra_product`
+
+- **HTTP:** `GET /capterra/product`
+- **What:** Get a Capterra product. Returns a normalized Capterra product profile: name, description, category, and aggregate rating. Credential-free public Capterra data, rendered from the product page through proxied browser renderers.
+- **Params:** `product_id` (string, **required**) — Capterra product id (the numeric id in a /p/{id}/{slug}/ URL)
+
+### `capterra_reviews`
+
+- **HTTP:** `GET /capterra/product/reviews`
+- **What:** Get Capterra product reviews. Returns a page of normalized Capterra reviews (author, headline, rating) plus the product's aggregate rating. Credential-free public Capterra data, rendered from the reviews page through proxied browser renderers.
+- **Params:** `page` (integer, optional) — Page number (default 1); `product_id` (string, **required**) — Capterra product id (the numeric id in a /p/{id}/{slug}/ URL)
+
+### `capterra_search`
+
+- **HTTP:** `GET /capterra/search`
+- **What:** Search Capterra products. Returns Capterra search-result products (id, name, url, description, rating). Credential-free public Capterra data, rendered from the search page through proxied browser renderers. Note: Capterra renders a fallback product list even for queries with no genuine match, rather than a distinct empty-results page, so callers should treat low-relevance results as an upstream characteristic, not a bug.
+- **Params:** `q` (string, **required**) — Search query
+
+## ChromeWebStore (12)
+
+### `chromewebstore_categories`
+
+- **HTTP:** `GET /chromewebstore/categories`
+- **What:** List Chrome Web Store categories and collections. Returns the reference taxonomy for the list endpoints: extension category groups and their subcategory slugs, the top-chart identifiers, and known curated collection slugs.
+- **Params:** _none_
+
+### `chromewebstore_category`
+
+- **HTTP:** `GET /chromewebstore/category`
+- **What:** List items in a Chrome Web Store category. Returns the item cards listed under an extensions category slug (e.g. `productivity/tools`, `lifestyle/shopping`, `make_chrome_yours/privacy`). Use /chromewebstore/categories for the reference taxonomy. Defaults: `num=50`, `country=us`, `lang=en`.
+- **Params:** `category` (string, **required**) — Category slug under extensions; `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Two-letter language code; `num` (integer, optional) — Maximum number of items
+
+### `chromewebstore_charts`
+
+- **HTTP:** `GET /chromewebstore/charts`
+- **What:** List a Chrome Web Store top chart. Returns the item cards in a store top chart. `chart` accepts `trending`, `popular`, or `notable`. Defaults: `chart=popular`, `num=50`, `country=us`, `lang=en`.
+- **Params:** `chart` (string, optional) — Top chart to list; `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Two-letter language code; `num` (integer, optional) — Maximum number of items
+
+### `chromewebstore_collection`
+
+- **HTTP:** `GET /chromewebstore/collection`
+- **What:** List items in a curated Chrome Web Store collection. Returns the item cards in a curated store collection slug (e.g. `editors_picks_extensions`, `dark_mode`, `ai_productivity`). Use /chromewebstore/categories for known collection slugs. Defaults: `num=50`, `country=us`, `lang=en`.
+- **Params:** `collection` (string, **required**) — Curated collection slug; `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Two-letter language code; `num` (integer, optional) — Maximum number of items
+
+### `chromewebstore_developer`
+
+- **HTTP:** `GET /chromewebstore/developer`
+- **What:** Retrieve a Chrome Web Store publisher and their items. Returns a Chrome Web Store publisher (developer) by publisher id, including the disclosed trader details — legal name, email, phone, address, website, and D-U-N-S number — plus the publisher's listed items ("More from ..."). Trader fields are only present for publishers that identify as EU traders. Defaults: `num=50`, `country=us`, `lang=en`.
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Chrome Web Store publisher id (u + 32 hex chars); `lang` (string, optional) — Two-letter language code; `num` (integer, optional) — Maximum number of items
+
+### `chromewebstore_item`
+
+- **HTTP:** `GET /chromewebstore/item`
+- **What:** Retrieve Chrome Web Store item details. Returns normalized detail for a Chrome Web Store extension or theme, including name, rating, rating count, user count, version, last-updated date, size, supported languages, developer, category, screenshots, and privacy links. Defaults: `country=us`, `lang=en`.
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Chrome Web Store item id (32-character extension/theme id); `lang` (string, optional) — Two-letter language code
+
+### `chromewebstore_permissions`
+
+- **HTTP:** `GET /chromewebstore/permissions`
+- **What:** Retrieve a Chrome Web Store item's declared permissions. Returns the permissions a Chrome Web Store extension declares in its manifest: `permissions`, `optional_permissions`, `host_permissions`, `optional_host_permissions`, plus `manifest_version` and `min_browser_version`. Useful for security and supply-chain review. Defaults: `country=us`, `lang=en`.
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Chrome Web Store item id (32-character extension id); `lang` (string, optional) — Two-letter language code
+
+### `chromewebstore_privacy`
+
+- **HTTP:** `GET /chromewebstore/privacy`
+- **What:** Retrieve a Chrome Web Store item's privacy disclosures. Returns an extension's privacy disclosures as the store renders them: the developer's data-use statement, whether it collects data, the standard data-handling declarations, and the privacy-policy link. Defaults: `country=us`, `lang=en`.
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Chrome Web Store item id (32-character extension/theme id); `lang` (string, optional) — Two-letter language code
+
+### `chromewebstore_reviews`
+
+- **HTTP:** `GET /chromewebstore/reviews`
+- **What:** Retrieve Chrome Web Store item reviews. Returns the reviews the store renders on an item's reviews page, each with author, star rating, text, posted/edited dates and reviewed version. Defaults: `num=20`, `country=us`, `lang=en`.
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Chrome Web Store item id (32-character extension/theme id); `lang` (string, optional) — Two-letter language code; `num` (integer, optional) — Maximum number of reviews; `sort` (string, optional) — Review sort order
+
+### `chromewebstore_search`
+
+- **HTTP:** `GET /chromewebstore/search`
+- **What:** Search Chrome Web Store items. Returns Chrome Web Store search result cards for a keyword, each with id, name, rating, user count, publisher and detail URL. Defaults: `num=30`, `country=us`, `lang=en`.
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Two-letter language code; `num` (integer, optional) — Maximum number of results; `term` (string, **required**) — Search keyword
+
+### `chromewebstore_similar`
+
+- **HTTP:** `GET /chromewebstore/similar`
+- **What:** Retrieve related Chrome Web Store items. Returns the related-items shelf the store renders on an item's detail page. Defaults: `country=us`, `lang=en`.
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Chrome Web Store item id (32-character extension/theme id); `lang` (string, optional) — Two-letter language code
+
+### `chromewebstore_suggest`
+
+- **HTTP:** `GET /chromewebstore/suggest`
+- **What:** Suggest Chrome Web Store search terms. Returns item-name suggestions for a search prefix, drawn from the top store-search results. Defaults: `num=8`, `country=us`, `lang=en`.
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Two-letter language code; `num` (integer, optional) — Maximum number of suggestions; `term` (string, **required**) — Search prefix to autocomplete
+
 ## CoinGecko (21)
 
 ### `coingecko_categories`
@@ -476,13 +644,103 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** CoinGecko trending highlights. Returns deduped trending coins and categories from the public CoinGecko highlights page. This endpoint supports the documented `vs_currency` enum.
 - **Params:** `limit` (integer, optional) — Rows per section to return, default 20, max 50; `vs_currency` (string, optional) — Quote currency
 
-## Datasets (9)
+## Datasets (62)
+
+### `datasets_airbnb_facets`
+
+- **HTTP:** `GET /datasets/airbnb-markets/facets`
+- **What:** Facet the Airbnb markets dataset. Returns suppressed distribution counts over the Airbnb markets dataset, honoring the same filters as search. Facet enum: `country`, `market`, `currency`, `superhost`, `guest_favorite`, `rating_band`, `review_band`, `admin1` (top subdivision), `locality` (settlement), `room_type` (`entire_place`/`private_room`/`hotel`/`shared_room`), `property_type` (Airbnb's canonical listing type from the detail page), `amenities` (each amenity with the count of listings offering it). The `admin1`, `locality`, `room_type`, `property_type` and `amenities` facets stay empty until their enrichment coverage is high enough to be reliable. group_by enum: `country`, `market`, `admin1`, `locality`, `room_type`, `property_type`.
+- **Params:** `active_since` (string, optional) — Freshness filter, an ISO-8601 date (YYYY-MM-DD); `country` (string, optional) — Exact ISO-3166-1 alpha-2 country filter, e.g. FR; `facet` (string, **required**) — Facet enum: country, market, currency, superhost, guest_favorite, rating_band, review_band, admin1, locality, room_type, property_type, amenities; `group_by` (string, optional) — Aggregate cell dimension enum: country, market, admin1, locality, room_type, property_type. Defaults to country; `guest_favorite` (boolean, optional) — Count only Guest Favorite listings (an observed lower bound; the badge under-counts); `market` (string, optional) — Exact metro-market filter, max 128 characters; `min_listings` (integer, optional) — Minimum listings per bucket; raises the small-cell suppression floor; `min_rating` (number, optional) — Minimum listing rating, from 0 through 5; `min_review_count` (integer, optional) — Minimum listing review count, 0 or greater; `superhost` (boolean, optional) — Count only Superhost listings
+
+### `datasets_airbnb_item`
+
+- **HTTP:** `GET /datasets/airbnb-markets/items/{country}`
+- **What:** Get an Airbnb market from the dataset. Returns one country's full aggregate Airbnb market profile from dataset id enum value `airbnb-markets` — headline supply, Superhost share, Guest Favorite share (`guest_favorite_pct`, an observed lower bound), `avg_person_capacity` (average guests a listing sleeps over the detail-page-enriched sample), ratings, its top metros, bounding box, per-currency nightly-price percentiles, and a USD-normalized `price_usd` percentile block (converted via an approximate dated FX snapshot) for cross-country comparison. Aggregate-only. Returns 404 for a country below the suppression floor.
+- **Params:** `country` (string, **required**) — ISO-3166-1 alpha-2 country code, e.g. FR
+
+### `datasets_airbnb_nearby`
+
+- **HTTP:** `GET /datasets/airbnb-markets/nearby`
+- **What:** Airbnb market density near a coordinate. Returns an aggregate geohash-grid density map of Airbnb listings within a radius of a coordinate, from dataset id enum value `airbnb-markets`. Each cell reports a centroid, listing count and Superhost share; thin cells are suppressed. Aggregate-only.
+- **Params:** `active_since` (string, optional) — Freshness filter, an ISO-8601 date (YYYY-MM-DD); `country` (string, optional) — Exact ISO-3166-1 alpha-2 country filter, e.g. US; `lat` (number, **required**) — Center latitude, from -90 through 90; `lon` (number, **required**) — Center longitude, from -180 through 180; `min_listings` (integer, optional) — Minimum listings per cell; raises the small-cell suppression floor; `min_rating` (number, optional) — Minimum listing rating, from 0 through 5; `precision` (integer, optional) — Geohash precision, from 1 through 12; defaults to a value derived from the radius; `radius_m` (integer, **required**) — Search radius in meters, from 1 through 50000; `superhost` (boolean, optional) — Count only Superhost listings
+
+### `datasets_airbnb_search`
+
+- **HTTP:** `GET /datasets/airbnb-markets/search`
+- **What:** Search the Airbnb markets dataset. Returns aggregate Airbnb short-term-rental market rollups from the dataset id enum value `airbnb-markets`. Aggregate-only: each row is a market cell, never an individual listing. Thin cells are suppressed. group_by enum: `country`, `market`, `admin1` (top subdivision), `locality` (settlement), `room_type` (`entire_place`/`private_room`/`hotel`/`shared_room`), `property_type` (Airbnb's canonical listing type from the detail page). `admin1`, `locality`, `room_type` and `property_type` are enrichment-derived and stay empty until their coverage is high enough to be reliable. Each cell also carries `median_price_usd`, the median nightly price converted to USD via an approximate dated FX snapshot, for cross-country comparison (combine with `group_by=room_type` for median price by room type); `guest_favorite_pct`, the share of listings carrying the Guest Favorite badge (an observed lower bound, like `superhost_pct`); and `avg_person_capacity`, the average guests a listing sleeps over the detail-page-enriched sample. Sort enum: `listings_desc`, `superhost_pct_desc`, `rating_desc`, `key_asc`.
+- **Params:** `active_since` (string, optional) — Freshness filter, an ISO-8601 date (YYYY-MM-DD); only listings last seen on or after it are counted; `country` (string, optional) — Exact ISO-3166-1 alpha-2 country filter, e.g. FR; `group_by` (string, optional) — Aggregate cell dimension enum: country, market, admin1, locality, room_type, property_type. Defaults to country; `guest_favorite` (boolean, optional) — Count only Guest Favorite listings (an observed lower bound; the badge under-counts); `market` (string, optional) — Exact metro-market filter, e.g. Paris, max 128 characters; `min_listings` (integer, optional) — Minimum listings per cell; raises the small-cell suppression floor (never lowered below the built-in minimum); `min_rating` (number, optional) — Minimum listing rating, from 0 through 5; `min_review_count` (integer, optional) — Minimum listing review count, 0 or greater; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: listings_desc, superhost_pct_desc, rating_desc, key_asc; `superhost` (boolean, optional) — Count only Superhost listings
+
+### `datasets_apps_charts_search`
+
+- **HTTP:** `GET /datasets/apps-charts/search`
+- **What:** Search the app-charts dataset. Searches daily top-chart snapshots scraped from the iOS App Store and Google Play, stored in a search index (one document per chart × snapshot × rank). With no `date` the latest snapshot is returned (today's chart); pair `app_id` with `sort=date_desc` for an app's rank over time. Store enum: `ios`, `android`. Chart type enum: `top_free`, `top_paid`, `top_grossing`, `new`. Sort enum: `rank`, `rank_desc`, `date_desc`.
+- **Params:** `app_id` (string, optional) — Exact app filter — iOS numeric track id or Android package; pair with sort=date_desc for rank history; `category` (string, optional) — Store category/genre filter, max 128 characters; empty for the overall charts; `chart_type` (string, optional) — Chart enum: top_free, top_paid, top_grossing, new; `collection` (string, optional) — Raw store collection id filter (e.g. topgrossingapplications, GROSSING), max 128 characters; `country` (string, optional) — Exact storefront country filter, max 128 characters; `date` (string, optional) — Snapshot date filter yyyy-MM-dd; defaults to the latest snapshot; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over chart-entry title and developer, max 256 characters; `sort` (string, optional) — Sort enum: rank, rank_desc, date_desc; `store` (string, optional) — Store enum: ios, android
+
+### `datasets_apps_reviews_search`
+
+- **HTTP:** `GET /datasets/apps-reviews/search`
+- **What:** Search the app-reviews dataset. Searches user reviews scraped from the iOS App Store and Google Play, stored in a search index (one document per review). Store enum: `ios`, `android`. Sort enum: `recent`, `score_desc`, `score_asc`, `helpful_desc`.
+- **Params:** `app_id` (string, optional) — Exact app filter — iOS numeric track id or Android package, max 128 characters; `country` (string, optional) — Exact storefront country filter, max 128 characters; `min_score` (integer, optional) — Minimum star rating, 1 through 5; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over review text, title and author, max 256 characters; `sort` (string, optional) — Sort enum: recent, score_desc, score_asc, helpful_desc; `store` (string, optional) — Store enum: ios, android
+
+### `datasets_apps_search`
+
+- **HTTP:** `GET /datasets/apps/search`
+- **What:** Search the apps-intelligence dataset. Searches resolved iOS App Store and Google Play apps stored in a search index. Store enum: `ios`, `android`, `both`. Sort enum: `relevance`, `rating_desc`, `reviews_desc`, `installs_desc`, `updated_at_desc`.
+- **Params:** `category` (string, optional) — Exact app-store category filter, max 128 characters; `country` (string, optional) — Exact storefront country filter, max 128 characters; `developer` (string, optional) — Exact developer/publisher name filter, max 128 characters; `free` (boolean, optional) — Filter by price; true keeps only free apps, false only paid; `min_rating` (number, optional) — Minimum store rating, 0 through 5; `min_reviews` (integer, optional) — Minimum ratings/review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over title, developer and category, max 256 characters; `sort` (string, optional) — Sort enum: relevance, rating_desc, reviews_desc, installs_desc, updated_at_desc; `store` (string, optional) — Store enum: ios, android, both
+
+### `datasets_chrome_extensions_changes`
+
+- **HTTP:** `GET /datasets/chrome-extensions/changes`
+- **What:** Get recent Chrome Web Store item changes. Returns recent change observations. Change type enum: `users`, `rating`, `rating_count`, `version`, `developer`, `permissions`, `privacy`, `status`.
+- **Params:** `change_type` (string, optional) — Change type enum: users, rating, rating_count, version, developer, permissions, privacy, status; `limit` (integer, optional) — Maximum observations, default 100, max 500
+
+### `datasets_chrome_extensions_facets`
+
+- **HTTP:** `GET /datasets/chrome-extensions/facets`
+- **What:** Facet the Chrome Web Store dataset. Returns aggregation buckets. Facet enum: `item_type`, `category`, `developer`, `developer_email`, `manifest_version`, `permission`, `status`, `collects_data`, `has_broad_host_access`. Item type enum: `extension`, `theme`, `app`, `unknown`. Search sort, status and manifest-version enums match the search endpoint.
+- **Params:** `category` (string, optional) — Exact category; `collects_data` (boolean, optional) — Data-collection filter; `developer` (string, optional) — Exact developer; `developer_email` (string, optional) — Exact developer email; `facet` (string, **required**) — Facet enum: item_type, category, developer, developer_email, manifest_version, permission, status, collects_data, has_broad_host_access; `has_broad_host_access` (boolean, optional) — Broad-host-access filter; `item_type` (string, optional) — Item type enum: extension, theme, app, unknown; `manifest_version` (integer, optional) — Manifest version enum: 2, 3; `min_rating` (number, optional) — Minimum rating; `min_rating_count` (integer, optional) — Minimum rating count; `min_users` (integer, optional) — Minimum users; `permission` (string, optional) — Exact permission; `q` (string, optional) — Full-text query; `sort` (string, optional) — Sort enum: relevance, users_desc, rating_desc, reviews_desc, updated_desc, trending_desc; `status` (string, optional) — Status enum: active, removed
+
+### `datasets_chrome_extensions_history`
+
+- **HTTP:** `GET /datasets/chrome-extensions/history/{id}`
+- **What:** Get Chrome Web Store item history. Returns chronological change-only observations for a Chrome Web Store item.
+- **Params:** `from` (string, optional) — Inclusive start date, YYYY-MM-DD; `id` (string, **required**) — Chrome Web Store item id; `limit` (integer, optional) — Maximum points, default 365, max 1000; `to` (string, optional) — Inclusive end date, YYYY-MM-DD
+
+### `datasets_chrome_extensions_item`
+
+- **HTTP:** `GET /datasets/chrome-extensions/items/{id}`
+- **What:** Get a Chrome Web Store dataset item. Returns one stored extension, theme or legacy app snapshot by its 32-character Chrome Web Store id.
+- **Params:** `id` (string, **required**) — Chrome Web Store item id
+
+### `datasets_chrome_extensions_metrics`
+
+- **HTTP:** `GET /datasets/chrome-extensions/metrics`
+- **What:** Get Chrome Web Store dataset metrics. Returns chart-ready coverage, adoption, rating, permission, privacy and recent-change aggregates for the stored Chrome Web Store dataset. Days enum: `7`, `30`, `90`.
+- **Params:** `days` (integer, optional) — Recent-change window enum: 7, 30, 90; default 30; `limit` (integer, optional) — Top category and permission buckets, default 10, min 5, max 25
+
+### `datasets_chrome_extensions_search`
+
+- **HTTP:** `GET /datasets/chrome-extensions/search`
+- **What:** Search the Chrome Web Store dataset. Searches stored Chrome Web Store item snapshots. Item type enum: `extension`, `theme`, `app`, `unknown`. Sort enum: `relevance`, `users_desc`, `rating_desc`, `reviews_desc`, `updated_desc`, `trending_desc`. Status enum: `active`, `removed`. Manifest version enum: `2`, `3`.
+- **Params:** `category` (string, optional) — Exact Chrome Web Store category; `collects_data` (boolean, optional) — Filter by public data-collection disclosure; `developer` (string, optional) — Exact displayed developer name; `developer_email` (string, optional) — Exact disclosed developer email; `has_broad_host_access` (boolean, optional) — Filter by broad host access; `item_type` (string, optional) — Item type enum: extension, theme, app, unknown; `manifest_version` (integer, optional) — Manifest version enum: 2, 3; `min_rating` (number, optional) — Minimum rating, 0 through 5; `min_rating_count` (integer, optional) — Minimum rating count; `min_users` (integer, optional) — Minimum displayed user count; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; `permission` (string, optional) — Exact declared permission; `q` (string, optional) — Full-text query, max 256 characters; `sort` (string, optional) — Sort enum: relevance, users_desc, rating_desc, reviews_desc, updated_desc, trending_desc; `status` (string, optional) — Status enum: active, removed
+
+### `datasets_chrome_extensions_trending`
+
+- **HTTP:** `GET /datasets/chrome-extensions/trending`
+- **What:** Get trending Chrome Web Store items. Returns stored Chrome Web Store items ranked by the latest observed user and rating-count movement. Filters match the search endpoint; sort is fixed to `trending_desc`.
+- **Params:** `category` (string, optional) — Exact category; `collects_data` (boolean, optional) — Data-collection filter; `developer` (string, optional) — Exact developer; `developer_email` (string, optional) — Exact developer email; `has_broad_host_access` (boolean, optional) — Broad-host-access filter; `item_type` (string, optional) — Item type enum: extension, theme, app, unknown; `manifest_version` (integer, optional) — Manifest version enum: 2, 3; `min_rating` (number, optional) — Minimum rating; `min_rating_count` (integer, optional) — Minimum rating count; `min_users` (integer, optional) — Minimum users; `page` (integer, optional) — Page number; `page_size` (integer, optional) — Page size, max 100; `permission` (string, optional) — Exact permission; `q` (string, optional) — Full-text query; `status` (string, optional) — Status enum: active, removed
+
+### `datasets_creators_search`
+
+- **HTTP:** `GET /datasets/creators/search`
+- **What:** Search the TikTok creators dataset. Searches TikTok creators stored in a search index (one document per creator), with follower counts, verified status, niche, and engagement. Deleted and private accounts are excluded by default; set `include_inactive=true` to include them for historical lookups. Sort enum: `followers_desc`, `engagement_desc`, `likes_desc`, `relevance`. Coverage note: `followers_desc`, `likes_desc`, and `relevance` are backed by profile fields present across the full dataset; the post-level engagement metrics (`engagement_rate`, `avg_views`, and the nested `post_stats` object) and the `engagement_desc` sort are currently populated for a growing subset of creators, prioritizing the highest-reach accounts. Creators without these metrics are still returned but sort last under `engagement_desc` and omit those fields.
+- **Params:** `country` (string, optional) — Exact creator country/region filter, max 128 characters; `handle` (string, optional) — Exact handle lookup (case-insensitive), e.g. khaby.lame; returns the single creator with that exact @handle; `has_email` (boolean, optional) — Filter by contact-email presence; true keeps only creators with an email; `include_inactive` (boolean, optional) — Include deleted/private accounts; defaults to false (only live accounts returned); `min_followers` (integer, optional) — Minimum follower count; `niche` (string, optional) — Exact content-niche filter, max 128 characters; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over handle, nickname and bio, max 256 characters; `sort` (string, optional) — Sort enum: followers_desc, engagement_desc, likes_desc, relevance. engagement_desc ranks by post-level engagement rate, currently populated for a subset of creators (highest-reach first); creators without it sort last; `verified` (boolean, optional) — Filter by verified badge; true keeps only verified creators
 
 ### `datasets_github_users_facets`
 
 - **HTTP:** `GET /datasets/github-users/facets`
-- **What:** Facet the GitHub users dataset. Returns terms aggregation counts for the GitHub users dataset. Facet enum: `influence_tier`, `type`, `country`, `country_code`, `state`, `city`, `domains`, `company`, `reachable`, `has_email`, `has_twitter`, `has_blog`, `active_90d`, `is_org`, `is_bot`. influence_tier enum: `nano`, `micro`, `mid`, `macro`, `mega`.
-- **Params:** `active_90d` (boolean, optional) — Filter by activity within the last 90 days; `city` (string, optional) — Exact geocoded city filter, max 128 characters; `company` (string, optional) — Exact normalized-company filter, max 128 characters; `country` (string, optional) — Exact geocoded country filter, max 128 characters; `country_code` (string, optional) — Exact ISO country-code filter, max 128 characters; `domain` (string, optional) — Interest-domain tag filter, max 128 characters; `facet` (string, **required**) — Facet enum: influence_tier, type, country, country_code, state, city, domains, company, reachable, has_email, has_twitter, has_blog, active_90d, is_org, is_bot; `has_blog` (boolean, optional) — Filter by public blog/website presence; `has_email` (boolean, optional) — Filter by public email presence; `has_twitter` (boolean, optional) — Filter by public Twitter/X handle presence; `hireable` (boolean, optional) — Filter by the GitHub available-for-hire flag; `influence_tier` (string, optional) — Follower-tier enum: nano, micro, mid, macro, mega; `is_bot` (boolean, optional) — Bot filter; `is_org` (boolean, optional) — Organization filter; `lat` (number, optional) — Latitude for radius filtering; `login` (string, optional) — Exact login filter, max 128 characters; `lon` (number, optional) — Longitude for radius filtering; `max_account_age_years` (number, optional) — Maximum account age in years; `max_followers` (integer, optional) — Maximum follower count; `min_account_age_years` (number, optional) — Minimum account age in years; `min_followers` (integer, optional) — Minimum follower count; `min_rank_score` (integer, optional) — Minimum composite rank score; `min_repos` (integer, optional) — Minimum public repository count; `q` (string, optional) — Full-text query over login, name, company, bio and location, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `reachable` (boolean, optional) — Filter by any public contact channel; `sort` (string, optional) — Sort enum: relevance, rank_score_desc, followers_desc, account_age_desc, account_age_asc, distance_asc; `state` (string, optional) — Exact geocoded state filter, max 128 characters
+- **What:** Facet the GitHub users dataset. Returns terms aggregation counts for the GitHub users dataset. Facet enum: `influence_tier`, `type`, `country`, `country_code`, `state`, `city`, `domains`, `company`, `reachable`, `has_email`, `has_twitter`, `has_blog`, `active_90d`, `hireable`, `is_org`, `is_bot`, `is_suspected_automation`. influence_tier enum: `nano`, `micro`, `mid`, `macro`, `mega`. Suspected-automation records are excluded by default unless is_suspected_automation is set.
+- **Params:** `active_90d` (boolean, optional) — Filter by activity within the last 90 days; `city` (string, optional) — Exact geocoded city filter, max 128 characters; `company` (string, optional) — Exact normalized-company filter, max 128 characters; `country` (string, optional) — Exact geocoded country filter, max 128 characters; `country_code` (string, optional) — Exact ISO country-code filter, max 128 characters; `domain` (string, optional) — Interest-domain tag filter, max 128 characters; `facet` (string, **required**) — Facet enum: influence_tier, type, country, country_code, state, city, domains, company, reachable, has_email, has_twitter, has_blog, active_90d, hireable, is_org, is_bot, is_suspected_automation; `has_blog` (boolean, optional) — Filter by public blog/website presence; `has_email` (boolean, optional) — Filter by public email presence; `has_twitter` (boolean, optional) — Filter by public Twitter/X handle presence; `hireable` (boolean, optional) — Filter by the GitHub available-for-hire flag; `influence_tier` (string, optional) — Follower-tier enum: nano, micro, mid, macro, mega; `is_bot` (boolean, optional) — Bot filter; `is_org` (boolean, optional) — Organization filter; `is_suspected_automation` (boolean, optional) — Suspected automation filter; omitted these are hidden by default; `lat` (number, optional) — Latitude for radius filtering; `login` (string, optional) — Exact login filter, max 128 characters; `lon` (number, optional) — Longitude for radius filtering; `max_account_age_years` (number, optional) — Maximum account age in years; `max_followers` (integer, optional) — Maximum follower count; `min_account_age_years` (number, optional) — Minimum account age in years; `min_followers` (integer, optional) — Minimum follower count; `min_rank_score` (integer, optional) — Minimum composite rank score; `min_repos` (integer, optional) — Minimum public repository count; `q` (string, optional) — Full-text query over login, name, company, bio and location, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `reachable` (boolean, optional) — Filter by any public contact channel; `sort` (string, optional) — Sort enum: relevance, rank_score_desc, followers_desc, account_age_desc, account_age_asc, distance_asc; `state` (string, optional) — Exact geocoded state filter, max 128 characters
 
 ### `datasets_github_users_item`
 
@@ -500,37 +758,309 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /datasets/github-users/search`
 - **What:** Search the GitHub users dataset. Searches enriched public GitHub user profiles stored in a search index. influence_tier enum: `nano`, `micro`, `mid`, `macro`, `mega`. Sort enum: `relevance`, `rank_score_desc`, `followers_desc`, `account_age_desc`, `account_age_asc`, `distance_asc`.
-- **Params:** `active_90d` (boolean, optional) — Filter by activity within the last 90 days; `city` (string, optional) — Exact geocoded city filter, max 128 characters; `company` (string, optional) — Exact normalized-company filter, max 128 characters; `country` (string, optional) — Exact geocoded country filter, max 128 characters; `country_code` (string, optional) — Exact ISO country-code filter, max 128 characters; `domain` (string, optional) — Interest-domain tag filter (e.g. ml-ai, web, devops), max 128 characters; `has_blog` (boolean, optional) — Filter by public blog/website presence; `has_email` (boolean, optional) — Filter by public email presence; `has_twitter` (boolean, optional) — Filter by public Twitter/X handle presence; `hireable` (boolean, optional) — Filter by the GitHub available-for-hire flag; `influence_tier` (string, optional) — Follower-tier enum: nano, micro, mid, macro, mega; `is_bot` (boolean, optional) — Bot filter (normally false; the crawl skips bots); `is_org` (boolean, optional) — Organization filter (normally false; the crawl indexes individuals); `lat` (number, optional) — Latitude for radius filtering or distance sort; `login` (string, optional) — Exact login filter, max 128 characters; `lon` (number, optional) — Longitude for radius filtering or distance sort; `max_account_age_years` (number, optional) — Maximum account age in years; `max_followers` (integer, optional) — Maximum follower count; `min_account_age_years` (number, optional) — Minimum account age in years; `min_followers` (integer, optional) — Minimum follower count; `min_rank_score` (integer, optional) — Minimum composite rank score; `min_repos` (integer, optional) — Minimum public repository count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over login, name, company, bio and location, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `reachable` (boolean, optional) — Filter by any public contact channel; `sort` (string, optional) — Sort enum: relevance, rank_score_desc, followers_desc, account_age_desc, account_age_asc, distance_asc; `state` (string, optional) — Exact geocoded state filter, max 128 characters
+- **Params:** `active_90d` (boolean, optional) — Filter by activity within the last 90 days; `city` (string, optional) — Exact geocoded city filter, max 128 characters; `company` (string, optional) — Exact normalized-company filter, max 128 characters; `country` (string, optional) — Exact geocoded country filter, max 128 characters; `country_code` (string, optional) — Exact ISO country-code filter, max 128 characters; `domain` (string, optional) — Interest-domain tag filter (e.g. ml-ai, web, devops), max 128 characters; `has_blog` (boolean, optional) — Filter by public blog/website presence; `has_email` (boolean, optional) — Filter by public email presence; `has_twitter` (boolean, optional) — Filter by public Twitter/X handle presence; `hireable` (boolean, optional) — Filter by the GitHub available-for-hire flag; `influence_tier` (string, optional) — Follower-tier enum: nano, micro, mid, macro, mega; `is_bot` (boolean, optional) — Bot filter (normally false; the crawl skips bots); `is_org` (boolean, optional) — Organization filter (normally false; the crawl indexes individuals); `is_suspected_automation` (boolean, optional) — Suspected automation (commit-farm/mass-repo bots); omitted these are hidden by default, pass true to isolate them; `lat` (number, optional) — Latitude for radius filtering or distance sort; `login` (string, optional) — Exact login filter, max 128 characters; `lon` (number, optional) — Longitude for radius filtering or distance sort; `max_account_age_years` (number, optional) — Maximum account age in years; `max_followers` (integer, optional) — Maximum follower count; `min_account_age_years` (number, optional) — Minimum account age in years; `min_followers` (integer, optional) — Minimum follower count; `min_rank_score` (integer, optional) — Minimum composite rank score; `min_repos` (integer, optional) — Minimum public repository count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over login, name, company, bio and location, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `reachable` (boolean, optional) — Filter by any public contact channel; `sort` (string, optional) — Sort enum: relevance, rank_score_desc, followers_desc, account_age_desc, account_age_asc, distance_asc; `state` (string, optional) — Exact geocoded state filter, max 128 characters
 
 ### `datasets_google_map_facets`
 
 - **HTTP:** `GET /datasets/google-map-businesses/facets`
 - **What:** Facet stored Google Maps businesses. Returns terms aggregation counts for Google Maps businesses. Facet enum: `category`, `country`, `state`, `county`, `city`, `town`, `website_status`. `category` values (as a facet or filter) are Google Maps type tokens in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`).
-- **Params:** `category` (string, optional) — Exact category filter: a Google Maps type token in lower-case snake_case (e.g. dentist, bus_stop), max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `facet` (string, **required**) — Facet enum: category, country, state, county, city, town, website_status; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering; `lon` (number, optional) — Longitude for radius filtering; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are stored as rating 0, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
+- **Params:** `category` (string, optional) — Exact category filter: a Google Maps type token in lower-case snake_case (e.g. dentist, bus_stop), max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `facet` (string, **required**) — Facet enum: category, country, state, county, city, town, website_status; `has_geo` (boolean, optional) — Filter by location presence: true keeps only mappable businesses with coordinates; false isolates locationless service-area businesses that have no map location; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering; `lon` (number, optional) — Longitude for radius filtering; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
 
 ### `datasets_google_map_item`
 
 - **HTTP:** `GET /datasets/google-map-businesses/items/{place_id}`
-- **What:** Get a stored Google Maps business. Returns one stored Google Maps business by Google place_id from dataset id enum value `google-map-businesses`. The `category` field is a Google Maps type token in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`). A `rating` of `0` means no aggregate rating is available for that business (not a literal zero-star score); read it together with `review_count`.
+- **What:** Get a stored Google Maps business. Returns one stored Google Maps business by Google place_id from dataset id enum value `google-map-businesses`. The `category` field is a Google Maps type token in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`). A `rating` of `null` means no aggregate rating is available for that business; read it together with `review_count`. Locationless service-area businesses (online/mobile/home-based) have a `null` `geo`.
 - **Params:** `place_id` (string, **required**) — Google Place ID, max 256 characters
 
 ### `datasets_google_map_nearby`
 
 - **HTTP:** `GET /datasets/google-map-businesses/nearby`
 - **What:** Search nearby stored Google Maps businesses. Searches stored Google Maps businesses near a coordinate in dataset id enum value `google-map-businesses`. `category` is a Google Maps type token in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`), both as the `category` filter and in each result's `category` field. A `rating` of `0` means no aggregate rating is available for that business (not a literal zero-star score); read it together with `review_count`, and note that `min_rating` above 0 excludes unrated businesses.
-- **Params:** `category` (string, optional) — Exact category filter: a Google Maps type token in lower-case snake_case (e.g. dentist, bus_stop), max 128 characters; `lat` (number, **required**) — Latitude; `lon` (number, **required**) — Longitude; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are stored as rating 0, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `radius_m` (integer, **required**) — Radius in meters, max 50000
+- **Params:** `category` (string, optional) — Exact category filter: a Google Maps type token in lower-case snake_case (e.g. dentist, bus_stop), max 128 characters; `lat` (number, **required**) — Latitude; `lon` (number, **required**) — Longitude; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `radius_m` (integer, **required**) — Radius in meters, max 50000
 
 ### `datasets_google_map_search`
 
 - **HTTP:** `GET /datasets/google-map-businesses/search`
-- **What:** Search stored Google Maps businesses. Searches Google Maps business records stored in a search index. Sort enum: `relevance`, `updated_at_desc`, `rating_desc`, `review_count_desc`, `distance_asc`. `category` is a Google Maps type token in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`), both as the `category` filter and in each result's `category` field. A `rating` of `0` means no aggregate rating is available for that business (too few reviews, or a place type Google does not rate) — it is not a literal zero-star score; read it together with `review_count`, and note that `rating_desc` sorts unrated businesses last and `min_rating` above 0 excludes them.
-- **Params:** `category` (string, optional) — Exact category filter: a Google Maps type token in lower-case snake_case (e.g. dentist, bus_stop), max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering or distance sort; `lon` (number, optional) — Longitude for radius filtering or distance sort; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are stored as rating 0, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
+- **What:** Search stored Google Maps businesses. Searches Google Maps business records stored in a search index. Sort enum: `relevance`, `updated_at_desc`, `rating_desc`, `review_count_desc`, `distance_asc`. `category` is a Google Maps type token in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`), both as the `category` filter and in each result's `category` field. A `rating` of `null` means no aggregate rating is available for that business (too few reviews, or a place type Google does not rate) — it is never a literal zero-star score; read it together with `review_count`, and note that `rating_desc` sorts unrated businesses last and `min_rating` above 0 excludes them. Use `has_geo=false` to isolate locationless service-area businesses (which have a `null` `geo`).
+- **Params:** `category` (string, optional) — Exact category filter: a Google Maps type token in lower-case snake_case (e.g. dentist, bus_stop), max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `has_geo` (boolean, optional) — Filter by location presence: true keeps only mappable businesses with coordinates; false isolates locationless service-area businesses that have no map location; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering or distance sort; `lon` (number, optional) — Longitude for radius filtering or distance sort; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
+
+### `datasets_housing_markets_facets`
+
+- **HTTP:** `GET /datasets/housing-markets/facets`
+- **What:** Facet the US housing markets dataset. Returns terms aggregation counts for the housing markets dataset. Facet enum: `region_type`, `state_code`, `property_type`, `parent_metro`, `parent_metro_code`, `income_vintage`, `is_latest`, `period_begin`. region_type enum: `national`, `metro`, `county`, `city`, `zip`. property_type enum: `All Residential`, `Single Family Residential`, `Condo/Co-op`, `Townhouse`, `Multi-Family (2-4 Unit)`, `Single Units Only`.
+- **Params:** `facet` (string, **required**) — Facet enum: region_type, state_code, property_type, parent_metro, parent_metro_code, income_vintage, is_latest, period_begin; `latest` (boolean, optional) — Filter for the most recent period per region and property type; `max_inventory` (integer, optional) — Maximum active inventory; `max_median_dom` (number, optional) — Maximum median days on market; `max_median_list_price` (number, optional) — Maximum median list price in USD; `max_median_sale_price` (number, optional) — Maximum median sale price in USD; `max_price_to_income` (number, optional) — Maximum price-to-income ratio; `max_salary_to_buy` (integer, optional) — Maximum salary needed to buy in USD per year; `min_homes_sold` (integer, optional) — Minimum homes sold in the period; `min_inventory` (integer, optional) — Minimum active inventory; `min_median_dom` (number, optional) — Minimum median days on market; `min_median_list_price` (number, optional) — Minimum median list price in USD; `min_median_sale_price` (number, optional) — Minimum median sale price in USD; `min_price_to_income` (number, optional) — Minimum price-to-income ratio; `min_salary_to_buy` (integer, optional) — Minimum salary needed to buy in USD per year; `parent_metro_code` (string, optional) — Exact parent metro (CBSA) code filter, e.g. 16980; `period` (string, optional) — Exact period start date filter, YYYY-MM-DD; `property_type` (string, optional) — Property type enum: All Residential, Single Family Residential, Condo/Co-op, Townhouse, Multi-Family (2-4 Unit), Single Units Only; `q` (string, optional) — Full-text query over region name and city, max 256 characters; `region_type` (string, optional) — Region level enum: national, metro, county, city, zip; `state_code` (string, optional) — Exact two-letter state code filter, e.g. CA; `zip_code` (string, optional) — Exact zip code filter (zip-level rows only), e.g. 60616
+
+### `datasets_housing_markets_item`
+
+- **HTTP:** `GET /datasets/housing-markets/items/{region_type}/{table_id}`
+- **What:** Get a US housing market record from the dataset. Returns one housing-market record by region_type and Redfin table_id from dataset id enum value `housing-markets`. region_type enum: `national`, `metro`, `county`, `city`, `zip`. property_type enum: `All Residential`, `Single Family Residential`, `Condo/Co-op`, `Townhouse`, `Multi-Family (2-4 Unit)`, `Single Units Only` (defaults to `All Residential`). `period` defaults to the most recent period on record. Pass `history=true` to get the full monthly series (a `{dataset, region_type, table_id, property_type, items}` envelope, sorted by period ascending) instead of a single record.
+- **Params:** `history` (boolean, optional) — Return the full monthly series instead of a single period; `period` (string, optional) — Exact period start date, YYYY-MM-DD; defaults to the latest period; `property_type` (string, optional) — Property type enum: All Residential, Single Family Residential, Condo/Co-op, Townhouse, Multi-Family (2-4 Unit), Single Units Only; defaults to All Residential; `region_type` (string, **required**) — Region level enum: national, metro, county, city, zip; `table_id` (integer, **required**) — Redfin table id (the region's stable numeric id)
+
+### `datasets_housing_markets_search`
+
+- **HTTP:** `GET /datasets/housing-markets/search`
+- **What:** Search the US housing markets dataset. Searches monthly Redfin housing-market statistics per region and property type since 2012, joined to Census ACS income for affordability metrics. region_type enum: `national`, `metro`, `county`, `city`, `zip`. property_type enum: `All Residential`, `Single Family Residential`, `Condo/Co-op`, `Townhouse`, `Multi-Family (2-4 Unit)`, `Single Units Only`. Sort enum: `relevance`, `price_desc`, `price_asc`, `list_price_desc`, `list_price_asc`, `price_to_income_desc`, `price_to_income_asc`, `salary_to_buy_desc`, `salary_to_buy_asc`, `dom_asc`, `dom_desc`, `inventory_desc`, `homes_sold_desc`, `period_desc`. Use `latest=true` for the most recent period per region series.
+- **Params:** `latest` (boolean, optional) — Filter for the most recent period per region and property type; `max_inventory` (integer, optional) — Maximum active inventory; `max_median_dom` (number, optional) — Maximum median days on market; `max_median_list_price` (number, optional) — Maximum median list price in USD; `max_median_sale_price` (number, optional) — Maximum median sale price in USD; `max_price_to_income` (number, optional) — Maximum price-to-income ratio; `max_salary_to_buy` (integer, optional) — Maximum salary needed to buy in USD per year; `min_homes_sold` (integer, optional) — Minimum homes sold in the period; `min_inventory` (integer, optional) — Minimum active inventory; `min_median_dom` (number, optional) — Minimum median days on market; `min_median_list_price` (number, optional) — Minimum median list price in USD; `min_median_sale_price` (number, optional) — Minimum median sale price in USD; `min_price_to_income` (number, optional) — Minimum price-to-income ratio; `min_salary_to_buy` (integer, optional) — Minimum salary needed to buy in USD per year; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `parent_metro_code` (string, optional) — Exact parent metro (CBSA) code filter, e.g. 16980; `period` (string, optional) — Exact period start date filter, YYYY-MM-DD; `property_type` (string, optional) — Property type enum: All Residential, Single Family Residential, Condo/Co-op, Townhouse, Multi-Family (2-4 Unit), Single Units Only; `q` (string, optional) — Full-text query over region name and city, max 256 characters; `region_type` (string, optional) — Region level enum: national, metro, county, city, zip; `sort` (string, optional) — Sort enum: relevance, price_desc, price_asc, list_price_desc, list_price_asc, price_to_income_desc, price_to_income_asc, salary_to_buy_desc, salary_to_buy_asc, dom_asc, dom_desc, inventory_desc, homes_sold_desc, period_desc; `state_code` (string, optional) — Exact two-letter state code filter, e.g. CA; `zip_code` (string, optional) — Exact zip code filter (zip-level rows only), e.g. 60616
+
+### `datasets_journalists_facets`
+
+- **HTTP:** `GET /datasets/journalists/facets`
+- **What:** Facet the journalists dataset. Returns distribution counts over the journalists index (dataset id enum value `journalists`), honoring the same filters as search. Facet enum: `outlet`, `vertical`, `topic`, `contact_type`.
+- **Params:** `contact_type` (string, optional) — Contact-availability filter. Enum: email, social, none; `facet` (string, **required**) — Facet enum: outlet, vertical, topic, contact_type; `outlet` (string, optional) — Exact outlet id filter; `q` (string, optional) — Full-text match on the journalist's name, title, and bio, max 256 characters; `topic` (string, optional) — Exact topic filter; `vertical` (string, optional) — Exact beat-vertical filter. Enum: tech, crypto, marketing, consumer_tech, consumer_policy, cybersecurity, health, gaming, climate, tech_independent, culture_independent
+
+### `datasets_journalists_item`
+
+- **HTTP:** `GET /datasets/journalists/items/{outlet}/{slug}`
+- **What:** Get a journalist from the journalists dataset. Returns one journalist by outlet id and slug from dataset id enum value `journalists`. Returns 404 when the outlet is not supported or the journalist is not in the index.
+- **Params:** `outlet` (string, **required**) — Outlet id, e.g. techcrunch. Use the ids returned by facets?facet=outlet; `slug` (string, **required**) — Journalist slug within the outlet, e.g. zack-whittaker
+
+### `datasets_journalists_search`
+
+- **HTTP:** `GET /datasets/journalists/search`
+- **What:** Search the journalists dataset. Searches the journalists index (dataset id enum value `journalists`) — public journalist and reporter contact records crawled from news outlets' own staff/author pages, for PR outreach. Each record carries the outlet, title, best-effort beat topics, and any public contact info (a work email or a social handle) found on that outlet's own page. There is no cross-outlet upstream search; this dataset is built by crawling a curated roster of outlets ourselves. vertical enum: `tech`, `crypto`, `marketing`, `consumer_tech`, `consumer_policy`, `cybersecurity`, `health`, `gaming`, `climate`, `tech_independent`, `culture_independent`. contact_type enum: `email`, `social`, `none`. sort enum: `relevance`, `name_asc`, `outlet_asc`, `crawled_desc`.
+- **Params:** `contact_type` (string, optional) — Contact-availability filter. Enum: email, social, none; `outlet` (string, optional) — Exact outlet id filter, e.g. techcrunch, coindesk. Use the ids returned by facets?facet=outlet; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text match on the journalist's name, title, and bio, max 256 characters; `sort` (string, optional) — Sort enum: relevance, name_asc, outlet_asc, crawled_desc; `topic` (string, optional) — Exact topic filter, e.g. security, stablecoins. Use the values returned by facets?facet=topic; `vertical` (string, optional) — Exact beat-vertical filter. Enum: tech, crypto, marketing, consumer_tech, consumer_policy, cybersecurity, health, gaming, climate, tech_independent, culture_independent
 
 ### `datasets_list`
 
 - **HTTP:** `GET /datasets`
-- **What:** List stored scraped datasets. Lists available read-only scraped datasets. Initial dataset id enum: `google-map-businesses`.
+- **What:** List stored scraped datasets. Lists available read-only scraped datasets and the capabilities supported by each dataset.
 - **Params:** _none_
+
+### `datasets_numbeo_cities_facets`
+
+- **HTTP:** `GET /datasets/numbeo-cities/facets`
+- **What:** Facet the Numbeo cities dataset. Returns terms aggregation counts for the Numbeo cities dataset. Facet enum: `country`.
+- **Params:** `country` (string, optional) — Exact country filter, max 128 characters; `facet` (string, **required**) — Facet enum: country; `max_cost_of_living_index` (number, optional) — Maximum Cost of Living Index (New York = 100); `max_crime_index` (number, optional) — Maximum Crime Index; `max_pollution_index` (number, optional) — Maximum Pollution Index; `max_traffic_index` (number, optional) — Maximum Traffic Index; `min_cost_of_living_index` (number, optional) — Minimum Cost of Living Index (New York = 100); `min_crime_index` (number, optional) — Minimum Crime Index; `min_health_care_index` (number, optional) — Minimum Health Care Index; `min_quality_of_life_index` (number, optional) — Minimum Quality of Life Index; `min_safety_index` (number, optional) — Minimum Safety Index; `q` (string, optional) — Full-text query over the city name, max 256 characters
+
+### `datasets_numbeo_cities_item`
+
+- **HTTP:** `GET /datasets/numbeo-cities/items/{slug}`
+- **What:** Get a Numbeo city from the dataset. Returns one composite Numbeo city record by city slug from dataset id enum value `numbeo-cities`.
+- **Params:** `slug` (string, **required**) — Numbeo city slug
+
+### `datasets_numbeo_cities_search`
+
+- **HTTP:** `GET /datasets/numbeo-cities/search`
+- **What:** Search the Numbeo cities dataset. Searches the composite Numbeo cities dataset, merged from the current global rankings of all seven index families (cost of living, quality of life, crime, health care, pollution, traffic, property investment). A city appears once it is ranked by at least one family; coverage varies per city. Sort enum: `name_asc`, `cost_of_living_asc`, `cost_of_living_desc`, `quality_of_life_desc`, `safety_desc`, `crime_asc`, `health_care_desc`, `pollution_asc`, `traffic_asc`.
+- **Params:** `country` (string, optional) — Exact country filter, max 128 characters; `max_cost_of_living_index` (number, optional) — Maximum Cost of Living Index (New York = 100); `max_crime_index` (number, optional) — Maximum Crime Index; `max_pollution_index` (number, optional) — Maximum Pollution Index; `max_traffic_index` (number, optional) — Maximum Traffic Index; `min_cost_of_living_index` (number, optional) — Minimum Cost of Living Index (New York = 100); `min_crime_index` (number, optional) — Minimum Crime Index; `min_health_care_index` (number, optional) — Minimum Health Care Index; `min_quality_of_life_index` (number, optional) — Minimum Quality of Life Index; `min_safety_index` (number, optional) — Minimum Safety Index; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over the city name, max 256 characters; `sort` (string, optional) — Sort enum: name_asc, cost_of_living_asc, cost_of_living_desc, quality_of_life_desc, safety_desc, crime_asc, health_care_desc, pollution_asc, traffic_asc
+
+### `datasets_numbeo_countries_item`
+
+- **HTTP:** `GET /datasets/numbeo-countries/items/{country}`
+- **What:** Get a Numbeo country from the dataset. Returns one composite Numbeo country record by country name from dataset id enum value `numbeo-countries`.
+- **Params:** `country` (string, **required**) — Country name as Numbeo spells it
+
+### `datasets_numbeo_countries_search`
+
+- **HTTP:** `GET /datasets/numbeo-countries/search`
+- **What:** Search the Numbeo countries dataset. Searches the composite Numbeo countries dataset, merged from the current global by-country rankings of all seven index families. Sort enum: `name_asc`, `cost_of_living_asc`, `cost_of_living_desc`, `quality_of_life_desc`, `safety_desc`, `crime_asc`, `health_care_desc`, `pollution_asc`, `traffic_asc`.
+- **Params:** `max_cost_of_living_index` (number, optional) — Maximum Cost of Living Index (New York = 100); `max_crime_index` (number, optional) — Maximum Crime Index; `max_pollution_index` (number, optional) — Maximum Pollution Index; `max_traffic_index` (number, optional) — Maximum Traffic Index; `min_cost_of_living_index` (number, optional) — Minimum Cost of Living Index (New York = 100); `min_crime_index` (number, optional) — Minimum Crime Index; `min_health_care_index` (number, optional) — Minimum Health Care Index; `min_quality_of_life_index` (number, optional) — Minimum Quality of Life Index; `min_safety_index` (number, optional) — Minimum Safety Index; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over the country name, max 256 characters; `sort` (string, optional) — Sort enum: name_asc, cost_of_living_asc, cost_of_living_desc, quality_of_life_desc, safety_desc, crime_asc, health_care_desc, pollution_asc, traffic_asc
+
+### `datasets_playstation_games_facets`
+
+- **HTTP:** `GET /datasets/playstation-games/facets`
+- **What:** Facet PlayStation games dataset. Returns terms aggregation counts for the PlayStation games dataset. Facet enum: `publisher`, `classification`, `genres`, `platforms`, `content_rating_authority`, `price_tier`, `service_branding`, `region`, `release_year`, `run_id`, `is_free`, `is_addon`, `coming_soon`. price_tier enum: `free`, `under_5`, `5_to_10`, `10_to_20`, `20_to_40`, `40_to_60`, `60_plus`.
+- **Params:** `branding` (string, optional) — Exact subscription/service-branding filter, max 128 characters; `classification` (string, optional) — Exact classification filter, max 128 characters; `coming_soon` (boolean, optional) — Filter for pre-release titles; `concept_id` (string, optional) — Exact concept id filter, max 128 characters; `content_descriptor` (string, optional) — Exact content-descriptor filter, max 128 characters; `content_rating` (string, optional) — Exact content-rating authority filter, max 128 characters; `facet` (string, **required**) — Facet enum: publisher, classification, genres, platforms, content_rating_authority, price_tier, service_branding, region, release_year, run_id, is_free, is_addon, coming_soon; `genre` (string, optional) — Exact genre filter, max 128 characters; `is_addon` (boolean, optional) — Filter add-ons vs games; `is_free` (boolean, optional) — Filter by free flag; `is_tied_to_subscription` (boolean, optional) — Filter subscription-included titles; `max_price_value` (integer, optional) — Maximum current price in minor units; `max_release_year` (integer, optional) — Maximum release year; `min_discount_pct` (integer, optional) — Minimum discount percent, 0 through 100; `min_price_value` (integer, optional) — Minimum current price in minor units; `min_release_year` (integer, optional) — Minimum release year; `min_star_count` (integer, optional) — Minimum number of star ratings; `min_star_rating` (number, optional) — Minimum average star rating, 0 through 5; `np_title_id` (string, optional) — Exact np_title_id filter, max 128 characters; `on_sale` (boolean, optional) — Filter by titles currently discounted (discount_pct > 0); `platform` (string, optional) — Exact platform filter: PS4 or PS5; `price_tier` (string, optional) — Price-tier enum: free, under_5, 5_to_10, 10_to_20, 20_to_40, 40_to_60, 60_plus; `publisher` (string, optional) — Exact publisher filter, max 128 characters; `q` (string, optional) — Full-text query over name and publisher, max 256 characters; `region` (string, optional) — Exact store region (country code) filter, max 128 characters; `run_id` (string, optional) — Exact crawl run-id filter, max 128 characters
+
+### `datasets_playstation_games_item`
+
+- **HTTP:** `GET /datasets/playstation-games/items/{product_id}`
+- **What:** Get a PlayStation game from dataset. Returns one crawled PlayStation Store record by product_id from dataset id enum value `playstation-games`.
+- **Params:** `product_id` (string, **required**) — PlayStation product id (e.g. UP0001-PPSA01491_00-GAME000000000000)
+
+### `datasets_playstation_games_search`
+
+- **HTTP:** `GET /datasets/playstation-games/search`
+- **What:** Search PlayStation games dataset. Searches the crawled public PlayStation Store catalog stored in a search index. One row per product SKU (game, edition or add-on); concept_id / np_title_id group a title's SKUs. price_tier enum: `free`, `under_5`, `5_to_10`, `10_to_20`, `20_to_40`, `40_to_60`, `60_plus`. Sort enum: `relevance`, `rating_desc`, `reviews_desc`, `price_asc`, `price_desc`, `discount_desc`, `release_desc`, `release_asc`.
+- **Params:** `branding` (string, optional) — Exact subscription/service-branding filter (e.g. PS_PLUS, EA_PLAY, UBISOFT_PLUS), max 128 characters; `classification` (string, optional) — Exact classification filter: FULL_GAME, PREMIUM_EDITION, GAME_BUNDLE, ADD_ON_PACK, VIRTUAL_CURRENCY, LEVEL, OTHER; `coming_soon` (boolean, optional) — Filter for pre-release / not-yet-purchasable titles; `concept_id` (string, optional) — Exact concept id filter (groups all SKUs of a title), max 128 characters; `content_descriptor` (string, optional) — Exact content-descriptor filter (e.g. Blood, Violence, In-Game Purchases, Users Interact), max 128 characters; `content_rating` (string, optional) — Exact content-rating authority filter (e.g. ESRB, PEGI), max 128 characters; `genre` (string, optional) — Exact genre filter (e.g. Action, Role Playing Games), max 128 characters; `is_addon` (boolean, optional) — Filter: true returns add-ons/DLC/currency, false returns games and editions; `is_free` (boolean, optional) — Filter by free flag; `is_tied_to_subscription` (boolean, optional) — Filter for titles included with a subscription (e.g. free with PS Plus); `max_price_value` (integer, optional) — Maximum current price in minor units (e.g. cents); `max_release_year` (integer, optional) — Maximum release year; `min_discount_pct` (integer, optional) — Minimum discount percent, 0 through 100; `min_price_value` (integer, optional) — Minimum current price in minor units (e.g. cents); `min_release_year` (integer, optional) — Minimum release year; `min_star_count` (integer, optional) — Minimum number of star ratings; `min_star_rating` (number, optional) — Minimum average star rating, 0 through 5; `np_title_id` (string, optional) — Exact np_title_id filter, max 128 characters; `on_sale` (boolean, optional) — Filter by titles currently discounted (discount_pct > 0); `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `platform` (string, optional) — Exact platform filter: PS4 or PS5; `price_tier` (string, optional) — Price-tier enum: free, under_5, 5_to_10, 10_to_20, 20_to_40, 40_to_60, 60_plus; `publisher` (string, optional) — Exact publisher filter, max 128 characters; `q` (string, optional) — Full-text query over name and publisher, max 256 characters; `region` (string, optional) — Exact store region (country code) filter, max 128 characters; `run_id` (string, optional) — Exact crawl run-id filter, max 128 characters; `sort` (string, optional) — Sort enum: relevance, rating_desc, reviews_desc, price_asc, price_desc, discount_desc, release_desc, release_asc
+
+### `datasets_producthunt_makers_facets`
+
+- **HTTP:** `GET /datasets/producthunt-makers/facets`
+- **What:** Facet the Product Hunt makers dataset. Returns distribution counts over the Product Hunt makers dataset (dataset id enum value `producthunt-makers`), honoring the same filters as search. Facet enum: `topic`, `product_count_band`.
+- **Params:** `facet` (string, **required**) — Facet enum: topic, product_count_band; `min_products` (integer, optional) — Minimum number of products made, 0 or greater; `min_total_votes` (integer, optional) — Minimum total upvotes across the maker's products, 0 or greater; `q` (string, optional) — Full-text query over maker name and headline, max 256 characters; `topic` (string, optional) — Exact topic-slug the maker builds in, max 128 characters
+
+### `datasets_producthunt_makers_item`
+
+- **HTTP:** `GET /datasets/producthunt-makers/items/{username}`
+- **What:** Get a Product Hunt maker from the dataset. Returns one maker by Product Hunt username from dataset id enum value `producthunt-makers`, including the products they made and their aggregate footprint. Returns 404 when the username is not in the dataset.
+- **Params:** `username` (string, **required**) — Product Hunt maker username, e.g. rrhoover
+
+### `datasets_producthunt_makers_search`
+
+- **HTTP:** `GET /datasets/producthunt-makers/search`
+- **What:** Search the Product Hunt makers dataset. Searches Product Hunt makers from the dataset id enum value `producthunt-makers` — public-profile records of the people who made products, with their footprint (products made, total upvotes, topics) for maker leaderboards. Public fields only. Sort enum: `total_votes_desc`, `product_count_desc`, `followers_desc`, `relevance`.
+- **Params:** `min_products` (integer, optional) — Minimum number of products made, 0 or greater; `min_total_votes` (integer, optional) — Minimum total upvotes across the maker's products, 0 or greater; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over maker name and headline, max 256 characters; `sort` (string, optional) — Sort enum: total_votes_desc, product_count_desc, followers_desc, relevance; `topic` (string, optional) — Exact topic-slug the maker builds in, e.g. artificial-intelligence, max 128 characters
+
+### `datasets_producthunt_products_facets`
+
+- **HTTP:** `GET /datasets/producthunt-products/facets`
+- **What:** Facet the Product Hunt products dataset. Returns distribution counts over the Product Hunt products dataset (dataset id enum value `producthunt-products`), honoring the same filters as search. Facet enum: `topic`, `launch_year`, `pricing_type`, `product_state`.
+- **Params:** `facet` (string, **required**) — Facet enum: topic, launch_year, pricing_type, product_state; `has_website` (boolean, optional) — Website presence filter; `is_online` (boolean, optional) — true keeps only products still online, false only retired products; `launched_after` (string, optional) — Lower bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `launched_before` (string, optional) — Upper bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `maker` (string, optional) — Exact maker-username filter (populated by hydration), max 128 characters; `min_rating` (number, optional) — Minimum review rating, from 0 through 5; `min_votes` (integer, optional) — Minimum upvotes, 0 or greater; `pricing_type` (string, optional) — Exact pricing-type filter, e.g. free, paid, freemium; `q` (string, optional) — Full-text query over product name and tagline, max 256 characters; `topic` (string, optional) — Exact topic-slug filter, e.g. artificial-intelligence, max 128 characters
+
+### `datasets_producthunt_products_item`
+
+- **HTTP:** `GET /datasets/producthunt-products/items/{slug}`
+- **What:** Get a Product Hunt product from the dataset. Returns one product by its Product Hunt slug from dataset id enum value `producthunt-products`, including its full launch history and (once hydrated) description, website, pricing and makers. Returns 404 when the slug is not in the archive.
+- **Params:** `slug` (string, **required**) — Product Hunt product slug, e.g. chatgpt
+
+### `datasets_producthunt_products_search`
+
+- **HTTP:** `GET /datasets/producthunt-products/search`
+- **What:** Search the Product Hunt products dataset. Searches individual Product Hunt launches from the dataset id enum value `producthunt-products` — the searchable launch archive. Each result is one product with its topics, upvotes, ranks and launch history; description/website/pricing/makers are filled in as hydration runs. Sort enum: `relevance`, `votes_desc`, `launched_desc`, `launched_asc`, `rating_desc`, `best_rank_asc`.
+- **Params:** `has_website` (boolean, optional) — Website presence filter (populated by hydration); `is_online` (boolean, optional) — true keeps only products still online, false only retired products; `launched_after` (string, optional) — Lower bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `launched_before` (string, optional) — Upper bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `maker` (string, optional) — Exact maker-username filter (populated by hydration), max 128 characters; `min_rating` (number, optional) — Minimum review rating, from 0 through 5 (populated by hydration); `min_votes` (integer, optional) — Minimum upvotes, 0 or greater; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `pricing_type` (string, optional) — Exact pricing-type filter (populated by hydration), e.g. free, paid, freemium; `q` (string, optional) — Full-text query over product name and tagline, max 256 characters; `sort` (string, optional) — Sort enum: relevance, votes_desc, launched_desc, launched_asc, rating_desc, best_rank_asc; `topic` (string, optional) — Exact topic-slug filter, e.g. artificial-intelligence, max 128 characters
+
+### `datasets_producthunt_trends_facets`
+
+- **HTTP:** `GET /datasets/producthunt-trends/facets`
+- **What:** Facet the Product Hunt trends dataset. Returns suppressed distribution counts over the Product Hunt trends dataset (dataset id enum value `producthunt-trends`), honoring the same filters as search. Facet enum: `topic`, `launch_year`.
+- **Params:** `facet` (string, **required**) — Facet enum: topic, launch_year; `group_by` (string, optional) — Aggregate cell dimension enum: topic_month, topic_year, topic. Defaults to topic_month; `launched_after` (string, optional) — Lower bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `launched_before` (string, optional) — Upper bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `min_launches` (integer, optional) — Minimum launches per bucket; raises the small-cell suppression floor; `min_votes` (integer, optional) — Minimum product upvotes, 0 or greater; `topic` (string, optional) — Exact topic-slug filter, e.g. artificial-intelligence, max 128 characters
+
+### `datasets_producthunt_trends_search`
+
+- **HTTP:** `GET /datasets/producthunt-trends/search`
+- **What:** Search the Product Hunt trends dataset. Returns aggregate Product Hunt launch trends from the dataset id enum value `producthunt-trends`. Aggregate-only: each row is a category-over-time cell (a topic, optionally within a calendar period), reporting launch count, total and average upvotes, average rating and the top product — never an individual product record. Thin cells are suppressed. group_by enum: `topic_month`, `topic_year`, `topic`. Sort enum: `period_desc`, `period_asc`, `launch_count_desc`, `sum_votes_desc`.
+- **Params:** `group_by` (string, optional) — Aggregate cell dimension enum: topic_month, topic_year, topic. Defaults to topic_month; `launched_after` (string, optional) — Lower bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `launched_before` (string, optional) — Upper bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `min_launches` (integer, optional) — Minimum launches per cell; raises the small-cell suppression floor (never lowered below the built-in minimum); `min_votes` (integer, optional) — Minimum product upvotes, 0 or greater; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: period_desc, period_asc, launch_count_desc, sum_votes_desc; `topic` (string, optional) — Exact topic-slug filter, e.g. artificial-intelligence, max 128 characters
+
+### `datasets_steam_achievements_search`
+
+- **HTTP:** `GET /datasets/steam-achievements/search`
+- **What:** Search steam-achievements dataset. Searches per-game global achievement unlock percentages (one document per appid × achievement). Pass `app_id` to list a game's achievements. Sort enum: `percent_desc` (most-unlocked first, default), `percent_asc` (rarest first), `rank_asc`.
+- **Params:** `app_id` (string, optional) — Exact Steam app id filter; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: percent_desc, percent_asc, rank_asc
+
+### `datasets_steam_charts_search`
+
+- **HTTP:** `GET /datasets/steam-charts/search`
+- **What:** Search the steam-charts dataset. Searches daily snapshots of Steam's player-count and sales charts, stored in a search index (one document per chart × country × snapshot × rank) so history accumulates. Charts: `most_played` (weekly peak concurrent), `concurrent` (live concurrent players), `top_sellers` (weekly sales; country-specific). With no `date` the latest snapshot is returned (today's chart); pair `app_id` with `sort=date_desc` for an app's rank/players over time. Country is `global` for the player-count charts or an ISO code (e.g. `us`) for `top_sellers`. Sort enum: `rank`, `rank_desc`, `date_desc`.
+- **Params:** `app_id` (string, optional) — Exact Steam app id filter; pair with sort=date_desc for rank/players history; `chart` (string, optional) — Chart enum: most_played, concurrent, top_sellers; `country` (string, optional) — Market filter: global (player-count charts) or an ISO country code (top_sellers), max 128 characters; `date` (string, optional) — Snapshot date filter yyyy-MM-dd; defaults to the latest snapshot; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over the game name, max 256 characters; `sort` (string, optional) — Sort enum: rank, rank_desc, date_desc
+
+### `datasets_steam_games_facets`
+
+- **HTTP:** `GET /datasets/steam-games/facets`
+- **What:** Facet the Steam games dataset. Returns terms aggregation counts for the Steam games dataset. Facet enum: `type`, `developer`, `publisher`, `genres`, `categories`, `price_tier`, `review_tier`, `owners_bucket`, `release_year`, `run_id`, `is_free`, `coming_soon`, `platform_windows`, `platform_mac`, `platform_linux`. price_tier enum: `free`, `under5`, `5to15`, `15to30`, `30to60`, `over60`. review_tier enum: `overwhelmingly_positive`, `very_positive`, `positive`, `mixed`, `negative`, `insufficient`.
+- **Params:** `category` (string, optional) — Exact store category filter, max 128 characters; `developer` (string, optional) — Exact developer filter, max 128 characters; `facet` (string, **required**) — Facet enum: type, developer, publisher, genres, categories, tags, primary_tag, price_tier, review_tier, owners_bucket, release_year, run_id, is_free, coming_soon, platform_windows, platform_mac, platform_linux; `genre` (string, optional) — Exact genre filter, max 128 characters; `is_free` (boolean, optional) — Filter by free-to-play flag; `linux` (boolean, optional) — Filter by Linux support; `mac` (boolean, optional) — Filter by macOS support; `max_price_cents` (integer, optional) — Maximum current price in cents; `max_release_year` (integer, optional) — Maximum release year; `min_ccu` (integer, optional) — Minimum peak concurrent users yesterday; `min_metacritic` (integer, optional) — Minimum Metacritic score, 0 through 100; `min_owners` (integer, optional) — Minimum estimated owners (SteamSpy owners midpoint); `min_positive` (integer, optional) — Minimum positive review count; `min_price_cents` (integer, optional) — Minimum current price in cents; `min_release_year` (integer, optional) — Minimum release year; `min_review_score` (number, optional) — Minimum positive-review ratio, 0 through 1; `min_total_reviews` (integer, optional) — Minimum total review count; `on_sale` (boolean, optional) — Filter by titles currently discounted (discount_pct > 0); `owners_bucket` (string, optional) — Exact SteamSpy owners-range bucket filter, max 128 characters; `price_tier` (string, optional) — Price-tier enum: free, under5, 5to15, 15to30, 30to60, over60; `publisher` (string, optional) — Exact publisher filter, max 128 characters; `q` (string, optional) — Full-text query over name, developer and publisher, max 256 characters; `review_tier` (string, optional) — Review-tier enum: overwhelmingly_positive, very_positive, positive, mixed, negative, insufficient; `run_id` (string, optional) — Exact crawl run-id filter, max 128 characters; `tag` (string, optional) — Exact community-tag filter (e.g. Roguelike, Cozy), max 128 characters; `type` (string, optional) — Exact storefront type filter, max 128 characters; `windows` (boolean, optional) — Filter by Windows support
+
+### `datasets_steam_games_item`
+
+- **HTTP:** `GET /datasets/steam-games/items/{appid}`
+- **What:** Get a Steam game from the dataset. Returns one enriched Steam catalog record by appid from dataset id enum value `steam-games`.
+- **Params:** `appid` (integer, **required**) — Steam app id
+
+### `datasets_steam_games_search`
+
+- **HTTP:** `GET /datasets/steam-games/search`
+- **What:** Search the Steam games dataset. Searches enriched public Steam catalog records stored in a search index. price_tier enum: `free`, `under5`, `5to15`, `15to30`, `30to60`, `over60`. review_tier enum: `overwhelmingly_positive`, `very_positive`, `positive`, `mixed`, `negative`, `insufficient`. Sort enum: `relevance`, `owners_desc`, `reviews_desc`, `review_score_desc`, `ccu_desc`, `metacritic_desc`, `price_asc`, `price_desc`, `release_desc`, `release_asc`.
+- **Params:** `category` (string, optional) — Exact store category filter (e.g. Single-player), max 128 characters; `developer` (string, optional) — Exact developer filter, max 128 characters; `genre` (string, optional) — Exact genre filter (e.g. Action, Indie), max 128 characters; `is_free` (boolean, optional) — Filter by free-to-play flag; `linux` (boolean, optional) — Filter by Linux support; `mac` (boolean, optional) — Filter by macOS support; `max_price_cents` (integer, optional) — Maximum current price in cents; `max_release_year` (integer, optional) — Maximum release year; `min_ccu` (integer, optional) — Minimum peak concurrent users yesterday; `min_metacritic` (integer, optional) — Minimum Metacritic score, 0 through 100; `min_owners` (integer, optional) — Minimum estimated owners (SteamSpy owners midpoint); `min_positive` (integer, optional) — Minimum positive review count; `min_price_cents` (integer, optional) — Minimum current price in cents; `min_release_year` (integer, optional) — Minimum release year; `min_review_score` (number, optional) — Minimum positive-review ratio, 0 through 1; `min_total_reviews` (integer, optional) — Minimum total review count; `on_sale` (boolean, optional) — Filter by titles currently discounted (discount_pct > 0); `owners_bucket` (string, optional) — Exact SteamSpy owners-range bucket filter, max 128 characters; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `price_tier` (string, optional) — Price-tier enum: free, under5, 5to15, 15to30, 30to60, over60; `publisher` (string, optional) — Exact publisher filter, max 128 characters; `q` (string, optional) — Full-text query over name, developer and publisher, max 256 characters; `review_tier` (string, optional) — Review-tier enum: overwhelmingly_positive, very_positive, positive, mixed, negative, insufficient; `run_id` (string, optional) — Exact crawl run-id filter, max 128 characters; `sort` (string, optional) — Sort enum: relevance, owners_desc, reviews_desc, review_score_desc, ccu_desc, metacritic_desc, price_asc, price_desc, release_desc, release_asc; `tag` (string, optional) — Exact community-tag filter (e.g. Roguelike, Metroidvania, Cozy), max 128 characters; `type` (string, optional) — Exact storefront type filter (e.g. game, dlc, demo), max 128 characters; `windows` (boolean, optional) — Filter by Windows support
+
+### `datasets_steam_news_search`
+
+- **HTTP:** `GET /datasets/steam-news/search`
+- **What:** Search the steam-news dataset. Searches Steam news + announcements for tracked apps (one document per appid × gid; the latest items per app are kept). Filter by `app_id` for a single game's news, or full-text `q` over the title + contents. Sort enum: `date_desc` (newest first, default), `date_asc`.
+- **Params:** `app_id` (string, optional) — Exact Steam app id filter; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over the news title + contents, max 256 characters; `sort` (string, optional) — Sort enum: date_desc, date_asc
+
+### `datasets_steam_playercounts_search`
+
+- **HTTP:** `GET /datasets/steam-playercounts/search`
+- **What:** Search steam-playercounts dataset. Searches the daily concurrent-player time series for tracked games (one document per appid × day). Pair `app_id` with `sort=date_desc` for a game's player-count history, or pass `date` for one day's snapshot. Sort enum: `date_desc` (default), `date_asc`, `players_desc`.
+- **Params:** `app_id` (string, optional) — Exact Steam app id filter; `date` (string, optional) — Snapshot date filter yyyy-MM-dd; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: date_desc, date_asc, players_desc
+
+### `datasets_steam_prices_search`
+
+- **HTTP:** `GET /datasets/steam-prices/search`
+- **What:** Search the steam-prices dataset. Searches the daily price time series for priced games (one document per appid × day; integer cents). Pair `app_id` with `sort=date_desc` for a game's price history, or pass `date` for one day's snapshot. Sort enum: `date_desc` (default), `date_asc`, `price_asc`, `price_desc`, `discount_desc`.
+- **Params:** `app_id` (string, optional) — Exact Steam app id filter; `date` (string, optional) — Snapshot date filter yyyy-MM-dd; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: date_desc, date_asc, price_asc, price_desc, discount_desc
+
+### `datasets_steam_reviews_search`
+
+- **HTTP:** `GET /datasets/steam-reviews/search`
+- **What:** Search the steam-reviews dataset. Searches the stored Steam review corpus (the most-helpful reviews per game; one document per appid × recommendation). Full-text `q` over the review body, filter by `app_id`, `language`, or `voted_up` (positive/negative). Sort enum: `votes_desc` (most-helpful first, default), `weighted_desc`, `date_desc`.
+- **Params:** `app_id` (string, optional) — Exact Steam app id filter; `language` (string, optional) — Review language filter (e.g. english, schinese); `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over the review body, max 256 characters; `sort` (string, optional) — Sort enum: votes_desc, weighted_desc, date_desc; `voted_up` (string, optional) — Recommendation filter: true (positive) or false (negative)
+
+### `datasets_techstack_facets`
+
+- **HTTP:** `GET /datasets/techstack/facets`
+- **What:** Facet the website tech-stack dataset. Returns distribution counts over the website tech-stack index (dataset id enum value `techstack`), honoring the same filters as search — the technology / category market-share view. Facet enum: `technology`, `category`, `cms`, `ecommerce`, `cdn`, `web_server`, `server_language`, `analytics`, `tld`, `render_tier`, `seed_source`.
+- **Params:** `any_of` (array, optional) — Repeatable exact technology name; the site must use at least one (OR); `category` (string, optional) — Exact category filter, e.g. Ecommerce, CMS, Analytics; `cdn` (string, optional) — Exact CDN / hosting filter, e.g. Cloudflare, Fastly, Vercel; `cms` (string, optional) — Exact CMS filter, e.g. WordPress, Shopify, Webflow; `ecommerce` (string, optional) — Exact e-commerce platform filter, e.g. Shopify, WooCommerce, Magento; `facet` (string, **required**) — Facet enum: technology, category, cms, ecommerce, cdn, web_server, server_language, analytics, tld, render_tier, seed_source; `has_captcha` (boolean, optional) — true keeps only sites with a detected CAPTCHA; `min_tech_count` (integer, optional) — Minimum number of detected technologies, 0 or greater; `not` (array, optional) — Repeatable exact technology name the site must NOT use (excludes); `q` (string, optional) — Substring match on the site domain, max 256 characters; `reachable` (boolean, optional) — true keeps only sites whose homepage was fetched; `render_tier` (string, optional) — Fetch-tier filter. Enum: http, browser; `run_id` (string, optional) — Scan run id; defaults to the latest run; `seed_source` (string, optional) — Source filter for where the domain was discovered, e.g. tranco; `server_language` (string, optional) — Exact server language / framework filter, e.g. PHP, ASP.NET, Ruby on Rails; `technology` (array, optional) — Repeatable exact technology name the site MUST use (AND); `tld` (string, optional) — Exact top-level-domain filter, e.g. com, org, io; `web_server` (string, optional) — Exact web-server filter, e.g. nginx, Apache, IIS
+
+### `datasets_techstack_item`
+
+- **HTTP:** `GET /datasets/techstack/items/{domain}`
+- **What:** Get a site from the website tech-stack dataset. Returns one site by its domain from dataset id enum value `techstack`, including every detected technology (name, categories, confidence, version, evidence) plus the CMS / e-commerce / CDN / web-server / server-language rollups. Returns 404 when the domain is not in the index.
+- **Params:** `domain` (string, **required**) — Site domain, e.g. shopify.com (a scheme and www. are stripped)
+
+### `datasets_techstack_search`
+
+- **HTTP:** `GET /datasets/techstack/search`
+- **What:** Search the website tech-stack dataset. Searches the website tech-stack index (dataset id enum value `techstack`) — one record per site listing the web technologies it is built with (frameworks, CMS, e-commerce, analytics, CDNs, servers, and more), BuiltWith / Wappalyzer-style. The reverse-index filters are the point: repeat `technology` to require several at once (AND), `any_of` to match at least one (OR), and `not` to exclude — e.g. sites on `Shopify` and `Klaviyo` but not `Recharge`. Sort enum: `relevance`, `rank_asc`, `tech_count_desc`, `domain_asc`, `crawled_desc`. render_tier enum: `http`, `browser`.
+- **Params:** `any_of` (array, optional) — Repeatable exact technology name; the site must use at least one (OR); `category` (string, optional) — Exact category filter, e.g. Ecommerce, CMS, Analytics, Payment, CDN; `cdn` (string, optional) — Exact CDN / hosting filter, e.g. Cloudflare, Fastly, Vercel; `cms` (string, optional) — Exact CMS filter, e.g. WordPress, Shopify, Webflow; `ecommerce` (string, optional) — Exact e-commerce platform filter, e.g. Shopify, WooCommerce, Magento; `has_captcha` (boolean, optional) — true keeps only sites with a detected CAPTCHA; `min_tech_count` (integer, optional) — Minimum number of detected technologies, 0 or greater; `not` (array, optional) — Repeatable exact technology name the site must NOT use (excludes); `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Substring match on the site domain, max 256 characters; `reachable` (boolean, optional) — true keeps only sites whose homepage was fetched, false only sites that could not be fetched; `render_tier` (string, optional) — Fetch-tier filter. Enum: http, browser; `run_id` (string, optional) — Scan run id; defaults to the latest run; `seed_source` (string, optional) — Source filter for where the domain was discovered, e.g. tranco; `server_language` (string, optional) — Exact server language / framework filter, e.g. PHP, ASP.NET, Ruby on Rails; `sort` (string, optional) — Sort enum: relevance, rank_asc, tech_count_desc, domain_asc, crawled_desc; `technology` (array, optional) — Repeatable exact technology name the site MUST use (AND), e.g. technology=Shopify&technology=Klaviyo; `tld` (string, optional) — Exact top-level-domain filter, e.g. com, org, io; `web_server` (string, optional) — Exact web-server filter, e.g. nginx, Apache, IIS
+
+### `datasets_trustmrr_facets`
+
+- **HTTP:** `GET /datasets/trustmrr/facets`
+- **What:** Facet the TrustMRR dataset. Returns terms-aggregation counts for one facet of the TrustMRR dataset, scoped to the same filters as search. Facet enum: `category`, `country`, `payment_provider`, `target_audience`, `business_type`, `tech`, `channels`, `listing_tier`, `status`, `on_sale`, `is_sponsored`, `tags`.
+- **Params:** `category` (string, optional) — Exact category filter, max 128 characters; `country` (string, optional) — Exact ISO country-code filter, max 128 characters; `facet` (string, **required**) — Facet enum: category, country, payment_provider, target_audience, business_type, tech, channels, listing_tier, status, on_sale, is_sponsored, tags; `min_mrr` (number, optional) — Minimum verified MRR in USD; `on_sale` (boolean, optional) — Filter for startups currently listed for sale; `payment_provider` (string, optional) — Payment-provider filter, max 128 characters; `q` (string, optional) — Full-text query, max 256 characters
+
+### `datasets_trustmrr_history`
+
+- **HTTP:** `GET /datasets/trustmrr/history/{slug}`
+- **What:** Get a TrustMRR startup's daily history. Returns a startup's daily time-series of payment-provider-verified metrics — MRR, all-time revenue, last-30-days revenue, 30-day and 12-month traffic, 30-day growth, for-sale flag, asking price, valuation multiple, deal score and offer count — one point per day in chronological order (oldest first). The series accrues one point per calendar day, so a recently discovered startup returns a short or empty series rather than a 404.
+- **Params:** `from` (string, optional) — Inclusive start date, YYYY-MM-DD (UTC); `limit` (integer, optional) — Maximum points returned (the most recent within the range), default 365, max 1000; `slug` (string, **required**) — Startup slug, max 128 characters; `to` (string, optional) — Inclusive end date, YYYY-MM-DD (UTC)
+
+### `datasets_trustmrr_item`
+
+- **HTTP:** `GET /datasets/trustmrr/items/{slug}`
+- **What:** Get a TrustMRR startup from the dataset. Returns one startup record by slug from the TrustMRR dataset (dataset id `trustmrr`), including verified revenue/MRR, traffic, growth, category, tech stack, marketing channels and acquisition-marketplace fields.
+- **Params:** `slug` (string, **required**) — Startup slug, max 128 characters
+
+### `datasets_trustmrr_search`
+
+- **HTTP:** `GET /datasets/trustmrr/search`
+- **What:** Search the TrustMRR dataset. Searches public startups with payment-provider-verified revenue and MRR, stored in a search index. Filter by category, country, payment provider, target audience, tech, marketing channel, listing tier and for-sale status, and by revenue/MRR/traffic/growth/multiple/asking-price ranges. Sort enum: `relevance`, `mrr_desc`, `revenue_desc`, `revenue_30d_desc`, `traffic_desc`, `growth_desc`, `deal_score_desc`, `price_asc`, `price_desc`, `multiple_asc`, `founded_desc`. status enum: `active`, `removed`.
+- **Params:** `business_type` (string, optional) — Business-type filter (e.g. B2B, B2C), max 128 characters; `category` (string, optional) — Exact category filter (e.g. SaaS, Artificial Intelligence, Mobile Apps), max 128 characters; `channel` (string, optional) — Detected marketing-channel slug filter (e.g. meta-ads, seo), max 128 characters; `country` (string, optional) — Exact ISO country-code filter (e.g. US), max 128 characters; `is_sponsored` (boolean, optional) — Filter for sponsored (paid-placement) listings; `listing_tier` (string, optional) — For-sale listing-tier filter (e.g. pro), max 128 characters; `max_asking_price` (number, optional) — Maximum asking price in USD; `max_mrr` (number, optional) — Maximum verified MRR in USD; `max_multiple` (number, optional) — Maximum asking-price-to-revenue multiple; `min_ahrefs_dr` (integer, optional) — Minimum Ahrefs Domain Rating; `min_asking_price` (number, optional) — Minimum asking price in USD; `min_growth` (number, optional) — Minimum 30-day revenue growth percentage; `min_mrr` (number, optional) — Minimum verified MRR in USD; `min_revenue` (number, optional) — Minimum verified all-time revenue in USD; `min_revenue_30d` (number, optional) — Minimum verified last-30-days revenue in USD; `min_traffic` (number, optional) — Minimum last-30-days traffic (visits); `on_sale` (boolean, optional) — Filter for startups currently listed for sale; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `payment_provider` (string, optional) — Payment-provider filter (e.g. stripe, revenuecat, superwall, creem), max 128 characters; `q` (string, optional) — Full-text query over name, description, seller message and business summary, max 256 characters; `slug` (string, optional) — Exact startup slug filter, max 128 characters; `sort` (string, optional) — Sort enum: relevance, mrr_desc, revenue_desc, revenue_30d_desc, traffic_desc, growth_desc, deal_score_desc, price_asc, price_desc, multiple_asc, founded_desc; `status` (string, optional) — Lifecycle enum: active, removed; `target_audience` (string, optional) — Target-audience filter (e.g. B2B, B2C), max 128 characters; `tech` (string, optional) — Detected tech-stack slug filter (e.g. nextjs, reactnative), max 128 characters
+
+## Discogs (7)
+
+### `discogs_artist`
+
+- **HTTP:** `GET /discogs/artist/{id}`
+- **What:** Get a Discogs artist profile. Returns a normalized Discogs artist profile: real name, bio, links, name variations, aliases, and group memberships. Credential-free official Discogs database data.
+- **Params:** `id` (string, **required**) — Discogs artist id
+
+### `discogs_artist_releases`
+
+- **HTTP:** `GET /discogs/artist/{id}/releases`
+- **What:** List a Discogs artist's releases. Returns an artist's paginated release/master credits (role, format, label, year, want/collection counts). Credential-free official Discogs database data.
+- **Params:** `id` (string, **required**) — Discogs artist id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 50, max 100
+
+### `discogs_label`
+
+- **HTTP:** `GET /discogs/label/{id}`
+- **What:** Get a Discogs label profile. Returns a normalized Discogs label profile: profile text, contact info, parent label, and sub-labels. Credential-free official Discogs database data.
+- **Params:** `id` (string, **required**) — Discogs label id
+
+### `discogs_label_releases`
+
+- **HTTP:** `GET /discogs/label/{id}/releases`
+- **What:** List a Discogs label's releases. Returns a label's paginated release catalog (title, artist, format, catalog number, year). Credential-free official Discogs database data.
+- **Params:** `id` (string, **required**) — Discogs label id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 50, max 100
+
+### `discogs_master`
+
+- **HTTP:** `GET /discogs/master/{id}`
+- **What:** Get a Discogs master release. Returns a normalized Discogs master release: the version-agnostic grouping of a release across pressings/reissues (artists, tracklist, genres/styles, videos, images, marketplace stats). Credential-free official Discogs database data.
+- **Params:** `id` (string, **required**) — Discogs master release id
+
+### `discogs_release`
+
+- **HTTP:** `GET /discogs/release/{id}`
+- **What:** Get a Discogs release. Returns a normalized Discogs release: artists, labels, formats, tracklist, credits, identifiers, videos, images, and community want/have/rating. Credential-free official Discogs database data (api.discogs.com).
+- **Params:** `id` (string, **required**) — Discogs release id
+
+### `discogs_search`
+
+- **HTTP:** `GET /discogs/search`
+- **What:** Search the Discogs database. Searches Discogs releases, masters, artists, and labels. Credential-free official Discogs database data.
+- **Params:** `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 50, max 100; `q` (string, **required**) — Search query; `type` (string, optional) — Result type filter
 
 ## eBay (6)
 
@@ -570,6 +1100,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get eBay seller shop listings. Returns normalized listings from the public eBay seller shop tab, with pagination backed by the store odtRefresh response.
 - **Params:** `page` (integer, optional) — Shop page number; `seller` (string, **required**) — eBay seller username
 
+## ESPN (9)
+
+### `espn_athlete`
+
+- **HTTP:** `GET /espn/athlete`
+- **What:** ESPN athlete. Returns one athlete's bio/overview (name, position, jersey, physicals, current team) from ESPN's credential-free public JSON. The `sport` enum accepts `football`, `basketball`, `baseball`, `hockey`, and `soccer`. The `league` enum accepts `nfl`, `college-football`, `nba`, `wnba`, `mens-college-basketball`, `womens-college-basketball`, `mlb`, `nhl`, `eng.1`, `esp.1`, `ita.1`, `ger.1`, `fra.1`, `usa.1`, and `uefa.champions`; it must be valid for the chosen sport.
+- **Params:** `athlete` (string, **required**) — Numeric ESPN athlete (player) id; `league` (string, **required**) — League key (must be valid for the sport); `sport` (string, **required**) — Sport key
+
+### `espn_game_summary`
+
+- **HTTP:** `GET /espn/game-summary`
+- **What:** ESPN game summary. Returns one game's matchup, betting odds, and boxscore stat totals from ESPN's credential-free public JSON. The `sport` enum accepts `football`, `basketball`, `baseball`, `hockey`, and `soccer`. The `league` enum accepts `nfl`, `college-football`, `nba`, `wnba`, `mens-college-basketball`, `womens-college-basketball`, `mlb`, `nhl`, `eng.1`, `esp.1`, `ita.1`, `ger.1`, `fra.1`, `usa.1`, and `uefa.champions`; it must be valid for the chosen sport. Get an `event` id from the scoreboard endpoint.
+- **Params:** `event` (string, **required**) — Numeric ESPN event (game) id; `league` (string, **required**) — League key (must be valid for the sport); `sport` (string, **required**) — Sport key
+
+### `espn_news`
+
+- **HTTP:** `GET /espn/news`
+- **What:** ESPN league news. Returns recent news articles (headline, description, link) for a league from ESPN's credential-free public JSON. The `sport` enum accepts `football`, `basketball`, `baseball`, `hockey`, and `soccer`. The `league` enum accepts `nfl`, `college-football`, `nba`, `wnba`, `mens-college-basketball`, `womens-college-basketball`, `mlb`, `nhl`, `eng.1`, `esp.1`, `ita.1`, `ger.1`, `fra.1`, `usa.1`, and `uefa.champions`; it must be valid for the chosen sport.
+- **Params:** `league` (string, **required**) — League key (must be valid for the sport); `sport` (string, **required**) — Sport key
+
+### `espn_rankings`
+
+- **HTTP:** `GET /espn/rankings`
+- **What:** ESPN poll rankings. Returns poll rankings (e.g. AP Top 25) for a college league from ESPN's credential-free public JSON. Rankings are only published for college leagues: the `sport` enum accepts `football` and `basketball`, and the `league` enum accepts `college-football`, `mens-college-basketball`, and `womens-college-basketball`.
+- **Params:** `league` (string, **required**) — College league key; `sport` (string, **required**) — Sport key
+
+### `espn_scoreboard`
+
+- **HTTP:** `GET /espn/scoreboard`
+- **What:** ESPN scoreboard. Returns games (scores, schedule, status, and odds when available) for a sport and league from ESPN's credential-free public JSON. The `sport` enum accepts `football`, `basketball`, `baseball`, `hockey`, and `soccer`. The `league` enum accepts `nfl`, `college-football`, `nba`, `wnba`, `mens-college-basketball`, `womens-college-basketball`, `mlb`, `nhl`, `eng.1`, `esp.1`, `ita.1`, `ger.1`, `fra.1`, `usa.1`, and `uefa.champions`; it must be valid for the chosen sport. The `seasontype` enum accepts `1` (preseason), `2` (regular season), `3` (postseason), and `4` (offseason).
+- **Params:** `dates` (string, optional) — Date or range as YYYYMMDD, YYYYMMDD-YYYYMMDD, or YYYY; defaults to the current scoreboard; `league` (string, **required**) — League key (must be valid for the sport); `seasontype` (integer, optional) — Season type; `sport` (string, **required**) — Sport key; `week` (integer, optional) — Week number (football leagues)
+
+### `espn_standings`
+
+- **HTTP:** `GET /espn/standings`
+- **What:** ESPN standings. Returns league standings grouped by conference/division from ESPN's credential-free public JSON. The `sport` enum accepts `football`, `basketball`, `baseball`, `hockey`, and `soccer`. The `league` enum accepts `nfl`, `college-football`, `nba`, `wnba`, `mens-college-basketball`, `womens-college-basketball`, `mlb`, `nhl`, `eng.1`, `esp.1`, `ita.1`, `ger.1`, `fra.1`, `usa.1`, and `uefa.champions`; it must be valid for the chosen sport. The `seasontype` enum accepts `1` (preseason), `2` (regular season), and `3` (postseason).
+- **Params:** `league` (string, **required**) — League key (must be valid for the sport); `season` (integer, optional) — Four-digit season year; defaults to the current season; `seasontype` (integer, optional) — Season type; `sport` (string, **required**) — Sport key
+
+### `espn_team`
+
+- **HTTP:** `GET /espn/team`
+- **What:** ESPN team detail. Returns one team's detail (identity, colors, record, standing summary) from ESPN's credential-free public JSON. The `sport` enum accepts `football`, `basketball`, `baseball`, `hockey`, and `soccer`. The `league` enum accepts `nfl`, `college-football`, `nba`, `wnba`, `mens-college-basketball`, `womens-college-basketball`, `mlb`, `nhl`, `eng.1`, `esp.1`, `ita.1`, `ger.1`, `fra.1`, `usa.1`, and `uefa.champions`; it must be valid for the chosen sport.
+- **Params:** `league` (string, **required**) — League key (must be valid for the sport); `sport` (string, **required**) — Sport key; `team` (string, **required**) — Team id (numeric) or abbreviation
+
+### `espn_team_roster`
+
+- **HTTP:** `GET /espn/team-roster`
+- **What:** ESPN team roster. Returns a team's roster (players with position, jersey, age, and experience) plus head coach from ESPN's credential-free public JSON. The `sport` enum accepts `football`, `basketball`, `baseball`, `hockey`, and `soccer`. The `league` enum accepts `nfl`, `college-football`, `nba`, `wnba`, `mens-college-basketball`, `womens-college-basketball`, `mlb`, `nhl`, `eng.1`, `esp.1`, `ita.1`, `ger.1`, `fra.1`, `usa.1`, and `uefa.champions`; it must be valid for the chosen sport.
+- **Params:** `league` (string, **required**) — League key (must be valid for the sport); `sport` (string, **required**) — Sport key; `team` (string, **required**) — Team id (numeric) or abbreviation
+
+### `espn_teams`
+
+- **HTTP:** `GET /espn/teams`
+- **What:** ESPN team list. Returns the full team list for a sport and league from ESPN's credential-free public JSON. The `sport` enum accepts `football`, `basketball`, `baseball`, `hockey`, and `soccer`. The `league` enum accepts `nfl`, `college-football`, `nba`, `wnba`, `mens-college-basketball`, `womens-college-basketball`, `mlb`, `nhl`, `eng.1`, `esp.1`, `ita.1`, `ger.1`, `fra.1`, `usa.1`, and `uefa.champions`; it must be valid for the chosen sport.
+- **Params:** `league` (string, **required**) — League key (must be valid for the sport); `sport` (string, **required**) — Sport key
+
 ## Geocoding (3)
 
 ### `geocoding_lookup`
@@ -590,7 +1176,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Nominatim places. Returns typed Nominatim JSONv2 forward geocoding results. Use either q or structured fields, not both.
 - **Params:** `accept_language` (string, optional) — Preferred result language, forwarded to Nominatim; `addressdetails` (boolean, optional) — Include address details, defaults to true; `city` (string, optional) — Structured city; `country` (string, optional) — Structured country; `countrycodes` (string, optional) — Comma-separated ISO 3166-1 alpha-2 country filters; `county` (string, optional) — Structured county; `extratags` (boolean, optional) — Include OSM extra tags; `limit` (integer, optional) — Maximum results, defaults to 10 and clamps to 20; `namedetails` (boolean, optional) — Include multilingual name details; `postalcode` (string, optional) — Structured postal code; `q` (string, optional) — Free-text search query; `state` (string, optional) — Structured state; `street` (string, optional) — Structured street or house number
 
-## GitHub (16)
+## GitHub (15)
 
 ### `github_org`
 
@@ -632,12 +1218,6 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /github/repo/{owner}/{repo}/releases`
 - **What:** List a repository's releases. Returns a page of a repository's releases (momentum/health signal).
-- **Params:** `owner` (string, **required**) — Repository owner (user or org login); `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `repo` (string, **required**) — Repository name
-
-### `github_repo_stargazers`
-
-- **HTTP:** `GET /github/repo/{owner}/{repo}/stargazers`
-- **What:** List users who starred a repository. Returns a page of users who starred a repository (buyer-intent signal).
 - **Params:** `owner` (string, **required**) — Repository owner (user or org login); `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `repo` (string, **required**) — Repository name
 
 ### `github_search_repositories`
@@ -687,6 +1267,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /github/user/{username}/repos`
 - **What:** List a GitHub user's public repositories. Returns a page of a user's public repositories (tech-stack signal).
 - **Params:** `direction` (string, optional) — Sort direction; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `sort` (string, optional) — Sort field; `type` (string, optional) — Repository type; `username` (string, **required**) — GitHub username
+
+## Goodreads (6)
+
+### `goodreads_author`
+
+- **HTTP:** `GET /goodreads/author/{id}`
+- **What:** Get a Goodreads author. Returns a normalized Goodreads author profile: bio, birth/death dates, website, genres, photo, and aggregate rating stats. Credential-free public Goodreads data.
+- **Params:** `id` (string, **required**) — Goodreads author id
+
+### `goodreads_author_books`
+
+- **HTTP:** `GET /goodreads/author/{id}/books`
+- **What:** List a Goodreads author's books. Returns an author's paginated works list (title, author, average rating, ratings count). Credential-free public Goodreads data.
+- **Params:** `id` (string, **required**) — Goodreads author id; `page` (integer, optional) — 1-based page number, default 1
+
+### `goodreads_book`
+
+- **HTTP:** `GET /goodreads/book/{id}`
+- **What:** Get a Goodreads book. Returns a normalized Goodreads book: description, authors, series, genres, format, pages, publisher, publication date, ISBNs, and aggregate rating with the full 1-5 star distribution. Credential-free public Goodreads data (goodreads.com), parsed from the book page's embedded GraphQL cache.
+- **Params:** `id` (string, **required**) — Goodreads book id
+
+### `goodreads_book_reviews`
+
+- **HTTP:** `GET /goodreads/book/{id}/reviews`
+- **What:** Get a Goodreads book's featured reviews. Returns a book's featured reviews (reviewer, rating, text, date, like/comment counts, spoiler flag), sorted by like count. Credential-free public Goodreads data.
+- **Params:** `id` (string, **required**) — Goodreads book id; `limit` (integer, optional) — Max reviews, default 10, max 50
+
+### `goodreads_list`
+
+- **HTTP:** `GET /goodreads/list/{id}`
+- **What:** Get a Goodreads Listopia list. Returns a Goodreads Listopia list (ranked book list) by id, paginated. Credential-free public Goodreads data.
+- **Params:** `id` (string, **required**) — Goodreads list id; `page` (integer, optional) — 1-based page number, default 1
+
+### `goodreads_search`
+
+- **HTTP:** `GET /goodreads/search`
+- **What:** Search Goodreads books. Searches Goodreads books by title/author. Credential-free public Goodreads data via the autocomplete endpoint (book results only).
+- **Params:** `limit` (integer, optional) — Max results, default 10, max 50; `q` (string, **required**) — Search query
 
 ## Google (38)
 
@@ -1116,6 +1734,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve Instagram Reels for a user. Returns a feed of Instagram Reels for the specified user ID. Supports pagination via `max_id`.
 - **Params:** `id` (string, **required**) — Instagram user ID; `max_id` (string, optional) — Pagination cursor for fetching the next page of Reels
 
+## Jobs (11)
+
+### `jobs_ashby_board`
+
+- **HTTP:** `GET /jobs/ashby/board`
+- **What:** List an organization's Ashby job board. Lists an organization's public Ashby board postings with inline detail (description, compensation when include_compensation=true). The org is the Ashby slug from its careers URL. An unknown org returns an empty board (Ashby does not 404). Credential-free public ATS JSON.
+- **Params:** `include_compensation` (boolean, optional) — Include compensation summary; `org` (string, **required**) — Ashby org slug (careers URL)
+
+### `jobs_company_search`
+
+- **HTTP:** `GET /jobs/company-search`
+- **What:** Find which ATS a company uses by slug. Probes Greenhouse, Lever, Ashby, and SmartRecruiters in parallel for a slug and reports the providers where it resolves to a non-empty board (with the open-role count and board URL). Workday is excluded (its board needs tenant + datacenter + site). Credential-free public ATS JSON.
+- **Params:** `slug` (string, **required**) — Company careers slug to probe
+
+### `jobs_greenhouse_board`
+
+- **HTTP:** `GET /jobs/greenhouse/board`
+- **What:** List a company's Greenhouse job board. Lists a company's public Greenhouse board postings, normalized to the shared Job shape. Set content=true to include each job's full HTML description in one call. The token is the company's Greenhouse board slug from its careers URL. Credential-free public ATS JSON.
+- **Params:** `content` (boolean, optional) — Include full HTML description per job; `token` (string, **required**) — Greenhouse board token (careers URL slug)
+
+### `jobs_greenhouse_job`
+
+- **HTTP:** `GET /jobs/greenhouse/job`
+- **What:** Get a single Greenhouse job. Returns a single Greenhouse job with its full HTML/text description, department, and offices. Credential-free public ATS JSON.
+- **Params:** `id` (string, **required**) — Greenhouse job id; `token` (string, **required**) — Greenhouse board token
+
+### `jobs_hiring_signals`
+
+- **HTTP:** `GET /jobs/hiring-signals`
+- **What:** Aggregate hiring signals for a company's board. Aggregates a company's ATS board into a hiring snapshot: total open roles, breakdowns by department/location/title, remote share, and how many roles are new in the last 7/30 days — a leading indicator of company growth. Supply provider plus that provider's slug params (token / company / org / tenant+datacenter+site). Breakdowns are computed over the fetched postings. Credential-free public ATS JSON.
+- **Params:** `company` (string, optional) — lever / smartrecruiters company slug; `datacenter` (string, optional) — workday datacenter shard; `org` (string, optional) — ashby org slug; `provider` (string, **required**) — ATS provider; `site` (string, optional) — workday career site; `tenant` (string, optional) — workday tenant; `token` (string, optional) — greenhouse board token
+
+### `jobs_lever_posting`
+
+- **HTTP:** `GET /jobs/lever/posting`
+- **What:** Get a single Lever posting. Returns a single Lever posting with its full HTML/text description. Credential-free public ATS JSON.
+- **Params:** `company` (string, **required**) — Lever company slug; `id` (string, **required**) — Lever posting id
+
+### `jobs_lever_postings`
+
+- **HTTP:** `GET /jobs/lever/postings`
+- **What:** List a company's Lever postings. Lists a company's public Lever postings (detail is inline), optionally filtered by department, location, or remote. The company is the Lever slug from its careers URL. Credential-free public ATS JSON.
+- **Params:** `company` (string, **required**) — Lever company slug (careers URL); `department` (string, optional) — Filter: department contains; `location` (string, optional) — Filter: location contains; `remote` (boolean, optional) — Filter by remote (true or false)
+
+### `jobs_smartrecruiters_posting`
+
+- **HTTP:** `GET /jobs/smartrecruiters/posting`
+- **What:** Get a single SmartRecruiters posting. Returns a single SmartRecruiters posting with its jobAd description. Recruiter personal data is intentionally omitted. Credential-free public ATS JSON.
+- **Params:** `company` (string, **required**) — SmartRecruiters company id; `id` (string, **required**) — SmartRecruiters posting id
+
+### `jobs_smartrecruiters_postings`
+
+- **HTTP:** `GET /jobs/smartrecruiters/postings`
+- **What:** List a company's SmartRecruiters postings. Lists a company's public SmartRecruiters postings, paged via limit/offset. The company is the SmartRecruiters identifier from its careers URL. Credential-free public ATS JSON.
+- **Params:** `company` (string, **required**) — SmartRecruiters company id (careers URL); `limit` (integer, optional) — Page size, default 100, max 100; `offset` (integer, optional) — Page offset, default 0
+
+### `jobs_workday_board`
+
+- **HTTP:** `GET /jobs/workday/board`
+- **What:** List a Workday tenant's job board. Lists a company's public Workday (CXS) postings, paged via limit/offset. tenant, datacenter (wd1/wd3/wd5/...), and site all come from the careers URL https://{tenant}.wd5.myworkdayjobs.com/{site}. Credential-free public ATS JSON.
+- **Params:** `datacenter` (string, **required**) — Workday datacenter shard (wd1, wd3, wd5, ...); `limit` (integer, optional) — Page size, default 20, max 20; `offset` (integer, optional) — Page offset, default 0; `search` (string, optional) — Free-text search; `site` (string, **required**) — Workday career site; `tenant` (string, **required**) — Workday tenant
+
+### `jobs_workday_job`
+
+- **HTTP:** `GET /jobs/workday/job`
+- **What:** Get a single Workday job. Returns a single Workday posting's full detail (description, location, req id). path is the externalPath from a board listing. tenant/datacenter/site as in the board endpoint. Credential-free public ATS JSON.
+- **Params:** `datacenter` (string, **required**) — Workday datacenter shard; `path` (string, **required**) — Job externalPath from a board listing; `site` (string, **required**) — Workday career site; `tenant` (string, **required**) — Workday tenant
+
 ## JustWatch (21)
 
 ### `justwatch_age_certifications`
@@ -1127,8 +1813,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `justwatch_discover`
 
 - **HTTP:** `GET /justwatch/discover`
-- **What:** Discover JustWatch titles. Returns popular movies and shows filtered by optional genre short names, provider short names, monetization types, and release year bounds. Type accepts only `all`, `movie`, or `show`; monetization_types accepts only `FLATRATE`, `FREE`, `ADS`, `RENT`, or `BUY`.
-- **Params:** `country` (string, optional) — Two-letter country code; `genres` (string, optional) — Comma-separated JustWatch genre short names; `language` (string, optional) — Two-letter language code; `limit` (integer, optional) — Maximum results, defaults to 20 and clamps to 50; `monetization_types` (string, optional) — Comma-separated monetization types: FLATRATE, FREE, ADS, RENT, BUY; `providers` (string, optional) — Comma-separated JustWatch provider short names; `type` (string, optional) — Title type: all, movie, show; `year_max` (integer, optional) — Maximum release year; `year_min` (integer, optional) — Minimum release year
+- **What:** Discover JustWatch titles. Returns popular movies and shows filtered by optional genre short names, provider short names, production countries, monetization types, and release year bounds. Combine `providers` with `production_countries` to build charts such as most popular Korean or Japanese titles on a given service. Type accepts only `all`, `movie`, or `show`; monetization_types accepts only `FLATRATE`, `FREE`, `ADS`, `RENT`, or `BUY`.
+- **Params:** `country` (string, optional) — Two-letter country code; `genres` (string, optional) — Comma-separated JustWatch genre short names; `language` (string, optional) — Two-letter language code; `limit` (integer, optional) — Maximum results, defaults to 20 and clamps to 50; `monetization_types` (string, optional) — Comma-separated monetization types: FLATRATE, FREE, ADS, RENT, BUY; `production_countries` (string, optional) — Comma-separated two-letter ISO production-country codes; `providers` (string, optional) — Comma-separated JustWatch provider short names; `type` (string, optional) — Title type: all, movie, show; `year_max` (integer, optional) — Maximum release year; `year_min` (integer, optional) — Minimum release year
 
 ### `justwatch_episode_by_id`
 
@@ -1372,6 +2058,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Kalshi trades. Returns normalized recent Kalshi market trades from credential-free public market-data JSON.
 - **Params:** `cursor` (string, optional) — Pagination cursor from a previous Kalshi response; `limit` (integer, optional) — Rows to return, default 25, max 200; `max_ts` (integer, optional) — Maximum created Unix timestamp in seconds; `min_ts` (integer, optional) — Minimum created Unix timestamp in seconds; `ticker` (string, optional) — Kalshi market ticker filter
 
+## Letterboxd (8)
+
+### `letterboxd_film`
+
+- **HTTP:** `GET /letterboxd/film/{slug}`
+- **What:** Get a Letterboxd film. Returns a normalized Letterboxd film: synopsis, director, cast, genres, countries, languages, runtime, and aggregate member rating. Credential-free public Letterboxd data (letterboxd.com), parsed from the film page's schema.org structured data.
+- **Params:** `slug` (string, **required**) — Letterboxd film slug
+
+### `letterboxd_film_rating_histogram`
+
+- **HTTP:** `GET /letterboxd/film/{slug}/rating-histogram`
+- **What:** Get a Letterboxd film's rating distribution. Returns a film's full star-rating distribution (0.5 to 5.0 in half-star buckets) with counts and percentages. Credential-free public Letterboxd data.
+- **Params:** `slug` (string, **required**) — Letterboxd film slug
+
+### `letterboxd_film_reviews`
+
+- **HTTP:** `GET /letterboxd/film/{slug}/reviews`
+- **What:** Get a Letterboxd film's popular reviews. Returns a film's popular reviews (reviewer, rating, date, text, like/comment counts, spoiler flag). Credential-free public Letterboxd data.
+- **Params:** `limit` (integer, optional) — Max reviews, default 10, max 50; `slug` (string, **required**) — Letterboxd film slug
+
+### `letterboxd_film_similar`
+
+- **HTTP:** `GET /letterboxd/film/{slug}/similar`
+- **What:** Get films similar to a Letterboxd film. Returns films Letterboxd recommends as similar to the given film. Credential-free public Letterboxd data.
+- **Params:** `limit` (integer, optional) — Max films, default 10, max 50; `slug` (string, **required**) — Letterboxd film slug
+
+### `letterboxd_member`
+
+- **HTTP:** `GET /letterboxd/member/{username}`
+- **What:** Get a Letterboxd member's public profile stats. Returns a member's public profile stats (films watched, lists, following/followers). No private data — everything is visible to a logged-out visitor. Credential-free public Letterboxd data.
+- **Params:** `username` (string, **required**) — Letterboxd username
+
+### `letterboxd_person`
+
+- **HTTP:** `GET /letterboxd/person/{slug}`
+- **What:** Get a Letterboxd person's filmography. Returns a person's Letterboxd filmography for a credit role. Credential-free public Letterboxd data.
+- **Params:** `limit` (integer, optional) — Max films, default 10, max 50; `role` (string, optional) — Credit role, default actor; `slug` (string, **required**) — Letterboxd person slug
+
+### `letterboxd_popular`
+
+- **HTTP:** `GET /letterboxd/popular`
+- **What:** Get a Letterboxd popularity-ranked film chart. Returns a popularity-ranked film chart, optionally scoped to a time window, genre, and/or decade. Credential-free public Letterboxd data.
+- **Params:** `decade` (string, optional) — Decade filter, e.g. 2010s; `genre` (string, optional) — Genre slug filter; `limit` (integer, optional) — Max films, default 10, max 50; `period` (string, optional) — Popularity window, omit for all-time
+
+### `letterboxd_search`
+
+- **HTTP:** `GET /letterboxd/search`
+- **What:** Search Letterboxd. Searches Letterboxd films, people, lists, and tags. Credential-free public Letterboxd data.
+- **Params:** `limit` (integer, optional) — Max results, default 10, max 50; `q` (string, **required**) — Search query; `type` (string, optional) — Optional result type filter
+
 ## LinkedIn (3)
 
 ### `linkedin_company`
@@ -1392,6 +2128,88 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Linkedin Showcase Page Info. Returns detailed information about a LinkedIn showcase page by ID.
 - **Params:** `id` (string, **required**) — LinkedIn Showcase Page ID
 
+## Manga (3)
+
+### `manga_rankings`
+
+- **HTTP:** `GET /manga/rankings`
+- **What:** Rank manga. Returns a filterable, sorted manga ranking. Credential-free public AniList data. Filter by format, genre, and status.
+- **Params:** `format` (string, optional) — Format filter: MANGA, NOVEL, ONE_SHOT.; `genre` (string, optional) — Genre filter, e.g. Fantasy.; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 20, max 50; `sort` (string, optional) — Order: TRENDING_DESC, POPULARITY_DESC, SCORE_DESC, FAVOURITES_DESC, START_DATE_DESC, UPDATED_AT_DESC. Default TRENDING_DESC.; `status` (string, optional) — Status filter: FINISHED, RELEASING, NOT_YET_RELEASED, CANCELLED, HIATUS.
+
+### `manga_search`
+
+- **HTTP:** `GET /manga/search`
+- **What:** Search manga. Searches manga by free-text query. Credential-free public manga data from AniList. Returns normalized entries: titles, scores, popularity, format, status, chapters, volumes, genres, and tags.
+- **Params:** `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50; `query` (string, **required**) — Search text; `sort` (string, optional) — Ordering: SEARCH_MATCH, POPULARITY_DESC, SCORE_DESC, TRENDING_DESC, FAVOURITES_DESC, START_DATE_DESC. Default SEARCH_MATCH.
+
+### `manga_title`
+
+- **HTTP:** `GET /manga/title/{id}`
+- **What:** Get a manga. Returns a normalized manga by AniList id: titles, MyAnimeList id, scores, popularity, favourites, format, status, chapters, volumes, genres, ranked tags, dates, description, and images. Pass mal=true to additionally enrich the response with the MyAnimeList community score (mal block: score on a 0-10 scale, plus scored-by count), scraped credential-free from the public MAL page. Credential-free public AniList data.
+- **Params:** `id` (string, **required**) — AniList manga id; `mal` (boolean, optional) — Enrich with the MyAnimeList community score (adds one fetch; omitted when the title has no MAL id)
+
+## Metacritic (10)
+
+### `metacritic_browse`
+
+- **HTTP:** `GET /metacritic/browse`
+- **What:** Browse Metacritic titles. Browse Metacritic titles by content type, optionally filtered by genre and ordered by Metascore, popularity, or release date. Returns paginated title cards with Metascore and user score. Credential-free public Metacritic data.
+- **Params:** `genre` (string, optional) — Genre filter (e.g. Action); `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 24, max 100); `sort` (string, optional) — Sort order; `type` (string, **required**) — Content type
+
+### `metacritic_game`
+
+- **HTTP:** `GET /metacritic/game/{slug}`
+- **What:** Get a Metacritic game. Returns a normalized Metacritic game: Metascore (critic) and user score with sentiment and review counts, genres, per-platform scores, developer/publisher, rating, release date, and trailer. Credential-free public Metacritic data.
+- **Params:** `slug` (string, **required**) — Metacritic game slug
+
+### `metacritic_game_critic_reviews`
+
+- **HTTP:** `GET /metacritic/game/{slug}/critic-reviews`
+- **What:** List a Metacritic game's critic reviews. Returns paginated professional/publication reviews for a game: publication, score, quote, author, platform, and source URL. Credential-free public Metacritic data.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic game slug; `sort` (string, optional) — Sort order
+
+### `metacritic_game_user_reviews`
+
+- **HTTP:** `GET /metacritic/game/{slug}/user-reviews`
+- **What:** List a Metacritic game's user reviews. Returns paginated user reviews for a game: author, score (0-10), quote, date, platform, helpfulness, and spoiler flag. Credential-free public Metacritic data.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic game slug; `sort` (string, optional) — Sort order
+
+### `metacritic_movie`
+
+- **HTTP:** `GET /metacritic/movie/{slug}`
+- **What:** Get a Metacritic movie. Returns a normalized Metacritic movie: Metascore (critic) and user score with sentiment and review counts, genres, cast/crew, rating, runtime, release date, IMDb id, and trailer. Credential-free public Metacritic data.
+- **Params:** `slug` (string, **required**) — Metacritic movie slug
+
+### `metacritic_movie_critic_reviews`
+
+- **HTTP:** `GET /metacritic/movie/{slug}/critic-reviews`
+- **What:** List a Metacritic movie's critic reviews. Returns paginated professional/publication reviews for a movie: publication, score, quote, author, and source URL. Credential-free public Metacritic data.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic movie slug; `sort` (string, optional) — Sort order
+
+### `metacritic_movie_user_reviews`
+
+- **HTTP:** `GET /metacritic/movie/{slug}/user-reviews`
+- **What:** List a Metacritic movie's user reviews. Returns paginated user reviews for a movie: author, score (0-10), quote, date, helpfulness, and spoiler flag. Credential-free public Metacritic data.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic movie slug; `sort` (string, optional) — Sort order
+
+### `metacritic_tv`
+
+- **HTTP:** `GET /metacritic/tv/{slug}`
+- **What:** Get a Metacritic TV show. Returns a normalized Metacritic TV show: Metascore (critic) and user score with sentiment and review counts, genres, networks, season count, rating, release date, IMDb id, and trailer. Credential-free public Metacritic data.
+- **Params:** `slug` (string, **required**) — Metacritic TV show slug
+
+### `metacritic_tv_critic_reviews`
+
+- **HTTP:** `GET /metacritic/tv/{slug}/critic-reviews`
+- **What:** List a Metacritic TV show's critic reviews. Returns paginated professional/publication reviews for a TV show: publication, score, quote, author, and source URL. Credential-free public Metacritic data.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic TV show slug; `sort` (string, optional) — Sort order
+
+### `metacritic_tv_user_reviews`
+
+- **HTTP:** `GET /metacritic/tv/{slug}/user-reviews`
+- **What:** List a Metacritic TV show's user reviews. Returns paginated user reviews for a TV show: author, score (0-10), quote, date, helpfulness, and spoiler flag. Credential-free public Metacritic data.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic TV show slug; `sort` (string, optional) — Sort order
+
 ## Metaculus (11)
 
 ### `metaculus_category_questions`
@@ -1403,7 +2221,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `metaculus_comments_feed`
 
 - **HTTP:** `GET /metaculus/comments-feed`
-- **What:** Metaculus comments feed. Returns normalized Metaculus question rows from the credential-free public comments feed page. Rows represent question cards with comment-related counts; upstream comment bodies are not exposed.
+- **What:** Metaculus comments feed. Returns normalized Metaculus question rows for the questions referenced by the most recent public comments, in comment recency order. Derived from credential-free public Metaculus data; upstream comment bodies are not exposed.
 - **Params:** `limit` (integer, optional) — Rows to return, default 10, max 25; `topic` (string, optional) — Optional Metaculus topic slug
 
 ### `metaculus_project_questions`
@@ -1451,7 +2269,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `metaculus_top_comments`
 
 - **HTTP:** `GET /metaculus/top-comments`
-- **What:** Metaculus top comments feed. Returns normalized Metaculus question rows from the credential-free public weekly top comments page. Rows represent question cards with comment-related counts; upstream comment bodies are not exposed.
+- **What:** Metaculus top comments feed. Returns normalized Metaculus question rows for the questions whose recent public comments collected the highest vote scores over roughly the last week. Derived from credential-free public Metaculus data; upstream comment bodies are not exposed.
 - **Params:** `limit` (integer, optional) — Rows to return, default 10, max 25; `topic` (string, optional) — Optional Metaculus topic slug
 
 ### `metaculus_tournament_questions`
@@ -1459,6 +2277,126 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /metaculus/tournament/{slug}/questions`
 - **What:** Metaculus tournament questions. Returns normalized Metaculus question rows from a credential-free public tournament feed page.
 - **Params:** `limit` (integer, optional) — Rows to return, default 10, max 25; `slug` (string, **required**) — Metaculus tournament slug
+
+## Numbeo (8)
+
+### `numbeo_cost_of_living_city`
+
+- **HTTP:** `GET /numbeo/cost-of-living/city/{slug}`
+- **What:** Get a Numbeo city's cost-of-living prices. Returns itemized cost-of-living prices for one city (restaurants, markets, transportation, utilities, rent, and more), grouped by category. Credential-free public Numbeo data (numbeo.com).
+- **Params:** `slug` (string, **required**) — Numbeo city slug
+
+### `numbeo_cost_of_living_country`
+
+- **HTTP:** `GET /numbeo/cost-of-living/country`
+- **What:** Get a Numbeo country's cost-of-living prices. Returns aggregate itemized cost-of-living prices for a country, plus the headline cost-of-living indices for every city Numbeo tracks there. Credential-free public Numbeo data (numbeo.com).
+- **Params:** `country` (string, **required**) — Country name as Numbeo spells it
+
+### `numbeo_cost_of_living_rankings`
+
+- **HTTP:** `GET /numbeo/cost-of-living/rankings`
+- **What:** Get the global Numbeo cost-of-living city ranking. Returns the global cost-of-living city ranking (Cost of Living, Rent, Cost of Living Plus Rent, Groceries, Restaurant Price, and Local Purchasing Power indices), either the continuously-updated current index or a historical periodic snapshot. Credential-free public Numbeo data (numbeo.com).
+- **Params:** `period` (string, optional) — Required when scope=historical, e.g. 2026-mid or 2025; `scope` (string, optional) — current (default) or historical
+
+### `numbeo_cost_of_living_rankings_by_country`
+
+- **HTTP:** `GET /numbeo/cost-of-living/rankings-by-country`
+- **What:** Get the global Numbeo cost-of-living country ranking. Returns the global country-level cost-of-living ranking (Cost of Living, Rent, Cost of Living Plus Rent, Groceries, Restaurant Price, and Local Purchasing Power indices). Credential-free public Numbeo data (numbeo.com).
+- **Params:** _none_
+
+### `numbeo_indices_city`
+
+- **HTTP:** `GET /numbeo/indices/city/{slug}`
+- **What:** Get a Numbeo city's data for an index family. Returns one city's data for a Numbeo index family (quality of life, crime, health care, pollution, traffic, or property investment): headline indices, and (depending on the family) titled sub-index sections and/or itemized prices. Credential-free public Numbeo data (numbeo.com).
+- **Params:** `index` (string, **required**) — Index family; `slug` (string, **required**) — Numbeo city slug
+
+### `numbeo_indices_country`
+
+- **HTTP:** `GET /numbeo/indices/country`
+- **What:** Get a Numbeo country's data for an index family. Returns one country's aggregate data for a Numbeo index family, plus every city Numbeo tracks there with its index breakdown. Credential-free public Numbeo data (numbeo.com).
+- **Params:** `country` (string, **required**) — Country name as Numbeo spells it; `index` (string, **required**) — Index family
+
+### `numbeo_indices_rankings`
+
+- **HTTP:** `GET /numbeo/indices/rankings`
+- **What:** Get the global Numbeo city ranking for an index family. Returns the global city ranking for a Numbeo index family, either the continuously-updated current index or a historical periodic snapshot. Credential-free public Numbeo data (numbeo.com).
+- **Params:** `index` (string, **required**) — Index family; `period` (string, optional) — Required when scope=historical, e.g. 2026-mid or 2025; `scope` (string, optional) — current (default) or historical
+
+### `numbeo_indices_rankings_by_country`
+
+- **HTTP:** `GET /numbeo/indices/rankings-by-country`
+- **What:** Get the global Numbeo country ranking for an index family. Returns the global country-level ranking for a Numbeo index family. Credential-free public Numbeo data (numbeo.com).
+- **Params:** `index` (string, **required**) — Index family
+
+## PitchBook (3)
+
+### `pitchbook_company`
+
+- **HTTP:** `GET /pitchbook/company`
+- **What:** PitchBook company profile. Returns the free/teaser content of a PitchBook company profile page (overview, description, contact/HQ, industry, funding-round history without dollar amounts, a preview of investors, acquisitions, and subsidiaries). PitchBook gates most numeric figures (deal amounts, cap tables, full investor/LP lists) behind a paid subscription; those come through as empty cells rather than being fabricated. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — PitchBook company id; `url` (string, optional) — Absolute https://pitchbook.com/profiles/company/<id> URL
+
+### `pitchbook_fund`
+
+- **HTTP:** `GET /pitchbook/fund`
+- **What:** PitchBook fund profile. Returns the free/teaser content of a PitchBook fund profile page (strategy, status, manager, size, vintage, and a preview of limited partners and benchmark peer funds). PitchBook gates most numeric figures (returns/IRR, full LP lists) behind a paid subscription; those come through as empty cells rather than being fabricated. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — PitchBook fund id; `url` (string, optional) — Absolute https://pitchbook.com/profiles/fund/<id> URL
+
+### `pitchbook_investor`
+
+- **HTTP:** `GET /pitchbook/investor`
+- **What:** PitchBook investor profile. Returns the free/teaser content of a PitchBook investor (fund manager/firm) profile page (overview, description, contact/HQ, and a preview of investments, exits, and co-investors). PitchBook gates most numeric figures and full lists behind a paid subscription; those come through as empty cells rather than being fabricated. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — PitchBook investor id; `url` (string, optional) — Absolute https://pitchbook.com/profiles/investor/<id> URL
+
+## PlayStation (8)
+
+### `playstation_browse`
+
+- **HTTP:** `GET /playstation/browse`
+- **What:** Browse the PlayStation Store all-games grid. Returns a page of the PlayStation Store "all games" grid with per-item price, platforms, and media, plus the available filter facets (price, genre, platform, subscription, content type, etc.) with value counts. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number
+
+### `playstation_category`
+
+- **HTTP:** `GET /playstation/category`
+- **What:** Browse a PlayStation Store category grid. Returns a page of a specific PlayStation Store category grid (by category UUID) with per-item price, platforms, and media, plus the available filter facets with value counts. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `id` (string, **required**) — Category UUID; `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number
+
+### `playstation_concept`
+
+- **HTTP:** `GET /playstation/concept`
+- **What:** Get PlayStation Store details for a concept (game hub). Returns normalized store metadata for a PlayStation concept: title, publisher, release date, platforms, genres, description, content rating, aggregate star rating, the default product's purchase price, media, and the full lists of purchasable editions and add-ons. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `id` (string, **required**) — Numeric PlayStation concept id; `l` (string, optional) — Language code
+
+### `playstation_deals`
+
+- **HTTP:** `GET /playstation/deals`
+- **What:** Get PlayStation Store deals shelves. Returns the PlayStation Store deals landing page as a list of merchandising shelves (sections), each with its titles and per-item price, plus a flattened, de-duplicated item list across all shelves. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code
+
+### `playstation_latest`
+
+- **HTTP:** `GET /playstation/latest`
+- **What:** Get PlayStation Store latest-release shelves. Returns the PlayStation Store latest-releases landing page as a list of merchandising shelves (sections), each with its titles and per-item price, plus a flattened, de-duplicated item list across all shelves. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code
+
+### `playstation_page`
+
+- **HTTP:** `GET /playstation/page`
+- **What:** Get a PlayStation Store merchandising page by alias. Reads any PlayStation Store merchandising page by alias (e.g. collections, subscriptions, or a promotional alias) and returns its shelves (sections) plus the curated collection links found on the page. Each collection link carries a category_id (UUID) you can pass to /playstation/category to fetch that collection's full, paginated title grid — the credential-free way to browse themed/curated selections. Known aliases: collections, subscriptions, deals, latest. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **Params:** `alias` (string, **required**) — Merchandising page alias; `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code
+
+### `playstation_product`
+
+- **HTTP:** `GET /playstation/product`
+- **What:** Get PlayStation Store details for a single product. Returns normalized store metadata for a single PlayStation product/edition: title, np title id, parent concept id, product type and store classification, edition name, publisher, release date, platforms, genres, spoken/screen languages, content rating, aggregate star rating, purchase price, and media. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `id` (string, **required**) — PlayStation product id; `l` (string, optional) — Language code
+
+### `playstation_search`
+
+- **HTTP:** `GET /playstation/search`
+- **What:** Search the PlayStation Store. Returns a page of PlayStation Store search results (concepts and products) for a term, with pagination and per-item price, platforms, classification, and media. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number; `term` (string, **required**) — Search term
 
 ## Polymarket (30)
 
@@ -1665,8 +2603,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `producthunt_category_products`
 
 - **HTTP:** `GET /producthunt/category/{slug}/products`
-- **What:** Retrieve Product Hunt category products. Returns the paginated category listing payload for a Product Hunt category slug.
-- **Params:** `featured_only` (boolean, optional) — Featured products only; `order` (string, optional) — Sort order; `page` (integer, optional) — Page number (1-based); `page_size` (integer, optional) — Page size; `slug` (string, **required**) — Product Hunt category slug; `tags` (string, optional) — Comma-separated category tags
+- **What:** Retrieve Product Hunt category products. Returns the products in a Product Hunt category (now backed by Product Hunt topics), cursor-paginated. Pass the `cursor` from a previous response's `end_cursor` to page; `page_size` controls the batch size. `page`, `featured_only`, `order` and `tags` are accepted for compatibility but no longer affect the result.
+- **Params:** `cursor` (string, optional) — Pagination cursor from a previous response's end_cursor; `featured_only` (boolean, optional) — Accepted for compatibility; no longer affects results; `order` (string, optional) — Accepted for compatibility; no longer affects results; `page` (integer, optional) — Accepted for compatibility; use cursor to paginate; `page_size` (integer, optional) — Page size (number of products); `slug` (string, **required**) — Product Hunt category slug; `tags` (string, optional) — Accepted for compatibility; no longer affects results
 
 ### `producthunt_customers`
 
@@ -1715,68 +2653,68 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `reddit_comments`
 
 - **HTTP:** `GET /reddit/comments/{id}`
-- **What:** Get Reddit post comments. Returns flat public comment entries from a Reddit post.
-- **Params:** `depth` (integer, optional) — Accepted for compatibility. Public comment data is flat and may ignore depth.; `id` (string, **required**) — Reddit post id or t3_ id; `limit` (integer, optional) — Maximum comments returned, defaults to 25 and clamps to 100; `sort` (string, optional) — Accepted for compatibility: confidence, top, new, controversial, old, or qa. Public comment data is flat and may ignore sort.; `with_scores` (boolean, optional) — When true, source comment scores and nested replies from old.reddit HTML rather than the default (slower)
+- **What:** Get Reddit post comments. Returns a Reddit post with its public comments. A post that exists but has no comments yet returns a 200 response with an empty comments list; a post that does not exist returns 404, and a temporary block or upstream failure returns 503 (retryable) rather than 404.
+- **Params:** `depth` (integer, optional) — Accepted for compatibility. Public comment data is flat and may ignore depth.; `id` (string, **required**) — Reddit post id or t3_ id; `limit` (integer, optional) — Maximum comments returned, defaults to 25 and clamps to 100; `sort` (string, optional) — Accepted for compatibility: confidence, top, new, controversial, old, or qa. Public comment data is flat and may ignore sort.
 
 ### `reddit_domain_posts`
 
 - **HTTP:** `GET /reddit/domain/{domain}/posts`
 - **What:** List Reddit domain posts. Returns normalized public posts submitted from a linked domain.
-- **Params:** `after` (string, optional) — Reddit pagination token; `domain` (string, **required**) — Domain hostname, without scheme or path; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all; `with_scores` (boolean, optional) — When true, source score and comment_count from old.reddit HTML rather than the default (slower)
+- **Params:** `after` (string, optional) — Reddit pagination token; `domain` (string, **required**) — Domain hostname, without scheme or path; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
 
 ### `reddit_post`
 
 - **HTTP:** `GET /reddit/post/{id}`
 - **What:** Get Reddit post. Returns a normalized public Reddit post entry.
-- **Params:** `id` (string, **required**) — Reddit post id or t3_ id; `with_scores` (boolean, optional) — When true, source score, upvote_ratio, and comment_count from old.reddit HTML rather than the default (slower)
+- **Params:** `id` (string, **required**) — Reddit post id or t3_ id
 
 ### `reddit_search`
 
 - **HTTP:** `GET /reddit/search`
 - **What:** Search Reddit posts. Searches public Reddit content and returns normalized public post entries.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `q` (string, **required**) — Search keywords; `sort` (string, optional) — Sort: relevance, hot, new, top, or comments; `subreddit` (string, optional) — Restrict search to a subreddit name, without r/; `time` (string, optional) — Time window for top/comments sorts: hour, day, week, month, year, or all; `with_scores` (boolean, optional) — When true, source score and comment_count from old.reddit HTML rather than the default (slower)
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `q` (string, **required**) — Search keywords; `sort` (string, optional) — Sort: relevance, hot, new, top, or comments; `subreddit` (string, optional) — Restrict search to a subreddit name, without r/; `time` (string, optional) — Time window for top/comments sorts: hour, day, week, month, year, or all
 
 ### `reddit_subreddit_about`
 
 - **HTTP:** `GET /reddit/subreddit/{subreddit}/about`
 - **What:** Get Reddit subreddit metadata. Returns public metadata and sample posts for a subreddit. Subscriber counts, icons, and banners are omitted because they are not available on anonymous Reddit pages.
-- **Params:** `limit` (integer, optional) — Maximum sample posts inspected, defaults to 25 and clamps to 100; `subreddit` (string, **required**) — Subreddit name, without r/; `with_scores` (boolean, optional) — When true, source the sample posts (with score and comment_count) from old.reddit HTML rather than the default (slower); subscriber counts remain unavailable
+- **Params:** `limit` (integer, optional) — Maximum sample posts inspected, defaults to 25 and clamps to 100; `subreddit` (string, **required**) — Subreddit name, without r/
 
 ### `reddit_subreddit_comments`
 
 - **HTTP:** `GET /reddit/subreddit/{subreddit}/comments`
 - **What:** List Reddit subreddit comments. Returns flat public comment entries from a subreddit latest-comments feed.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `subreddit` (string, **required**) — Subreddit name, without r/; `with_scores` (boolean, optional) — When true, source comment scores from old.reddit HTML rather than the default (slower)
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `subreddit` (string, **required**) — Subreddit name, without r/
 
 ### `reddit_subreddit_posts`
 
 - **HTTP:** `GET /reddit/subreddit/{subreddit}/posts`
 - **What:** List Reddit subreddit posts. Returns normalized public posts from a subreddit.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `subreddit` (string, **required**) — Subreddit name, without r/; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all; `with_scores` (boolean, optional) — When true, source score and comment_count from old.reddit HTML rather than the default (slower)
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `subreddit` (string, **required**) — Subreddit name, without r/; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
 
 ### `reddit_subreddits_posts`
 
 - **HTTP:** `GET /reddit/subreddits/posts`
 - **What:** List Reddit multi-subreddit posts. Returns normalized public posts from a combined multi-subreddit feed.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `subreddits` (string, **required**) — Comma-separated subreddit names, without r/, maximum 10; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all; `with_scores` (boolean, optional) — When true, source score and comment_count from old.reddit HTML rather than the default (slower)
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `subreddits` (string, **required**) — Comma-separated subreddit names, without r/, maximum 10; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
 
 ### `reddit_trends`
 
 - **HTTP:** `GET /reddit/trends`
 - **What:** List Reddit trends. Returns normalized public posts from broad Reddit hot, new, rising, or top feeds. For subreddit-specific trends, use `/reddit/subreddit/{subreddit}/posts` with `sort=hot`, `sort=new`, `sort=rising`, or `sort=top`.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, rising, or top; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all; `with_scores` (boolean, optional) — When true, source score and comment_count from old.reddit HTML rather than the default (slower)
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, rising, or top; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
 
 ### `reddit_user_comments`
 
 - **HTTP:** `GET /reddit/user/{username}/comments`
 - **What:** List Reddit user comments. Returns flat public comment entries from a public Reddit user's comments feed.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/; `with_scores` (boolean, optional) — When true, source comment scores from old.reddit HTML rather than the default (slower)
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/
 
 ### `reddit_user_posts`
 
 - **HTTP:** `GET /reddit/user/{username}/posts`
 - **What:** List Reddit user posts. Returns normalized public posts from a public Reddit user's submitted feed.
-- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/; `with_scores` (boolean, optional) — When true, source score and comment_count from old.reddit HTML rather than the default (slower)
+- **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/
 
 ## Redfin (5)
 
@@ -1865,6 +2803,68 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /rottentomatoes/series`
 - **What:** Rotten Tomatoes series detail. Returns normalized Rotten Tomatoes TV series metadata and scorecard data from a credential-free public series page. Pass exactly one of `path` or `url`.
 - **Params:** `path` (string, optional) — Rotten Tomatoes series path; `url` (string, optional) — Absolute https://www.rottentomatoes.com series URL
+
+## SEC EDGAR (10)
+
+### `sec_company_intelligence`
+
+- **HTTP:** `GET /sec/company/intelligence`
+- **What:** Company 360 overview from SEC data. Aggregates a company's profile, a latest-annual financial snapshot, the latest 10-K/10-Q/8-K, and recent material events into one call. Provide cik or ticker. Optionally fuse live cross-source data with enrich (a comma list of market, news, hiring): market and news are keyed on the ticker; hiring needs ats plus that ATS's careers slug (or tenant/datacenter/site for Workday). Enrichment is best-effort — requested-but-unavailable sources are listed under degraded and never fail the SEC-native response. Credential-free public data.
+- **Params:** `ats` (string, optional) — ATS provider for hiring enrichment; `careers_slug` (string, optional) — Careers board slug for hiring (greenhouse/lever/ashby/smartrecruiters); `cik` (string, optional) — SEC CIK (numeric or zero-padded); `datacenter` (string, optional) — Workday datacenter shard (hiring, when ats=workday); `enrich` (string, optional) — Comma list of cross-source enrichments; `site` (string, optional) — Workday career site (hiring, when ats=workday); `tenant` (string, optional) — Workday tenant (hiring, when ats=workday); `ticker` (string, optional) — Ticker symbol (alternative to cik)
+
+### `sec_company_search`
+
+- **HTTP:** `GET /sec/company/search`
+- **What:** Resolve a ticker or company name to EDGAR companies. Resolves a ticker symbol or company-name query to SEC EDGAR companies (CIK, ticker, name) using the official company_tickers map. Credential-free public SEC data.
+- **Params:** `limit` (integer, optional) — Max matches, default 10, max 100; `q` (string, **required**) — Ticker symbol or company name
+
+### `sec_company_submissions`
+
+- **HTTP:** `GET /sec/company/submissions`
+- **What:** List a company's EDGAR filings. Returns a company's recent SEC filings (form, dates, primary document URL) filtered by form type and date range. Provide cik or ticker. Credential-free public SEC data.
+- **Params:** `cik` (string, optional) — SEC CIK (numeric or zero-padded); `form` (string, optional) — Filter by form type, e.g. 10-K, 10-Q, 8-K; `from` (string, optional) — Earliest filing date (YYYY-MM-DD); `limit` (integer, optional) — Max filings, default 50, max 500; `ticker` (string, optional) — Ticker symbol (alternative to cik); `to` (string, optional) — Latest filing date (YYYY-MM-DD)
+
+### `sec_filing`
+
+- **HTTP:** `GET /sec/filing`
+- **What:** Get a single filing by accession number. Returns a single SEC filing's metadata and primary document URL. Provide accession plus cik or ticker. Credential-free public SEC data.
+- **Params:** `accession` (string, **required**) — Accession number; `cik` (string, optional) — SEC CIK (numeric or zero-padded); `ticker` (string, optional) — Ticker symbol (alternative to cik)
+
+### `sec_filing_sections`
+
+- **HTTP:** `GET /sec/filing/sections`
+- **What:** Extract 10-K/10-Q/8-K item sections. Extracts item sections (e.g. 1A Risk Factors, 7 MD&A) from a 10-K/10-Q/8-K primary document as clean text. Provide accession plus cik or ticker. Credential-free public SEC data.
+- **Params:** `accession` (string, **required**) — Accession number; `cik` (string, optional) — SEC CIK (numeric or zero-padded); `items` (string, optional) — Comma-separated item numbers to return, e.g. 1A,7; `max_chars` (integer, optional) — Max characters per section, default 20000, max 200000; `ticker` (string, optional) — Ticker symbol (alternative to cik)
+
+### `sec_financials`
+
+- **HTTP:** `GET /sec/financials`
+- **What:** Normalized income statement, balance sheet, or cash flow. Returns a company's normalized financial statements across recent periods, resolving EDGAR's inconsistent XBRL tags to a stable schema. Provide cik or ticker. Credential-free public SEC data.
+- **Params:** `cik` (string, optional) — SEC CIK (numeric or zero-padded); `limit` (integer, optional) — Number of periods, default 5, max 20; `period` (string, optional) — Period basis, default annual; `statement` (string, optional) — Statement, default income; `ticker` (string, optional) — Ticker symbol (alternative to cik)
+
+### `sec_frames`
+
+- **HTTP:** `GET /sec/frames`
+- **What:** Cross-company values for one XBRL concept and period. Returns every filer's reported value for one XBRL concept in one reporting period (an EDGAR "frame"). Credential-free public SEC data.
+- **Params:** `concept` (string, **required**) — XBRL concept tag, e.g. Assets, Revenues; `limit` (integer, optional) — Max companies, default 200, max 2000; `period` (string, **required**) — Reporting frame, e.g. CY2024, CY2024Q1, CY2024Q4I; `taxonomy` (string, optional) — XBRL taxonomy, default us-gaap; `unit` (string, optional) — Unit of measure, default USD
+
+### `sec_full_text_search`
+
+- **HTTP:** `GET /sec/full-text-search`
+- **What:** Full-text search across EDGAR filings. Searches the full text of SEC EDGAR filings (efts), filtered by form and date, with pagination. Credential-free public SEC data; free where incumbents gate full-text search behind paid tiers.
+- **Params:** `forms` (string, optional) — Filter by form types, comma-separated; `from` (string, optional) — Earliest filing date (YYYY-MM-DD); `page` (integer, optional) — 1-based page number, default 1; `q` (string, **required**) — Search query (supports quoted phrases); `to` (string, optional) — Latest filing date (YYYY-MM-DD)
+
+### `sec_insider`
+
+- **HTTP:** `GET /sec/insider`
+- **What:** Insider transactions (Forms 3/4/5). Returns a company's recent insider transactions parsed from Form 3/4/5 ownership filings (owner, role, security, shares, price). Provide cik or ticker. Credential-free public SEC data.
+- **Params:** `cik` (string, optional) — SEC CIK (numeric or zero-padded); `limit` (integer, optional) — Max transactions, default 10, max 30; `ticker` (string, optional) — Ticker symbol (alternative to cik)
+
+### `sec_institutional_holdings`
+
+- **HTTP:** `GET /sec/institutional-holdings`
+- **What:** Institutional holdings (13F-HR). Returns the latest 13F-HR holdings for an institutional manager (by CIK): issuer, value, shares, sorted by value. Credential-free public SEC data.
+- **Params:** `cik` (string, **required**) — Institutional manager CIK; `limit` (integer, optional) — Max holdings, default 50, max 1000
 
 ## Shop.app (16)
 
@@ -2045,6 +3045,98 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /similarweb/web/{domain}`
 - **What:** Get SimilarWeb Web Info. Returns traffic and engagement data from SimilarWeb for a specific domain.
 - **Params:** `domain` (string, **required**) — Domain to fetch SimilarWeb data for
+
+## SofaScore (15)
+
+### `sofascore_event`
+
+- **HTTP:** `GET /sofascore/event`
+- **What:** SofaScore event detail. Returns one match's detail (teams, score, status, venue, referee) from SofaScore's credential-free public JSON.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_h2h`
+
+- **HTTP:** `GET /sofascore/event-h2h`
+- **What:** SofaScore event head-to-head. Returns the historical head-to-head win/draw record between a match's two teams (and managers, when available) from SofaScore's credential-free public JSON.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_incidents`
+
+- **HTTP:** `GET /sofascore/event-incidents`
+- **What:** SofaScore event incidents. Returns one match's goal, card, substitution, and period timeline from SofaScore's credential-free public JSON. An empty `incidents` list is a valid response before kickoff.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_lineups`
+
+- **HTTP:** `GET /sofascore/event-lineups`
+- **What:** SofaScore event lineups. Returns one match's starting XI and substitutes per side, with formation, from SofaScore's credential-free public JSON. Returns 404 when SofaScore has no lineups for the match.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_odds`
+
+- **HTTP:** `GET /sofascore/event-odds`
+- **What:** SofaScore event odds. Returns one match's betting markets and choices from SofaScore's credential-free public JSON. Returns 404 when SofaScore has no odds for the match.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_statistics`
+
+- **HTTP:** `GET /sofascore/event-statistics`
+- **What:** SofaScore event statistics. Returns one match's statistics (possession, shots, passes, and more, grouped and split by period) from SofaScore's credential-free public JSON. Returns 404 when SofaScore has no tracked statistics for the match.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_live_events`
+
+- **HTTP:** `GET /sofascore/live-events`
+- **What:** SofaScore live events. Returns currently live events for a sport from SofaScore's credential-free public JSON. The `sport` enum accepts `football`, `basketball`, and `tennis`. An empty `events` list is a valid response when nothing is live right now.
+- **Params:** `sport` (string, **required**) — Sport key
+
+### `sofascore_player`
+
+- **HTTP:** `GET /sofascore/player`
+- **What:** SofaScore player detail. Returns one player's bio (position, height, market value, current team) from SofaScore's credential-free public JSON.
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id
+
+### `sofascore_round_events`
+
+- **HTTP:** `GET /sofascore/round-events`
+- **What:** SofaScore round fixtures. Returns fixtures for one round of a competition season from SofaScore's credential-free public JSON. Get `id` from search and `season` from tournament-seasons.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `round` (integer, **required**) — Round number; `season` (string, **required**) — Numeric SofaScore season id
+
+### `sofascore_search`
+
+- **HTTP:** `GET /sofascore/search`
+- **What:** SofaScore universal search. Searches SofaScore's credential-free public JSON for teams, players, and competitions matching a free-text query. An empty `results` list is a valid response when nothing matches.
+- **Params:** `q` (string, **required**) — Free-text search query
+
+### `sofascore_standings`
+
+- **HTTP:** `GET /sofascore/standings`
+- **What:** SofaScore standings. Returns a league table for a competition season from SofaScore's credential-free public JSON. The `type` enum accepts `total`, `home`, and `away`. Get `id` from search and `season` from tournament-seasons.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `season` (string, **required**) — Numeric SofaScore season id; `type` (string, **required**) — Standings variant
+
+### `sofascore_team`
+
+- **HTTP:** `GET /sofascore/team`
+- **What:** SofaScore team detail. Returns one team's detail (identity, manager, venue, primary competition) from SofaScore's credential-free public JSON.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id
+
+### `sofascore_team_events`
+
+- **HTTP:** `GET /sofascore/team-events`
+- **What:** SofaScore team fixtures. Returns a page of a team's upcoming or recent fixtures from SofaScore's credential-free public JSON. The `direction` enum accepts `next` and `last`. An empty `events` list is a valid response when there is no fixture on that page.
+- **Params:** `direction` (string, **required**) — Fixture direction; `id` (string, **required**) — Numeric SofaScore team id; `page` (integer, optional) — Zero-based page number
+
+### `sofascore_team_players`
+
+- **HTTP:** `GET /sofascore/team-players`
+- **What:** SofaScore team players. Returns a team's full squad from SofaScore's credential-free public JSON.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id
+
+### `sofascore_tournament_seasons`
+
+- **HTTP:** `GET /sofascore/tournament-seasons`
+- **What:** SofaScore competition seasons. Returns the season list for a competition from SofaScore's credential-free public JSON. Use a returned season id with the standings and round-events endpoints.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id
 
 ## Spotify (30)
 
@@ -2278,6 +3370,134 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve Spotify podcast recommendations. Returns normalized related Spotify shows and episodes from Spotify's show recommendations response.
 - **Params:** `uri` (string, optional) — Spotify show URI
 
+## Steam (21)
+
+### `steam_achievements`
+
+- **HTTP:** `GET /steam/achievements`
+- **What:** Get global achievement completion percentages for a Steam app. Returns the global unlock percentage for each of an app's achievements, sorted most-unlocked first. Apps without global achievement stats return an empty list. Credential-free public Steam WebAPI JSON.
+- **Params:** `appid` (string, **required**) — Numeric Steam app id
+
+### `steam_app`
+
+- **HTTP:** `GET /steam/app`
+- **What:** Get Steam store details for an app. Returns normalized store metadata for a single Steam app (title, type, price, developers/publishers, platforms, genres, categories, release date, metacritic, recommendation and achievement counts). cc selects the store region (and price currency) and l the text language. filters is a comma-separated subset of allowed fields to shrink the payload. Credential-free public Steam storefront JSON.
+- **Params:** `appid` (string, **required**) — Numeric Steam app id; `cc` (string, optional) — Store country code (ISO, selects currency); `filters` (string, optional) — Comma-separated fields: basic, price_overview, developers, publishers, categories, genres, release_date, platforms, metacritic, achievements, screenshots, movies, recommendations, controller_support, dlc, short_description, supported_languages, packages, package_groups, ratings, content_descriptors, background; `l` (string, optional) — Language code
+
+### `steam_category`
+
+- **HTTP:** `GET /steam/category/{slug}`
+- **What:** Browse a store category (tag) with weighted community tags. Returns a catalog slice for a community tag / category via Steam's keyless IStoreQueryService, carrying each item's WEIGHTED community tags, review-score breakdown, developer/publisher credits, release date, platforms and price. The slug is a numeric tag id or a tag name (case- and separator-insensitive, e.g. rogue_like); resolve ids via /steam/tags/list. Ordering is Steam's default relevance — for sorted or os/price-faceted browse use /steam/tags. Credential-free public Steam store query API.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `coming_soon_only` (boolean, optional) — Only unreleased / coming-soon titles; `count` (integer, optional) — Results per page (max 100); `free` (boolean, optional) — Only free titles; `l` (string, optional) — Steam store language name; `released_only` (boolean, optional) — Only already-released titles; `slug` (string, **required**) — Community tag id (numeric) or tag name slug; `start` (integer, optional) — Result offset for pagination
+
+### `steam_charts_concurrent`
+
+- **HTTP:** `GET /steam/charts/concurrent`
+- **What:** Get Steam's live games-by-concurrent-players leaderboard. Returns the live leaderboard of games ranked by current concurrent players (rank, appid, current concurrent, peak). By default each row is enriched with the game name and review summary; pass enrich=false for raw ranked app ids. Credential-free public Steam WebAPI JSON.
+- **Params:** `cc` (string, optional) — Store country code (ISO) for name enrichment; `enrich` (boolean, optional) — Attach game name and review summary to each rank; `l` (string, optional) — Steam store language name for name enrichment
+
+### `steam_charts_most_played`
+
+- **HTTP:** `GET /steam/charts/most-played`
+- **What:** Get Steam's weekly most-played games chart. Returns Steam's weekly most-played chart: the top games ranked by peak concurrent players over the last week (rank, appid, previous-week rank, peak players). By default each row is enriched with the game name and review summary via a batch lookup; pass enrich=false for the raw ranked app ids only. Credential-free public Steam WebAPI JSON.
+- **Params:** `cc` (string, optional) — Store country code (ISO) for name enrichment; `enrich` (boolean, optional) — Attach game name and review summary to each rank; `l` (string, optional) — Steam store language name for name enrichment
+
+### `steam_charts_top_releases`
+
+- **HTTP:** `GET /steam/charts/top-releases`
+- **What:** Get Steam's monthly best-new-releases index. Returns Steam's monthly top-releases index: one page per month, each listing that month's top-released app ids (with the month label and start date). The app-id lists are large and not name-enriched; resolve names via /steam/items. Credential-free public Steam WebAPI JSON.
+- **Params:** _none_
+
+### `steam_community_recommendations`
+
+- **HTTP:** `GET /steam/community-recommendations`
+- **What:** Get the store's community-recommended reviews feed. Returns a batch of recent, quality user reviews recommended across the whole store (author, playtime, helpful votes, and the recommended app). Filter by review kind/sort, reviewer playtime window, review language, and store region. The upstream serves a fixed batch and, unauthenticated, does not support tag filtering or deep pagination. Credential-free public Steam storefront JSON.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `playtime_max` (integer, optional) — Maximum reviewer playtime in hours (0 = no maximum); `playtime_min` (integer, optional) — Minimum reviewer playtime in hours (0 = no minimum); `review_filter` (string, optional) — Review kind / sort; `review_language` (string, optional) — Review language: 'my_languages' or a Steam language name
+
+### `steam_featured`
+
+- **HTTP:** `GET /steam/featured`
+- **What:** Get the Steam store featured capsules. Returns the storefront's featured capsules for a region (per-platform featured lists plus large spotlight capsules), including discount and price fields. Credential-free public Steam storefront JSON.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code
+
+### `steam_featured_categories`
+
+- **HTTP:** `GET /steam/featured-categories`
+- **What:** Get Steam top sellers, new releases, specials and coming soon. Returns the storefront merchandising buckets for a region: specials, top_sellers, new_releases, and coming_soon, each with its item list. Credential-free public Steam storefront JSON.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code
+
+### `steam_items`
+
+- **HTTP:** `GET /steam/items`
+- **What:** Resolve a batch of app ids to store items with weighted tags. Resolves up to 100 Steam app ids in one call to normalized store items via Steam's keyless IStoreBrowseService, each carrying its WEIGHTED community tags, review-score breakdown, developer/publisher credits, release date, platforms and price. The batch enrichment primitive for the community-tag taxonomy. Credential-free public Steam store query API.
+- **Params:** `appids` (string, **required**) — Comma-separated numeric app ids (max 100); `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Steam store language name
+
+### `steam_news`
+
+- **HTTP:** `GET /steam/news`
+- **What:** Get recent news posts for a Steam app. Returns recent news/announcement posts for an app (title, author, contents, feed, date). Credential-free public Steam WebAPI JSON.
+- **Params:** `appid` (string, **required**) — Numeric Steam app id; `count` (integer, optional) — Number of posts (max 50); `maxlength` (integer, optional) — Max characters of each post body; default 300, set -1 for full content
+
+### `steam_package`
+
+- **HTTP:** `GET /steam/package`
+- **What:** Get Steam store details for a package. Returns normalized details for a Steam package (a purchasable bundle): name, the apps it contains, price, platforms, and release date. cc selects the store region and price currency. Credential-free public Steam storefront JSON.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `packageid` (string, **required**) — Numeric Steam package id
+
+### `steam_players`
+
+- **HTTP:** `GET /steam/players`
+- **What:** Get the current concurrent-player count for a Steam app. Returns the official current concurrent-players count for an app. Credential-free public Steam WebAPI JSON.
+- **Params:** `appid` (string, **required**) — Numeric Steam app id
+
+### `steam_reviews`
+
+- **HTTP:** `GET /steam/reviews`
+- **What:** List reviews for a Steam app. Returns a page of user reviews for an app with cursor pagination and an aggregate query_summary (score, positive/negative totals). Aggregate totals populate only on the first page (cursor=*). Pass the returned cursor back to page. Credential-free public Steam storefront JSON.
+- **Params:** `appid` (string, **required**) — Numeric Steam app id; `cursor` (string, optional) — Pagination cursor from the previous page; `day_range` (integer, optional) — Look-back window in days (filter=all only, max 365); `filter` (string, optional) — Sort order; `language` (string, optional) — Steam language name or 'all'; `num_per_page` (integer, optional) — Reviews per page (max 100); `purchase_type` (string, optional) — Purchase source filter; `review_type` (string, optional) — Review sentiment filter
+
+### `steam_reviews_histogram`
+
+- **HTTP:** `GET /steam/reviews/histogram`
+- **What:** Get the review up/down histogram for a Steam app. Returns the positive/negative recommendation counts over time (the store review graph): weekly/monthly rollups plus recent daily buckets. Credential-free public Steam storefront JSON.
+- **Params:** `appid` (string, **required**) — Numeric Steam app id; `language` (string, optional) — Steam language name or 'all'
+
+### `steam_search`
+
+- **HTTP:** `GET /steam/search`
+- **What:** Search the Steam store by title. Resolves a search term to Steam apps via the store typeahead JSON (title, appid, price, platforms, metascore). Best for title -> appid lookup; returns roughly ten results. For faceted, paginated search use /steam/search/results. Credential-free public Steam storefront JSON.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `term` (string, **required**) — Search term
+
+### `steam_search_results`
+
+- **HTTP:** `GET /steam/search/results`
+- **What:** Faceted, paginated Steam store search. Runs the Steam store search with pagination and sorting and returns the result rows (appid, title, release date, review summary, price, platforms). Supports start/count paging and sort_by. Credential-free public Steam storefront JSON.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `count` (integer, optional) — Results per page (max 100); `l` (string, optional) — Language code; `sort_by` (string, optional) — Sort order; `start` (integer, optional) — Result offset for pagination; `term` (string, **required**) — Search term
+
+### `steam_steamspy`
+
+- **HTTP:** `GET /steam/steamspy`
+- **What:** Get SteamSpy third-party ownership and playtime estimates. Returns third-party ownership, concurrent-user, playtime, and review estimates for an app from SteamSpy. These are SteamSpy estimates, not official Steam figures. Credential-free public third-party JSON.
+- **Params:** `appid` (string, **required**) — Numeric Steam app id
+
+### `steam_tags`
+
+- **HTTP:** `GET /steam/tags`
+- **What:** Browse the Steam store by community tag and store facets. Browses the store by the community-tag taxonomy (Roguelike, Metroidvania, Cozy...) and the store filter facets, with no free-text term. Filter by one or more tag ids, a store category id, platform (os), a maximum price, specials-only, and hide-free-to-play; sort and page the browse-rank rows. Each row includes its community tag ids (resolve names via /steam/tags/list). Pagination runs the full result set (total is the real, fully-pageable match count); paging past total returns an empty page. Credential-free public Steam storefront JSON.
+- **Params:** `category1` (string, optional) — Numeric Steam store category id (e.g. 998 games, 21 dlc); `category2` (string, optional) — Additional numeric store category id (feature); `category3` (string, optional) — Additional numeric store category id (feature); `cc` (string, optional) — Store country code (ISO, selects currency); `count` (integer, optional) — Results per page (max 100); `deck_compatibility` (string, optional) — Steam Deck compatibility filter: 1 unsupported, 2 playable, 3 verified; `filter` (string, optional) — Curated preset applied within the other facets; `hidef2p` (boolean, optional) — Hide free-to-play titles; `l` (string, optional) — Language code; `maxprice` (string, optional) — Maximum price as whole cents in the cc currency, or the literal 'free'; `os` (string, optional) — Comma-separated platform filter subset of: win, mac, linux; `sort_by` (string, optional) — Sort order; `specials` (boolean, optional) — Only discounted titles; `start` (integer, optional) — Result offset for pagination; `supportedlang` (string, optional) — Only titles supporting this Steam language name; `tags` (string, optional) — Comma-separated numeric community tag ids (all must match); resolve ids via /steam/tags/list; `untags` (string, optional) — Comma-separated numeric community tag ids to EXCLUDE; `vrsupport` (string, optional) — Comma-separated VR-support filter ids (e.g. 401 seated, 402 standing, 403 roomscale)
+
+### `steam_tags_list`
+
+- **HTTP:** `GET /steam/tags/list`
+- **What:** List Steam community tag ids and names. Returns Steam's popular community tags (numeric id + localized name) so callers can map a tag name to the id that /steam/tags and /steam/category expect. Credential-free public Steam storefront JSON.
+- **Params:** `l` (string, optional) — Steam store language name for the tag labels
+
+### `steam_top_sellers`
+
+- **HTTP:** `GET /steam/top-sellers`
+- **What:** Get Steam's weekly top-sellers chart for a country. Returns the store's weekly top-sellers chart for a country, each rank carrying the full store item (name, price, weighted community tags, review summary, platforms). cc selects the country whose sales ranking and currency are returned. Credential-free public Steam store top-sellers API.
+- **Params:** `cc` (string, optional) — Country code (ISO) whose weekly sales ranking is returned; `l` (string, optional) — Steam store language name
+
 ## TikTok (23)
 
 ### `tiktok_category`
@@ -2418,6 +3638,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve TikTok trending posts. Returns the current TikTok trending feed.
 - **Params:** _none_
 
+## TMDB (6)
+
+### `tmdb_movie`
+
+- **HTTP:** `GET /tmdb/movie/{id}`
+- **What:** Get a TMDB movie. Returns a normalized TMDB movie: overview, tagline, genres, countries, runtime, budget/revenue, top-billed cast, top crew (director/writer), and aggregate rating. Credential-free public TMDB data (themoviedb.org) — not the official api.themoviedb.org, which requires an API key.
+- **Params:** `id` (string, **required**) — TMDB movie id
+
+### `tmdb_movie_list`
+
+- **HTTP:** `GET /tmdb/movie/list`
+- **What:** Get a TMDB movie chart. Returns a TMDB movie chart (popular, top rated, now playing, or upcoming). Credential-free public TMDB data.
+- **Params:** `category` (string, optional) — Movie chart, default popular; `limit` (integer, optional) — Max movies, default 10, max 20
+
+### `tmdb_person`
+
+- **HTTP:** `GET /tmdb/person/{id}`
+- **What:** Get a TMDB person. Returns a normalized TMDB person: biography, birth date, photo, and filmography (movie and TV credits). Credential-free public TMDB data.
+- **Params:** `id` (string, **required**) — TMDB person id; `limit` (integer, optional) — Max filmography credits, default 10, max 20
+
+### `tmdb_search`
+
+- **HTTP:** `GET /tmdb/search`
+- **What:** Search TMDB. Searches TMDB movies, TV shows, and people. An unscoped query interleaves results across all three types rather than returning whichever type happens to rank first upstream. Credential-free public TMDB data.
+- **Params:** `limit` (integer, optional) — Max results, default 10, max 20; `query` (string, **required**) — Search query; `type` (string, optional) — Optional result type filter
+
+### `tmdb_tv`
+
+- **HTTP:** `GET /tmdb/tv/{id}`
+- **What:** Get a TMDB TV show. Returns a normalized TMDB TV show: overview, tagline, genres, countries, episode count, first/last air year, top-billed cast, top crew (creator), and aggregate rating. Credential-free public TMDB data.
+- **Params:** `id` (string, **required**) — TMDB TV show id
+
+### `tmdb_tv_list`
+
+- **HTTP:** `GET /tmdb/tv/list`
+- **What:** Get a TMDB TV chart. Returns a TMDB TV chart (popular, top rated, airing today, or on the air). Credential-free public TMDB data.
+- **Params:** `category` (string, optional) — TV chart, default popular; `limit` (integer, optional) — Max shows, default 10, max 20
+
 ## TripAdvisor (6)
 
 ### `tripadvisor_autocomplete`
@@ -2455,6 +3713,50 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /tripadvisor/search`
 - **What:** Search TripAdvisor places. Returns normalized TripAdvisor place listings for hotels, restaurants, attractions, and supported attraction category types.
 - **Params:** `amenities` (array, optional) — Hotel amenity filter ids; `class` (integer, optional) — Hotel class filter; `currency` (string, optional) — Currency code; `establishment_types` (array, optional) — Restaurant establishment type ids; `filter_id` (string, optional) — Optional hotel filter id; `geo_id` (integer, **required**) — TripAdvisor geo id; `limit` (integer, optional) — Maximum results; `locale` (string, optional) — TripAdvisor locale; `offset` (integer, optional) — Zero-based result offset; `online_options` (array, optional) — Restaurant online option ids; `price_max` (integer, optional) — Maximum hotel price filter; `price_min` (integer, optional) — Minimum hotel price filter; `pricing_mode` (string, optional) — Hotel pricing mode; `restaurant_date` (string, optional) — Restaurant availability date; `restaurant_guests` (integer, optional) — Restaurant guest count; `restaurant_time` (string, optional) — Restaurant availability time; `sort` (string, optional) — Sort value; `travelers_choice` (boolean, optional) — Filter Travelers' Choice hotels; `travelers_choice_botb` (boolean, optional) — Filter Best of the Best hotels; `type` (string, **required**) — Listing type
+
+## TrustMRR (7)
+
+### `trustmrr_acquire`
+
+- **HTTP:** `GET /trustmrr/acquire`
+- **What:** Get TrustMRR acquisition listings. Returns the for-sale startups rendered on the public TrustMRR /acquire marketplace page, with deal metrics (asking price, revenue, multiple, growth). Verified revenue figures come from supported payment providers.
+- **Params:** _none_
+
+### `trustmrr_categories`
+
+- **HTTP:** `GET /trustmrr/categories`
+- **What:** Get TrustMRR categories. Returns the TrustMRR startup category directory (slug, label, description, and keywords for each category).
+- **Params:** _none_
+
+### `trustmrr_category`
+
+- **HTTP:** `GET /trustmrr/category/{slug}`
+- **What:** Get TrustMRR category detail. Returns a single TrustMRR category page and the startups listed under it, with verified revenue and MRR figures.
+- **Params:** `slug` (string, **required**) — TrustMRR category slug
+
+### `trustmrr_leaderboard`
+
+- **HTTP:** `GET /trustmrr/leaderboard`
+- **What:** Get TrustMRR revenue leaderboard. Returns the top 100 startups ranked by the selected metric from the public TrustMRR leaderboard. Revenue and MRR figures are verified through supported payment providers.
+- **Params:** `metric` (string, optional) — Leaderboard metric to rank by (default mrr)
+
+### `trustmrr_marketplace`
+
+- **HTTP:** `GET /trustmrr/marketplace`
+- **What:** Get TrustMRR marketplace snapshot. Returns the public TrustMRR marketplace snapshot: the 25 most recently listed startups for sale and the current 25 best deals ranked by TrustMRR's recency-aware deal score. Revenue figures are verified through supported payment providers.
+- **Params:** _none_
+
+### `trustmrr_startup`
+
+- **HTTP:** `GET /trustmrr/startup/{slug}`
+- **What:** Get TrustMRR startup detail. Returns the full verified profile for a single TrustMRR startup by slug: revenue and MRR, growth, asking price and marketplace status, tech stack, marketing channels, and TrustMRR's AI-generated business summary.
+- **Params:** `slug` (string, **required**) — TrustMRR startup slug
+
+### `trustmrr_startups`
+
+- **HTTP:** `GET /trustmrr/startups`
+- **What:** List all TrustMRR startups. Returns a paginated list of every startup in the TrustMRR directory, discovered from the site's public sitemap. Each entry is a slug you can pass to /trustmrr/startup/{slug} for the full verified profile — together these two endpoints let you enumerate and scrape the entire directory without the authenticated marketplace API.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `page_size` (integer, optional) — Items per page (default 100, max 1000)
 
 ## Trustpilot (7)
 
@@ -2526,13 +3828,45 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get current user's usage timeseries. Returns JWT-authenticated request and credit consumption buckets for chart rendering. Results use UTC buckets.
 - **Params:** `bucket` (string, optional) — Bucket size. Defaults to hour for day range and day otherwise.; `endpoint` (string, optional) — Optional endpoint filter; `from` (string, optional) — Custom lower bound in RFC3339 format when range=custom; `range` (string, optional) — Time range preset. Defaults to the current billing period.; `to` (string, optional) — Custom upper bound in RFC3339 format when range=custom
 
-## Web (1)
+## Walmart (3)
+
+### `walmart_product`
+
+- **HTTP:** `GET /walmart/product/{item_id}`
+- **What:** Get a Walmart product. Returns a normalized Walmart product: price, availability, brand, images, rating, seller, description, highlights, specifications, and variants. Credential-free public Walmart data, rendered from the product page through proxied browser renderers.
+- **Params:** `item_id` (string, **required**) — Walmart item id (the numeric id in a /ip/{id} URL)
+
+### `walmart_product_reviews`
+
+- **HTTP:** `GET /walmart/product/{item_id}/reviews`
+- **What:** Get Walmart product reviews. Returns the reviews snapshot embedded in a Walmart product page: average rating, total review count, the per-star rating breakdown, the recommended percentage, the top positive and top negative review, and a sample of recent reviews. This is a single on-page snapshot, not a full paginated feed. A product that exists but has no reviews returns zero counts and an empty reviews list. Credential-free public Walmart data, rendered from the product page through proxied browser renderers.
+- **Params:** `item_id` (string, **required**) — Walmart item id (the numeric id in a /ip/{id} URL)
+
+### `walmart_search`
+
+- **HTTP:** `GET /walmart/search`
+- **What:** Search Walmart products. Returns Walmart search results: item id, title, brand, price, image, availability, seller, and rating per product. Credential-free public Walmart data, rendered from the search page through proxied browser renderers.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `q` (string, **required**) — Search query; `sort` (string, optional) — Sort order
+
+## Web (3)
+
+### `extract`
+
+- **HTTP:** `POST /extract`
+- **What:** Extract schema-conforming JSON from a URL. Scrapes a public URL into clean Markdown, then returns data that strictly conforms to the supplied bounded JSON Schema.
+- **Params:** `extractOption` (object, **required**) — Extraction options
 
 ### `web_scrape`
 
 - **HTTP:** `POST /web/scrape`
 - **What:** Scrape a URL into markdown, HTML, links or metadata. Fetches a single public URL and returns clean content in the requested formats (markdown, html, raw_html, links, metadata). With render=auto the request starts as a fast HTTP fetch and escalates to a real browser when the page is blocked or rendered with JavaScript. only_main_content (default true) strips navigation, headers, footers and other boilerplate before conversion. Only public pages are supported; respect each site's terms of use and robots directives.
 - **Params:** `scrapeOption` (object, **required**) — Scrape options
+
+### `web_techstack`
+
+- **HTTP:** `POST /web/techstack`
+- **What:** Tech stack — detect what a website is built with. Fetches a public URL and fingerprints the web technologies it is built with — a BuiltWith / Wappalyzer-style detector. Returns a list of detected `technologies`, each with its `categories`, a `confidence` (`high`, `medium`, `low`), an optional `version`, and the `evidence` that matched. Covers JavaScript frameworks and libraries (React, Vue.js, Angular, Svelte, jQuery), web frameworks / static site generators (Next.js, Nuxt.js, Gatsby, Remix, SvelteKit, Astro, Hugo), CMS and website builders (WordPress, Drupal, Joomla, Ghost, Wix, Squarespace, Webflow), e-commerce (Shopify, WooCommerce, Magento, BigCommerce), analytics, ad pixels, and tag managers (Google Analytics, Google Tag Manager, Meta Pixel, LinkedIn, Bing, TikTok/Pinterest/Reddit pixels, Segment, Hotjar, Microsoft Clarity), CDNs, UI frameworks and fonts, payments (Stripe, PayPal, Klarna), live chat, marketing automation, A/B testing, consent management, CAPTCHAs (reCAPTCHA, hCaptcha, Turnstile), video, and search. It also inspects response headers (from a plain HTTP fetch) to identify the web server (nginx, Apache, IIS), the CDN / hosting provider (Cloudflare, CloudFront, Fastly, Vercel, Netlify), and the server-side language / framework (PHP, ASP.NET, Ruby on Rails, Django, Laravel, Express). Results are directional, not exhaustive. The `render` fetch strategy is one of `browser` (headless browser that executes JavaScript — the default, so client-injected scripts like analytics, tag managers and pixels are detected), `auto` (Chrome-impersonated HTTP, escalating to a real browser only when blocked or JS-rendered), or `http` (HTTP only, no JavaScript — fastest, but sees only the server HTML); defaults to `browser`. Only public pages are supported; respect each site's terms of use and robots directives.
+- **Params:** `request` (object, **required**) — Target URL (and optional render strategy)
 
 ## X (3)
 
