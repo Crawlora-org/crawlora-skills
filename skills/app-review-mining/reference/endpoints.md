@@ -13,8 +13,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `appstore_app`
 
 - **HTTP:** `GET /appstore/app`
-- **What:** Retrieve full App Store app details. Returns normalized app metadata from the App Store lookup API. Provide either `id` or `app_id`.
-- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store track ID; `lang` (string, optional) — Result language tag; `ratings` (boolean, optional) — Include ratings histogram
+- **What:** Retrieve full App Store app details. Returns normalized app metadata from the App Store lookup API. Provide either `id` (numeric track ID) or `app_id` (bundle ID).
+- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag; `ratings` (boolean, optional) — Include ratings histogram
 
 ### `appstore_developer`
 
@@ -32,19 +32,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /appstore/privacy/{id}`
 - **What:** Retrieve App Store privacy disclosures. Returns the app privacy cards shown on the App Store page, including data categories and purposes.
-- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — App Store track ID; `lang` (string, optional) — Result language tag
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag
 
 ### `appstore_ratings`
 
 - **HTTP:** `GET /appstore/ratings`
 - **What:** Retrieve App Store ratings histogram. Returns total ratings count and the 1-5 star histogram shown on the App Store product page.
-- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store track ID; `lang` (string, optional) — Result language tag
+- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag
 
 ### `appstore_reviews`
 
 - **HTTP:** `GET /appstore/reviews`
-- **What:** Retrieve App Store reviews. Returns one page of customer reviews for an app. Provide either `id` or `app_id`.
-- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store track ID; `lang` (string, optional) — Result language tag; `page` (integer, optional) — Review page number (1-10); `sort` (string, optional) — Sort order
+- **What:** Retrieve App Store reviews. Returns one page of customer reviews for an app. Provide either `id` (numeric track ID) or `app_id` (bundle ID).
+- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag; `page` (integer, optional) — Review page number (1-10); `sort` (string, optional) — Sort order
 
 ### `appstore_search`
 
@@ -55,8 +55,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `appstore_similar`
 
 - **HTTP:** `GET /appstore/similar`
-- **What:** Retrieve "You Might Also Like" apps. Returns the related apps shown on the App Store product page. Provide either `id` or `app_id`.
-- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store track ID; `lang` (string, optional) — Result language tag
+- **What:** Retrieve "You Might Also Like" apps. Returns the related apps shown on the App Store product page. Provide either `id` (numeric track ID) or `app_id` (bundle ID).
+- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag
 
 ### `appstore_suggest`
 
@@ -68,7 +68,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /appstore/version-history/{id}`
 - **What:** Retrieve App Store version history. Returns the version history entries shown in the App Store "What's New" section.
-- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — App Store track ID; `lang` (string, optional) — Result language tag
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag
 
 ## GooglePlay (10)
 
