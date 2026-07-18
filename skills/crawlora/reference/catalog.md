@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**683 endpoints across 59 platform group(s).**
+**728 endpoints across 60 platform group(s).**
 
 ## Airbnb (7)
 
@@ -165,8 +165,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `appstore_app`
 
 - **HTTP:** `GET /appstore/app`
-- **What:** Retrieve full App Store app details. Returns normalized app metadata from the App Store lookup API. Provide either `id` or `app_id`.
-- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store track ID; `lang` (string, optional) — Result language tag; `ratings` (boolean, optional) — Include ratings histogram
+- **What:** Retrieve full App Store app details. Returns normalized app metadata from the App Store lookup API. Provide either `id` (numeric track ID) or `app_id` (bundle ID).
+- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag; `ratings` (boolean, optional) — Include ratings histogram
 
 ### `appstore_developer`
 
@@ -184,19 +184,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /appstore/privacy/{id}`
 - **What:** Retrieve App Store privacy disclosures. Returns the app privacy cards shown on the App Store page, including data categories and purposes.
-- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — App Store track ID; `lang` (string, optional) — Result language tag
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag
 
 ### `appstore_ratings`
 
 - **HTTP:** `GET /appstore/ratings`
 - **What:** Retrieve App Store ratings histogram. Returns total ratings count and the 1-5 star histogram shown on the App Store product page.
-- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store track ID; `lang` (string, optional) — Result language tag
+- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag
 
 ### `appstore_reviews`
 
 - **HTTP:** `GET /appstore/reviews`
-- **What:** Retrieve App Store reviews. Returns one page of customer reviews for an app. Provide either `id` or `app_id`.
-- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store track ID; `lang` (string, optional) — Result language tag; `page` (integer, optional) — Review page number (1-10); `sort` (string, optional) — Sort order
+- **What:** Retrieve App Store reviews. Returns one page of customer reviews for an app. Provide either `id` (numeric track ID) or `app_id` (bundle ID).
+- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag; `page` (integer, optional) — Review page number (1-10); `sort` (string, optional) — Sort order
 
 ### `appstore_search`
 
@@ -207,8 +207,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `appstore_similar`
 
 - **HTTP:** `GET /appstore/similar`
-- **What:** Retrieve "You Might Also Like" apps. Returns the related apps shown on the App Store product page. Provide either `id` or `app_id`.
-- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store track ID; `lang` (string, optional) — Result language tag
+- **What:** Retrieve "You Might Also Like" apps. Returns the related apps shown on the App Store product page. Provide either `id` (numeric track ID) or `app_id` (bundle ID).
+- **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag
 
 ### `appstore_suggest`
 
@@ -220,7 +220,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /appstore/version-history/{id}`
 - **What:** Retrieve App Store version history. Returns the version history entries shown in the App Store "What's New" section.
-- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — App Store track ID; `lang` (string, optional) — Result language tag
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag
 
 ## Bing (5)
 
@@ -644,7 +644,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** CoinGecko trending highlights. Returns deduped trending coins and categories from the public CoinGecko highlights page. This endpoint supports the documented `vs_currency` enum.
 - **Params:** `limit` (integer, optional) — Rows per section to return, default 20, max 50; `vs_currency` (string, optional) — Quote currency
 
-## Datasets (62)
+## Datasets (78)
 
 ### `datasets_airbnb_facets`
 
@@ -802,11 +802,47 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the US housing markets dataset. Searches monthly Redfin housing-market statistics per region and property type since 2012, joined to Census ACS income for affordability metrics. region_type enum: `national`, `metro`, `county`, `city`, `zip`. property_type enum: `All Residential`, `Single Family Residential`, `Condo/Co-op`, `Townhouse`, `Multi-Family (2-4 Unit)`, `Single Units Only`. Sort enum: `relevance`, `price_desc`, `price_asc`, `list_price_desc`, `list_price_asc`, `price_to_income_desc`, `price_to_income_asc`, `salary_to_buy_desc`, `salary_to_buy_asc`, `dom_asc`, `dom_desc`, `inventory_desc`, `homes_sold_desc`, `period_desc`. Use `latest=true` for the most recent period per region series.
 - **Params:** `latest` (boolean, optional) — Filter for the most recent period per region and property type; `max_inventory` (integer, optional) — Maximum active inventory; `max_median_dom` (number, optional) — Maximum median days on market; `max_median_list_price` (number, optional) — Maximum median list price in USD; `max_median_sale_price` (number, optional) — Maximum median sale price in USD; `max_price_to_income` (number, optional) — Maximum price-to-income ratio; `max_salary_to_buy` (integer, optional) — Maximum salary needed to buy in USD per year; `min_homes_sold` (integer, optional) — Minimum homes sold in the period; `min_inventory` (integer, optional) — Minimum active inventory; `min_median_dom` (number, optional) — Minimum median days on market; `min_median_list_price` (number, optional) — Minimum median list price in USD; `min_median_sale_price` (number, optional) — Minimum median sale price in USD; `min_price_to_income` (number, optional) — Minimum price-to-income ratio; `min_salary_to_buy` (integer, optional) — Minimum salary needed to buy in USD per year; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `parent_metro_code` (string, optional) — Exact parent metro (CBSA) code filter, e.g. 16980; `period` (string, optional) — Exact period start date filter, YYYY-MM-DD; `property_type` (string, optional) — Property type enum: All Residential, Single Family Residential, Condo/Co-op, Townhouse, Multi-Family (2-4 Unit), Single Units Only; `q` (string, optional) — Full-text query over region name and city, max 256 characters; `region_type` (string, optional) — Region level enum: national, metro, county, city, zip; `sort` (string, optional) — Sort enum: relevance, price_desc, price_asc, list_price_desc, list_price_asc, price_to_income_desc, price_to_income_asc, salary_to_buy_desc, salary_to_buy_asc, dom_asc, dom_desc, inventory_desc, homes_sold_desc, period_desc; `state_code` (string, optional) — Exact two-letter state code filter, e.g. CA; `zip_code` (string, optional) — Exact zip code filter (zip-level rows only), e.g. 60616
 
+### `datasets_jobs_companies`
+
+- **HTTP:** `GET /datasets/jobs/companies`
+- **What:** Find which companies are hiring. Searches the discovered company board registry — which companies are hiring, on which ATS, with how many open roles. status enum: `active`, `empty`, `gone`, `blocked`, `pending`. sort enum: `open_desc`, `company_asc`, `crawled_desc`.
+- **Params:** `min_open_roles` (integer, optional) — Minimum open roles; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; `provider` (string, optional) — ATS provider filter; `q` (string, optional) — Match on company name / domain; `sort` (string, optional) — Sort enum: open_desc, company_asc, crawled_desc; `status` (string, optional) — Board status. Enum: active, empty, gone, blocked, pending
+
+### `datasets_jobs_company_item`
+
+- **HTTP:** `GET /datasets/jobs/companies/{id}`
+- **What:** Get a single company by board id. Returns one discovered company board by its dataset board id. When the board carries a known domain (currently populated for iCIMS and Eightfold boards; most Common-Crawl-discovered boards do not), the response also includes a `tech_stack` field joined from the website tech-stack dataset -- a firmographic hint, not a guess: it is only attached when a structural domain signal exists. Returns 404 when the board id is not in the registry.
+- **Params:** `id` (string, **required**) — Dataset board id
+
+### `datasets_jobs_facets`
+
+- **HTTP:** `GET /datasets/jobs/facets`
+- **What:** Facet the jobs dataset (hiring market aggregates). Aggregations over all open postings: top companies hiring, breakdown by ATS provider, department, location, employment type, and the remote share — a live hiring-market snapshot.
+- **Params:** `size` (integer, optional) — Buckets per facet, default 20, max 100
+
+### `datasets_jobs_item`
+
+- **HTTP:** `GET /datasets/jobs/items/{id}`
+- **What:** Get a single posting from the jobs dataset. Returns one crawled job posting by its dataset posting id. Returns 404 when absent.
+- **Params:** `id` (string, **required**) — Dataset posting id
+
+### `datasets_jobs_nearby`
+
+- **HTTP:** `GET /datasets/jobs/nearby`
+- **What:** Find postings near a coordinate. Finds crawled job postings within `radius_km` of a `lat`/`lon`, nearest first. Only geocoded postings participate (the geo-enrich worker back-fills coordinates from each posting's location). Open roles only by default. provider enum matches search.
+- **Params:** `include_closed` (boolean, optional) — Include closed/filled roles (default false); `lat` (number, **required**) — Latitude, -90..90; `lon` (number, **required**) — Longitude, -180..180; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; `provider` (string, optional) — ATS provider filter; `radius_km` (number, optional) — Search radius in km, default 50, max 500
+
+### `datasets_jobs_search`
+
+- **HTTP:** `GET /datasets/jobs/search`
+- **What:** Search the jobs dataset (all companies' live postings). Full-text + faceted search over every job posting crawled from every discovered company ATS board (Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Workable, Recruitee, Rippling, Personio, Teamtailor, Oracle, UKG). Open roles only by default (set include_closed=true for historical/filled roles). provider enum: `greenhouse`, `lever`, `ashby`, `workday`, `smartrecruiters`, `workable`, `recruitee`, `rippling`, `personio`, `teamtailor`, `oracle`, `ukg`. sort enum: `relevance`, `posted_desc`, `company_asc`.
+- **Params:** `company` (string, optional) — Company name match; `department` (string, optional) — Exact department filter; `employment_type` (string, optional) — Exact employment-type filter; `include_closed` (boolean, optional) — Include closed/filled roles (default false = open only); `location` (string, optional) — Location match; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; page*page_size must be <= 10000; `provider` (string, optional) — ATS provider filter. Enum: greenhouse, lever, ashby, workday, smartrecruiters, workable, recruitee, rippling, personio, teamtailor, oracle, ukg; `q` (string, optional) — Full-text over title, company, description; `remote` (boolean, optional) — Filter by remote (true or false); `sort` (string, optional) — Sort enum: relevance, posted_desc, company_asc
+
 ### `datasets_journalists_facets`
 
 - **HTTP:** `GET /datasets/journalists/facets`
 - **What:** Facet the journalists dataset. Returns distribution counts over the journalists index (dataset id enum value `journalists`), honoring the same filters as search. Facet enum: `outlet`, `vertical`, `topic`, `contact_type`.
-- **Params:** `contact_type` (string, optional) — Contact-availability filter. Enum: email, social, none; `facet` (string, **required**) — Facet enum: outlet, vertical, topic, contact_type; `outlet` (string, optional) — Exact outlet id filter; `q` (string, optional) — Full-text match on the journalist's name, title, and bio, max 256 characters; `topic` (string, optional) — Exact topic filter; `vertical` (string, optional) — Exact beat-vertical filter. Enum: tech, crypto, marketing, consumer_tech, consumer_policy, cybersecurity, health, gaming, climate, tech_independent, culture_independent
+- **Params:** `contact_type` (string, optional) — Contact-availability filter. Enum: email, social, none; `facet` (string, **required**) — Facet enum: outlet, vertical, topic, contact_type; `outlet` (string, optional) — Exact outlet id filter; `q` (string, optional) — Full-text match on the journalist's name, title, and bio, max 256 characters; `topic` (string, optional) — Exact topic filter; `vertical` (string, optional) — Exact beat-vertical filter. Enum: tech, crypto, marketing, consumer_tech, consumer_policy, cybersecurity, health, gaming, climate, business, entertainment, sports, legal, science, politics, real_estate, automotive, travel, food, education, design, film_tv, fashion, music, personal_finance, tech_independent, culture_independent, local_news, construction, banking, retail, aerospace_defense, energy, agriculture, local_business
 
 ### `datasets_journalists_item`
 
@@ -817,8 +853,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_journalists_search`
 
 - **HTTP:** `GET /datasets/journalists/search`
-- **What:** Search the journalists dataset. Searches the journalists index (dataset id enum value `journalists`) — public journalist and reporter contact records crawled from news outlets' own staff/author pages, for PR outreach. Each record carries the outlet, title, best-effort beat topics, and any public contact info (a work email or a social handle) found on that outlet's own page. There is no cross-outlet upstream search; this dataset is built by crawling a curated roster of outlets ourselves. vertical enum: `tech`, `crypto`, `marketing`, `consumer_tech`, `consumer_policy`, `cybersecurity`, `health`, `gaming`, `climate`, `tech_independent`, `culture_independent`. contact_type enum: `email`, `social`, `none`. sort enum: `relevance`, `name_asc`, `outlet_asc`, `crawled_desc`.
-- **Params:** `contact_type` (string, optional) — Contact-availability filter. Enum: email, social, none; `outlet` (string, optional) — Exact outlet id filter, e.g. techcrunch, coindesk. Use the ids returned by facets?facet=outlet; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text match on the journalist's name, title, and bio, max 256 characters; `sort` (string, optional) — Sort enum: relevance, name_asc, outlet_asc, crawled_desc; `topic` (string, optional) — Exact topic filter, e.g. security, stablecoins. Use the values returned by facets?facet=topic; `vertical` (string, optional) — Exact beat-vertical filter. Enum: tech, crypto, marketing, consumer_tech, consumer_policy, cybersecurity, health, gaming, climate, tech_independent, culture_independent
+- **What:** Search the journalists dataset. Searches the journalists index (dataset id enum value `journalists`) — public journalist and reporter contact records crawled from news outlets' own staff/author pages, for PR outreach. Each record carries the outlet, title, best-effort beat topics, and any public contact info (a work email or a social handle) found on that outlet's own page. There is no cross-outlet upstream search; this dataset is built by crawling a curated roster of outlets ourselves. vertical enum: `tech`, `crypto`, `marketing`, `consumer_tech`, `consumer_policy`, `cybersecurity`, `health`, `gaming`, `climate`, `business`, `entertainment`, `sports`, `legal`, `science`, `politics`, `real_estate`, `automotive`, `travel`, `food`, `education`, `design`, `film_tv`, `fashion`, `music`, `personal_finance`, `tech_independent`, `culture_independent`, `local_news`, `construction`, `banking`, `retail`, `aerospace_defense`, `energy`, `agriculture`, `local_business`. contact_type enum: `email`, `social`, `none`. sort enum: `relevance`, `name_asc`, `outlet_asc`, `crawled_desc`.
+- **Params:** `contact_type` (string, optional) — Contact-availability filter. Enum: email, social, none; `outlet` (string, optional) — Exact outlet id filter, e.g. techcrunch, coindesk. Use the ids returned by facets?facet=outlet; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text match on the journalist's name, title, and bio, max 256 characters; `sort` (string, optional) — Sort enum: relevance, name_asc, outlet_asc, crawled_desc; `topic` (string, optional) — Exact topic filter, e.g. security, stablecoins. Use the values returned by facets?facet=topic; `vertical` (string, optional) — Exact beat-vertical filter. Enum: tech, crypto, marketing, consumer_tech, consumer_policy, cybersecurity, health, gaming, climate, business, entertainment, sports, legal, science, politics, real_estate, automotive, travel, food, education, design, film_tv, fashion, music, personal_finance, tech_independent, culture_independent, local_news, construction, banking, retail, aerospace_defense, energy, agriculture, local_business
 
 ### `datasets_list`
 
@@ -922,6 +958,48 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the Product Hunt trends dataset. Returns aggregate Product Hunt launch trends from the dataset id enum value `producthunt-trends`. Aggregate-only: each row is a category-over-time cell (a topic, optionally within a calendar period), reporting launch count, total and average upvotes, average rating and the top product — never an individual product record. Thin cells are suppressed. group_by enum: `topic_month`, `topic_year`, `topic`. Sort enum: `period_desc`, `period_asc`, `launch_count_desc`, `sum_votes_desc`.
 - **Params:** `group_by` (string, optional) — Aggregate cell dimension enum: topic_month, topic_year, topic. Defaults to topic_month; `launched_after` (string, optional) — Lower bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `launched_before` (string, optional) — Upper bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `min_launches` (integer, optional) — Minimum launches per cell; raises the small-cell suppression floor (never lowered below the built-in minimum); `min_votes` (integer, optional) — Minimum product upvotes, 0 or greater; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: period_desc, period_asc, launch_count_desc, sum_votes_desc; `topic` (string, optional) — Exact topic-slug filter, e.g. artificial-intelligence, max 128 characters
 
+### `datasets_sec_companies_facets`
+
+- **HTTP:** `GET /datasets/sec-companies/facets`
+- **What:** Facet the SEC companies dataset. Returns terms-aggregation counts for one facet of the SEC companies dataset, scoped to the same filters as search. Facet enum: `sic`, `sic_description`, `exchange`, `state_of_incorporation`, `entity_type`, `reporting_currency`, `revenue_band`, `forms_filed`. `revenue_band` buckets latest-annual revenue into: `unknown`, `under_1m`, `1m_10m`, `10m_100m`, `100m_1b`, `1b_10b`, `over_10b`.
+- **Params:** `entity_type` (string, optional) — Exact entity-type filter, max 64 characters; `exchange` (string, optional) — Exact exchange filter as reported by EDGAR, max 64 characters; `facet` (string, **required**) — Facet enum: sic, sic_description, exchange, state_of_incorporation, entity_type, reporting_currency, revenue_band, forms_filed; `form_filed` (string, optional) — Exact form-type filter, e.g. 10-K, 8-K; `has_financials` (boolean, optional) — When true, keep only companies that have XBRL financial statements; `min_revenue` (number, optional) — Minimum latest-annual revenue in USD (normalized at reference rates), 0 or greater; `q` (string, optional) — Full-text query over the company name, or an exact ticker match, max 256 characters; `reporting_currency` (string, optional) — Exact reporting-currency filter, ISO-4217 code, e.g. USD, JPY, EUR; `sic` (string, optional) — Exact SIC industry-code filter, max 32 characters; `state_of_incorporation` (string, optional) — Exact state/country-of-incorporation filter, max 32 characters; `ticker` (string, optional) — Exact ticker filter (case-insensitive), max 32 characters
+
+### `datasets_sec_companies_financials`
+
+- **HTTP:** `GET /datasets/sec-companies/financials/{cik}`
+- **What:** Get a SEC company's financial-statement history. Returns a company's normalized financial-statement history (income statement, balance sheet, cash flow) from the SEC companies dataset, newest fiscal year first. An unknown CIK or a company with no XBRL data returns an empty series rather than a 404 — most filers without a current ticker have no financial-statement history at all. `lines` keys are the same normalized concept names the live `/sec/financials` endpoint uses (e.g. `revenue`, `net_income`, `total_assets`); `ratios` keys include `gross_margin`, `operating_margin`, `net_margin`, `revenue_growth_yoy`, `current_ratio`, `debt_to_equity`, `free_cash_flow` where derivable. statement enum: `income`, `balance`, `cash_flow`. period enum: `annual`, `quarterly`.
+- **Params:** `cik` (string, **required**) — SEC CIK, numeric or zero-padded; `from` (integer, optional) — Inclusive lower bound on fiscal_year; `limit` (integer, optional) — Maximum points returned (most recent fiscal years first), default 100, max 400; `period` (string, optional) — Period-type enum: annual, quarterly. Omit to return both.; `statement` (string, optional) — Statement enum: income, balance, cash_flow. Omit to return all three.; `to` (integer, optional) — Inclusive upper bound on fiscal_year
+
+### `datasets_sec_companies_insider`
+
+- **HTTP:** `GET /datasets/sec-companies/insider/{cik}`
+- **What:** Get a SEC company's insider-transaction history. Returns a company's insider (Form 3/4/5) transaction history from the SEC companies dataset, most recent transaction first. An unknown CIK or a company with no reported transactions returns an empty series rather than a 404.
+- **Params:** `cik` (string, **required**) — SEC CIK, numeric or zero-padded; `code` (string, optional) — Exact transaction code filter, e.g. P (open-market purchase), S (sale); `from` (string, optional) — Inclusive start date (YYYY-MM-DD, UTC) filtering transaction date; `limit` (integer, optional) — Maximum transactions returned (most recent first), default 50, max 200; `to` (string, optional) — Inclusive end date (YYYY-MM-DD, UTC) filtering transaction date
+
+### `datasets_sec_companies_item`
+
+- **HTTP:** `GET /datasets/sec-companies/items/{cik}`
+- **What:** Get a company from the SEC companies dataset. Returns one SEC-reporting company by CIK from dataset id `sec-companies`, including its filing-history summary, financial-statement rollups, and trailing-90-day insider-activity summary. Returns 404 when the CIK is not in the dataset.
+- **Params:** `cik` (string, **required**) — SEC CIK, numeric or zero-padded, e.g. 320193 or 0000320193
+
+### `datasets_sec_companies_search`
+
+- **HTTP:** `GET /datasets/sec-companies/search`
+- **What:** Search the SEC companies dataset. Searches SEC-reporting companies stored in a search index — normalized filing history, financial-statement rollups (latest annual/quarterly revenue, net income, total assets) and trailing-90-day insider (Form 3/4/5) activity. Sort enum: `relevance`, `name_asc`, `revenue_desc`, `net_income_desc`, `filing_recent_desc`, `insider_activity_desc`. `entity_type`, `sic`, `sic_description`, `exchange`, and `state_of_incorporation` are open filters over the exact values EDGAR reports for each filer (not a fixed enum) — discover real values via the matching facet.
+- **Params:** `cik` (string, optional) — Exact CIK filter, numeric or zero-padded, e.g. 320193 or 0000320193; `entity_type` (string, optional) — Exact entity-type filter as reported by EDGAR (e.g. operating), max 64 characters; `exchange` (string, optional) — Exact exchange filter as reported by EDGAR, e.g. Nasdaq, NYSE, max 64 characters; `form_filed` (string, optional) — Exact form-type filter; keeps only companies that have ever filed this form, e.g. 10-K, 8-K; `has_financials` (boolean, optional) — When true, keep only companies that have XBRL financial statements; `max_revenue` (number, optional) — Maximum latest-annual revenue in USD (normalized), 0 or greater; `min_insider_txn_count_90d` (integer, optional) — Minimum insider (Form 3/4/5) transaction count in the trailing 90 days, 0 or greater; `min_net_income` (number, optional) — Minimum latest-annual net income in USD (normalized; negative allowed); `min_revenue` (number, optional) — Minimum latest-annual revenue in USD (normalized from the filer's reporting currency at reference rates), 0 or greater; `min_total_assets` (number, optional) — Minimum latest-annual total assets in USD (normalized), 0 or greater; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over the company name, or an exact ticker match, max 256 characters; `reporting_currency` (string, optional) — Exact reporting-currency filter, ISO-4217 code, e.g. USD, JPY, EUR; `sic` (string, optional) — Exact SIC industry-code filter, e.g. 3571, max 32 characters; `sic_description` (string, optional) — Exact SIC description filter, e.g. Electronic Computers, max 128 characters; `sort` (string, optional) — Sort enum: relevance, name_asc, revenue_desc, net_income_desc, filing_recent_desc, insider_activity_desc; `state_of_incorporation` (string, optional) — Exact state/country-of-incorporation filter as reported by EDGAR, e.g. DE, CA, max 32 characters; `ticker` (string, optional) — Exact ticker filter (case-insensitive), e.g. AAPL, max 32 characters
+
+### `datasets_sec_institutional_positions_facets`
+
+- **HTTP:** `GET /datasets/sec-institutional-positions/facets`
+- **What:** Facet the SEC institutional positions dataset. Returns terms-aggregation counts for one facet of the SEC institutional positions dataset, scoped to the same filters as search. Facet enum: `manager`, `issuer`.
+- **Params:** `cusip` (string, optional) — Exact CUSIP filter, max 16 characters; `facet` (string, **required**) — Facet enum: manager, issuer; `issuer_name` (string, optional) — Issuer-name text filter (best-effort match), max 256 characters; `manager_cik` (string, optional) — Exact institutional-manager CIK filter, numeric or zero-padded
+
+### `datasets_sec_institutional_positions_search`
+
+- **HTTP:** `GET /datasets/sec-institutional-positions/search`
+- **What:** Search the SEC institutional positions dataset. Searches institutional investment managers' quarterly 13F portfolio holdings stored in a search index. Filter by manager_cik for a manager's full reported portfolio (an exact, reliable filter), or by issuer_name/cusip for a best-effort view of which managers reported a position in an issuer — SEC publishes no authoritative CUSIP-to-CIK mapping, so the issuer side is never a guaranteed-resolved join. Sort enum: `value_desc`, `value_asc`, `shares_desc`.
+- **Params:** `cusip` (string, optional) — Exact CUSIP filter, max 16 characters; `issuer_name` (string, optional) — Issuer-name text filter (best-effort match, not a resolved CIK join), max 256 characters; `manager_cik` (string, optional) — Exact institutional-manager CIK filter, numeric or zero-padded; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: value_desc, value_asc, shares_desc
+
 ### `datasets_steam_achievements_search`
 
 - **HTTP:** `GET /datasets/steam-achievements/search`
@@ -1017,6 +1095,24 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /datasets/trustmrr/search`
 - **What:** Search the TrustMRR dataset. Searches public startups with payment-provider-verified revenue and MRR, stored in a search index. Filter by category, country, payment provider, target audience, tech, marketing channel, listing tier and for-sale status, and by revenue/MRR/traffic/growth/multiple/asking-price ranges. Sort enum: `relevance`, `mrr_desc`, `revenue_desc`, `revenue_30d_desc`, `traffic_desc`, `growth_desc`, `deal_score_desc`, `price_asc`, `price_desc`, `multiple_asc`, `founded_desc`. status enum: `active`, `removed`.
 - **Params:** `business_type` (string, optional) — Business-type filter (e.g. B2B, B2C), max 128 characters; `category` (string, optional) — Exact category filter (e.g. SaaS, Artificial Intelligence, Mobile Apps), max 128 characters; `channel` (string, optional) — Detected marketing-channel slug filter (e.g. meta-ads, seo), max 128 characters; `country` (string, optional) — Exact ISO country-code filter (e.g. US), max 128 characters; `is_sponsored` (boolean, optional) — Filter for sponsored (paid-placement) listings; `listing_tier` (string, optional) — For-sale listing-tier filter (e.g. pro), max 128 characters; `max_asking_price` (number, optional) — Maximum asking price in USD; `max_mrr` (number, optional) — Maximum verified MRR in USD; `max_multiple` (number, optional) — Maximum asking-price-to-revenue multiple; `min_ahrefs_dr` (integer, optional) — Minimum Ahrefs Domain Rating; `min_asking_price` (number, optional) — Minimum asking price in USD; `min_growth` (number, optional) — Minimum 30-day revenue growth percentage; `min_mrr` (number, optional) — Minimum verified MRR in USD; `min_revenue` (number, optional) — Minimum verified all-time revenue in USD; `min_revenue_30d` (number, optional) — Minimum verified last-30-days revenue in USD; `min_traffic` (number, optional) — Minimum last-30-days traffic (visits); `on_sale` (boolean, optional) — Filter for startups currently listed for sale; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `payment_provider` (string, optional) — Payment-provider filter (e.g. stripe, revenuecat, superwall, creem), max 128 characters; `q` (string, optional) — Full-text query over name, description, seller message and business summary, max 256 characters; `slug` (string, optional) — Exact startup slug filter, max 128 characters; `sort` (string, optional) — Sort enum: relevance, mrr_desc, revenue_desc, revenue_30d_desc, traffic_desc, growth_desc, deal_score_desc, price_asc, price_desc, multiple_asc, founded_desc; `status` (string, optional) — Lifecycle enum: active, removed; `target_audience` (string, optional) — Target-audience filter (e.g. B2B, B2C), max 128 characters; `tech` (string, optional) — Detected tech-stack slug filter (e.g. nextjs, reactnative), max 128 characters
+
+### `datasets_x_users_facets`
+
+- **HTTP:** `GET /datasets/x-users/facets`
+- **What:** Facet the X users dataset. Returns terms aggregation counts for the X users dataset. Facet enum: `is_blue_verified`, `has_bio`, `has_external_url`, `source_tier`.
+- **Params:** `crawled_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `crawled_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `created_after` (string, optional) — Accounts created on or after this date (RFC3339 or YYYY-MM-DD); `created_before` (string, optional) — Accounts created on or before this date (RFC3339 or YYYY-MM-DD); `facet` (string, **required**) — Facet enum: is_blue_verified, has_bio, has_external_url, source_tier; `has_bio` (boolean, optional) — Filter by a non-empty profile bio; `has_external_url` (boolean, optional) — Filter by a linked external URL; `is_blue_verified` (boolean, optional) — Filter by the X blue-check verification flag; `max_followers` (integer, optional) — Maximum follower count; `max_ratio` (number, optional) — Maximum follower-to-following ratio; `min_followers` (integer, optional) — Minimum follower count; `min_ratio` (number, optional) — Minimum follower-to-following ratio; `q` (string, optional) — Full-text query over username, name, bio and location, max 256 characters; `sort` (string, optional) — Sort enum: relevance, followers_desc, followers_asc, crawled_at_desc, crawled_at_asc, created_at_desc, created_at_asc; `source_tier` (string, optional) — Exact filter for which seed tier discovered this account; `username` (string, optional) — Exact username filter (case-insensitive), max 128 characters
+
+### `datasets_x_users_item`
+
+- **HTTP:** `GET /datasets/x-users/items/{username}`
+- **What:** Get an X user from the dataset. Returns one X user record by username from dataset id enum value `x-users`.
+- **Params:** `username` (string, **required**) — X username, with or without a leading @, max 128 characters
+
+### `datasets_x_users_search`
+
+- **HTTP:** `GET /datasets/x-users/search`
+- **What:** Search the X users dataset. Searches public X (Twitter) user profiles stored in a search index. Sort enum: `relevance`, `followers_desc`, `followers_asc`, `crawled_at_desc`, `crawled_at_asc`, `created_at_desc`, `created_at_asc`.
+- **Params:** `crawled_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `crawled_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `created_after` (string, optional) — Accounts created on or after this date (RFC3339 or YYYY-MM-DD); `created_before` (string, optional) — Accounts created on or before this date (RFC3339 or YYYY-MM-DD); `has_bio` (boolean, optional) — Filter by a non-empty profile bio; `has_external_url` (boolean, optional) — Filter by a linked external URL; `is_blue_verified` (boolean, optional) — Filter by the X blue-check verification flag; `max_followers` (integer, optional) — Maximum follower count; `max_ratio` (number, optional) — Maximum follower-to-following ratio; `min_followers` (integer, optional) — Minimum follower count; `min_ratio` (number, optional) — Minimum follower-to-following ratio (low values surface follow-spam / bot-like accounts); `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over username, name, bio and location, max 256 characters; `sort` (string, optional) — Sort enum: relevance, followers_desc, followers_asc, crawled_at_desc, crawled_at_asc, created_at_desc, created_at_asc; `source_tier` (string, optional) — Exact filter for which seed tier discovered this account, e.g. github-users, wikidata, tiktok-creators, journalists; `username` (string, optional) — Exact username filter (case-insensitive), max 128 characters
 
 ## Discogs (7)
 
@@ -1176,7 +1272,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Nominatim places. Returns typed Nominatim JSONv2 forward geocoding results. Use either q or structured fields, not both.
 - **Params:** `accept_language` (string, optional) — Preferred result language, forwarded to Nominatim; `addressdetails` (boolean, optional) — Include address details, defaults to true; `city` (string, optional) — Structured city; `country` (string, optional) — Structured country; `countrycodes` (string, optional) — Comma-separated ISO 3166-1 alpha-2 country filters; `county` (string, optional) — Structured county; `extratags` (boolean, optional) — Include OSM extra tags; `limit` (integer, optional) — Maximum results, defaults to 10 and clamps to 20; `namedetails` (boolean, optional) — Include multilingual name details; `postalcode` (string, optional) — Structured postal code; `q` (string, optional) — Free-text search query; `state` (string, optional) — Structured state; `street` (string, optional) — Structured street or house number
 
-## GitHub (15)
+## GitHub (17)
 
 ### `github_org`
 
@@ -1254,6 +1350,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /github/user/{username}/events`
 - **What:** List a GitHub user's recent public activity. Returns a page of a user's recent public events, normalized to type, repository, and timestamp (freshness signal).
+- **Params:** `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `username` (string, **required**) — GitHub username
+
+### `github_user_followers`
+
+- **HTTP:** `GET /github/user/{username}/followers`
+- **What:** List a GitHub user's followers. Returns a page of the public accounts following a GitHub user.
+- **Params:** `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `username` (string, **required**) — GitHub username
+
+### `github_user_following`
+
+- **HTTP:** `GET /github/user/{username}/following`
+- **What:** List who a GitHub user follows. Returns a page of the public accounts a GitHub user follows.
 - **Params:** `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `username` (string, **required**) — GitHub username
 
 ### `github_user_pinned`
@@ -1734,7 +1842,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve Instagram Reels for a user. Returns a feed of Instagram Reels for the specified user ID. Supports pagination via `max_id`.
 - **Params:** `id` (string, **required**) — Instagram user ID; `max_id` (string, optional) — Pagination cursor for fetching the next page of Reels
 
-## Jobs (11)
+## Jobs (26)
 
 ### `jobs_ashby_board`
 
@@ -1745,8 +1853,20 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `jobs_company_search`
 
 - **HTTP:** `GET /jobs/company-search`
-- **What:** Find which ATS a company uses by slug. Probes Greenhouse, Lever, Ashby, and SmartRecruiters in parallel for a slug and reports the providers where it resolves to a non-empty board (with the open-role count and board URL). Workday is excluded (its board needs tenant + datacenter + site). Credential-free public ATS JSON.
+- **What:** Find which ATS a company uses by slug. Probes Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Rippling, and Teamtailor in parallel for a slug and reports the providers where it resolves to a non-empty board (with the open-role count and board URL). Workday is excluded (its board needs tenant + datacenter + site). Credential-free public ATS JSON.
 - **Params:** `slug` (string, **required**) — Company careers slug to probe
+
+### `jobs_eightfold_board`
+
+- **HTTP:** `GET /jobs/eightfold/board`
+- **What:** List an Eightfold tenant's job board. Lists a company's public Eightfold AI job board, paged via limit/offset. tenant is the {tenant}.eightfold.ai subdomain from the careers URL; domain is the hiring organization's own domain (e.g. microsoft.com), also visible on the tenant's careers page. Tries the newer PCSX search first, falling back to the legacy SmartApply generation when PCSX is not enabled for the tenant. Credential-free public ATS JSON.
+- **Params:** `domain` (string, **required**) — Hiring organization domain; `limit` (integer, optional) — Page size, default 10, max 10 (upstream caps results per page regardless of a larger value); `location` (string, optional) — Filter: location contains; `offset` (integer, optional) — Page offset, default 0; `query` (string, optional) — Free-text search; `tenant` (string, **required**) — Eightfold tenant subdomain (careers URL)
+
+### `jobs_eightfold_job`
+
+- **HTTP:** `GET /jobs/eightfold/job`
+- **What:** Get a single Eightfold position. Returns a single Eightfold position with its full HTML/text description. id is the position id from a board listing; tenant/domain as in the board endpoint. Tries the newer PCSX detail first, falling back to the legacy SmartApply detail generation. Credential-free public ATS JSON.
+- **Params:** `domain` (string, **required**) — Hiring organization domain; `id` (string, **required**) — Eightfold position id from a board listing; `tenant` (string, **required**) — Eightfold tenant subdomain
 
 ### `jobs_greenhouse_board`
 
@@ -1763,8 +1883,20 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `jobs_hiring_signals`
 
 - **HTTP:** `GET /jobs/hiring-signals`
-- **What:** Aggregate hiring signals for a company's board. Aggregates a company's ATS board into a hiring snapshot: total open roles, breakdowns by department/location/title, remote share, and how many roles are new in the last 7/30 days — a leading indicator of company growth. Supply provider plus that provider's slug params (token / company / org / tenant+datacenter+site). Breakdowns are computed over the fetched postings. Credential-free public ATS JSON.
-- **Params:** `company` (string, optional) — lever / smartrecruiters company slug; `datacenter` (string, optional) — workday datacenter shard; `org` (string, optional) — ashby org slug; `provider` (string, **required**) — ATS provider; `site` (string, optional) — workday career site; `tenant` (string, optional) — workday tenant; `token` (string, optional) — greenhouse board token
+- **What:** Aggregate hiring signals for a company's board. Aggregates a company's ATS board into a hiring snapshot: total open roles, breakdowns by department/location/title, remote share, and how many roles are new in the last 7/30 days — a leading indicator of company growth. Supply provider plus that provider's slug params (token / company / org / tenant+datacenter+site / domain). Breakdowns are computed over the fetched postings. Credential-free public ATS JSON.
+- **Params:** `board` (string, optional) — ukg job-board UUID; `company` (string, optional) — lever / smartrecruiters / workable / recruitee / rippling / personio / teamtailor company slug; `datacenter` (string, optional) — workday datacenter shard; `domain` (string, optional) — icims careers domain / eightfold organization domain; `host` (string, optional) — oracle cloud host (*.oraclecloud.com); `org` (string, optional) — ashby org slug; `provider` (string, **required**) — ATS provider; `site` (string, optional) — workday / oracle career site; `tenant` (string, optional) — workday / eightfold tenant; `token` (string, optional) — greenhouse board token
+
+### `jobs_icims_board`
+
+- **HTTP:** `GET /jobs/icims/board`
+- **What:** List an iCIMS tenant's job board. Lists a company's public iCIMS job board (served through the tenant's white-labeled careers domain, e.g. careers.costco.com — not the bare {company}.icims.com subdomain, which is an OAuth-gated employee portal), paged via page/limit, with the full description inline per job. domain is the tenant's careers domain from its careers URL. Credential-free public ATS JSON.
+- **Params:** `domain` (string, **required**) — iCIMS tenant careers domain (careers URL); `keywords` (string, optional) — Free-text keyword search; `limit` (integer, optional) — Page size, default 20, max 50; `location` (string, optional) — Filter: location contains; `page` (integer, optional) — Page number, default 1
+
+### `jobs_icims_job`
+
+- **HTTP:** `GET /jobs/icims/job`
+- **What:** Get a single iCIMS job. Returns a single iCIMS job with its full HTML/text description, department, and benefits. id is the req_id/slug from a board listing; lang defaults to en-us. Credential-free public ATS JSON.
+- **Params:** `domain` (string, **required**) — iCIMS tenant careers domain; `id` (string, **required**) — iCIMS job req_id/slug from a board listing; `lang` (string, optional) — Language code, default en-us
 
 ### `jobs_lever_posting`
 
@@ -1778,6 +1910,48 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List a company's Lever postings. Lists a company's public Lever postings (detail is inline), optionally filtered by department, location, or remote. The company is the Lever slug from its careers URL. Credential-free public ATS JSON.
 - **Params:** `company` (string, **required**) — Lever company slug (careers URL); `department` (string, optional) — Filter: department contains; `location` (string, optional) — Filter: location contains; `remote` (boolean, optional) — Filter by remote (true or false)
 
+### `jobs_oracle_board`
+
+- **HTTP:** `GET /jobs/oracle/board`
+- **What:** List an Oracle Recruiting (ORC) tenant's job board. Lists an Oracle Recruiting Cloud tenant's public requisitions, paged via limit/offset. host and site both come from the careers URL https://{host}/hcmUI/CandidateExperience/en/sites/{site}/ (host must be an *.oraclecloud.com hostname; site looks like CX_1). The listing carries a short description; use the single-job endpoint for full detail. Credential-free public ATS JSON.
+- **Params:** `host` (string, **required**) — Oracle Cloud host (careers URL, *.oraclecloud.com); `limit` (integer, optional) — Page size, default 25, max 50; `offset` (integer, optional) — Page offset, default 0; `search` (string, optional) — Free-text keyword search; `site` (string, **required**) — Oracle career site number
+
+### `jobs_oracle_job`
+
+- **HTTP:** `GET /jobs/oracle/job`
+- **What:** Get a single Oracle Recruiting (ORC) requisition. Returns a single Oracle Recruiting requisition with its full HTML/text description (description, responsibilities, qualifications). id is the requisition Id from a board listing; host/site as in the board endpoint. Credential-free public ATS JSON.
+- **Params:** `host` (string, **required**) — Oracle Cloud host (*.oraclecloud.com); `id` (string, **required**) — Oracle requisition Id from a board listing; `site` (string, **required**) — Oracle career site number
+
+### `jobs_personio_feed`
+
+- **HTTP:** `GET /jobs/personio/feed`
+- **What:** List a company's Personio job board. Lists a company's public Personio board feed (XML), normalized to the shared Job shape with detail inline, optionally filtered by department, location, or remote. The company is the Personio subdomain from its careers URL https://{company}.jobs.personio.de/. Credential-free public ATS feed.
+- **Params:** `company` (string, **required**) — Personio subdomain (careers URL); `department` (string, optional) — Filter: department contains; `location` (string, optional) — Filter: location contains; `remote` (boolean, optional) — Filter by remote (true or false)
+
+### `jobs_recruitee_offer`
+
+- **HTTP:** `GET /jobs/recruitee/offer`
+- **What:** Get a single Recruitee offer. Returns a single Recruitee offer with its full HTML/text description and structured compensation when the board exposes it. Credential-free public ATS JSON.
+- **Params:** `company` (string, **required**) — Recruitee subdomain; `id` (string, **required**) — Recruitee offer id
+
+### `jobs_recruitee_offers`
+
+- **HTTP:** `GET /jobs/recruitee/offers`
+- **What:** List a company's Recruitee offers. Lists a company's public Recruitee offers (detail is inline), optionally filtered by department, location, or remote. The company is the Recruitee subdomain from its careers URL https://{company}.recruitee.com/. Credential-free public ATS JSON.
+- **Params:** `company` (string, **required**) — Recruitee subdomain (careers URL); `department` (string, optional) — Filter: department contains; `location` (string, optional) — Filter: location contains; `remote` (boolean, optional) — Filter by remote (true or false)
+
+### `jobs_rippling_board`
+
+- **HTTP:** `GET /jobs/rippling/board`
+- **What:** List a company's Rippling job board. Lists a company's public Rippling board postings (thin listing — title, department, work location). The company is the Rippling board slug from its careers URL https://ats.rippling.com/{company}/jobs. Detail (full description, employment type) is fetched per job via the single-job endpoint. Credential-free public ATS JSON.
+- **Params:** `company` (string, **required**) — Rippling board slug (careers URL); `department` (string, optional) — Filter: department contains; `location` (string, optional) — Filter: location contains; `remote` (boolean, optional) — Filter by remote (true or false)
+
+### `jobs_rippling_job`
+
+- **HTTP:** `GET /jobs/rippling/job`
+- **What:** Get a single Rippling job. Returns a single Rippling job with its full HTML/text description, employment type, and work locations. The id is the job uuid from a listing. Credential-free public ATS JSON.
+- **Params:** `company` (string, **required**) — Rippling board slug; `id` (string, **required**) — Rippling job uuid
+
 ### `jobs_smartrecruiters_posting`
 
 - **HTTP:** `GET /jobs/smartrecruiters/posting`
@@ -1789,6 +1963,30 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /jobs/smartrecruiters/postings`
 - **What:** List a company's SmartRecruiters postings. Lists a company's public SmartRecruiters postings, paged via limit/offset. The company is the SmartRecruiters identifier from its careers URL. Credential-free public ATS JSON.
 - **Params:** `company` (string, **required**) — SmartRecruiters company id (careers URL); `limit` (integer, optional) — Page size, default 100, max 100; `offset` (integer, optional) — Page offset, default 0
+
+### `jobs_teamtailor_jobs`
+
+- **HTTP:** `GET /jobs/teamtailor/jobs`
+- **What:** List a company's Teamtailor job board. Lists a company's public Teamtailor board feed (JSON Feed), normalized to the shared Job shape with detail inline, optionally filtered by department, location, or remote. The company is the Teamtailor subdomain from its careers URL https://{company}.teamtailor.com/. Credential-free public ATS feed.
+- **Params:** `company` (string, **required**) — Teamtailor subdomain (careers URL); `department` (string, optional) — Filter: department contains; `location` (string, optional) — Filter: location contains; `remote` (boolean, optional) — Filter by remote (true or false)
+
+### `jobs_ukg_board`
+
+- **HTTP:** `GET /jobs/ukg/board`
+- **What:** List a UKG Pro Recruiting tenant's job board. Lists a UKG Pro Recruiting (formerly UltiPro) tenant's public opportunities, paged via limit/offset. tenant and board both come from the careers URL https://recruiting.ultipro.com/{tenant}/JobBoard/{board}. Each posting carries a brief description inline (UKG's full detail page is HTML, not JSON). Credential-free public ATS JSON.
+- **Params:** `board` (string, **required**) — UKG job-board UUID (careers URL); `limit` (integer, optional) — Page size, default 25, max 50; `offset` (integer, optional) — Page offset, default 0; `search` (string, optional) — Free-text keyword search; `tenant` (string, **required**) — UKG tenant code (careers URL)
+
+### `jobs_workable_posting`
+
+- **HTTP:** `GET /jobs/workable/posting`
+- **What:** Get a single Workable posting. Returns a single Workable posting with its full HTML/text description. The id is the posting shortcode from a listing. Credential-free public ATS JSON.
+- **Params:** `company` (string, **required**) — Workable account slug; `id` (string, **required**) — Workable posting shortcode
+
+### `jobs_workable_postings`
+
+- **HTTP:** `GET /jobs/workable/postings`
+- **What:** List a company's Workable postings. Lists a company's public Workable postings, normalized to the shared Job shape, optionally filtered by department, location, or remote. The company is the Workable account slug from its careers URL https://apply.workable.com/{company}/. Detail (full description) is fetched per job via the single-posting endpoint. Credential-free public ATS JSON.
+- **Params:** `company` (string, **required**) — Workable account slug (careers URL); `department` (string, optional) — Filter: department contains; `location` (string, optional) — Filter: location contains; `remote` (boolean, optional) — Filter by remote (true or false); `search` (string, optional) — Free-text search
 
 ### `jobs_workday_board`
 
@@ -2821,7 +3019,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sec_company_submissions`
 
 - **HTTP:** `GET /sec/company/submissions`
-- **What:** List a company's EDGAR filings. Returns a company's recent SEC filings (form, dates, primary document URL) filtered by form type and date range. Provide cik or ticker. Credential-free public SEC data.
+- **What:** List a company's EDGAR filings. Returns a company's recent SEC filings (form, dates, primary document URL) filtered by form type and date range, plus company profile fields as reported by EDGAR: entity_type, former_names, exchanges, category, fiscal_year_end, state_of_incorporation. Provide cik or ticker. Credential-free public SEC data.
 - **Params:** `cik` (string, optional) — SEC CIK (numeric or zero-padded); `form` (string, optional) — Filter by form type, e.g. 10-K, 10-Q, 8-K; `from` (string, optional) — Earliest filing date (YYYY-MM-DD); `limit` (integer, optional) — Max filings, default 50, max 500; `ticker` (string, optional) — Ticker symbol (alternative to cik); `to` (string, optional) — Latest filing date (YYYY-MM-DD)
 
 ### `sec_filing`
@@ -3497,6 +3695,80 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /steam/top-sellers`
 - **What:** Get Steam's weekly top-sellers chart for a country. Returns the store's weekly top-sellers chart for a country, each rank carrying the full store item (name, price, weighted community tags, review summary, platforms). cc selects the country whose sales ranking and currency are returned. Credential-free public Steam store top-sellers API.
 - **Params:** `cc` (string, optional) — Country code (ISO) whose weekly sales ranking is returned; `l` (string, optional) — Steam store language name
+
+## tcdb (12)
+
+### `tcdb_birthdays`
+
+- **HTTP:** `GET /tcdb/birthdays`
+- **What:** Get people born on a TCDB date. Fetches the public TCDB Birthdays page for a month and day and returns the people born on that date.
+- **Params:** `day` (integer, **required**) — Day of month, 1-31; `limit` (integer, optional) — Maximum people returned, default 25, max 100; `month` (integer, **required**) — Month, 1-12
+
+### `tcdb_card`
+
+- **HTTP:** `GET /tcdb/card`
+- **What:** Get TCDB card detail. Fetches a public TCDB card page and returns normalized card metadata, image links, tags, and parent set references.
+- **Params:** `card_id` (string, optional) — Numeric TCDB card id. Required with set_id when path or url is omitted.; `path` (string, optional) — TCDB ViewCard path; `set_id` (string, optional) — Numeric TCDB set id. Required with card_id when path or url is omitted.; `url` (string, optional) — Absolute https://www.tcdb.com ViewCard URL
+
+### `tcdb_card_of_the_day`
+
+- **HTTP:** `GET /tcdb/card-of-the-day`
+- **What:** List TCDB cards of the day. Fetches the public TCDB Card of the Day feed and returns the dated featured cards with their set, card, member comment, and image.
+- **Params:** `limit` (integer, optional) — Maximum cards returned, default 25, max 100; `page` (integer, optional) — Result page, default 1
+
+### `tcdb_companies`
+
+- **HTTP:** `GET /tcdb/companies`
+- **What:** List TCDB card companies. Fetches the public TCDB Card Companies directory and returns each manufacturer with its labeled external links.
+- **Params:** `limit` (integer, optional) — Maximum companies returned, default 25, max 100
+
+### `tcdb_person`
+
+- **HTTP:** `GET /tcdb/person`
+- **What:** Get TCDB person card checklist. Fetches a public TCDB person page and returns the person's normalized identity plus the cards on the visible checklist.
+- **Params:** `id` (string, optional) — Numeric TCDB person id. Required when path or url is omitted.; `limit` (integer, optional) — Maximum cards returned, default 25, max 100; `path` (string, optional) — TCDB Person.cfm path; `url` (string, optional) — Absolute https://www.tcdb.com Person.cfm URL
+
+### `tcdb_releases`
+
+- **HTTP:** `GET /tcdb/releases`
+- **What:** List TCDB release dates. Fetches the public TCDB Release Dates calendar and returns the upcoming and recent set releases with their dates.
+- **Params:** `limit` (integer, optional) — Maximum releases returned, default 25, max 100
+
+### `tcdb_search`
+
+- **HTTP:** `GET /tcdb/search`
+- **What:** Search Trading Card Database. Searches TCDB's public server-rendered search page and returns normalized set, card, person, and team links from the selected category.
+- **Params:** `category` (string, optional) — TCDB category. Allowed values: Baseball, Basketball, Boxing, Cricket, Football, Gaming, Golf, Hockey, Misc Sports, MMA, Multi-Sport, Non-Sport, Racing, Soccer, Tennis, Wrestling; `limit` (integer, optional) — Maximum results per parsed group, default 25, max 100; `q` (string, **required**) — Search query
+
+### `tcdb_set`
+
+- **HTTP:** `GET /tcdb/set`
+- **What:** Get TCDB set checklist. Fetches a public TCDB set page and returns normalized set metadata plus card rows from the visible checklist.
+- **Params:** `id` (string, optional) — Numeric TCDB set id. Required when path or url is omitted.; `limit` (integer, optional) — Maximum cards returned, default 25, max 100; `path` (string, optional) — TCDB ViewSet path; `url` (string, optional) — Absolute https://www.tcdb.com ViewSet URL
+
+### `tcdb_sets`
+
+- **HTTP:** `GET /tcdb/sets`
+- **What:** Browse TCDB sets by sport and year. Lists the TCDB sets released for a sport and year from the public ViewAll browse.
+- **Params:** `limit` (integer, optional) — Maximum sets returned, default 25, max 100; `sport` (string, **required**) — TCDB sport. Allowed values: Baseball, Basketball, Boxing, Cricket, Football, Gaming, Golf, Hockey, Misc Sports, MMA, Multi-Sport, Non-Sport, Racing, Soccer, Tennis, Wrestling; `year` (string, **required**) — 4-digit year
+
+### `tcdb_tagged`
+
+- **HTTP:** `GET /tcdb/tagged`
+- **What:** Get TCDB cards by tag. Fetches a public TCDB tag page and returns the tag name plus the cards on the visible page, optionally filtered by sport and paged.
+- **Params:** `id` (string, optional) — Numeric TCDB tag id. Required when path or url is omitted.; `limit` (integer, optional) — Maximum cards returned, default 25, max 100; `page` (integer, optional) — Result page, default 1; `path` (string, optional) — TCDB Tagged.cfm path; `sport` (string, optional) — Optional sport filter. Allowed values: Baseball, Basketball, Boxing, Cricket, Football, Gaming, Golf, Hockey, Misc Sports, MMA, Multi-Sport, Non-Sport, Racing, Soccer, Tennis, Wrestling; `url` (string, optional) — Absolute https://www.tcdb.com Tagged.cfm URL
+
+### `tcdb_team`
+
+- **HTTP:** `GET /tcdb/team`
+- **What:** Get TCDB team card checklist. Fetches a public TCDB team page and returns the team's normalized identity plus the cards on the visible checklist.
+- **Params:** `id` (string, optional) — Numeric TCDB team id. Required when path or url is omitted.; `limit` (integer, optional) — Maximum cards returned, default 25, max 100; `path` (string, optional) — TCDB Team.cfm path; `url` (string, optional) — Absolute https://www.tcdb.com Team.cfm URL
+
+### `tcdb_top_sets`
+
+- **HTTP:** `GET /tcdb/top-sets`
+- **What:** List TCDB top-rated sets. Fetches the public TCDB Top Sets ranking and returns the highest-rated sets with their rank, rating, and vote count.
+- **Params:** `limit` (integer, optional) — Maximum sets returned, default 25, max 100
 
 ## TikTok (23)
 
