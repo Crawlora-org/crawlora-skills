@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**728 endpoints across 60 platform group(s).**
+**733 endpoints across 61 platform group(s).**
 
 ## Airbnb (7)
 
@@ -805,7 +805,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_jobs_companies`
 
 - **HTTP:** `GET /datasets/jobs/companies`
-- **What:** Find which companies are hiring. Searches the discovered company board registry — which companies are hiring, on which ATS, with how many open roles. status enum: `active`, `empty`, `gone`, `blocked`, `pending`. sort enum: `open_desc`, `company_asc`, `crawled_desc`.
+- **What:** Find which companies are hiring. Searches the discovered company board registry — which companies are hiring, on which ATS, with how many open roles. provider enum: `greenhouse`, `lever`, `ashby`, `workday`, `smartrecruiters`, `workable`, `recruitee`, `rippling`, `personio`, `teamtailor`, `oracle`, `ukg`, `icims`, `eightfold`. status enum: `active`, `empty`, `gone`, `blocked`, `pending`. sort enum: `open_desc`, `company_asc`, `crawled_desc`.
 - **Params:** `min_open_roles` (integer, optional) — Minimum open roles; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; `provider` (string, optional) — ATS provider filter; `q` (string, optional) — Match on company name / domain; `sort` (string, optional) — Sort enum: open_desc, company_asc, crawled_desc; `status` (string, optional) — Board status. Enum: active, empty, gone, blocked, pending
 
 ### `datasets_jobs_company_item`
@@ -829,14 +829,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_jobs_nearby`
 
 - **HTTP:** `GET /datasets/jobs/nearby`
-- **What:** Find postings near a coordinate. Finds crawled job postings within `radius_km` of a `lat`/`lon`, nearest first. Only geocoded postings participate (the geo-enrich worker back-fills coordinates from each posting's location). Open roles only by default. provider enum matches search.
+- **What:** Find postings near a coordinate. Finds crawled job postings within `radius_km` of a `lat`/`lon`, nearest first. Only geocoded postings participate (the geo-enrich worker back-fills coordinates from each posting's location). Open roles only by default. provider enum: `greenhouse`, `lever`, `ashby`, `workday`, `smartrecruiters`, `workable`, `recruitee`, `rippling`, `personio`, `teamtailor`, `oracle`, `ukg`, `icims`, `eightfold`.
 - **Params:** `include_closed` (boolean, optional) — Include closed/filled roles (default false); `lat` (number, **required**) — Latitude, -90..90; `lon` (number, **required**) — Longitude, -180..180; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; `provider` (string, optional) — ATS provider filter; `radius_km` (number, optional) — Search radius in km, default 50, max 500
 
 ### `datasets_jobs_search`
 
 - **HTTP:** `GET /datasets/jobs/search`
-- **What:** Search the jobs dataset (all companies' live postings). Full-text + faceted search over every job posting crawled from every discovered company ATS board (Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Workable, Recruitee, Rippling, Personio, Teamtailor, Oracle, UKG). Open roles only by default (set include_closed=true for historical/filled roles). provider enum: `greenhouse`, `lever`, `ashby`, `workday`, `smartrecruiters`, `workable`, `recruitee`, `rippling`, `personio`, `teamtailor`, `oracle`, `ukg`. sort enum: `relevance`, `posted_desc`, `company_asc`.
-- **Params:** `company` (string, optional) — Company name match; `department` (string, optional) — Exact department filter; `employment_type` (string, optional) — Exact employment-type filter; `include_closed` (boolean, optional) — Include closed/filled roles (default false = open only); `location` (string, optional) — Location match; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; page*page_size must be <= 10000; `provider` (string, optional) — ATS provider filter. Enum: greenhouse, lever, ashby, workday, smartrecruiters, workable, recruitee, rippling, personio, teamtailor, oracle, ukg; `q` (string, optional) — Full-text over title, company, description; `remote` (boolean, optional) — Filter by remote (true or false); `sort` (string, optional) — Sort enum: relevance, posted_desc, company_asc
+- **What:** Search the jobs dataset (all companies' live postings). Full-text + faceted search over every job posting crawled from every discovered company ATS board (Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Workable, Recruitee, Rippling, Personio, Teamtailor, Oracle, UKG, iCIMS, Eightfold). Open roles only by default (set include_closed=true for historical/filled roles). provider enum: `greenhouse`, `lever`, `ashby`, `workday`, `smartrecruiters`, `workable`, `recruitee`, `rippling`, `personio`, `teamtailor`, `oracle`, `ukg`, `icims`, `eightfold`. sort enum: `relevance`, `posted_desc`, `company_asc`.
+- **Params:** `company` (string, optional) — Company name match; `department` (string, optional) — Exact department filter; `employment_type` (string, optional) — Exact employment-type filter; `include_closed` (boolean, optional) — Include closed/filled roles (default false = open only); `location` (string, optional) — Location match; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; page*page_size must be <= 10000; `provider` (string, optional) — ATS provider filter; `q` (string, optional) — Full-text over title, company, description; `remote` (boolean, optional) — Filter by remote (true or false); `sort` (string, optional) — Sort enum: relevance, posted_desc, company_asc
 
 ### `datasets_journalists_facets`
 
@@ -3769,6 +3769,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /tcdb/top-sets`
 - **What:** List TCDB top-rated sets. Fetches the public TCDB Top Sets ranking and returns the highest-rated sets with their rank, rating, and vote count.
 - **Params:** `limit` (integer, optional) — Maximum sets returned, default 25, max 100
+
+## Threads (5)
+
+### `threads_post`
+
+- **HTTP:** `GET /threads/post/{username}/{code}`
+- **What:** Retrieve a public Threads post. Returns the public text, author, canonical URL, and preview image for a Threads post.
+- **Params:** `code` (string, **required**) — Threads post code; `username` (string, **required**) — Threads username
+
+### `threads_post_replies`
+
+- **HTTP:** `GET /threads/post/{username}/{code}/replies`
+- **What:** Retrieve public replies to a Threads post. Returns the public replies currently exposed to logged-out visitors. The response identifies when Threads reports additional replies but withholds a usable continuation cursor.
+- **Params:** `code` (string, **required**) — Threads post code; `username` (string, **required**) — Threads username
+
+### `threads_profile`
+
+- **HTTP:** `GET /threads/profile/{username}`
+- **What:** Retrieve a public Threads profile. Returns public profile metadata for a Threads username, including the visible biography and counts.
+- **Params:** `username` (string, **required**) — Threads username
+
+### `threads_profile_posts`
+
+- **HTTP:** `GET /threads/profile/{username}/posts`
+- **What:** Retrieve public posts from a Threads profile. Returns public profile posts with an opaque continuation cursor when more posts are available.
+- **Params:** `cursor` (string, optional) — Opaque cursor returned by the previous response; `username` (string, **required**) — Threads username
+
+### `threads_search`
+
+- **HTTP:** `GET /threads/search`
+- **What:** Search public Threads posts. Returns the public first page of Threads search results for a query. Logged-out search does not expose a continuation cursor.
+- **Params:** `q` (string, **required**) — Search query (1-100 characters)
 
 ## TikTok (23)
 
