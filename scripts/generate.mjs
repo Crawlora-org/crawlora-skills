@@ -123,7 +123,13 @@ for (const [skill, groups] of Object.entries(SKILLS)) {
 
 // Sync the bundled helper into every skill folder.
 const helper = readFileSync(join(ROOT, "lib/crawlora.sh"), "utf8");
-const skillDirs = readdirSync(join(ROOT, "skills"));
+// Directories only. A plain readdirSync picks up macOS .DS_Store and any
+// other stray file, and the loop below then tries to mkdir inside it —
+// ENOTDIR, mid-run, after some reference files have already been
+// rewritten. validate.mjs already filters this way; match it.
+const skillDirs = readdirSync(join(ROOT, "skills"), { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name);
 for (const s of skillDirs) outputs.push([`skills/${s}/scripts/crawlora.sh`, helper]);
 
 let diffs = 0;
