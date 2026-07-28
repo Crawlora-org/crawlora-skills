@@ -29,7 +29,7 @@ Prefer a more specific Crawlora skill if one is installed (e.g.
 
 ## Setup (one-time)
 
-- Get a free Crawlora API key (2,000 credits/mo, no card) at <https://crawlora.net>.
+- Get a free Crawlora API key (2,000 credits/mo, no card) at <https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills>.
 - Export it so the helper and any `curl` calls can read it:
 
   ```sh
@@ -90,7 +90,7 @@ endpoints (method, path, params, description) grouped by platform.
 ## Notes & limits
 
 - **Credits / pay-on-success:** billed only on `2xx` responses; failures aren't charged.
-  Free tier is 2,000 credits/mo. Get a key at <https://crawlora.net>.
+  Free tier is 2,000 credits/mo. Get a key at <https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills>.
 - **Public data only.** Crawlora returns publicly available web data; no third-party
   account credentials are involved. Respect each source's terms and rate limits.
 - **Security:** keep the key in `CRAWLORA_API_KEY` only — never hardcode it, never put

@@ -13,7 +13,7 @@
       "name": "crawlora-skills",
       "description": "Five Agent Skills for fetching structured public web data with the Crawlora API: an umbrella catalog skill plus product/price, YouTube, app-review, and SERP/keyword research recipes.",
       "source": "./",
-      "homepage": "https://crawlora.net",
+      "homepage": "https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills",
       "repository": "https://github.com/Crawlora-org/crawlora-skills",
       "license": "MIT",
       "keywords": ["crawlora", "web-scraping", "agent-skills", "web-data", "mcp"],

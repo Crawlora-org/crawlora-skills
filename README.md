@@ -1,13 +1,13 @@
 # Crawlora Agent Skills
 
-[![Website](https://img.shields.io/badge/website-crawlora.net-2563eb)](https://crawlora.net)
-[![Docs](https://img.shields.io/badge/docs-crawlora.net%2Fdocs-555)](https://crawlora.net/docs)
+[![Website](https://img.shields.io/badge/website-crawlora.net-2563eb)](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills)
+[![Docs](https://img.shields.io/badge/docs-crawlora.net%2Fdocs-555)](https://crawlora.net/docs?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills)
 [![Skills](https://img.shields.io/badge/Agent-Skills-7c3aed)](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 **Crawlora Agent Skills** are ready-to-install [Agent Skills](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview)
 that teach any coding agent (Claude Code, Codex, Cursor, Copilot, …) how to fetch
-**structured public web data** with the [Crawlora](https://crawlora.net) REST API —
+**structured public web data** with the [Crawlora](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills) REST API —
 search engines, marketplaces, social, finance, maps, app stores, media, and reviews —
 getting clean JSON instead of HTML to parse.
 
@@ -17,7 +17,7 @@ required** — install one skill and go. (If you'd rather use agent-native MCP t
 see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 
 > Get a free Crawlora API key — **2,000 credits/mo, no card** — at
-> **[crawlora.net](https://crawlora.net)**. Billing is **pay-on-success** (only `2xx`
+> **[crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills)**. Billing is **pay-on-success** (only `2xx`
 > responses are charged).
 
 ## The skills
@@ -103,13 +103,13 @@ node scripts/validate.mjs        # lint all SKILL.md
 
 ## Links
 
-- Website: https://crawlora.net · Docs & Playground: https://crawlora.net/docs · https://crawlora.net/playground
-- API base: `https://api.crawlora.net/api/v1` · Pricing: https://crawlora.net/pricing
+- Website: https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills · Docs & Playground: https://crawlora.net/docs?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills · https://crawlora.net/playground?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills
+- API base: `https://api.crawlora.net/api/v1` · Pricing: https://crawlora.net/pricing?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills
 - Agent-native MCP server: https://github.com/Crawlora-org/crawlora-mcp
 - Agent Skills (Anthropic): https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview
 
 ## License
 
 [MIT](LICENSE). The Crawlora API itself is a hosted SaaS governed by the
-[Crawlora terms](https://crawlora.net); this repository contains the skill
+[Crawlora terms](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills); this repository contains the skill
 definitions, helper, and manifests.

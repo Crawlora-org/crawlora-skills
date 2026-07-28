@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Crawlora REST helper — minimal, dependency-free (curl only).
 # Calls https://api.crawlora.net/api/v1 with your Crawlora API key.
-# Get a free key (2,000 credits/mo, no card) at https://crawlora.net.
+# Get a free key (2,000 credits/mo, no card) at https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills.
 #
 # Usage:
 #   GET  :  crawlora.sh /amazon/search k=laptop s=relevanceblender
@@ -13,7 +13,7 @@
 # (or pass it with -d '<json>'). Prints raw JSON to stdout — pipe into `jq`.
 set -euo pipefail
 
-: "${CRAWLORA_API_KEY:?Set CRAWLORA_API_KEY first — get a free key at https://crawlora.net}"
+: "${CRAWLORA_API_KEY:?Set CRAWLORA_API_KEY first — get a free key at https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills}"
 base="${CRAWLORA_API_BASE:-https://api.crawlora.net/api/v1}"
 
 method="GET"
