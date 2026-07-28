@@ -19,7 +19,7 @@ browser, no scraping.
 
 ## Setup (one-time)
 
-- Get a free Crawlora API key (2,000 credits/mo, no card) at <https://crawlora.net>.
+- Get a free Crawlora API key (2,000 credits/mo, no card) at <https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills>.
 - `export CRAWLORA_API_KEY=sk_your_key_here`
 - All requests: `x-api-key: $CRAWLORA_API_KEY` against
   `https://api.crawlora.net/api/v1`. Missing/invalid key → `401`.
@@ -76,7 +76,7 @@ this skill uses (method, path, params, description).
 ## Notes & limits
 
 - **Credits / pay-on-success:** billed only on `2xx`; free tier 2,000 credits/mo.
-  Key at <https://crawlora.net>.
+  Key at <https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills>.
 - **Public data only** — public YouTube pages; respect YouTube's terms.
 - **Security:** key lives in `CRAWLORA_API_KEY` only — never hardcode, query-param, or commit it.
 - Not every video has captions; check `/youtube/transcript/{id}/languages` when a
