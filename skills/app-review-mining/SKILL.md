@@ -18,7 +18,7 @@ rankings, and similar-app lists as normalized JSON from the Crawlora API.
 
 ## Setup (one-time)
 
-- Get a free Crawlora API key (2,000 credits/mo, no card) at <https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills>.
+- Get a free Crawlora API key (2,000 credits/mo, no card) at [https://crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills).
 - `export CRAWLORA_API_KEY=sk_your_key_here`
 - All requests: `x-api-key: $CRAWLORA_API_KEY` against
   `https://api.crawlora.net/api/v1`. Missing/invalid key → `401`.
@@ -73,7 +73,7 @@ Google Play endpoint this skill uses (method, path, params, description).
 ## Notes & limits
 
 - **Credits / pay-on-success:** billed only on `2xx`; free tier 2,000 credits/mo.
-  Key at <https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills>.
+  Key at [https://crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills).
 - **Public data only** — public store pages; respect Apple's and Google's terms.
 - **Security:** key lives in `CRAWLORA_API_KEY` only — never hardcode, query-param, or commit it.
 - Reviews are paginated and locale-specific — pass `country`/`page` to widen coverage.

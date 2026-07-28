@@ -103,8 +103,8 @@ node scripts/validate.mjs        # lint all SKILL.md
 
 ## Links
 
-- Website: https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills · Docs & Playground: https://crawlora.net/docs?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills · https://crawlora.net/playground?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills
-- API base: `https://api.crawlora.net/api/v1` · Pricing: https://crawlora.net/pricing?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills
+- Website: [https://crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills) · Docs & Playground: [https://crawlora.net/docs](https://crawlora.net/docs?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills) · [https://crawlora.net/playground](https://crawlora.net/playground?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills)
+- API base: `https://api.crawlora.net/api/v1` · Pricing: [https://crawlora.net/pricing](https://crawlora.net/pricing?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills)
 - Agent-native MCP server: https://github.com/Crawlora-org/crawlora-mcp
 - Agent Skills (Anthropic): https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview
 
