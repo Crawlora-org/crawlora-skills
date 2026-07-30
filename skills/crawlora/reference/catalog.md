@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**778 endpoints across 62 platform group(s).**
+**795 endpoints across 68 platform group(s).**
 
 ## Airbnb (7)
 
@@ -72,6 +72,20 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve Amazon search suggestions. Returns typeahead keyword suggestions from Amazon's public suggestion API for `amazon.com`.
 - **Params:** `keyword` (string, **required**) — Suggestion prefix
 
+## Amazon Jobs (2)
+
+### `amazon_jobs_job`
+
+- **HTTP:** `GET /amazon-jobs/job`
+- **What:** Amazon Jobs single posting. Returns one Amazon.jobs posting by its numeric job id (the `id` field returned by search). Parsed from amazon.jobs's stable server-rendered job detail page — there is no separate JSON detail endpoint upstream.
+- **Params:** `id` (string, **required**) — Numeric Amazon job id
+
+### `amazon_jobs_search`
+
+- **HTTP:** `GET /amazon-jobs/search`
+- **What:** Amazon Jobs search. Searches Amazon's public careers site (amazon.jobs) via its credential-free search JSON. Each result includes the full description and qualifications inline. `sort` accepts `relevant` (default, upstream relevance ranking) or `recent` (newest posted first). Either `q` or `category` (or both) must be given -- `category` filters by Amazon's own job-category taxonomy and works with no text query at all.
+- **Params:** `category` (string, optional) — Amazon's own job-category taxonomy slug. Either q or category is required; `country` (string, optional) — ISO 3166-1 alpha-3 country code filter; `limit` (integer, optional) — Results per page, max 100 (default 20); `page` (integer, optional) — Page number, 1-based; `q` (string, optional) — Search query. Either q or category is required; `sort` (string, optional) — Sort order
+
 ## Anime (9)
 
 ### `anime_airing_schedule`
@@ -127,6 +141,20 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /anime/title/{id}/staff`
 - **What:** List an anime's staff. Returns the people credited on an anime (name, production role, occupations, image), paginated. Credential-free public AniList data.
 - **Params:** `id` (string, **required**) — AniList anime id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50
+
+## Apple Jobs (2)
+
+### `apple_jobs_job`
+
+- **HTTP:** `GET /apple-jobs/job`
+- **What:** Apple Jobs single posting. Returns one Apple Careers posting by its job id (the `id` field returned by search, e.g. `200674676-0836` for a specific requisition or `PIPE-200314122` for an evergreen/pipeline retail role). Parsed from jobs.apple.com's server-rendered job detail page.
+- **Params:** `id` (string, **required**) — Apple job id
+
+### `apple_jobs_search`
+
+- **HTTP:** `GET /apple-jobs/search`
+- **What:** Apple Jobs search. Searches Apple's public careers site (jobs.apple.com) via its server-rendered search page's embedded job data. Page size is fixed by Apple at 20 results. Search results carry identity/location/team metadata only — call the job endpoint for the full description and qualifications.
+- **Params:** `location` (string, optional) — Location filter in Apple's own slug format, e.g. united-states-USA or singapore-SGP; `page` (integer, optional) — Page number, 1-based; `q` (string, **required**) — Search query
 
 ## AppleBooks (12)
 
@@ -748,7 +776,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** CoinGecko trending highlights. Returns deduped trending coins and categories from the public CoinGecko highlights page. This endpoint supports the documented `vs_currency` enum.
 - **Params:** `limit` (integer, optional) — Rows per section to return, default 20, max 50; `vs_currency` (string, optional) — Quote currency
 
-## Datasets (105)
+## Datasets (109)
 
 ### `datasets_airbnb_facets`
 
@@ -939,26 +967,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_google_map_facets`
 
 - **HTTP:** `GET /datasets/google-map-businesses/facets`
-- **What:** Facet stored Google Maps businesses. Returns terms aggregation counts for Google Maps businesses. Facet enum: `category`, `country`, `state`, `county`, `city`, `town`, `website_status`. `category` values (as a facet or filter) are Google Maps type tokens in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`).
-- **Params:** `category` (string, optional) — Exact category filter: a Google Maps type token in lower-case snake_case (e.g. dentist, bus_stop), max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `facet` (string, **required**) — Facet enum: category, country, state, county, city, town, website_status; `has_geo` (boolean, optional) — Filter by location presence: true keeps only mappable businesses with coordinates; false isolates locationless service-area businesses that have no map location; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering; `lon` (number, optional) — Longitude for radius filtering; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
+- **What:** Facet stored Google Maps businesses. Returns terms aggregation counts for Google Maps businesses. Facet enum: `category`, `country`, `state`, `county`, `city`, `town`, `website_status`. Category facet values are exact locale-specific Google Maps labels and can be localized, non-ASCII, or contain punctuation; pass a returned value unchanged to the category filter.
+- **Params:** `category` (string, optional) — Exact locale-specific Google Maps category label; use the category facet to discover values, max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `facet` (string, **required**) — Facet enum: category, country, state, county, city, town, website_status; `has_geo` (boolean, optional) — Filter by location presence: true keeps only mappable businesses with coordinates; false isolates locationless service-area businesses that have no map location; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering; `lon` (number, optional) — Longitude for radius filtering; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
 
 ### `datasets_google_map_item`
 
 - **HTTP:** `GET /datasets/google-map-businesses/items/{place_id}`
-- **What:** Get a stored Google Maps business. Returns one stored Google Maps business by Google place_id from dataset id enum value `google-map-businesses`. The `category` field is a Google Maps type token in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`). A `rating` of `null` means no aggregate rating is available for that business; read it together with `review_count`. Locationless service-area businesses (online/mobile/home-based) have a `null` `geo`.
+- **What:** Get a stored Google Maps business. Returns one stored Google Maps business by Google place_id from dataset id enum value `google-map-businesses`. The `category` field contains the exact Google Maps category label returned for the business locale and can be localized, non-ASCII, or contain punctuation. A `rating` of `null` means no aggregate rating is available. A `review_count` of `null` means Google did not return a count; numeric `0` means Google confirmed zero reviews. Locationless service-area businesses (online/mobile/home-based) have a `null` `geo`.
 - **Params:** `place_id` (string, **required**) — Google Place ID, max 256 characters
 
 ### `datasets_google_map_nearby`
 
 - **HTTP:** `GET /datasets/google-map-businesses/nearby`
-- **What:** Search nearby stored Google Maps businesses. Searches stored Google Maps businesses near a coordinate in dataset id enum value `google-map-businesses`. `category` is a Google Maps type token in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`), both as the `category` filter and in each result's `category` field. A `rating` of `0` means no aggregate rating is available for that business (not a literal zero-star score); read it together with `review_count`, and note that `min_rating` above 0 excludes unrated businesses.
-- **Params:** `category` (string, optional) — Exact category filter: a Google Maps type token in lower-case snake_case (e.g. dentist, bus_stop), max 128 characters; `lat` (number, **required**) — Latitude; `lon` (number, **required**) — Longitude; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `radius_m` (integer, **required**) — Radius in meters, max 50000
+- **What:** Search nearby stored Google Maps businesses. Searches stored Google Maps businesses near a coordinate in dataset id enum value `google-map-businesses`. `category` is the exact Google Maps category label returned for the business locale; it can be localized, non-ASCII, or contain punctuation, so use the category facet to discover exact filter values. A `rating` of `null` means no aggregate rating is available. A `review_count` of `null` means Google did not return a count; numeric `0` means Google confirmed zero reviews. `min_rating` above 0 excludes unrated businesses.
+- **Params:** `category` (string, optional) — Exact locale-specific Google Maps category label; use the category facet to discover values, max 128 characters; `lat` (number, **required**) — Latitude; `lon` (number, **required**) — Longitude; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `radius_m` (integer, **required**) — Radius in meters, max 50000
 
 ### `datasets_google_map_search`
 
 - **HTTP:** `GET /datasets/google-map-businesses/search`
-- **What:** Search stored Google Maps businesses. Searches Google Maps business records stored in a search index. Sort enum: `relevance`, `updated_at_desc`, `rating_desc`, `review_count_desc`, `distance_asc`. `category` is a Google Maps type token in lower-case snake_case (e.g. `dentist`, `bus_stop`, `atm`), both as the `category` filter and in each result's `category` field. A `rating` of `null` means no aggregate rating is available for that business (too few reviews, or a place type Google does not rate) — it is never a literal zero-star score; read it together with `review_count`, and note that `rating_desc` sorts unrated businesses last and `min_rating` above 0 excludes them. Use `has_geo=false` to isolate locationless service-area businesses (which have a `null` `geo`).
-- **Params:** `category` (string, optional) — Exact category filter: a Google Maps type token in lower-case snake_case (e.g. dentist, bus_stop), max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `has_geo` (boolean, optional) — Filter by location presence: true keeps only mappable businesses with coordinates; false isolates locationless service-area businesses that have no map location; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering or distance sort; `lon` (number, optional) — Longitude for radius filtering or distance sort; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
+- **What:** Search stored Google Maps businesses. Searches Google Maps business records stored in a search index. Sort enum: `relevance`, `updated_at_desc`, `rating_desc`, `review_count_desc`, `distance_asc`. `category` is the exact Google Maps category label returned for the business locale; it can be localized, non-ASCII, or contain punctuation, so use the category facet to discover exact filter values. A `rating` of `null` means no aggregate rating is available. A `review_count` of `null` means Google did not return a count; numeric `0` means Google confirmed zero reviews. `rating_desc` sorts unrated businesses last, and `min_rating` above 0 excludes them. Use `has_geo=false` to isolate locationless service-area businesses (which have a `null` `geo`).
+- **Params:** `category` (string, optional) — Exact locale-specific Google Maps category label; use the category facet to discover values, max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `has_geo` (boolean, optional) — Filter by location presence: true keeps only mappable businesses with coordinates; false isolates locationless service-area businesses that have no map location; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering or distance sort; `lon` (number, optional) — Longitude for radius filtering or distance sort; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
 
 ### `datasets_housing_markets_facets`
 
@@ -977,6 +1005,24 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /datasets/housing-markets/search`
 - **What:** Search the US housing markets dataset. Searches monthly Redfin housing-market statistics per region and property type since 2012, joined to Census ACS income for affordability metrics. region_type enum: `national`, `metro`, `county`, `city`, `zip`. property_type enum: `All Residential`, `Single Family Residential`, `Condo/Co-op`, `Townhouse`, `Multi-Family (2-4 Unit)`, `Single Units Only`. Sort enum: `relevance`, `price_desc`, `price_asc`, `list_price_desc`, `list_price_asc`, `price_to_income_desc`, `price_to_income_asc`, `salary_to_buy_desc`, `salary_to_buy_asc`, `dom_asc`, `dom_desc`, `inventory_desc`, `homes_sold_desc`, `period_desc`. Use `latest=true` for the most recent period per region series.
 - **Params:** `latest` (boolean, optional) — Filter for the most recent period per region and property type; `max_inventory` (integer, optional) — Maximum active inventory; `max_median_dom` (number, optional) — Maximum median days on market; `max_median_list_price` (number, optional) — Maximum median list price in USD; `max_median_sale_price` (number, optional) — Maximum median sale price in USD; `max_price_to_income` (number, optional) — Maximum price-to-income ratio; `max_salary_to_buy` (integer, optional) — Maximum salary needed to buy in USD per year; `min_homes_sold` (integer, optional) — Minimum homes sold in the period; `min_inventory` (integer, optional) — Minimum active inventory; `min_median_dom` (number, optional) — Minimum median days on market; `min_median_list_price` (number, optional) — Minimum median list price in USD; `min_median_sale_price` (number, optional) — Minimum median sale price in USD; `min_price_to_income` (number, optional) — Minimum price-to-income ratio; `min_salary_to_buy` (integer, optional) — Minimum salary needed to buy in USD per year; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `parent_metro_code` (string, optional) — Exact parent metro (CBSA) code filter, e.g. 16980; `period` (string, optional) — Exact period start date filter, YYYY-MM-DD; `property_type` (string, optional) — Property type enum: All Residential, Single Family Residential, Condo/Co-op, Townhouse, Multi-Family (2-4 Unit), Single Units Only; `q` (string, optional) — Full-text query over region name and city, max 256 characters; `region_type` (string, optional) — Region level enum: national, metro, county, city, zip; `sort` (string, optional) — Sort enum: relevance, price_desc, price_asc, list_price_desc, list_price_asc, price_to_income_desc, price_to_income_asc, salary_to_buy_desc, salary_to_buy_asc, dom_asc, dom_desc, inventory_desc, homes_sold_desc, period_desc; `state_code` (string, optional) — Exact two-letter state code filter, e.g. CA; `zip_code` (string, optional) — Exact zip code filter (zip-level rows only), e.g. 60616
+
+### `datasets_instagram_users_facets`
+
+- **HTTP:** `GET /datasets/instagram-users/facets`
+- **What:** Facet the Instagram users dataset. Returns terms aggregation counts for the Instagram users dataset. Facet enum: `is_verified`, `is_business_account`, `has_bio`, `has_external_url`, `category_name`, `source_tier`.
+- **Params:** `category_name` (string, optional) — Exact category filter (case-insensitive, e.g. Digital Creator), max 128 characters; `crawled_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `crawled_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `created_after` (string, optional) — Accounts created on or after this date (RFC3339 or YYYY-MM-DD); `created_before` (string, optional) — Accounts created on or before this date (RFC3339 or YYYY-MM-DD); `facet` (string, **required**) — Facet enum: is_verified, is_business_account, has_bio, has_external_url, category_name, source_tier; `has_bio` (boolean, optional) — Filter by a non-empty profile biography; `has_external_url` (boolean, optional) — Filter by a linked external URL; `is_business_account` (boolean, optional) — Filter by business or creator accounts; `is_verified` (boolean, optional) — Filter by the Instagram verification checkmark; `max_followers` (integer, optional) — Maximum follower count; `max_ratio` (number, optional) — Maximum follower-to-following ratio; `min_followers` (integer, optional) — Minimum follower count; `min_ratio` (number, optional) — Minimum follower-to-following ratio; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over username, full_name and biography, max 256 characters; `sort` (string, optional) — Sort enum: relevance, followers_desc, followers_asc, crawled_at_desc, crawled_at_asc, created_at_desc, created_at_asc; `source_tier` (string, optional) — Exact filter for seed tier (e.g. crossref, vertical-hashtags, mention-graph, head-directory); `username` (string, optional) — Exact username filter (case-insensitive), max 128 characters
+
+### `datasets_instagram_users_item`
+
+- **HTTP:** `GET /datasets/instagram-users/items/{username}`
+- **What:** Get an Instagram user from the dataset. Returns one Instagram user record by username from dataset id enum value `instagram-users`.
+- **Params:** `username` (string, **required**) — Instagram username, with or without a leading @, max 128 characters
+
+### `datasets_instagram_users_search`
+
+- **HTTP:** `GET /datasets/instagram-users/search`
+- **What:** Search the Instagram users dataset. Searches public Instagram user profiles stored in a search index. Sort enum: `relevance`, `followers_desc`, `followers_asc`, `crawled_at_desc`, `crawled_at_asc`, `created_at_desc`, `created_at_asc`.
+- **Params:** `category_name` (string, optional) — Exact category filter (case-insensitive, e.g. Digital Creator), max 128 characters; `crawled_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `crawled_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `created_after` (string, optional) — Accounts created on or after this date (RFC3339 or YYYY-MM-DD); `created_before` (string, optional) — Accounts created on or before this date (RFC3339 or YYYY-MM-DD); `has_bio` (boolean, optional) — Filter by a non-empty profile biography; `has_external_url` (boolean, optional) — Filter by a linked external URL; `is_business_account` (boolean, optional) — Filter by business or creator accounts; `is_verified` (boolean, optional) — Filter by the Instagram verification checkmark; `max_followers` (integer, optional) — Maximum follower count; `max_ratio` (number, optional) — Maximum follower-to-following ratio; `min_followers` (integer, optional) — Minimum follower count; `min_ratio` (number, optional) — Minimum follower-to-following ratio; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over username, full_name and biography, max 256 characters; `sort` (string, optional) — Sort enum: relevance, followers_desc, followers_asc, crawled_at_desc, crawled_at_asc, created_at_desc, created_at_asc; `source_tier` (string, optional) — Exact filter for seed tier (e.g. crossref, vertical-hashtags, mention-graph, head-directory), max 128 characters; `username` (string, optional) — Exact username filter (case-insensitive), max 128 characters
 
 ### `datasets_jobs_companies`
 
@@ -1223,6 +1269,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /datasets/producthunt-trends/search`
 - **What:** Search the Product Hunt trends dataset. Returns aggregate Product Hunt launch trends from the dataset id enum value `producthunt-trends`. Aggregate-only: each row is a category-over-time cell (a topic, optionally within a calendar period), reporting launch count, total and average upvotes, average rating and the top product — never an individual product record. Thin cells are suppressed. group_by enum: `topic_month`, `topic_year`, `topic`. Sort enum: `period_desc`, `period_asc`, `launch_count_desc`, `sum_votes_desc`.
 - **Params:** `group_by` (string, optional) — Aggregate cell dimension enum: topic_month, topic_year, topic. Defaults to topic_month; `launched_after` (string, optional) — Lower bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `launched_before` (string, optional) — Upper bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `min_launches` (integer, optional) — Minimum launches per cell; raises the small-cell suppression floor (never lowered below the built-in minimum); `min_votes` (integer, optional) — Minimum product upvotes, 0 or greater; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: period_desc, period_asc, launch_count_desc, sum_votes_desc; `topic` (string, optional) — Exact topic-slug filter, e.g. artificial-intelligence, max 128 characters
+
+### `datasets_reddit_trending_search`
+
+- **HTTP:** `GET /datasets/reddit-trending/search`
+- **What:** Search the reddit-trending dataset. Searches daily snapshots of each tracked subreddit's hot-feed post order, stored in a search index (one document per subreddit × snapshot × rank) so history accumulates. With no `date` the latest snapshot is returned (today's trending); pair `subreddit` with `sort=date_desc` for a subreddit's trending history over time. There is no score or comment-count field — the underlying credential-free scraper does not expose vote counts, so `rank` reflects Reddit's own hot-feed order rather than a locally computed score.
+- **Params:** `date` (string, optional) — Snapshot date filter yyyy-MM-dd; defaults to the latest snapshot; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over the post title, max 256 characters; `sort` (string, optional) — Sort enum: rank, date_desc; `subreddit` (string, optional) — Exact subreddit-name filter, max 128 characters
 
 ### `datasets_sec_companies_facets`
 
@@ -1517,6 +1569,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /espn/teams`
 - **What:** ESPN team list. Returns the full team list for a sport and league from ESPN's credential-free public JSON. The `sport` enum accepts `football`, `basketball`, `baseball`, `hockey`, and `soccer`. The `league` enum accepts `nfl`, `college-football`, `nba`, `wnba`, `mens-college-basketball`, `womens-college-basketball`, `mlb`, `nhl`, `eng.1`, `esp.1`, `ita.1`, `ger.1`, `fra.1`, `usa.1`, and `uefa.champions`; it must be valid for the chosen sport.
 - **Params:** `league` (string, **required**) — League key (must be valid for the sport); `sport` (string, **required**) — Sport key
+
+## Facebook (1)
+
+### `facebook_page`
+
+- **HTTP:** `GET /facebook/{page}`
+- **What:** Get Facebook page details. Fetches public data about a Facebook Page given its page ID, vanity name, or full page URL: name, follower/like counts, intro, category, business hours/price range, review count, and any public contact details (email, phone, address, website, WhatsApp number) exposed on the Page's About tab.
+- **Params:** `page` (string, **required**) — Facebook Page reference: vanity name, handle, profile.php id, or full Facebook URL
 
 ## Geocoding (3)
 
@@ -1946,12 +2006,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Google video results. Returns normalized Google video vertical results (title, platform, link, duration, age) parsed from the public Google video results page. Locale defaults to country=us and lang=en. Returns 503 when Google serves a challenge page or unusable HTML.
 - **Params:** `count` (integer, optional) — Results per page; defaults to 10, clamped to 1..50; `country` (string, optional) — Two-letter country code; defaults to us; `lang` (string, optional) — Google UI language; defaults to en; `page` (integer, optional) — 1-based page number; defaults to 1; `q` (string, **required**) — Search query
 
-## GooglePlay (10)
+## Google Jobs (2)
+
+### `google_jobs_job`
+
+- **HTTP:** `GET /google-jobs/job`
+- **What:** Google Jobs single posting. Returns one Google Careers posting by its numeric job id (the `id` field returned by search). Parsed from careers.google.com's server-rendered job detail page.
+- **Params:** `id` (string, **required**) — Numeric Google job id
+
+### `google_jobs_search`
+
+- **HTTP:** `GET /google-jobs/search`
+- **What:** Google Jobs search. Searches Google's public careers site (careers.google.com) via its server-rendered search page's embedded job data. Each result includes the description, responsibilities, and qualifications inline. Page size is fixed by Google at 20 results.
+- **Params:** `location` (string, optional) — Location filter (free text); `page` (integer, optional) — Page number, 1-based; `q` (string, **required**) — Search query
+
+## GooglePlay (11)
 
 ### `googleplay_app`
 
 - **HTTP:** `GET /googleplay/app`
-- **What:** Retrieve full Google Play app details. Returns normalized app metadata from a Google Play details page, including installs, ratings, pricing, version info, developer metadata, media assets, release state, and selected user comments. Defaults: `country=us`, `lang=en`.
+- **What:** Retrieve full Google Play app details. Returns normalized app metadata from a Google Play details page, including installs, ratings, pricing, version info, developer metadata, media assets, release state, selected user comments, and "More by this developer" and "Similar apps" recommendation rails. For a per-device (phone/tablet/Chromebook) ratings-and-reviews breakdown, see `/googleplay/ratings`. Defaults: `country=us`, `lang=en`.
 - **Params:** `app_id` (string, **required**) — Google Play package name; `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Two-letter language code
 
 ### `googleplay_categories`
@@ -1976,13 +2050,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /googleplay/list`
 - **What:** Retrieve apps from a Google Play top collection. Returns apps from a Google Play collection and category.
-- **Params:** `age` (string, optional) — Family age range; `category` (string, optional) — Category id; `collection` (string, optional) — Collection: TOP_FREE, TOP_PAID, GROSSING, NEW_FREE, NEW_PAID; `country` (string, optional) — Two-letter country code; `full_detail` (boolean, optional) — Resolve each app to full detail; `lang` (string, optional) — Two-letter language code; `num` (integer, optional) — Number of apps
+- **Params:** `age` (string, optional) — Family age range; `category` (string, optional) — Category id; `collection` (string, optional) — Collection: TOP_FREE, TOP_PAID, GROSSING, NEW_FREE, NEW_PAID; `country` (string, optional) — Two-letter country code; `device` (string, optional) — Google Play device tab: phone, tablet, tv, chromebook, watch, xr, car; `full_detail` (boolean, optional) — Resolve each app to full detail; `lang` (string, optional) — Two-letter language code; `num` (integer, optional) — Number of apps
 
 ### `googleplay_permissions`
 
 - **HTTP:** `GET /googleplay/permissions`
 - **What:** Retrieve Google Play app permissions. Returns Google Play permission groups or a short permission name list.
 - **Params:** `app_id` (string, **required**) — Google Play app id; `country` (string, optional) — Two-letter country code; `lang` (string, optional) — Two-letter language code; `short` (boolean, optional) — Return only permission names
+
+### `googleplay_ratings`
+
+- **HTTP:** `GET /googleplay/ratings`
+- **What:** Get Google Play ratings by device. Returns the ratings-and-reviews breakdown Google Play shows under the details page's device tabs, one entry each for phone, tablet, and Chromebook. Defaults: `country=us`, `lang=en`.
+- **Params:** `app_id` (string, **required**) — Google Play package name; `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Two-letter language code
 
 ### `googleplay_reviews`
 
@@ -2660,6 +2740,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get a manga. Returns a normalized manga by AniList id: titles, MyAnimeList id, scores, popularity, favourites, format, status, chapters, volumes, genres, ranked tags, dates, description, and images. Pass mal=true to additionally enrich the response with the MyAnimeList community score (mal block: score on a 0-10 scale, plus scored-by count), scraped credential-free from the public MAL page. Credential-free public AniList data.
 - **Params:** `id` (string, **required**) — AniList manga id; `mal` (boolean, optional) — Enrich with the MyAnimeList community score (adds one fetch; omitted when the title has no MAL id)
 
+## Meta Jobs (3)
+
+### `meta_jobs_job`
+
+- **HTTP:** `GET /meta-jobs/job`
+- **What:** Meta Jobs single posting. Returns one Meta Careers posting by its numeric job id (the `id` field returned by search or list). Parsed from metacareers.com's server-rendered job detail page.
+- **Params:** `id` (string, **required**) — Meta job id
+
+### `meta_jobs_list`
+
+- **HTTP:** `GET /meta-jobs/list`
+- **What:** Meta Jobs catalog listing. Returns a page of Meta's own public job sitemap -- every open requisition's id, canonical URL, and last-modified timestamp, with no team/location/keyword filtering. Use this for full-catalog enumeration or change tracking via last_modified; use search when you need to filter by team, technology, location, employment type, or keyword.
+- **Params:** `page` (integer, optional) — Page number, 1-based, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 50, maxes at 200
+
+### `meta_jobs_search`
+
+- **HTTP:** `GET /meta-jobs/search`
+- **What:** Meta Jobs search. Searches Meta's public careers site (metacareers.com) via its own anonymous jobsearch GraphQL endpoint, with the same team/technology/location/employment-type/keyword/remote/sort filters the live search page offers. All filters are optional and combine with AND semantics; an empty request returns Meta's entire open-requisition catalog in one response. `q` matches team, technology, location, or ref/req-code names -- it is NOT a free-text search over job titles or descriptions. `teams` enum (org teams + technologies, both use the same field): `Advertising Technology`, `AR/VR`, `Artificial Intelligence`, `Business Development & Partnerships`, `Communications & Public Policy`, `Creative`, `Data & Analytics`, `Data Center`, `Design & User Experience`, `Enterprise Engineering`, `Global Operations`, `Infrastructure`, `Internship - Business`, `Internship - Engineering, Tech & Design`, `Internship - PhD`, `Legal, Finance, Facilities & Admin`, `People & Recruiting`, `Product Management`, `Research`, `Sales & Marketing`, `Security`, `Software Engineering`, `Technical Program Management`, `University Grad - Business`, `University Grad - Engineering, Tech & Design`, `University Grad - PhD & Postdoc`, `Facebook`, `Messenger`, `Instagram`, `WhatsApp`, `Meta Quest`. `roles` enum: `Full time employment`, `Internship`, `Short term employment`. `results_per_page` enum: `all`, `five`, `ten`.
+- **Params:** `is_remote_only` (boolean, optional) — Restrict to remote-only postings; `offices` (array, optional) — Repeatable location-id filter (OR) in Meta's own id format, e.g. menlo-park, london -- not a closed enum; `q` (string, optional) — Facet-name keyword: matches team, technology, location, or ref/req-code -- not a title/description search; `results_per_page` (string, optional) — Response size cap: all, five, ten; `roles` (array, optional) — Repeatable employment-type filter (OR); see roles enum above; `sort_by_new` (boolean, optional) — Sort newest-first instead of relevance; `teams` (array, optional) — Repeatable team-or-technology filter (OR); see teams enum above
+
 ## Metacritic (10)
 
 ### `metacritic_browse`
@@ -3177,8 +3277,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `reddit_comments`
 
 - **HTTP:** `GET /reddit/comments/{id}`
-- **What:** Get Reddit post comments. Returns a Reddit post with its public comments. A post that exists but has no comments yet returns a 200 response with an empty comments list; a post that does not exist returns 404, and a temporary block or upstream failure returns 503 (retryable) rather than 404. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
-- **Params:** `depth` (integer, optional) — Accepted for compatibility. Public comment data is flat and may ignore depth.; `id` (string, **required**) — Reddit post id or t3_ id; `limit` (integer, optional) — Maximum comments returned, defaults to 25 and clamps to 100; `sort` (string, optional) — Accepted for compatibility: confidence, top, new, controversial, old, or qa. Public comment data is flat and may ignore sort.
+- **What:** Get Reddit post comments. Returns a Reddit post with its public comments. The default 1-credit mode uses RSS. Set `include_metrics=true` to use the anonymous HTML post page as the sole content request and return the server-rendered comments with public net score and award count plus post engagement metrics for 3 credits. Large threads may expose only an initial comment subset in anonymous HTML. Reddit does not expose per-comment upvote ratios or exact upvote/downvote totals anonymously. A post that exists but has no comments yet returns a 200 response with an empty comments list; a post that does not exist returns 404, and a temporary block or upstream failure returns 503 (retryable) rather than 404.
+- **Params:** `depth` (integer, optional) — Maximum flat comment depth returned in metrics mode.; `id` (string, **required**) — Reddit post id or t3_ id; `include_metrics` (boolean, optional) — Include public post and per-comment engagement metrics; costs 3 credits instead of 1; `limit` (integer, optional) — Maximum comments returned, defaults to 25 and clamps to 100; `sort` (string, optional) — Comment order: confidence, top, new, controversial, old, or qa. Applied to the anonymous HTML request when metrics are enabled.
 
 ### `reddit_domain_posts`
 
@@ -3189,8 +3289,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `reddit_post`
 
 - **HTTP:** `GET /reddit/post/{id}`
-- **What:** Get Reddit post. Returns a normalized public Reddit post entry. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
-- **Params:** `id` (string, **required**) — Reddit post id or t3_ id
+- **What:** Get Reddit post. Returns a normalized public Reddit post. The default 1-credit mode uses RSS. Set `include_metrics=true` to use the anonymous HTML post page as the sole content request and return public net score, upvote ratio, comment count, award count, and estimated upvote/downvote totals for 3 credits. Reddit fuzzes voting data, so estimates are approximate; share, repost/crosspost, and view counts are not exposed anonymously.
+- **Params:** `id` (string, **required**) — Reddit post id or t3_ id; `include_metrics` (boolean, optional) — Include public engagement metrics; costs 3 credits instead of 1
 
 ### `reddit_search`
 
@@ -4021,6 +4121,20 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /steam/top-sellers`
 - **What:** Get Steam's weekly top-sellers chart for a country. Returns the store's weekly top-sellers chart for a country, each rank carrying the full store item (name, price, weighted community tags, review summary, platforms). cc selects the country whose sales ranking and currency are returned. Credential-free public Steam store top-sellers API.
 - **Params:** `cc` (string, optional) — Country code (ISO) whose weekly sales ranking is returned; `l` (string, optional) — Steam store language name
+
+## Tesla Jobs (2)
+
+### `tesla_jobs_job`
+
+- **HTTP:** `GET /tesla-jobs/job`
+- **What:** Tesla Jobs single posting. Returns one Tesla Careers posting by its numeric job id (the `id` field returned by the list endpoint). Parsed from tesla.com's own job detail JSON endpoint.
+- **Params:** `id` (string, **required**) — Tesla job id
+
+### `tesla_jobs_list`
+
+- **HTTP:** `GET /tesla-jobs/list`
+- **What:** Tesla Jobs listing. Searches Tesla's public careers site (tesla.com/careers) via its own careers-state JSON endpoint. Tesla's own endpoint always returns its entire global job dataset regardless of query parameters; this filters and paginates that snapshot server-side. Listings carry identity/department/location metadata only — call the job endpoint for the full description, responsibilities, and requirements.
+- **Params:** `location` (string, optional) — Filter by location, case-insensitive substring match; `page` (integer, optional) — Page number, 1-based; `page_size` (integer, optional) — Results per page, up to 100; `query` (string, optional) — Filter by title or department, case-insensitive substring match
 
 ## Threads (5)
 

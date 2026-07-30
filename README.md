@@ -24,7 +24,7 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 
 | Skill | What it does | Platforms |
 |---|---|---|
-| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured data from **any** of the 733 Crawlora endpoints; teaches auth, credits, and the full catalog. | all 61 |
+| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured data from **any** of the 795 Crawlora endpoints; teaches auth, credits, and the full catalog. | all 68 |
 | [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace reviews. | Amazon, eBay, Shopify, Shop.app |
 | [`youtube-research`](skills/youtube-research) | Transcripts, comments, video/channel metadata, search — no `yt-dlp`. | YouTube |
 | [`app-review-mining`](skills/app-review-mining) | App details, reviews, ratings, rankings, similar apps (ASO). | App Store, Google Play |
