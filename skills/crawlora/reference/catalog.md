@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**827 endpoints across 71 platform group(s).**
+**828 endpoints across 71 platform group(s).**
 
 ## Airbnb (7)
 
@@ -4506,7 +4506,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve TikTok trending posts. Returns the current TikTok trending feed.
 - **Params:** _none_
 
-## TMDB (6)
+## TMDB (7)
 
 ### `tmdb_movie`
 
@@ -4518,7 +4518,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /tmdb/movie/list`
 - **What:** Get a TMDB movie chart. Returns a TMDB movie chart (popular, top rated, now playing, or upcoming). Credential-free public TMDB data.
-- **Params:** `category` (string, optional) — Movie chart, default popular; `limit` (integer, optional) — Max movies, default 10, max 20
+- **Params:** `category` (string, optional) — Movie chart, default popular; `date_from` (string, optional) — Release date lower bound (YYYY-MM-DD); `date_to` (string, optional) — Release date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max movies, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TMDB genre ids
 
 ### `tmdb_person`
 
@@ -4526,11 +4526,17 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get a TMDB person. Returns a normalized TMDB person: biography, birth date, photo, and filmography (movie and TV credits). Credential-free public TMDB data.
 - **Params:** `id` (string, **required**) — TMDB person id; `limit` (integer, optional) — Max filmography credits, default 10, max 20
 
+### `tmdb_person_list`
+
+- **HTTP:** `GET /tmdb/person/list`
+- **What:** List popular people on TMDB. Returns one page from TMDB's Popular People directory, including each person's id, name, known-for titles, profile image, and detail URL. Credential-free public TMDB data.
+- **Params:** `limit` (integer, optional) — Max people, default 10, max 20; `page` (integer, optional) — 1-based page, default 1
+
 ### `tmdb_search`
 
 - **HTTP:** `GET /tmdb/search`
 - **What:** Search TMDB. Searches TMDB movies, TV shows, and people. An unscoped query interleaves results across all three types rather than returning whichever type happens to rank first upstream. Credential-free public TMDB data.
-- **Params:** `limit` (integer, optional) — Max results, default 10, max 20; `query` (string, **required**) — Search query; `type` (string, optional) — Optional result type filter
+- **Params:** `limit` (integer, optional) — Max results, default 10, max 20; `page` (integer, optional) — 1-based results page, default 1; `query` (string, **required**) — Search query; `type` (string, optional) — Optional result type filter
 
 ### `tmdb_tv`
 
@@ -4542,7 +4548,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /tmdb/tv/list`
 - **What:** Get a TMDB TV chart. Returns a TMDB TV chart (popular, top rated, airing today, or on the air). Credential-free public TMDB data.
-- **Params:** `category` (string, optional) — TV chart, default popular; `limit` (integer, optional) — Max shows, default 10, max 20
+- **Params:** `category` (string, optional) — TV chart, default popular; `date_from` (string, optional) — First-air date lower bound (YYYY-MM-DD); `date_to` (string, optional) — First-air date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max shows, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TMDB genre ids
 
 ## TripAdvisor (6)
 
