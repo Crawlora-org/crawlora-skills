@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**795 endpoints across 68 platform group(s).**
+**827 endpoints across 71 platform group(s).**
 
 ## Airbnb (7)
 
@@ -1027,19 +1027,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_jobs_companies`
 
 - **HTTP:** `GET /datasets/jobs/companies`
-- **What:** Find which companies are hiring. Searches the discovered company board registry — which companies are hiring, on which ATS, with how many open roles. provider enum: `greenhouse`, `lever`, `ashby`, `workday`, `smartrecruiters`, `workable`, `recruitee`, `rippling`, `personio`, `teamtailor`, `oracle`, `ukg`, `icims`, `eightfold`, `gem`, `pinpoint`. status enum: `active`, `empty`, `gone`, `blocked`, `pending`, `invalid`. sort enum: `open_desc`, `company_asc`, `crawled_desc`.
-- **Params:** `min_open_roles` (integer, optional) — Minimum open roles; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; `provider` (string, optional) — ATS provider filter; `q` (string, optional) — Match on company name / domain; `sort` (string, optional) — Sort enum: open_desc, company_asc, crawled_desc; `status` (string, optional) — Board status. Enum: active, empty, gone, blocked, pending, invalid
+- **What:** Find which companies are hiring. Searches the discovered company board registry — which companies are hiring, on which ATS (or, for the 5 single-company big-tech providers, which platform), with how many open roles. Set sponsors_visa=true to keep companies with certified employer filings in recent public U.S. Department of Labor LCA disclosure data. This is company-level historical evidence, not a guarantee for a specific role or candidate. provider enum: `greenhouse`, `lever`, `ashby`, `workday`, `smartrecruiters`, `workable`, `recruitee`, `rippling`, `personio`, `teamtailor`, `oracle`, `ukg`, `icims`, `eightfold`, `gem`, `pinpoint`, `amazon-jobs`, `apple-jobs`, `google-jobs`, `meta-jobs`, `tesla-jobs`. status enum: `active`, `empty`, `gone`, `blocked`, `pending`, `invalid`. sort enum: `open_desc`, `company_asc`, `crawled_desc`.
+- **Params:** `min_open_roles` (integer, optional) — Minimum open roles; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; `provider` (string, optional) — Provider filter; `q` (string, optional) — Match on company name / domain; `sort` (string, optional) — Sort enum: open_desc, company_asc, crawled_desc; `sponsors_visa` (boolean, optional) — Keep companies with recent certified DOL LCA filings (default false); `status` (string, optional) — Board status. Enum: active, empty, gone, blocked, pending, invalid
 
 ### `datasets_jobs_company_item`
 
 - **HTTP:** `GET /datasets/jobs/companies/{id}`
-- **What:** Get a single company by board id. Returns one discovered company board by its dataset board id. When the board carries a known domain (currently populated for iCIMS and Eightfold boards; most Common-Crawl-discovered boards do not), the response also includes a `tech_stack` field joined from the website tech-stack dataset -- a firmographic hint, not a guess: it is only attached when a structural domain signal exists. Returns 404 when the board id is not in the registry.
+- **What:** Get a single company by board id. Returns one discovered company board by its dataset board id. When the company name matches recent public U.S. Department of Labor LCA disclosure data, the response includes `lca_sponsorship` with filing counts and observed fiscal-quarter range; this is company-level historical evidence, not a guarantee for a specific role or candidate. When the board carries a known domain, the response also includes a `tech_stack` firmographic hint. Returns 404 when the board id is not in the registry.
 - **Params:** `id` (string, **required**) — Dataset board id
 
 ### `datasets_jobs_facets`
 
 - **HTTP:** `GET /datasets/jobs/facets`
-- **What:** Facet the jobs dataset (hiring market aggregates). Aggregations over all open postings: top companies hiring, breakdown by ATS provider, department, location, employment type, and the remote share — a live hiring-market snapshot.
+- **What:** Facet the jobs dataset (hiring market aggregates). Aggregations over all open postings: top companies hiring, breakdown by provider (every provider filterable via /datasets/jobs/search's `provider` param), department, location, employment type, skill, benefit, education, security clearance, seniority, and ESCO/ISCO job family, plus the remote share — a live hiring-market snapshot. Seniority uses one mutually exclusive value: `entry`, `mid`, or `senior`; ambiguous occupations are omitted from job-family buckets.
 - **Params:** `size` (integer, optional) — Buckets per facet, default 20, max 100
 
 ### `datasets_jobs_item`
@@ -1051,14 +1051,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_jobs_nearby`
 
 - **HTTP:** `GET /datasets/jobs/nearby`
-- **What:** Find postings near a coordinate. Finds crawled job postings within `radius_km` of a `lat`/`lon`, nearest first. Only geocoded postings participate (the geo-enrich worker back-fills coordinates from each posting's location). Open roles only by default. provider enum: `greenhouse`, `lever`, `ashby`, `workday`, `smartrecruiters`, `workable`, `recruitee`, `rippling`, `personio`, `teamtailor`, `oracle`, `ukg`, `icims`, `eightfold`, `gem`, `pinpoint`.
-- **Params:** `include_closed` (boolean, optional) — Include closed/filled roles (default false); `lat` (number, **required**) — Latitude, -90..90; `lon` (number, **required**) — Longitude, -180..180; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; `provider` (string, optional) — ATS provider filter; `radius_km` (number, optional) — Search radius in km, default 50, max 500
+- **What:** Find postings near a coordinate. Finds crawled job postings within `radius_km` of a `lat`/`lon`, nearest first. Only geocoded postings participate (the geo-enrich worker back-fills coordinates from each posting's location). Open roles only by default. provider enum: `greenhouse`, `lever`, `ashby`, `workday`, `smartrecruiters`, `workable`, `recruitee`, `rippling`, `personio`, `teamtailor`, `oracle`, `ukg`, `icims`, `eightfold`, `gem`, `pinpoint`, `amazon-jobs`, `apple-jobs`, `google-jobs`, `meta-jobs`, `tesla-jobs`.
+- **Params:** `include_closed` (boolean, optional) — Include closed/filled roles (default false); `lat` (number, **required**) — Latitude, -90..90; `lon` (number, **required**) — Longitude, -180..180; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; `provider` (string, optional) — Provider filter; `radius_km` (number, optional) — Search radius in km, default 50, max 500
 
 ### `datasets_jobs_search`
 
 - **HTTP:** `GET /datasets/jobs/search`
-- **What:** Search the jobs dataset (all companies' live postings). Full-text + faceted search over every job posting crawled from every discovered company ATS board (Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Workable, Recruitee, Rippling, Personio, Teamtailor, Oracle, UKG, iCIMS, Eightfold, Gem, Pinpoint). Open roles only by default (set include_closed=true for historical/filled roles). Salary is parsed from a structured field when the provider has one, or from an explicit pay figure stated in the description otherwise, so coverage varies by posting rather than by provider; min_salary/max_salary filter on it and require salary_currency, since comparing raw compensation numbers across currencies is meaningless. Location is also exposed as structured city/state/country fields alongside the free-text location string, so city/state/country filter on an exact match of those parsed components rather than substring-matching the display string. provider enum: `greenhouse`, `lever`, `ashby`, `workday`, `smartrecruiters`, `workable`, `recruitee`, `rippling`, `personio`, `teamtailor`, `oracle`, `ukg`, `icims`, `eightfold`, `gem`, `pinpoint`. workplace_type enum: `onsite`, `hybrid`, `remote`. sort enum: `relevance`, `posted_desc`, `company_asc`.
-- **Params:** `city` (string, optional) — Exact city filter (parsed location component); `company` (string, optional) — Company name match; `country` (string, optional) — Exact country filter (parsed location component); ISO country code or name, matched case-insensitively; `department` (string, optional) — Exact department filter; `employment_type` (string, optional) — Exact employment-type filter; `include_closed` (boolean, optional) — Include closed/filled roles (default false = open only); `location` (string, optional) — Location match; `max_salary` (number, optional) — Maximum salary (matches postings whose range starts at or below this); requires salary_currency; `min_salary` (number, optional) — Minimum salary (matches postings whose range reaches at least this); requires salary_currency; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; page*page_size must be <= 10000; `provider` (string, optional) — ATS provider filter; `q` (string, optional) — Full-text over title, company, description; `remote` (boolean, optional) — Filter by remote (true or false); `salary_currency` (string, optional) — 3-letter ISO currency code (e.g. USD) the min_salary/max_salary bounds are in; required when either bound is set; `sort` (string, optional) — Sort enum: relevance, posted_desc, company_asc; `state` (string, optional) — Exact state/region filter (parsed location component); `workplace_type` (string, optional) — Workplace type filter
+- **What:** Search the jobs dataset (all companies' live postings). Full-text + faceted search over every job posting crawled from every discovered company ATS board (Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Workable, Recruitee, Rippling, Personio, Teamtailor, Oracle, UKG, iCIMS, Eightfold, Gem, Pinpoint) plus 5 single-company big-tech careers platforms (Amazon, Apple, Google, Meta, Tesla). Open roles only by default (set include_closed=true for historical/filled roles). Salary is parsed from a structured field when the provider has one, or from an explicit pay figure stated in the description otherwise, so coverage varies by posting rather than by provider; min_salary/max_salary filter on it and require salary_currency, since comparing raw compensation numbers across currencies is meaningless. Location is also exposed as structured city/state/country fields alongside the free-text location string, so city/state/country filter on an exact match of those parsed components rather than substring-matching the display string. job_family is an exact level-2 ISCO family label assigned from ESCO occupation evidence; ambiguous postings remain unclassified and do not match that filter. employment_type is never populated for google-jobs/meta-jobs, and posted_at (so sort=posted_desc) is never populated for meta-jobs/tesla-jobs -- their upstream APIs expose no such field. provider enum: `greenhouse`, `lever`, `ashby`, `workday`, `smartrecruiters`, `workable`, `recruitee`, `rippling`, `personio`, `teamtailor`, `oracle`, `ukg`, `icims`, `eightfold`, `gem`, `pinpoint`, `amazon-jobs`, `apple-jobs`, `google-jobs`, `meta-jobs`, `tesla-jobs`. workplace_type enum: `onsite`, `hybrid`, `remote`. sort enum: `relevance`, `posted_desc`, `company_asc`.
+- **Params:** `city` (string, optional) — Exact city filter (parsed location component); `company` (string, optional) — Company name match; `country` (string, optional) — Exact country filter (parsed location component); ISO country code or name, matched case-insensitively; `department` (string, optional) — Exact department filter; `employment_type` (string, optional) — Exact employment-type filter; `include_closed` (boolean, optional) — Include closed/filled roles (default false = open only); `job_family` (string, optional) — Exact ESCO/ISCO job-family label filter; `location` (string, optional) — Location match; `max_salary` (number, optional) — Maximum salary (matches postings whose range starts at or below this); requires salary_currency; `min_salary` (number, optional) — Minimum salary (matches postings whose range reaches at least this); requires salary_currency; `page` (integer, optional) — Page number, default 1; `page_size` (integer, optional) — Page size, default 20, max 100; page*page_size must be <= 10000; `provider` (string, optional) — Provider filter; `q` (string, optional) — Full-text over title, company, description; `remote` (boolean, optional) — Filter by remote (true or false); `salary_currency` (string, optional) — 3-letter ISO currency code (e.g. USD) the min_salary/max_salary bounds are in; required when either bound is set; `sort` (string, optional) — Sort enum: relevance, posted_desc, company_asc; `state` (string, optional) — Exact state/region filter (parsed location component); `workplace_type` (string, optional) — Workplace type filter
 
 ### `datasets_journalists_facets`
 
@@ -2890,6 +2890,80 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Metaculus tournament questions. Returns normalized Metaculus question rows for one public tournament, filtered by its slug. A slug that does not exist returns 404.
 - **Params:** `limit` (integer, optional) — Rows to return, default 10, max 25; `slug` (string, **required**) — Metaculus tournament slug
 
+## MLB (12)
+
+### `mlb_game`
+
+- **HTTP:** `GET /mlb/game`
+- **What:** Get an MLB game feed. Returns a compact MLB game feed with status, teams, score, innings, probable pitchers, decisions, and team box-score totals.
+- **Params:** `id` (string, **required**) — Numeric MLB game id
+
+### `mlb_game_boxscore`
+
+- **HTTP:** `GET /mlb/game-boxscore`
+- **What:** Get an MLB player boxscore. Returns both teams' player batting, pitching, and fielding lines for a game.
+- **Params:** `id` (string, **required**) — Numeric MLB game id
+
+### `mlb_game_play_by_play`
+
+- **HTTP:** `GET /mlb/game-play-by-play`
+- **What:** Get MLB game play-by-play. Returns every at-bat and pitch/event record for an MLB game.
+- **Params:** `id` (string, **required**) — Numeric MLB game id
+
+### `mlb_league_stats`
+
+- **HTTP:** `GET /mlb/league-stats`
+- **What:** Get ranked MLB league statistics. Returns ranked MLB season stat splits across both leagues. The group enum accepts `hitting`, `pitching`, and `fielding`.
+- **Params:** `group` (string, **required**) — Stat group; `limit` (integer, optional) — Results to return (1-100); `season` (integer, optional) — Four-digit season; defaults to current year
+
+### `mlb_player`
+
+- **HTTP:** `GET /mlb/player`
+- **What:** Get an MLB player. Returns an MLB player's identity, biographical information, position, handedness, active status, and current team.
+- **Params:** `id` (string, **required**) — Numeric MLB player id
+
+### `mlb_player_stats`
+
+- **HTTP:** `GET /mlb/player-stats`
+- **What:** Get MLB player season statistics. Returns one player's MLB season statistics. The group enum accepts `hitting`, `pitching`, and `fielding`.
+- **Params:** `group` (string, **required**) — Stat group; `id` (string, **required**) — Numeric MLB player id; `season` (integer, optional) — Four-digit season; defaults to current year
+
+### `mlb_schedule`
+
+- **HTTP:** `GET /mlb/schedule`
+- **What:** Get the MLB schedule and scores. Returns MLB games, teams, scores, status, probable pitchers, venue, and series information for one date or date range, optionally filtered to a team.
+- **Params:** `date` (string, optional) — Single date in YYYY-MM-DD format; `end_date` (string, optional) — Range end in YYYY-MM-DD format; `start_date` (string, optional) — Range start in YYYY-MM-DD format; `team_id` (string, optional) — Numeric MLB team id
+
+### `mlb_standings`
+
+- **HTTP:** `GET /mlb/standings`
+- **What:** Get MLB standings. Returns American League and National League standings grouped by division. The type enum accepts `regularSeason`, `wildCard`, and `springTraining`.
+- **Params:** `season` (integer, optional) — Four-digit season; defaults to current year; `type` (string, optional) — Standings type
+
+### `mlb_team_roster`
+
+- **HTTP:** `GET /mlb/team-roster`
+- **What:** Get an MLB team roster. Returns a team's players, jersey numbers, positions, and roster status. The roster_type enum accepts `active`, `40Man`, and `fullSeason`.
+- **Params:** `roster_type` (string, optional) — Roster type; `season` (integer, optional) — Four-digit season; defaults to current year; `team_id` (string, **required**) — Numeric MLB team id
+
+### `mlb_team_stats`
+
+- **HTTP:** `GET /mlb/team-stats`
+- **What:** Get MLB team season statistics. Returns one team's season statistics. Group accepts `hitting`, `pitching`, and `fielding`.
+- **Params:** `group` (string, **required**) — Statistics group; `season` (integer, optional) — Four-digit season; `team_id` (string, **required**) — Numeric MLB team id
+
+### `mlb_teams`
+
+- **HTTP:** `GET /mlb/teams`
+- **What:** List MLB teams. Returns the 30 MLB clubs for a season with league, division, venue, and abbreviation metadata.
+- **Params:** `season` (integer, optional) — Four-digit season; defaults to current year
+
+### `mlb_transactions`
+
+- **HTTP:** `GET /mlb/transactions`
+- **What:** List MLB transactions. Lists signings, trades, options, assignments, injured-list moves, and other MLB transactions for a date range.
+- **Params:** `end_date` (string, **required**) — Range end in YYYY-MM-DD format; `player_id` (string, optional) — Numeric MLB player id; `start_date` (string, **required**) — Range start in YYYY-MM-DD format; `team_id` (string, optional) — Numeric MLB team id
+
 ## Numbeo (8)
 
 ### `numbeo_cost_of_living_city`
@@ -4122,6 +4196,50 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Steam's weekly top-sellers chart for a country. Returns the store's weekly top-sellers chart for a country, each rank carrying the full store item (name, price, weighted community tags, review summary, platforms). cc selects the country whose sales ranking and currency are returned. Credential-free public Steam store top-sellers API.
 - **Params:** `cc` (string, optional) — Country code (ISO) whose weekly sales ranking is returned; `l` (string, optional) — Steam store language name
 
+## Target (7)
+
+### `target_categories`
+
+- **HTTP:** `GET /target/categories`
+- **What:** List all Target categories. Returns Target's current top-level category menu and the complete grouped shop-all directory, including category ids and canonical URLs.
+- **Params:** _none_
+
+### `target_category_products`
+
+- **HTTP:** `GET /target/category-products`
+- **What:** Browse Target category products. Returns paginated products for any category id from target-categories. Each response also contains every available dynamic filter group and option. Pass selected option ids through filter_ids as a comma-separated list. The sort enum accepts `relevance`, `featured`, `price-low`, `price-high`, `rating`, `bestselling`, and `newest`.
+- **Params:** `category_id` (string, **required**) — Target category id; `filter_ids` (string, optional) — Comma-separated Target filter option ids; `page` (integer, optional) — One-based page (1-50); `sort` (string, optional) — Result order; `store_id` (integer, optional) — Target store id used for pricing
+
+### `target_filter_options`
+
+- **HTTP:** `GET /target/filter-options`
+- **What:** List Target filter options. Returns every dynamic filter group and option for either a product query or category. Provide exactly one of q or category_id. Pass currently selected option ids through filter_ids to obtain the remaining context-aware options.
+- **Params:** `category_id` (string, optional) — Target category id; mutually exclusive with q; `filter_ids` (string, optional) — Comma-separated selected Target filter option ids; `q` (string, optional) — Product search query; mutually exclusive with category_id; `store_id` (integer, optional) — Target store id used for pricing
+
+### `target_product`
+
+- **HTTP:** `GET /target/product`
+- **What:** Get a Target product. Returns normalized product details for one Target item, including product content, images, price, rating, category, and availability flags for the selected store.
+- **Params:** `store_id` (integer, optional) — Target store id used for pricing and availability; `tcin` (string, **required**) — Numeric Target item id (TCIN)
+
+### `target_questions`
+
+- **HTTP:** `GET /target/questions`
+- **What:** List Target product questions and answers. Returns paginated product questions with their nested answers.
+- **Params:** `page` (integer, optional) — Zero-based page; `per_page` (integer, optional) — Questions per page; `tcin` (string, **required**) — Numeric Target item id
+
+### `target_reviews`
+
+- **HTTP:** `GET /target/reviews`
+- **What:** List Target product reviews. Returns paginated written reviews for a Target item. Pagination is zero-based and page 50 is the upstream maximum.
+- **Params:** `page` (integer, optional) — Zero-based page; `per_page` (integer, optional) — Reviews per page; `tcin` (string, **required**) — Numeric Target item id
+
+### `target_search`
+
+- **HTTP:** `GET /target/search`
+- **What:** Search Target products. Searches Target products and returns normalized products plus every filter group and option available for the current result set. Pass option ids back through filter_ids as a comma-separated list. A zero total with an empty products list is a valid no-results response. The sort enum accepts `relevance`, `featured`, `price-low`, `price-high`, `rating`, `bestselling`, and `newest`.
+- **Params:** `filter_ids` (string, optional) — Comma-separated Target filter option ids; `page` (integer, optional) — One-based page (1-50); `q` (string, **required**) — Product search query; `sort` (string, optional) — Result order; `store_id` (integer, optional) — Target store id used for pricing
+
 ## Tesla Jobs (2)
 
 ### `tesla_jobs_job`
@@ -4168,7 +4286,75 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search public Threads posts. Returns the public first page of Threads search results for a query. Logged-out search does not expose a continuation cursor.
 - **Params:** `q` (string, **required**) — Search query (1-100 characters)
 
-## TikTok (23)
+## Ticketmaster (11)
+
+### `ticketmaster_attraction`
+
+- **HTTP:** `GET /ticketmaster/attraction`
+- **What:** Get a Ticketmaster attraction. Returns normalized details for one Ticketmaster artist, team, or other attraction.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster attraction id
+
+### `ticketmaster_attraction_events`
+
+- **HTTP:** `GET /ticketmaster/attraction-events`
+- **What:** List an attraction's Ticketmaster events. Returns upcoming Ticketmaster events for one attraction. The sort enum accepts `relevance` and `date`.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster attraction id; `page` (integer, optional) — Zero-based page (0-49); `sort` (string, optional) — Result order
+
+### `ticketmaster_discover_categories`
+
+- **HTTP:** `GET /ticketmaster/discover-categories`
+- **What:** List Ticketmaster discover categories. Lists every current Concerts, Sports, Arts & Theater, and Family category with pagination. Section accepts `all`, `concerts`, `sports`, `arts-theater`, and `family`.
+- **Params:** `page` (integer, optional) — One-based page; `per_page` (integer, optional) — Categories per page; `section` (string, optional) — Discover section
+
+### `ticketmaster_discover_category_events`
+
+- **HTTP:** `GET /ticketmaster/discover-category-events`
+- **What:** List events in a Ticketmaster discover category. Returns a zero-based paginated event feed for any category returned by ticketmaster-discover-categories.
+- **Params:** `category_id` (string, **required**) — Ticketmaster discover category id; `page` (integer, optional) — Zero-based page
+
+### `ticketmaster_discover_cities`
+
+- **HTTP:** `GET /ticketmaster/discover-cities`
+- **What:** List Ticketmaster discover cities. Lists Ticketmaster city discovery destinations for a country with pagination.
+- **Params:** `country` (string, optional) — Two-letter country code; `page` (integer, optional) — One-based page; `per_page` (integer, optional) — Cities per page
+
+### `ticketmaster_discover_city_events`
+
+- **HTTP:** `GET /ticketmaster/discover-city-events`
+- **What:** List events in a Ticketmaster discover city. Returns a zero-based paginated event feed for a city slug returned by ticketmaster-discover-cities.
+- **Params:** `city` (string, **required**) — Ticketmaster discover city slug; `country` (string, optional) — Two-letter country code matching the selected city; `page` (integer, optional) — Zero-based page
+
+### `ticketmaster_event`
+
+- **HTTP:** `GET /ticketmaster/event`
+- **What:** Get a Ticketmaster event. Returns normalized details for one Ticketmaster event, including its venue, attractions, timing, availability flags, and classification.
+- **Params:** `id` (string, **required**) — Ticketmaster event id
+
+### `ticketmaster_search_events`
+
+- **HTTP:** `GET /ticketmaster/search-events`
+- **What:** Search Ticketmaster events. Searches Ticketmaster events by artist, event, team, or venue. A zero total with an empty events list is a valid no-results response. The sort enum accepts `relevance` and `date`.
+- **Params:** `page` (integer, optional) — Zero-based page (0-49); `q` (string, **required**) — Artist, event, team, or venue query; `sort` (string, optional) — Result order
+
+### `ticketmaster_suggest`
+
+- **HTTP:** `GET /ticketmaster/suggest`
+- **What:** Suggest Ticketmaster artists, events, and venues. Returns autocomplete suggestions for a partial query.
+- **Params:** `q` (string, **required**) — Partial artist, event, team, or venue query
+
+### `ticketmaster_venue`
+
+- **HTTP:** `GET /ticketmaster/venue`
+- **What:** Get a Ticketmaster venue. Returns normalized details and visitor information for one Ticketmaster venue.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster venue id
+
+### `ticketmaster_venue_events`
+
+- **HTTP:** `GET /ticketmaster/venue-events`
+- **What:** List a venue's Ticketmaster events. Returns upcoming Ticketmaster events at one venue. The sort enum accepts `relevance` and `date`.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster venue id; `page` (integer, optional) — Zero-based page (0-49); `sort` (string, optional) — Result order
+
+## TikTok (25)
 
 ### `tiktok_category`
 
@@ -4193,6 +4379,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /tiktok/comments`
 - **What:** Retrieve TikTok video comments. Returns top-level TikTok video comments with cursor-based pagination.
 - **Params:** `aweme_id` (string, **required**) — TikTok video id from the video URL; `cursor` (integer, optional) — Pagination cursor
+
+### `tiktok_creative_center_hashtags`
+
+- **HTTP:** `GET /tiktok/creative-center/hashtags`
+- **What:** Retrieve TikTok Creative Center trending hashtags. Returns TikTok Creative Center's ranked trending hashtags for a country and period. TikTok gates this endpoint's full result set behind a logged-in TikTok One account: an anonymous request always receives at most 3 hashtags regardless of country or period.
+- **Params:** `country_code` (string, **required**) — ISO-2 country code; `period` (integer, optional) — Lookback window in days
+
+### `tiktok_creative_center_videos`
+
+- **HTTP:** `GET /tiktok/creative-center/videos`
+- **What:** Retrieve TikTok Creative Center trending videos. Returns TikTok Creative Center's ranked trending videos for a country, period, and sort order. TikTok reports the true result-set size (see total_count/page_count in the response) but gates access to it behind a logged-in TikTok One account: an anonymous request always receives page 1 (4 videos) regardless of sort order or period. Country coverage is uneven: US, JP, ID, VN, and TH reliably return populated results; other countries have been observed to return an empty videos array (a genuine no-data response, not an error).
+- **Params:** `content_label_id` (string, optional) — Content tag id to filter by; `country_code` (string, **required**) — ISO-2 country code; `organic_only` (boolean, optional) — Restrict to organic (non-paid) videos only; `period` (integer, optional) — Lookback window in days; `sort_by` (string, optional) — Sort order
 
 ### `tiktok_explore`
 
