@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**828 endpoints across 71 platform group(s).**
+**841 endpoints across 72 platform group(s).**
 
 ## Airbnb (7)
 
@@ -1476,6 +1476,68 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the Discogs database. Searches Discogs releases, masters, artists, and labels. Credential-free official Discogs database data.
 - **Params:** `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 50, max 100; `q` (string, **required**) — Search query; `type` (string, optional) — Result type filter
 
+## DoorDash (10)
+
+### `doordash_feed`
+
+- **HTTP:** `GET /doordash/feed`
+- **What:** Get DoorDash store discovery feed. Returns nearby trending restaurants, grocery stores, and promotional offers from the Android mobile guest experience for a location. No DoorDash account or caller-supplied token is required.
+- **Params:** `latitude` (number, **required**) — Consumer latitude; `limit` (integer, optional) — Max stores to return; `longitude` (number, **required**) — Consumer longitude; `offset` (integer, optional) — Feed offset
+
+### `doordash_search`
+
+- **HTTP:** `GET /doordash/search`
+- **What:** Search DoorDash pickup restaurants. Searches the Android mobile guest catalog for pickup restaurants near a location and supports optional result filters. No DoorDash account or caller-supplied token is required.
+- **Params:** `asapOnly` (boolean, optional) — Keep only stores currently available ASAP; `dashPassOnly` (boolean, optional) — Keep only DashPass-eligible stores; `latitude` (number, **required**) — Consumer latitude; `longitude` (number, **required**) — Consumer longitude; `maxDistanceMiles` (number, optional) — Maximum displayed distance in miles, from 0 to 100; `pickupOnly` (boolean, optional) — Keep only pickup-enabled stores; `query` (string, **required**) — Restaurant, cuisine, or dish query; `tag` (string, optional) — Exact cuisine or store tag, case-insensitive
+
+### `doordash_search_autocomplete`
+
+- **HTTP:** `GET /doordash/search/autocomplete`
+- **What:** Get DoorDash pickup search suggestions. Returns pickup restaurant matches from the Android mobile guest search experience near a location. No DoorDash account or caller-supplied token is required.
+- **Params:** `latitude` (number, **required**) — Consumer latitude; `longitude` (number, **required**) — Consumer longitude; `query` (string, **required**) — Partial restaurant, cuisine, or dish query
+
+### `doordash_search_filters`
+
+- **HTTP:** `GET /doordash/search/filters`
+- **What:** Get DoorDash search filter options. Returns the cuisines and filter values supported by the Android mobile guest search experience for a location. No DoorDash account or caller-supplied token is required.
+- **Params:** `latitude` (number, **required**) — Consumer latitude; `longitude` (number, **required**) — Consumer longitude
+
+### `doordash_search_items`
+
+- **HTTP:** `GET /doordash/search/items`
+- **What:** Search DoorDash dishes and items. Search for specific dishes or items across nearby merchants from the Android mobile guest experience. No DoorDash account or caller-supplied token is required.
+- **Params:** `latitude` (number, **required**) — Consumer latitude; `longitude` (number, **required**) — Consumer longitude; `query` (string, **required**) — Search text
+
+### `doordash_store`
+
+- **HTTP:** `GET /doordash/store/{store_id}`
+- **What:** Get a DoorDash store. Returns location-aware DoorDash store metadata through the Android mobile guest flow. No DoorDash account or caller-supplied token is required.
+- **Params:** `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
+
+### `doordash_store_fulfillment`
+
+- **HTTP:** `GET /doordash/store/{store_id}/fulfillment`
+- **What:** Get DoorDash store fulfillment details. Returns store fulfillment methods, delivery fee info, and scheduling details from the Android mobile guest experience. No DoorDash account or caller-supplied token is required.
+- **Params:** `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
+
+### `doordash_store_item`
+
+- **HTTP:** `GET /doordash/store/{store_id}/item/{item_id}`
+- **What:** Get DoorDash menu item details. Returns details for a specific menu item from the Android mobile guest experience. No DoorDash account or caller-supplied token is required.
+- **Params:** `item_id` (string, **required**) — Menu item ID or name; `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
+
+### `doordash_store_menu`
+
+- **HTTP:** `GET /doordash/store/{store_id}/menu`
+- **What:** Get a DoorDash store menu. Returns the location-aware DoorDash mobile menu, grouped into sections with item names, descriptions, and displayed prices. No DoorDash account or caller-supplied token is required.
+- **Params:** `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
+
+### `doordash_store_reviews`
+
+- **HTTP:** `GET /doordash/store/{store_id}/reviews`
+- **What:** Get DoorDash store reviews. Returns store ratings and customer reviews from the Android mobile guest experience for a location. No DoorDash account or caller-supplied token is required.
+- **Params:** `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
+
 ## eBay (6)
 
 ### `ebay_item`
@@ -2088,7 +2150,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve Google Play query suggestions. Returns up to 10 suggestions for a search term.
 - **Params:** `country` (string, optional) — Two-letter country code; `lang` (string, optional) — Two-letter language code; `term` (string, **required**) — Search term prefix
 
-## IMDb (19)
+## IMDb (20)
 
 ### `imdb_name`
 
@@ -2113,6 +2175,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /imdb/search`
 - **What:** IMDb title search. Returns normalized IMDb title search rows from credential-free public IMDb pages. Limit defaults to 10 and clamps to 20.
 - **Params:** `limit` (integer, optional) — Rows to return, default 10, max 20; `query` (string, **required**) — Search query
+
+### `imdb_search_title`
+
+- **HTTP:** `GET /imdb/search/title`
+- **What:** IMDb advanced title search. Returns normalized IMDb advanced title-search results (imdb.com/search/title/) from a credential-free public IMDb page. At least one filter is required; sort/limit alone are not enough. Limit defaults to 25 and clamps to 50; only IMDb's first rendered page of results is returned (see `total`/`has_more`), there is no deeper cursor pagination. Genre/company/certificate/country/language/keyword/characters/role are include-only lists; there is no exclude support. Unsupported: genre exclude, three curated `groups` values (best-picture-nominee, best-director-nominee, national-film-registry), and the non-plot "page topic" search fields.
+- **Params:** `certificates` (string, optional) — Comma-separated `COUNTRY:RATING` certificate pairs, e.g. `US:PG-13`; `characters` (string, optional) — Comma-separated character names; `colors` (string, optional) — Comma-separated color info: `color`, `black_and_white`, `colorized`, `aces`; `companies` (string, optional) — Comma-separated IMDb company ids, format `co########`; `countries` (string, optional) — Comma-separated ISO country codes; `genres` (string, optional) — Comma-separated genres (include-only): `Action`, `Adventure`, `Animation`, `Biography`, `Comedy`, `Crime`, `Documentary`, `Drama`, `Family`, `Fantasy`, `Film-Noir`, `Game-Show`, `History`, `Horror`, `Music`, `Musical`, `Mystery`, `News`, `Reality-TV`, `Romance`, `Sci-Fi`, `Short`, `Sport`, `Talk-Show`, `Thriller`, `War`, `Western`; `groups` (string, optional) — Comma-separated awards/curated-list groups: `oscar_winner`, `oscar_nominee`, `emmy_winner`, `emmy_nominee`, `golden_globe_winner`, `golden_globe_nominee`, `best_picture_winner`, `best_director_winner`, `razzie_winner`, `razzie_nominee`, `top_100`, `top_250`, `top_1000`, `bottom_100`, `bottom_250`, `bottom_1000`; `include_adult` (boolean, optional) — Include adult titles. Defaults to excluded; `keywords` (string, optional) — Comma-separated plot keywords; `languages` (string, optional) — Comma-separated ISO language codes; `limit` (integer, optional) — Rows to return, default 25, max 50; `max_popularity` (integer, optional) — Maximum IMDb popularity rank; `max_runtime` (integer, optional) — Maximum runtime in minutes; `max_user_rating` (number, optional) — Maximum IMDb user rating, 0-10; `max_votes` (integer, optional) — Maximum number of user rating votes; `min_popularity` (integer, optional) — Minimum IMDb popularity rank (1 is most popular); `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_user_rating` (number, optional) — Minimum IMDb user rating, 0-10; `min_votes` (integer, optional) — Minimum number of user rating votes; `plot` (string, optional) — Plot text search term; `release_date_from` (string, optional) — Release date lower bound: YYYY, YYYY-MM, or YYYY-MM-DD; `release_date_to` (string, optional) — Release date upper bound: YYYY, YYYY-MM, or YYYY-MM-DD; `role` (string, optional) — Comma-separated cast/crew IMDb name ids, format `nm########`; `sort` (string, optional) — One of `moviemeter`, `alpha`, `user_rating`, `num_votes`, `boxoffice_gross_us`, `runtime`, `year`, `release_date`; `sort_order` (string, optional) — `asc` or `desc`. Defaults to `asc` when sort is set; `sound_mixes` (string, optional) — Comma-separated sound mix names: `12-Track Digital Sound`, `3 Channel Stereo`, `4-Track Stereo`, `6-Track Stereo`, `70 mm 6-Track`, `AGA Sound System`, `Auro 11.1`, `CDS`, `Chronophone`, `Cinematophone`, `Cinephone`, `Cinerama 7-Track`, `Cinesound`, `D-Cinema 48kHz 5.1`, `Datasat`, `De Forest Phonofilm`, `Digitrac Digital Audio System`, `Dolby`, `Dolby Atmos`, `Dolby Digital`, `Dolby Digital EX`, `Dolby SR`, `Dolby Stereo`, `Dolby Surround 7.1`, `DTS`, `DTS 70 mm`, `DTS Stereo`, `DTS-ES`, `IMAX 6-Track`, `Kinoplasticon`, `LC-Concept Digital Sound`, `Matrix Surround`, `Mono`, `Perspecta Stereo`, `Phono-Kinema`, `SDDS`, `Sensurround`, `Silent`, `Sonics-DDP`, `Sonix`, `Stereo`, `Ultra Stereo`, `Vitaphone`; `title` (string, optional) — Title-name substring match; `title_type` (string, optional) — Comma-separated title types: `feature`, `tvSeries`, `short`, `tvEpisode`, `tvMiniSeries`, `tvMovie`, `tvSpecial`, `tvShort`, `videoGame`, `video`, `musicVideo`, `podcastSeries`, `podcastEpisode`
 
 ### `imdb_title`
 
@@ -4676,7 +4744,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Trustpilot categories. Returns normalized category search results from Trustpilot's JSON category search API.
 - **Params:** `country` (string, optional) — Two-letter country code; defaults to US; `locale` (string, optional) — Locale in ll-CC format; defaults to en-US; `q` (string, **required**) — Search query; `size` (integer, optional) — Maximum number of categories; defaults to 20
 
-## UberEats (3)
+## UberEats (5)
+
+### `ubereats_feed`
+
+- **HTTP:** `GET /ubereats/feed`
+- **What:** Browse UberEats location feed. Returns restaurants delivering to a specific location: name, rating, review count, delivery estimate, cuisine tags, and cover image. Credential-free public UberEats data.
+- **Params:** `latitude` (number, **required**) — Delivery search center latitude; `limit` (integer, optional) — Number of restaurants to return, clamped to 50. Default 20; `longitude` (number, **required**) — Delivery search center longitude; `offset` (integer, optional) — Result offset for the location feed. Default 0
 
 ### `ubereats_search`
 
@@ -4688,6 +4762,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /ubereats/store/{store_id}`
 - **What:** Get an UberEats store. Returns a normalized UberEats store: address, phone, rating, cuisine tags, hours tagline, and the full menu (sections with items, descriptions, and prices). Credential-free public UberEats data.
+- **Params:** `store_id` (string, **required**) — UberEats store UUID, as returned by the search endpoint's storeUuid field
+
+### `ubereats_store_menu`
+
+- **HTTP:** `GET /ubereats/store/{store_id}/menu`
+- **What:** Get an UberEats store menu. Returns the full menu for an UberEats store: section titles, items, item descriptions, prices, and availability status. Credential-free public UberEats data.
 - **Params:** `store_id` (string, **required**) — UberEats store UUID, as returned by the search endpoint's storeUuid field
 
 ### `ubereats_store_reviews`
