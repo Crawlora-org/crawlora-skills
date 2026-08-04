@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**841 endpoints across 72 platform group(s).**
+**893 endpoints across 81 platform group(s).**
 
 ## Airbnb (7)
 
@@ -354,6 +354,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve App Store version history. Returns the version history entries shown in the App Store "What's New" section.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag
 
+## Autotrader (3)
+
+### `autotrader_dealer`
+
+- **HTTP:** `GET /autotrader/dealer/{id}`
+- **What:** Get Autotrader dealer profile. Returns a normalized Autotrader dealer profile (name, phone, address, rating, website) plus a first page of the dealer's own current inventory as normalized vehicle summaries and the dealer's total listing count. Credential-free public data sourced from Autotrader's own server-rendered dealer profile page.
+- **Params:** `id` (string, **required**) — Autotrader dealer/owner id, the numeric path segment of a /car-dealers/{id} URL
+
+### `autotrader_search`
+
+- **HTTP:** `GET /autotrader/search`
+- **What:** Search Autotrader vehicle listings. Searches Autotrader for new and used car listings, returning normalized vehicle summaries (make, model, trim, year, mileage, pricing, images) plus the total matching count. Credential-free public data sourced from Autotrader's own server-rendered search page.
+- **Params:** `body_style` (string, optional) — Body style. Allowed values: convertible, coupe, hatchback, sedan, suv, truck, van, wagon; `condition` (string, optional) — Listing condition. Allowed values: new, used, certified, 3p_cert; `make` (string, optional) — Autotrader make code, e.g. TOYOTA, HONDA, BMW; `max_mileage` (integer, optional) — Maximum odometer mileage; `max_price` (integer, optional) — Maximum price in US dollars; `max_year` (integer, optional) — Maximum model year; `min_price` (integer, optional) — Minimum price in US dollars; `min_year` (integer, optional) — Minimum model year; `model` (string, optional) — Autotrader model code, e.g. CAMRY. Requires make; `page` (integer, optional) — 1-indexed result page, defaults to 1. Autotrader returns 24 results per page; `query` (string, optional) — Free-text keyword search; `radius` (integer, optional) — Search radius in miles around zip; `seller_type` (string, optional) — Seller type. Allowed values: dealer, private; `trim` (string, optional) — Autotrader trim code. Requires make and model; `zip` (string, optional) — 5-digit US ZIP code to search around
+
+### `autotrader_vehicle`
+
+- **HTTP:** `GET /autotrader/vehicle/{id}`
+- **What:** Get Autotrader vehicle listing detail. Returns a normalized Autotrader vehicle listing: full vehicle spec (make, model, trim, mileage, colors, transmission, fuel type, engine, images, pricing), the full listing description, and seller detail (dealership or private seller). Credential-free public data sourced from Autotrader's own server-rendered vehicle detail page.
+- **Params:** `id` (string, **required**) — Autotrader listing id, the numeric path segment of a /cars-for-sale/vehicle/{id} URL
+
 ## Bing (5)
 
 ### `bing_images`
@@ -385,6 +405,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /bing/videos`
 - **What:** Search Bing video results. Returns normalized Bing video search results for a query string. Locale defaults to country=us and lang=en-us. Results are fetched from public Bing video HTML/async pages and return 503 when Bing serves a challenge page or unusable HTML.
 - **Params:** `count` (integer, optional) — Results per page; defaults to 10, clamped to 1..50; `country` (string, optional) — Two-letter country code; defaults to us; `lang` (string, optional) — Bing UI language; defaults to en-us; `page` (integer, optional) — 1-based page number; defaults to 1; `q` (string, **required**) — Search query
+
+## Booking (8)
+
+### `booking_attractions_detail`
+
+- **HTTP:** `GET /booking-attractions/detail`
+- **What:** Booking.com attraction detail. Returns a Booking.com attraction's detail page.
+- **Params:** `slug` (string, **required**) — Attraction slug, from a prior attraction search result
+
+### `booking_attractions_reviews`
+
+- **HTTP:** `GET /booking-attractions/reviews`
+- **What:** Booking.com attraction reviews. Returns normalized guest reviews for a Booking.com attraction.
+- **Params:** `limit` (integer, optional) — Reviews per page, 1-50, default 10; `page` (integer, optional) — 1-based result page, default 1; `product_id` (string, **required**) — Attraction product id, from a prior attraction search result
+
+### `booking_attractions_search`
+
+- **HTTP:** `GET /booking-attractions/search`
+- **What:** Search Booking.com attractions. Returns normalized Booking.com attractions/things-to-do search results for a destination and date range, with an optional category/subcategory filter and a discoverable category taxonomy.
+- **Params:** `category` (string, optional) — Optional top-level category tagname filter, from a prior response's categories; `end_date` (string, optional) — Availability end date, YYYY-MM-DD, defaults to start_date; `limit` (integer, optional) — Results per page, 1-30, default 15; `page` (integer, optional) — 1-based result page, default 1; `query` (string, **required**) — Destination name or city; `start_date` (string, **required**) — Availability start date, YYYY-MM-DD; `subcategory` (string, optional) — Optional subcategory tagname filter, from a prior response's categories
+
+### `booking_flights_autocomplete`
+
+- **HTTP:** `GET /booking-flights/autocomplete`
+- **What:** Booking.com flight autocomplete. Returns Booking.com flight-search location suggestions (airports/cities) for a query string.
+- **Params:** `origin` (string, optional) — Optional origin location code, biases results by proximity; `origin_type` (string, optional) — Origin location type; `query` (string, **required**) — City or airport name/code to search; `type` (string, optional) — Location role, default to
+
+### `booking_flights_search`
+
+- **HTTP:** `GET /booking-flights/search`
+- **What:** Search Booking.com flights. Returns normalized round-trip or one-way flight offers between two Booking.com flight-search locations.
+- **Params:** `adults` (integer, optional) — Number of adults, 1-9, default 1; `cabin_class` (string, optional) — Cabin class, default ECONOMY; `children` (integer, optional) — Number of children, 0-9; `depart` (string, **required**) — Departure date, YYYY-MM-DD; `from` (string, **required**) — Origin location id, e.g. SGN.AIRPORT, from a prior autocomplete result; `from_country` (string, optional) — Origin country code; `return` (string, optional) — Return date, YYYY-MM-DD, required when type is ROUNDTRIP; `sort` (string, optional) — Result sort order, default BEST; `to` (string, **required**) — Destination location id, same composite format as from; `to_country` (string, optional) — Destination country code; `type` (string, optional) — Trip type, default ROUNDTRIP
+
+### `booking_hotel_detail`
+
+- **HTTP:** `GET /booking/hotel-detail`
+- **What:** Booking.com hotel detail. Returns a Booking.com hotel's core detail page: rating, facilities, highlights, house rules, cover photos, and rooms with their own photos.
+- **Params:** `hotel_id` (integer, **required**) — Booking.com hotel id, from a prior search's property id
+
+### `booking_reviews`
+
+- **HTTP:** `GET /booking/reviews`
+- **What:** Booking.com hotel reviews. Returns normalized guest reviews for a Booking.com hotel, with an optional free-text search over review content.
+- **Params:** `destination_id` (integer, optional) — Destination id (ufi), from a prior search response; `hotel_country_code` (string, **required**) — Hotel's country code, from a prior search response; `hotel_id` (integer, **required**) — Booking.com hotel id, from a prior search's property id; `hotel_score` (number, optional) — Hotel's overall review score; `limit` (integer, optional) — Reviews per page, 1-25, default 10; `page` (integer, optional) — 1-based result page, default 1; `search_text` (string, optional) — Optional free-text search over review content
+
+### `booking_search`
+
+- **HTTP:** `GET /booking/search`
+- **What:** Search Booking.com hotels. Returns normalized Booking.com hotel search results for a destination and date range.
+- **Params:** `adults` (integer, optional) — Number of adults, 1-9, default 2; `checkin` (string, **required**) — Check-in date, YYYY-MM-DD; `checkout` (string, **required**) — Check-out date, YYYY-MM-DD; `children` (integer, optional) — Number of children, 0-9; `page` (integer, optional) — 1-based result page, default 1; `query` (string, **required**) — Destination name or city; `rooms` (integer, optional) — Number of rooms, 1-8, default 1
 
 ## Box Office Mojo (21)
 
@@ -1476,7 +1546,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the Discogs database. Searches Discogs releases, masters, artists, and labels. Credential-free official Discogs database data.
 - **Params:** `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 50, max 100; `q` (string, **required**) — Search query; `type` (string, optional) — Result type filter
 
-## DoorDash (10)
+## DoorDash (12)
+
+### `doordash_explore`
+
+- **HTTP:** `GET /doordash/explore`
+- **What:** Get DoorDash nearby stores explore feed. Returns DoorDash's location-based "nearby stores" browse feed from the Android mobile guest experience. Unlike search or autocomplete, no search query is required. No DoorDash account or caller-supplied token is required.
+- **Params:** `latitude` (number, **required**) — Consumer latitude; `longitude` (number, **required**) — Consumer longitude
 
 ### `doordash_feed`
 
@@ -1518,6 +1594,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /doordash/store/{store_id}/fulfillment`
 - **What:** Get DoorDash store fulfillment details. Returns store fulfillment methods, delivery fee info, and scheduling details from the Android mobile guest experience. No DoorDash account or caller-supplied token is required.
+- **Params:** `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
+
+### `doordash_store_info`
+
+- **HTTP:** `GET /doordash/store/{store_id}/info`
+- **What:** Get DoorDash store contact info. Returns a lightweight store info card (map coordinates, address, phone number) from the Android mobile guest experience. This is a distinct upstream contract from the full store endpoint and reliably includes address and coordinates. No DoorDash account or caller-supplied token is required.
 - **Params:** `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
 
 ### `doordash_store_item`
@@ -1632,7 +1714,113 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** ESPN team list. Returns the full team list for a sport and league from ESPN's credential-free public JSON. The `sport` enum accepts `football`, `basketball`, `baseball`, `hockey`, and `soccer`. The `league` enum accepts `nfl`, `college-football`, `nba`, `wnba`, `mens-college-basketball`, `womens-college-basketball`, `mlb`, `nhl`, `eng.1`, `esp.1`, `ita.1`, `ger.1`, `fra.1`, `usa.1`, and `uefa.champions`; it must be valid for the chosen sport.
 - **Params:** `league` (string, **required**) — League key (must be valid for the sport); `sport` (string, **required**) — Sport key
 
-## Facebook (1)
+## Etsy (7)
+
+### `etsy_listing`
+
+- **HTTP:** `GET /etsy/listing/{id}`
+- **What:** Get Etsy listing detail. Returns Etsy listing detail: title, price, images, materials, tags, and shop.
+- **Params:** `id` (string, **required**) — Numeric Etsy listing id
+
+### `etsy_listing_reviews`
+
+- **HTTP:** `GET /etsy/listing/{id}/reviews`
+- **What:** Get Etsy listing reviews. Returns buyer reviews for an Etsy listing.
+- **Params:** `id` (string, **required**) — Numeric Etsy listing id; `offset` (integer, optional) — 0-based review offset; `sort` (string, optional) — Review sort order
+
+### `etsy_search`
+
+- **HTTP:** `GET /etsy/search`
+- **What:** Search Etsy listings. Returns Etsy product search results across shops for a keyword query.
+- **Params:** `limit` (integer, optional) — Page size (default 36, max 100); `offset` (integer, optional) — 0-based result offset; `q` (string, **required**) — Search keywords
+
+### `etsy_shop`
+
+- **HTTP:** `GET /etsy/shop/{id}`
+- **What:** Get Etsy shop profile. Returns an Etsy shop profile: seller, headline, rating, and sold count. Accepts a numeric shop id or a shop name.
+- **Params:** `id` (string, **required**) — Numeric Etsy shop id or shop name
+
+### `etsy_shop_listings`
+
+- **HTTP:** `GET /etsy/shop/{id}/listings`
+- **What:** Get an Etsy shop's listings. Returns a shop's listing catalog, optionally filtered by keyword. Accepts a numeric shop id or a shop name.
+- **Params:** `id` (string, **required**) — Numeric Etsy shop id or shop name; `limit` (integer, optional) — Page size (default 24); `offset` (integer, optional) — 0-based listing offset; `q` (string, optional) — Keyword filter within the shop's own catalog
+
+### `etsy_shop_reviews`
+
+- **HTTP:** `GET /etsy/shop/{id}/reviews`
+- **What:** Get Etsy shop reviews. Returns buyer reviews for an Etsy shop. Accepts a numeric shop id or a shop name.
+- **Params:** `id` (string, **required**) — Numeric Etsy shop id or shop name; `limit` (integer, optional) — Page size (default 14); `offset` (integer, optional) — 0-based review offset
+
+### `etsy_shop_search`
+
+- **HTTP:** `GET /etsy/shop/search`
+- **What:** Search Etsy shops. Returns Etsy shops matching a keyword.
+- **Params:** `limit` (integer, optional) — Max shops to return (default 10); `q` (string, **required**) — Shop search keyword
+
+## Expedia (7)
+
+### `expedia_activities_search`
+
+- **HTTP:** `POST /expedia/activities/search`
+- **What:** Search Expedia activities. Returns normalized Expedia Things To Do (activities/tours) search results for a free-text destination and date range.
+- **Params:** `option` (object, **required**) — Activity search payload
+
+### `expedia_flights_search`
+
+- **HTTP:** `POST /expedia/flights/search`
+- **What:** Search Expedia flights. Returns normalized Expedia Flights search results (departing-leg offers) for an origin/destination IATA pair and date range.
+- **Params:** `option` (object, **required**) — Flights search payload
+
+### `expedia_locations_search`
+
+- **HTTP:** `POST /expedia/locations/search`
+- **What:** Search Expedia destinations. Returns normalized destination/property typeahead suggestions (cities, airports, neighborhoods, hotels) for a free-text term.
+- **Params:** `option` (object, **required**) — Location search payload
+
+### `expedia_properties_detail`
+
+- **HTTP:** `POST /expedia/properties/detail`
+- **What:** Expedia Stays property detail. Returns a hotel's detail summary (name, star rating, address/coordinates, top amenities) for a known property id.
+- **Params:** `option` (object, **required**) — Property detail payload
+
+### `expedia_properties_filters`
+
+- **HTTP:** `POST /expedia/properties/filters`
+- **What:** Expedia search filters. Returns the sort and filter facets (amenities, star rating, neighborhood, nightly price range, sort options) available for a Stays search.
+- **Params:** `option` (object, **required**) — Property filters payload
+
+### `expedia_properties_reviews`
+
+- **HTTP:** `POST /expedia/properties/reviews`
+- **What:** Expedia Stays property guest reviews. Returns a hotel's overall rating and highlighted/recent guest reviews (reviewer, date, rating, message) for a known property id.
+- **Params:** `option` (object, **required**) — Property reviews payload
+
+### `expedia_properties_search`
+
+- **HTTP:** `POST /expedia/properties/search`
+- **What:** Search Expedia Stays properties. Returns normalized Expedia Stays (hotel) search results for a free-text destination and date range.
+- **Params:** `option` (object, **required**) — Property search payload
+
+## Facebook (4)
+
+### `facebook_group`
+
+- **HTTP:** `GET /facebook/groups/{group}`
+- **What:** Get Facebook group details. Fetches public data about a Facebook Group given its numeric group id, vanity name, or full group URL: name, cover photo, stable group id, and — when the group exposes them without joining — its privacy setting (public/private) and formatted member count.
+- **Params:** `group` (string, **required**) — Facebook Group reference: numeric group id, vanity name, or full Facebook group URL
+
+### `facebook_marketplace_item`
+
+- **HTTP:** `GET /facebook/marketplace/item/{id}`
+- **What:** Get Facebook Marketplace listing. Fetches public data for a single Facebook Marketplace listing given its numeric listing id: title, price, description, condition, a representative photo, and approximate (city/state) location. Facebook's own logged-out payload withholds seller identity entirely, so this response has no seller field by design.
+- **Params:** `id` (string, **required**) — Facebook Marketplace numeric listing id
+
+### `facebook_marketplace_search`
+
+- **HTTP:** `GET /facebook/marketplace/search`
+- **What:** Search Facebook Marketplace. Fetches Facebook Marketplace search or browse results for a location: listing id, title, price, city/state, and a thumbnail image per result. Only the first page Facebook's own server-rendered results page returns is available — Facebook's own further pagination requires a logged-in session and is out of scope. Omit both query and category to get the location's browse feed instead of running a search. minPrice, maxPrice, sortBy, daysSinceListed, and condition only take effect alongside a query or category (Facebook itself ignores them on the plain browse feed), except for the property_rentals category, which has its own always-filtered listing page. This endpoint can take noticeably longer than other search endpoints (up to roughly a minute in the slowest case) as it retries to get past an intermittent upstream condition; priced accordingly.
+- **Params:** `category` (string, optional) — Marketplace category; `condition` (string, optional) — Comma-separated listing conditions; requires query or category; `days_since_listed` (integer, optional) — Restrict to listings posted within this many days; requires query or category; `location` (string, **required**) — Facebook Marketplace location vanity slug; `max_price` (integer, optional) — Maximum price in whole currency units; requires query or category; `min_price` (integer, optional) — Minimum price in whole currency units; requires query or category; `query` (string, optional) — Free-text search terms; omit (with category) for the location's browse feed; `sort_by` (string, optional) — Result order; requires query or category
 
 ### `facebook_page`
 
@@ -2271,6 +2459,40 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /imdb/title/trivia`
 - **What:** IMDb title trivia. Returns normalized public IMDb trivia rows for a title. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
+
+## ImportYeti (2)
+
+### `importyeti_company`
+
+- **HTTP:** `GET /importyeti/company`
+- **What:** Get an ImportYeti company report. Returns a normalized ImportYeti company report: identity, headline US customs shipment-volume metrics (total shipments, average TEU, last shipment date, estimated shipping spend), its supplier list, and recent bill-of-lading shipment activity. Credential-free public data, rendered from the company report page through proxied browser renderers.
+- **Params:** `slug` (string, **required**) — ImportYeti company slug, the last path segment of a /company/{slug} URL
+
+### `importyeti_search`
+
+- **HTTP:** `GET /importyeti/search`
+- **What:** Search ImportYeti companies and suppliers by name. Searches ImportYeti for companies and suppliers matching a name, returning each match's kind (company or supplier), slug, country, address, and headline shipment stats. A "company" result's slug chains into GET /importyeti/company. Credential-free public data, sourced from ImportYeti's own JSON search API (distinct from its human-facing /search results page, which does not render due to a client-side bug in ImportYeti's own app).
+- **Params:** `page` (integer, optional) — 1-indexed result page, defaults to 1; `q` (string, **required**) — Company or supplier name to search for
+
+## Indeed (3)
+
+### `indeed_job`
+
+- **HTTP:** `GET /indeed/job`
+- **What:** Indeed job detail. Returns one Indeed job posting by its job key (the `job_key` field returned by search). Primary transport is Indeed's own credential-free GraphQL API; falls back to the original web-page transport if that fails.
+- **Params:** `jk` (string, **required**) — Indeed job key (16-character hex)
+
+### `indeed_locations_suggest`
+
+- **HTTP:** `GET /indeed/locations/suggest`
+- **What:** Indeed location suggestions. Returns Indeed's own location-search autocomplete suggestions for a partial location string -- the same suggestions the app's search bar offers -- for building a valid `l` value for search. Credential-free GraphQL only; there is no page-based fallback for this endpoint.
+- **Params:** `limit` (integer, optional) — Max suggestions to return, defaults to 10, maxes at 25; `q` (string, **required**) — Partial location text
+
+### `indeed_search`
+
+- **HTTP:** `GET /indeed/search`
+- **What:** Indeed job search. Searches Indeed job postings by keyword and location. Primary transport is Indeed's own credential-free GraphQL API; a page 1, unfiltered-by-date request uses it directly. Requesting page 2+ or the `fromage` filter (not yet expressible over the primary transport) uses the original web-page transport instead, with the same normalized response shape either way. `sort` enum: `relevance` (default), `date`.
+- **Params:** `fromage` (integer, optional) — Only jobs posted within this many days; `l` (string, optional) — Location (city, state, or zip); `page` (integer, optional) — Page number, 1-based, defaults to 1; `q` (string, **required**) — Search keywords; `radius` (integer, optional) — Search radius in miles; `sort` (string, optional) — Sort order: relevance, date
 
 ## Instagram (3)
 
@@ -3081,6 +3303,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /numbeo/indices/rankings-by-country`
 - **What:** Get the global Numbeo country ranking for an index family. Returns the global country-level ranking for a Numbeo index family. Credential-free public Numbeo data (numbeo.com).
 - **Params:** `index` (string, **required**) — Index family
+
+## OpenTable (4)
+
+### `opentable_restaurant`
+
+- **HTTP:** `GET /opentable/restaurant`
+- **What:** Get an OpenTable restaurant's profile and live availability. Returns a restaurant's profile (location, cuisines, hours, price band, review summary) plus real-time bookable timeslots for the given date/time and party size. Credential-free.
+- **Params:** `date_time` (string, optional) — Reservation date/time, RFC3339-minute local format; defaults to now; `party_size` (integer, optional) — Party size, default 2; `restaurant_id` (string, **required**) — OpenTable restaurant id
+
+### `opentable_restaurant_menus`
+
+- **HTTP:** `GET /opentable/restaurant/menus`
+- **What:** Get an OpenTable restaurant's menus. Returns a restaurant's menus (sections, items, prices). Credential-free.
+- **Params:** `restaurant_id` (string, **required**) — OpenTable restaurant id
+
+### `opentable_restaurant_reviews`
+
+- **HTTP:** `GET /opentable/restaurant/reviews`
+- **What:** Get a page of an OpenTable restaurant's diner reviews. Returns a page of diner reviews (author, text, per-category ratings) for a restaurant. Credential-free.
+- **Params:** `page` (integer, optional) — Page number, default 1; `restaurant_id` (string, **required**) — OpenTable restaurant id; `size` (integer, optional) — Reviews per page, default 20
+
+### `opentable_search`
+
+- **HTTP:** `GET /opentable/search`
+- **What:** Search OpenTable restaurants near a location. Searches restaurants by free-text term (cuisine, name, neighborhood) near a latitude/longitude, for a given date/time and party size, including inline live availability per result. Credential-free.
+- **Params:** `date_time` (string, optional) — Reservation date/time, RFC3339-minute local format; defaults to now; `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `party_size` (integer, optional) — Party size, default 2; `size` (integer, optional) — Max results, default 10; `term` (string, **required**) — Free-text search term
 
 ## PitchBook (5)
 
@@ -5098,6 +5346,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Yahoo Finance trending symbols. Returns trending Yahoo Finance symbols for a region.
 - **Params:** `count` (integer, optional) — Symbol count; `region` (string, **required**) — Region such as US
 
+## Yelp (8)
+
+### `yelp_business`
+
+- **HTTP:** `GET /yelp/business/{id}`
+- **What:** Get Yelp business detail. Looks up a single Yelp business by alias or encoded id via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller.
+- **Params:** `id` (string, **required**) — Yelp business alias or encoded id
+
+### `yelp_business_menu`
+
+- **HTTP:** `GET /yelp/business/{id}/menu`
+- **What:** Get Yelp business menu. Fetches menu items for a Yelp business via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller.
+- **Params:** `id` (string, **required**) — Yelp business alias or encoded id
+
+### `yelp_business_photos`
+
+- **HTTP:** `GET /yelp/business/{id}/photos`
+- **What:** Get Yelp business photos. Fetches the photo gallery for a Yelp business via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller.
+- **Params:** `id` (string, **required**) — Yelp business alias or encoded id; `limit` (integer, optional) — Max photos to return, 1-50; `offset` (integer, optional) — Pagination offset
+
+### `yelp_business_review_highlights`
+
+- **HTTP:** `GET /yelp/business/{id}/reviews/highlights`
+- **What:** Get Yelp business review highlights. Fetches thematic review snippets (extracted talking points with a supporting quote) for a Yelp business via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller.
+- **Params:** `id` (string, **required**) — Yelp business alias or encoded id
+
+### `yelp_business_reviews`
+
+- **HTTP:** `GET /yelp/business/{id}/reviews`
+- **What:** Get Yelp business reviews. Fetches reviews for a Yelp business via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller.
+- **Params:** `id` (string, **required**) — Yelp business alias or encoded id; `limit` (integer, optional) — Max reviews to return, 1-50; `offset` (integer, optional) — Pagination offset
+
+### `yelp_business_reviews_search`
+
+- **HTTP:** `GET /yelp/business/{id}/reviews/search`
+- **What:** Search Yelp business reviews by keyword. Searches a Yelp business's reviews for a keyword via Yelp's real Android app backend, returning a highlighted excerpt per match. Credential-free: no login, no API key, no cookie required from the caller.
+- **Params:** `id` (string, **required**) — Yelp business alias or encoded id; `term` (string, **required**) — Keyword to search reviews for
+
+### `yelp_geocode`
+
+- **HTTP:** `GET /yelp/geocode`
+- **What:** Geocode a free-form address. Resolves a free-form address into structured location data (coordinates, city, state, zip, county) via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller. Not business-scoped.
+- **Params:** `address` (string, **required**) — Free-form address to geocode
+
+### `yelp_search`
+
+- **HTTP:** `GET /yelp/search`
+- **What:** Search Yelp businesses. Searches Yelp's real Android app business-search backend for a term and location. Credential-free: no login, no API key, no cookie required from the caller.
+- **Params:** `limit` (integer, optional) — Max results to return, 1-50; `location` (string, **required**) — Neighborhood, city, state, or zip code; `offset` (integer, optional) — Pagination offset; `term` (string, **required**) — Search term
+
 ## YouTube (13)
 
 ### `youtube_captions`
@@ -5177,6 +5475,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /youtube/video/{id}`
 - **What:** Retrieve video metadata & captions. Returns title, description, stats, and captions for a YouTube video ID.
 - **Params:** `id` (string, **required**) — YouTube video ID (11-char code)
+
+## Zalando (5)
+
+### `zalando_category`
+
+- **HTTP:** `GET /zalando/category`
+- **What:** Browse a Zalando category or brand. Browses a Zalando category or brand listing by URL slug (e.g. shoes, womens-dresses, on-running) and returns the same normalized result cards as zalando-search, plus the category's upstream total_count. Category slugs are market-specific (each storefront uses its own local-language slug, e.g. "shoes" on de/gb, "chaussures" on fr, "scarpe" on it) — take them from that market's own site navigation or a product's url field. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains.
+- **Params:** `category` (string, **required**) — Zalando category or brand URL slug, in the target market's own language; `market` (string, **required**) — Zalando country storefront
+
+### `zalando_markets`
+
+- **HTTP:** `GET /zalando/markets`
+- **What:** List supported Zalando country storefronts. Returns the Zalando country storefronts currently supported by the required market parameter on zalando-search, zalando-category, and zalando-product, with each market's domain. Static, credential-free metadata with no upstream request.
+- **Params:** _none_
+
+### `zalando_product`
+
+- **HTTP:** `GET /zalando/product`
+- **What:** Get a Zalando product. Returns normalized product details for one Zalando product, including brand, description, images, and per-size price/availability/GTIN. Pass the sku returned by zalando-search or zalando-category; Zalando's own site search resolves the sku to its canonical product page. market is required and must match the storefront the sku was found in (there is no default, and a sku is generally only listed for sale on the market(s) that carry it) — see zalando-markets for the full reference list.
+- **Params:** `market` (string, **required**) — Zalando country storefront the sku was found in; `sku` (string, **required**) — Zalando product SKU (article number) from zalando-search or zalando-category
+
+### `zalando_search`
+
+- **HTTP:** `GET /zalando/search`
+- **What:** Search Zalando products. Searches a Zalando country storefront by keyword and returns normalized result cards with price, brand, and image. Returns the first page of results as rendered by Zalando plus the upstream total_count; deeper pagination is not yet supported. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains.
+- **Params:** `market` (string, **required**) — Zalando country storefront; `q` (string, **required**) — Product search keyword
+
+### `zalando_suggest`
+
+- **HTTP:** `GET /zalando/suggest`
+- **What:** Autocomplete a Zalando search query. Returns Zalando's own search-box query completions for a partial keyword, e.g. "running sho" -> "running shoes", "running shoes nike". market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains.
+- **Params:** `market` (string, **required**) — Zalando country storefront; `q` (string, **required**) — Partial search text to complete
 
 ## Zillow (3)
 
