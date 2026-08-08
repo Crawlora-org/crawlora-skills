@@ -6,7 +6,57 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**893 endpoints across 81 platform group(s).**
+**987 endpoints across 101 platform group(s).**
+
+## Agoda (8)
+
+### `agoda_activities_search`
+
+- **HTTP:** `GET /agoda/activities/search`
+- **What:** Search Agoda activities. Returns Agoda activities (tours, attractions, experiences) matching a free-text keyword and/or a city. When keyword is omitted, the resolved city's name is used instead to return a general listing of activities in that city. Callers may supply a known Agoda city id or a free-text city name for the city filter; when both are supplied city_id takes precedence. Credential-free public data from Agoda's own destination search.
+- **Params:** `city` (string, optional) — Free-text city name, used directly as the search text when keyword is omitted, and to resolve a city id filter.; `city_id` (integer, optional) — Numeric Agoda city id to filter results to. Optional if keyword is supplied; city_id takes precedence over city when both are supplied.; `keyword` (string, optional) — Free-text activity search keyword. When omitted, the resolved city's name is used instead.
+
+### `agoda_activity_detail`
+
+- **HTTP:** `GET /agoda/activities/{activity_id}`
+- **What:** Get Agoda activity detail. Returns full activity detail from Agoda: title, description, stated duration, categories, and content images. Credential-free public data from Agoda's own activity content source.
+- **Params:** `activity_id` (string, **required**) — Numeric Agoda activity id, from a prior activities search call's activity_id field
+
+### `agoda_flights_itinerary_amenities`
+
+- **HTTP:** `POST /agoda/flights/itinerary-amenities`
+- **What:** Get Agoda flight segment amenities. Returns real-content amenities (aircraft type, seat layout, meals, entertainment, wifi) for one or more flight segments. Copy the segments straight from a flight search response's own segment fields. Credential-free public data from Agoda's own flight content service.
+- **Params:** `body` (object, **required**) — One or more flight segments to fetch amenities for
+
+### `agoda_flights_search`
+
+- **HTTP:** `GET /agoda/flights/search`
+- **What:** Search Agoda one-way flights. Returns bookable one-way flight itineraries between two IATA airport codes for a departure date, including per-segment flight number, airline, times, layovers, aircraft type, and price. Resolve free-text city/airport names to codes first via the flight destination search endpoint. Credential-free public data from Agoda's own flight search.
+- **Params:** `adults` (integer, optional) — Adult passengers (age 12+), defaults to 1; `cabin_class` (string, optional) — Cabin class, defaults to Economy; `children` (integer, optional) — Child passengers (age 2-11), defaults to 0; `departure_date` (string, **required**) — Departure date, YYYY-MM-DD; `destination` (string, **required**) — Destination IATA airport code; `infants` (integer, optional) — Infant passengers (under age 2), defaults to 0; `origin` (string, **required**) — Origin IATA airport code; `page` (integer, optional) — 1-indexed result page, defaults to 1
+
+### `agoda_flights_search_locations`
+
+- **HTTP:** `GET /agoda/flights/search-locations`
+- **What:** Search Agoda flight destinations/airports. Resolves a free-text city or airport name into IATA airport codes for flight search, with each city's direct and nearby airports. Credential-free public data from Agoda's own flight destination search.
+- **Params:** `keyword` (string, **required**) — Free-text city or airport name
+
+### `agoda_homes_search`
+
+- **HTTP:** `GET /agoda/homes/search`
+- **What:** Search Agoda Homes & Apartments by city. Returns Homes & Apartments results for an Agoda city: full listing detail for every matching property whose accommodation type is Apartment, drawn from the same city search as hotel search and filtered to non-hotel accommodation types. Callers may supply a known Agoda city id or a free-text city name; when both are supplied city_id takes precedence. Credential-free public data from Agoda's own hotel/home search.
+- **Params:** `city` (string, optional) — Free-text city name, resolved to a numeric city id via Agoda's own destination search. Ignored when city_id is also supplied.; `city_id` (integer, optional) — Numeric Agoda city id, e.g. 9395 for Bangkok. Either city_id or city is required; city_id takes precedence when both are supplied.; `limit` (integer, optional) — Candidate listings fetched per page before filtering to homes/apartments, defaults to 10, maximum 50; `page` (integer, optional) — 1-indexed result page over the underlying city search, defaults to 1
+
+### `agoda_hotel_detail`
+
+- **HTTP:** `GET /agoda/hotels/{property_id}`
+- **What:** Get Agoda hotel detail. Returns full hotel detail from Agoda: identity (name, any former name), an accommodation type code, address (street address, postal code, city, country), guest rating, a main photo, room count, hotel chain id, a long and short description, and short-form policy statements (minimum age, adult/child definitions, extra-bed and additional-room booking policy). Credential-free public data from Agoda's own hotel content source.
+- **Params:** `property_id` (string, **required**) — Numeric Agoda property id, from a prior search call's property_id field or the id embedded in an Agoda hotel URL
+
+### `agoda_hotels_search`
+
+- **HTTP:** `GET /agoda/hotels/search`
+- **What:** Search Agoda hotels by city. Returns hotel search results for an Agoda city: the matching property ids for that city plus a direct link to each property's listing page. Callers may supply a known Agoda city id or a free-text city name; when both are supplied city_id takes precedence. Credential-free public data from Agoda's own hotel search.
+- **Params:** `city` (string, optional) — Free-text city name, resolved to a numeric city id via Agoda's own destination search. Ignored when city_id is also supplied.; `city_id` (integer, optional) — Numeric Agoda city id, e.g. 9395 for Bangkok. Either city_id or city is required; city_id takes precedence when both are supplied.; `limit` (integer, optional) — Results per page, defaults to 10, maximum 50; `page` (integer, optional) — 1-indexed result page, defaults to 1
 
 ## Airbnb (7)
 
@@ -391,7 +441,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bing_search`
 
 - **HTTP:** `GET /bing/search`
-- **What:** Search Bing web results. Returns normalized Bing web search results for a query string, including organic results, optional context panel data, related queries, people-also-ask questions, news modules, video modules, and page-based pagination. Empty optional blocks are omitted from the JSON response. Locale defaults to country=us and lang=en-us. Results are fetched with a Chrome-impersonated request client and return 503 when Bing serves a challenge page or unusable HTML. Queries that use the site: operator (for example site:gov.hu) are not supported: Bing serves a bot-verification challenge for them, so they are rejected with 400 before any request is made. Use the Google search endpoint (/api/v1/google/search) for domain-restricted searches.
+- **What:** Search Bing web results. Returns normalized Bing web search results for a query string, including organic results, optional context panel data, related queries, people-also-ask questions, news modules, video modules, and page-based pagination. Empty optional blocks are omitted from the JSON response. Locale defaults to country=us and lang=en-us. Results are fetched with a Chrome-impersonated request client and return 503 when Bing serves a challenge page, unusable HTML, or a response whose results are unrelated to the query. Queries that use the site: operator (for example site:gov.hu) are not supported: Bing serves a bot-verification challenge for them, so they are rejected with 400 before any request is made. Use the Google search endpoint (/api/v1/google/search) for domain-restricted searches.
 - **Params:** `count` (integer, optional) — Results per page; defaults to 10, clamped to 1..50; `country` (string, optional) — Two-letter country code; defaults to us; `lang` (string, optional) — Bing UI language; defaults to en-us; `page` (integer, optional) — 1-based page number; defaults to 1; `q` (string, **required**) — Search query
 
 ### `bing_suggest`
@@ -405,6 +455,50 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /bing/videos`
 - **What:** Search Bing video results. Returns normalized Bing video search results for a query string. Locale defaults to country=us and lang=en-us. Results are fetched from public Bing video HTML/async pages and return 503 when Bing serves a challenge page or unusable HTML.
 - **Params:** `count` (integer, optional) — Results per page; defaults to 10, clamped to 1..50; `country` (string, optional) — Two-letter country code; defaults to us; `lang` (string, optional) — Bing UI language; defaults to en-us; `page` (integer, optional) — 1-based page number; defaults to 1; `q` (string, **required**) — Search query
+
+## Bluesky (7)
+
+### `bluesky_author_feed`
+
+- **HTTP:** `GET /bluesky/author-feed`
+- **What:** A Bluesky account's posts. Returns a page of a Bluesky account's posts, newest first, including text, engagement counts, and any attached images/link card/quoted post. Public data, sourced from the AT Protocol's public, credential-free AppView API.
+- **Params:** `actor` (string, **required**) — A handle (e.g. bsky.app) or DID; `cursor` (string, optional) — Pagination cursor from a previous response's cursor field; `limit` (integer, optional) — Page size, 1-100
+
+### `bluesky_followers`
+
+- **HTTP:** `GET /bluesky/followers`
+- **What:** A Bluesky account's followers. Returns a page of a Bluesky account's followers. Public data, sourced from the AT Protocol's public, credential-free AppView API.
+- **Params:** `actor` (string, **required**) — A handle (e.g. bsky.app) or DID; `cursor` (string, optional) — Pagination cursor from a previous response's cursor field; `limit` (integer, optional) — Page size, 1-100
+
+### `bluesky_follows`
+
+- **HTTP:** `GET /bluesky/follows`
+- **What:** Accounts a Bluesky account follows. Returns a page of the accounts a Bluesky account follows. Public data, sourced from the AT Protocol's public, credential-free AppView API.
+- **Params:** `actor` (string, **required**) — A handle (e.g. bsky.app) or DID; `cursor` (string, optional) — Pagination cursor from a previous response's cursor field; `limit` (integer, optional) — Page size, 1-100
+
+### `bluesky_post_thread`
+
+- **HTTP:** `GET /bluesky/post-thread`
+- **What:** A Bluesky post and its reply tree. Returns a Bluesky post along with its nested replies (and, when the post is itself a reply, its parent chain), up to `depth` levels deep. Public data, sourced from the AT Protocol's public, credential-free AppView API.
+- **Params:** `depth` (integer, optional) — Reply-tree depth, 1-10; `uri` (string, **required**) — The post's at:// URI, e.g. from an author-feed or search-actors result's post uri field
+
+### `bluesky_profile`
+
+- **HTTP:** `GET /bluesky/profile`
+- **What:** A Bluesky account's full public profile. Returns a Bluesky account's public profile: display name, description, avatar/banner images, and follower/follows/posts counts. Public data, sourced from the AT Protocol's public, credential-free AppView API.
+- **Params:** `actor` (string, **required**) — A handle (e.g. bsky.app) or DID (e.g. did:plc:z72i7hdynmk6r22z27h6tvur)
+
+### `bluesky_search_actors`
+
+- **HTTP:** `GET /bluesky/search-actors`
+- **What:** Search Bluesky accounts. Returns Bluesky accounts matching a query against display name, handle, and profile description. Public data, sourced from the AT Protocol's public, credential-free AppView API.
+- **Params:** `cursor` (string, optional) — Pagination cursor from a previous response's cursor field; `limit` (integer, optional) — Page size, 1-100; `q` (string, **required**) — Search text
+
+### `bluesky_trending_topics`
+
+- **HTTP:** `GET /bluesky/trending-topics`
+- **What:** Bluesky's current trending topics. Returns Bluesky's current trending topics and suggested feeds, each with a link to its feed. Public data, sourced from the AT Protocol's public, credential-free AppView API. This surface is less stable than the rest of this family -- Bluesky may change its shape without notice.
+- **Params:** _none_
 
 ## Booking (8)
 
@@ -644,6 +738,64 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Capterra products. Returns Capterra search-result products (id, name, url, description, rating). Credential-free public Capterra data, rendered from the search page through proxied browser renderers. Note: Capterra renders a fallback product list even for queries with no genuine match, rather than a distinct empty-results page, so callers should treat low-relevance results as an upstream characteristic, not a bug.
 - **Params:** `q` (string, **required**) — Search query
 
+## CarMax (7)
+
+### `carmax_search`
+
+- **HTTP:** `GET /carmax/search`
+- **What:** Search CarMax vehicle listings. Searches CarMax for used car listings, returning normalized vehicle summaries (make, model, trim, year, mileage, colors, engine, fuel economy, pricing, store, images), available search facets with live counts, and the total matching count. Credential-free public data sourced from CarMax's own mobile-app search API.
+- **Params:** `make` (string, optional) — CarMax make, e.g. honda, Toyota, BMW (case-insensitive); `max_mileage` (integer, optional) — Maximum odometer mileage; `max_price` (integer, optional) — Maximum price in US dollars; `max_year` (integer, optional) — Maximum model year; `min_price` (integer, optional) — Minimum price in US dollars; `min_year` (integer, optional) — Minimum model year; `model` (string, optional) — CarMax model, e.g. civic (case-insensitive). Does not require make; `page` (integer, optional) — 1-indexed result page, defaults to 1. CarMax returns 48 results per page; `sort` (string, optional) — Sort order: bestmatch, distance-asc, price-asc, price-desc, mileage-asc, mileage-desc, year-desc, year-asc, newarrival. Defaults to bestmatch; `zip` (string, optional) — 5-digit US ZIP code to bias results toward CarMax's nearest store
+
+### `carmax_search_suggestions`
+
+- **HTTP:** `GET /carmax/search/suggestions`
+- **What:** Get CarMax search autocomplete suggestions. Returns autocomplete suggestions for a partial search term (make/model/trim), typo-tolerant by default. Credential-free public data sourced from CarMax's own mobile-app API.
+- **Params:** `exact_match` (boolean, optional) — Disable fuzzy/typo-tolerant matching -- require an exact prefix match. Defaults to false; `search` (string, **required**) — Free-text partial search term to get autocomplete suggestions for
+
+### `carmax_shop_by_brand`
+
+- **HTTP:** `GET /carmax/shop-by-brand`
+- **What:** Get CarMax's "shop by brand" make taxonomy. Returns CarMax's full make taxonomy for browsing by brand: every make, a display image, and CarMax's own display order. Credential-free public data sourced from CarMax's own mobile-app API.
+- **Params:** _none_
+
+### `carmax_store`
+
+- **HTTP:** `GET /carmax/store/{id}`
+- **What:** Get CarMax store (physical location) detail. Returns a normalized CarMax store: name, full address, phone numbers, coordinates, opening hours, and store-type flags (car buying center, microstore). Credential-free public data sourced from CarMax's own server-rendered store page.
+- **Params:** `id` (string, **required**) — CarMax store id, the numeric path segment of a /stores/{id} URL
+
+### `carmax_stores`
+
+- **HTTP:** `GET /carmax/stores`
+- **What:** Search CarMax store (physical location) locations. Searches CarMax's physical store locations by ZIP code or free-text keyword, returning normalized stores with full address, every published phone number, opening hours, and (for a ZIP-based search) live driving distance in miles. Credential-free public data sourced from CarMax's own mobile-app store-locator API.
+- **Params:** `keyword` (string, optional) — Free-text match against store name or city; `take` (integer, optional) — Maximum number of stores to return, defaults to 10, capped at 300; `zip` (string, optional) — 5-digit US ZIP code to search near. Triggers a live geo-distance sort. Provide this or keyword; zip takes precedence if both are given
+
+### `carmax_vehicle`
+
+- **HTTP:** `GET /carmax/vehicle/{stock_number}`
+- **What:** Get CarMax vehicle listing detail. Returns a normalized CarMax vehicle listing: full vehicle spec (make, model, trim, mileage, colors, engine, transmission, fuel economy, pricing), equipment features, labeled specifications, warranty coverage, accident/owner history, and CarMax's return guarantee terms. Credential-free public data sourced primarily from CarMax's own mobile-app API, backfilled with the website's server-rendered page for accident/owner history and warranty terms the mobile API doesn't expose.
+- **Params:** `stock_number` (string, **required**) — CarMax stock number, the numeric path segment of a /car/{stock_number} URL; `store_id` (string, optional) — Optional CarMax store id for pricing/transfer-fee display context. Defaults to a fixed CarMax store when omitted
+
+### `carmax_vehicle_recommendations`
+
+- **HTTP:** `GET /carmax/vehicle/{stock_number}/recommendations`
+- **What:** Get CarMax "similar vehicles" recommendations for a listing. Returns CarMax's own similar-vehicle recommendations for a listing: stock number, description, display mileage/price, store location, and image, for vehicles CarMax considers comparable. An empty list is a normal result, not an error. Credential-free public data sourced from CarMax's own mobile-app API.
+- **Params:** `stock_number` (string, **required**) — CarMax stock number to find similar vehicles for, the numeric path segment of a /car/{stock_number} URL; `store_id` (string, **required**) — CarMax store id used as the recommendation's location context. See any search/vehicle/store response's store id field
+
+## Cars.com (2)
+
+### `carsdotcom_search`
+
+- **HTTP:** `GET /carsdotcom/search`
+- **What:** Search Cars.com vehicle listings. Searches Cars.com for new and used car listings, returning normalized vehicle summaries (make, model, trim, year, mileage, exterior color, drivetrain, fuel type, pricing, seller, images) plus the total matching count. Credential-free public data sourced directly from Cars.com's own public search API.
+- **Params:** `page` (integer, optional) — 1-indexed result page, defaults to 1. Cars.com returns 24 results per page; `radius` (integer, optional) — Search radius in miles around zip; `stock_type` (string, optional) — Listing condition. Allowed values: new, used, cpo, all; `zip` (string, optional) — 5-digit US ZIP code to search around
+
+### `carsdotcom_vehicle`
+
+- **HTTP:** `GET /carsdotcom/vehicle/{listing_id}`
+- **What:** Get Cars.com vehicle listing detail. Returns a normalized Cars.com vehicle listing: full vehicle spec (make, model, trim, mileage, colors, engine, transmission, fuel economy, a key-specs table), Cars.com's own deal-fairness rating and predicted fair price, categorized equipment features, an AutoCheck-derived vehicle history report, Cars.com's own price-change history, the seller's notes, dealer detail (name, rating, address, website, phones, hours) or private-seller detail for a for-sale-by-owner listing, and certified-pre-owned/manufacturer-program detail when applicable. Credential-free public data sourced directly from Cars.com's own public GraphQL API.
+- **Params:** `listing_id` (string, **required**) — Cars.com listing id (a UUID), the path segment of a /vehicledetail/{listing_id}/ URL
+
 ## ChromeWebStore (12)
 
 ### `chromewebstore_categories`
@@ -845,6 +997,58 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /coingecko/trending`
 - **What:** CoinGecko trending highlights. Returns deduped trending coins and categories from the public CoinGecko highlights page. This endpoint supports the documented `vs_currency` enum.
 - **Params:** `limit` (integer, optional) — Rows per section to return, default 20, max 50; `vs_currency` (string, optional) — Quote currency
+
+## Congress (2)
+
+### `congress_report`
+
+- **HTTP:** `GET /congress/report`
+- **What:** Fetch and parse a congressional disclosure report. Fetch a single disclosure report by its filing_url (as returned by.
+- **Params:** `url` (string, **required**) — Filing URL, as returned by congress-stock-disclosures' filing_url field. Must be an efdsearch.senate.gov /search/view/annual/..., /search/view/ptr/..., or /search/view/extension-notice/regular/... URL.
+
+### `congress_stock_disclosures`
+
+- **HTTP:** `GET /congress/stock-disclosures`
+- **What:** Search congressional stock-disclosure filings. Search public congressional stock disclosure filings (House or Senate).
+- **Params:** `chamber` (string, optional) — Chamber filter. Allowed values: house, senate.; `district` (string, optional) — House district filter (House only).; `election_year` (string, optional) — House candidate-search election year filter (requires filer_type=candidate).; `filer_type` (string, optional) — Filer-type filter, meaning differs by chamber. House: single value selecting between the site's two separate search forms -- member (default, Search Members) or candidate (Search Candidates; results[].filing_year holds election year instead of a filing year). Senate: comma-separated multi-select -- senator, candidate, former_senator. Defaults to senator when omitted.; `from` (string, optional) — Minimum filing year (YYYY).; `limit` (integer, optional) — Max results (1-500).; `member` (string, optional) — Chamber member name (required when ticker is omitted).; `report_type` (string, optional) — Comma-separated Senate report-type filter (Senate only). Allowed values: annual, periodic_transaction, due_date_extension, blind_trust, other. Defaults to all types when omitted.; `sort` (string, optional) — Sort key. Allowed values: name_asc, name_desc, office_asc, office_desc, filing_year_asc, filing_year_desc.; `state` (string, optional) — Member state filter (2-letter code).; `ticker` (string, optional) — Ticker symbol filter. Not supported by House or Senate sources.; `to` (string, optional) — Maximum filing year (YYYY).
+
+## Costco (6)
+
+### `costco_categories`
+
+- **HTTP:** `GET /costco/categories`
+- **What:** Get Costco category facets. Returns Costco category slugs and product counts relevant to an optional search term, each slug usable directly with GET /costco/search's category filter. Public data sourced from Costco's own search backend.
+- **Params:** `query` (string, optional) — Search text to scope the returned categories to, e.g. \
+
+### `costco_product`
+
+- **HTTP:** `GET /costco/product/{id}`
+- **What:** Get a Costco product's detail. Returns a Costco product's detail: title, description, manufacturer, image, price, stock status, and rating. Public data sourced from Costco's own product backend.
+- **Params:** `id` (string, **required**) — Costco product id, e.g. from a search result's id field or a product page URL's \
+
+### `costco_product_availability`
+
+- **HTTP:** `GET /costco/product/{id}/availability`
+- **What:** Get a Costco product's delivery estimate. Returns a Costco product's stock and estimated-delivery status for a delivery destination. Public data sourced from Costco's own fulfillment backend.
+- **Params:** `id` (string, **required**) — Costco product id; `postal_code` (string, **required**) — US destination ZIP code; `state` (string, **required**) — US destination two-letter state code
+
+### `costco_product_reviews`
+
+- **HTTP:** `GET /costco/product/{id}/reviews`
+- **What:** Get a Costco product's reviews. Returns a page of a Costco product's reviews: title, text, rating, author, and recommendation for each. Public data sourced from Costco's own review platform.
+- **Params:** `id` (string, **required**) — Costco product id, e.g. from a search result's id field
+
+### `costco_search`
+
+- **HTTP:** `GET /costco/search`
+- **What:** Search Costco products. Returns public Costco products matching a text query and/or a category slug: title, brand, model, image, and rating for each result. Public data sourced from Costco's own search backend.
+- **Params:** `category` (string, optional) — Costco category slug, e.g. the last path segment of a category page URL; `query` (string, optional) — Search text
+
+### `costco_warehouses`
+
+- **HTTP:** `GET /costco/warehouses`
+- **What:** Find nearby Costco warehouses. Returns Costco warehouses near a latitude/longitude, sorted by distance: name, address, and distance for each. Public data sourced from Costco's own warehouse locator backend.
+- **Params:** `latitude` (number, **required**) — Latitude; `longitude` (number, **required**) — Longitude
 
 ## Datasets (109)
 
@@ -1502,6 +1706,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the X users dataset. Searches public X (Twitter) user profiles stored in a search index. Sort enum: `relevance`, `followers_desc`, `followers_asc`, `crawled_at_desc`, `crawled_at_asc`, `created_at_desc`, `created_at_asc`.
 - **Params:** `crawled_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `crawled_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `created_after` (string, optional) — Accounts created on or after this date (RFC3339 or YYYY-MM-DD); `created_before` (string, optional) — Accounts created on or before this date (RFC3339 or YYYY-MM-DD); `has_bio` (boolean, optional) — Filter by a non-empty profile bio; `has_external_url` (boolean, optional) — Filter by a linked external URL; `is_blue_verified` (boolean, optional) — Filter by the X blue-check verification flag; `max_followers` (integer, optional) — Maximum follower count; `max_ratio` (number, optional) — Maximum follower-to-following ratio; `min_followers` (integer, optional) — Minimum follower count; `min_ratio` (number, optional) — Minimum follower-to-following ratio (low values surface follow-spam / bot-like accounts); `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over username, name, bio and location, max 256 characters; `sort` (string, optional) — Sort enum: relevance, followers_desc, followers_asc, crawled_at_desc, crawled_at_asc, created_at_desc, created_at_asc; `source_tier` (string, optional) — Exact filter for which seed tier discovered this account, e.g. github-users, wikidata, tiktok-creators, journalists; `username` (string, optional) — Exact username filter (case-insensitive), max 128 characters
 
+## Depop (4)
+
+### `depop_categories`
+
+- **HTTP:** `GET /depop/categories`
+- **What:** Get Depop's category taxonomy. Returns Depop's full department, category, and subcategory taxonomy -- every value usable with /depop/search's and /depop/shop/{username}'s category/subcategory filters. Static data, no live request.
+- **Params:** _none_
+
+### `depop_item`
+
+- **HTTP:** `GET /depop/item/{slug}`
+- **What:** Get Depop item detail. Returns a normalized Depop item-detail page: description, all photos, price, condition, brand, size, seller info, and a "similar items" carousel when the page has one. Public data sourced from Depop's own item pages.
+- **Params:** `slug` (string, **required**) — Depop item URL slug, e.g. from a search result's id field
+
+### `depop_search`
+
+- **HTTP:** `GET /depop/search`
+- **What:** Search Depop listings. Searches Depop's resale-fashion marketplace by free-text keyword, with optional price, condition, colour, category, subcategory, gender, brand, discount, and sort filters, returning normalized listing summaries (title, price, brand, condition, photos, sizes), a pagination cursor, and the total matching count. Public data sourced from Depop's own search API.
+- **Params:** `after` (string, optional) — Opaque pagination cursor from a previous response's next_cursor field. Omit for the first page.; `brand_ids` (string, optional) — Comma-separated Depop internal numeric brand ids. Not documented by Depop -- find a brand's id by browsing its depop.com/brands/<slug>/ page.; `category` (string, optional) — Depop category slug: tops, bottoms, dresses, coats-jackets, jumpsuit-and-playsuit, suits, footwear, accessories, nightwear, underwear, swim-beach-wear, fancy-dress, sleepsuits-and-bodysuits, bundles, beauty, face-masks, home, tech-accessories, film, art, books-and-magazine, music, party-supplies, sports-equipment-accesories, toys, umbrella. See GET /depop/categories for a machine-readable enumeration with names and subcategories.; `colours` (string, optional) — Comma-separated colour filter: black, grey, white, brown, tan, cream, yellow, red, burgundy, orange, pink, purple, blue, navy, green, khaki, multi; `condition` (string, optional) — Comma-separated condition filter: brand_new, used_like_new, used_excellent, used_good, used_fair; `gender` (string, optional) — Department filter: female, male; `on_sale` (boolean, optional) — Restrict results to discounted listings; `price_max` (number, optional) — Maximum listing price in USD; `price_min` (number, optional) — Minimum listing price in USD; `query` (string, **required**) — Free-text keyword search; `sort` (string, optional) — Sort order: relevance, price_low_to_high, price_high_to_low; `subcategory` (string, optional) — Comma-separated Depop subcategory slug(s), scoped within category. See GET /depop/categories for the full list per category.
+
+### `depop_shop`
+
+- **HTTP:** `GET /depop/shop/{username}`
+- **What:** Get a Depop seller's shop. Returns a Depop seller's public shop: profile (rating, sold count, followers, bio) plus current listings, with optional price, condition, colour, category, subcategory, gender, discount, and sort filters. Public data sourced from Depop's own shop pages.
+- **Params:** `category` (string, optional) — Depop category slug: tops, bottoms, dresses, coats-jackets, jumpsuit-and-playsuit, suits, footwear, accessories, nightwear, underwear, swim-beach-wear, fancy-dress, sleepsuits-and-bodysuits, bundles, beauty, face-masks, home, tech-accessories, film, art, books-and-magazine, music, party-supplies, sports-equipment-accesories, toys, umbrella. See GET /depop/categories for a machine-readable enumeration with names and subcategories.; `colours` (string, optional) — Comma-separated colour filter: black, grey, white, brown, tan, cream, yellow, red, burgundy, orange, pink, purple, blue, navy, green, khaki, multi; `condition` (string, optional) — Comma-separated condition filter: brand_new, used_like_new, used_excellent, used_good, used_fair; `gender` (string, optional) — Department filter: female, male; `on_sale` (boolean, optional) — Restrict results to discounted listings; `price_max` (number, optional) — Maximum listing price in USD; `price_min` (number, optional) — Minimum listing price in USD; `sort` (string, optional) — Sort order: relevance, price_low_to_high, price_high_to_low, recently_listed; `subcategory` (string, optional) — Comma-separated Depop subcategory slug(s), scoped within category. See GET /depop/categories for the full list per category.; `username` (string, **required**) — Depop seller username, e.g. from a shop page URL segment
+
 ## Discogs (7)
 
 ### `discogs_artist`
@@ -1619,6 +1849,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /doordash/store/{store_id}/reviews`
 - **What:** Get DoorDash store reviews. Returns store ratings and customer reviews from the Android mobile guest experience for a location. No DoorDash account or caller-supplied token is required.
 - **Params:** `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
+
+## DuckDuckGo Search (5)
+
+### `duckduckgo_image`
+
+- **HTTP:** `GET /duckduckgo/image`
+- **What:** Search DuckDuckGo image results. Returns normalized DuckDuckGo image results for a query string: title, source page URL, image URL, thumbnail, dimensions, and hostname, plus page-based pagination. Results are fetched from DuckDuckGo's own image JSON API.
+- **Params:** `page` (integer, optional) — 1-based page number, defaults to 1; `q` (string, **required**) — Search query; `region` (string, optional) — DuckDuckGo region/locale code, e.g. us-en, uk-en, wt-wt (worldwide, the default)
+
+### `duckduckgo_news`
+
+- **HTTP:** `GET /duckduckgo/news`
+- **What:** Search DuckDuckGo news results. Returns normalized DuckDuckGo news results for a query string: title, destination URL, source, excerpt, thumbnail, and relative/published time, plus page-based pagination. Results are fetched from DuckDuckGo's own news JSON API.
+- **Params:** `page` (integer, optional) — 1-based page number, defaults to 1; `q` (string, **required**) — Search query; `region` (string, optional) — DuckDuckGo region/locale code, e.g. us-en, uk-en, wt-wt (worldwide, the default)
+
+### `duckduckgo_search`
+
+- **HTTP:** `GET /duckduckgo/search`
+- **What:** Search DuckDuckGo web results. Returns normalized DuckDuckGo web search results for a query string: title, destination URL, description, and hostname, plus page-based pagination. DuckDuckGo wraps every result link in its own click-tracking redirect; this endpoint always returns the decoded destination URL, never the raw redirect link. Results are fetched from DuckDuckGo's own server-rendered search page.
+- **Params:** `page` (integer, optional) — 1-based page number, defaults to 1; `q` (string, **required**) — Search query; `region` (string, optional) — DuckDuckGo region/locale code, e.g. us-en, uk-en, wt-wt (worldwide, the default); `safe_search` (string, optional) — Safe search level, defaults to DuckDuckGo's own moderate setting when omitted; `time_range` (string, optional) — Restrict results to a recency window
+
+### `duckduckgo_shopping`
+
+- **HTTP:** `GET /duckduckgo/shopping`
+- **What:** Search DuckDuckGo shopping results. Returns normalized DuckDuckGo shopping results for a query string: title, brand, merchant, description, price, rating, and review count, plus total page count. DuckDuckGo's shopping vertical is ad-funded, syndicated product listings, not organic content; every product link is wrapped in an ad-click-tracking redirect with no clean destination to unwrap, so no destination URL is returned. DuckDuckGo's own pagination token for this vertical is an opaque per-response blob rather than a plain page offset, so only the first page is supported.
+- **Params:** `q` (string, **required**) — Search query; `region` (string, optional) — DuckDuckGo market code, e.g. us-en, uk-en
+
+### `duckduckgo_video`
+
+- **HTTP:** `GET /duckduckgo/video`
+- **What:** Search DuckDuckGo video results. Returns normalized DuckDuckGo video results for a query string: title, destination URL, description, duration, thumbnail, publisher/uploader, published time, and view count, plus page-based pagination. Results are fetched from DuckDuckGo's own video JSON API.
+- **Params:** `page` (integer, optional) — 1-based page number, defaults to 1; `q` (string, **required**) — Search query; `region` (string, optional) — DuckDuckGo region/locale code, e.g. us-en, uk-en, wt-wt (worldwide, the default)
 
 ## eBay (6)
 
@@ -1802,19 +2064,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Expedia Stays properties. Returns normalized Expedia Stays (hotel) search results for a free-text destination and date range.
 - **Params:** `option` (object, **required**) — Property search payload
 
-## Facebook (4)
-
-### `facebook_group`
-
-- **HTTP:** `GET /facebook/groups/{group}`
-- **What:** Get Facebook group details. Fetches public data about a Facebook Group given its numeric group id, vanity name, or full group URL: name, cover photo, stable group id, and — when the group exposes them without joining — its privacy setting (public/private) and formatted member count.
-- **Params:** `group` (string, **required**) — Facebook Group reference: numeric group id, vanity name, or full Facebook group URL
-
-### `facebook_marketplace_item`
-
-- **HTTP:** `GET /facebook/marketplace/item/{id}`
-- **What:** Get Facebook Marketplace listing. Fetches public data for a single Facebook Marketplace listing given its numeric listing id: title, price, description, condition, a representative photo, and approximate (city/state) location. Facebook's own logged-out payload withholds seller identity entirely, so this response has no seller field by design.
-- **Params:** `id` (string, **required**) — Facebook Marketplace numeric listing id
+## Facebook (2)
 
 ### `facebook_marketplace_search`
 
@@ -1827,6 +2077,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /facebook/{page}`
 - **What:** Get Facebook page details. Fetches public data about a Facebook Page given its page ID, vanity name, or full page URL: name, follower/like counts, intro, category, business hours/price range, review count, and any public contact details (email, phone, address, website, WhatsApp number) exposed on the Page's About tab.
 - **Params:** `page` (string, **required**) — Facebook Page reference: vanity name, handle, profile.php id, or full Facebook URL
+
+## Fiverr (3)
+
+### `fiverr_gig`
+
+- **HTTP:** `GET /fiverr/gig/{username}/{slug}`
+- **What:** Get Fiverr gig detail. Returns a normalized Fiverr gig detail page: title, description, category, pricing packages (basic/standard/premium tiers with price and delivery time), rating, review count, orders in queue, tags, gallery images, and a seller summary (level, rating, response time, languages). Public data sourced from Fiverr's own server-rendered gig pages via a real browser-rendering backend.
+- **Params:** `slug` (string, **required**) — Fiverr gig URL slug, the trailing path segment after the username in a gig URL; `username` (string, **required**) — Fiverr seller username, e.g. from a search result's seller_username field
+
+### `fiverr_search`
+
+- **HTTP:** `GET /fiverr/search`
+- **What:** Search Fiverr gigs. Searches Fiverr's public gig listings by free-text keyword, returning normalized gig summaries (title, seller username, seller level, rating, review count, starting price, category, thumbnail image). Public data sourced from Fiverr's own server-rendered search pages via a real browser-rendering backend.
+- **Params:** `page` (integer, optional) — 1-based result page. Defaults to 1.; `q` (string, **required**) — Free-text gig search keyword
+
+### `fiverr_seller`
+
+- **HTTP:** `GET /fiverr/seller/{username}`
+- **What:** Get Fiverr seller profile. Returns a normalized Fiverr seller profile: display name, one-liner title, description, country, seller level, verification status, hourly rate, spoken languages, join date, and the seller's gig ids. Public data sourced from Fiverr's own server-rendered seller profile pages via a real browser-rendering backend.
+- **Params:** `username` (string, **required**) — Fiverr seller username, e.g. from a search result's seller_username field
 
 ## Geocoding (3)
 
@@ -2494,6 +2764,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Indeed job search. Searches Indeed job postings by keyword and location. Primary transport is Indeed's own credential-free GraphQL API; a page 1, unfiltered-by-date request uses it directly. Requesting page 2+ or the `fromage` filter (not yet expressible over the primary transport) uses the original web-page transport instead, with the same normalized response shape either way. `sort` enum: `relevance` (default), `date`.
 - **Params:** `fromage` (integer, optional) — Only jobs posted within this many days; `l` (string, optional) — Location (city, state, or zip); `page` (integer, optional) — Page number, 1-based, defaults to 1; `q` (string, **required**) — Search keywords; `radius` (integer, optional) — Search radius in miles; `sort` (string, optional) — Sort order: relevance, date
 
+## Instacart (6)
+
+### `instacart_departments`
+
+- **HTTP:** `GET /instacart/departments`
+- **What:** Get Instacart store department taxonomy. Returns a store's department/category taxonomy (Produce, Dairy & Eggs, Bakery, ...) two levels deep -- department and subcategory. Metadata only, does not return products. Public data sourced from Instacart's own storefront navigation.
+- **Params:** `postal_code` (string, **required**) — Postal code to localize the taxonomy for; `shop_id` (string, **required**) — Store's opaque shop id, from GET /instacart/stores; `store_slug` (string, **required**) — Store's retailer slug, from GET /instacart/stores
+
+### `instacart_item`
+
+- **HTTP:** `GET /instacart/item`
+- **What:** Get Instacart product detail at a store. Returns a single product's detail at a specific Instacart store: name, size, brand, image, current pricing (with any sale/offer badge), availability, stock level, dietary labels, and nutrition facts. Public data sourced from Instacart's own storefront pages.
+- **Params:** `postal_code` (string, **required**) — Postal code to price/localize the lookup for; `product_id` (string, **required**) — Instacart's opaque product id; `retailer_location_id` (string, **required**) — Store's opaque retailer location id, from GET /instacart/stores; `shop_id` (string, **required**) — Store's opaque shop id, from GET /instacart/stores; `store_slug` (string, **required**) — Store's retailer slug, from GET /instacart/stores
+
+### `instacart_search`
+
+- **HTTP:** `GET /instacart/search`
+- **What:** Search Instacart product terms at a store. Returns Instacart's own search-term autosuggestions for a keyword within one store -- the same suggestion list shown in the site's own search box dropdown. This is term-level (matching search phrases plus a representative thumbnail), not a paginated product-results list. Public data sourced from Instacart's own storefront search.
+- **Params:** `q` (string, **required**) — Free-text search term; `shop_id` (string, **required**) — Store's opaque shop id, from GET /instacart/stores; `store_slug` (string, **required**) — Store's retailer slug, from GET /instacart/stores
+
+### `instacart_search_nearby`
+
+- **HTTP:** `GET /instacart/search-nearby`
+- **What:** Search Instacart product terms near a postal code. Returns Instacart's own search-term autosuggestions for a keyword across every retailer serving a postal code at once, rather than one specific store. Public data sourced from Instacart's own cross-retailer search.
+- **Params:** `postal_code` (string, **required**) — US postal/ZIP code to search near; `q` (string, **required**) — Free-text search term
+
+### `instacart_stores`
+
+- **HTTP:** `GET /instacart/stores`
+- **What:** Find Instacart stores near a postal code. Finds Instacart retailer storefronts (grocery stores, warehouse clubs, and other partner retailers) serving a US postal code, each with the identifiers needed to look up its items and search suggestions. Public data sourced from Instacart's own store-discovery API.
+- **Params:** `postal_code` (string, **required**) — US postal/ZIP code to search near
+
+### `instacart_trending`
+
+- **HTTP:** `GET /instacart/trending`
+- **What:** Get Instacart trending search terms near a postal code. Returns Instacart's own popular/trending search terms across every retailer serving a postal code -- the same blank-state suggestions shown before a user types anything into the search box. Public data sourced from Instacart's own cross-retailer search.
+- **Params:** `postal_code` (string, **required**) — US postal/ZIP code to search near
+
 ## Instagram (3)
 
 ### `instagram_post`
@@ -3030,6 +3338,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get a manga. Returns a normalized manga by AniList id: titles, MyAnimeList id, scores, popularity, favourites, format, status, chapters, volumes, genres, ranked tags, dates, description, and images. Pass mal=true to additionally enrich the response with the MyAnimeList community score (mal block: score on a 0-10 scale, plus scored-by count), scraped credential-free from the public MAL page. Credential-free public AniList data.
 - **Params:** `id` (string, **required**) — AniList manga id; `mal` (boolean, optional) — Enrich with the MyAnimeList community score (adds one fetch; omitted when the title has no MAL id)
 
+## Mercari (5)
+
+### `mercari_autocomplete`
+
+- **HTTP:** `GET /mercari/autocomplete`
+- **What:** Mercari search autocomplete. Returns Mercari's own search-suggestion list for a partial keyword, in the upstream's own relevance order. An empty suggestion list is a normal outcome for obscure or gibberish input. Credential-free public data sourced from Mercari's own mobile-app API using an anonymous, login-free session.
+- **Params:** `query` (string, **required**) — Partial keyword to get suggestions for
+
+### `mercari_home`
+
+- **HTTP:** `GET /mercari/home`
+- **What:** Get Mercari home feed. Returns Mercari's own curated home-feed recommendations: normalized listing summaries (title, price, thumbnail, condition, seller). Credential-free public data sourced from Mercari's own mobile-app API using an anonymous, login-free session.
+- **Params:** _none_
+
+### `mercari_item`
+
+- **HTTP:** `GET /mercari/item/{id}`
+- **What:** Get Mercari item detail. Returns a normalized Mercari item-detail page: description, all photos, price, condition, category, hashtags, the shipping origin state, and a "similar items" carousel of related listings. Credential-free public data sourced from Mercari's own mobile-app API using an anonymous, login-free session.
+- **Params:** `id` (string, **required**) — Mercari item id, e.g. from a search result's id field
+
+### `mercari_master`
+
+- **HTTP:** `GET /mercari/master`
+- **What:** Get Mercari full taxonomy (categories, brands, sizes). Returns Mercari's full reference taxonomy in one call: every category (with parent linkage), every recognized brand, and every clothing/shoe/apparel size. Large (tens of thousands of brand entries) and effectively static -- cache this response rather than polling it. Credential-free public data sourced from Mercari's own mobile-app API using an anonymous, login-free session.
+- **Params:** _none_
+
+### `mercari_search`
+
+- **HTTP:** `GET /mercari/search`
+- **What:** Search Mercari listings. Searches Mercari's live resale marketplace by free-text keyword, returning normalized listing summaries (title, price, thumbnail, condition, seller) plus the total matching count. Credential-free public data sourced from Mercari's own mobile-app API using an anonymous, login-free session.
+- **Params:** `query` (string, **required**) — Free-text keyword search
+
 ## Meta Jobs (3)
 
 ### `meta_jobs_job`
@@ -3330,6 +3670,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search OpenTable restaurants near a location. Searches restaurants by free-text term (cuisine, name, neighborhood) near a latitude/longitude, for a given date/time and party size, including inline live availability per result. Credential-free.
 - **Params:** `date_time` (string, optional) — Reservation date/time, RFC3339-minute local format; defaults to now; `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `party_size` (integer, optional) — Party size, default 2; `size` (integer, optional) — Max results, default 10; `term` (string, **required**) — Free-text search term
 
+## Pinterest (8)
+
+### `pinterest_board`
+
+- **HTTP:** `GET /pinterest/board/{username}/{slug}`
+- **What:** Get a Pinterest board's detail. Returns a Pinterest board's metadata (name, description, cover image, pin/follower counts, owner) plus a page of pins from that board. Public data sourced from Pinterest's own board pages.
+- **Params:** `slug` (string, **required**) — Board URL slug, from the board's own /{username}/{slug}/ URL; `username` (string, **required**) — Pinterest username that owns the board
+
+### `pinterest_categories`
+
+- **HTTP:** `GET /pinterest/categories`
+- **What:** Get Pinterest's "Ideas" category list. Returns Pinterest's top-level "Ideas" category taxonomy (e.g. "Animals", "Home Decor", "Food And Drink"). Each entry's id is usable directly with GET /pinterest/ideas/{id}. Public data sourced from Pinterest's own ideas.pinterest.com-style category hub.
+- **Params:** _none_
+
+### `pinterest_idea`
+
+- **HTTP:** `GET /pinterest/ideas/{id}`
+- **What:** Get a Pinterest "Ideas" category's detail feed. Returns one "Ideas" category's metadata (name, description, follower count) plus a page of pins from that category's feed. Public data sourced from Pinterest's own ideas category pages.
+- **Params:** `id` (string, **required**) — Pinterest ideas category id. See GET /pinterest/categories for the full list.
+
+### `pinterest_pin`
+
+- **HTTP:** `GET /pinterest/pin/{id}`
+- **What:** Get a Pinterest pin's full detail. Returns a single Pinterest pin's full detail: title, description, image, board, pinner, comment count, save count, and creation time. Public data sourced from Pinterest's own pin pages.
+- **Params:** `id` (string, **required**) — Pinterest pin id
+
+### `pinterest_search`
+
+- **HTTP:** `GET /pinterest/search`
+- **What:** Search Pinterest pins. Returns public Pinterest pins matching a text query: title, description, image, board, and pinner for each result. Public data sourced from Pinterest's own web search.
+- **Params:** `query` (string, **required**) — Search text
+
+### `pinterest_user`
+
+- **HTTP:** `GET /pinterest/user/{username}`
+- **What:** Get a Pinterest user's public profile. Returns a Pinterest user's public profile: display name, bio, website, avatar, and follower/following/pin/board counts. Public data sourced from Pinterest's own profile pages.
+- **Params:** `username` (string, **required**) — Pinterest username
+
+### `pinterest_user_boards`
+
+- **HTTP:** `GET /pinterest/user/{username}/boards`
+- **What:** Get a Pinterest user's boards. Returns a page of a Pinterest user's own boards: name, description, cover image, and pin/follower counts for each. Public data sourced from Pinterest's own profile pages.
+- **Params:** `username` (string, **required**) — Pinterest username
+
+### `pinterest_user_pins`
+
+- **HTTP:** `GET /pinterest/user/{username}/pins`
+- **What:** Get a Pinterest user's own pins. Returns a page of a Pinterest user's own pins: title, description, image, board, and pinner for each. Public data sourced from Pinterest's own profile pages.
+- **Params:** `username` (string, **required**) — Pinterest username
+
 ## PitchBook (5)
 
 ### `pitchbook_advisor`
@@ -3593,6 +3983,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /polymarket/tokens/spreads`
 - **What:** Get Polymarket token spreads. Returns public CLOB spreads for up to 25 Polymarket token ids. This uses credential-free public CLOB market-data JSON and does not require a Polymarket user token, wallet signature, cookies, or personal account authentication.
 - **Params:** `body` (object, **required**) — Token ids request body
+
+## Poshmark (8)
+
+### `poshmark_brand`
+
+- **HTTP:** `GET /poshmark/brand/{name}`
+- **What:** Browse Poshmark listings by brand. Returns a page of normalized Poshmark listings for a given brand name (e.g. Nike), the same browsing view as Poshmark's own brand pages. Pass a previous response's next_max_id back as max_id to fetch the next page. Credential-free public data sourced from Poshmark's own server-rendered brand page and, for pages past the first, Poshmark's own JSON pagination API.
+- **Params:** `max_id` (string, optional) — Opaque pagination cursor from a previous response's next_max_id. Omit for the first page; `name` (string, **required**) — Poshmark brand name, matching the path segment of a /brand/{name} URL
+
+### `poshmark_brands`
+
+- **HTTP:** `GET /poshmark/brands`
+- **What:** Get the full Poshmark brand directory. Returns Poshmark's full brand directory: every brand Poshmark recognizes (name, slug, logo, known aliases), not just brands with active listings for a given search or category filter. Useful for resolving a brand name to the exact value the brand/search filters expect. Credential-free public data sourced from Poshmark's own server-rendered brand directory page.
+- **Params:** _none_
+
+### `poshmark_categories`
+
+- **HTTP:** `GET /poshmark/categories`
+- **What:** Get the Poshmark department/category browse taxonomy. Returns Poshmark's full department/category browse taxonomy (e.g. Women > Shoes, Men > Jackets & Coats). Each entry's path resolves directly against the category endpoint. This is reference data that changes rarely, so responses are cached. Credential-free public data sourced from Poshmark's own server-rendered category pages.
+- **Params:** _none_
+
+### `poshmark_category`
+
+- **HTTP:** `GET /poshmark/category/{path}`
+- **What:** Browse Poshmark listings by category. Returns a page of normalized Poshmark listings for a given category path (e.g. Women-Shoes, Men-Shirts), the same browsing view as Poshmark's own category pages. Pass a previous response's next_max_id back as max_id to fetch the next page. Credential-free public data sourced from Poshmark's own server-rendered category page and, for pages past the first, Poshmark's own JSON pagination API.
+- **Params:** `max_id` (string, optional) — Opaque pagination cursor from a previous response's next_max_id. Omit for the first page; `path` (string, **required**) — Poshmark category path segment, e.g. Women-Shoes, Men-Shirts
+
+### `poshmark_closet`
+
+- **HTTP:** `GET /poshmark/closet/{username}`
+- **What:** Get Poshmark seller closet (storefront). Returns a normalized Poshmark closet (seller storefront) page: the seller's public profile and reputation stats (followers, ratings, items sold) plus a first page of their currently available listings and total listing count. Pass a previous response's next_max_id back as max_id to fetch the next page of listings; paginated responses omit the seller profile to avoid a second upstream fetch, so fetch without max_id first to get seller fields. Credential-free public data sourced from Poshmark's own server-rendered closet page and, for pages past the first, Poshmark's own JSON pagination API.
+- **Params:** `max_id` (string, optional) — Opaque pagination cursor from a previous response's next_max_id. Omit for the first page; `username` (string, **required**) — Poshmark seller username, the path segment of a /closet/{username} URL
+
+### `poshmark_listing`
+
+- **HTTP:** `GET /poshmark/listing/{id}`
+- **What:** Get Poshmark listing detail. Returns a normalized Poshmark item-detail page: the full listing (description, all photos, size/brand/condition, inventory), its seller's profile, public comments, and similar listings Poshmark itself surfaces on the same page. Credential-free public data sourced from Poshmark's own server-rendered listing page.
+- **Params:** `id` (string, **required**) — Poshmark listing id, the trailing id segment of a /listing/{slug}-{id} URL
+
+### `poshmark_search`
+
+- **HTTP:** `GET /poshmark/search`
+- **What:** Search Poshmark listings. Searches Poshmark for clothing, shoes, and accessory listings, returning normalized listing summaries (title, price, brand, size, condition, seller, images) plus the total matching count and an opaque pagination cursor. Pass a previous response's next_max_id back as max_id to fetch the next page. Credential-free public data sourced from Poshmark's own server-rendered search page and, for pages past the first, Poshmark's own JSON pagination API.
+- **Params:** `department` (string, optional) — Department filter, e.g. Women, Men, Kids; `max_id` (string, optional) — Opaque pagination cursor from a previous response's next_max_id. Omit for the first page; `query` (string, **required**) — Free-text keyword search
+
+### `poshmark_trend`
+
+- **HTTP:** `GET /poshmark/trend/{id}`
+- **What:** Browse a Poshmark trend/showroom collection. Returns a page of normalized Poshmark listings for a curated trend/showroom collection (e.g. "Vintage Celine Handbags"), the same browsing view as Poshmark's own trend pages. Pass a previous response's next_max_id back as max_id to fetch the next page. Credential-free public data sourced from Poshmark's own server-rendered trend page and, for pages past the first, Poshmark's own JSON pagination API.
+- **Params:** `id` (string, **required**) — Poshmark trend/showroom id, the trailing id segment of a /trend/{slug}-{id} URL; `max_id` (string, optional) — Opaque pagination cursor from a previous response's next_max_id. Omit for the first page
 
 ## ProductHunt (11)
 
@@ -4512,6 +4952,64 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Steam's weekly top-sellers chart for a country. Returns the store's weekly top-sellers chart for a country, each rank carrying the full store item (name, price, weighted community tags, review summary, platforms). cc selects the country whose sales ranking and currency are returned. Credential-free public Steam store top-sellers API.
 - **Params:** `cc` (string, optional) — Country code (ISO) whose weekly sales ranking is returned; `l` (string, optional) — Steam store language name
 
+## StockX (5)
+
+### `stockx_brands`
+
+- **HTTP:** `GET /stockx/brands`
+- **What:** Get StockX brand catalog. Returns StockX's full brand catalog (name and URL slug for every brand in its own brand directory), suitable for building GET /stockx/search's brand parameter or GET /stockx/search's model parameter's required single-brand context. Credential-free public data from the same navigation API backing StockX's own site menu.
+- **Params:** _none_
+
+### `stockx_categories`
+
+- **HTTP:** `GET /stockx/categories`
+- **What:** Get StockX category/subcategory taxonomy. Returns StockX's full category/subcategory reference: the 7 top-level categories accepted by GET /stockx/search's category parameter, each with its subcategories (e.g. Shoes -> Boots, Cleats, Clogs). Credential-free public data from the same navigation API backing StockX's own site menu.
+- **Params:** _none_
+
+### `stockx_product`
+
+- **HTTP:** `GET /stockx/product/{slug}`
+- **What:** Get StockX product detail. Returns a normalized StockX product: identity (title, brand, model, colorway, style id, retail price, release date, description, image), current market data (lowest ask, highest bid, last sale, trailing average price/sales count, delivery-speed ask tiers), individual seller listings (price, condition, size), related-product recommendations (other colorways/siblings StockX surfaces on the product page), and any promotional badges. Credential-free public data from StockX's own product-page GraphQL API.
+- **Params:** `slug` (string, **required**) — StockX product URL slug (the urlKey), the path segment of a https://stockx.com/{slug} product page
+
+### `stockx_releases`
+
+- **HTTP:** `GET /stockx/releases`
+- **What:** Get StockX upcoming release calendar. Returns a date-ordered page (release date ascending) of StockX's upcoming release calendar: new and restocked products releasing on or after the given date, with normalized product summaries, headline pricing, and each item's published release date. Credential-free public data from the same GraphQL API backing StockX's own releases page.
+- **Params:** `from` (string, optional) — Only include releases on or after this date (YYYY-MM-DD, UTC). Defaults to today; `limit` (integer, optional) — Results per page, defaults to 20, maximum 100; `page` (integer, optional) — 1-indexed result page, defaults to 1
+
+### `stockx_search`
+
+- **HTTP:** `GET /stockx/search`
+- **What:** Search/browse StockX products. Browses StockX's product catalog by category with optional free-text keyword search and facet filters (gender, brand, color, shoe height, activity, availability), returning normalized product summaries with headline pricing plus the total matching count. Credential-free public data from the same GraphQL API backing StockX's own category browse pages.
+- **Params:** `activity` (string, optional) — Filter by activity, comma-separated for multiple values; `available_now` (boolean, optional) — Only include products with at least one active ask; `below_retail` (boolean, optional) — Only include products currently trading below original retail price; `brand` (string, optional) — Filter by one or more brand slugs, comma-separated, e.g. jordan,nike; `category` (string, **required**) — StockX top-level category; `color` (string, optional) — Filter by color, comma-separated for multiple values; `gender` (string, optional) — Filter by gender, comma-separated for multiple values; `limit` (integer, optional) — Results per page, defaults to 20, maximum 100; `model` (string, optional) — Filter by a single model slug, e.g. air-force-1. Requires exactly one value in brand; `page` (integer, optional) — 1-indexed result page, defaults to 1; `query` (string, optional) — Free-text keyword search within the category, e.g. a model name or colorway; `shoe_height` (string, optional) — Filter by shoe height, comma-separated for multiple values; `sort` (string, optional) — Result sort order, defaults to featured; `xpress_ship` (boolean, optional) — Only include products with StockX Xpress Ship availability
+
+## Strava (4)
+
+### `strava_challenges`
+
+- **HTTP:** `GET /strava/challenges`
+- **What:** Strava's public challenge gallery. Returns Strava's public challenge gallery: the currently promoted challenge plus every gallery section (partner challenges, and one section per sport such as run/ride), each with its challenges' goal, duration, and cover art. Public data, sourced from Strava's own challenge gallery.
+- **Params:** _none_
+
+### `strava_club`
+
+- **HTTP:** `GET /strava/clubs/{id}`
+- **What:** A Strava club's public profile. Returns a Strava club's public profile: name, verified/private flags, location, description, member count, and cover/avatar images. Only the base public profile is returned -- discussion, leaderboard, member list, and recent-activity data require a logged-in Strava session and are not available. Public data, sourced from Strava's own server-rendered club page.
+- **Params:** `id` (string, **required**) — Strava club ID
+
+### `strava_route_detail`
+
+- **HTTP:** `GET /strava/routes/detail`
+- **What:** A single Strava route's detail page. Returns a single Strava route's detail: type, difficulty, distance, elevation gain, estimated time, and summary. `path` is the relative route path returned by `/strava/routes` results (e.g. `hiking/usa/colorado/boulder/mallory-cave_5171952737974445730`). Public data, sourced from Strava's own server-rendered route pages.
+- **Params:** `path` (string, **required**) — Relative route path, from a /strava/routes result's path field
+
+### `strava_routes`
+
+- **HTTP:** `GET /strava/routes`
+- **What:** Strava route-index listing for a sport, country, and region. Returns a page of Strava's public route recommendations for a sport, country, and region (state, or state/city). `sport` values: `hiking`, `road-biking`, `mountain-biking`, `trail-running`, `gravel-biking`. Public data, sourced from Strava's own server-rendered route pages.
+- **Params:** `country` (string, **required**) — Country slug, e.g. usa; `page` (integer, optional) — Page number, starting at 1; `region` (string, **required**) — Region slug: a state (colorado) or state/city (colorado/boulder); `sport` (string, **required**) — Route sport. Allowed values: hiking, road-biking, mountain-biking, trail-running, gravel-biking
+
 ## Target (7)
 
 ### `target_categories`
@@ -4866,6 +5364,20 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get a TMDB TV chart. Returns a TMDB TV chart (popular, top rated, airing today, or on the air). Credential-free public TMDB data.
 - **Params:** `category` (string, optional) — TV chart, default popular; `date_from` (string, optional) — First-air date lower bound (YYYY-MM-DD); `date_to` (string, optional) — First-air date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max shows, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TMDB genre ids
 
+## Trip.com (2)
+
+### `tripcom_hotel_detail`
+
+- **HTTP:** `GET /tripcom/hotels/{id}`
+- **What:** Get Trip.com hotel detail. Returns a normalized Trip.com hotel-detail page: identity (name, local name, star rating, city/province/country), location (address, zone, latitude/longitude, nearby-transport description), guest rating (overall score plus cleanliness/amenities/location/service breakdown), images, description, check-in/check-out and child policy summaries, and popular facilities. Credential-free public data sourced from Trip.com's own server-rendered hotel-detail page. Pricing is not included: Trip.com's detail page only returns per-night rates alongside check-in/check-out dates, which this endpoint does not take as input -- use the search endpoint for a city's current display prices.
+- **Params:** `id` (string, **required**) — Trip.com hotel id, from a prior search call's hotel_id field; `slug` (string, optional) — Optional slug segment for a nicer canonical source URL (e.g. the district/city slug from a search result's url). Not required and not validated by Trip.com.
+
+### `tripcom_hotels_search`
+
+- **HTTP:** `GET /tripcom/hotels/search`
+- **What:** Search Trip.com hotels by city. Returns Trip.com's own top-hotels page for a city: normalized hotel summaries (name, location, star rating, guest rating, review count, image, display price) for the hotels Trip.com features on that city's hotel-list page. Trip.com does not expose a credential-free free-text city search, so callers supply the exact city_slug and city_id pair from a known Trip.com hotel-list URL of the form https://www.trip.com/hotels/{city_slug}-hotels-list-{city_id}/. Credential-free public data sourced from Trip.com's own server-rendered hotel-list page.
+- **Params:** `city_id` (string, **required**) — Trip.com numeric city id, the trailing number of a /hotels/{city_slug}-hotels-list-{city_id}/ URL; `city_slug` (string, **required**) — Trip.com city slug, the text segment of a /hotels/{city_slug}-hotels-list-{city_id}/ URL
+
 ## TripAdvisor (6)
 
 ### `tripadvisor_autocomplete`
@@ -4889,7 +5401,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tripadvisor_place`
 
 - **HTTP:** `GET /tripadvisor/place`
-- **What:** Get TripAdvisor place. Returns a rich normalized TripAdvisor place profile from public place HTML, using configured browser fallbacks when direct HTML is blocked.
+- **What:** Get TripAdvisor place. Returns a rich normalized TripAdvisor place profile. Destination and bookable tour/experience pages resolve through a faster dedicated lookup; everything else comes from public place HTML, using configured browser fallbacks when direct HTML is blocked.
 - **Params:** `id` (string, optional) — TripAdvisor location id fallback; `url` (string, optional) — TripAdvisor place URL
 
 ### `tripadvisor_reviews`
@@ -5024,6 +5536,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get UberEats store reviews. Returns the reviews snapshot embedded in an UberEats store page: aggregate rating, review count, and a sample of recent reviews (reviewer name, text, and relative/absolute date). This is a single on-page snapshot, not a full paginated feed. A store with no written reviews returns an empty reviews list. Credential-free public UberEats data.
 - **Params:** `store_id` (string, **required**) — UberEats store UUID, as returned by the search endpoint's storeUuid field
 
+## Upwork (3)
+
+### `upwork_freelancer`
+
+- **HTTP:** `GET /upwork/freelancer/{id}`
+- **What:** Get Upwork freelancer profile. Returns a normalized Upwork freelancer profile: name, title, verification badge, overview, hourly rate, rating and review count, Job Success Score, location and local time, total jobs/hours worked, and recent client feedback (title, comment, date, client name, rating). Public data sourced from Upwork's own server-rendered profile pages via a real browser-rendering backend.
+- **Params:** `id` (string, **required**) — Upwork freelancer id, the value after \
+
+### `upwork_job`
+
+- **HTTP:** `GET /upwork/job/{id}`
+- **What:** Get Upwork job posting detail. Returns a normalized Upwork job posting: title, full description, employment type, budget (hourly range or fixed amount), location/remote type, experience level, duration, project type, proposal count, allowed applicant countries, and a summary of the posting client (member since, location, total spend, hires, hours, industry, company size). Public data sourced from Upwork's own server-rendered job pages via a real browser-rendering backend.
+- **Params:** `id` (string, **required**) — Upwork job id, e.g. from a search result's id field
+
+### `upwork_search`
+
+- **HTTP:** `GET /upwork/search`
+- **What:** Search Upwork job postings. Searches Upwork's public job listings by free-text keyword, returning normalized job summaries (title, budget, experience level, duration, posted date, description snippet, skill tags). Public data sourced from Upwork's own server-rendered search pages via a real browser-rendering backend.
+- **Params:** `page` (integer, optional) — 1-based result page. Defaults to 1.; `q` (string, **required**) — Free-text job search keyword
+
 ## Usage (4)
 
 ### `usage_endpoints`
@@ -5049,6 +5581,50 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /usage/me/timeseries`
 - **What:** Get current user's usage timeseries. Returns JWT-authenticated request and credit consumption buckets for chart rendering. Results use UTC buckets.
 - **Params:** `bucket` (string, optional) — Bucket size. Defaults to hour for day range and day otherwise.; `endpoint` (string, optional) — Optional endpoint filter; `from` (string, optional) — Custom lower bound in RFC3339 format when range=custom; `range` (string, optional) — Time range preset. Defaults to the current billing period.; `to` (string, optional) — Custom upper bound in RFC3339 format when range=custom
+
+## Vinted (7)
+
+### `vinted_brand`
+
+- **HTTP:** `GET /vinted/brand`
+- **What:** Vinted listings for a brand. Returns Vinted listings for a specific brand, with optional price filtering and sort order. `order` values: `relevance`, `newest_first`, `price_high_to_low`, `price_low_to_high`. Public data, sourced from Vinted's own server-rendered brand page.
+- **Params:** `id` (string, **required**) — Numeric Vinted brand ID, from a /vinted/item result's brand link; `order` (string, optional) — Sort order. Allowed values: relevance, newest_first, price_high_to_low, price_low_to_high; `page` (integer, optional) — Page number, starting at 1; `price_from` (number, optional) — Minimum price; `price_to` (number, optional) — Maximum price
+
+### `vinted_brands`
+
+- **HTTP:** `GET /vinted/brands`
+- **What:** Vinted popular-brands directory. Returns Vinted's "Popular brands" directory. This is Vinted's own curated list, not an exhaustive list of every brand in its catalog. Each entry's `id` is usable directly as the `id` query parameter to /vinted/brand. Public data, sourced from Vinted's own server-rendered brands page.
+- **Params:** _none_
+
+### `vinted_catalog`
+
+- **HTTP:** `GET /vinted/catalog`
+- **What:** Vinted listing search. Returns Vinted resale listings matching a text search, with optional price filtering and sort order. `order` values: `relevance`, `newest_first`, `price_high_to_low`, `price_low_to_high`. Public data, sourced from Vinted's own server-rendered catalog page.
+- **Params:** `order` (string, optional) — Sort order. Allowed values: relevance, newest_first, price_high_to_low, price_low_to_high; `page` (integer, optional) — Page number, starting at 1; `price_from` (number, optional) — Minimum price; `price_to` (number, optional) — Maximum price; `search_text` (string, **required**) — Search text
+
+### `vinted_categories`
+
+- **HTTP:** `GET /vinted/categories`
+- **What:** Vinted top-level catalog categories. Returns Vinted's top-level catalog categories (e.g. Women, Men, Kids, Home, Electronics, Sports, Entertainment, Hobbies & collectibles). This is the root level only -- Vinted's full category tree goes several levels deeper on the live site, but deeper levels aren't server-rendered so aren't covered here. Each entry's `id` is usable directly as the `id` query parameter to /vinted/category. Public data, sourced from Vinted's own server-rendered catalog navigation.
+- **Params:** _none_
+
+### `vinted_category`
+
+- **HTTP:** `GET /vinted/category`
+- **What:** Vinted listings for a category. Returns Vinted listings for a specific category, with optional price filtering and sort order. `order` values: `relevance`, `newest_first`, `price_high_to_low`, `price_low_to_high`. Public data, sourced from Vinted's own server-rendered category page.
+- **Params:** `id` (string, **required**) — Numeric Vinted category ID, from a /vinted/item result's categories breadcrumb link; `order` (string, optional) — Sort order. Allowed values: relevance, newest_first, price_high_to_low, price_low_to_high; `page` (integer, optional) — Page number, starting at 1; `price_from` (number, optional) — Minimum price; `price_to` (number, optional) — Maximum price
+
+### `vinted_item`
+
+- **HTTP:** `GET /vinted/item`
+- **What:** A single Vinted listing's detail. Returns a single Vinted listing's detail: title, description, brand, size, condition, material, color, price, category breadcrumb, and photos. Public data, sourced from Vinted's own server-rendered item page.
+- **Params:** `id` (string, **required**) — Numeric Vinted item ID, from a /vinted/catalog result's id field
+
+### `vinted_member`
+
+- **HTTP:** `GET /vinted/member`
+- **What:** A Vinted seller's public storefront profile. Returns a Vinted seller's public storefront profile: username, self-disclosed coarse location, rating, and follower/following counts. Deliberately excludes online-presence and activity data (last-seen timestamps, upload-frequency badges) present on the live page. Public data, sourced from Vinted's own server-rendered member page.
+- **Params:** `id` (string, **required**) — Numeric Vinted member ID, from a /vinted/item result's seller link
 
 ## Walmart (3)
 
@@ -5089,6 +5665,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /web/techstack`
 - **What:** Tech stack — detect what a website is built with. Fetches a public URL and fingerprints the web technologies it is built with — a BuiltWith / Wappalyzer-style detector. Returns a list of detected `technologies`, each with its `categories`, a `confidence` (`high`, `medium`, `low`), an optional `version`, and the `evidence` that matched. Covers JavaScript frameworks and libraries (React, Vue.js, Angular, Svelte, jQuery), web frameworks / static site generators (Next.js, Nuxt.js, Gatsby, Remix, SvelteKit, Astro, Hugo), CMS and website builders (WordPress, Drupal, Joomla, Ghost, Wix, Squarespace, Webflow), e-commerce (Shopify, WooCommerce, Magento, BigCommerce), analytics, ad pixels, and tag managers (Google Analytics, Google Tag Manager, Meta Pixel, LinkedIn, Bing, TikTok/Pinterest/Reddit pixels, Segment, Hotjar, Microsoft Clarity), CDNs, UI frameworks and fonts, payments (Stripe, PayPal, Klarna), live chat, marketing automation, A/B testing, consent management, CAPTCHAs (reCAPTCHA, hCaptcha, Turnstile), video, and search. It also inspects response headers (from a plain HTTP fetch) to identify the web server (nginx, Apache, IIS), the CDN / hosting provider (Cloudflare, CloudFront, Fastly, Vercel, Netlify), and the server-side language / framework (PHP, ASP.NET, Ruby on Rails, Django, Laravel, Express). Results are directional, not exhaustive. The `render` fetch strategy is one of `browser` (headless browser that executes JavaScript — the default, so client-injected scripts like analytics, tag managers and pixels are detected), `auto` (Chrome-impersonated HTTP, escalating to a real browser only when blocked or JS-rendered), or `http` (HTTP only, no JavaScript — fastest, but sees only the server HTML); defaults to `browser`. Only public pages are supported; respect each site's terms of use and robots directives.
 - **Params:** `request` (object, **required**) — Target URL (and optional render strategy)
+
+## Whatnot (3)
+
+### `whatnot_browse`
+
+- **HTTP:** `GET /whatnot/browse`
+- **What:** Browse Whatnot live shows by category. Returns the live and upcoming shows currently listed under a Whatnot category: seller, title, status, start time, thumbnail, and tags. Public data sourced from Whatnot's own GraphQL API.
+- **Params:** `category` (string, **required**) — Whatnot category slug. See GET /whatnot/categories for the full list.
+
+### `whatnot_categories`
+
+- **HTTP:** `GET /whatnot/categories`
+- **What:** Get Whatnot's category list. Returns Whatnot's full top-level category list (e.g. "Trading Card Games", "Sneakers & Streetwear"). Each entry's slug is usable directly with /whatnot/browse's category filter. Public data sourced from Whatnot's own GraphQL API.
+- **Params:** _none_
+
+### `whatnot_live`
+
+- **HTTP:** `GET /whatnot/live/{id}`
+- **What:** Get a Whatnot live show's current shop feed. Returns a Whatnot live show's current shop feed: every product, auction, and giveaway listing currently visible in the show, each with its seller's rating. Public data sourced from Whatnot's own GraphQL API.
+- **Params:** `id` (string, **required**) — Whatnot live show id, e.g. from a browse result's id field
 
 ## X (3)
 
@@ -5345,6 +5941,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /yahoo-finance/trending/{region}`
 - **What:** Yahoo Finance trending symbols. Returns trending Yahoo Finance symbols for a region.
 - **Params:** `count` (integer, optional) — Symbol count; `region` (string, **required**) — Region such as US
+
+## Yahoo Search (1)
+
+### `yahoo_search`
+
+- **HTTP:** `GET /yahoo-search/search`
+- **What:** Search Yahoo web results. Returns normalized Yahoo web search results for a query string: title, destination URL, description, and hostname, plus page-based pagination. Yahoo wraps every result link in its own click-tracking redirect; this endpoint always returns the decoded destination URL, never the raw redirect link. Results are fetched from Yahoo's own server-rendered search page.
+- **Params:** `page` (integer, optional) — 1-based page number, defaults to 1; `q` (string, **required**) — Search query
 
 ## Yelp (8)
 
