@@ -1,12 +1,13 @@
 ---
 name: serp-keyword-research
-description: Runs SERP and keyword research via the Crawlora API — Google, Bing, and Brave search results plus Google Trends interest-over-time and related/rising queries — returning clean JSON. Use when the user wants search-engine rankings, SERP snapshots, autocomplete/keyword suggestions, or trend data instead of scraping result pages.
+description: Runs SERP and keyword research via the Crawlora API — Google, Bing, Brave, DuckDuckGo, and Yahoo search results plus Google Trends interest-over-time and related/rising queries — returning clean JSON. Use when the user wants search-engine rankings, SERP snapshots, autocomplete/keyword suggestions, or trend data instead of scraping result pages.
 ---
 
 # SERP & keyword research
 
-Capture search-engine results (Google, Bing, Brave) and keyword/trend signals
-(Google autosuggest, Google Trends) as normalized JSON from the Crawlora API.
+Capture search-engine results (Google, Bing, Brave, DuckDuckGo, Yahoo) and
+keyword/trend signals (Google autosuggest, Google Trends) as normalized
+JSON from the Crawlora API.
 
 ## When to use this skill
 
@@ -26,9 +27,11 @@ Capture search-engine results (Google, Bing, Brave) and keyword/trend signals
 ## How it works
 
 1. **SERP** — Google search is `POST /google/search` with a `searchOption` body;
-   Bing and Brave are `GET /bing/search?q=...` and `GET /brave/search?q=...`.
+   Bing, Brave, DuckDuckGo, and Yahoo are plain `GET` with `q`:
+   `/bing/search`, `/brave/search`, `/duckduckgo/search`, `/yahoo-search/search`.
    Cross-check engines for coverage; on a `503` challenge, fall back to another engine.
-2. **Verticals** — news/videos/images per engine (`/google/news`, `/bing/videos`, …).
+2. **Verticals** — news/videos/images per engine (`/google/news`, `/bing/videos`,
+   `/duckduckgo/news`, `/duckduckgo/image`, `/duckduckgo/video`, `/duckduckgo/shopping`, …).
 3. **Keyword ideas** — autosuggest: `GET /google/suggest?q=...` (and `/bing/suggest`,
    `/brave/suggest`).
 4. **Trends** — Google Trends `POST` endpoints:
@@ -44,6 +47,8 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 # GET search engines + suggest:
 scripts/crawlora.sh /bing/search q="web scraping api" | jq '.'
 scripts/crawlora.sh /brave/search q="web scraping api" | jq '.'
+scripts/crawlora.sh /duckduckgo/search q="web scraping api" | jq '.'
+scripts/crawlora.sh /yahoo-search/search q="web scraping api" | jq '.'
 scripts/crawlora.sh /google/suggest q="web scraping" | jq '.'
 
 # POST endpoints take a JSON body (note -X POST):
@@ -61,7 +66,8 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 ## Endpoint reference
 
 See [`reference/endpoints.md`](reference/endpoints.md) for every Google, Bing,
-Brave, and Google Trends endpoint this skill uses (method, path, params, description).
+Brave, DuckDuckGo, Yahoo, and Google Trends endpoint this skill uses (method,
+path, params, description).
 
 ## Examples
 

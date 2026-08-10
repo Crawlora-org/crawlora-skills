@@ -13,7 +13,7 @@
 //   skills/<skill>/reference/endpoints.md                (that skill's groups)
 //   skills/<skill>/scripts/crawlora.sh                   (copy of lib/crawlora.sh)
 
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, chmodSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -25,10 +25,19 @@ const all = Array.isArray(tools) ? tools : tools.tools || Object.values(tools)[0
 
 // Skill → list of _http.group names it covers. The umbrella skill covers all.
 const SKILLS = {
-  "product-price-research": ["Amazon", "eBay", "Shopify", "Shop.app"],
+  "product-price-research": [
+    "Amazon",
+    "eBay",
+    "Shopify",
+    "Shop.app",
+    "Target",
+    "Costco",
+    "Zalando",
+    "Walmart",
+  ],
   "youtube-research": ["YouTube"],
   "app-review-mining": ["AppStore", "GooglePlay"],
-  "serp-keyword-research": ["Google", "Bing", "Brave", "Google Trends"],
+  "serp-keyword-research": ["Google", "Bing", "Brave", "Google Trends", "DuckDuckGo Search", "Yahoo Search"],
   "crawlora-datasets": ["Datasets"],
   "finance-markets-research": ["Yahoo Finance", "SEC EDGAR", "Congress", "CoinGecko", "PitchBook"],
   "prediction-markets-research": ["Polymarket", "Kalshi", "Metaculus"],
@@ -63,8 +72,34 @@ const SKILLS = {
     "Facebook",
     "Reddit",
   ],
-  "travel-hotel-research": ["Booking", "Expedia", "Agoda", "TripAdvisor", "Trip.com", "Airbnb"],
-  "sports-scores-research": ["ESPN", "SofaScore", "MLB"],
+  "travel-hotel-research": [
+    "Booking",
+    "Expedia",
+    "Agoda",
+    "TripAdvisor",
+    "Trip.com",
+    "Airbnb",
+    "Ticketmaster",
+  ],
+  "sports-scores-research": ["ESPN", "SofaScore", "MLB", "Strava"],
+  "music-podcast-research": ["Spotify", "SpotifyPodcasts", "ApplePodcasts", "Discogs"],
+  "book-research": ["Goodreads", "AppleBooks"],
+  "gaming-research": ["Steam", "PlayStation"],
+  "anime-manga-research": ["Anime", "Manga"],
+  "developer-oss-research": ["GitHub", "ChromeWebStore"],
+  "restaurant-food-delivery-research": ["DoorDash", "Yelp", "UberEats", "Instacart", "OpenTable"],
+  "business-review-trust-research": ["ProductHunt", "TrustMRR", "Trustpilot", "Capterra"],
+  "resale-secondhand-research": [
+    "Poshmark",
+    "Etsy",
+    "Vinted",
+    "StockX",
+    "Mercari",
+    "Depop",
+    "Whatnot",
+  ],
+  "real-estate-autos-research": ["CarMax", "Redfin", "Autotrader", "Zillow", "Cars.com"],
+  "web-utilities-research": ["Numbeo", "Geocoding", "Web", "ImportYeti", "SimilarWeb", "Brand"],
 };
 
 const groupsOf = (t) => (t._http && t._http.group) || "Other";
@@ -168,20 +203,38 @@ const skillDirs = readdirSync(join(ROOT, "skills"), { withFileTypes: true })
   .map((entry) => entry.name);
 for (const s of skillDirs) outputs.push([`skills/${s}/scripts/crawlora.sh`, helper]);
 
+// Executable helper scripts must carry the +x bit — writeFileSync alone
+// leaves them at the default umask (non-executable), which git then commits
+// as 100644. A user who installs the skill and runs `scripts/crawlora.sh`
+// as every SKILL.md example shows gets "permission denied". Enforce +x for
+// every generated .sh file, and treat a missing +x as drift in --check too.
+const isExecutable = (abs) => {
+  try {
+    return (statSync(abs).mode & 0o111) !== 0;
+  } catch {
+    return false;
+  }
+};
+
 let diffs = 0;
 for (const [rel, content] of outputs) {
   const abs = join(ROOT, rel);
+  const isScript = rel.endsWith(".sh");
   let current = null;
   try {
     current = readFileSync(abs, "utf8");
   } catch {}
-  if (current === content) continue;
+  const contentChanged = current !== content;
+  const needsExecFix = isScript && current !== null && !isExecutable(abs);
+  if (!contentChanged && !needsExecFix) continue;
   diffs++;
   if (CHECK) {
-    console.error(`DRIFT: ${rel} is out of date — run \`node scripts/generate.mjs\``);
+    if (contentChanged) console.error(`DRIFT: ${rel} is out of date — run \`node scripts/generate.mjs\``);
+    else console.error(`DRIFT: ${rel} is missing its executable bit — run \`node scripts/generate.mjs\``);
   } else {
     mkdirSync(dirname(abs), { recursive: true });
     writeFileSync(abs, content);
+    if (isScript) chmodSync(abs, 0o755);
     console.log(`wrote ${rel}`);
   }
 }

@@ -26,17 +26,27 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 |---|---|---|
 | [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured data from **any** of the 987 Crawlora endpoints; teaches auth, credits, and the full catalog. | all 101 |
 | [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (109 endpoints) |
-| [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace reviews. | Amazon, eBay, Shopify, Shop.app |
+| [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, Shopify, Shop.app, Target, Costco, Zalando, Walmart |
 | [`youtube-research`](skills/youtube-research) | Transcripts, comments, video/channel metadata, search — no `yt-dlp`. | YouTube |
 | [`app-review-mining`](skills/app-review-mining) | App details, reviews, ratings, rankings, similar apps (ASO). | App Store, Google Play |
-| [`serp-keyword-research`](skills/serp-keyword-research) | SERP snapshots, autocomplete keyword ideas, Google Trends. | Google, Bing, Brave, Google Trends |
+| [`serp-keyword-research`](skills/serp-keyword-research) | SERP snapshots, autocomplete keyword ideas, Google Trends. | Google, Bing, Brave, DuckDuckGo, Yahoo, Google Trends |
 | [`finance-markets-research`](skills/finance-markets-research) | Stock quotes/financials, SEC filings & insider trades, congressional stock disclosures, crypto markets, VC/PE profiles. | Yahoo Finance, SEC EDGAR, Congress, CoinGecko, PitchBook |
 | [`prediction-markets-research`](skills/prediction-markets-research) | Odds, order books, price history, and forecast questions. | Polymarket, Kalshi, Metaculus |
 | [`movie-tv-research`](skills/movie-tv-research) | Cast/crew, ratings/reviews, streaming availability, box-office numbers. | IMDb, TMDB, JustWatch, Letterboxd, Rotten Tomatoes, Metacritic, Box Office Mojo |
 | [`job-market-research`](skills/job-market-research) | Search postings, pull any company's ATS board directly, hiring signals, freelance gigs. | Indeed, Google/Amazon/Apple/Meta/Tesla Jobs, 15+ ATS platforms, Upwork, Fiverr |
 | [`social-media-research`](skills/social-media-research) | Public profiles, posts, engagement, search, and trending topics. | Instagram, TikTok, Threads, Bluesky, X, Pinterest, LinkedIn, Facebook, Reddit |
-| [`travel-hotel-research`](skills/travel-hotel-research) | Hotel/flight/attraction search and reviews, short-term rentals. | Booking.com, Expedia, Agoda, TripAdvisor, Trip.com, Airbnb |
-| [`sports-scores-research`](skills/sports-scores-research) | Live scores, standings, rosters, player/team stats, boxscores. | ESPN, SofaScore, MLB |
+| [`travel-hotel-research`](skills/travel-hotel-research) | Hotel/flight/attraction search and reviews, short-term rentals, event tickets. | Booking.com, Expedia, Agoda, TripAdvisor, Trip.com, Airbnb, Ticketmaster |
+| [`sports-scores-research`](skills/sports-scores-research) | Live scores, standings, rosters, player/team stats, boxscores, endurance routes. | ESPN, SofaScore, MLB, Strava |
+| [`music-podcast-research`](skills/music-podcast-research) | Tracks/albums/artists/playlists, podcast shows/episodes, record pressings. | Spotify, Spotify Podcasts, Apple Podcasts, Discogs |
+| [`book-research`](skills/book-research) | Book/author ratings and reviews, reading lists, audiobooks. | Goodreads, Apple Books |
+| [`gaming-research`](skills/gaming-research) | Game pricing, reviews, player counts, deals, charts. | Steam, PlayStation Store |
+| [`anime-manga-research`](skills/anime-manga-research) | Title detail, characters, staff, rankings, airing schedule. | Anime, Manga |
+| [`developer-oss-research`](skills/developer-oss-research) | Repo/user/org profiles, trending, contributors; Chrome extension detail/reviews. | GitHub, Chrome Web Store |
+| [`restaurant-food-delivery-research`](skills/restaurant-food-delivery-research) | Restaurant reviews/reservations, delivery search and menus, grocery search. | Yelp, OpenTable, DoorDash, Uber Eats, Instacart |
+| [`business-review-trust-research`](skills/business-review-trust-research) | Product launches, business reputation, verified startup revenue, software reviews. | Product Hunt, TrustMRR, Trustpilot, Capterra |
+| [`resale-secondhand-research`](skills/resale-secondhand-research) | C2C resale, streetwear/sneaker, and handmade marketplace search. | Poshmark, Etsy, Vinted, StockX, Mercari, Depop, Whatnot |
+| [`real-estate-autos-research`](skills/real-estate-autos-research) | Home search/estimates/market trends, used-car search and dealer/listing detail. | Zillow, Redfin, CarMax, Autotrader, Cars.com |
+| [`web-utilities-research`](skills/web-utilities-research) | URL scraping/extraction, tech-stack fingerprinting, geocoding, cost of living, trade records, site traffic, brand lookup. | Geocoding, Numbeo, ImportYeti, SimilarWeb, Brand, Web (scrape/extract/techstack) |
 
 ## Install
 

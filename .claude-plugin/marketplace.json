@@ -5,13 +5,13 @@
     "email": "hello@crawlora.net"
   },
   "metadata": {
-    "description": "Crawlora Agent Skills — structured public web data (search, e-commerce, social, finance, app stores, media, reviews, travel, sports, jobs, prediction markets) via the Crawlora REST API.",
-    "version": "1.8.0"
+    "description": "Crawlora Agent Skills — structured public web data (search, e-commerce, social, finance, app stores, media, reviews, travel, sports, jobs, prediction markets, gaming, real estate, and more) via the Crawlora REST API.",
+    "version": "1.9.0"
   },
   "plugins": [
     {
       "name": "crawlora-skills",
-      "description": "Thirteen Agent Skills for fetching structured public web data with the Crawlora API: an umbrella catalog skill, a hosted-datasets skill, plus product/price, YouTube, app-review, SERP/keyword, finance/markets, prediction-markets, movie/TV, job-market, social-media, travel/hotel, and sports research recipes.",
+      "description": "23 Agent Skills for fetching structured public web data with the Crawlora API: an umbrella catalog skill, a hosted-datasets skill, plus product/price, YouTube, app-review, SERP/keyword, finance/markets, prediction-markets, movie/TV, job-market, social-media, travel/hotel, sports, music/podcast, book, gaming, anime/manga, developer/OSS, restaurant/food-delivery, business-review/trust, resale/secondhand, real-estate/autos, and web-utilities research recipes.",
       "source": "./",
       "homepage": "https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills",
       "repository": "https://github.com/Crawlora-org/crawlora-skills",
@@ -31,7 +31,17 @@
         "./skills/job-market-research",
         "./skills/social-media-research",
         "./skills/travel-hotel-research",
-        "./skills/sports-scores-research"
+        "./skills/sports-scores-research",
+        "./skills/music-podcast-research",
+        "./skills/book-research",
+        "./skills/gaming-research",
+        "./skills/anime-manga-research",
+        "./skills/developer-oss-research",
+        "./skills/restaurant-food-delivery-research",
+        "./skills/business-review-trust-research",
+        "./skills/resale-secondhand-research",
+        "./skills/real-estate-autos-research",
+        "./skills/web-utilities-research"
       ]
     }
   ]

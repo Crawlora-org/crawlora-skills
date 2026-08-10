@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**38 endpoints across 6 platform group(s).**
+**49 endpoints across 7 platform group(s).**
 
 ## Booking (8)
 
@@ -247,3 +247,71 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /airbnb/search`
 - **What:** Search Airbnb stays. Returns normalized Airbnb public web search results.
 - **Params:** `adults` (integer, optional) — Adult guests; `check_in` (string, optional) — Check-in date; `check_out` (string, optional) — Check-out date; `currency` (string, optional) — Currency for bounded map search; `location` (string, **required**) — Location; `ne_lat` (number, optional) — Northeast latitude for bounded map search; `ne_lng` (number, optional) — Northeast longitude for bounded map search; `page` (integer, optional) — 1-based page; `sw_lat` (number, optional) — Southwest latitude for bounded map search; `sw_lng` (number, optional) — Southwest longitude for bounded map search; `zoom` (integer, optional) — Map zoom for bounded map search
+
+## Ticketmaster (11)
+
+### `ticketmaster_attraction`
+
+- **HTTP:** `GET /ticketmaster/attraction`
+- **What:** Get a Ticketmaster attraction. Returns normalized details for one Ticketmaster artist, team, or other attraction.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster attraction id
+
+### `ticketmaster_attraction_events`
+
+- **HTTP:** `GET /ticketmaster/attraction-events`
+- **What:** List an attraction's Ticketmaster events. Returns upcoming Ticketmaster events for one attraction. The sort enum accepts `relevance` and `date`.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster attraction id; `page` (integer, optional) — Zero-based page (0-49); `sort` (string, optional) — Result order
+
+### `ticketmaster_discover_categories`
+
+- **HTTP:** `GET /ticketmaster/discover-categories`
+- **What:** List Ticketmaster discover categories. Lists every current Concerts, Sports, Arts & Theater, and Family category with pagination. Section accepts `all`, `concerts`, `sports`, `arts-theater`, and `family`.
+- **Params:** `page` (integer, optional) — One-based page; `per_page` (integer, optional) — Categories per page; `section` (string, optional) — Discover section
+
+### `ticketmaster_discover_category_events`
+
+- **HTTP:** `GET /ticketmaster/discover-category-events`
+- **What:** List events in a Ticketmaster discover category. Returns a zero-based paginated event feed for any category returned by ticketmaster-discover-categories.
+- **Params:** `category_id` (string, **required**) — Ticketmaster discover category id; `page` (integer, optional) — Zero-based page
+
+### `ticketmaster_discover_cities`
+
+- **HTTP:** `GET /ticketmaster/discover-cities`
+- **What:** List Ticketmaster discover cities. Lists Ticketmaster city discovery destinations for a country with pagination.
+- **Params:** `country` (string, optional) — Two-letter country code; `page` (integer, optional) — One-based page; `per_page` (integer, optional) — Cities per page
+
+### `ticketmaster_discover_city_events`
+
+- **HTTP:** `GET /ticketmaster/discover-city-events`
+- **What:** List events in a Ticketmaster discover city. Returns a zero-based paginated event feed for a city slug returned by ticketmaster-discover-cities.
+- **Params:** `city` (string, **required**) — Ticketmaster discover city slug; `country` (string, optional) — Two-letter country code matching the selected city; `page` (integer, optional) — Zero-based page
+
+### `ticketmaster_event`
+
+- **HTTP:** `GET /ticketmaster/event`
+- **What:** Get a Ticketmaster event. Returns normalized details for one Ticketmaster event, including its venue, attractions, timing, availability flags, and classification.
+- **Params:** `id` (string, **required**) — Ticketmaster event id
+
+### `ticketmaster_search_events`
+
+- **HTTP:** `GET /ticketmaster/search-events`
+- **What:** Search Ticketmaster events. Searches Ticketmaster events by artist, event, team, or venue. A zero total with an empty events list is a valid no-results response. The sort enum accepts `relevance` and `date`.
+- **Params:** `page` (integer, optional) — Zero-based page (0-49); `q` (string, **required**) — Artist, event, team, or venue query; `sort` (string, optional) — Result order
+
+### `ticketmaster_suggest`
+
+- **HTTP:** `GET /ticketmaster/suggest`
+- **What:** Suggest Ticketmaster artists, events, and venues. Returns autocomplete suggestions for a partial query.
+- **Params:** `q` (string, **required**) — Partial artist, event, team, or venue query
+
+### `ticketmaster_venue`
+
+- **HTTP:** `GET /ticketmaster/venue`
+- **What:** Get a Ticketmaster venue. Returns normalized details and visitor information for one Ticketmaster venue.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster venue id
+
+### `ticketmaster_venue_events`
+
+- **HTTP:** `GET /ticketmaster/venue-events`
+- **What:** List a venue's Ticketmaster events. Returns upcoming Ticketmaster events at one venue. The sort enum accepts `relevance` and `date`.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster venue id; `page` (integer, optional) — Zero-based page (0-49); `sort` (string, optional) — Result order

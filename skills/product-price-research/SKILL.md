@@ -1,17 +1,18 @@
 ---
 name: product-price-research
-description: Researches products, prices, sellers, and reviews across major online marketplaces (Amazon, eBay, Shopify stores, and Shop.app) using the Crawlora API, returning clean JSON. Use when the user asks to find a product, compare prices or sellers, track listings, or pull marketplace reviews — instead of scraping store pages.
+description: Researches products, prices, sellers, and reviews across major online marketplaces and big-box retailers (Amazon, eBay, Shopify stores, Shop.app, Target, Costco, Zalando, Walmart) using the Crawlora API, returning clean JSON. Use when the user asks to find a product, compare prices or sellers, track listings, or pull marketplace/retailer reviews — instead of scraping store pages.
 ---
 
 # Product & price research
 
-Look up and compare products, prices, sellers, and reviews across Amazon, eBay,
-Shopify storefronts, and Shop.app — all as normalized JSON from the Crawlora API,
-with no HTML scraping.
+Look up and compare products, prices, sellers, and reviews across Amazon,
+eBay, Shopify storefronts, Shop.app, Target, Costco, Zalando, and Walmart —
+all as normalized JSON from the Crawlora API, with no HTML scraping.
 
 ## When to use this skill
 
-- "What does X cost on Amazon / eBay?" or "compare prices for X across sellers."
+- "What does X cost on Amazon / eBay / Target / Walmart?" or "compare prices
+  for X across sellers/retailers."
 - "Find listings for X" / "search this Shopify store" / "what's in this collection?"
 - "Pull reviews / ratings for this product or seller."
 - "Track this product's price / variants / availability."
@@ -29,13 +30,19 @@ with no HTML scraping.
 Pick the marketplace, then the job:
 
 1. **Search / discover** — `/amazon/search`, `/ebay/search`, `/shopify/products`,
-   `/shop-app/search` to find candidate products by keyword.
+   `/shop-app/search`, `/target/search`, `/costco/search`, `/walmart/search`,
+   and `/zalando/search` (this one **requires `market`** — a Zalando country
+   storefront code like `de`, `fr`, `com`; list them via `/zalando/markets`)
+   to find candidate products by keyword.
 2. **Detail** — fetch a specific product (`/amazon/product`, `/ebay/item`,
-   `/shopify/products/{handle}`, `/shop-app/products/{id}`) for price, variants, specs.
+   `/shopify/products/{handle}`, `/shop-app/products/{id}`,
+   `/target/product` (`tcin`), `/costco/product/{id}`, `/walmart/product/{item_id}`,
+   `/zalando/product` (`sku`+`market`)) for price, variants, specs.
 3. **Sellers** — for eBay/Shop.app, resolve the seller/shop (`/ebay/seller/...`,
    `/shop-app/shops/{handle}`) to compare offers.
 4. **Reviews** — pull product/seller reviews where available
-   (`/shop-app/products/{id}/reviews`, `/ebay/seller/.../feedback`).
+   (`/shop-app/products/{id}/reviews`, `/ebay/seller/.../feedback`,
+   `/target/reviews`, `/costco/product/{id}/reviews`, `/walmart/product/{item_id}/reviews`).
 5. **Compare** the JSON fields (price, currency, rating, seller) and answer.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
@@ -47,6 +54,9 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 scripts/crawlora.sh /amazon/search k="standing desk" | jq '.'
 scripts/crawlora.sh /ebay/search q="mechanical keyboard" | jq '.'
 scripts/crawlora.sh /shop-app/search query="running shoes" | jq '.'
+scripts/crawlora.sh /target/search q="standing desk" | jq '.'
+scripts/crawlora.sh /walmart/search q="standing desk" | jq '.'
+scripts/crawlora.sh /zalando/search q="running shoes" market=de | jq '.'
 
 # Product detail:
 scripts/crawlora.sh /amazon/product asin=B0XXXXXXX | jq '{title,price}'
@@ -61,8 +71,9 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 
 ## Endpoint reference
 
-See [`reference/endpoints.md`](reference/endpoints.md) for every Amazon, eBay,
-Shopify, and Shop.app endpoint this skill uses (method, path, params, description).
+See [`reference/endpoints.md`](reference/endpoints.md) for every Amazon,
+eBay, Shopify, Shop.app, Target, Costco, Zalando, and Walmart endpoint this
+skill uses (method, path, params, description).
 
 ## Examples
 
@@ -80,3 +91,5 @@ Shopify, and Shop.app endpoint this skill uses (method, path, params, descriptio
 - **Public data only** — public product/listing pages; respect each marketplace's terms.
 - **Security:** key lives in `CRAWLORA_API_KEY` only — never hardcode, query-param, or commit it.
 - Results are paginated — pass `page` (and `count` where supported) to walk listings.
+- **Zalando always needs `market`** (no default storefront) — resolve valid
+  codes via `/zalando/markets` if unsure.

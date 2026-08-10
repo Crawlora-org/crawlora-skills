@@ -1,13 +1,13 @@
 ---
 name: sports-scores-research
-description: Pulls live scores, standings, rosters, and player/team stats via the Crawlora API — ESPN (most sports/leagues), SofaScore (global soccer + more), and MLB's own stats API — returning clean JSON. Use when the user wants a live scoreboard, a team or player's stats, league standings, a game's boxscore/play-by-play, or head-to-head history.
+description: Pulls live scores, standings, rosters, and player/team stats via the Crawlora API — ESPN (most sports/leagues), SofaScore (global soccer + more), MLB's own stats API, and Strava (routes, clubs, challenges) — returning clean JSON. Use when the user wants a live scoreboard, a team or player's stats, league standings, a game's boxscore/play-by-play, head-to-head history, or an endurance-sport route/club.
 ---
 
-# Sports scores & stats research
+# Sports & athletics research
 
-Pull live scoreboards, standings, rosters, and player/team stats across
-three sports-data sources as normalized JSON from the Crawlora API — no
-scraping scoreboard widgets or stat pages.
+Pull live scoreboards, standings, rosters, player/team stats, and endurance-
+sport routes/clubs across four sports-data sources as normalized JSON from
+the Crawlora API — no scraping scoreboard widgets or stat pages.
 
 ## When to use this skill
 
@@ -17,6 +17,7 @@ scraping scoreboard widgets or stat pages.
 - "Give me the boxscore / play-by-play for <game>."
 - "Head-to-head history between <team A> and <team B>."
 - League news, rankings/polls, or betting-odds snapshots (where exposed).
+- "Find running/biking/hiking routes in <region>" or "look up this Strava club."
 
 ## Setup (one-time)
 
@@ -44,6 +45,11 @@ scraping scoreboard widgets or stat pages.
    `/mlb/standings`, `/mlb/teams`, `/mlb/team-roster`, `/mlb/team-stats`;
    `/mlb/player` + `/mlb/player-stats`; `/mlb/transactions` for
    signings/trades/IL moves; `/mlb/league-stats` for ranked league leaders.
+4. **Strava** — `/strava/routes` (requires `sport` — one of `hiking`,
+   `road-biking`, `mountain-biking`, `trail-running`, `gravel-biking` —
+   plus `country`+`region` slugs) to browse routes; `/strava/routes/detail`
+   (`path`) for one route; `/strava/clubs/{id}` for a club; `/strava/challenges`
+   for current public challenges.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
 
@@ -61,6 +67,10 @@ scripts/crawlora.sh /sofascore/event id=<event-id> | jq '.'
 # MLB:
 scripts/crawlora.sh /mlb/schedule date=2026-08-10 | jq '.'
 scripts/crawlora.sh /mlb/player-stats id=<mlb-id> group=hitting | jq '.'
+
+# Strava:
+scripts/crawlora.sh /strava/challenges | jq '.'
+scripts/crawlora.sh /strava/routes sport=hiking country=<country-slug> region=<region-slug> | jq '.'
 ```
 
 Raw `curl` fallback:
@@ -73,7 +83,7 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 ## Endpoint reference
 
 See [`reference/endpoints.md`](reference/endpoints.md) for every ESPN,
-SofaScore, and MLB endpoint this skill uses.
+SofaScore, MLB, and Strava endpoint this skill uses.
 
 ## Examples
 
@@ -98,3 +108,9 @@ SofaScore, and MLB endpoint this skill uses.
   assuming a league is supported.
 - Live-score endpoints reflect the source's own update cadence — poll rather
   than assume sub-second freshness.
+- **Strava's `country`/`region` are platform-specific slugs**, not free-text
+  names — the exact slug format isn't in the tool schema; verify a working
+  value at [crawlora.net/docs](https://crawlora.net/docs?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills)
+  or the [playground](https://crawlora.net/playground?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills)
+  if `/strava/routes` 404s — `/strava/challenges` needs no params and is a
+  safe starting point.
