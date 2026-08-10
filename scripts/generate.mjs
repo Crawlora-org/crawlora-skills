@@ -100,6 +100,36 @@ const SKILLS = {
   ],
   "real-estate-autos-research": ["CarMax", "Redfin", "Autotrader", "Zillow", "Cars.com"],
   "web-utilities-research": ["Numbeo", "Geocoding", "Web", "ImportYeti", "SimilarWeb", "Brand"],
+
+  // Per-platform splits of the biggest bundles above (pilot, 2026-08-11) — the bundled
+  // umbrella skills stay as-is for backward compat with already-listed directories;
+  // these are additive, finer-grained skills for sharper per-platform discovery.
+  "amazon-research": ["Amazon"],
+  "ebay-research": ["eBay"],
+  "shopify-research": ["Shopify"],
+  "shop-app-research": ["Shop.app"],
+  "target-research": ["Target"],
+  "costco-research": ["Costco"],
+  "zalando-research": ["Zalando"],
+  "walmart-research": ["Walmart"],
+  "instagram-research": ["Instagram"],
+  "tiktok-research": ["TikTok"],
+  "threads-research": ["Threads"],
+  "bluesky-research": ["Bluesky"],
+  "x-research": ["X"],
+  "pinterest-research": ["Pinterest"],
+  "linkedin-research": ["LinkedIn"],
+  "facebook-research": ["Facebook"],
+  "reddit-research": ["Reddit"],
+  "indeed-research": ["Indeed"],
+  "google-jobs-research": ["Google Jobs"],
+  "amazon-jobs-research": ["Amazon Jobs"],
+  "apple-jobs-research": ["Apple Jobs"],
+  "meta-jobs-research": ["Meta Jobs"],
+  "tesla-jobs-research": ["Tesla Jobs"],
+  "ats-job-boards-research": ["Jobs"],
+  "upwork-research": ["Upwork"],
+  "fiverr-research": ["Fiverr"],
 };
 
 const groupsOf = (t) => (t._http && t._http.group) || "Other";

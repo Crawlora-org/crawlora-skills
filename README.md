@@ -48,6 +48,19 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`real-estate-autos-research`](skills/real-estate-autos-research) | Home search/estimates/market trends, used-car search and dealer/listing detail. | Zillow, Redfin, CarMax, Autotrader, Cars.com |
 | [`web-utilities-research`](skills/web-utilities-research) | URL scraping/extraction, tech-stack fingerprinting, geocoding, cost of living, trade records, site traffic, brand lookup. | Geocoding, Numbeo, ImportYeti, SimilarWeb, Brand, Web (scrape/extract/techstack) |
 
+### Per-platform skills
+
+The three biggest bundles above (`product-price-research`, `social-media-research`,
+`job-market-research`) also ship as **individual per-platform skills** — same
+endpoints, narrower scope, for when you only need one platform. The bundled skills
+stay available too; both cover the same underlying endpoints.
+
+| Bundle | Per-platform skills |
+|---|---|
+| `product-price-research` | [`amazon-research`](skills/amazon-research), [`ebay-research`](skills/ebay-research), [`shopify-research`](skills/shopify-research), [`shop-app-research`](skills/shop-app-research), [`target-research`](skills/target-research), [`costco-research`](skills/costco-research), [`zalando-research`](skills/zalando-research), [`walmart-research`](skills/walmart-research) |
+| `social-media-research` | [`instagram-research`](skills/instagram-research), [`tiktok-research`](skills/tiktok-research), [`threads-research`](skills/threads-research), [`bluesky-research`](skills/bluesky-research), [`x-research`](skills/x-research), [`pinterest-research`](skills/pinterest-research), [`linkedin-research`](skills/linkedin-research), [`facebook-research`](skills/facebook-research), [`reddit-research`](skills/reddit-research) |
+| `job-market-research` | [`indeed-research`](skills/indeed-research), [`google-jobs-research`](skills/google-jobs-research), [`amazon-jobs-research`](skills/amazon-jobs-research), [`apple-jobs-research`](skills/apple-jobs-research), [`meta-jobs-research`](skills/meta-jobs-research), [`tesla-jobs-research`](skills/tesla-jobs-research), [`ats-job-boards-research`](skills/ats-job-boards-research) (Greenhouse, Lever, Workday, Ashby, and 10+ more ATS platforms), [`upwork-research`](skills/upwork-research), [`fiverr-research`](skills/fiverr-research) |
+
 ## Install
 
 ### With the `skills` CLI (any agent)
