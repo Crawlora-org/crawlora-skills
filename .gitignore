@@ -3,3 +3,13 @@ node_modules/
 *.log
 .env
 .env.*
+
+# Local install artifacts from `npx skills add` / `npx clawhub` run in this repo —
+# NEVER run those installers from inside this source repo (they symlink skills/<name>
+# into these paths, which git sees as deleting the real tracked files). Run them from
+# a scratch directory pointed at the GitHub URL instead.
+.agents/
+.claude/
+agent/
+skills-lock.json
+.clawhub/
