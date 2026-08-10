@@ -5,13 +5,13 @@
     "email": "hello@crawlora.net"
   },
   "metadata": {
-    "description": "Crawlora Agent Skills — structured public web data (search, e-commerce, social, finance, app stores, media, reviews) via the Crawlora REST API.",
-    "version": "1.7.0"
+    "description": "Crawlora Agent Skills — structured public web data (search, e-commerce, social, finance, app stores, media, reviews, travel, sports, jobs, prediction markets) via the Crawlora REST API.",
+    "version": "1.8.0"
   },
   "plugins": [
     {
       "name": "crawlora-skills",
-      "description": "Five Agent Skills for fetching structured public web data with the Crawlora API: an umbrella catalog skill plus product/price, YouTube, app-review, and SERP/keyword research recipes.",
+      "description": "Thirteen Agent Skills for fetching structured public web data with the Crawlora API: an umbrella catalog skill, a hosted-datasets skill, plus product/price, YouTube, app-review, SERP/keyword, finance/markets, prediction-markets, movie/TV, job-market, social-media, travel/hotel, and sports research recipes.",
       "source": "./",
       "homepage": "https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills",
       "repository": "https://github.com/Crawlora-org/crawlora-skills",
@@ -20,10 +20,18 @@
       "strict": false,
       "skills": [
         "./skills/crawlora",
+        "./skills/crawlora-datasets",
         "./skills/product-price-research",
         "./skills/youtube-research",
         "./skills/app-review-mining",
-        "./skills/serp-keyword-research"
+        "./skills/serp-keyword-research",
+        "./skills/finance-markets-research",
+        "./skills/prediction-markets-research",
+        "./skills/movie-tv-research",
+        "./skills/job-market-research",
+        "./skills/social-media-research",
+        "./skills/travel-hotel-research",
+        "./skills/sports-scores-research"
       ]
     }
   ]
