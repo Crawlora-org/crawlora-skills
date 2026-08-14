@@ -24,9 +24,9 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 
 | Skill | What it does | Platforms |
 |---|---|---|
-| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured data from **any** of the 987 Crawlora endpoints; teaches auth, credits, and the full catalog. | all 101 |
+| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured data from **any** of the 1118 Crawlora endpoints; teaches auth, credits, and the full catalog. | all 123 |
 | [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (109 endpoints) |
-| [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, Shopify, Shop.app, Target, Costco, Zalando, Walmart |
+| [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, Shopify, Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara |
 | [`youtube-research`](skills/youtube-research) | Transcripts, comments, video/channel metadata, search — no `yt-dlp`. | YouTube |
 | [`app-review-mining`](skills/app-review-mining) | App details, reviews, ratings, rankings, similar apps (ASO). | App Store, Google Play |
 | [`serp-keyword-research`](skills/serp-keyword-research) | SERP snapshots, autocomplete keyword ideas, Google Trends. | Google, Bing, Brave, DuckDuckGo, Yahoo, Google Trends |
@@ -37,7 +37,8 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`social-media-research`](skills/social-media-research) | Public profiles, posts, engagement, search, and trending topics. | Instagram, TikTok, Threads, Bluesky, X, Pinterest, LinkedIn, Facebook, Reddit |
 | [`travel-hotel-research`](skills/travel-hotel-research) | Hotel/flight/attraction search and reviews, short-term rentals, event tickets. | Booking.com, Expedia, Agoda, TripAdvisor, Trip.com, Airbnb, Ticketmaster |
 | [`sports-scores-research`](skills/sports-scores-research) | Live scores, standings, rosters, player/team stats, boxscores, endurance routes. | ESPN, SofaScore, MLB, Strava |
-| [`music-podcast-research`](skills/music-podcast-research) | Tracks/albums/artists/playlists, podcast shows/episodes, record pressings. | Spotify, Spotify Podcasts, Apple Podcasts, Discogs |
+| [`twitch-research`](skills/twitch-research) | Channel profile/live status, streams by game, clips, VODs, search, top games, team rosters, VOD chat replay. | Twitch |
+| [`music-podcast-research`](skills/music-podcast-research) | Tracks/albums/artists/playlists, podcast shows/episodes, record pressings, SoundCloud track/user stats. | Spotify, Spotify Podcasts, Apple Podcasts, Discogs, SoundCloud |
 | [`book-research`](skills/book-research) | Book/author ratings and reviews, reading lists, audiobooks. | Goodreads, Apple Books |
 | [`gaming-research`](skills/gaming-research) | Game pricing, reviews, player counts, deals, charts. | Steam, PlayStation Store |
 | [`anime-manga-research`](skills/anime-manga-research) | Title detail, characters, staff, rankings, airing schedule. | Anime, Manga |
@@ -46,6 +47,7 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`business-review-trust-research`](skills/business-review-trust-research) | Product launches, business reputation, verified startup revenue, software reviews. | Product Hunt, TrustMRR, Trustpilot, Capterra |
 | [`resale-secondhand-research`](skills/resale-secondhand-research) | C2C resale, streetwear/sneaker, and handmade marketplace search. | Poshmark, Etsy, Vinted, StockX, Mercari, Depop, Whatnot |
 | [`real-estate-autos-research`](skills/real-estate-autos-research) | Home search/estimates/market trends, used-car search and dealer/listing detail. | Zillow, Redfin, CarMax, Autotrader, Cars.com |
+| [`yahoo-network-research`](skills/yahoo-network-research) | Yahoo's editorial content network: category/home story feeds and full articles across autos, entertainment, health, life, news (with comments), and shopping/tech; deeper scores/standings/rosters for Yahoo Sports. Yahoo Finance and Yahoo Search are separate skills. | Yahoo Autos, Yahoo Entertainment, Yahoo Health, Yahoo Life, Yahoo News, Yahoo Shopping, Yahoo Sports, Yahoo Tech |
 | [`web-utilities-research`](skills/web-utilities-research) | URL scraping/extraction, tech-stack fingerprinting, geocoding, cost of living, trade records, site traffic, brand lookup. | Geocoding, Numbeo, ImportYeti, SimilarWeb, Brand, Web (scrape/extract/techstack) |
 
 ### Per-platform skills
@@ -57,7 +59,7 @@ stay available too; both cover the same underlying endpoints.
 
 | Bundle | Per-platform skills |
 |---|---|
-| `product-price-research` | [`amazon-research`](skills/amazon-research), [`ebay-research`](skills/ebay-research), [`shopify-research`](skills/shopify-research), [`shop-app-research`](skills/shop-app-research), [`target-research`](skills/target-research), [`costco-research`](skills/costco-research), [`zalando-research`](skills/zalando-research), [`walmart-research`](skills/walmart-research) |
+| `product-price-research` | [`amazon-research`](skills/amazon-research), [`ebay-research`](skills/ebay-research), [`shopify-research`](skills/shopify-research), [`shop-app-research`](skills/shop-app-research), [`target-research`](skills/target-research), [`costco-research`](skills/costco-research), [`zalando-research`](skills/zalando-research), [`walmart-research`](skills/walmart-research), [`hm-research`](skills/hm-research), [`kohls-research`](skills/kohls-research), [`lululemon-research`](skills/lululemon-research), [`macys-research`](skills/macys-research), [`nike-research`](skills/nike-research), [`oldnavy-research`](skills/oldnavy-research), [`samsclub-research`](skills/samsclub-research), [`ulta-research`](skills/ulta-research), [`wayfair-research`](skills/wayfair-research), [`wish-research`](skills/wish-research), [`zappos-research`](skills/zappos-research), [`zara-research`](skills/zara-research) |
 | `social-media-research` | [`instagram-research`](skills/instagram-research), [`tiktok-research`](skills/tiktok-research), [`threads-research`](skills/threads-research), [`bluesky-research`](skills/bluesky-research), [`x-research`](skills/x-research), [`pinterest-research`](skills/pinterest-research), [`linkedin-research`](skills/linkedin-research), [`facebook-research`](skills/facebook-research), [`reddit-research`](skills/reddit-research) |
 | `job-market-research` | [`indeed-research`](skills/indeed-research), [`google-jobs-research`](skills/google-jobs-research), [`amazon-jobs-research`](skills/amazon-jobs-research), [`apple-jobs-research`](skills/apple-jobs-research), [`meta-jobs-research`](skills/meta-jobs-research), [`tesla-jobs-research`](skills/tesla-jobs-research), [`ats-job-boards-research`](skills/ats-job-boards-research) (Greenhouse, Lever, Workday, Ashby, and 10+ more ATS platforms), [`upwork-research`](skills/upwork-research), [`fiverr-research`](skills/fiverr-research) |
 
