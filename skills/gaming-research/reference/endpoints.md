@@ -184,4 +184,4 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /playstation/search`
 - **What:** Search the PlayStation Store. Returns a page of PlayStation Store search results (concepts and products) for a term, with pagination and per-item price, platforms, classification, and media. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
-- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number; `term` (string, **required**) — Search term
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page (max 48); `term` (string, **required**) — Search term

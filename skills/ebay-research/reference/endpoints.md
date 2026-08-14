@@ -6,15 +6,39 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**6 endpoints across 1 platform group(s).**
+**10 endpoints across 1 platform group(s).**
 
-## eBay (6)
+## eBay (10)
 
 ### `ebay_item`
 
 - **HTTP:** `GET /ebay/item/{item_id}`
 - **What:** Get eBay item details. Returns normalized details for a public eBay item listing.
 - **Params:** `item_id` (string, **required**) — eBay item ID
+
+### `ebay_live_stream`
+
+- **HTTP:** `GET /ebay/live/streams/{id}`
+- **What:** Get an eBay Live stream. Returns normalized detail for a single eBay Live stream/event, including each host's feedback summary for the last 365 days.
+- **Params:** `id` (string, **required**) — eBay Live stream/event id
+
+### `ebay_live_stream_items`
+
+- **HTTP:** `GET /ebay/live/streams/{id}/items`
+- **What:** List an eBay Live stream's featured items. Returns the currently featured/auction items for an eBay Live stream, including live bidding state.
+- **Params:** `id` (string, **required**) — eBay Live stream/event id
+
+### `ebay_live_streams`
+
+- **HTTP:** `GET /ebay/live/streams`
+- **What:** List eBay Live streams. Returns currently live and upcoming eBay Live streams for a category channel.
+- **Params:** `category` (string, optional) — eBay Live category channel, defaults to explore; `request_number` (integer, optional) — Pagination cursor from a previous response's next_request_number, defaults to 0; `session_id` (string, optional) — Pagination session id from a previous response's session_id
+
+### `ebay_live_streams_batch`
+
+- **HTTP:** `GET /ebay/live/streams/batch`
+- **What:** Get multiple eBay Live streams. Returns normalized summaries for multiple eBay Live streams/events in one call, up to 9 ids per request.
+- **Params:** `ids` (string, **required**) — One or more eBay Live stream/event ids, up to 9. Comma-separated or repeated query values are both accepted.
 
 ### `ebay_search`
 

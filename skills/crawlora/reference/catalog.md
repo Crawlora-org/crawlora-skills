@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**987 endpoints across 101 platform group(s).**
+**1118 endpoints across 123 platform group(s).**
 
 ## Agoda (8)
 
@@ -1010,7 +1010,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /congress/stock-disclosures`
 - **What:** Search congressional stock-disclosure filings. Search public congressional stock disclosure filings (House or Senate).
-- **Params:** `chamber` (string, optional) — Chamber filter. Allowed values: house, senate.; `district` (string, optional) — House district filter (House only).; `election_year` (string, optional) — House candidate-search election year filter (requires filer_type=candidate).; `filer_type` (string, optional) — Filer-type filter, meaning differs by chamber. House: single value selecting between the site's two separate search forms -- member (default, Search Members) or candidate (Search Candidates; results[].filing_year holds election year instead of a filing year). Senate: comma-separated multi-select -- senator, candidate, former_senator. Defaults to senator when omitted.; `from` (string, optional) — Minimum filing year (YYYY).; `limit` (integer, optional) — Max results (1-500).; `member` (string, optional) — Chamber member name (required when ticker is omitted).; `report_type` (string, optional) — Comma-separated Senate report-type filter (Senate only). Allowed values: annual, periodic_transaction, due_date_extension, blind_trust, other. Defaults to all types when omitted.; `sort` (string, optional) — Sort key. Allowed values: name_asc, name_desc, office_asc, office_desc, filing_year_asc, filing_year_desc.; `state` (string, optional) — Member state filter (2-letter code).; `ticker` (string, optional) — Ticker symbol filter. Not supported by House or Senate sources.; `to` (string, optional) — Maximum filing year (YYYY).
+- **Params:** `candidate_state` (string, optional) — Candidate state filter (Senate only, 2-letter code).; `chamber` (string, optional) — Chamber filter. Allowed values: house, senate.; `district` (string, optional) — House district filter (House only).; `election_year` (string, optional) — House candidate-search election year filter (requires filer_type=candidate).; `filer_type` (string, optional) — Filer-type filter, meaning differs by chamber. House: member (default) or candidate. Senate: comma-separated senator, candidate, former_senator, or the standalone all value. Defaults to senator when omitted.; `first_name` (string, optional) — Senate filer first-name prefix (Senate only; cannot be combined with member).; `from` (string, optional) — Minimum filing date. House accepts YYYY. Senate accepts YYYY or MM/DD/YYYY and defaults to 2012 when omitted.; `last_name` (string, optional) — Senate filer last-name prefix (Senate only; cannot be combined with member).; `limit` (integer, optional) — Max results (1-500).; `member` (string, optional) — Member name. Required for House. For Senate, this backward-compatible shorthand maps one word to last_name and maps the first word plus the complete remaining surname to first_name/last_name; it cannot be combined with either exact name field.; `page` (integer, optional) — 1-based result page (1-1000).; `report_type` (string, optional) — Comma-separated Senate report-type filter (Senate only). Allowed values: annual, periodic_transaction, due_date_extension, blind_trust, other. Defaults to all types when omitted.; `senator_state` (string, optional) — Senator state filter (Senate only, 2-letter code).; `sort` (string, optional) — Sort key. Allowed values: name_asc, name_desc, office_asc, office_desc, filing_year_asc, filing_year_desc.; `state` (string, optional) — State or territory filter (2-letter code). For Senate this backward-compatible shorthand applies to both Senator and Candidate states and cannot be combined with senator_state or candidate_state.; `ticker` (string, optional) — Deprecated unsupported parameter; any non-empty value returns a validation error and the parameter is planned for removal.; `to` (string, optional) — Maximum filing date. House accepts YYYY. Senate accepts YYYY or MM/DD/YYYY.
 
 ## Costco (6)
 
@@ -1882,13 +1882,37 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search DuckDuckGo video results. Returns normalized DuckDuckGo video results for a query string: title, destination URL, description, duration, thumbnail, publisher/uploader, published time, and view count, plus page-based pagination. Results are fetched from DuckDuckGo's own video JSON API.
 - **Params:** `page` (integer, optional) — 1-based page number, defaults to 1; `q` (string, **required**) — Search query; `region` (string, optional) — DuckDuckGo region/locale code, e.g. us-en, uk-en, wt-wt (worldwide, the default)
 
-## eBay (6)
+## eBay (10)
 
 ### `ebay_item`
 
 - **HTTP:** `GET /ebay/item/{item_id}`
 - **What:** Get eBay item details. Returns normalized details for a public eBay item listing.
 - **Params:** `item_id` (string, **required**) — eBay item ID
+
+### `ebay_live_stream`
+
+- **HTTP:** `GET /ebay/live/streams/{id}`
+- **What:** Get an eBay Live stream. Returns normalized detail for a single eBay Live stream/event, including each host's feedback summary for the last 365 days.
+- **Params:** `id` (string, **required**) — eBay Live stream/event id
+
+### `ebay_live_stream_items`
+
+- **HTTP:** `GET /ebay/live/streams/{id}/items`
+- **What:** List an eBay Live stream's featured items. Returns the currently featured/auction items for an eBay Live stream, including live bidding state.
+- **Params:** `id` (string, **required**) — eBay Live stream/event id
+
+### `ebay_live_streams`
+
+- **HTTP:** `GET /ebay/live/streams`
+- **What:** List eBay Live streams. Returns currently live and upcoming eBay Live streams for a category channel.
+- **Params:** `category` (string, optional) — eBay Live category channel, defaults to explore; `request_number` (integer, optional) — Pagination cursor from a previous response's next_request_number, defaults to 0; `session_id` (string, optional) — Pagination session id from a previous response's session_id
+
+### `ebay_live_streams_batch`
+
+- **HTTP:** `GET /ebay/live/streams/batch`
+- **What:** Get multiple eBay Live streams. Returns normalized summaries for multiple eBay Live streams/events in one call, up to 9 ids per request.
+- **Params:** `ids` (string, **required**) — One or more eBay Live stream/event ids, up to 9. Comma-separated or repeated query values are both accepted.
 
 ### `ebay_search`
 
@@ -2269,13 +2293,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `goodreads_list`
 
 - **HTTP:** `GET /goodreads/list/{id}`
-- **What:** Get a Goodreads Listopia list. Returns a Goodreads Listopia list (ranked book list) by id, paginated. Credential-free public Goodreads data.
+- **What:** Get a Goodreads Listopia list. Returns a Goodreads Listopia list (ranked book list) by id, paginated. Credential-free public Goodreads data; page 1 of well-known lists may be served from a faster live source, with the public list page itself as fallback for every other case.
 - **Params:** `id` (string, **required**) — Goodreads list id; `page` (integer, optional) — 1-based page number, default 1
 
 ### `goodreads_lists`
 
 - **HTTP:** `GET /goodreads/lists`
-- **What:** List curated Goodreads Listopia lists. Returns a curated, non-exhaustive catalog of well-known Goodreads Listopia lists (id, name, category) — Goodreads has no directory or search endpoint for the tens of thousands of user-created lists, so this is hand-picked and verified live, not derived from an upstream index. Pass a returned id to GET /goodreads/list/{id} for that list's ranked book contents. Category enum: `general`, `genre`, `era`, `young_adult`, `children`, `holiday`.
+- **What:** List curated Goodreads Listopia lists. Returns a catalog of well-known Goodreads Listopia lists (id, name, category). Goodreads has no directory or search endpoint for the tens of thousands of user-created lists, so this is served from a live popular-lists source when available, falling back to a curated, hand-picked catalog otherwise. Pass a returned id to GET /goodreads/list/{id} for that list's ranked book contents. Category enum: `general`, `genre`, `era`, `young_adult`, `children`, `holiday`.
 - **Params:** _none_
 
 ### `goodreads_search`
@@ -2608,6 +2632,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve Google Play query suggestions. Returns up to 10 suggestions for a search term.
 - **Params:** `country` (string, optional) — Two-letter country code; `lang` (string, optional) — Two-letter language code; `term` (string, **required**) — Search term prefix
 
+## H&M (5)
+
+### `hm_categories`
+
+- **HTTP:** `GET /hm/categories`
+- **What:** Browse H&M's storefront category navigation. Returns H&M's own storefront category navigation, department by department: every direct nav item and subcategory currently shown in the site's own menu, with its display name and storefront URL. Where this build has separately verified the value against hm-listing's own category_id parameter, that id is included too; category_id is omitted for entries not yet verified rather than guessed, since the visible category label is confirmed NOT a reliable way to derive H&M's real listing category ids for every category. department, when given, filters the result to one department.
+- **Params:** `department` (string, optional) — Filter to one storefront department
+
+### `hm_listing`
+
+- **HTTP:** `GET /hm/listing`
+- **What:** Browse an H&M category's product listing. Returns one H&M category's product listing page: normalized products with pricing, images, colors, and per-size stock, sourced from H&M's own app-backend listing data. category_id is an H&M category slug (e.g. ladies_newarrivals_all, men_newarrivals_all, ladies_jeans) -- this build does not expose a category/nav-tree discovery endpoint, so category_id values are currently sourced from known H&M storefront paths rather than a lookup call. Pagination is page-based and real: requesting a page beyond the category's real last page returns a normal response with an empty products array rather than an error.
+- **Params:** `category_id` (string, **required**) — H&M category slug; `is_new` (boolean, optional) — Optional filter for newly added items only; `page` (integer, optional) — Page number, one-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 72, defaults to 36; `sort` (string, optional) — Sort order, defaults to RELEVANCE
+
+### `hm_product`
+
+- **HTTP:** `GET /hm/product/{product_id}`
+- **What:** Get an H&M product's full detail. Returns one H&M product's full detail: every purchasable color grouped with its own per-size price and live availability, plus an aggregate rating and real customer reviews (author label, date, body, rating, and any fit-feedback tags the reviewer left, such as "True to Size") when the product has any. This data is not available from hm-listing or hm-search, which only carry one representative price and a per-color stock count. product_id is the numeric id from a listing/search result's id field or its url field's productpage.<id>.html segment. An unrecognized product_id returns 404.
+- **Params:** `product_id` (string, **required**) — Numeric H&M product id, from a listing/search result's id field
+
+### `hm_search`
+
+- **HTTP:** `GET /hm/search`
+- **What:** Search H&M product listings by free-text keyword. Runs a free-text keyword search against H&M's own app-backend search data and returns normalized products with pricing, images, colors, and per-size stock, plus search-quality metadata (a spelling-correction suggestion, related searches, and a content-filter flag). Unlike category browsing, an obscure or nonsense keyword returns a genuine empty result (zero products) rather than a fallback set. Pagination is page-based and real: requesting a page beyond the real last page returns a normal response with an empty products array rather than an error.
+- **Params:** `page` (integer, optional) — Page number, one-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 72, defaults to 36; `query` (string, **required**) — Free-text search keyword
+
+### `hm_stores`
+
+- **HTTP:** `GET /hm/stores`
+- **What:** Find nearby H&M physical stores. Returns H&M physical retail store locations near a point: name, phone, full address, and coordinates. Either search, or both lat and lng, is required. search is a free-text zip code or place name that is first resolved to coordinates; if it does not resolve to any location, a well-formed empty result is returned rather than an error. lat and lng, when given directly, skip that resolution step. radius_meters is optional (1000 to 50000, defaults to 10000). A location with no stores within the radius returns a well-formed empty result rather than an error.
+- **Params:** `lat` (number, optional) — Latitude, requires lng; `lng` (number, optional) — Longitude, requires lat; `radius_meters` (integer, optional) — Search radius in meters, 1000 to 50000, defaults to 10000; `search` (string, optional) — Free-text zip code or place name to resolve to coordinates
+
 ## IMDb (20)
 
 ### `imdb_name`
@@ -2820,7 +2876,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /instagram/reels/{id}`
 - **What:** Retrieve Instagram Reels for a user. Returns a feed of Instagram Reels for the specified user ID. Supports pagination via `max_id`.
-- **Params:** `id` (string, **required**) — Instagram user ID; `max_id` (string, optional) — Pagination cursor for fetching the next page of Reels
+- **Params:** `id` (string, **required**) — Numeric Instagram user ID (not a username); `max_id` (string, optional) — Pagination cursor for fetching the next page of Reels
 
 ## Jobs (28)
 
@@ -3248,6 +3304,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Kalshi trades. Returns normalized recent Kalshi market trades from credential-free public market-data JSON.
 - **Params:** `cursor` (string, optional) — Pagination cursor from a previous Kalshi response; `limit` (integer, optional) — Rows to return, default 25, max 200; `max_ts` (integer, optional) — Maximum created Unix timestamp in seconds; `min_ts` (integer, optional) — Minimum created Unix timestamp in seconds; `ticker` (string, optional) — Kalshi market ticker filter
 
+## Kohl's (4)
+
+### `kohls_category`
+
+- **HTTP:** `GET /kohls/category`
+- **What:** Browse a Kohl's category or curated campaign page. Returns a Kohl's category or curated campaign page's product grid (page 1 only), with normalized products (title, image, colors, pricing, rating, availability) and facets for discovering further category values. category is Kohl's own catalog taxonomy string, e.g. "Room:Dorm" or "Department:Kitchen & Dining" -- combine multiple dimensions with a literal "+", percent-encoded as "%2B" so it survives as "+" rather than being decoded to a space (e.g. "Room%3ADorm%2BDepartment%3ABedding"). Every facets[].options[].category value in a response is a ready-to-use category string for a follow-up call, so a caller can discover the full taxonomy by starting from a known category (e.g. "Room:Dorm") and following facets. A category value Kohl's does not recognize returns a 404 rather than an unfiltered listing; a recognized dimension with no matching products returns a genuine zero-result response instead.
+- **Params:** `category` (string, **required**) — Kohl's catalog taxonomy string, e.g. \
+
+### `kohls_product_reviews`
+
+- **HTTP:** `GET /kohls/product/reviews`
+- **What:** Browse a Kohl's product's customer reviews. Returns one page of a Kohl's product's normalized customer reviews (title, text, rating, secondary ratings such as quality/durability/value/style, reviewer name and location, submission date, and photo URLs). web_id is the same identifier a GET /kohls/category response's products[].web_id field carries. A web_id with zero reviews returns a genuine zero-result response rather than an error.
+- **Params:** `page` (integer, optional) — Page number, 10 reviews per page (default 1); `web_id` (string, **required**) — Kohl's product web id, e.g. from a GET /kohls/category response's products[].web_id
+
+### `kohls_stores`
+
+- **HTTP:** `GET /kohls/stores`
+- **What:** Find nearby Kohl's store locations. Returns physical Kohl's store locations near a free-text location (city/state, zip code, or address): address, phone, weekly hours, distance, and store badges/services. A search with no results returns a genuine empty list rather than an error.
+- **Params:** `search` (string, **required**) — Free-text location: city/state, zip code, or address
+
+### `kohls_suggest`
+
+- **HTTP:** `GET /kohls/suggest`
+- **What:** Kohl's search-box typeahead suggestions. Returns Kohl's own search-box typeahead result for a partial query: a flat list of suggested search phrases (no product data). A nonsense query returns a genuine, well-formed empty list rather than an error.
+- **Params:** `query` (string, **required**) — Partial search text, e.g. \
+
 ## Letterboxd (8)
 
 ### `letterboxd_film`
@@ -3317,6 +3399,58 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /linkedin/showcase/{id}`
 - **What:** Get Linkedin Showcase Page Info. Returns detailed information about a LinkedIn showcase page by ID.
 - **Params:** `id` (string, **required**) — LinkedIn Showcase Page ID
+
+## Lululemon (5)
+
+### `lululemon_categories`
+
+- **HTTP:** `GET /lululemon/categories`
+- **What:** Browse lululemon's storefront category navigation. Returns lululemon's own storefront category navigation, flattened out of the site's shared header nav: every navigable category with its display name, breadcrumb path, and the exact category/cdp_hash pair lululemon-category's own parameters expect (read directly from the nav's own URL, not guessed from the display label). section, when given, filters the result to one top-level nav section.
+- **Params:** `section` (string, optional) — Filter to one top-level storefront nav section
+
+### `lululemon_category`
+
+- **HTTP:** `GET /lululemon/category`
+- **What:** Browse a lululemon category's product listing. Returns one lululemon category's product listing page: normalized products with pricing, sale detection, sizes, colors, and style numbers, sourced from lululemon's own app-backend category data. category and cdp_hash are the two path segments of a lululemon category URL (https://shop.lululemon.com/c/{category}/{cdp_hash}), e.g. women-new-styles and n14f1wz6o10 -- both are also available from lululemon-categories's own category and cdp_hash fields. Pagination is page-based and real: requesting a page beyond the category's real last page returns a normal response with an empty products array rather than an error. An unrecognized category/cdp_hash pair returns 404.
+- **Params:** `category` (string, **required**) — lululemon category slug, from a category URL's first path segment; `cdp_hash` (string, **required**) — lululemon category id, from a category URL's second path segment; `page` (integer, optional) — Page number, one-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 100, defaults to 24
+
+### `lululemon_outfit`
+
+- **HTTP:** `GET /lululemon/outfit`
+- **What:** Get lululemon's outfit/style recommendations for a product color. Returns lululemon's own curated outfit/style recommendations for one product color: every complementary item in each styled look, plus the anchor product itself. unified_id and color_code are lululemon-product's own unified_id response field and a color's code field (from lululemon-product's colors[] or lululemon-category's style_numbers-paired colors[]) -- not lululemon-product's own product_id, which is a different id space. Recommended items' own id is a separate, third-party catalog id (not lululemon-product's product_id) -- use each item's url to reach its product page. An unrecognized unified_id/color_code pair returns 404.
+- **Params:** `color_code` (string, **required**) — lululemon color code, from a lululemon-product result's colors[].code field; `unified_id` (string, **required**) — lululemon product unified id, from a lululemon-product result's unified_id field
+
+### `lululemon_product`
+
+- **HTTP:** `GET /lululemon/product/{product_id}`
+- **What:** Get a lululemon product's full detail. Returns one lululemon product's full detail: every purchasable color/size SKU with its own price, sale status, and live availability, plus an aggregate rating and real customer reviews when the product has any -- none of which lululemon-category exposes (it only carries one representative color/price per product). product_id is the id from a lululemon-category result's id field or a lululemon product URL's trailing path segment (https://shop.lululemon.com/p/{slug}/{product_id}) -- the slug itself is not needed. An unrecognized product_id returns 404.
+- **Params:** `product_id` (string, **required**) — lululemon product id, from a lululemon-category result's id field
+
+### `lululemon_stores`
+
+- **HTTP:** `GET /lululemon/stores`
+- **What:** Browse lululemon's physical store directory. Returns lululemon's own complete physical store directory (480 US and 86 Canada locations as of this endpoint's own research), including regular weekly hours and in-store amenities. All filters are optional and applied locally after fetching the full directory -- there is no live geo-search API on a credential-free host for this platform (see notes/lululemon-maintenance.md). country and state are free-text equality filters against the values this directory actually carries (2-letter codes, e.g. US/CA, NY/CA), not an enforced enum. lat and lng (both required together) filter to stores within radius_miles (1 to 500, defaults to 50), sorted nearest-first.
+- **Params:** `country` (string, optional) — Filter to one country by its 2-letter code; `lat` (number, optional) — Latitude, requires lng; `lng` (number, optional) — Longitude, requires lat; `radius_miles` (number, optional) — Search radius in miles, 1 to 500, defaults to 50; `state` (string, optional) — Filter to one state/province by its 2-letter code
+
+## Macy's (3)
+
+### `macys_product`
+
+- **HTTP:** `GET /macys/product/{productId}`
+- **What:** Get a Macy's product's full detail. Returns one Macy's product's full detail: name, brand, description, department/division, category breadcrumb, pricing (with sale detection), availability, images, aggregate rating, and every purchasable color variant with its own price. productId is a numeric id, taken from a Macy's product page's ?ID= query parameter.
+- **Params:** `productId` (string, **required**) — Numeric Macy's product id, from a product page's ?ID= query parameter
+
+### `macys_product_reviews`
+
+- **HTTP:** `GET /macys/product/reviews`
+- **What:** Get a Macy's product's customer reviews. Returns one page of a Macy's product's normalized customer reviews, plus a site-wide rating summary (rating count, average rating, recommended ratio, rating histogram) for the product. Sourced from a separate review platform Macy's own product pages embed, distinct from the product catalog itself. product_id is a numeric id, the same one used by GET /macys/product/{productId}. A product with zero reviews, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
+- **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Numeric Macy's product id, from a product page's ?ID= query parameter
+
+### `macys_suggest`
+
+- **HTTP:** `GET /macys/suggest`
+- **What:** Get Macy's search-box suggestions. Returns Macy's own search-box suggestions (typeahead) for a partial query: a flat list of suggested search phrases, no product data. A partial query with no real matches returns a normal, empty result rather than an error.
+- **Params:** `query` (string, **required**) — Partial search query
 
 ## Manga (3)
 
@@ -3594,6 +3728,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List MLB transactions. Lists signings, trades, options, assignments, injured-list moves, and other MLB transactions for a date range.
 - **Params:** `end_date` (string, **required**) — Range end in YYYY-MM-DD format; `player_id` (string, optional) — Numeric MLB player id; `start_date` (string, **required**) — Range start in YYYY-MM-DD format; `team_id` (string, optional) — Numeric MLB team id
 
+## Nike (6)
+
+### `nike_categories`
+
+- **HTTP:** `GET /nike/categories`
+- **What:** List Nike's category and subcategory taxonomy. Returns Nike's full Men/Women/Kids/Jordan category and subcategory taxonomy tree, sourced directly from Nike.com's own nav mega-menu. Each top-level entry (Men, Women, Kids, Jordan) breaks down into named groups (e.g. Shoes, Clothing, Accessories, Shop By Sport -- Women additionally carries a Shop by Color group, and Jordan is organized by Men/Women/Kids instead of by product type), each with its own subcategory entries. Every subcategory (and most groups) carries a slug usable as a future category-browse endpoint's path/slug input, and is directly browsable today at https://www.nike.com/w/<slug>. This mirrors the live nav exactly, including its seasonal/promotional groups (e.g. Limited Time, New & Featured) alongside the stable structural ones -- Nike's own markup does not distinguish the two.
+- **Params:** _none_
+
+### `nike_product`
+
+- **HTTP:** `GET /nike/product`
+- **What:** Get a Nike product. Returns normalized product-detail data for one color variant: title, description, pricing, images, every offered size, and every other available color. slug and style_color together reproduce Nike's own product page URL (nike.com/t/<slug>/<style_color>) and are both returned by nike-search's product colors[].slug and colors[].style_color fields.
+- **Params:** `slug` (string, **required**) — Product-detail URL slug, from a search result's colors[].slug field; `style_color` (string, **required**) — Style-color id, from a search result's colors[].style_color field
+
+### `nike_product_reviews`
+
+- **HTTP:** `GET /nike/product/reviews`
+- **What:** Get Nike product reviews. Returns one page of a Nike product's normalized customer reviews, plus an aggregate rating summary (average rating and a per-star rating breakdown) that Nike's own product-detail endpoint does not otherwise expose. slug and style_color are the same values nike-product accepts (from a search result's colors[].slug/colors[].style_color fields). A product with no reviews yet returns a well-formed empty result rather than an error. Requesting a page beyond the available result pages returns a not-found error.
+- **Params:** `page` (integer, optional) — One-based page number, defaults to 1; `slug` (string, **required**) — Product-detail URL slug, from a search result's colors[].slug field; `style_color` (string, **required**) — Style-color id, from a search result's colors[].style_color field
+
+### `nike_search`
+
+- **HTTP:** `GET /nike/search`
+- **What:** Search or browse Nike products. Searches Nike.com product listings by keyword, or browses a category/subcategory listing by slug, with real pagination. Exactly one of keyword or category is required. Returns normalized product groups with pricing, colorway images, and every purchasable color variant, plus filter and subcategory navigation data (facet_nav) already present on the same response -- both keyword search and a category listing's first page include filter groups (Gender, Color, Price, Size, and similar); only a category listing includes a breadcrumb trail and subcategory drill-down options, and only its first page (a category listing's later pages do not repeat navigation data). Keyword search is best-effort relevance, not a guaranteed keyword match: for an obscure or nonsense keyword, Nike's own search index falls back to its own recommended results instead of returning an empty list, and there is currently no reliable signal in the response to distinguish a true keyword match from that fallback behavior. A keyword Nike's own search router treats as structurally empty (for example a punctuation-only query) does return a genuine empty result. Category values come from nike-categories' own slug field, or from a prior response's own facet_nav navigation paths (with the leading /w/ stripped). Requesting a page beyond the available result pages returns a not-found error.
+- **Params:** `category` (string, optional) — Category/subcategory browse slug, from nike-categories' own slug field or a prior response's facet_nav navigation. Exactly one of keyword or category is required.; `keyword` (string, optional) — Search keyword. Exactly one of keyword or category is required.; `page` (integer, optional) — One-based page number, defaults to 1
+
+### `nike_stores`
+
+- **HTTP:** `GET /nike/stores`
+- **What:** Find nearby Nike stores. Searches Nike's physical retail store locator by coordinates and radius. Returns each nearby store's name, address, phone, coordinates, distance, and store page URL. A location with no nearby stores within the given radius returns a well-formed empty result.
+- **Params:** `lat` (number, **required**) — Latitude, -90 to 90; `lng` (number, **required**) — Longitude, -180 to 180; `page` (integer, optional) — One-based page number, defaults to 1; `radius_miles` (integer, optional) — Search radius in miles, defaults to 50
+
+### `nike_suggest`
+
+- **HTTP:** `GET /nike/suggest`
+- **What:** Get Nike search-box suggestions. Returns Nike's own search-box suggestions (typeahead) for a partial query, the same "Top Suggestions" list shown while typing into Nike's search box: a flat list of suggested search phrases, no product data.
+- **Params:** `query` (string, **required**) — Partial search query
+
 ## Numbeo (8)
 
 ### `numbeo_cost_of_living_city`
@@ -3643,6 +3815,50 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /numbeo/indices/rankings-by-country`
 - **What:** Get the global Numbeo country ranking for an index family. Returns the global country-level ranking for a Numbeo index family. Credential-free public Numbeo data (numbeo.com).
 - **Params:** `index` (string, **required**) — Index family
+
+## Old Navy (7)
+
+### `oldnavy_categories`
+
+- **HTTP:** `GET /oldnavy/categories`
+- **What:** List Old Navy storefront categories. Lists Old Navy's own storefront navigation as name/cid pairs, resolving the cid-discovery gap oldnavy-search, oldnavy-product, and oldnavy-category all document. Omit cid to list Old Navy's top-level divisions (e.g. Women, Men, Boys, Toddler). Pass a cid (a division's own, or any deeper category's) to list the related categories for that part of the storefront instead, in the same order the live storefront menu shows them -- this is section-level, not necessarily unique per leaf category. Currently only available for brand=on (Old Navy) -- Gap, Banana Republic, and Athleta render their storefront navigation as client-side-only JavaScript with no server-rendered category id to scrape.
+- **Params:** `brand` (string, optional) — Storefront to list -- only on (Old Navy) is currently supported; `cid` (string, optional) — Category id to list related categories for; omit to list the top-level divisions
+
+### `oldnavy_category`
+
+- **HTTP:** `GET /oldnavy/category`
+- **What:** Browse an Old Navy, Gap, Banana Republic, or Athleta category. Returns a category/browse listing for one storefront category id (cid). cid is an opaque Gap Inc category id assigned by the storefront's own navigation -- neither oldnavy-search nor oldnavy-category currently surface a category-id list, so find one from the storefront's own category page URLs (the cid query parameter on a /browse/... page) for now. Select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`) -- it must match the brand the cid was found under. Returns the category's subcategory breakdown, normalized product summaries with per-color inventory data, and available search facets with live counts.
+- **Params:** `brand` (string, optional) — Storefront to browse; `cid` (string, **required**) — Category id, from a storefront category page's own cid query parameter; `page` (integer, optional) — One-based page
+
+### `oldnavy_product`
+
+- **HTTP:** `GET /oldnavy/product`
+- **What:** Get an Old Navy, Gap, Banana Republic, or Athleta product. Returns normalized product-detail data for one color variant: name, description, images, aggregate rating, and every size offered in that color as a separate priced offer. pid is a color-specific product id, as returned by oldnavy-search's product colors[].id field (not the bare base product id). Select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`) -- it must match the brand the pid was found under.
+- **Params:** `brand` (string, optional) — Storefront the pid belongs to; `pid` (string, **required**) — Color-specific product id, from a search result's colors[].id field
+
+### `oldnavy_product_availability`
+
+- **HTTP:** `GET /oldnavy/product/availability`
+- **What:** Check in-store pickup stock for an Old Navy, Gap, Banana Republic, or Athleta product. Checks per-size, in-store pickup stock status for one color (pid) at one or more physical stores. pid matches oldnavy-product's own color-level id. Give store location either directly with store_id (one or more comma-separated store ids, e.g. from a prior call to this endpoint or a value you already have) or with zip or both lat and lng, which resolves the nearest stores automatically. Select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`). Each returned store lists every offered size's stock status: `in_stock`, `out_of_stock`, or `low_stock`.
+- **Params:** `brand` (string, optional) — Storefront to check; `lat` (number, optional) — Latitude to resolve the nearest stores from (must be given together with lng); `lng` (number, optional) — Longitude to resolve the nearest stores from (must be given together with lat); `pid` (string, **required**) — Color-level Old Navy/Gap/Banana Republic/Athleta product id; `store_id` (string, optional) — One or more comma-separated numeric store ids; `zip` (string, optional) — Zip code to resolve the nearest stores from
+
+### `oldnavy_product_reviews`
+
+- **HTTP:** `GET /oldnavy/product/reviews`
+- **What:** Get reviews for an Old Navy, Gap, Banana Republic, or Athleta product. Returns one page of a product's customer reviews (author, date, rating, headline, body, and verified-purchase flag), plus the product's overall rating summary (average rating, rating count, per-star histogram, and recommended ratio). pid is a color-specific product id, as returned by oldnavy-search's product colors[].id field (not the bare base product id) -- the same pid oldnavy-product accepts. Select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`) -- it must match the brand the pid was found under. A product with no reviews yet returns a well-formed empty result, not an error.
+- **Params:** `brand` (string, optional) — Storefront the pid belongs to; `page` (integer, optional) — One-based page, 10 reviews per page; `pid` (string, **required**) — Color-specific product id, from a search result's colors[].id field
+
+### `oldnavy_search`
+
+- **HTTP:** `GET /oldnavy/search`
+- **What:** Search Old Navy, Gap, Banana Republic, or Athleta products. Searches product listings across Old Navy, Gap, Banana Republic, and Athleta -- select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`). Returns normalized product summaries with pricing, review scores, and every purchasable color variant. This search is best-effort relevance, not a guaranteed keyword match: for an obscure or nonsense keyword the upstream search index falls back to its own recommended results instead of returning an empty list, and there is currently no reliable signal in the response to distinguish a true keyword match from that fallback behavior.
+- **Params:** `brand` (string, optional) — Storefront to search; `keyword` (string, **required**) — Search keyword; `page` (integer, optional) — One-based page
+
+### `oldnavy_stores`
+
+- **HTTP:** `GET /oldnavy/stores`
+- **What:** Find Old Navy, Gap, Banana Republic, or Athleta store locations. Searches physical store locations for one storefront by free-text search (zip code or city) and/or coordinates. Provide search, or both lat and lng. Select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`). Returns each nearby store's name, full address, phone number, coordinates, distance, and specialties (e.g. "In-Store Shopping", "Outlet"). This is location search only -- it does not report per-item, per-store stock levels; use oldnavy-product-availability for that.
+- **Params:** `brand` (string, optional) — Storefront to search; `lat` (number, optional) — Latitude (must be given together with lng); `lng` (number, optional) — Longitude (must be given together with lat); `search` (string, optional) — Zip code or city to search near
 
 ## OpenTable (4)
 
@@ -3800,7 +4016,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /playstation/search`
 - **What:** Search the PlayStation Store. Returns a page of PlayStation Store search results (concepts and products) for a term, with pagination and per-item price, platforms, classification, and media. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
-- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number; `term` (string, **required**) — Search term
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page (max 48); `term` (string, **required**) — Search term
 
 ## Polymarket (30)
 
@@ -4258,6 +4474,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Rotten Tomatoes series detail. Returns normalized Rotten Tomatoes TV series metadata and scorecard data from a credential-free public series page. Pass exactly one of `path` or `url`.
 - **Params:** `path` (string, optional) — Rotten Tomatoes series path; `url` (string, optional) — Absolute https://www.rottentomatoes.com series URL
 
+## Sam's Club (5)
+
+### `samsclub_category`
+
+- **HTTP:** `GET /samsclub/category`
+- **What:** Browse a Sam's Club category or collection. Returns a Sam's Club category or collection page's product grid, with real page-based pagination. id accepts a bare numeric category id (from a nav link's /browse/{id} URL) or a full /browse/{slug}/{id} URL copied from samsclub.com -- only the trailing id is used. Returns normalized products with name, brand, pricing, availability, rating, and image. An id samsclub.com does not recognize returns a genuine zero-result response rather than an error, matching upstream's own behavior.
+- **Params:** `id` (string, **required**) — Sam's Club category id, or a /browse/{slug}/{id} URL; `page` (integer, optional) — Result page, 1-based, defaults to 1
+
+### `samsclub_content`
+
+- **HTTP:** `GET /samsclub/content/{id}`
+- **What:** Get a Sam's Club curated content or landing page. Returns one Sam's Club curated content/landing page (e.g. a seasonal savings hub or a "New Arrivals" page) -- distinct data from GET /samsclub/category's flat, paginated product grid. id accepts a bare numeric content page id (from a nav link's /cp/{id} URL) or a full /cp/{slug}/{id} URL copied from samsclub.com -- only the trailing id is used. Returns a title, breadcrumb, named curated product shelves, and a category-navigation tile grid. There is no pagination -- a content page's shelves are a fixed, hand-curated set. An id samsclub.com does not recognize returns a 404, unlike GET /samsclub/category's zero-result response for the same situation.
+- **Params:** `id` (string, **required**) — Numeric Sam's Club content page id, from a /cp/{slug}/{id} URL
+
+### `samsclub_departments`
+
+- **HTTP:** `GET /samsclub/departments`
+- **What:** List Sam's Club departments and categories. Returns Sam's Club's full department/category taxonomy, as shown on its own "All Departments" page: every top-level department with its own subcategory list. Each link's type is "browse" (pairs directly with GET /samsclub/category), "cp" (a content/landing page that does not reliably carry a product grid), or empty (an unrecognized link shape).
+- **Params:** _none_
+
+### `samsclub_product`
+
+- **HTTP:** `GET /samsclub/product/{id}`
+- **What:** Get a Sam's Club product's full detail. Returns one Sam's Club product's full detail: name, brand, description, category breadcrumb, pricing, availability, images, aggregate rating and review count, and the club's own item number. id is the numeric product id from a Sam's Club product page's /ip/ URL.
+- **Params:** `id` (string, **required**) — Numeric Sam's Club product id, from a product page's /ip/{slug}/{id} URL
+
+### `samsclub_product_related`
+
+- **HTTP:** `GET /samsclub/product/{id}/related`
+- **What:** Get a Sam's Club product's related items. Returns the related-item carousels shown on a Sam's Club product page, each a named shelf (e.g. "Members also considered", "Items you may like") of normalized products with pricing, rating, and image. id is the numeric product id from a Sam's Club product page's /ip/ URL. This upstream source does not distinguish an unrecognized id from a known one -- an unrecognized id still returns generic fallback shelves rather than an error.
+- **Params:** `id` (string, **required**) — Numeric Sam's Club product id, from a product page's /ip/{slug}/{id} URL
+
 ## SEC EDGAR (10)
 
 ### `sec_company_intelligence`
@@ -4591,6 +4839,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sofascore/tournament-seasons`
 - **What:** SofaScore competition seasons. Returns the season list for a competition from SofaScore's credential-free public JSON. Use a returned season id with the standings and round-events endpoints.
 - **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id
+
+## SoundCloud (5)
+
+### `soundcloud_playlist`
+
+- **HTTP:** `GET /soundcloud/playlist`
+- **What:** Get a SoundCloud playlist or album's detail. Returns one playlist or album's metadata plus its full track list: owner, likes/reposts counts, and every track's title, artwork, and playback/likes counts. Public data sourced from SoundCloud's own JSON API.
+- **Params:** `url` (string, **required**) — Full soundcloud.com playlist/album URL (a playlist's permalink_url)
+
+### `soundcloud_profile`
+
+- **HTTP:** `GET /soundcloud/profile`
+- **What:** Get a SoundCloud user/artist profile. Returns one user/artist's profile: bio, avatar, followers/followings/track/playlist/likes counts, and verified status. Public data sourced from SoundCloud's own JSON API.
+- **Params:** `url` (string, **required**) — Full soundcloud.com user/artist profile URL
+
+### `soundcloud_search`
+
+- **HTTP:** `GET /soundcloud/search`
+- **What:** Search SoundCloud tracks. Returns tracks matching a query: title, artwork, playback/likes/comment/repost counts, and uploader. Public data sourced from SoundCloud's own JSON API.
+- **Params:** `limit` (integer, optional) — Number of tracks to return (default 20, max 50); `query` (string, **required**) — Search text
+
+### `soundcloud_track`
+
+- **HTTP:** `GET /soundcloud/track`
+- **What:** Get a SoundCloud track's detail. Returns one track's full metadata: title, artwork, description, genre, tags, playback/likes/comment/repost counts, and uploader. Public data sourced from SoundCloud's own JSON API.
+- **Params:** `url` (string, **required**) — Full soundcloud.com track URL (a track's permalink_url)
+
+### `soundcloud_user_tracks`
+
+- **HTTP:** `GET /soundcloud/user-tracks`
+- **What:** Get a SoundCloud user's own uploaded tracks. Returns a user/artist's own uploaded tracks, most recent first: title, artwork, playback/likes/comment/repost counts. Public data sourced from SoundCloud's own JSON API.
+- **Params:** `limit` (integer, optional) — Number of tracks to return (default 20, max 50); `url` (string, **required**) — Full soundcloud.com user/artist profile URL
 
 ## Spotify (30)
 
@@ -5504,6 +5784,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Trustpilot categories. Returns normalized category search results from Trustpilot's JSON category search API.
 - **Params:** `country` (string, optional) — Two-letter country code; defaults to US; `locale` (string, optional) — Locale in ll-CC format; defaults to en-US; `q` (string, **required**) — Search query; `size` (integer, optional) — Maximum number of categories; defaults to 20
 
+## Twitch (9)
+
+### `twitch_channel`
+
+- **HTTP:** `GET /twitch/channel`
+- **What:** Get a Twitch channel's profile and live status. Returns a Twitch channel's profile (partner status, team, last broadcast title) plus its current live status (started time and game/category, when live). Public data sourced from Twitch's own GraphQL API.
+- **Params:** `login` (string, **required**) — Twitch channel login (the lowercase URL slug, e.g. caedrel for twitch.tv/caedrel)
+
+### `twitch_clips`
+
+- **HTTP:** `GET /twitch/clips`
+- **What:** Get a Twitch channel's clips. Returns a Twitch channel's clips (last 7 days), most-viewed first: title, view count, duration, curator, and the game it was recorded under. Public data sourced from Twitch's own GraphQL API.
+- **Params:** `limit` (integer, optional) — Number of clips to return (default 20, max 100); `login` (string, **required**) — Twitch channel login (the lowercase URL slug, e.g. caedrel for twitch.tv/caedrel)
+
+### `twitch_schedule`
+
+- **HTTP:** `GET /twitch/schedule`
+- **What:** Get a Twitch channel's broadcast schedule. Returns a Twitch channel's upcoming broadcast schedule -- planned segments with title, start/end time, and game/category -- starting today. A channel with no schedule configured returns an empty segments list, not an error. Public data sourced from Twitch's own GraphQL API.
+- **Params:** `channel` (string, **required**) — Twitch channel login (the lowercase URL slug); `weeks` (integer, optional) — Number of weeks ahead to return, starting today (default 1, max 4)
+
+### `twitch_search`
+
+- **HTTP:** `GET /twitch/search`
+- **What:** Search Twitch channels and games/categories. Returns mixed category and channel matches for a query -- live channels include current viewer count and stream title. Sourced from Twitch's own search-typeahead surface (a capped suggestion list, not a fully paginated results page).
+- **Params:** `limit` (integer, optional) — Number of results to return (default 10, max 30); `query` (string, **required**) — Search text (category/game name or channel name)
+
+### `twitch_streams`
+
+- **HTTP:** `GET /twitch/streams`
+- **What:** Get the top live streams for a Twitch game/category. Returns the top currently-live streams for a Twitch game/category, ranked by viewer count: title, viewer count, broadcaster, and tags. Public data sourced from Twitch's own GraphQL API.
+- **Params:** `game` (string, **required**) — Twitch game/category slug (the lowercase URL slug from twitch.tv/directory/category/{slug}); `limit` (integer, optional) — Number of streams to return (default 20, max 100)
+
+### `twitch_team`
+
+- **HTTP:** `GET /twitch/team`
+- **What:** Get a Twitch team's roster. Returns a Twitch team's full member roster, with live status and viewer count for whoever is currently live, plus team-level metadata (banner, logo, description, owner). Public data sourced from Twitch's own GraphQL API.
+- **Params:** `team` (string, **required**) — Twitch team slug (the lowercase URL slug from twitch.tv/team/{slug})
+
+### `twitch_top_games`
+
+- **HTTP:** `GET /twitch/top-games`
+- **What:** Get Twitch's top games/categories. Returns the top games/categories site-wide, ranked by total current viewers across all live streams under each one. Public data sourced from Twitch's own GraphQL API.
+- **Params:** `limit` (integer, optional) — Number of games to return (default 20, max 100)
+
+### `twitch_videos`
+
+- **HTTP:** `GET /twitch/videos`
+- **What:** Get a Twitch channel's videos (VODs). Returns a Twitch channel's past-broadcast videos (VODs), ranked by view count: title, view count, length, publish date, and the game it was recorded under. Public data sourced from Twitch's own GraphQL API.
+- **Params:** `limit` (integer, optional) — Number of videos to return (default 20, max 100); `login` (string, **required**) — Twitch channel login (the lowercase URL slug, e.g. lck for twitch.tv/lck)
+
+### `twitch_vod_comments`
+
+- **HTTP:** `GET /twitch/vod-comments`
+- **What:** Get a Twitch VOD's chat replay. Returns one page of a Twitch VOD's chat replay (past-broadcast chat messages), starting at a given point in the video's timeline. Paginate forward by re-requesting with the last returned comment's offset_seconds. Public data sourced from Twitch's own GraphQL API.
+- **Params:** `offset` (integer, optional) — Start the page from this point in the VOD's timeline, in seconds (default 0); `video` (string, **required**) — Twitch VOD/video id (the numeric id from twitch.tv/videos/{id})
+
 ## UberEats (5)
 
 ### `ubereats_feed`
@@ -5535,6 +5871,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /ubereats/store/{store_id}/reviews`
 - **What:** Get UberEats store reviews. Returns the reviews snapshot embedded in an UberEats store page: aggregate rating, review count, and a sample of recent reviews (reviewer name, text, and relative/absolute date). This is a single on-page snapshot, not a full paginated feed. A store with no written reviews returns an empty reviews list. Credential-free public UberEats data.
 - **Params:** `store_id` (string, **required**) — UberEats store UUID, as returned by the search endpoint's storeUuid field
+
+## Ulta Beauty (8)
+
+### `ulta_categories`
+
+- **HTTP:** `GET /ulta/categories`
+- **What:** List Ulta Beauty storefront categories. Lists Ulta Beauty's own storefront category navigation: department, group, name, and a URL usable directly as GET /ulta/category's own category parameter. Closes the discovery gap of not already knowing a category path. department, if set, filters to just that department's entries. group is empty for a department's own top-level link or a group's own heading link, and set to that group's name for the leaf categories nested under it. The exact same real category can legitimately appear more than once under a different department/group when the site's own navigation cross-lists it.
+- **Params:** `department` (string, optional) — Filter to one department
+
+### `ulta_category`
+
+- **HTTP:** `GET /ulta/category`
+- **What:** Browse an Ulta Beauty category page. Browses an Ulta Beauty category page's product grid, with real page-based pagination and the category's own guided-navigation refinement options. category accepts a category path or full URL copied from Ulta's own site navigation (e.g. shop/makeup/eyes/mascara). filter narrows results using Ulta's own guided-navigation facet-code shape (e.g. BENEFIT--WATERPROOF, or a comma-joined combination of codes) -- discover valid codes for a category from that category's own response facets field, whose value is ready to use directly as this parameter. An unrecognized category returns 404.
+- **Params:** `category` (string, **required**) — Ulta category path or URL; `filter` (string, optional) — Guided-navigation facet code(s), comma-joined for multiple; `page` (integer, optional) — Result page, 1-based, defaults to 1
+
+### `ulta_product`
+
+- **HTTP:** `GET /ulta/product/{productId}`
+- **What:** Get an Ulta Beauty product's full detail. Returns one Ulta Beauty product's full detail: name, brand, description, category, pricing, rating, review count, images, and every purchasable color/shade variant. productId is taken from a search result's product_id field or a product page's URL (e.g. pimprod2020260). sku is optional and selects a specific color/shade variant; an omitted or invalid sku still resolves the base product using its own default variant. An unrecognized productId returns 404.
+- **Params:** `productId` (string, **required**) — Ulta product id, from a search result's product_id field; `sku` (string, optional) — Numeric Ulta sku id selecting a specific color/shade variant
+
+### `ulta_product_questions`
+
+- **HTTP:** `GET /ulta/product/questions`
+- **What:** Get an Ulta Beauty product's customer questions and answers. Returns one page of an Ulta Beauty product's normalized customer questions, each with every answer it received. product_id is taken from a search result's product_id field or a product page's URL. A product with zero questions, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
+- **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Ulta product id, from a search result's product_id field
+
+### `ulta_product_reviews`
+
+- **HTTP:** `GET /ulta/product/reviews`
+- **What:** Get an Ulta Beauty product's customer reviews. Returns one page of an Ulta Beauty product's normalized customer reviews, plus the retailer's own site-wide rating summary (rating count, average rating, recommended ratio, rating histogram) for the product. product_id is taken from a search result's product_id field or a product page's URL. A product with zero reviews, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
+- **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Ulta product id, from a search result's product_id field
+
+### `ulta_search`
+
+- **HTTP:** `GET /ulta/search`
+- **What:** Search Ulta Beauty products. Searches Ulta Beauty's product catalog by keyword, with real page-based pagination. Returns normalized products with brand, pricing, rating, and review count. An unrecognized/nonsense keyword returns a genuine empty result rather than a fallback set. Requesting a page beyond the available results returns a normal, empty result rather than an error.
+- **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `query` (string, **required**) — Search keyword
+
+### `ulta_stores`
+
+- **HTTP:** `GET /ulta/stores`
+- **What:** Find nearby Ulta Beauty physical stores. Returns Ulta Beauty physical retail store locations near a point: name, phone, full address, hours, services, and coordinates. Either search, or both lat and lng, is required. search is a free-text zip code, city, or address that is first resolved to coordinates; if it does not resolve to any location, a well-formed empty result is returned rather than an error. lat and lng, when given directly, skip that resolution step. radius_meters is optional (1000 to 50000, defaults to 25000). A location with no stores within the radius returns a well-formed empty result rather than an error.
+- **Params:** `lat` (number, optional) — Latitude, requires lng; `lng` (number, optional) — Longitude, requires lat; `radius_meters` (integer, optional) — Search radius in meters, 1000 to 50000, defaults to 25000; `search` (string, optional) — Free-text zip code, city, or address to resolve to coordinates
+
+### `ulta_suggest`
+
+- **HTTP:** `GET /ulta/suggest`
+- **What:** Get Ulta Beauty search suggestions. Returns Ulta Beauty's own search-suggestion (typeahead) result for a partial search term: suggested search terms, each with its own top product matches, plus a featured top result matching what a real user sees at the top of the dropdown. A partial term with no matches returns a normal, empty result rather than an error.
+- **Params:** `query` (string, **required**) — Partial search term
 
 ## Upwork (3)
 
@@ -5646,6 +6032,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Walmart products. Returns Walmart search results: item id, title, brand, price, image, availability, seller, and rating per product. Credential-free public Walmart data, rendered from the search page through proxied browser renderers.
 - **Params:** `page` (integer, optional) — 1-based page number (default 1); `q` (string, **required**) — Search query; `sort` (string, optional) — Sort order
 
+## Wayfair (3)
+
+### `wayfair_categories`
+
+- **HTTP:** `GET /wayfair/categories`
+- **What:** List Wayfair categories. Returns a page of Wayfair categories discovered from Wayfair's own published sitemap, closing the discovery gap where a category id otherwise has to be found elsewhere. Pair a returned id with GET /wayfair/category to browse that category's product grid. name is derived from the category's own URL slug (title-cased), not an authoritative site-provided label. q, if set, case-insensitively filters to categories whose derived name or department contains it.
+- **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `page_size` (integer, optional) — Results per page, defaults to 100, max 1000; `q` (string, optional) — Case-insensitive substring filter on name or department
+
+### `wayfair_category`
+
+- **HTTP:** `GET /wayfair/category`
+- **What:** Browse a Wayfair category. Returns a Wayfair category page's product grid, with real page-based pagination. category accepts a bare Wayfair category id ("478390"), a "c"-prefixed id ("c478390"), a category slug ("office-chairs-c478390"), or a full category URL copied from wayfair.com -- only the trailing category id is used. Returns normalized products with name, brand, pricing, and image.
+- **Params:** `category` (string, **required**) — Wayfair category id, slug, or URL; `page` (integer, optional) — Result page, 1-based, defaults to 1
+
+### `wayfair_product`
+
+- **HTTP:** `GET /wayfair/product/{id}`
+- **What:** Get a Wayfair product's full detail. Returns one Wayfair product's full detail: name, brand, price, stock status, aggregate rating with a 1-5 star breakdown, images, every selectable variant option (e.g. color, finish), and site-selected feature highlights. id is the product's own "W"-prefixed id (e.g. W100794312), taken from a category result's product_id field or a product page's URL. An unrecognized id returns 404.
+- **Params:** `id` (string, **required**) — Wayfair product id, starting with W
+
 ## Web (3)
 
 ### `extract`
@@ -5686,6 +6092,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get a Whatnot live show's current shop feed. Returns a Whatnot live show's current shop feed: every product, auction, and giveaway listing currently visible in the show, each with its seller's rating. Public data sourced from Whatnot's own GraphQL API.
 - **Params:** `id` (string, **required**) — Whatnot live show id, e.g. from a browse result's id field
 
+## Wish (6)
+
+### `wish_categories`
+
+- **HTTP:** `GET /wish/categories`
+- **What:** Get Wish's category and filter navigation tree. Returns Wish's own top navigation/category tree (e.g. "Popular", "Deals Hub", "Fashion", "Gadgets") plus each category's nested filter groups (e.g. Color, Rating) where present. This is a static, site-wide taxonomy -- it takes no input and its result does not vary by search term or category.
+- **Params:** _none_
+
+### `wish_product`
+
+- **HTTP:** `GET /wish/product/{id}`
+- **What:** Get a Wish product's full detail. Returns one Wish product's full detail: name, description, sold-out state, aggregate rating, image URLs, and every purchasable variation with its own price, currency, inventory, and merchant. id is taken from a search result's product_id field or a product page's URL. An unrecognized id returns 404.
+- **Params:** `id` (string, **required**) — Wish product id, a 24-character hex id from a search result's product_id field
+
+### `wish_product_related`
+
+- **HTTP:** `GET /wish/product/{id}/related`
+- **What:** Get a Wish product's related items. Returns a Wish product's related-item rails: shelves of similar products, grouped by rail (e.g. general similar items, a faster-shipping-eligible subset). id is taken from a search result's product_id field or a product page's URL. A faster-shipping rail with no eligible items, or a nonexistent id, returns a normal, empty result rather than an error.
+- **Params:** `count` (integer, optional) — Number of items to return per rail, 1 to 70, defaults to 10; `id` (string, **required**) — Wish product id, a 24-character hex id from a search result's product_id field
+
+### `wish_product_reviews`
+
+- **HTTP:** `GET /wish/product/{id}/reviews`
+- **What:** Get a Wish product's customer reviews. Returns a Wish product's normalized customer reviews. id is taken from a search result's product_id field or a product page's URL. A product with zero reviews returns a normal, empty result rather than an error. A caller wanting more reviews should re-request with a larger count -- this endpoint does not support an offset/cursor parameter, since the upstream source does not support one.
+- **Params:** `count` (integer, optional) — Number of reviews to return, 1 to 200, defaults to 10; `id` (string, **required**) — Wish product id, a 24-character hex id from a search result's product_id field
+
+### `wish_search`
+
+- **HTTP:** `GET /wish/search`
+- **What:** Search Wish products. Searches Wish's product catalog by keyword, with real offset-based pagination. Returns normalized products with price, currency, rating, review count, and merchant id. A query with no matches returns a normal, empty result rather than an error.
+- **Params:** `count` (integer, optional) — Number of results per page, 1 to 70, defaults to 30; `offset` (integer, optional) — Result offset, 0-based, defaults to 0, must be an exact multiple of count up to 3 * count; `query` (string, **required**) — Search keyword
+
+### `wish_suggest`
+
+- **HTTP:** `GET /wish/suggest`
+- **What:** Get Wish search suggestions. Returns Wish's own search-suggestion (typeahead) result for a partial search term: a flat list of suggested search terms, no product data. A partial term with no matches returns a normal, empty result rather than an error.
+- **Params:** `query` (string, **required**) — Partial search term
+
 ## X (3)
 
 ### `x_post`
@@ -5705,6 +6149,46 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /x/profile/{username}/posts`
 - **What:** List public X profile posts. Returns posts present in the first public profile page payload for an X username. The endpoint does not paginate replies, media-only tabs, or search results.
 - **Params:** `limit` (integer, optional) — Maximum posts returned from the first page payload. Defaults to 20 and must be 1-50.; `username` (string, **required**) — X username
+
+## Yahoo Autos (3)
+
+### `yahoo_autos_article`
+
+- **HTTP:** `GET /yahoo-autos/article`
+- **What:** Yahoo Autos article content. Returns a single Yahoo Autos article's full content: title, description, author, publish/update time, section, image, keywords, original publisher, and body paragraphs. Accepts a canonical autos.yahoo.com article URL, such as one returned by the home or category story streams.
+- **Params:** `url` (string, **required**) — Canonical autos.yahoo.com article URL
+
+### `yahoo_autos_category`
+
+- **HTTP:** `GET /yahoo-autos/category`
+- **What:** Yahoo Autos section story stream. Returns a Yahoo Autos section's editorial story feed: title, destination URL, category, and thumbnail image for each story, with page-based pagination. Sourced from Yahoo Autos's own server-rendered section pages.
+- **Params:** `category` (string, **required**) — Yahoo Autos section; `page` (integer, optional) — 1-based page number, defaults to 1
+
+### `yahoo_autos_home`
+
+- **HTTP:** `GET /yahoo-autos/home`
+- **What:** Yahoo Autos homepage story stream. Returns Yahoo Autos's homepage editorial story feed: title, destination URL, category, and thumbnail image for each story. Sourced from Yahoo Autos's own server-rendered homepage.
+- **Params:** _none_
+
+## Yahoo Entertainment (3)
+
+### `yahoo_entertainment_article`
+
+- **HTTP:** `GET /yahoo-entertainment/article`
+- **What:** Yahoo Entertainment article content. Returns a single Yahoo Entertainment article's full content: title, description, author, publish/update time, section, image, keywords, original publisher, and body paragraphs. Accepts a canonical www.yahoo.com/entertainment/ article URL, such as one returned by the home or category story streams.
+- **Params:** `url` (string, **required**) — Canonical www.yahoo.com/entertainment/ article URL
+
+### `yahoo_entertainment_category`
+
+- **HTTP:** `GET /yahoo-entertainment/category`
+- **What:** Yahoo Entertainment section story stream. Returns a Yahoo Entertainment section's editorial story feed: title, destination URL, category, and thumbnail image for each story, with page-based pagination. Sourced from Yahoo Entertainment's own server-rendered section pages.
+- **Params:** `category` (string, **required**) — Yahoo Entertainment section; `page` (integer, optional) — 1-based page number, defaults to 1
+
+### `yahoo_entertainment_home`
+
+- **HTTP:** `GET /yahoo-entertainment/home`
+- **What:** Yahoo Entertainment homepage story stream. Returns Yahoo Entertainment's homepage editorial story feed: title, destination URL, category, and thumbnail image for each story. Sourced from Yahoo Entertainment's own server-rendered homepage.
+- **Params:** _none_
 
 ## Yahoo Finance (39)
 
@@ -5942,13 +6426,289 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Yahoo Finance trending symbols. Returns trending Yahoo Finance symbols for a region.
 - **Params:** `count` (integer, optional) — Symbol count; `region` (string, **required**) — Region such as US
 
-## Yahoo Search (1)
+## Yahoo Health (3)
+
+### `yahoo_health_article`
+
+- **HTTP:** `GET /yahoo-health/article`
+- **What:** Yahoo Health article content. Returns a single Yahoo Health article's full content: title, description, author, publish/update time, section, image, keywords, original publisher, and body paragraphs. Accepts a canonical health.yahoo.com article URL, such as one returned by the home or category story streams.
+- **Params:** `url` (string, **required**) — Canonical health.yahoo.com article URL
+
+### `yahoo_health_category`
+
+- **HTTP:** `GET /yahoo-health/category`
+- **What:** Yahoo Health section story stream. Returns a Yahoo Health section's editorial story feed: title, destination URL, category, and thumbnail image for each story, with page-based pagination. Sourced from Yahoo Health's own server-rendered section pages.
+- **Params:** `category` (string, **required**) — Yahoo Health section; `page` (integer, optional) — 1-based page number, defaults to 1
+
+### `yahoo_health_home`
+
+- **HTTP:** `GET /yahoo-health/home`
+- **What:** Yahoo Health homepage story stream. Returns Yahoo Health's homepage editorial story feed: title, destination URL, category, and thumbnail image for each story. Sourced from Yahoo Health's own server-rendered homepage.
+- **Params:** _none_
+
+## Yahoo Life (2)
+
+### `yahoo_life_article`
+
+- **HTTP:** `GET /yahoo-life/article`
+- **What:** Yahoo Life article content. Returns a single Yahoo Life article's full content: title, description, author, publish/update time, section, image, keywords, original publisher, and body paragraphs. Accepts a canonical www.yahoo.com/lifestyle article URL, such as one returned by the home story stream.
+- **Params:** `url` (string, **required**) — Canonical www.yahoo.com/lifestyle article URL
+
+### `yahoo_life_home`
+
+- **HTTP:** `GET /yahoo-life/home`
+- **What:** Yahoo Life homepage story stream. Returns Yahoo Life's homepage editorial story feed: title, destination URL, and thumbnail image for each story. Sourced from Yahoo Life's own server-rendered homepage.
+- **Params:** _none_
+
+## Yahoo News (6)
+
+### `yahoo_news_article`
+
+- **HTTP:** `GET /yahoo-news/article`
+- **What:** Yahoo News article content. Returns a single Yahoo News article's full content: headline, description, author, publish/update time, section, image, keywords, original publisher, and body paragraphs. Accepts a canonical yahoo.com/news article URL, such as one returned by the home or category story streams.
+- **Params:** `url` (string, **required**) — Canonical www.yahoo.com/news article URL
+
+### `yahoo_news_category`
+
+- **HTTP:** `GET /yahoo-news/category`
+- **What:** Yahoo News section story stream. Returns a Yahoo News section's story stream: title, destination URL, summary, source, publish time, comment count, and thumbnail images for each story. Sourced from Yahoo News's own server-rendered section pages.
+- **Params:** `category` (string, **required**) — Yahoo News section
+
+### `yahoo_news_comment_replies`
+
+- **HTTP:** `GET /yahoo-news/comments/replies`
+- **What:** Yahoo News comment replies. Returns a page of a comment's replies: author, body, reaction counts, and pin status, with sort order and cursor-based pagination. Sourced from Yahoo's own comment platform gateway.
+- **Params:** `comment_id` (string, **required**) — Parent comment id (the id field returned by /yahoo-news/comments); `content_id` (string, **required**) — Article id (the id field returned by home/category/article); `count` (integer, optional) — Number of replies to return, default 10, clamped to 1..50; `cursor` (string, optional) — Pagination cursor from a previous response's next_cursor; `sort` (string, optional) — Sort order, defaults to newest
+
+### `yahoo_news_comments`
+
+- **HTTP:** `GET /yahoo-news/comments`
+- **What:** Yahoo News article comments. Returns a page of an article's top-level comments: author, body, reaction counts, reply count, and pin status, with sort order and cursor-based pagination. Sourced from Yahoo's own comment platform gateway.
+- **Params:** `content_id` (string, **required**) — Article id (the id field returned by home/category/article); `count` (integer, optional) — Number of comments to return, default 10, clamped to 1..50; `cursor` (string, optional) — Pagination cursor from a previous response's next_cursor; `sort` (string, optional) — Sort order, defaults to top
+
+### `yahoo_news_home`
+
+- **HTTP:** `GET /yahoo-news/home`
+- **What:** Yahoo News homepage story stream. Returns Yahoo News's homepage "need to know" story stream: title, destination URL, summary, source, publish time, comment count, and thumbnail images for each story. Sourced from Yahoo News's own server-rendered homepage.
+- **Params:** _none_
+
+### `yahoo_news_suggest`
+
+- **HTTP:** `GET /yahoo-news/suggest`
+- **What:** Yahoo News search autocomplete suggestions. Returns Yahoo News's own search-box autocomplete suggestions for a partial query: a flat list of suggested news search terms.
+- **Params:** `count` (integer, optional) — Number of suggestions to return, default 10, clamped to 1..20; `q` (string, **required**) — Partial search query to autocomplete
+
+## Yahoo Search (6)
 
 ### `yahoo_search`
 
 - **HTTP:** `GET /yahoo-search/search`
 - **What:** Search Yahoo web results. Returns normalized Yahoo web search results for a query string: title, destination URL, description, and hostname, plus page-based pagination. Yahoo wraps every result link in its own click-tracking redirect; this endpoint always returns the decoded destination URL, never the raw redirect link. Results are fetched from Yahoo's own server-rendered search page.
-- **Params:** `page` (integer, optional) — 1-based page number, defaults to 1; `q` (string, **required**) — Search query
+- **Params:** `page` (integer, optional) — 1-based page number, defaults to 1; `q` (string, **required**) — Search query; `time_range` (string, optional) — Restrict results by recency. Omit for unfiltered ('Anytime').
+
+### `yahoo_search_images`
+
+- **HTTP:** `GET /yahoo-search/images`
+- **What:** Search Yahoo image results. Returns Yahoo's image-search results for a query: title, direct image URL, the page hosting the image, source domain, thumbnail, and original image dimensions when available. Results are fetched from Yahoo's own server-rendered image-search page.
+- **Params:** `q` (string, **required**) — Search query
+
+### `yahoo_search_local`
+
+- **HTTP:** `GET /yahoo-search/local`
+- **What:** Search Yahoo local business results. Returns Yahoo's local-business-search results for a query: name, category, price range, address, phone, open status, rating, and review count. Location is resolved from the query text itself, the same way a user would type into Yahoo's own local search box (e.g. "pizza near seattle wa"), not a separate coordinate parameter. Results are fetched from Yahoo's own server-rendered local-search page.
+- **Params:** `q` (string, **required**) — Search query, including any location intent
+
+### `yahoo_search_news`
+
+- **HTTP:** `GET /yahoo-search/news`
+- **What:** Search Yahoo news results. Returns Yahoo's news-search results for a query: title, destination URL, description, source, and relative publish age. Results are fetched from Yahoo's own server-rendered news-search page (news.search.yahoo.com) -- a distinct product from the yahoo-news family, which covers the www.yahoo.com/news portal itself. Yahoo wraps every result link in its own click-tracking redirect; this endpoint always returns the decoded destination URL, never the raw redirect link.
+- **Params:** `q` (string, **required**) — Search query
+
+### `yahoo_search_suggest`
+
+- **HTTP:** `GET /yahoo-search/suggest`
+- **What:** Yahoo web search autocomplete suggestions. Returns Yahoo's own search-box autocomplete suggestions for a partial query: a flat list of suggested search terms, each optionally carrying knowledge-panel entity metadata (type, image, subtitle, description) when Yahoo resolves the term to a known company, place, product, or similar entity rather than a plain phrase.
+- **Params:** `count` (integer, optional) — Number of suggestions to return, default 10, clamped to 1..20; `q` (string, **required**) — Partial search query to autocomplete
+
+### `yahoo_search_videos`
+
+- **HTTP:** `GET /yahoo-search/videos`
+- **What:** Search Yahoo video results. Returns Yahoo's video-search results for a query: title, destination page URL, source domain, description, thumbnail, and duration. Results are fetched from Yahoo's own server-rendered video-search page.
+- **Params:** `q` (string, **required**) — Search query
+
+## Yahoo Shopping (7)
+
+### `yahoo_shopping_article`
+
+- **HTTP:** `GET /yahoo-shopping/article`
+- **What:** Yahoo Shopping article content. Returns a single Yahoo Shopping article's full content: title, description, author, publish/update time, section, image, keywords, original publisher, and body paragraphs. Accepts a canonical shopping.yahoo.com article URL, such as one returned by the home or category story streams.
+- **Params:** `url` (string, **required**) — Canonical shopping.yahoo.com article URL
+
+### `yahoo_shopping_category`
+
+- **HTTP:** `GET /yahoo-shopping/category`
+- **What:** Yahoo Shopping section story stream. Returns a Yahoo Shopping section's editorial story feed: title, destination URL, category, and thumbnail image for each story, with page-based pagination. Sourced from Yahoo Shopping's own server-rendered section pages.
+- **Params:** `category` (string, **required**) — Yahoo Shopping section; `page` (integer, optional) — 1-based page number, defaults to 1
+
+### `yahoo_shopping_home`
+
+- **HTTP:** `GET /yahoo-shopping/home`
+- **What:** Yahoo Shopping homepage story stream. Returns Yahoo Shopping's homepage editorial story feed: title, destination URL, category, and thumbnail image for each story. Sourced from Yahoo Shopping's own server-rendered homepage. This is Yahoo's shopping buying-guide/deals content site, not a product-search API -- shopping.yahoo.com no longer exposes a searchable product catalog.
+- **Params:** _none_
+
+### `yahoo_shopping_shopping_list`
+
+- **HTTP:** `GET /yahoo-shopping/shopping-list`
+- **What:** Yahoo Shopping curated list items. Returns one curated Yahoo Shopping list's items: product title, direct destination URL, image, seller, currency, price, and sale price for each item. Sourced from the list page's own product cards. Use GET /yahoo-shopping/shopping-lists to find a list's slug.
+- **Params:** `list` (string, **required**) — List slug from GET /yahoo-shopping/shopping-lists
+
+### `yahoo_shopping_shopping_lists`
+
+- **HTTP:** `GET /yahoo-shopping/shopping-lists`
+- **What:** Yahoo Shopping curated shopping-lists directory. Returns Yahoo Shopping's curated shopping-lists directory: a slug, title, and image for each themed list (e.g. "Cooling Essentials", "Back to School"). Use a list's slug with GET /yahoo-shopping/shopping-list to read its items.
+- **Params:** _none_
+
+### `yahoo_shopping_store`
+
+- **HTTP:** `GET /yahoo-shopping/store`
+- **What:** Yahoo Shopping retailer store deals. Returns one retailer's current deals on Yahoo Shopping: product title, direct retailer product URL, image, brand, currency, price, and sale price for each offer. Sourced from the retailer's shopping.yahoo.com store page's own structured product data -- not a keyword search, a fixed set of currently-featured deals for that retailer. Use GET /yahoo-shopping/stores to find a retailer's slug.
+- **Params:** `store` (string, **required**) — Retailer slug from GET /yahoo-shopping/stores
+
+### `yahoo_shopping_stores`
+
+- **HTTP:** `GET /yahoo-shopping/stores`
+- **What:** Yahoo Shopping retailer store directory. Returns Yahoo Shopping's retailer store directory: a slug, display name, and logo image for each retailer with a dedicated store page (e.g. Amazon, Target, Best Buy). Use a store's slug with GET /yahoo-shopping/store to read its current deals.
+- **Params:** _none_
+
+## Yahoo Sports (18)
+
+### `yahoo_sports_game`
+
+- **HTTP:** `GET /yahoo-sports/game`
+- **What:** Yahoo Sports game boxscore. Returns one game's boxscore (matchup, line score by period, and team stat totals) from sports.yahoo.com's own server-rendered game page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`. Get the `game` slug from a scoreboard or team-schedule response's game `url` (the last path segment), e.g. `cleveland-guardians-detroit-tigers-460811106`.
+- **Params:** `game` (string, **required**) — Yahoo Sports game slug from a scoreboard/team-schedule response's game url; `league` (string, **required**) — League key
+
+### `yahoo_sports_golf_leaderboard`
+
+- **HTTP:** `GET /yahoo-sports/golf-leaderboard`
+- **What:** Yahoo Sports golf tournament leaderboard. Returns one golf tournament's full leaderboard (every golfer's rank, to-par score, status, holes-completed-in-current-round, per-round strokes, and a fixed stat set: earnings, eagles, birdies, pars, bogeys, double bogeys), from Yahoo Sports' own public tournament-leaderboard JSON API. Get the `tournament` id from a golf-schedule response's `id` field, e.g. `golf.e.23`.
+- **Params:** `season` (integer, optional) — 4-digit season year (a tournament id is reused across years); defaults to the tournament's most recent season; `tournament` (string, **required**) — Yahoo Sports golf tournament id from a golf-schedule response's id field
+
+### `yahoo_sports_golf_schedule`
+
+- **HTTP:** `GET /yahoo-sports/golf-schedule`
+- **What:** Yahoo Sports golf tournament schedule. Returns a golf tour's tournament schedule for a season (name, dates, status, purse, and venue), from Yahoo Sports' own public tournament-schedule JSON API. The `tour` enum accepts `pga-tour`, `pga-european-tours`, `lpga-tour`, `champions-tour`, and `european-tour`. Each tournament's `id` feeds the golf-leaderboard endpoint's `tournament` parameter.
+- **Params:** `season` (integer, optional) — 4-digit season year; defaults to the tour's current season; `tour` (string, **required**) — Golf tour key
+
+### `yahoo_sports_mma_fight_card`
+
+- **HTTP:** `GET /yahoo-sports/mma-fight-card`
+- **What:** Yahoo Sports MMA fight card. Returns the current/next UFC event's full fight card (each bout's fighters, records, rankings, weight class, and card position), from Yahoo Sports' own server-rendered MMA schedule page. This endpoint takes no parameters -- it always returns whichever event Yahoo currently features as next up, not a caller-selected one.
+- **Params:** _none_
+
+### `yahoo_sports_mma_schedule`
+
+- **HTTP:** `GET /yahoo-sports/mma-schedule`
+- **What:** Yahoo Sports MMA event schedule. Returns the known UFC event calendar (name, date, status), from Yahoo Sports' own server-rendered MMA schedule page. This endpoint is UFC-only and takes no parameters -- Yahoo's own page does not expose Bellator, PFL, ONE Championship, or other promotions from this URL.
+- **Params:** _none_
+
+### `yahoo_sports_motorsports_race`
+
+- **HTTP:** `GET /yahoo-sports/motorsports-race`
+- **What:** Yahoo Sports motorsports race results. Returns one race's full driver-by-driver results (finishing position, driver, car/team, points, laps, time), from Yahoo Sports' own server-rendered race page. The `series` enum accepts `f1` and `nascar`. Get the `race` slug from a motorsports-schedule response's race `url` (the last path segment), e.g. `australian-grand-prix-2026-2961`.
+- **Params:** `race` (string, **required**) — Yahoo Sports race slug from a motorsports-schedule response's race url; `series` (string, **required**) — Motorsports series key
+
+### `yahoo_sports_motorsports_schedule`
+
+- **HTTP:** `GET /yahoo-sports/motorsports-schedule`
+- **What:** Yahoo Sports motorsports season schedule. Returns a series' season race list (name, date, status, laps, distance, pole/race winner, venue), from Yahoo Sports' own server-rendered motorsports schedule page. The `series` enum accepts `f1` and `nascar`.
+- **Params:** `season` (integer, optional) — 4-digit season year; defaults to the current season; `series` (string, **required**) — Motorsports series key
+
+### `yahoo_sports_news`
+
+- **HTTP:** `GET /yahoo-sports/news`
+- **What:** Yahoo Sports league news. Returns recent news articles (title, summary, author, published time, and link) for a league from sports.yahoo.com's own server-rendered news page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`.
+- **Params:** `league` (string, **required**) — League key
+
+### `yahoo_sports_olympics_medals`
+
+- **HTTP:** `GET /yahoo-sports/olympics-medals`
+- **What:** Yahoo Sports Olympics medal count. Returns the current Olympic games' full medal count by country (gold/silver/bronze/total, ranked), from Yahoo Sports' own server-rendered Olympics medals page. This endpoint takes no parameters -- it always returns whichever Olympic games Yahoo currently has medal data for, not a caller-selected prior edition.
+- **Params:** _none_
+
+### `yahoo_sports_player`
+
+- **HTTP:** `GET /yahoo-sports/player`
+- **What:** Yahoo Sports player detail. Returns one player's bio/overview (position, jersey, status, injury, physicals, college, draft position) plus current-season stats by category, from sports.yahoo.com's own server-rendered player page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`. Get a numeric player id from a roster response's player `url` (the last path segment).
+- **Params:** `league` (string, **required**) — League key; `player` (string, **required**) — Numeric Yahoo Sports player id
+
+### `yahoo_sports_scoreboard`
+
+- **HTTP:** `GET /yahoo-sports/scoreboard`
+- **What:** Yahoo Sports scoreboard. Returns games (teams, score, status, venue, and broadcast info) for a league on a date, from sports.yahoo.com's own server-rendered scoreboard page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`.
+- **Params:** `date` (string, optional) — Date as YYYY-MM-DD; defaults to Yahoo Sports' current scoreboard date; `league` (string, **required**) — League key
+
+### `yahoo_sports_standings`
+
+- **HTTP:** `GET /yahoo-sports/standings`
+- **What:** Yahoo Sports standings. Returns league standings (record, streak, games back, and clinch status) grouped by conference/division, from sports.yahoo.com's own server-rendered standings page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `world-cup`, and `champions-league` (not `college-womens-basketball`, whose standings page does not embed a full grouped table). Soccer leagues return a single ungrouped table (no conference/division) and each entry's `record.points` is populated (3 per win, 1 per draw).
+- **Params:** `league` (string, **required**) — League key
+
+### `yahoo_sports_team`
+
+- **HTTP:** `GET /yahoo-sports/team`
+- **What:** Yahoo Sports team detail. Returns one team's detail (identity, colors, conference/division, and current standing summary) from sports.yahoo.com's own server-rendered team page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`. Get a team slug from the scoreboard or standings response (e.g. `green-bay`, `la-lakers`).
+- **Params:** `league` (string, **required**) — League key; `team` (string, **required**) — Yahoo Sports team slug
+
+### `yahoo_sports_team_roster`
+
+- **HTTP:** `GET /yahoo-sports/team-roster`
+- **What:** Yahoo Sports team roster. Returns a team's full roster (position, jersey number, status, injury, physicals, college, and experience) from sports.yahoo.com's own server-rendered roster page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`. Get a team slug from the scoreboard or standings response (e.g. `green-bay`, `la-lakers`).
+- **Params:** `league` (string, **required**) — League key; `team` (string, **required**) — Yahoo Sports team slug
+
+### `yahoo_sports_team_schedule`
+
+- **HTTP:** `GET /yahoo-sports/team-schedule`
+- **What:** Yahoo Sports team schedule. Returns a team's full schedule (regular season plus any already-played/scheduled playoff games), with the same per-game fields as the scoreboard, from sports.yahoo.com's own server-rendered team schedule page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`. Get a team slug from the scoreboard or standings response (e.g. `green-bay`, `la-lakers`).
+- **Params:** `league` (string, **required**) — League key; `team` (string, **required**) — Yahoo Sports team slug
+
+### `yahoo_sports_tennis_rankings`
+
+- **HTTP:** `GET /yahoo-sports/tennis-rankings`
+- **What:** Yahoo Sports tennis rankings. Returns an ATP/WTA singles/doubles ranking list (rank, points, player name, country, age), from Yahoo Sports' own server-rendered rankings page. The `type` enum accepts `mens-singles`, `womens-singles`, `mens-doubles`, and `womens-doubles`. No stable player id is available in this list.
+- **Params:** `type` (string, **required**) — Rankings type
+
+### `yahoo_sports_tennis_schedule`
+
+- **HTTP:** `GET /yahoo-sports/tennis-schedule`
+- **What:** Yahoo Sports tennis tournament schedule. Returns the full season tennis tournament calendar (name, gender, match type, surface, dates, status, venue, and champion where decided), from Yahoo Sports' own server-rendered tournaments page. This endpoint takes no parameters -- it always returns Yahoo's current full-season snapshot (season/gender/match-type filtering happens client-side on Yahoo's own page, not server-side).
+- **Params:** _none_
+
+### `yahoo_sports_tennis_scoreboard`
+
+- **HTTP:** `GET /yahoo-sports/tennis-scoreboard`
+- **What:** Yahoo Sports tennis scoreboard. Returns a snapshot of current/recently-completed tennis matches across the tour (tournament, round, players, per-set scores, winner, and status), from Yahoo Sports' own server-rendered tournaments page. This endpoint takes no parameters -- it is a fixed-size "what's happening right now" snapshot, not a by-date query.
+- **Params:** _none_
+
+## Yahoo Tech (3)
+
+### `yahoo_tech_article`
+
+- **HTTP:** `GET /yahoo-tech/article`
+- **What:** Yahoo Tech article content. Returns a single Yahoo Tech article's full content: title, description, author, publish/update time, section, image, keywords, original publisher, and body paragraphs. Accepts a canonical tech.yahoo.com article URL, such as one returned by the home or category story streams.
+- **Params:** `url` (string, **required**) — Canonical tech.yahoo.com article URL
+
+### `yahoo_tech_category`
+
+- **HTTP:** `GET /yahoo-tech/category`
+- **What:** Yahoo Tech section story stream. Returns a Yahoo Tech section's editorial story feed: title, destination URL, category, and thumbnail image for each story, with page-based pagination. Sourced from Yahoo Tech's own server-rendered section pages.
+- **Params:** `category` (string, **required**) — Yahoo Tech section; `page` (integer, optional) — 1-based page number, defaults to 1
+
+### `yahoo_tech_home`
+
+- **HTTP:** `GET /yahoo-tech/home`
+- **What:** Yahoo Tech homepage story stream. Returns Yahoo Tech's homepage editorial story feed: title, destination URL, category, and thumbnail image for each story. Sourced from Yahoo Tech's own server-rendered homepage.
+- **Params:** _none_
 
 ## Yelp (8)
 
@@ -6111,6 +6871,76 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /zalando/suggest`
 - **What:** Autocomplete a Zalando search query. Returns Zalando's own search-box query completions for a partial keyword, e.g. "running sho" -> "running shoes", "running shoes nike". market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains.
 - **Params:** `market` (string, **required**) — Zalando country storefront; `q` (string, **required**) — Partial search text to complete
+
+## Zappos (5)
+
+### `zappos_brand`
+
+- **HTTP:** `GET /zappos/brand`
+- **What:** Browse a Zappos brand. Returns a Zappos brand page's product grid, with real page-based pagination and per-field filter facets. brand accepts a full brand URL copied from zappos.com, the "slug/id.zso" path from that URL, or just the opaque id from a GET /zappos/brands result's own id field. An unrecognized brand returns 404.
+- **Params:** `brand` (string, **required**) — Zappos brand URL, slug/id.zso path, or opaque id; `page` (integer, optional) — Result page, 1-based, defaults to 1
+
+### `zappos_brands`
+
+- **HTTP:** `GET /zappos/brands`
+- **What:** List Zappos brands. Returns a page of Zappos brands discovered from Zappos's own published sitemap, closing the discovery gap where a brand id otherwise has to be found elsewhere. Pair a returned id or url with GET /zappos/brand to browse that brand's product grid. name is derived from the brand's own URL slug (title-cased), not an authoritative site-provided label. q, if set, case-insensitively filters to brands whose derived name or slug contains it.
+- **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `page_size` (integer, optional) — Results per page, defaults to 100, max 1000; `q` (string, optional) — Case-insensitive substring filter on name or slug
+
+### `zappos_product`
+
+- **HTTP:** `GET /zappos/product/{productId}`
+- **What:** Get a Zappos product's full detail. Returns one Zappos product's full detail: name, brand, description, category, breadcrumbs, pricing, images, aggregate rating with a 1-5 star breakdown, up to two featured customer reviews with real author/date/body/rating, reviewer-submitted fit feedback for size/width/arch (each response option's own share of respondents plus the most common answer), and every sibling color variant with its own price. productId is taken from a search result's product_id field or a product page's URL. colorId is optional and selects a specific color variant; an omitted or invalid colorId still resolves the base product using a real color variant rather than failing. An unrecognized productId returns 404.
+- **Params:** `colorId` (string, optional) — Zappos color id selecting a specific color variant; `productId` (string, **required**) — Zappos product id, from a search result's product_id field
+
+### `zappos_search`
+
+- **HTTP:** `GET /zappos/search`
+- **What:** Search Zappos products. Searches Zappos's product catalog by keyword, with real page-based pagination. Returns normalized products with brand, pricing, sale status, rating, and review count, plus filterable facets (gender, department, shoe size, and more) each with a live result count and its own drill-down URL. Requesting a page beyond the available results returns a normal, empty result rather than an error.
+- **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `term` (string, **required**) — Search keyword
+
+### `zappos_suggest`
+
+- **HTTP:** `GET /zappos/suggest`
+- **What:** Get Zappos search-box suggestions. Returns Zappos's own search-box suggestions (typeahead) for a partial query: a flat list of suggested search phrases, no product data. A partial query with no real matches returns a normal, empty result rather than an error.
+- **Params:** `query` (string, **required**) — Partial search query
+
+## Zara (6)
+
+### `zara_categories`
+
+- **HTTP:** `GET /zara/categories`
+- **What:** List Zara's category and subcategory taxonomy. Returns Zara's full category and subcategory navigation tree for the US storefront (WOMAN, MAN, KID, and other top-level sections), sourced directly from Zara's own category navigation data. Each entry's id is the value to pass as categoryId to zara-category-products. Takes no query parameters.
+- **Params:** _none_
+
+### `zara_category_products`
+
+- **HTTP:** `GET /zara/category/{categoryId}/products`
+- **What:** Browse a Zara category's product listing. Returns a Zara category's full product listing: normalized products with pricing, images, and availability, sourced from Zara's own category browse data. categoryId is a numeric id from zara-categories. Zara does not paginate this data -- the response always contains the category's complete listing in one call, not one page of it. Each entry represents one purchasable color variant rather than a color-grouped product family, matching how Zara's own category data is structured.
+- **Params:** `categoryId` (string, **required**) — Numeric Zara category id, from zara-categories' id field
+
+### `zara_product`
+
+- **HTTP:** `GET /zara/product/{productId}`
+- **What:** Get a Zara product's full detail. Returns one Zara product's full detail: every purchasable color variant with its real marketing description, per-size stock, and full image gallery -- richer than the per-product summaries returned by zara-category-products and zara-search. productId is a numeric id, taken from a search/category result's url field (the digits after "-p" in the product-detail URL). An unrecognized productId returns 404.
+- **Params:** `productId` (string, **required**) — Numeric Zara product id, from a search/category result's url field
+
+### `zara_search`
+
+- **HTTP:** `GET /zara/search`
+- **What:** Search Zara products. Searches Zara product listings by keyword within one department section, with real offset-based pagination. Returns normalized products with pricing, images, availability, and every purchasable color variant, plus the upstream's own search facets. This search is best-effort relevance, not a guaranteed keyword match: for an obscure or nonsense keyword, Zara's own search falls back to a broader recommended result set instead of returning an empty list, and there is no reliable field in the response to distinguish a true keyword match from that fallback behavior. Requesting an offset beyond the available results returns a normal, empty result with is_last_page true rather than an error.
+- **Params:** `limit` (integer, optional) — Results per request, 1 to 100, defaults to 24; `offset` (integer, optional) — Zero-based result offset, defaults to 0; `query` (string, **required**) — Search keyword; `section` (string, **required**) — Department section to search
+
+### `zara_stores`
+
+- **HTTP:** `GET /zara/stores`
+- **What:** Find nearby Zara physical stores. Returns Zara physical retail stores near a location: name, full address, phone, coordinates, opening hours status, pickup/donation eligibility, and a canonical store page URL. lat and lng are both required -- this endpoint does not accept a free-text zip/city search. A location with no stores within the radius returns a normal response with an empty stores array rather than an error.
+- **Params:** `donation_only` (boolean, optional) — Only return stores that accept clothing donations; `lat` (number, **required**) — Latitude; `lng` (number, **required**) — Longitude; `pickup_only` (boolean, optional) — Only return stores that support in-store pickup; `radius` (integer, optional) — Search radius in miles, 1 to 500, defaults to 30
+
+### `zara_suggest`
+
+- **HTTP:** `GET /zara/suggest`
+- **What:** Get Zara search-box suggestions for a partial keyword. Returns Zara's own search-suggestion (typeahead) results for a partial keyword, the same suggestions shown while typing into Zara's search box. A nonsense query returns a normal response with an empty suggestions array rather than a fallback/recommended set.
+- **Params:** `query` (string, **required**) — Partial search keyword
 
 ## Zillow (3)
 

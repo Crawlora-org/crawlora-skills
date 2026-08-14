@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Crawlora Agent Skills — structured public web data (search, e-commerce, social, finance, app stores, media, reviews, travel, sports, jobs, prediction markets, gaming, real estate, and more) via the Crawlora REST API.",
-    "version": "1.9.0"
+    "version": "1.8.0"
   },
   "plugins": [
     {

@@ -1,13 +1,16 @@
 ---
 name: product-price-research
-description: Researches products, prices, sellers, and reviews across major online marketplaces and big-box retailers (Amazon, eBay, Shopify stores, Shop.app, Target, Costco, Zalando, Walmart) using the Crawlora API, returning clean JSON. Use when the user asks to find a product, compare prices or sellers, track listings, or pull marketplace/retailer reviews — instead of scraping store pages.
+description: Researches products, prices, sellers, and reviews across 20 major online marketplaces and big-box/specialty retailers (Amazon, eBay, Shopify stores, Shop.app, Target, Costco, Zalando, Walmart, Nike, Zara, and more) using the Crawlora API, returning clean JSON. Use when the user asks to find a product, compare prices or sellers, track listings, or pull marketplace/retailer reviews — instead of scraping store pages.
 ---
 
 # Product & price research
 
 Look up and compare products, prices, sellers, and reviews across Amazon,
-eBay, Shopify storefronts, Shop.app, Target, Costco, Zalando, and Walmart —
-all as normalized JSON from the Crawlora API, with no HTML scraping.
+eBay, Shopify storefronts, Shop.app, Target, Costco, Zalando, Walmart, H&M,
+Kohl's, Lululemon, Macy's, Nike, Old Navy (plus Gap, Banana Republic, and
+Athleta under the same endpoints), Sam's Club, Ulta Beauty, Wayfair, Wish,
+Zappos, and Zara — all as normalized JSON from the Crawlora API, with no
+HTML scraping.
 
 ## When to use this skill
 
@@ -17,6 +20,10 @@ all as normalized JSON from the Crawlora API, with no HTML scraping.
 - "Pull reviews / ratings for this product or seller."
 - "Track this product's price / variants / availability."
 - Competitive pricing, catalog, or marketplace-review research.
+- "Browse category X on Wayfair / Kohl's / Sam's Club" when the retailer has
+  no keyword search of its own.
+- Apparel/beauty catalog lookups spanning Nike, Zara, H&M, Old Navy/Gap/Banana
+  Republic/Athleta, Lululemon, or Ulta Beauty.
 
 ## Setup (one-time)
 
@@ -31,18 +38,42 @@ Pick the marketplace, then the job:
 
 1. **Search / discover** — `/amazon/search`, `/ebay/search`, `/shopify/products`,
    `/shop-app/search`, `/target/search`, `/costco/search`, `/walmart/search`,
-   and `/zalando/search` (this one **requires `market`** — a Zalando country
-   storefront code like `de`, `fr`, `com`; list them via `/zalando/markets`)
-   to find candidate products by keyword.
+   `/hm/search`, `/nike/search`, `/oldnavy/search` (covers Old Navy, Gap,
+   Banana Republic, and Athleta via `brand=on|gap|br|at`, defaults to `on`),
+   `/ulta/search`, `/wish/search`, `/zappos/search`, `/zara/search` (**requires
+   `section`**, a department like `WOMAN`/`MAN`), and `/zalando/search` (this
+   one **requires `market`** — a Zalando country storefront code like `de`,
+   `fr`, `com`; list them via `/zalando/markets`) to find candidate products by
+   keyword. **Kohl's, Lululemon, Macy's, Sam's Club, and Wayfair have no
+   keyword-search endpoint** — browse a category instead:
+   `/kohls/category` (facets give follow-up category strings),
+   `/lululemon/categories` → `/lululemon/category`, `/samsclub/departments` →
+   `/samsclub/category`, and `/wayfair/categories` → `/wayfair/category`.
+   Macy's has neither search nor category browse at all — only direct
+   `productId` lookup (below) plus `/macys/suggest` typeahead.
 2. **Detail** — fetch a specific product (`/amazon/product`, `/ebay/item`,
    `/shopify/products/{handle}`, `/shop-app/products/{id}`,
    `/target/product` (`tcin`), `/costco/product/{id}`, `/walmart/product/{item_id}`,
-   `/zalando/product` (`sku`+`market`)) for price, variants, specs.
+   `/zalando/product` (`sku`+`market`), `/hm/product/{product_id}`,
+   `/nike/product` (`slug`+`style_color`), `/oldnavy/product` (`pid`+`brand`),
+   `/lululemon/product/{product_id}`, `/macys/product/{productId}`,
+   `/samsclub/product/{id}`, `/ulta/product/{productId}`, `/wayfair/product/{id}`,
+   `/wish/product/{id}`, `/zappos/product/{productId}`, `/zara/product/{productId}`)
+   for price, variants, specs. **Kohl's has no standalone product-detail
+   endpoint** — product cards (including `web_id`, needed for reviews below)
+   only come back embedded in `/kohls/category`'s listing.
 3. **Sellers** — for eBay/Shop.app, resolve the seller/shop (`/ebay/seller/...`,
    `/shop-app/shops/{handle}`) to compare offers.
 4. **Reviews** — pull product/seller reviews where available
    (`/shop-app/products/{id}/reviews`, `/ebay/seller/.../feedback`,
-   `/target/reviews`, `/costco/product/{id}/reviews`, `/walmart/product/{item_id}/reviews`).
+   `/target/reviews`, `/costco/product/{id}/reviews`, `/walmart/product/{item_id}/reviews`,
+   `/kohls/product/reviews` (`web_id`), `/macys/product/reviews` (`product_id`),
+   `/nike/product/reviews` (`slug`+`style_color`), `/oldnavy/product/reviews`
+   (`pid`+`brand`), `/ulta/product/reviews` (`product_id`), `/wish/product/{id}/reviews`).
+   H&M, Lululemon, Sam's Club, and Zappos surface reviews (when present)
+   embedded in their own product-detail call instead of a separate endpoint;
+   Wayfair and Zara expose no reviews at all — Wayfair's product detail only
+   has an aggregate rating.
 5. **Compare** the JSON fields (price, currency, rating, seller) and answer.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
@@ -57,9 +88,15 @@ scripts/crawlora.sh /shop-app/search query="running shoes" | jq '.'
 scripts/crawlora.sh /target/search q="standing desk" | jq '.'
 scripts/crawlora.sh /walmart/search q="standing desk" | jq '.'
 scripts/crawlora.sh /zalando/search q="running shoes" market=de | jq '.'
+scripts/crawlora.sh /nike/search keyword="running shoes" | jq '.'
+scripts/crawlora.sh /ulta/search query="retinol serum" | jq '.'
 
 # Product detail:
 scripts/crawlora.sh /amazon/product asin=B0XXXXXXX | jq '{title,price}'
+
+# Category browse (no keyword search on this platform):
+scripts/crawlora.sh /wayfair/category category=478390 | jq '.'
+scripts/crawlora.sh /zara/category/2420463/products | jq '.'
 ```
 
 Raw `curl` fallback:
@@ -71,9 +108,11 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 
 ## Endpoint reference
 
-See [`reference/endpoints.md`](reference/endpoints.md) for every Amazon,
-eBay, Shopify, Shop.app, Target, Costco, Zalando, and Walmart endpoint this
-skill uses (method, path, params, description).
+See [`reference/endpoints.md`](reference/endpoints.md) for every endpoint
+this skill uses (method, path, params, description) across all 20 platforms:
+Amazon, eBay, Shopify, Shop.app, Target, Costco, Zalando, Walmart, H&M,
+Kohl's, Lululemon, Macy's, Nike, Old Navy (+ Gap, Banana Republic, Athleta),
+Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, and Zara.
 
 ## Examples
 
@@ -83,6 +122,11 @@ skill uses (method, path, params, description).
   to summarize a seller's rating and recent feedback before buying.
 - **Shopify catalog audit:** `/shopify/products` (paginate) to list a store's
   catalog with prices, then flag items above/below a threshold.
+- **No-search retailer browse:** for a retailer with no keyword search
+  (Kohl's, Wayfair, Sam's Club), call the category/department-discovery
+  endpoint first (`/kohls/category`'s facets, `/wayfair/categories`,
+  `/samsclub/departments`) to find a category id, then browse it directly
+  instead of trying to search by keyword.
 
 ## Notes & limits
 
@@ -93,3 +137,23 @@ skill uses (method, path, params, description).
 - Results are paginated — pass `page` (and `count` where supported) to walk listings.
 - **Zalando always needs `market`** (no default storefront) — resolve valid
   codes via `/zalando/markets` if unsure.
+- **Macy's has no search or category browse** — only `/macys/product/{productId}`
+  (needs a known `productId`) and `/macys/suggest` typeahead.
+- **Wayfair has no search and no reviews endpoint** — only
+  `/wayfair/categories` → `/wayfair/category` and `/wayfair/product/{id}`
+  (which carries an aggregate rating, but no review text).
+- **Kohl's has no search or standalone product-detail endpoint** — browse
+  `/kohls/category` (its `category` param takes a `+`-joined taxonomy string,
+  percent-encode the `+` as `%2B`) and read product cards from the listing;
+  `/kohls/product/reviews` needs the `web_id` from that listing.
+- **Sam's Club has no keyword-search endpoint** — start from
+  `/samsclub/departments` or `/samsclub/category`; there's also no dedicated
+  reviews endpoint (rating/review count only comes from `/samsclub/product/{id}`).
+- **Lululemon has no keyword-search endpoint** — browse via
+  `/lululemon/categories` → `/lululemon/category`; reviews are embedded in
+  `/lululemon/product/{product_id}`, not a separate call.
+- **Zara's `/zara/search` requires `section`** (a department like `WOMAN`),
+  and Zara exposes no reviews endpoint at all.
+- **Old Navy's endpoints are shared across four storefronts** — pass
+  `brand=on|gap|br|at` (Old Navy/Gap/Banana Republic/Athleta; defaults to
+  `on`); a `cid`/`pid` found under one brand only works with that same brand.

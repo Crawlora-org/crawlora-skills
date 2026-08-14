@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**56 endpoints across 6 platform group(s).**
+**61 endpoints across 6 platform group(s).**
 
 ## Google (40)
 
@@ -346,10 +346,40 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search DuckDuckGo video results. Returns normalized DuckDuckGo video results for a query string: title, destination URL, description, duration, thumbnail, publisher/uploader, published time, and view count, plus page-based pagination. Results are fetched from DuckDuckGo's own video JSON API.
 - **Params:** `page` (integer, optional) — 1-based page number, defaults to 1; `q` (string, **required**) — Search query; `region` (string, optional) — DuckDuckGo region/locale code, e.g. us-en, uk-en, wt-wt (worldwide, the default)
 
-## Yahoo Search (1)
+## Yahoo Search (6)
 
 ### `yahoo_search`
 
 - **HTTP:** `GET /yahoo-search/search`
 - **What:** Search Yahoo web results. Returns normalized Yahoo web search results for a query string: title, destination URL, description, and hostname, plus page-based pagination. Yahoo wraps every result link in its own click-tracking redirect; this endpoint always returns the decoded destination URL, never the raw redirect link. Results are fetched from Yahoo's own server-rendered search page.
-- **Params:** `page` (integer, optional) — 1-based page number, defaults to 1; `q` (string, **required**) — Search query
+- **Params:** `page` (integer, optional) — 1-based page number, defaults to 1; `q` (string, **required**) — Search query; `time_range` (string, optional) — Restrict results by recency. Omit for unfiltered ('Anytime').
+
+### `yahoo_search_images`
+
+- **HTTP:** `GET /yahoo-search/images`
+- **What:** Search Yahoo image results. Returns Yahoo's image-search results for a query: title, direct image URL, the page hosting the image, source domain, thumbnail, and original image dimensions when available. Results are fetched from Yahoo's own server-rendered image-search page.
+- **Params:** `q` (string, **required**) — Search query
+
+### `yahoo_search_local`
+
+- **HTTP:** `GET /yahoo-search/local`
+- **What:** Search Yahoo local business results. Returns Yahoo's local-business-search results for a query: name, category, price range, address, phone, open status, rating, and review count. Location is resolved from the query text itself, the same way a user would type into Yahoo's own local search box (e.g. "pizza near seattle wa"), not a separate coordinate parameter. Results are fetched from Yahoo's own server-rendered local-search page.
+- **Params:** `q` (string, **required**) — Search query, including any location intent
+
+### `yahoo_search_news`
+
+- **HTTP:** `GET /yahoo-search/news`
+- **What:** Search Yahoo news results. Returns Yahoo's news-search results for a query: title, destination URL, description, source, and relative publish age. Results are fetched from Yahoo's own server-rendered news-search page (news.search.yahoo.com) -- a distinct product from the yahoo-news family, which covers the www.yahoo.com/news portal itself. Yahoo wraps every result link in its own click-tracking redirect; this endpoint always returns the decoded destination URL, never the raw redirect link.
+- **Params:** `q` (string, **required**) — Search query
+
+### `yahoo_search_suggest`
+
+- **HTTP:** `GET /yahoo-search/suggest`
+- **What:** Yahoo web search autocomplete suggestions. Returns Yahoo's own search-box autocomplete suggestions for a partial query: a flat list of suggested search terms, each optionally carrying knowledge-panel entity metadata (type, image, subtitle, description) when Yahoo resolves the term to a known company, place, product, or similar entity rather than a plain phrase.
+- **Params:** `count` (integer, optional) — Number of suggestions to return, default 10, clamped to 1..20; `q` (string, **required**) — Partial search query to autocomplete
+
+### `yahoo_search_videos`
+
+- **HTTP:** `GET /yahoo-search/videos`
+- **What:** Search Yahoo video results. Returns Yahoo's video-search results for a query: title, destination page URL, source domain, description, thumbnail, and duration. Results are fetched from Yahoo's own server-rendered video-search page.
+- **Params:** `q` (string, **required**) — Search query

@@ -55,13 +55,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `goodreads_list`
 
 - **HTTP:** `GET /goodreads/list/{id}`
-- **What:** Get a Goodreads Listopia list. Returns a Goodreads Listopia list (ranked book list) by id, paginated. Credential-free public Goodreads data.
+- **What:** Get a Goodreads Listopia list. Returns a Goodreads Listopia list (ranked book list) by id, paginated. Credential-free public Goodreads data; page 1 of well-known lists may be served from a faster live source, with the public list page itself as fallback for every other case.
 - **Params:** `id` (string, **required**) — Goodreads list id; `page` (integer, optional) — 1-based page number, default 1
 
 ### `goodreads_lists`
 
 - **HTTP:** `GET /goodreads/lists`
-- **What:** List curated Goodreads Listopia lists. Returns a curated, non-exhaustive catalog of well-known Goodreads Listopia lists (id, name, category) — Goodreads has no directory or search endpoint for the tens of thousands of user-created lists, so this is hand-picked and verified live, not derived from an upstream index. Pass a returned id to GET /goodreads/list/{id} for that list's ranked book contents. Category enum: `general`, `genre`, `era`, `young_adult`, `children`, `holiday`.
+- **What:** List curated Goodreads Listopia lists. Returns a catalog of well-known Goodreads Listopia lists (id, name, category). Goodreads has no directory or search endpoint for the tens of thousands of user-created lists, so this is served from a live popular-lists source when available, falling back to a curated, hand-picked catalog otherwise. Pass a returned id to GET /goodreads/list/{id} for that list's ranked book contents. Category enum: `general`, `genre`, `era`, `young_adult`, `children`, `holiday`.
 - **Params:** _none_
 
 ### `goodreads_search`

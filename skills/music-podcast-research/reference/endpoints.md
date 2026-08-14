@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**53 endpoints across 4 platform group(s).**
+**58 endpoints across 5 platform group(s).**
 
 ## Spotify (30)
 
@@ -333,3 +333,35 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /discogs/search`
 - **What:** Search the Discogs database. Searches Discogs releases, masters, artists, and labels. Credential-free official Discogs database data.
 - **Params:** `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 50, max 100; `q` (string, **required**) — Search query; `type` (string, optional) — Result type filter
+
+## SoundCloud (5)
+
+### `soundcloud_playlist`
+
+- **HTTP:** `GET /soundcloud/playlist`
+- **What:** Get a SoundCloud playlist or album's detail. Returns one playlist or album's metadata plus its full track list: owner, likes/reposts counts, and every track's title, artwork, and playback/likes counts. Public data sourced from SoundCloud's own JSON API.
+- **Params:** `url` (string, **required**) — Full soundcloud.com playlist/album URL (a playlist's permalink_url)
+
+### `soundcloud_profile`
+
+- **HTTP:** `GET /soundcloud/profile`
+- **What:** Get a SoundCloud user/artist profile. Returns one user/artist's profile: bio, avatar, followers/followings/track/playlist/likes counts, and verified status. Public data sourced from SoundCloud's own JSON API.
+- **Params:** `url` (string, **required**) — Full soundcloud.com user/artist profile URL
+
+### `soundcloud_search`
+
+- **HTTP:** `GET /soundcloud/search`
+- **What:** Search SoundCloud tracks. Returns tracks matching a query: title, artwork, playback/likes/comment/repost counts, and uploader. Public data sourced from SoundCloud's own JSON API.
+- **Params:** `limit` (integer, optional) — Number of tracks to return (default 20, max 50); `query` (string, **required**) — Search text
+
+### `soundcloud_track`
+
+- **HTTP:** `GET /soundcloud/track`
+- **What:** Get a SoundCloud track's detail. Returns one track's full metadata: title, artwork, description, genre, tags, playback/likes/comment/repost counts, and uploader. Public data sourced from SoundCloud's own JSON API.
+- **Params:** `url` (string, **required**) — Full soundcloud.com track URL (a track's permalink_url)
+
+### `soundcloud_user_tracks`
+
+- **HTTP:** `GET /soundcloud/user-tracks`
+- **What:** Get a SoundCloud user's own uploaded tracks. Returns a user/artist's own uploaded tracks, most recent first: title, artwork, playback/likes/comment/repost counts. Public data sourced from SoundCloud's own JSON API.
+- **Params:** `limit` (integer, optional) — Number of tracks to return (default 20, max 50); `url` (string, **required**) — Full soundcloud.com user/artist profile URL
