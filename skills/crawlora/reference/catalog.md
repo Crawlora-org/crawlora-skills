@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**1118 endpoints across 123 platform group(s).**
+**1164 endpoints across 128 platform group(s).**
 
 ## Agoda (8)
 
@@ -423,6 +423,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /autotrader/vehicle/{id}`
 - **What:** Get Autotrader vehicle listing detail. Returns a normalized Autotrader vehicle listing: full vehicle spec (make, model, trim, mileage, colors, transmission, fuel type, engine, images, pricing), the full listing description, and seller detail (dealership or private seller). Credential-free public data sourced from Autotrader's own server-rendered vehicle detail page.
 - **Params:** `id` (string, **required**) — Autotrader listing id, the numeric path segment of a /cars-for-sale/vehicle/{id} URL
+
+## Best Buy (11)
+
+### `bestbuy_brands`
+
+- **HTTP:** `GET /bestbuy/brands`
+- **What:** Get Best Buy's full brand directory. Returns Best Buy's full brand directory (name, category id, url), sourced from the site's own "Name Brands" page. Each id is directly usable as bestbuy_category's category_id input.
+- **Params:** _none_
+
+### `bestbuy_categories`
+
+- **HTTP:** `GET /bestbuy/categories`
+- **What:** Get Best Buy's top-level shopping departments. Returns Best Buy's top-level shopping departments (name, category id, url), sourced from the homepage's own category carousel. Each id is directly usable as bestbuy_category's category_id input.
+- **Params:** _none_
+
+### `bestbuy_categories_trending`
+
+- **HTTP:** `GET /bestbuy/categories/trending`
+- **What:** Get Best Buy's fine-grained trending product-type categories. Returns Best Buy's fine-grained, often deeply-nested product-type categories (e.g. "Windows Laptops", "55-Inch TVs (55 - 64 in)", "PS5 Consoles") sourced from the homepage's own "Best Selling" section -- much more specific than bestbuy_categories' ~25 top-level departments. Each id is directly usable as bestbuy_category's category_id input.
+- **Params:** _none_
+
+### `bestbuy_category`
+
+- **HTTP:** `GET /bestbuy/category`
+- **What:** Get a Best Buy category's product listing. Returns one page (up to 24) of one Best Buy category's normalized product listing (sku, title, url, image, price, rating, review count). category_id is a Best Buy category id, e.g. pcmcat138500050001, found in a category page URL's trailing <id>.c?id=<id> segment. page is the optional 1-indexed page number (defaults to 1); requesting a page past the last one returns an empty products list, not an error.
+- **Params:** `category_id` (string, **required**) — Best Buy category id; `page` (integer, optional) — 1-indexed page number, defaults to 1
+
+### `bestbuy_category_subcategories`
+
+- **HTTP:** `GET /bestbuy/category/subcategories`
+- **What:** Get a Best Buy category's own sibling/child categories. Returns a Best Buy category's own sibling/child category set (name, category id, url), sourced from that category page's own "Category" filter facet. Each id is directly usable as bestbuy_category's category_id input. category_id is a Best Buy category id, e.g. pcmcat138500050001, found in a category page URL's trailing <id>.c?id=<id> segment. A leaf category with no siblings returns an empty list, not an error.
+- **Params:** `category_id` (string, **required**) — Best Buy category id
+
+### `bestbuy_product`
+
+- **HTTP:** `GET /bestbuy/product`
+- **What:** Get a Best Buy product's detail. Returns one Best Buy product's normalized detail (name, brand, model, color, price, availability, rating, images, breadcrumbs), sourced from the product page's own schema.org Product structured-data block. sku is the numeric Best Buy SKU shown on bestbuy.com product pages and URLs.
+- **Params:** `sku` (string, **required**) — Numeric Best Buy SKU
+
+### `bestbuy_product_questions`
+
+- **HTTP:** `GET /bestbuy/product/questions`
+- **What:** Get a Best Buy product's customer questions and answers. Returns the customer questions (with answers, when present) Best Buy embeds directly on a product's page: question text, answer text, who answered, and when. sku is the numeric Best Buy SKU shown on bestbuy.com product pages and URLs. A product with no questions asked yet returns an empty list, not an error.
+- **Params:** `sku` (string, **required**) — Numeric Best Buy SKU
+
+### `bestbuy_product_related`
+
+- **HTTP:** `GET /bestbuy/product/related`
+- **What:** Get a Best Buy product's related products. Returns the organic (non-sponsored) related products Best Buy embeds in a product page's own comparison table (sku, name, url, image, price). sku is the numeric Best Buy SKU shown on bestbuy.com product pages and URLs. A product page with no comparison table returns an empty list, not an error.
+- **Params:** `sku` (string, **required**) — Numeric Best Buy SKU
+
+### `bestbuy_product_reviews`
+
+- **HTTP:** `GET /bestbuy/product/reviews`
+- **What:** Get a Best Buy product's customer reviews. Returns page 1 (up to 20) of one Best Buy product's normalized customer reviews (rating, title, text, author, posted date, tags such as Verified Purchaser, recommended flag, helpful/unhelpful counts), sourced from the product's dedicated reviews page. sku is the numeric Best Buy SKU shown on bestbuy.com product pages and URLs.
+- **Params:** `sku` (string, **required**) — Numeric Best Buy SKU
+
+### `bestbuy_search`
+
+- **HTTP:** `GET /bestbuy/search`
+- **What:** Search Best Buy's product catalog. Returns one page (up to 24) of one Best Buy keyword search's normalized product listing (sku, title, url, image, price, rating, review count). q is free-text search keywords, e.g. "laptop". page is the optional 1-indexed page number (defaults to 1); requesting a page past the last one returns an empty products list, not an error.
+- **Params:** `page` (integer, optional) — 1-indexed page number, defaults to 1; `q` (string, **required**) — Search keywords
+
+### `bestbuy_stores`
+
+- **HTTP:** `GET /bestbuy/stores`
+- **What:** Get Best Buy's physical stores in one city. Returns Best Buy's physical store locations in one city (name, address, phone, coordinates, rating, hours), sourced from Best Buy's own SEO store directory. state is one of the 50 US state codes plus dc and pr: `al`, `ak`, `az`, `ar`, `ca`, `co`, `ct`, `de`, `dc`, `fl`, `ga`, `hi`, `id`, `il`, `in`, `ia`, `ks`, `ky`, `la`, `me`, `md`, `ma`, `mi`, `mn`, `ms`, `mo`, `mt`, `ne`, `nv`, `nh`, `nj`, `nm`, `ny`, `nc`, `nd`, `oh`, `ok`, `or`, `pa`, `pr`, `ri`, `sc`, `sd`, `tn`, `tx`, `ut`, `vt`, `va`, `wa`, `wv`, `wi`, `wy`. city is free text matched case-insensitively against that state's own directory (e.g. "Chicago").
+- **Params:** `city` (string, **required**) — City name; `state` (string, **required**) — Two-letter state/territory code
 
 ## Bing (5)
 
@@ -1706,12 +1774,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the X users dataset. Searches public X (Twitter) user profiles stored in a search index. Sort enum: `relevance`, `followers_desc`, `followers_asc`, `crawled_at_desc`, `crawled_at_asc`, `created_at_desc`, `created_at_asc`.
 - **Params:** `crawled_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `crawled_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `created_after` (string, optional) — Accounts created on or after this date (RFC3339 or YYYY-MM-DD); `created_before` (string, optional) — Accounts created on or before this date (RFC3339 or YYYY-MM-DD); `has_bio` (boolean, optional) — Filter by a non-empty profile bio; `has_external_url` (boolean, optional) — Filter by a linked external URL; `is_blue_verified` (boolean, optional) — Filter by the X blue-check verification flag; `max_followers` (integer, optional) — Maximum follower count; `max_ratio` (number, optional) — Maximum follower-to-following ratio; `min_followers` (integer, optional) — Minimum follower count; `min_ratio` (number, optional) — Minimum follower-to-following ratio (low values surface follow-spam / bot-like accounts); `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over username, name, bio and location, max 256 characters; `sort` (string, optional) — Sort enum: relevance, followers_desc, followers_asc, crawled_at_desc, crawled_at_asc, created_at_desc, created_at_asc; `source_tier` (string, optional) — Exact filter for which seed tier discovered this account, e.g. github-users, wikidata, tiktok-creators, journalists; `username` (string, optional) — Exact username filter (case-insensitive), max 128 characters
 
-## Depop (4)
+## Depop (10)
+
+### `depop_brands`
+
+- **HTTP:** `GET /depop/brands`
+- **What:** Depop's full brand directory. Returns Depop's full brand directory (id, name, slug), not just brands with active listings for a given search -- resolves the search endpoint's otherwise-opaque brand_ids filter to human-readable names. Public data sourced from Depop's own brand-directory API.
+- **Params:** _none_
 
 ### `depop_categories`
 
 - **HTTP:** `GET /depop/categories`
-- **What:** Get Depop's category taxonomy. Returns Depop's full department, category, and subcategory taxonomy -- every value usable with /depop/search's and /depop/shop/{username}'s category/subcategory filters. Static data, no live request.
+- **What:** Get Depop's category taxonomy. Returns Depop's full department, category, and subcategory taxonomy -- every value usable with /depop/search's and /depop/shop/{username}'s category/subcategory filters. Tries a live refresh from Depop's own category-filter API first and falls back to a static snapshot on any failure, so this never errors.
 - **Params:** _none_
 
 ### `depop_item`
@@ -1720,17 +1794,47 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Depop item detail. Returns a normalized Depop item-detail page: description, all photos, price, condition, brand, size, seller info, and a "similar items" carousel when the page has one. Public data sourced from Depop's own item pages.
 - **Params:** `slug` (string, **required**) — Depop item URL slug, e.g. from a search result's id field
 
+### `depop_item_similar`
+
+- **HTTP:** `GET /depop/item/{slug}/similar`
+- **What:** Get Depop items similar to a listing. Returns items similar to a given Depop listing, via Depop's dedicated similar-items API -- richer and paginated (up to 150 per page) compared to the small, non-paginated "similar items" carousel already included in item detail. Public data sourced from Depop's own similar-items API.
+- **Params:** `after` (string, optional) — Opaque pagination cursor from a previous response's next_cursor field. Omit for the first page.; `limit` (integer, optional) — Max results per page, 1-150; `slug` (string, **required**) — Depop item URL slug, e.g. from a search result's id field
+
 ### `depop_search`
 
 - **HTTP:** `GET /depop/search`
-- **What:** Search Depop listings. Searches Depop's resale-fashion marketplace by free-text keyword, with optional price, condition, colour, category, subcategory, gender, brand, discount, and sort filters, returning normalized listing summaries (title, price, brand, condition, photos, sizes), a pagination cursor, and the total matching count. Public data sourced from Depop's own search API.
-- **Params:** `after` (string, optional) — Opaque pagination cursor from a previous response's next_cursor field. Omit for the first page.; `brand_ids` (string, optional) — Comma-separated Depop internal numeric brand ids. Not documented by Depop -- find a brand's id by browsing its depop.com/brands/<slug>/ page.; `category` (string, optional) — Depop category slug: tops, bottoms, dresses, coats-jackets, jumpsuit-and-playsuit, suits, footwear, accessories, nightwear, underwear, swim-beach-wear, fancy-dress, sleepsuits-and-bodysuits, bundles, beauty, face-masks, home, tech-accessories, film, art, books-and-magazine, music, party-supplies, sports-equipment-accesories, toys, umbrella. See GET /depop/categories for a machine-readable enumeration with names and subcategories.; `colours` (string, optional) — Comma-separated colour filter: black, grey, white, brown, tan, cream, yellow, red, burgundy, orange, pink, purple, blue, navy, green, khaki, multi; `condition` (string, optional) — Comma-separated condition filter: brand_new, used_like_new, used_excellent, used_good, used_fair; `gender` (string, optional) — Department filter: female, male; `on_sale` (boolean, optional) — Restrict results to discounted listings; `price_max` (number, optional) — Maximum listing price in USD; `price_min` (number, optional) — Minimum listing price in USD; `query` (string, **required**) — Free-text keyword search; `sort` (string, optional) — Sort order: relevance, price_low_to_high, price_high_to_low; `subcategory` (string, optional) — Comma-separated Depop subcategory slug(s), scoped within category. See GET /depop/categories for the full list per category.
+- **What:** Search Depop listings. Searches Depop's resale-fashion marketplace by free-text keyword, with optional price, condition, colour, category, subcategory, gender, kids-department, brand, discount, and sort filters, returning normalized listing summaries (title, price, brand, condition, like count, photos, sizes), a pagination cursor, and the total matching count. Public data sourced from Depop's own search API.
+- **Params:** `after` (string, optional) — Opaque pagination cursor from a previous response's next_cursor field. Omit for the first page.; `brand_ids` (string, optional) — Comma-separated Depop internal numeric brand ids. Not documented by Depop -- find a brand's id by browsing its depop.com/brands/<slug>/ page.; `category` (string, optional) — Depop category slug: tops, bottoms, dresses, coats-jackets, jumpsuit-and-playsuit, suits, footwear, accessories, nightwear, underwear, swim-beach-wear, fancy-dress, sleepsuits-and-bodysuits, bundles, beauty, face-masks, home, tech-accessories, film, art, books-and-magazine, music, party-supplies, sports-equipment-accesories, toys, umbrella. See GET /depop/categories for a machine-readable enumeration with names and subcategories.; `colours` (string, optional) — Comma-separated colour filter: black, grey, white, brown, tan, cream, yellow, red, burgundy, orange, pink, purple, blue, navy, green, khaki, multi; `condition` (string, optional) — Comma-separated condition filter: brand_new, used_like_new, used_excellent, used_good, used_fair; `gender` (string, optional) — Department filter: female, male; `is_kids` (boolean, optional) — Kids-department filter: true restricts results to kids items only, false excludes them, omitted returns both.; `on_sale` (boolean, optional) — Restrict results to discounted listings; `price_max` (number, optional) — Maximum listing price in USD; `price_min` (number, optional) — Minimum listing price in USD; `query` (string, **required**) — Free-text keyword search; `sizes` (string, optional) — Comma-separated Depop size composite ids (format {size_set_id}.{id}, e.g. \; `sort` (string, optional) — Sort order: relevance, price_low_to_high, price_high_to_low; `subcategory` (string, optional) — Comma-separated Depop subcategory slug(s), scoped within category. See GET /depop/categories for the full list per category.
+
+### `depop_search_facets`
+
+- **HTTP:** `GET /depop/search/facets`
+- **What:** Depop search result-count breakdowns. Returns result-count breakdowns per department/category/subcategory for a search query, via Depop's dedicated aggregates API -- a distinct upstream call from search itself, not embedded in its response. Public data sourced from Depop's own search-aggregates API.
+- **Params:** `query` (string, **required**) — Free-text keyword search
+
+### `depop_search_sellers`
+
+- **HTTP:** `GET /depop/search-sellers`
+- **What:** Search Depop sellers by name. Finds Depop users/sellers by name or username. A matched result's username can be passed directly to GET /depop/shop/{username} for that seller's full shop. Public data sourced from Depop's own user-search API.
+- **Params:** `query` (string, **required**) — Seller name or username to search for
 
 ### `depop_shop`
 
 - **HTTP:** `GET /depop/shop/{username}`
 - **What:** Get a Depop seller's shop. Returns a Depop seller's public shop: profile (rating, sold count, followers, bio) plus current listings, with optional price, condition, colour, category, subcategory, gender, discount, and sort filters. Public data sourced from Depop's own shop pages.
-- **Params:** `category` (string, optional) — Depop category slug: tops, bottoms, dresses, coats-jackets, jumpsuit-and-playsuit, suits, footwear, accessories, nightwear, underwear, swim-beach-wear, fancy-dress, sleepsuits-and-bodysuits, bundles, beauty, face-masks, home, tech-accessories, film, art, books-and-magazine, music, party-supplies, sports-equipment-accesories, toys, umbrella. See GET /depop/categories for a machine-readable enumeration with names and subcategories.; `colours` (string, optional) — Comma-separated colour filter: black, grey, white, brown, tan, cream, yellow, red, burgundy, orange, pink, purple, blue, navy, green, khaki, multi; `condition` (string, optional) — Comma-separated condition filter: brand_new, used_like_new, used_excellent, used_good, used_fair; `gender` (string, optional) — Department filter: female, male; `on_sale` (boolean, optional) — Restrict results to discounted listings; `price_max` (number, optional) — Maximum listing price in USD; `price_min` (number, optional) — Minimum listing price in USD; `sort` (string, optional) — Sort order: relevance, price_low_to_high, price_high_to_low, recently_listed; `subcategory` (string, optional) — Comma-separated Depop subcategory slug(s), scoped within category. See GET /depop/categories for the full list per category.; `username` (string, **required**) — Depop seller username, e.g. from a shop page URL segment
+- **Params:** `category` (string, optional) — Depop category slug: tops, bottoms, dresses, coats-jackets, jumpsuit-and-playsuit, suits, footwear, accessories, nightwear, underwear, swim-beach-wear, fancy-dress, sleepsuits-and-bodysuits, bundles, beauty, face-masks, home, tech-accessories, film, art, books-and-magazine, music, party-supplies, sports-equipment-accesories, toys, umbrella. See GET /depop/categories for a machine-readable enumeration with names and subcategories.; `colours` (string, optional) — Comma-separated colour filter: black, grey, white, brown, tan, cream, yellow, red, burgundy, orange, pink, purple, blue, navy, green, khaki, multi; `condition` (string, optional) — Comma-separated condition filter: brand_new, used_like_new, used_excellent, used_good, used_fair; `gender` (string, optional) — Department filter: female, male; `on_sale` (boolean, optional) — Restrict results to discounted listings; `price_max` (number, optional) — Maximum listing price in USD; `price_min` (number, optional) — Minimum listing price in USD; `sizes` (string, optional) — Comma-separated Depop size composite ids (format {size_set_id}.{id}, e.g. \; `sort` (string, optional) — Sort order: relevance, price_low_to_high, price_high_to_low, recently_listed; `subcategory` (string, optional) — Comma-separated Depop subcategory slug(s), scoped within category. See GET /depop/categories for the full list per category.; `username` (string, **required**) — Depop seller username, e.g. from a shop page URL segment
+
+### `depop_sizes`
+
+- **HTTP:** `GET /depop/sizes`
+- **What:** Get Depop's size taxonomy. Returns Depop's full, multi-region size taxonomy -- every composite id usable with /depop/search's and /depop/shop/{username}'s sizes filter. Public data sourced from Depop's own size-filter API.
+- **Params:** _none_
+
+### `depop_suggest`
+
+- **HTTP:** `GET /depop/suggest`
+- **What:** Depop search-box autocomplete. Returns Depop's own search-box autocomplete suggestions for a partial query, including the category a suggestion maps to when relevant. Public data sourced from Depop's own search-suggestions API.
+- **Params:** `query` (string, **required**) — Partial search query to autocomplete
 
 ## Discogs (7)
 
@@ -1849,6 +1953,80 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /doordash/store/{store_id}/reviews`
 - **What:** Get DoorDash store reviews. Returns store ratings and customer reviews from the Android mobile guest experience for a location. No DoorDash account or caller-supplied token is required.
 - **Params:** `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
+
+## DraftKings Sportsbook (12)
+
+### `draftkings_event`
+
+- **HTTP:** `GET /draftkings/sportsbook/event`
+- **What:** DraftKings Sportsbook event. Returns one event's metadata (league id, sport id, teams, status, start time) from DraftKings' credential-free public JSON. `event_id` is a numeric DraftKings event identifier (find it from an event's DraftKings Sportsbook page, or from the `id` field of an event returned by /draftkings/sportsbook/odds). The returned `league_id` is accepted by /draftkings/sportsbook/odds and /draftkings/sportsbook/futures. This endpoint does not include betting markets/odds.
+- **Params:** `event_id` (string, **required**) — Numeric DraftKings event id
+
+### `draftkings_event_context`
+
+- **HTTP:** `GET /draftkings/sportsbook/event-context`
+- **What:** DraftKings Sportsbook event context. Returns public sport, league, and event navigation identifiers for a numeric DraftKings event id. Use it to associate an event with DraftKings Sportsbook's public sport and league navigation.
+- **Params:** `event_id` (string, **required**) — Numeric DraftKings event id
+
+### `draftkings_event_markets`
+
+- **HTTP:** `GET /draftkings/sportsbook/event-markets`
+- **What:** DraftKings Sportsbook event markets. Returns one event's betting markets and selections for a specific market category, from DraftKings' credential-free public JSON. `event_id` is a numeric DraftKings event identifier (find it from the `id` field of an event returned by /draftkings/sportsbook/odds). `subcategory_id` selects the market category (e.g. game lines, a player-prop category, an alternate-line category) -- find one from the `subcategory_id` field on a market returned by /draftkings/sportsbook/odds, or from a DraftKings Sportsbook event page's own network traffic. An empty `markets` list is a valid response when the category has no markets currently posted for this event.
+- **Params:** `event_id` (string, **required**) — Numeric DraftKings event id; `subcategory_id` (string, **required**) — Numeric DraftKings market subcategory id
+
+### `draftkings_featured_leagues`
+
+- **HTTP:** `GET /draftkings/sportsbook/featured-leagues`
+- **What:** DraftKings Sportsbook featured leagues. Returns public DraftKings Sportsbook leagues currently marked as featured in its sport navigation. Each item includes its numeric `id`, capability `tags`, live-offer status, and upstream featured ordering. Use the `id` as `league_id` with /draftkings/sportsbook/odds and /draftkings/sportsbook/futures.
+- **Params:** _none_
+
+### `draftkings_futures`
+
+- **HTTP:** `GET /draftkings/sportsbook/futures`
+- **What:** DraftKings Sportsbook futures. Returns league-level futures markets and selections for a specific DraftKings market category, from DraftKings' credential-free public JSON. `league_id` is a numeric DraftKings league identifier and `subcategory_id` is a numeric futures category identifier. An empty `events` list is a valid response when the category has no markets currently posted for that league.
+- **Params:** `league_id` (string, **required**) — Numeric DraftKings league id; `subcategory_id` (string, **required**) — Numeric DraftKings futures market subcategory id
+
+### `draftkings_league_events`
+
+- **HTTP:** `GET /draftkings/sportsbook/league-events`
+- **What:** DraftKings Sportsbook league event directory. Returns a DraftKings Sportsbook league's current public event directory, including event IDs, teams or other participants, start times, status, and public availability tags. Supply a numeric `league_id` from /draftkings/sportsbook/leagues, /draftkings/sportsbook/quick-links, /draftkings/sportsbook/featured-leagues, or /draftkings/sportsbook/event. This endpoint does not include betting markets or odds.
+- **Params:** `league_id` (string, **required**) — Numeric DraftKings league id
+
+### `draftkings_leagues`
+
+- **HTTP:** `GET /draftkings/sportsbook/leagues`
+- **What:** DraftKings Sportsbook sports and leagues. Returns DraftKings Sportsbook's current public sport and league directory. Each league `id` is accepted as `league_id` by /draftkings/sportsbook/odds and /draftkings/sportsbook/futures.
+- **Params:** _none_
+
+### `draftkings_live`
+
+- **HTTP:** `GET /draftkings/sportsbook/live`
+- **What:** DraftKings Sportsbook live events. Returns the live events currently shown by DraftKings Sportsbook, including score state, period, primary markets, and market categories that can be used with /draftkings/sportsbook/event-markets. An empty `events` list is valid when DraftKings has no live events at request time.
+- **Params:** _none_
+
+### `draftkings_odds`
+
+- **HTTP:** `GET /draftkings/sportsbook/odds`
+- **What:** DraftKings Sportsbook odds. Returns the primary betting markets (moneyline, spread, total) for every upcoming event in a DraftKings Sportsbook league, from DraftKings' credential-free public JSON. `league_id` is a numeric DraftKings league identifier (find it from a league's DraftKings Sportsbook page). An empty `events` list is a valid response when nothing is currently scheduled.
+- **Params:** `league_id` (string, **required**) — Numeric DraftKings league id
+
+### `draftkings_quick_links`
+
+- **HTTP:** `GET /draftkings/sportsbook/quick-links`
+- **What:** DraftKings Sportsbook quick links. Returns the ordered league shortcuts currently prioritized on DraftKings Sportsbook's public home page. Each item includes a numeric `league_id` accepted by /draftkings/sportsbook/odds and /draftkings/sportsbook/futures.
+- **Params:** _none_
+
+### `draftkings_team`
+
+- **HTTP:** `GET /draftkings/sportsbook/team`
+- **What:** DraftKings Sportsbook team. Returns stable team metadata embedded in a public DraftKings Sportsbook team page. Supply `team_id`, `sport`, and `slug` from an item returned by /draftkings/sportsbook/teams. Allowed `sport` values: `football`, `hockey`, `basketball`, `baseball`.
+- **Params:** `slug` (string, **required**) — Lowercase DraftKings team slug; `sport` (string, **required**) — Sport: football, hockey, basketball, baseball; `team_id` (string, **required**) — Numeric DraftKings team id
+
+### `draftkings_teams`
+
+- **HTTP:** `GET /draftkings/sportsbook/teams`
+- **What:** DraftKings Sportsbook league teams. Returns the teams listed on DraftKings Sportsbook's public Teams page for one league. Allowed `league` values: `nfl`, `nhl`, `nba`, `cbb`, `mlb`, `cfb`.
+- **Params:** `league` (string, **required**) — League: nfl, nhl, nba, cbb, mlb, cfb
 
 ## DuckDuckGo Search (5)
 
@@ -2564,6 +2742,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Google Jobs search. Searches Google's public careers site (careers.google.com) via its server-rendered search page's embedded job data. Each result includes the description, responsibilities, and qualifications inline. Page size is fixed by Google at 20 results.
 - **Params:** `location` (string, optional) — Location filter (free text); `page` (integer, optional) — Page number, 1-based; `q` (string, **required**) — Search query
 
+## Google Patents (6)
+
+### `googlepatents_classification`
+
+- **HTTP:** `GET /googlepatents/classification`
+- **What:** Look up a Cooperative Patent Classification (CPC) symbol. Returns a CPC classification symbol's official title, its position in the classification tree (parent/child symbols), related symbols, and its full scope-note description. Accepts a symbol at any level, e.g. a section ("A"), a class ("A61"), a subclass ("A61K"), or a full group/subgroup ("A61K31/00"). Public data, sourced from Google Patents' own search API.
+- **Params:** `code` (string, **required**) — CPC classification symbol
+
+### `googlepatents_coverage`
+
+- **HTTP:** `GET /googlepatents/coverage`
+- **What:** Google Patents database coverage: grants and applications indexed per country per year. Returns how many patent grants and applications Google Patents has indexed, per patent office/country, per year, across every authority it covers. Public data, sourced from Google Patents' own search API.
+- **Params:** _none_
+
+### `googlepatents_detail`
+
+- **HTTP:** `GET /googlepatents/detail`
+- **What:** A single patent's bibliographic data, abstract, claims, description, citations, and family. Returns a single patent's normalized detail: title, abstract, inventors, assignees, dates, legal status, CPC/IPC classifications, claims, description, patent citations, cited-by patents, family members, and similar documents. `number` is a publication number such as `US10758101B2`, `EP1000000A1`, or `WO2020123456A1`. Public data, sourced from Google Patents' server-rendered detail pages. To search or browse by keyword, inventor, or assignee instead of a known publication number, use `/googlepatents/search`.
+- **Params:** `lang` (string, optional) — Language code for the translated page, default en; `number` (string, **required**) — Publication number, e.g. US10758101B2
+
+### `googlepatents_recent`
+
+- **HTTP:** `GET /googlepatents/recent`
+- **What:** Browse patent publications indexed by Google Patents for one ISO week. Returns the patent publications Google Patents' bulk sitemap indexes for one ISO 8601 week (format YYYY-Www, e.g. "2026-W20"): publication number, title, and detail-page URL for each. Useful for browsing recently published patents without a search query. Public data, sourced from Google Patents' own sitemap.
+- **Params:** `week` (string, **required**) — ISO 8601 week, format YYYY-Www
+
+### `googlepatents_search`
+
+- **HTTP:** `GET /googlepatents/search`
+- **What:** Search Google Patents by keyword, inventor, assignee, and other filters. Searches Google Patents' full index by free-text query, with optional inventor, assignee, patent office, status, type, language, and date filters. Returns a page of normalized hits plus top-assignee/top-inventor/top-classification breakdowns over the full result set. Public data, sourced from Google Patents' own search API.
+- **Params:** `after` (string, optional) — Only results dated on or after this date (YYYY-MM-DD); `assignee` (string, optional) — Filter by assignee/applicant name; `before` (string, optional) — Only results dated on or before this date (YYYY-MM-DD); `country` (string, optional) — Filter by patent office/authority code, e.g. US, EP, WO, CN, JP; `date_field` (string, optional) — Which date before/after filter. Allowed values: priority, filing, publication. Defaults to priority when before/after is set; `inventor` (string, optional) — Filter by inventor name; `language` (string, optional) — Filter by document language. Allowed values: ENGLISH, GERMAN, CHINESE, FRENCH, SPANISH, ARABIC, JAPANESE, KOREAN, PORTUGUESE, RUSSIAN, ITALIAN, DUTCH, SWEDISH, FINNISH, NORWEGIAN, DANISH; `num` (integer, optional) — Results per page, default 10, max 100; `page` (integer, optional) — Page number, 0-indexed, default 0; `q` (string, **required**) — Free-text search query; `sort` (string, optional) — Sort order. Allowed values: relevance, new, old. Defaults to relevance; `status` (string, optional) — Filter by legal status. Allowed values: GRANT, APPLICATION; `type` (string, optional) — Filter by document type. Allowed values: PATENT, DESIGN
+
+### `googlepatents_suggest`
+
+- **HTTP:** `GET /googlepatents/suggest`
+- **What:** Autocomplete an inventor or assignee name for Google Patents search. Returns Google Patents' own autocomplete suggestions for an inventor or assignee name as the user types, the same suggestions shown by the Inventor/Assignee fields on Google Patents' advanced search page. Public data, sourced from Google Patents' own search API.
+- **Params:** `field` (string, **required**) — Which field to autocomplete. Allowed values: inventor, assignee; `value` (string, **required**) — Partial name typed so far
+
 ## GooglePlay (11)
 
 ### `googleplay_app`
@@ -2632,7 +2848,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve Google Play query suggestions. Returns up to 10 suggestions for a search term.
 - **Params:** `country` (string, optional) — Two-letter country code; `lang` (string, optional) — Two-letter language code; `term` (string, **required**) — Search term prefix
 
-## H&M (5)
+## H&M (7)
 
 ### `hm_categories`
 
@@ -2652,11 +2868,23 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get an H&M product's full detail. Returns one H&M product's full detail: every purchasable color grouped with its own per-size price and live availability, plus an aggregate rating and real customer reviews (author label, date, body, rating, and any fit-feedback tags the reviewer left, such as "True to Size") when the product has any. This data is not available from hm-listing or hm-search, which only carry one representative price and a per-color stock count. product_id is the numeric id from a listing/search result's id field or its url field's productpage.<id>.html segment. An unrecognized product_id returns 404.
 - **Params:** `product_id` (string, **required**) — Numeric H&M product id, from a listing/search result's id field
 
+### `hm_product_related`
+
+- **HTTP:** `GET /hm/product/{product_id}/related`
+- **What:** Get an H&M product's related items. Returns every product-detail recommendation list H&M's own app shows for one product (which lists are present genuinely varies by product -- for example "more from series" and "style with" appear only when the product has one, while "alternatives" and "upsell" are more consistently present). An unrecognized product_id returns a well-formed empty result rather than an error.
+- **Params:** `product_id` (string, **required**) — Numeric H&M product id, from a listing/search result's id field
+
 ### `hm_search`
 
 - **HTTP:** `GET /hm/search`
 - **What:** Search H&M product listings by free-text keyword. Runs a free-text keyword search against H&M's own app-backend search data and returns normalized products with pricing, images, colors, and per-size stock, plus search-quality metadata (a spelling-correction suggestion, related searches, and a content-filter flag). Unlike category browsing, an obscure or nonsense keyword returns a genuine empty result (zero products) rather than a fallback set. Pagination is page-based and real: requesting a page beyond the real last page returns a normal response with an empty products array rather than an error.
 - **Params:** `page` (integer, optional) — Page number, one-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 72, defaults to 36; `query` (string, **required**) — Free-text search keyword
+
+### `hm_search_suggestions`
+
+- **HTTP:** `GET /hm/search/suggestions`
+- **What:** Get H&M search-box suggestions. Returns H&M's own search-box typeahead suggestions, sourced from the same credential-free app-backend host as hm-listing/hm-search. When query is given, returns spelling-complete phrase suggestions and merchandised content results. When query is omitted or empty, instead returns trending searches and popular-search shortcuts (phrase/content suggestions are both empty in that mode). search_history is part of the real upstream response but confirmed NOT session-scoped -- it returned the identical list across separate cookie-free requests, so treat it as fixed default content rather than a real per-caller history.
+- **Params:** `query` (string, optional) — Free-text search-box input; omit or leave empty for trending/popular searches instead
 
 ### `hm_stores`
 
@@ -4568,6 +4796,50 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Institutional holdings (13F-HR). Returns the latest 13F-HR holdings for an institutional manager (by CIK): issuer, value, shares, sorted by value. Credential-free public SEC data.
 - **Params:** `cik` (string, **required**) — Institutional manager CIK; `limit` (integer, optional) — Max holdings, default 50, max 1000
 
+## Sephora (7)
+
+### `sephora_category`
+
+- **HTTP:** `GET /sephora/category`
+- **What:** Sephora category browse. Returns one page of a Sephora category/browse listing (e.g. Makeup, Skincare), with the same sort and facet filters as /sephora/search. slug is the path segment after sephora.com/shop/, e.g. makeup-cosmetics. An unrecognized slug returns 404.
+- **Params:** `brand` (array, optional) — One or more exact brand names to filter to (OR'd together); repeat the param for multiple values; `filter` (array, optional) — Additional facet:value filters, repeat the param for multiple; facet must be one of: benefits, ingredientpreferences, colorfamily, formulation, size, shoppingpreferences, agerange, skintype, finish, skinconcerns, coverage, hairtype, hairconcerns, hairtexture; `is_new` (boolean, optional) — When true, filters to products flagged New; `page` (integer, optional) — Result page, 1-based, defaults to 1; `price_max` (integer, optional) — Maximum price in whole dollars; must be set together with price_min; `price_min` (integer, optional) — Minimum price in whole dollars; must be set together with price_max; `rating_min` (integer, optional) — Minimum star rating, 1 to 4; `slug` (string, **required**) — Category-page slug; `sort_by` (string, optional) — Sort order, defaults to featured
+
+### `sephora_product`
+
+- **HTTP:** `GET /sephora/product`
+- **What:** Sephora product detail. Returns one Sephora product's full detail (every color/shade variant with its own price and availability, rating, review count, and a sample of recent reviews), from Sephora's credential-free public JSON-LD. `product_id` is the full product-page slug, e.g. `lip-sleeping-mask-P420652` -- copy it from the path segment after sephora.com/product/ on any product page; unlike some other retailers, an arbitrary or partial slug does not resolve.
+- **Params:** `product_id` (string, **required**) — Full Sephora product-page slug
+
+### `sephora_product_questions`
+
+- **HTTP:** `GET /sephora/product/questions`
+- **What:** Sephora product questions and answers. Returns one page of a Sephora product's customer Q&A: each question plus every answer it received (text, author, whether it's a brand answer, helpful votes). product_id is the Sephora productGroupID, e.g. P420652 -- the same value /sephora/product returns as product_group_id.
+- **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Sephora productGroupID
+
+### `sephora_product_reviews`
+
+- **HTTP:** `GET /sephora/product/reviews`
+- **What:** Sephora product reviews. Returns one page of a Sephora product's full customer reviews (title, body, rating, author, helpful votes, secondary ratings, photos), plus the product's site-wide rating rollup (average rating, recommended ratio, star-count histogram). product_id is the Sephora productGroupID, e.g. P420652 -- the same value /sephora/product returns as product_group_id.
+- **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Sephora productGroupID
+
+### `sephora_search`
+
+- **HTTP:** `GET /sephora/search`
+- **What:** Sephora product search. Searches Sephora's product catalog by keyword, with real page-based pagination. Returns normalized products with brand, pricing, rating, and review count. Sephora's own search never returns a genuine zero-result state for a nonempty keyword -- an unrecognized/nonsense keyword still returns a full, unrelated fallback result set rather than an empty one. price_min/price_max must be provided together (whole dollars) -- upstream silently ignores a one-sided price range rather than filtering or erroring, so this endpoint rejects a one-sided range as invalid instead of passing it through. brand and filter each accept multiple values (OR'd together within the same facet); brand/rating_min/is_new/filter/price_min/price_max can all be combined with each other (AND'd together across different facets).
+- **Params:** `brand` (array, optional) — One or more exact brand names to filter to (OR'd together); repeat the param for multiple values; `filter` (array, optional) — Additional facet:value filters, repeat the param for multiple; facet must be one of: benefits, ingredientpreferences, colorfamily, formulation, size, shoppingpreferences, agerange, skintype, finish, skinconcerns, coverage, hairtype, hairconcerns, hairtexture; `is_new` (boolean, optional) — When true, filters to products flagged New; `page` (integer, optional) — Result page, 1-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 100, defaults to 60; `price_max` (integer, optional) — Maximum price in whole dollars; must be set together with price_min; `price_min` (integer, optional) — Minimum price in whole dollars; must be set together with price_max; `query` (string, **required**) — Search keyword; `rating_min` (integer, optional) — Minimum star rating, 1 to 4; `sort_by` (string, optional) — Sort order, defaults to featured
+
+### `sephora_stores`
+
+- **HTTP:** `GET /sephora/stores`
+- **What:** Sephora store locator. Returns Sephora physical store locations near a coordinate (address, hours, BOPIS/curbside/same-day flags). Renders through a JS-executing browser backend, unlike every other Sephora endpoint -- the store-locator data call itself is plain HTTP, but it requires a per-visit access token minted by an endpoint gated behind a bot-management JS challenge, so responses may take longer.
+- **Params:** `latitude` (number, **required**) — Latitude, -90 to 90; `limit` (integer, optional) — Max stores to return, 1 to 50, defaults to 10; `longitude` (number, **required**) — Longitude, -180 to 180; `radius` (integer, optional) — Search radius in miles, 1 to 500, defaults to 50
+
+### `sephora_suggest`
+
+- **HTTP:** `GET /sephora/suggest`
+- **What:** Sephora search suggestions. Returns Sephora's own search-box type-ahead suggestions for a partial keyword: keyword-completion terms, matching products, and trending/related categories. Sephora's own upstream never returns a genuine zero-result state for a nonempty query -- a deliberately nonsense query still returns unrelated product suggestions.
+- **Params:** `query` (string, **required**) — Partial search keywords
+
 ## Shop.app (16)
 
 ### `shop_app_analysis`
@@ -5967,6 +6239,20 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /usage/me/timeseries`
 - **What:** Get current user's usage timeseries. Returns JWT-authenticated request and credit consumption buckets for chart rendering. Results use UTC buckets.
 - **Params:** `bucket` (string, optional) — Bucket size. Defaults to hour for day range and day otherwise.; `endpoint` (string, optional) — Optional endpoint filter; `from` (string, optional) — Custom lower bound in RFC3339 format when range=custom; `range` (string, optional) — Time range preset. Defaults to the current billing period.; `to` (string, optional) — Custom upper bound in RFC3339 format when range=custom
+
+## USPTO Patent Public Search (2)
+
+### `usptoppubs_detail`
+
+- **HTTP:** `GET /usptoppubs/detail`
+- **What:** Fetch a document's full bibliographic data, abstract, description, and claims. Fetches a single USPTO Patent Public Search record's full text -- bibliographic data, abstract, description, and claims -- by GUID and source database. guid and source normally come straight from a prior /usptoppubs/search result's guid and database fields. Public data, sourced from USPTO's own official search tool.
+- **Params:** `guid` (string, **required**) — Document GUID, e.g. from a prior search result's guid field; `source` (string, **required**) — Source database. Allowed values: US-PGPUB, USPAT, USOCR
+
+### `usptoppubs_search`
+
+- **HTTP:** `GET /usptoppubs/search`
+- **What:** Search USPTO's own patent full-text search index. Searches USPTO Patent Public Search's full-text index of granted patents and published applications, returning normalized bibliographic results (title, applicant/assignee, inventors, filing and publication dates, application number, IPC/CPC classifications, page count). q accepts USPTO's full Advanced Search query syntax -- field-specific search (e.g. battery.ti., Microsoft.as.), date ranges (@pd>=20200101<=20241231), boolean and proximity operators, and wildcards -- see the markdown doc for the full field-code table and syntax reference. Public data, sourced from USPTO's own official search tool.
+- **Params:** `databases` (string, optional) — Comma-separated subset of databases to search. Allowed values: US-PGPUB, USPAT, USOCR. Defaults to all three; `num` (integer, optional) — Results to return, default 20, max 100; `page` (integer, optional) — Results page, 0-indexed, default 0; `q` (string, **required**) — Search query text -- accepts USPTO's full Advanced Search (BRS) query syntax: field codes, date ranges, boolean/proximity operators, wildcards
 
 ## Vinted (7)
 

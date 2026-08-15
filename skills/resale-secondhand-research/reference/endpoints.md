@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**39 endpoints across 7 platform group(s).**
+**45 endpoints across 7 platform group(s).**
 
 ## Poshmark (8)
 
@@ -210,12 +210,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Mercari listings. Searches Mercari's live resale marketplace by free-text keyword, returning normalized listing summaries (title, price, thumbnail, condition, seller) plus the total matching count. Credential-free public data sourced from Mercari's own mobile-app API using an anonymous, login-free session.
 - **Params:** `query` (string, **required**) — Free-text keyword search
 
-## Depop (4)
+## Depop (10)
+
+### `depop_brands`
+
+- **HTTP:** `GET /depop/brands`
+- **What:** Depop's full brand directory. Returns Depop's full brand directory (id, name, slug), not just brands with active listings for a given search -- resolves the search endpoint's otherwise-opaque brand_ids filter to human-readable names. Public data sourced from Depop's own brand-directory API.
+- **Params:** _none_
 
 ### `depop_categories`
 
 - **HTTP:** `GET /depop/categories`
-- **What:** Get Depop's category taxonomy. Returns Depop's full department, category, and subcategory taxonomy -- every value usable with /depop/search's and /depop/shop/{username}'s category/subcategory filters. Static data, no live request.
+- **What:** Get Depop's category taxonomy. Returns Depop's full department, category, and subcategory taxonomy -- every value usable with /depop/search's and /depop/shop/{username}'s category/subcategory filters. Tries a live refresh from Depop's own category-filter API first and falls back to a static snapshot on any failure, so this never errors.
 - **Params:** _none_
 
 ### `depop_item`
@@ -224,17 +230,47 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Depop item detail. Returns a normalized Depop item-detail page: description, all photos, price, condition, brand, size, seller info, and a "similar items" carousel when the page has one. Public data sourced from Depop's own item pages.
 - **Params:** `slug` (string, **required**) — Depop item URL slug, e.g. from a search result's id field
 
+### `depop_item_similar`
+
+- **HTTP:** `GET /depop/item/{slug}/similar`
+- **What:** Get Depop items similar to a listing. Returns items similar to a given Depop listing, via Depop's dedicated similar-items API -- richer and paginated (up to 150 per page) compared to the small, non-paginated "similar items" carousel already included in item detail. Public data sourced from Depop's own similar-items API.
+- **Params:** `after` (string, optional) — Opaque pagination cursor from a previous response's next_cursor field. Omit for the first page.; `limit` (integer, optional) — Max results per page, 1-150; `slug` (string, **required**) — Depop item URL slug, e.g. from a search result's id field
+
 ### `depop_search`
 
 - **HTTP:** `GET /depop/search`
-- **What:** Search Depop listings. Searches Depop's resale-fashion marketplace by free-text keyword, with optional price, condition, colour, category, subcategory, gender, brand, discount, and sort filters, returning normalized listing summaries (title, price, brand, condition, photos, sizes), a pagination cursor, and the total matching count. Public data sourced from Depop's own search API.
-- **Params:** `after` (string, optional) — Opaque pagination cursor from a previous response's next_cursor field. Omit for the first page.; `brand_ids` (string, optional) — Comma-separated Depop internal numeric brand ids. Not documented by Depop -- find a brand's id by browsing its depop.com/brands/<slug>/ page.; `category` (string, optional) — Depop category slug: tops, bottoms, dresses, coats-jackets, jumpsuit-and-playsuit, suits, footwear, accessories, nightwear, underwear, swim-beach-wear, fancy-dress, sleepsuits-and-bodysuits, bundles, beauty, face-masks, home, tech-accessories, film, art, books-and-magazine, music, party-supplies, sports-equipment-accesories, toys, umbrella. See GET /depop/categories for a machine-readable enumeration with names and subcategories.; `colours` (string, optional) — Comma-separated colour filter: black, grey, white, brown, tan, cream, yellow, red, burgundy, orange, pink, purple, blue, navy, green, khaki, multi; `condition` (string, optional) — Comma-separated condition filter: brand_new, used_like_new, used_excellent, used_good, used_fair; `gender` (string, optional) — Department filter: female, male; `on_sale` (boolean, optional) — Restrict results to discounted listings; `price_max` (number, optional) — Maximum listing price in USD; `price_min` (number, optional) — Minimum listing price in USD; `query` (string, **required**) — Free-text keyword search; `sort` (string, optional) — Sort order: relevance, price_low_to_high, price_high_to_low; `subcategory` (string, optional) — Comma-separated Depop subcategory slug(s), scoped within category. See GET /depop/categories for the full list per category.
+- **What:** Search Depop listings. Searches Depop's resale-fashion marketplace by free-text keyword, with optional price, condition, colour, category, subcategory, gender, kids-department, brand, discount, and sort filters, returning normalized listing summaries (title, price, brand, condition, like count, photos, sizes), a pagination cursor, and the total matching count. Public data sourced from Depop's own search API.
+- **Params:** `after` (string, optional) — Opaque pagination cursor from a previous response's next_cursor field. Omit for the first page.; `brand_ids` (string, optional) — Comma-separated Depop internal numeric brand ids. Not documented by Depop -- find a brand's id by browsing its depop.com/brands/<slug>/ page.; `category` (string, optional) — Depop category slug: tops, bottoms, dresses, coats-jackets, jumpsuit-and-playsuit, suits, footwear, accessories, nightwear, underwear, swim-beach-wear, fancy-dress, sleepsuits-and-bodysuits, bundles, beauty, face-masks, home, tech-accessories, film, art, books-and-magazine, music, party-supplies, sports-equipment-accesories, toys, umbrella. See GET /depop/categories for a machine-readable enumeration with names and subcategories.; `colours` (string, optional) — Comma-separated colour filter: black, grey, white, brown, tan, cream, yellow, red, burgundy, orange, pink, purple, blue, navy, green, khaki, multi; `condition` (string, optional) — Comma-separated condition filter: brand_new, used_like_new, used_excellent, used_good, used_fair; `gender` (string, optional) — Department filter: female, male; `is_kids` (boolean, optional) — Kids-department filter: true restricts results to kids items only, false excludes them, omitted returns both.; `on_sale` (boolean, optional) — Restrict results to discounted listings; `price_max` (number, optional) — Maximum listing price in USD; `price_min` (number, optional) — Minimum listing price in USD; `query` (string, **required**) — Free-text keyword search; `sizes` (string, optional) — Comma-separated Depop size composite ids (format {size_set_id}.{id}, e.g. \; `sort` (string, optional) — Sort order: relevance, price_low_to_high, price_high_to_low; `subcategory` (string, optional) — Comma-separated Depop subcategory slug(s), scoped within category. See GET /depop/categories for the full list per category.
+
+### `depop_search_facets`
+
+- **HTTP:** `GET /depop/search/facets`
+- **What:** Depop search result-count breakdowns. Returns result-count breakdowns per department/category/subcategory for a search query, via Depop's dedicated aggregates API -- a distinct upstream call from search itself, not embedded in its response. Public data sourced from Depop's own search-aggregates API.
+- **Params:** `query` (string, **required**) — Free-text keyword search
+
+### `depop_search_sellers`
+
+- **HTTP:** `GET /depop/search-sellers`
+- **What:** Search Depop sellers by name. Finds Depop users/sellers by name or username. A matched result's username can be passed directly to GET /depop/shop/{username} for that seller's full shop. Public data sourced from Depop's own user-search API.
+- **Params:** `query` (string, **required**) — Seller name or username to search for
 
 ### `depop_shop`
 
 - **HTTP:** `GET /depop/shop/{username}`
 - **What:** Get a Depop seller's shop. Returns a Depop seller's public shop: profile (rating, sold count, followers, bio) plus current listings, with optional price, condition, colour, category, subcategory, gender, discount, and sort filters. Public data sourced from Depop's own shop pages.
-- **Params:** `category` (string, optional) — Depop category slug: tops, bottoms, dresses, coats-jackets, jumpsuit-and-playsuit, suits, footwear, accessories, nightwear, underwear, swim-beach-wear, fancy-dress, sleepsuits-and-bodysuits, bundles, beauty, face-masks, home, tech-accessories, film, art, books-and-magazine, music, party-supplies, sports-equipment-accesories, toys, umbrella. See GET /depop/categories for a machine-readable enumeration with names and subcategories.; `colours` (string, optional) — Comma-separated colour filter: black, grey, white, brown, tan, cream, yellow, red, burgundy, orange, pink, purple, blue, navy, green, khaki, multi; `condition` (string, optional) — Comma-separated condition filter: brand_new, used_like_new, used_excellent, used_good, used_fair; `gender` (string, optional) — Department filter: female, male; `on_sale` (boolean, optional) — Restrict results to discounted listings; `price_max` (number, optional) — Maximum listing price in USD; `price_min` (number, optional) — Minimum listing price in USD; `sort` (string, optional) — Sort order: relevance, price_low_to_high, price_high_to_low, recently_listed; `subcategory` (string, optional) — Comma-separated Depop subcategory slug(s), scoped within category. See GET /depop/categories for the full list per category.; `username` (string, **required**) — Depop seller username, e.g. from a shop page URL segment
+- **Params:** `category` (string, optional) — Depop category slug: tops, bottoms, dresses, coats-jackets, jumpsuit-and-playsuit, suits, footwear, accessories, nightwear, underwear, swim-beach-wear, fancy-dress, sleepsuits-and-bodysuits, bundles, beauty, face-masks, home, tech-accessories, film, art, books-and-magazine, music, party-supplies, sports-equipment-accesories, toys, umbrella. See GET /depop/categories for a machine-readable enumeration with names and subcategories.; `colours` (string, optional) — Comma-separated colour filter: black, grey, white, brown, tan, cream, yellow, red, burgundy, orange, pink, purple, blue, navy, green, khaki, multi; `condition` (string, optional) — Comma-separated condition filter: brand_new, used_like_new, used_excellent, used_good, used_fair; `gender` (string, optional) — Department filter: female, male; `on_sale` (boolean, optional) — Restrict results to discounted listings; `price_max` (number, optional) — Maximum listing price in USD; `price_min` (number, optional) — Minimum listing price in USD; `sizes` (string, optional) — Comma-separated Depop size composite ids (format {size_set_id}.{id}, e.g. \; `sort` (string, optional) — Sort order: relevance, price_low_to_high, price_high_to_low, recently_listed; `subcategory` (string, optional) — Comma-separated Depop subcategory slug(s), scoped within category. See GET /depop/categories for the full list per category.; `username` (string, **required**) — Depop seller username, e.g. from a shop page URL segment
+
+### `depop_sizes`
+
+- **HTTP:** `GET /depop/sizes`
+- **What:** Get Depop's size taxonomy. Returns Depop's full, multi-region size taxonomy -- every composite id usable with /depop/search's and /depop/shop/{username}'s sizes filter. Public data sourced from Depop's own size-filter API.
+- **Params:** _none_
+
+### `depop_suggest`
+
+- **HTTP:** `GET /depop/suggest`
+- **What:** Depop search-box autocomplete. Returns Depop's own search-box autocomplete suggestions for a partial query, including the category a suggestion maps to when relevant. Public data sourced from Depop's own search-suggestions API.
+- **Params:** `query` (string, **required**) — Partial search query to autocomplete
 
 ## Whatnot (3)
 

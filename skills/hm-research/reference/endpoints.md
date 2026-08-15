@@ -6,9 +6,9 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**5 endpoints across 1 platform group(s).**
+**7 endpoints across 1 platform group(s).**
 
-## H&M (5)
+## H&M (7)
 
 ### `hm_categories`
 
@@ -28,11 +28,23 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get an H&M product's full detail. Returns one H&M product's full detail: every purchasable color grouped with its own per-size price and live availability, plus an aggregate rating and real customer reviews (author label, date, body, rating, and any fit-feedback tags the reviewer left, such as "True to Size") when the product has any. This data is not available from hm-listing or hm-search, which only carry one representative price and a per-color stock count. product_id is the numeric id from a listing/search result's id field or its url field's productpage.<id>.html segment. An unrecognized product_id returns 404.
 - **Params:** `product_id` (string, **required**) — Numeric H&M product id, from a listing/search result's id field
 
+### `hm_product_related`
+
+- **HTTP:** `GET /hm/product/{product_id}/related`
+- **What:** Get an H&M product's related items. Returns every product-detail recommendation list H&M's own app shows for one product (which lists are present genuinely varies by product -- for example "more from series" and "style with" appear only when the product has one, while "alternatives" and "upsell" are more consistently present). An unrecognized product_id returns a well-formed empty result rather than an error.
+- **Params:** `product_id` (string, **required**) — Numeric H&M product id, from a listing/search result's id field
+
 ### `hm_search`
 
 - **HTTP:** `GET /hm/search`
 - **What:** Search H&M product listings by free-text keyword. Runs a free-text keyword search against H&M's own app-backend search data and returns normalized products with pricing, images, colors, and per-size stock, plus search-quality metadata (a spelling-correction suggestion, related searches, and a content-filter flag). Unlike category browsing, an obscure or nonsense keyword returns a genuine empty result (zero products) rather than a fallback set. Pagination is page-based and real: requesting a page beyond the real last page returns a normal response with an empty products array rather than an error.
 - **Params:** `page` (integer, optional) — Page number, one-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 72, defaults to 36; `query` (string, **required**) — Free-text search keyword
+
+### `hm_search_suggestions`
+
+- **HTTP:** `GET /hm/search/suggestions`
+- **What:** Get H&M search-box suggestions. Returns H&M's own search-box typeahead suggestions, sourced from the same credential-free app-backend host as hm-listing/hm-search. When query is given, returns spelling-complete phrase suggestions and merchandised content results. When query is omitted or empty, instead returns trending searches and popular-search shortcuts (phrase/content suggestions are both empty in that mode). search_history is part of the real upstream response but confirmed NOT session-scoped -- it returned the identical list across separate cookie-free requests, so treat it as fixed default content rather than a real per-caller history.
+- **Params:** `query` (string, optional) — Free-text search-box input; omit or leave empty for trending/popular searches instead
 
 ### `hm_stores`
 
