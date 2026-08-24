@@ -6,9 +6,15 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**96 endpoints across 7 platform group(s).**
+**99 endpoints across 7 platform group(s).**
 
-## IMDb (20)
+## IMDb (23)
+
+### `imdb_charts`
+
+- **HTTP:** `GET /imdb/charts`
+- **What:** IMDb title charts. Returns normalized rows from public IMDb title charts. Chart values: `top_rated_movies`, `top_rated_tv_shows`, `most_popular_movies`, `most_popular_tv_shows`, `top_rated_english_movies`, `lowest_rated_movies`.
+- **Params:** `chart` (string, optional) — IMDb chart; `limit` (integer, optional) — Rows to return, default 25, max 250
 
 ### `imdb_name`
 
@@ -106,6 +112,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** IMDb title quotes. Returns normalized public IMDb quote rows for a title. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
+### `imdb_title_ratings`
+
+- **HTTP:** `GET /imdb/title/ratings`
+- **What:** IMDb title ratings breakdown. Returns IMDb's aggregate rating, vote count, ten rating buckets, and country rating summaries. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute IMDb title URL
+
 ### `imdb_title_release_info`
 
 - **HTTP:** `GET /imdb/title/release-info`
@@ -117,6 +129,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /imdb/title/reviews`
 - **What:** IMDb title user reviews. Returns normalized public IMDb user review rows. Limit defaults to 10 and clamps to 20. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `limit` (integer, optional) — Rows to return, default 10, max 20; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
+
+### `imdb_title_similar`
+
+- **HTTP:** `GET /imdb/title/similar`
+- **What:** IMDb similar titles. Returns normalized titles from IMDb's public More like this recommendations. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute IMDb title URL
 
 ### `imdb_title_technical_specs`
 

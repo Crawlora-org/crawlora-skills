@@ -13,8 +13,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `shopify_collection_products`
 
 - **HTTP:** `GET /shopify/collections/{handle}/products`
-- **What:** List Shopify collection products. Returns normalized products from a public Shopify collection `/products.json` endpoint.
-- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `url` (string, **required**) — Shopify storefront URL
+- **What:** List Shopify collection products. Returns normalized products from a public Shopify collection `/products.json` endpoint. `sortBy` and dynamic facet-filter query params (e.g. `fit`, `canonicalColour`) only take effect for headless storefronts served via the embedded-SSR-JSON fallback transport (`transport_mode: "ssr_embedded"`) and return an invalid-param error if supplied against a classic-transport store, since Shopify's classic public catalog JSON has no server-side sort or filter support.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `sortBy` (string, optional) — SSR-fallback transport only (transport_mode ssr_embedded). Allowed values: sortLTH, sortHTL, newest. Omit for the storefront's default relevancy order. Rejected as an invalid param for classic-transport stores.; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_collections`
 
@@ -49,8 +49,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `shopify_products`
 
 - **HTTP:** `GET /shopify/products`
-- **What:** List Shopify products. Returns normalized products from a public Shopify `/products.json` endpoint. Valid empty result pages return `200` with an empty products array.
-- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `url` (string, **required**) — Shopify storefront URL
+- **What:** List Shopify products. Returns normalized products from a public Shopify `/products.json` endpoint. Valid empty result pages return `200` with an empty products array. `sortBy` and dynamic facet-filter query params (e.g. `fit`, `canonicalColour`) only take effect for headless storefronts served via the embedded-SSR-JSON fallback transport (`transport_mode: "ssr_embedded"`) and return an invalid-param error if supplied against a classic-transport store, since Shopify's classic public catalog JSON has no server-side sort or filter support.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `sortBy` (string, optional) — SSR-fallback transport only (transport_mode ssr_embedded). Allowed values: sortLTH, sortHTL, newest. Omit for the storefront's default relevancy order. Rejected as an invalid param for classic-transport stores.; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_search_suggest`
 

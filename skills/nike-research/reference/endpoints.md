@@ -6,9 +6,9 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**6 endpoints across 1 platform group(s).**
+**9 endpoints across 1 platform group(s).**
 
-## Nike (6)
+## Nike (9)
 
 ### `nike_categories`
 
@@ -21,6 +21,24 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /nike/product`
 - **What:** Get a Nike product. Returns normalized product-detail data for one color variant: title, description, pricing, images, every offered size, and every other available color. slug and style_color together reproduce Nike's own product page URL (nike.com/t/<slug>/<style_color>) and are both returned by nike-search's product colors[].slug and colors[].style_color fields.
 - **Params:** `slug` (string, **required**) — Product-detail URL slug, from a search result's colors[].slug field; `style_color` (string, **required**) — Style-color id, from a search result's colors[].style_color field
+
+### `nike_product_availability`
+
+- **HTTP:** `GET /nike/product/availability`
+- **What:** Get Nike product size availability. Returns per-size shipping availability for one product, sourced from the same anonymous mobile backend Nike's own app uses. group_key is the product's rollup key (from a search result's products[].group_key field). Each size carries its label, localized label, the color variant it belongs to, a GTIN, an available flag, Nike's own shipping-availability level (HIGH/LOW/MEDIUM/OOS), and the width grouping (Regular/Wide). Per-store pickup availability is not included -- this reflects online shipping availability.
+- **Params:** `group_key` (string, **required**) — Product rollup key, from a search result's products[].group_key field
+
+### `nike_product_details`
+
+- **HTTP:** `GET /nike/product/details`
+- **What:** Get full Nike product details. Returns full product-group detail for one product's rollup key, sourced from the same anonymous mobile backend Nike's own app uses: shared product copy plus every purchasable color variant (across width groupings), each with its own pricing, sizes, and images. group_key is the product's rollup key, the same value nike-search returns as a products[].group_key field. Unlike nike-product (which returns one color variant by slug/style_color), this returns every color of the product in one response.
+- **Params:** `group_key` (string, **required**) — Product rollup key, from a search result's products[].group_key field
+
+### `nike_product_recommendations`
+
+- **HTTP:** `GET /nike/product/recommendations`
+- **What:** Get Nike product recommendations. Returns Nike's own related-product ("Shop Similar") recommendations for one product, sourced from the same anonymous mobile backend Nike's own app uses. style_color is the anchor product's style-color id (from a search result's colors[].style_color field). Each recommendation carries the product's style-color, rank, title/subtitle, image, PDP URL, and current pricing. Recommendations are Nike's own ranking, not a guaranteed keyword match: an unrecognized style_color returns Nike's fallback recommendations rather than an empty list or an error.
+- **Params:** `style_color` (string, **required**) — Anchor product's style-color id, from a search result's colors[].style_color field
 
 ### `nike_product_reviews`
 

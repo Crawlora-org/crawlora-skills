@@ -6,7 +6,39 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**1164 endpoints across 128 platform group(s).**
+**1404 endpoints across 153 platform group(s).**
+
+## Adidas (5)
+
+### `adidas_product`
+
+- **HTTP:** `GET /adidas/product`
+- **What:** Get an Adidas product. Returns normalized product-detail data for one Adidas SKU: name, brand, category, description, pricing (current/standard/sale), images, and every purchasable size variant. product_id is the Adidas SKU (e.g. JI0397), taken from a search result's products[].id field or the trailing segment of an Adidas product page URL. An unknown product_id returns a not-found error.
+- **Params:** `product_id` (string, **required**) — Adidas SKU/product id, from a search result's products[].id field
+
+### `adidas_search`
+
+- **HTTP:** `GET /adidas/search`
+- **What:** Search or browse Adidas products. Searches Adidas.com product listings by keyword, or browses a category listing by taxonomy slug, with real pagination and sort options. Exactly one of query or category is required. Returns normalized product summaries (title, price, rating, images, color variants) plus facet filter groups, sort options, and (for category browse) a breadcrumb trail. Keyword search is best-effort relevance, not a guaranteed match: an obscure keyword returns whatever Adidas's own search index surfaces. A genuinely empty keyword search returns an empty product list, and requesting a page beyond the available result pages (or an unknown category) returns a not-found error. Category values are the path segment after /us/ in an Adidas category URL (e.g. women-athletic_sneakers); they can also be read from the url fields of a search/category response's own filters and breadcrumbs.
+- **Params:** `category` (string, optional) — Category/taxonomy slug, the path segment after /us/ in an Adidas category URL. Exactly one of query or category is required.; `page` (integer, optional) — One-based page number, defaults to 1; `query` (string, optional) — Search keyword. Exactly one of query or category is required.; `sort` (string, optional) — Sort order. Allowed values: price-low-to-high, newest-to-oldest, top-sellers, price-high-to-low. Omitted means relevance.
+
+### `adidas_store`
+
+- **HTTP:** `GET /adidas/store`
+- **What:** Get an Adidas store. Returns normalized detail for one Adidas retail store: name, status, phone, description, full address, coordinates, opening hours, and in-store services (e.g. Click and Collect, Free Wi-Fi). store_id is the numeric Adidas store id, taken from an adidas-stores response's stores[].id field. An unknown store_id returns a not-found error.
+- **Params:** `store_id` (string, **required**) — Adidas store id, from a stores response's stores[].id field
+
+### `adidas_stores`
+
+- **HTTP:** `GET /adidas/stores`
+- **What:** Find nearby Adidas stores. Returns Adidas physical retail stores nearest to a coordinate, sourced from Adidas's own store-finder API: name, address, phone, coordinates, distance in miles, opening hours, and in-store feature flags. lat and lng are both required. Adidas's upstream ignores a caller-supplied radius and returns the nearest ~20 stores ordered by distance. A location with no stores returns an empty list rather than an error.
+- **Params:** `lat` (number, **required**) — Latitude, -90 to 90; `lng` (number, **required**) — Longitude, -180 to 180; `page` (integer, optional) — Zero-based page number, defaults to 0
+
+### `adidas_suggest`
+
+- **HTTP:** `GET /adidas/suggest`
+- **What:** Get Adidas search suggestions. Returns the top matching products for a partial query, the same search-as-you-type preview Adidas's own search box shows. Adidas has no separate term-autocomplete index, so each suggestion is a matching product (id, title, url, image, price) rather than a completed search phrase. Best-effort relevance: an obscure query returns whatever Adidas's own search surfaces.
+- **Params:** `query` (string, **required**) — Partial search query
 
 ## Agoda (8)
 
@@ -101,6 +133,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /airbnb/search`
 - **What:** Search Airbnb stays. Returns normalized Airbnb public web search results.
 - **Params:** `adults` (integer, optional) — Adult guests; `check_in` (string, optional) — Check-in date; `check_out` (string, optional) — Check-out date; `currency` (string, optional) — Currency for bounded map search; `location` (string, **required**) — Location; `ne_lat` (number, optional) — Northeast latitude for bounded map search; `ne_lng` (number, optional) — Northeast longitude for bounded map search; `page` (integer, optional) — 1-based page; `sw_lat` (number, optional) — Southwest latitude for bounded map search; `sw_lng` (number, optional) — Southwest longitude for bounded map search; `zoom` (integer, optional) — Map zoom for bounded map search
+
+## Allbirds (11)
+
+### `allbirds_collection_products`
+
+- **HTTP:** `GET /allbirds/collections/{handle}/products`
+- **What:** List Allbirds collection products. Returns normalized products from one Allbirds (https://www.allbirds.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `allbirds_collections`
+
+- **HTTP:** `GET /allbirds/collections`
+- **What:** List Allbirds collections. Returns normalized collections from Allbirds (https://www.allbirds.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `allbirds_page`
+
+- **HTTP:** `GET /allbirds/pages/{handle}`
+- **What:** Get a Allbirds static page. Returns normalized static page detail for one Allbirds (https://www.allbirds.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `allbirds_pages`
+
+- **HTTP:** `GET /allbirds/pages`
+- **What:** List Allbirds static pages. Returns normalized static pages from Allbirds (https://www.allbirds.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `allbirds_product`
+
+- **HTTP:** `GET /allbirds/products/{handle}`
+- **What:** Get a Allbirds product. Returns normalized product detail for one Allbirds (https://www.allbirds.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `allbirds_product_recommendations`
+
+- **HTTP:** `GET /allbirds/products/{handle}/recommendations`
+- **What:** List Allbirds product recommendations. Returns normalized recommended products for one Allbirds (https://www.allbirds.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `allbirds_products`
+
+- **HTTP:** `GET /allbirds/products`
+- **What:** List Allbirds products. Returns normalized products from Allbirds's (https://www.allbirds.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `allbirds_search_suggest`
+
+- **HTTP:** `GET /allbirds/search/suggest`
+- **What:** Get Allbirds search suggestions. Returns products, collections, and query suggestions from Allbirds's (https://www.allbirds.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `allbirds_sitemap_urls`
+
+- **HTTP:** `GET /allbirds/sitemap/urls`
+- **What:** List Allbirds sitemap URLs. Returns capped URL entries from Allbirds's (https://www.allbirds.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `allbirds_sitemaps`
+
+- **HTTP:** `GET /allbirds/sitemaps`
+- **What:** List Allbirds sitemaps. Returns child sitemap URLs from Allbirds's (https://www.allbirds.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `allbirds_store`
+
+- **HTTP:** `GET /allbirds/store`
+- **What:** Get Allbirds store metadata. Returns normalized storefront metadata for Allbirds (https://www.allbirds.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
 
 ## Amazon (3)
 
@@ -404,6 +504,68 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve App Store version history. Returns the version history entries shown in the App Store "What's New" section.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag
 
+## Audible (10)
+
+### `audible_categories`
+
+- **HTTP:** `GET /audible/categories`
+- **What:** Get Audible's genre/category tree. Returns Audible's full genre/category tree (root genres with their subgenres), including the category ids accepted by GET /audible/search's category_id filter. Credential-free public catalog data from api.audible.com.
+- **Params:** _none_
+
+### `audible_category`
+
+- **HTTP:** `GET /audible/category/{id}`
+- **What:** Get one Audible category node. Returns one Audible category node and its immediate children by id — cheaper than fetching the full tree from GET /audible/categories when only one node is needed. Credential-free public catalog data from api.audible.com.
+- **Params:** `id` (string, **required**) — Audible category id from GET /audible/categories
+
+### `audible_charts`
+
+- **HTTP:** `GET /audible/charts`
+- **What:** Get an Audible chart (audible.com/charts). Returns one page of an Audible chart — a ranked list with real chart position, price, and rating that has no equivalent on api.audible.com's public JSON API. This is an HTML scrape of audible.com/charts, a different, less stable source class than the rest of this family, though its own filters (category, access level, language, duration, Audible-Originals-only) were individually verified to actually change results. category_id, access_level, and content_type=podcasts are mutually exclusive.
+- **Params:** `access_level` (string, optional) — Membership access level, default all; `category_id` (string, optional) — Restrict to a category id from GET /audible/categories; `chart` (string, optional) — Chart type, default most_listened; `content_type` (string, optional) — Content type, default audiobooks; `duration` (string, optional) — Runtime-length filter, default all; `language` (string, optional) — Language filter, default all; `originals_only` (boolean, optional) — Restrict to Audible Originals only; `page` (integer, optional) — 1-based result page, default 1, 20 results per page
+
+### `audible_editorial_list`
+
+- **HTTP:** `GET /audible/list/{list}`
+- **What:** Get an Audible curated editorial list. Returns one of Audible's hand-curated "Popular Lists" pages, normalized into its themed shelves (heading + ordered ASINs). This is an HTML scrape of a marketing/editorial page (audible.com), not api.audible.com's JSON API — pair an ASIN from any shelf with GET /audible/products (batch) or GET /audible/product/{asin} for full title/author/price/rating detail. "Best of the Year" is not covered — its layout has no consistent structure to parse.
+- **Params:** `list` (string, **required**) — Editorial list slug
+
+### `audible_product`
+
+- **HTTP:** `GET /audible/product/{asin}`
+- **What:** Get an Audible audiobook. Returns a normalized Audible audiobook: description, authors, narrators, series, category ladders, publisher, release date, runtime, language, sample audio URL, rating (overall/performance/story), and public list price. Credential-free public catalog data from api.audible.com.
+- **Params:** `asin` (string, **required**) — Audible ASIN
+
+### `audible_product_related`
+
+- **HTTP:** `GET /audible/product/{asin}/related`
+- **What:** Get Audible titles related to an audiobook. Returns Audible titles related to a given ASIN by a required relation type: same series, same narrator, same author, next in series, or raw upstream similarity. Credential-free public catalog data from api.audible.com.
+- **Params:** `asin` (string, **required**) — Audible ASIN; `limit` (integer, optional) — Max results, default 10, max 50; `similarity_type` (string, **required**) — How to relate titles to the given ASIN
+
+### `audible_product_reviews`
+
+- **HTTP:** `GET /audible/product/{asin}/reviews`
+- **What:** Get an Audible audiobook's customer reviews. Returns a page of an Audible audiobook's customer reviews (author, title, body, overall/performance/story ratings, helpful votes, submission date). Credential-free public catalog data from api.audible.com.
+- **Params:** `asin` (string, **required**) — Audible ASIN; `limit` (integer, optional) — Max reviews, default 10, max 50; `page` (integer, optional) — Zero-based result page, default 0
+
+### `audible_products`
+
+- **HTTP:** `GET /audible/products`
+- **What:** Get multiple Audible audiobooks in one call. Returns normalized Audible audiobooks for up to 50 ASINs in a single request — the same fields as GET /audible/product/{asin}. Unrecognized ASINs are silently omitted rather than failing the whole batch. Credential-free public catalog data from api.audible.com.
+- **Params:** `asins` (string, **required**) — Comma-separated Audible ASINs, up to 50
+
+### `audible_search`
+
+- **HTTP:** `GET /audible/search`
+- **What:** Search Audible's catalog. Searches Audible's audiobook catalog by keyword, title, author, narrator, or category id. At least one filter is required. Credential-free public catalog data from api.audible.com.
+- **Params:** `author` (string, optional) — Match by author name; `category_id` (string, optional) — Restrict to a category id from GET /audible/categories; `limit` (integer, optional) — Max results, default 10, max 50; `narrator` (string, optional) — Match by narrator name; `page` (integer, optional) — Zero-based result page, default 0; `q` (string, optional) — Free-text query matched across title, subtitle, and author; `title` (string, optional) — Match by title
+
+### `audible_series`
+
+- **HTTP:** `GET /audible/series/{asin}`
+- **What:** Get an Audible series' ordered book list. Returns an Audible series and every book in it, in series order. A series has its own ASIN distinct from any book in it — find one via a book's series[].asin field from GET /audible/product/{asin}. Credential-free public catalog data from api.audible.com.
+- **Params:** `asin` (string, **required**) — Audible series ASIN, from a product's series[].asin field
+
 ## Autotrader (3)
 
 ### `autotrader_dealer`
@@ -423,6 +585,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /autotrader/vehicle/{id}`
 - **What:** Get Autotrader vehicle listing detail. Returns a normalized Autotrader vehicle listing: full vehicle spec (make, model, trim, mileage, colors, transmission, fuel type, engine, images, pricing), the full listing description, and seller detail (dealership or private seller). Credential-free public data sourced from Autotrader's own server-rendered vehicle detail page.
 - **Params:** `id` (string, **required**) — Autotrader listing id, the numeric path segment of a /cars-for-sale/vehicle/{id} URL
+
+## BBB (9)
+
+### `bbb_business`
+
+- **HTTP:** `GET /bbb/business`
+- **What:** Get a Better Business Bureau business profile. Returns a normalized bbb.org business profile: BBB rating letter grade and reasons, accreditation status and since-date, years in business, BBB file/incorporation dates, entity type, contact info, business categories, social media, and a short latest-reviews preview. Credential-free public Better Business Bureau data.
+- **Params:** `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url
+
+### `bbb_business_complaints`
+
+- **HTTP:** `GET /bbb/business/complaints`
+- **What:** Get a Better Business Bureau business's complaint history. Returns a business's BBB complaint history: total complaint count, complaints closed in the last 12 months, and per-complaint detail (date, type, status, narrative text, and any business response / customer answer thread). A business with no filed complaints returns total_complaints 0 and an empty complaints list -- this is a normal result, not an error. Credential-free public Better Business Bureau data.
+- **Params:** `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url
+
+### `bbb_business_more_info`
+
+- **HTTP:** `GET /bbb/business/more-info`
+- **What:** Get a Better Business Bureau business's full rating reasons and service area. Returns a business's full per-factor "Reasons for Rating" list and full service-area list, from the separate BBB business profile /more-info sub-page. The bbb-business endpoint's own rating_reasons field is read from the main profile page and typically holds only one generic boilerplate bullet regardless of actual rating; this endpoint fetches the richer, business-specific list instead. Service area is business-conditional -- some businesses render no service-area section at all, in which case service_areas is empty. Credential-free public Better Business Bureau data.
+- **Params:** `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url
+
+### `bbb_business_reviews`
+
+- **HTTP:** `GET /bbb/business/reviews`
+- **What:** Get a Better Business Bureau business's customer reviews. Returns a business's full customer-review list (author, star rating, date, text, and any business response thread), paginated 10 per page, plus the average star rating and total review count. Credential-free public Better Business Bureau data. Unlike the other bbb-business-* endpoints, this one is fetched with browser impersonation rather than plain direct HTTP -- see the family's maintenance note for why.
+- **Params:** `page` (integer, optional) — Result page (10 per page), default 1; `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url
+
+### `bbb_category`
+
+- **HTTP:** `GET /bbb/category`
+- **What:** Browse a Better Business Bureau category. Browses bbb.org businesses by category and location directly, without a free-text search query. Returns the same normalized business-result shape as bbb-search. Credential-free public Better Business Bureau data.
+- **Params:** `page` (integer, optional) — Result page, default 1; `url` (string, **required**) — BBB category browse URL, from a bbb-search result's related_categories
+
+### `bbb_scamtracker_detail`
+
+- **HTTP:** `GET /bbb/scamtracker/{id}`
+- **What:** Get a Better Business Bureau Scam Tracker report. Returns one normalized BBB Scam Tracker consumer scam report: description, dollars lost, targeted person's location, scammer location/email/phone/URL (when known), scam type, business name used, and date reported. Credential-free public Better Business Bureau data.
+- **Params:** `id` (string, **required**) — BBB Scam Tracker report id, from a bbb-scamtracker-search result's id or url
+
+### `bbb_scamtracker_search`
+
+- **HTTP:** `GET /bbb/scamtracker/search`
+- **What:** Search Better Business Bureau Scam Tracker reports. Searches bbb.org Scam Tracker's consumer-reported-scam database by free-text query, scam category, targeted-victim state/province, reported-scammer state/province, report-date range, and/or dollar-loss range, paginated 10 results/page. Omit every filter to browse the most-recent-first feed. Credential-free public Better Business Bureau data. This is a separate BBB dataset from the bbb-search/bbb-business/bbb-business-complaints business-rating family -- consumer-reported scam incidents, not business ratings.
+- **Params:** `date_from` (string, optional) — Optional report-date range start (YYYY-MM-DD), inclusive. Must be set together with date_to; `date_to` (string, optional) — Optional report-date range end (YYYY-MM-DD), inclusive. Must be set together with date_from; `max_dollars_lost` (integer, optional) — Optional maximum reported dollar loss. Must be set together with min_dollars_lost; `min_dollars_lost` (integer, optional) — Optional minimum reported dollar loss. Must be set together with max_dollars_lost; `page` (integer, optional) — Result page (10 per page), default 1; `query` (string, optional) — Free-text search (phone number, website, email, business name, scam ID, description). Omit to browse the most-recent feed; `scam_type` (string, optional) — Scam category filter; `scammer_state` (string, optional) — Optional 2-letter reported-scammer state/province code (US state or Canadian province) -- where the scammer is reported to be, not the victim; `state` (string, optional) — Optional 2-letter targeted-victim state/province code (US state or Canadian province)
+
+### `bbb_scamtracker_state_stats`
+
+- **HTTP:** `GET /bbb/scamtracker/state-stats`
+- **What:** Get Better Business Bureau Scam Tracker state/province aggregate stats. Returns aggregate scam-report stats per US state and Canadian province for a given time window: report counts, dollar losses, per-capita rates, year-over-year change, and top scam-type breakdown. This calls the same JSON API the BBB Scam Tracker heatmap dashboard's own frontend uses -- not an HTML scrape. Credential-free public Better Business Bureau data.
+- **Params:** `period` (string, optional) — Aggregation window, default 90
+
+### `bbb_search`
+
+- **HTTP:** `GET /bbb/search`
+- **What:** Search Better Business Bureau businesses. Searches bbb.org for businesses by name or category near a location. Returns each business's BBB rating letter grade, accreditation status, categories, service areas, contact info, and profile URL. Credential-free public Better Business Bureau data.
+- **Params:** `location` (string, **required**) — City and state (e.g. 'Austin, TX') or a ZIP code; `page` (integer, optional) — Result page, default 1; `query` (string, **required**) — Business name or category/service keyword
 
 ## Best Buy (11)
 
@@ -509,7 +727,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bing_search`
 
 - **HTTP:** `GET /bing/search`
-- **What:** Search Bing web results. Returns normalized Bing web search results for a query string, including organic results, optional context panel data, related queries, people-also-ask questions, news modules, video modules, and page-based pagination. Empty optional blocks are omitted from the JSON response. Locale defaults to country=us and lang=en-us. Results are fetched with a Chrome-impersonated request client and return 503 when Bing serves a challenge page, unusable HTML, or a response whose results are unrelated to the query. Queries that use the site: operator (for example site:gov.hu) are not supported: Bing serves a bot-verification challenge for them, so they are rejected with 400 before any request is made. Use the Google search endpoint (/api/v1/google/search) for domain-restricted searches.
+- **What:** Search Bing web results. Returns normalized Bing web search results for a query string, including organic results, optional context panel data, related queries, people-also-ask questions, news modules, video modules, and page-based pagination. Empty optional blocks are omitted from the JSON response. Locale defaults to country=us and lang=en-us. Results are fetched with a Chrome-impersonated request client and return 503 on a genuine transport failure or challenge page. Bing occasionally serves a well-formed page whose results share no significant term with the query; when every hedged attempt hits this, the response is still returned as 200 with data.low_confidence set to true (and the X-Low-Confidence header) instead of being withheld, so callers get Bing's real answer plus an honest signal to double-check it rather than nothing. Queries that use the site: operator (for example site:gov.hu) are not supported: Bing serves a bot-verification challenge for them, so they are rejected with 400 before any request is made. Use the Google search endpoint (/api/v1/google/search) for domain-restricted searches.
 - **Params:** `count` (integer, optional) — Results per page; defaults to 10, clamped to 1..50; `country` (string, optional) — Two-letter country code; defaults to us; `lang` (string, optional) — Bing UI language; defaults to en-us; `page` (integer, optional) — 1-based page number; defaults to 1; `q` (string, **required**) — Search query
 
 ### `bing_suggest`
@@ -786,6 +1004,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Brave video results. Returns normalized Brave video search results for a query string. Locale defaults to country=us and lang=en-us. Results are fetched from public Brave Search video HTML and return 503 when Brave serves a challenge page or unusable HTML.
 - **Params:** `count` (integer, optional) — Results to return; defaults to 10, clamped to 1..50; `country` (string, optional) — Brave result country; defaults to us; `date_from` (string, optional) — Custom start date in YYYY-MM-DD; requires date_to; `date_to` (string, optional) — Custom end date in YYYY-MM-DD; requires date_from; `lang` (string, optional) — Brave UI language; defaults to en-us; `offset` (integer, optional) — Zero-based Brave result page; defaults to 0; `q` (string, **required**) — Search query; `time_range` (string, optional) — Preset time filter: any, day, week, month, year, or custom
 
+## Brooklinen (11)
+
+### `brooklinen_collection_products`
+
+- **HTTP:** `GET /brooklinen/collections/{handle}/products`
+- **What:** List Brooklinen collection products. Returns normalized products from one Brooklinen (https://www.brooklinen.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `brooklinen_collections`
+
+- **HTTP:** `GET /brooklinen/collections`
+- **What:** List Brooklinen collections. Returns normalized collections from Brooklinen (https://www.brooklinen.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `brooklinen_page`
+
+- **HTTP:** `GET /brooklinen/pages/{handle}`
+- **What:** Get a Brooklinen static page. Returns normalized static page detail for one Brooklinen (https://www.brooklinen.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `brooklinen_pages`
+
+- **HTTP:** `GET /brooklinen/pages`
+- **What:** List Brooklinen static pages. Returns normalized static pages from Brooklinen (https://www.brooklinen.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `brooklinen_product`
+
+- **HTTP:** `GET /brooklinen/products/{handle}`
+- **What:** Get a Brooklinen product. Returns normalized product detail for one Brooklinen (https://www.brooklinen.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `brooklinen_product_recommendations`
+
+- **HTTP:** `GET /brooklinen/products/{handle}/recommendations`
+- **What:** List Brooklinen product recommendations. Returns normalized recommended products for one Brooklinen (https://www.brooklinen.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `brooklinen_products`
+
+- **HTTP:** `GET /brooklinen/products`
+- **What:** List Brooklinen products. Returns normalized products from Brooklinen's (https://www.brooklinen.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `brooklinen_search_suggest`
+
+- **HTTP:** `GET /brooklinen/search/suggest`
+- **What:** Get Brooklinen search suggestions. Returns products, collections, and query suggestions from Brooklinen's (https://www.brooklinen.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `brooklinen_sitemap_urls`
+
+- **HTTP:** `GET /brooklinen/sitemap/urls`
+- **What:** List Brooklinen sitemap URLs. Returns capped URL entries from Brooklinen's (https://www.brooklinen.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `brooklinen_sitemaps`
+
+- **HTTP:** `GET /brooklinen/sitemaps`
+- **What:** List Brooklinen sitemaps. Returns child sitemap URLs from Brooklinen's (https://www.brooklinen.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `brooklinen_store`
+
+- **HTTP:** `GET /brooklinen/store`
+- **What:** Get Brooklinen store metadata. Returns normalized storefront metadata for Brooklinen (https://www.brooklinen.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
+
 ## Capterra (3)
 
 ### `capterra_product`
@@ -863,6 +1149,50 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /carsdotcom/vehicle/{listing_id}`
 - **What:** Get Cars.com vehicle listing detail. Returns a normalized Cars.com vehicle listing: full vehicle spec (make, model, trim, mileage, colors, engine, transmission, fuel economy, a key-specs table), Cars.com's own deal-fairness rating and predicted fair price, categorized equipment features, an AutoCheck-derived vehicle history report, Cars.com's own price-change history, the seller's notes, dealer detail (name, rating, address, website, phones, hours) or private-seller detail for a for-sale-by-owner listing, and certified-pre-owned/manufacturer-program detail when applicable. Credential-free public data sourced directly from Cars.com's own public GraphQL API.
 - **Params:** `listing_id` (string, **required**) — Cars.com listing id (a UUID), the path segment of a /vehicledetail/{listing_id}/ URL
+
+## Chewy (7)
+
+### `chewy_categories`
+
+- **HTTP:** `GET /chewy/categories`
+- **What:** Browse Chewy's category taxonomy tree. Returns Chewy's category taxonomy tree: how to discover group_id values for chewy_category, not the products within a category. Omitting group_id returns all top-level departments (Dog, Cat, Horse, Bird, Fish, Reptile, Small Pet, Farm and Livestock Supplies, Wild Bird and Wildlife Supplies, Pharmacy, Pet Parents); a group_id expands that specific group's own subtree instead. depth controls how many levels of subcategories are expanded in one call.
+- **Params:** `depth` (integer, optional) — How many levels of subcategories to expand, 1 to 3 (default 2); `group_id` (string, optional) — Chewy category group id to expand, e.g. 332 for Dog Food. Omit for the full top-level department tree.
+
+### `chewy_category`
+
+- **HTTP:** `GET /chewy/category`
+- **What:** Browse a Chewy category listing. Returns one page (36 products) of a Chewy category/browse listing's product grid (price, autoship price/discount, stock, rating, images), plus embedded facets and breadcrumbs. group_id is Chewy's own numeric category id -- the trailing id segment of a chewy.com/b/<slug>-<id> browse URL, e.g. 294 for /b/dry-food-294. Every breadcrumbs[].group_id and facets[].options[].value in a response is a ready-to-use group_id for a follow-up call, so a caller can discover the full category taxonomy starting from a known category. A group_id Chewy does not recognize returns a 404 rather than an unfiltered listing. sort and filter narrow/reorder the listing; every facets[].value paired with one of that facet's options[].value from any prior response is a valid filter key:value pair (e.g. brand, breed size, flavor, price range, customer rating -- whichever facets that category exposes).
+- **Params:** `filter` (array, optional) — Repeatable, up to 10. Each value is \; `group_id` (string, **required**) — Chewy's numeric category id, e.g. \; `page` (integer, optional) — Page number, 36 products per page (default 1); `sort` (string, optional) — Sort order. One of byRelevance, byNewest, byPopularity, byLowestPrice, byHighestPrice, byRating, byRatingCount. Defaults to Chewy's own relevance ordering when omitted.
+
+### `chewy_gtin_lookup`
+
+- **HTTP:** `GET /chewy/gtin-lookup`
+- **What:** Resolve Chewy GTIN/UPC barcodes to part numbers. Resolves a batch of up to 20 GTIN/UPC barcodes to their Chewy part numbers in one call. gtins is a comma-separated list of barcodes, e.g. "192268541316". A barcode Chewy does not recognize is omitted from part_numbers and listed in not_found rather than causing the whole call to fail. The resolved part_numbers values feed directly into chewy_product/chewy_products.
+- **Params:** `gtins` (string, **required**) — Comma-separated GTIN/UPC barcodes, up to 20
+
+### `chewy_product`
+
+- **HTTP:** `GET /chewy/product`
+- **What:** Get a Chewy product's detail. Returns one Chewy product's full normalized detail: name, brand, description, images, price, stock, rating and its star-count breakdown, category breadcrumbs, customer questions and answers, and customer reviews. id is the numeric id from a chewy.com PDP URL, e.g. 185468 from https://www.chewy.com/frisco-lion-mane-dog-cat-costume/dp/185468 -- also the same value a chewy_category response's products[].part_number field carries for that product's own default variant.
+- **Params:** `id` (string, **required**) — Numeric id from a chewy.com PDP URL
+
+### `chewy_products`
+
+- **HTTP:** `GET /chewy/products`
+- **What:** Get a batch of Chewy products' lightweight summaries. Returns a batch of up to 20 Chewy products' lightweight summaries (price, rating, stock, images) in one call. part_numbers is a comma-separated list of Chewy part numbers, e.g. "52448,767758" -- the same value chewy_product returns as part_number/parent_part_number, and chewy_category/chewy_search return as products[].part_number. A part number Chewy does not recognize is omitted from products and listed in not_found rather than causing the whole call to fail.
+- **Params:** `part_numbers` (string, **required**) — Comma-separated Chewy part numbers, up to 20
+
+### `chewy_search`
+
+- **HTTP:** `GET /chewy/search`
+- **What:** Search Chewy by keyword. Returns one page of a Chewy keyword search's normalized product listing (price, autoship price/discount, stock, rating, images), plus embedded facets. q is free-text search keywords, e.g. "salmon dog food". A generic query that strongly matches one of Chewy's own categories (e.g. "dog food", "cat litter", "leash") is transparently redirected to that category's listing, the same real results a chewy.com visitor would see -- source_url reflects the actual listing fetched. sort and filter narrow/reorder the listing; every facets[].value paired with one of that facet's options[].value from any prior response is a valid filter key:value pair.
+- **Params:** `filter` (array, optional) — Repeatable, up to 10. Each value is \; `page` (integer, optional) — Page number, 36 products per page (default 1); `q` (string, **required**) — Free-text search keywords; `sort` (string, optional) — Sort order. One of byRelevance, byNewest, byPopularity, byLowestPrice, byHighestPrice, byRating, byRatingCount. Defaults to Chewy's own relevance ordering when omitted.
+
+### `chewy_suggest`
+
+- **HTTP:** `GET /chewy/suggest`
+- **What:** Chewy search-box typeahead suggestions. Returns Chewy's own search-box typeahead result for a partial query term: search-term suggestions (some resolving directly to a category/brand browse URL via their own url field) plus a handful of educational-content article suggestions. term is a partial query, e.g. "salmon dog" or "blue buff".
+- **Params:** `term` (string, **required**) — Partial search text
 
 ## ChromeWebStore (12)
 
@@ -1066,6 +1396,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** CoinGecko trending highlights. Returns deduped trending coins and categories from the public CoinGecko highlights page. This endpoint supports the documented `vs_currency` enum.
 - **Params:** `limit` (integer, optional) — Rows per section to return, default 20, max 50; `vs_currency` (string, optional) — Quote currency
 
+## Cole Haan (11)
+
+### `colehaan_collection_products`
+
+- **HTTP:** `GET /colehaan/collections/{handle}/products`
+- **What:** List Cole Haan collection products. Returns normalized products from one Cole Haan (https://www.colehaan.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `colehaan_collections`
+
+- **HTTP:** `GET /colehaan/collections`
+- **What:** List Cole Haan collections. Returns normalized collections from Cole Haan (https://www.colehaan.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `colehaan_page`
+
+- **HTTP:** `GET /colehaan/pages/{handle}`
+- **What:** Get a Cole Haan static page. Returns normalized static page detail for one Cole Haan (https://www.colehaan.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `colehaan_pages`
+
+- **HTTP:** `GET /colehaan/pages`
+- **What:** List Cole Haan static pages. Returns normalized static pages from Cole Haan (https://www.colehaan.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `colehaan_product`
+
+- **HTTP:** `GET /colehaan/products/{handle}`
+- **What:** Get a Cole Haan product. Returns normalized product detail for one Cole Haan (https://www.colehaan.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `colehaan_product_recommendations`
+
+- **HTTP:** `GET /colehaan/products/{handle}/recommendations`
+- **What:** List Cole Haan product recommendations. Returns normalized recommended products for one Cole Haan (https://www.colehaan.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `colehaan_products`
+
+- **HTTP:** `GET /colehaan/products`
+- **What:** List Cole Haan products. Returns normalized products from Cole Haan's (https://www.colehaan.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `colehaan_search_suggest`
+
+- **HTTP:** `GET /colehaan/search/suggest`
+- **What:** Get Cole Haan search suggestions. Returns products, collections, and query suggestions from Cole Haan's (https://www.colehaan.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `colehaan_sitemap_urls`
+
+- **HTTP:** `GET /colehaan/sitemap/urls`
+- **What:** List Cole Haan sitemap URLs. Returns capped URL entries from Cole Haan's (https://www.colehaan.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `colehaan_sitemaps`
+
+- **HTTP:** `GET /colehaan/sitemaps`
+- **What:** List Cole Haan sitemaps. Returns child sitemap URLs from Cole Haan's (https://www.colehaan.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `colehaan_store`
+
+- **HTTP:** `GET /colehaan/store`
+- **What:** Get Cole Haan store metadata. Returns normalized storefront metadata for Cole Haan (https://www.colehaan.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
+
 ## Congress (2)
 
 ### `congress_report`
@@ -1118,7 +1516,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Find nearby Costco warehouses. Returns Costco warehouses near a latitude/longitude, sorted by distance: name, address, and distance for each. Public data sourced from Costco's own warehouse locator backend.
 - **Params:** `latitude` (number, **required**) — Latitude; `longitude` (number, **required**) — Longitude
 
-## Datasets (109)
+## Datasets (122)
 
 ### `datasets_airbnb_facets`
 
@@ -1179,6 +1577,24 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /datasets/apps/search`
 - **What:** Search the apps-intelligence dataset. Searches resolved iOS App Store and Google Play apps stored in a search index. Store enum: `ios`, `android`, `both`. Platform enum (Apple device platforms, ios records only): `phone`, `pad`, `mac`, `tv`, `watch`, `vision`. Sort enum: `relevance`, `rating_desc`, `reviews_desc`, `installs_desc`, `updated_at_desc`, `popularity_desc`.
 - **Params:** `category` (string, optional) — Exact app-store category filter, max 128 characters; `country` (string, optional) — Exact storefront country filter, max 128 characters; `developer` (string, optional) — Exact developer/publisher name filter, max 128 characters; `free` (boolean, optional) — Filter by price; true keeps only free apps, false only paid; `min_rating` (number, optional) — Minimum store rating, 0 through 5; `min_reviews` (integer, optional) — Minimum ratings/review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `platforms` (array, optional) — Repeatable Apple device-platform filter (OR); see platform enum above; `q` (string, optional) — Full-text query over title, developer and category, max 256 characters; `sort` (string, optional) — Sort enum: relevance, rating_desc, reviews_desc, installs_desc, updated_at_desc, popularity_desc; `store` (string, optional) — Store enum: ios, android, both
+
+### `datasets_bbb_businesses_facets`
+
+- **HTTP:** `GET /datasets/bbb-businesses/facets`
+- **What:** Facet the BBB businesses dataset. Returns distribution counts over the BBB businesses index (dataset id enum value `bbb-businesses`), honoring the same filters as search. Facet enum: `category`, `state`, `city`, `rating`, `accredited`, `entity_type`, `run_id`.
+- **Params:** `accredited` (boolean, optional) — Accreditation filter; `category` (string, optional) — Exact category filter; `city` (string, optional) — Exact city filter; `entity_type` (string, optional) — Exact entity-type filter; `facet` (string, **required**) — Facet enum: category, state, city, rating, accredited, entity_type, run_id; `q` (string, optional) — Full-text match on the business name/category, max 256 characters; `rating` (string, optional) — Exact letter-grade rating filter. Enum: A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F; `run_id` (string, optional) — Exact crawl run id filter; `state` (string, optional) — Exact 2-letter state/province filter
+
+### `datasets_bbb_businesses_item`
+
+- **HTTP:** `GET /datasets/bbb-businesses/items/{id}`
+- **What:** Get a business from the BBB businesses dataset. Returns one business by id from dataset id enum value `bbb-businesses`. Returns 404 when the business is not in the index.
+- **Params:** `id` (string, **required**) — Business id (the <bbbLocalId>-<businessId> slug from the profile URL), e.g. 0825-1000223803
+
+### `datasets_bbb_businesses_search`
+
+- **HTTP:** `GET /datasets/bbb-businesses/search`
+- **What:** Search the BBB businesses dataset. Searches the BBB (Better Business Bureau) businesses index (dataset id enum value `bbb-businesses`) — business profiles crawled from bbb.org's own search/category-browse pages: computed A+-F letter-grade rating, paid-accreditation status, category, contact info, business details, operating hours, and products/services. Complaints, full reviews, and the full "reasons for rating"/service-area detail are NOT embedded here; each record instead carries complaints_url/reviews_url/more_info_url pointing at the live bbb-business-complaints/bbb-business-reviews/bbb-business-more-info endpoints for on-demand lookup. rating enum: `A+`, `A`, `A-`, `B+`, `B`, `B-`, `C+`, `C`, `C-`, `D+`, `D`, `D-`, `F`. sort enum: `relevance`, `rating_desc`, `rating_asc`, `accredited_first`, `name_asc`, `years_in_business_desc`.
+- **Params:** `accredited` (boolean, optional) — Accreditation filter; true keeps only accredited businesses; `category` (string, optional) — Exact category filter, e.g. Plumber. Use the values returned by facets?facet=category; `city` (string, optional) — Exact city filter, parsed from the profile URL; `entity_type` (string, optional) — Exact entity-type filter, e.g. Limited Liability Company (LLC); `min_rating_rank` (integer, optional) — Numeric floor against the denormalized rating rank (A+=12 down to F=0), e.g. 10 for 'A- and above'; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text match on the business name/category, max 256 characters; `rating` (string, optional) — Exact letter-grade rating filter. Enum: A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F; `run_id` (string, optional) — Exact crawl run id filter; `sort` (string, optional) — Sort enum: relevance, rating_desc, rating_asc, accredited_first, name_asc, years_in_business_desc; `state` (string, optional) — Exact 2-letter state/province filter, parsed from the profile URL, e.g. tx
 
 ### `datasets_boxofficemojo_facets`
 
@@ -1245,6 +1661,24 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /datasets/creators/search`
 - **What:** Search the TikTok creators dataset. Searches TikTok creators stored in a search index (one document per creator), with follower counts, verified status, niche, and engagement. Deleted and private accounts are excluded by default; set `include_inactive=true` to include them for historical lookups. Sort enum: `followers_desc`, `engagement_desc`, `likes_desc`, `relevance`. Coverage note: `followers_desc`, `likes_desc`, and `relevance` are backed by profile fields present across the full dataset; the post-level engagement metrics (`engagement_rate`, `avg_views`, and the nested `post_stats` object) and the `engagement_desc` sort are currently populated for a growing subset of creators, prioritizing the highest-reach accounts. Creators without these metrics are still returned but sort last under `engagement_desc` and omit those fields.
 - **Params:** `country` (string, optional) — Exact creator country/region filter, max 128 characters; `handle` (string, optional) — Exact handle lookup (case-insensitive), e.g. khaby.lame; returns the single creator with that exact @handle; `has_email` (boolean, optional) — Filter by contact-email presence; true keeps only creators with an email; `include_inactive` (boolean, optional) — Include deleted/private accounts; defaults to false (only live accounts returned); `min_followers` (integer, optional) — Minimum follower count; `niche` (string, optional) — Exact content-niche filter, max 128 characters; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over handle, nickname and bio, max 256 characters; `sort` (string, optional) — Sort enum: followers_desc, engagement_desc, likes_desc, relevance. engagement_desc ranks by post-level engagement rate, currently populated for a subset of creators (highest-reach first); creators without it sort last; `verified` (boolean, optional) — Filter by verified badge; true keeps only verified creators
+
+### `datasets_facebook_pages_facets`
+
+- **HTTP:** `GET /datasets/facebook-pages/facets`
+- **What:** Facet the Facebook Pages dataset. Returns terms aggregation counts for the Facebook Pages dataset. Facet enum: `category`, `discovery_source`.
+- **Params:** `category` (string, optional) — Exact Page category filter (case-insensitive), max 128 characters; `discovery_source` (string, optional) — Exact filter for how the Page was discovered (e.g. business_search, warc_domain_scan, wikidata), max 128 characters; `facet` (string, **required**) — Facet enum: category, discovery_source; `has_email` (boolean, optional) — Filter by a public contact email; `has_phone` (boolean, optional) — Filter by at least one public phone number; `has_website` (boolean, optional) — Filter by a linked website; `has_whatsapp` (boolean, optional) — Filter by a public WhatsApp contact; `hydrated_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `hydrated_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `identifier` (string, optional) — Exact Page username/identifier filter (case-insensitive), max 128 characters; `max_likes` (integer, optional) — Maximum Page like count; `min_likes` (integer, optional) — Minimum Page like count; `page_id` (string, optional) — Exact Facebook Page id filter, max 128 characters; `q` (string, optional) — Full-text query over title and address, max 256 characters; `sort` (string, optional) — Sort enum: relevance, likes_desc, likes_asc, hydrated_at_desc, hydrated_at_asc
+
+### `datasets_facebook_pages_item`
+
+- **HTTP:** `GET /datasets/facebook-pages/items/{page_id}`
+- **What:** Get a Facebook Page from the dataset. Returns one Facebook Page record by page id from dataset id enum value `facebook-pages`.
+- **Params:** `page_id` (string, **required**) — Facebook Page id, max 128 characters
+
+### `datasets_facebook_pages_search`
+
+- **HTTP:** `GET /datasets/facebook-pages/search`
+- **What:** Search the Facebook Pages dataset. Searches public Facebook Page contact records stored in a search index — website, email, phone, WhatsApp, category and like count, discovered through business-search enumeration, domain-scoped scans, and Wikidata seeding, then hydrated from each Page's public About tab. Sort enum: `relevance`, `likes_desc`, `likes_asc`, `hydrated_at_desc`, `hydrated_at_asc`.
+- **Params:** `category` (string, optional) — Exact Page category filter (case-insensitive), max 128 characters; `discovery_source` (string, optional) — Exact filter for how the Page was discovered (e.g. business_search, warc_domain_scan, wikidata), max 128 characters; `has_email` (boolean, optional) — Filter by a public contact email; `has_phone` (boolean, optional) — Filter by at least one public phone number; `has_website` (boolean, optional) — Filter by a linked website; `has_whatsapp` (boolean, optional) — Filter by a public WhatsApp contact; `hydrated_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `hydrated_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `identifier` (string, optional) — Exact Page username/identifier filter (case-insensitive), max 128 characters; `max_likes` (integer, optional) — Maximum Page like count; `min_likes` (integer, optional) — Minimum Page like count; `page` (integer, optional) — Page number, defaults to 1; `page_id` (string, optional) — Exact Facebook Page id filter, max 128 characters; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over title and address, max 256 characters; `sort` (string, optional) — Sort enum: relevance, likes_desc, likes_asc, hydrated_at_desc, hydrated_at_asc
 
 ### `datasets_github_users_facets`
 
@@ -1756,6 +2190,30 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the TrustMRR dataset. Searches public startups with payment-provider-verified revenue and MRR, stored in a search index. Filter by category, country, payment provider, target audience, tech, marketing channel, listing tier and for-sale status, and by revenue/MRR/traffic/growth/multiple/asking-price ranges. Sort enum: `relevance`, `mrr_desc`, `revenue_desc`, `revenue_30d_desc`, `traffic_desc`, `growth_desc`, `deal_score_desc`, `price_asc`, `price_desc`, `multiple_asc`, `founded_desc`. status enum: `active`, `removed`.
 - **Params:** `business_type` (string, optional) — Business-type filter (e.g. B2B, B2C), max 128 characters; `category` (string, optional) — Exact category filter (e.g. SaaS, Artificial Intelligence, Mobile Apps), max 128 characters; `channel` (string, optional) — Detected marketing-channel slug filter (e.g. meta-ads, seo), max 128 characters; `country` (string, optional) — Exact ISO country-code filter (e.g. US), max 128 characters; `is_sponsored` (boolean, optional) — Filter for sponsored (paid-placement) listings; `listing_tier` (string, optional) — For-sale listing-tier filter (e.g. pro), max 128 characters; `max_asking_price` (number, optional) — Maximum asking price in USD; `max_mrr` (number, optional) — Maximum verified MRR in USD; `max_multiple` (number, optional) — Maximum asking-price-to-revenue multiple; `min_ahrefs_dr` (integer, optional) — Minimum Ahrefs Domain Rating; `min_asking_price` (number, optional) — Minimum asking price in USD; `min_growth` (number, optional) — Minimum 30-day revenue growth percentage; `min_mrr` (number, optional) — Minimum verified MRR in USD; `min_revenue` (number, optional) — Minimum verified all-time revenue in USD; `min_revenue_30d` (number, optional) — Minimum verified last-30-days revenue in USD; `min_traffic` (number, optional) — Minimum last-30-days traffic (visits); `on_sale` (boolean, optional) — Filter for startups currently listed for sale; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `payment_provider` (string, optional) — Payment-provider filter (e.g. stripe, revenuecat, superwall, creem), max 128 characters; `q` (string, optional) — Full-text query over name, description, seller message and business summary, max 256 characters; `slug` (string, optional) — Exact startup slug filter, max 128 characters; `sort` (string, optional) — Sort enum: relevance, mrr_desc, revenue_desc, revenue_30d_desc, traffic_desc, growth_desc, deal_score_desc, price_asc, price_desc, multiple_asc, founded_desc; `status` (string, optional) — Lifecycle enum: active, removed; `target_audience` (string, optional) — Target-audience filter (e.g. B2B, B2C), max 128 characters; `tech` (string, optional) — Detected tech-stack slug filter (e.g. nextjs, reactnative), max 128 characters
 
+### `datasets_vehicle_listings_facets`
+
+- **HTTP:** `GET /datasets/vehicle-listings/facets`
+- **What:** Facet vehicle listings dataset. Returns terms aggregation counts for the vehicle listings dataset. Facet enum: `source`, `make`, `model`, `trim`, `body_style`, `transmission`, `drive_type`, `fuel_type`, `seller_type`, `state`, `run_id`.
+- **Params:** `body_style` (string, optional) — Exact body style filter, max 128 characters; `drive_type` (string, optional) — Exact drivetrain filter, max 128 characters; `facet` (string, **required**) — Facet enum: source, make, model, trim, body_style, transmission, drive_type, fuel_type, seller_type, state, run_id; `fuel_type` (string, optional) — Exact fuel type filter, max 128 characters; `is_price_reduced` (boolean, optional) — Filter for listings currently marked down from a previous price; `make` (string, optional) — Exact make filter, max 128 characters; `max_mileage` (integer, optional) — Maximum odometer mileage; `max_price` (number, optional) — Maximum price in US dollars; `max_year` (integer, optional) — Maximum model year; `min_price` (number, optional) — Minimum price in US dollars; `min_year` (integer, optional) — Minimum model year; `model` (string, optional) — Exact model filter, max 128 characters; `q` (string, optional) — Full-text query over make, model and trim, max 256 characters; `run_id` (string, optional) — Exact crawl run-id filter, max 128 characters; `seller_type` (string, optional) — Exact seller type filter: retailer, dealer, private; `source` (string, optional) — Exact source marketplace filter: carmax, autotrader, carsdotcom; `state` (string, optional) — Exact US state abbreviation filter, max 8 characters; `transmission` (string, optional) — Exact transmission filter, max 128 characters; `trim` (string, optional) — Exact trim filter, max 128 characters; `vin` (string, optional) — Exact VIN filter
+
+### `datasets_vehicle_listings_item`
+
+- **HTTP:** `GET /datasets/vehicle-listings/items/{id}`
+- **What:** Get a vehicle listing from dataset. Returns one crawled vehicle listing by id from dataset id enum value `vehicle-listings`. id is `<source>:<source_listing_id>`, e.g. `carmax:28187774`.
+- **Params:** `id` (string, **required**) — Vehicle listing id, formatted <source>:<source_listing_id> (e.g. carmax:28187774)
+
+### `datasets_vehicle_listings_price_history`
+
+- **HTTP:** `GET /datasets/vehicle-listings/price-history/{id}`
+- **What:** Get a vehicle listing's price history. Returns the recorded price-change events for one listing, oldest first. An event is recorded only when a crawl first observes the listing or observes a changed price -- not one entry per crawl pass -- so a listing whose price has never changed since it was first crawled returns a single entry.
+- **Params:** `id` (string, **required**) — Vehicle listing id, formatted <source>:<source_listing_id> (e.g. carmax:28187774)
+
+### `datasets_vehicle_listings_search`
+
+- **HTTP:** `GET /datasets/vehicle-listings/search`
+- **What:** Search vehicle listings dataset. Searches the crawled used-vehicle listings index. source enum: `carmax`, `autotrader`, `carsdotcom`. CarMax's own national inventory is fully enumerable (re-crawled on a standing schedule); Autotrader/Cars.com coverage is a best-effort zip-code sweep, not exhaustive, and their rows approximate city/state from the searched area rather than the seller's exact location. seller_type enum: `retailer`, `dealer`, `private` (not populated for every row -- see the dataset markdown). Sort enum: `relevance`, `recently_updated`, `newly_listed`, `price_asc`, `price_desc`, `mileage_asc`, `mileage_desc`, `year_desc`, `year_asc`.
+- **Params:** `body_style` (string, optional) — Exact body style filter (e.g. Sedan, SUV), max 128 characters; `drive_type` (string, optional) — Exact drivetrain filter, max 128 characters; `fuel_type` (string, optional) — Exact fuel type filter (e.g. Gas, Hybrid, Electric), max 128 characters; `is_price_reduced` (boolean, optional) — Filter for listings currently marked down from a previous price; `make` (string, optional) — Exact make filter (e.g. Honda, Toyota), max 128 characters; `max_mileage` (integer, optional) — Maximum odometer mileage; `max_price` (number, optional) — Maximum price in US dollars; `max_year` (integer, optional) — Maximum model year; `min_price` (number, optional) — Minimum price in US dollars; `min_year` (integer, optional) — Minimum model year; `model` (string, optional) — Exact model filter (e.g. Civic), max 128 characters; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over make, model and trim, max 256 characters; `run_id` (string, optional) — Exact crawl run-id filter, max 128 characters; `seller_type` (string, optional) — Exact seller type filter: retailer, dealer, private; `sort` (string, optional) — Sort enum: relevance, recently_updated, newly_listed, price_asc, price_desc, mileage_asc, mileage_desc, year_desc, year_asc; `source` (string, optional) — Exact source marketplace filter: carmax, autotrader, carsdotcom; `state` (string, optional) — Exact US state abbreviation filter (e.g. CA), max 8 characters; `transmission` (string, optional) — Exact transmission filter, max 128 characters; `trim` (string, optional) — Exact trim filter, max 128 characters; `vin` (string, optional) — Exact VIN filter. Best-effort: not guaranteed on every listing
+
 ### `datasets_x_users_facets`
 
 - **HTTP:** `GET /datasets/x-users/facets`
@@ -1773,6 +2231,24 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /datasets/x-users/search`
 - **What:** Search the X users dataset. Searches public X (Twitter) user profiles stored in a search index. Sort enum: `relevance`, `followers_desc`, `followers_asc`, `crawled_at_desc`, `crawled_at_asc`, `created_at_desc`, `created_at_asc`.
 - **Params:** `crawled_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `crawled_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `created_after` (string, optional) — Accounts created on or after this date (RFC3339 or YYYY-MM-DD); `created_before` (string, optional) — Accounts created on or before this date (RFC3339 or YYYY-MM-DD); `has_bio` (boolean, optional) — Filter by a non-empty profile bio; `has_external_url` (boolean, optional) — Filter by a linked external URL; `is_blue_verified` (boolean, optional) — Filter by the X blue-check verification flag; `max_followers` (integer, optional) — Maximum follower count; `max_ratio` (number, optional) — Maximum follower-to-following ratio; `min_followers` (integer, optional) — Minimum follower count; `min_ratio` (number, optional) — Minimum follower-to-following ratio (low values surface follow-spam / bot-like accounts); `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over username, name, bio and location, max 256 characters; `sort` (string, optional) — Sort enum: relevance, followers_desc, followers_asc, crawled_at_desc, crawled_at_asc, created_at_desc, created_at_asc; `source_tier` (string, optional) — Exact filter for which seed tier discovered this account, e.g. github-users, wikidata, tiktok-creators, journalists; `username` (string, optional) — Exact username filter (case-insensitive), max 128 characters
+
+### `datasets_youtube_creators_facets`
+
+- **HTTP:** `GET /datasets/youtube-creators/facets`
+- **What:** Facet the YouTube creators dataset. Returns terms aggregation counts for the YouTube creators dataset. Facet enum: `region`, `discovery_source`.
+- **Params:** `channel_id` (string, optional) — Exact channel id filter, max 128 characters; `discovery_source` (string, optional) — Exact filter for how the channel was discovered, max 128 characters; `facet` (string, **required**) — Facet enum: region, discovery_source; `followers_count_available` (boolean, optional) — Filter by whether the channel exposes a public subscriber count; `has_bio` (boolean, optional) — Filter by a non-empty About bio; `has_links` (boolean, optional) — Filter by at least one linked external URL; `hydrated_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `hydrated_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `joined_after` (string, optional) — Channels created on or after this date (RFC3339 or YYYY-MM-DD); `joined_before` (string, optional) — Channels created on or before this date (RFC3339 or YYYY-MM-DD); `max_followers` (integer, optional) — Maximum subscriber count; `max_videos` (integer, optional) — Maximum uploaded-video count; `max_views` (integer, optional) — Maximum total view count; `min_followers` (integer, optional) — Minimum subscriber count; `min_videos` (integer, optional) — Minimum uploaded-video count; `min_views` (integer, optional) — Minimum total view count; `q` (string, optional) — Full-text query over channel_name and bio, max 256 characters; `region` (string, optional) — Exact channel region/country filter (case-insensitive), max 128 characters; `sort` (string, optional) — Sort enum: relevance, followers_desc, followers_asc, views_desc, videos_desc, hydrated_at_desc, hydrated_at_asc; `videos_count_available` (boolean, optional) — Filter by whether the channel has a known uploaded-video count; `views_count_available` (boolean, optional) — Filter by whether the channel has a known total view count
+
+### `datasets_youtube_creators_item`
+
+- **HTTP:** `GET /datasets/youtube-creators/items/{channel_id}`
+- **What:** Get a YouTube creator from the dataset. Returns one YouTube channel record by channel id from dataset id enum value `youtube-creators`.
+- **Params:** `channel_id` (string, **required**) — YouTube channel id, e.g. UCxxxxxxxxxxxxxxxxxxxxxxxx
+
+### `datasets_youtube_creators_search`
+
+- **HTTP:** `GET /datasets/youtube-creators/search`
+- **What:** Search the YouTube creators dataset. Searches public YouTube channel profiles stored in a search index — subscriber, video and view counts, region, bio and links, discovered via Common Crawl and Wikidata and hydrated from each channel's public About page. Sort enum: `relevance`, `followers_desc`, `followers_asc`, `views_desc`, `videos_desc`, `hydrated_at_desc`, `hydrated_at_asc`. Some channels hide their subscriber, video, or view count; the `_available` flags on each item distinguish a hidden count (stored as `0`, `*_available: false`) from a genuine `0`.
+- **Params:** `channel_id` (string, optional) — Exact channel id filter (e.g. UCxxxxxxxxxxxxxxxxxxxxxxxx), max 128 characters; `discovery_source` (string, optional) — Exact filter for how the channel was discovered (e.g. commoncrawl, wikidata), max 128 characters; `followers_count_available` (boolean, optional) — Filter by whether the channel exposes a public subscriber count; `has_bio` (boolean, optional) — Filter by a non-empty About bio; `has_links` (boolean, optional) — Filter by at least one linked external URL; `hydrated_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `hydrated_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `joined_after` (string, optional) — Channels created on or after this date (RFC3339 or YYYY-MM-DD); `joined_before` (string, optional) — Channels created on or before this date (RFC3339 or YYYY-MM-DD); `max_followers` (integer, optional) — Maximum subscriber count; `max_videos` (integer, optional) — Maximum uploaded-video count; `max_views` (integer, optional) — Maximum total view count; `min_followers` (integer, optional) — Minimum subscriber count; `min_videos` (integer, optional) — Minimum uploaded-video count; `min_views` (integer, optional) — Minimum total view count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over channel_name and bio, max 256 characters; `region` (string, optional) — Exact channel region/country filter (case-insensitive), max 128 characters; `sort` (string, optional) — Sort enum: relevance, followers_desc, followers_asc, views_desc, videos_desc, hydrated_at_desc, hydrated_at_asc; `videos_count_available` (boolean, optional) — Filter by whether the channel has a known uploaded-video count; `views_count_available` (boolean, optional) — Filter by whether the channel has a known total view count
 
 ## Depop (10)
 
@@ -2222,6 +2698,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Etsy shops. Returns Etsy shops matching a keyword.
 - **Params:** `limit` (integer, optional) — Max shops to return (default 10); `q` (string, **required**) — Shop search keyword
 
+## Everlane (11)
+
+### `everlane_collection_products`
+
+- **HTTP:** `GET /everlane/collections/{handle}/products`
+- **What:** List Everlane collection products. Returns normalized products from one Everlane (https://www.everlane.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `everlane_collections`
+
+- **HTTP:** `GET /everlane/collections`
+- **What:** List Everlane collections. Returns normalized collections from Everlane (https://www.everlane.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `everlane_page`
+
+- **HTTP:** `GET /everlane/pages/{handle}`
+- **What:** Get a Everlane static page. Returns normalized static page detail for one Everlane (https://www.everlane.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `everlane_pages`
+
+- **HTTP:** `GET /everlane/pages`
+- **What:** List Everlane static pages. Returns normalized static pages from Everlane (https://www.everlane.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `everlane_product`
+
+- **HTTP:** `GET /everlane/products/{handle}`
+- **What:** Get a Everlane product. Returns normalized product detail for one Everlane (https://www.everlane.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `everlane_product_recommendations`
+
+- **HTTP:** `GET /everlane/products/{handle}/recommendations`
+- **What:** List Everlane product recommendations. Returns normalized recommended products for one Everlane (https://www.everlane.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `everlane_products`
+
+- **HTTP:** `GET /everlane/products`
+- **What:** List Everlane products. Returns normalized products from Everlane's (https://www.everlane.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `everlane_search_suggest`
+
+- **HTTP:** `GET /everlane/search/suggest`
+- **What:** Get Everlane search suggestions. Returns products, collections, and query suggestions from Everlane's (https://www.everlane.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `everlane_sitemap_urls`
+
+- **HTTP:** `GET /everlane/sitemap/urls`
+- **What:** List Everlane sitemap URLs. Returns capped URL entries from Everlane's (https://www.everlane.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `everlane_sitemaps`
+
+- **HTTP:** `GET /everlane/sitemaps`
+- **What:** List Everlane sitemaps. Returns child sitemap URLs from Everlane's (https://www.everlane.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `everlane_store`
+
+- **HTTP:** `GET /everlane/store`
+- **What:** Get Everlane store metadata. Returns normalized storefront metadata for Everlane (https://www.everlane.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
+
 ## Expedia (7)
 
 ### `expedia_activities_search`
@@ -2280,6 +2824,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Facebook page details. Fetches public data about a Facebook Page given its page ID, vanity name, or full page URL: name, follower/like counts, intro, category, business hours/price range, review count, and any public contact details (email, phone, address, website, WhatsApp number) exposed on the Page's About tab.
 - **Params:** `page` (string, **required**) — Facebook Page reference: vanity name, handle, profile.php id, or full Facebook URL
 
+## Fashion Nova (11)
+
+### `fashionnova_collection_products`
+
+- **HTTP:** `GET /fashionnova/collections/{handle}/products`
+- **What:** List Fashion Nova collection products. Returns normalized products from one Fashion Nova (https://www.fashionnova.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `fashionnova_collections`
+
+- **HTTP:** `GET /fashionnova/collections`
+- **What:** List Fashion Nova collections. Returns normalized collections from Fashion Nova (https://www.fashionnova.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `fashionnova_page`
+
+- **HTTP:** `GET /fashionnova/pages/{handle}`
+- **What:** Get a Fashion Nova static page. Returns normalized static page detail for one Fashion Nova (https://www.fashionnova.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `fashionnova_pages`
+
+- **HTTP:** `GET /fashionnova/pages`
+- **What:** List Fashion Nova static pages. Returns normalized static pages from Fashion Nova (https://www.fashionnova.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `fashionnova_product`
+
+- **HTTP:** `GET /fashionnova/products/{handle}`
+- **What:** Get a Fashion Nova product. Returns normalized product detail for one Fashion Nova (https://www.fashionnova.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `fashionnova_product_recommendations`
+
+- **HTTP:** `GET /fashionnova/products/{handle}/recommendations`
+- **What:** List Fashion Nova product recommendations. Returns normalized recommended products for one Fashion Nova (https://www.fashionnova.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `fashionnova_products`
+
+- **HTTP:** `GET /fashionnova/products`
+- **What:** List Fashion Nova products. Returns normalized products from Fashion Nova's (https://www.fashionnova.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `fashionnova_search_suggest`
+
+- **HTTP:** `GET /fashionnova/search/suggest`
+- **What:** Get Fashion Nova search suggestions. Returns products, collections, and query suggestions from Fashion Nova's (https://www.fashionnova.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `fashionnova_sitemap_urls`
+
+- **HTTP:** `GET /fashionnova/sitemap/urls`
+- **What:** List Fashion Nova sitemap URLs. Returns capped URL entries from Fashion Nova's (https://www.fashionnova.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `fashionnova_sitemaps`
+
+- **HTTP:** `GET /fashionnova/sitemaps`
+- **What:** List Fashion Nova sitemaps. Returns child sitemap URLs from Fashion Nova's (https://www.fashionnova.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `fashionnova_store`
+
+- **HTTP:** `GET /fashionnova/store`
+- **What:** Get Fashion Nova store metadata. Returns normalized storefront metadata for Fashion Nova (https://www.fashionnova.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
+
 ## Fiverr (3)
 
 ### `fiverr_gig`
@@ -2299,6 +2911,80 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /fiverr/seller/{username}`
 - **What:** Get Fiverr seller profile. Returns a normalized Fiverr seller profile: display name, one-liner title, description, country, seller level, verification status, hourly rate, spoken languages, join date, and the seller's gig ids. Public data sourced from Fiverr's own server-rendered seller profile pages via a real browser-rendering backend.
 - **Params:** `username` (string, **required**) — Fiverr seller username, e.g. from a search result's seller_username field
+
+## GDELT (12)
+
+### `gdelt_context`
+
+- **HTTP:** `GET /gdelt/context`
+- **What:** Sentence-level co-occurrence search across recent GDELT coverage. Search recent (last 72 hours) GDELT-monitored news for.
+- **Params:** `domain` (string, optional) — Convenience domain filter, appended to the query as domain:VALUE.; `from` (string, optional) — Start of an absolute time window. Accepts YYYY-MM-DD, RFC3339, or GDELT's raw YYYYMMDDHHMMSS. Cannot be combined with timespan; GDELT caps this endpoint's window at 72 hours.; `is_quote` (boolean, optional) — Only return sentences GDELT identified as a quotation.; `language` (string, optional) — Source-language filter (GDELT's searchlang parameter). Space-segmented languages only (excludes CJK and similar).; `maxrecords` (integer, optional) — Rows to return. GDELT's own hard cap is 200 for this endpoint (lower than gdelt-search's 250); there is no pagination cursor beyond it.; `query` (string, **required**) — GDELT query string. All terms must co-occur in the same sentence. Supports quoted phrases, (a OR b), domain:example.com.; `sort` (string, optional) — Result order.; `timespan` (string, optional) — Relative time window ending now, e.g. 30min, 6h, 3d. Cannot be combined with from/to. GDELT caps this endpoint's window at 72 hours.; `to` (string, optional) — End of an absolute time window. Same formats as from.
+
+### `gdelt_search`
+
+- **HTTP:** `GET /gdelt/search`
+- **What:** Search global news coverage indexed by GDELT. Search the GDELT Project's continuously updated global news.
+- **Params:** `country` (string, optional) — Convenience source-country filter, appended to the query as sourcecountry:VALUE. Accepts a GDELT-recognized country name (no spaces) or 2-letter FIPS code.; `domain` (string, optional) — Convenience domain filter, appended to the query as domain:VALUE.; `from` (string, optional) — Start of an absolute time window. Accepts YYYY-MM-DD, RFC3339, or GDELT's raw YYYYMMDDHHMMSS. Cannot be combined with timespan; GDELT only indexes roughly the last 3 months.; `language` (string, optional) — Convenience source-language filter, appended to the query as sourcelang:VALUE. Accepts a GDELT-recognized language name or 3-letter code.; `maxrecords` (integer, optional) — Rows to return. GDELT's own hard cap is 250; there is no pagination cursor beyond it.; `query` (string, **required**) — GDELT query string. Supports GDELT's own search operators: quoted phrases, (a OR b), theme:NAME, tone<N / tone>N, near20:\; `sort` (string, optional) — Result order.; `timespan` (string, optional) — Relative time window ending now, e.g. 1h, 2d, 1w, 3m. Cannot be combined with from/to.; `to` (string, optional) — End of an absolute time window. Same formats as from.
+
+### `gdelt_timeline`
+
+- **HTTP:** `GET /gdelt/timeline`
+- **What:** Coverage volume or tone over time for a GDELT query. Return how a query's global news coverage has trended over.
+- **Params:** `country` (string, optional) — Convenience source-country filter, appended to the query as sourcecountry:VALUE.; `domain` (string, optional) — Convenience domain filter, appended to the query as domain:VALUE.; `from` (string, optional) — Start of an absolute time window. Accepts YYYY-MM-DD, RFC3339, or GDELT's raw YYYYMMDDHHMMSS. Cannot be combined with timespan.; `language` (string, optional) — Convenience source-language filter, appended to the query as sourcelang:VALUE.; `metric` (string, optional) — Timeline metric. lang and country return one series per language/country instead of one aggregate series.; `query` (string, **required**) — GDELT query string. Same syntax as gdelt-search's query.; `smooth` (integer, optional) — Moving-window smoothing applied to the timeline, in steps. 0 disables smoothing.; `timespan` (string, optional) — Relative time window ending now, e.g. 1h, 2d, 1w, 3m. Cannot be combined with from/to.; `to` (string, optional) — End of an absolute time window. Same formats as from.
+
+### `gdelt_tonechart`
+
+- **HTTP:** `GET /gdelt/tonechart`
+- **What:** Sentiment histogram for a GDELT query. Return a sentiment (tone) histogram for a query's matching.
+- **Params:** `country` (string, optional) — Convenience source-country filter, appended to the query as sourcecountry:VALUE.; `domain` (string, optional) — Convenience domain filter, appended to the query as domain:VALUE.; `from` (string, optional) — Start of an absolute time window. Accepts YYYY-MM-DD, RFC3339, or GDELT's raw YYYYMMDDHHMMSS. Cannot be combined with timespan.; `language` (string, optional) — Convenience source-language filter, appended to the query as sourcelang:VALUE.; `query` (string, **required**) — GDELT query string. Same syntax as gdelt-search's query.; `timespan` (string, optional) — Relative time window ending now, e.g. 1h, 2d, 1w, 3m. Cannot be combined with from/to.; `to` (string, optional) — End of an absolute time window. Same formats as from.
+
+### `gdelt_tv_concept_entities`
+
+- **HTTP:** `GET /gdelt/tv-concept-entities`
+- **What:** List GDELT Television 2.0 AI concept entities. Return GDELT's own catalog of Google Knowledge Graph concept.
+- **Params:** `limit` (integer, optional) — Maximum entries to return, most-frequent first.
+
+### `gdelt_tv_search`
+
+- **HTTP:** `GET /gdelt/tv-search`
+- **What:** Search US television news coverage (transcripts, captions, OCR, visual labels). Search GDELT's Television 2.0 AI index of US television news.
+- **Params:** `caption` (array, optional) — Search human-provided closed captioning (GDELT's cap: operator). Repeatable; multiple values are OR'd together.; `concept` (array, optional) — Search Google Knowledge Graph concepts extracted from captioning, by MID code (GDELT's capnlp: operator). Repeatable; multiple values are OR'd together.; `day_of_week` (integer, optional) — Limit to a day of week, 0 (Sunday) through 7 (Saturday), PST.; `exclude_caption` (array, optional) — Exclude clips whose closed captioning matches this value (GDELT's -cap: operator). Repeatable; every value must be absent.; `exclude_concept` (array, optional) — Exclude clips whose extracted concepts match this MID code (GDELT's -capnlp: operator). Repeatable; every value must be absent.; `exclude_onscreen_text` (array, optional) — Exclude clips whose OCR'd onscreen text matches this value (GDELT's -ocr: operator). Repeatable; every value must be absent.; `exclude_transcript` (array, optional) — Exclude clips whose speech-to-text transcript matches this value (GDELT's -asr: operator). Repeatable; every value must be absent.; `exclude_visual` (array, optional) — Exclude clips whose visual labels match this value (GDELT's -visual: operator). Repeatable; every value must be absent.; `from` (string, optional) — Start of an absolute time window. Accepts YYYY-MM-DD, RFC3339, or GDELT's raw YYYYMMDDHHMMSS. Cannot be combined with timespan.; `maxrecords` (integer, optional) — Rows to return. GDELT's own hard cap is 3000 for this endpoint; there is no pagination cursor beyond it.; `onscreen_text` (array, optional) — Search OCR'd onscreen text/chyrons (GDELT's ocr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `show` (string, optional) — Limit to an exact show name.; `sort` (string, optional) — Result order.; `station` (string, **required**) — Station to search.; `timespan` (string, optional) — Relative time window ending now, e.g. 1h, 7d, 3m, 1y. Cannot be combined with from/to. GDELT's TV archive starts July 6, 2010.; `to` (string, optional) — End of an absolute time window. Same formats as from.; `transcript` (array, optional) — Search machine-generated speech-to-text transcripts (GDELT's asr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `visual` (array, optional) — Search visual object/activity labels from computer vision (GDELT's visual: operator). Repeatable; multiple values are OR'd together.
+
+### `gdelt_tv_showchart`
+
+- **HTTP:** `GET /gdelt/tv-showchart`
+- **What:** Top US television shows by coverage share for a query. Return the top shows by result percentage for a query.
+- **Params:** `caption` (array, optional) — Search human-provided closed captioning (GDELT's cap: operator). Repeatable; multiple values are OR'd together.; `concept` (array, optional) — Search Google Knowledge Graph concepts extracted from captioning, by MID code (GDELT's capnlp: operator). Repeatable; multiple values are OR'd together.; `exclude_caption` (array, optional) — Exclude clips whose closed captioning matches this value (GDELT's -cap: operator). Repeatable; every value must be absent.; `exclude_concept` (array, optional) — Exclude clips whose extracted concepts match this MID code (GDELT's -capnlp: operator). Repeatable; every value must be absent.; `exclude_onscreen_text` (array, optional) — Exclude clips whose OCR'd onscreen text matches this value (GDELT's -ocr: operator). Repeatable; every value must be absent.; `exclude_transcript` (array, optional) — Exclude clips whose speech-to-text transcript matches this value (GDELT's -asr: operator). Repeatable; every value must be absent.; `exclude_visual` (array, optional) — Exclude clips whose visual labels match this value (GDELT's -visual: operator). Repeatable; every value must be absent.; `from` (string, optional) — Start of an absolute time window. Accepts YYYY-MM-DD, RFC3339, or GDELT's raw YYYYMMDDHHMMSS. Cannot be combined with timespan.; `onscreen_text` (array, optional) — Search OCR'd onscreen text/chyrons (GDELT's ocr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `show` (string, optional) — Limit to an exact show name.; `station` (array, **required**) — Required, repeatable. One or more stations, OR'd together.; `timespan` (string, optional) — Relative time window ending now, e.g. 1h, 7d, 3m, 1y. Cannot be combined with from/to. Omit both for GDELT's full archive (auto-resolution, back to July 6, 2010).; `to` (string, optional) — End of an absolute time window. Same formats as from.; `transcript` (array, optional) — Search machine-generated speech-to-text transcripts (GDELT's asr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `visual` (array, optional) — Search visual object/activity labels from computer vision (GDELT's visual: operator). Repeatable; multiple values are OR'd together.
+
+### `gdelt_tv_stationchart`
+
+- **HTTP:** `GET /gdelt/tv-stationchart`
+- **What:** Compare US television news coverage across stations. Return a result-count comparison across the requested.
+- **Params:** `caption` (array, optional) — Search human-provided closed captioning (GDELT's cap: operator). Repeatable; multiple values are OR'd together.; `concept` (array, optional) — Search Google Knowledge Graph concepts extracted from captioning, by MID code (GDELT's capnlp: operator). Repeatable; multiple values are OR'd together.; `exclude_caption` (array, optional) — Exclude clips whose closed captioning matches this value (GDELT's -cap: operator). Repeatable; every value must be absent.; `exclude_concept` (array, optional) — Exclude clips whose extracted concepts match this MID code (GDELT's -capnlp: operator). Repeatable; every value must be absent.; `exclude_onscreen_text` (array, optional) — Exclude clips whose OCR'd onscreen text matches this value (GDELT's -ocr: operator). Repeatable; every value must be absent.; `exclude_transcript` (array, optional) — Exclude clips whose speech-to-text transcript matches this value (GDELT's -asr: operator). Repeatable; every value must be absent.; `exclude_visual` (array, optional) — Exclude clips whose visual labels match this value (GDELT's -visual: operator). Repeatable; every value must be absent.; `from` (string, optional) — Start of an absolute time window. Accepts YYYY-MM-DD, RFC3339, or GDELT's raw YYYYMMDDHHMMSS. Cannot be combined with timespan.; `onscreen_text` (array, optional) — Search OCR'd onscreen text/chyrons (GDELT's ocr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `show` (string, optional) — Limit to an exact show name.; `station` (array, **required**) — Required, repeatable. One or more stations, OR'd together.; `timespan` (string, optional) — Relative time window ending now, e.g. 1h, 7d, 3m, 1y. Cannot be combined with from/to. Omit both for GDELT's full archive (auto-resolution, back to July 6, 2010).; `to` (string, optional) — End of an absolute time window. Same formats as from.; `transcript` (array, optional) — Search machine-generated speech-to-text transcripts (GDELT's asr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `visual` (array, optional) — Search visual object/activity labels from computer vision (GDELT's visual: operator). Repeatable; multiple values are OR'd together.
+
+### `gdelt_tv_stationdetails`
+
+- **HTTP:** `GET /gdelt/tv-stationdetails`
+- **What:** List GDELT Television 2.0 AI stations. Return GDELT's own current list of Television 2.0 AI.
+- **Params:** _none_
+
+### `gdelt_tv_timeline`
+
+- **HTTP:** `GET /gdelt/tv-timeline`
+- **What:** Airtime volume over time for US television news coverage. Return how much airtime a query's matching US television.
+- **Params:** `caption` (array, optional) — Search human-provided closed captioning (GDELT's cap: operator). Repeatable; multiple values are OR'd together.; `concept` (array, optional) — Search Google Knowledge Graph concepts extracted from captioning, by MID code (GDELT's capnlp: operator). Repeatable; multiple values are OR'd together.; `exclude_caption` (array, optional) — Exclude clips whose closed captioning matches this value (GDELT's -cap: operator). Repeatable; every value must be absent.; `exclude_concept` (array, optional) — Exclude clips whose extracted concepts match this MID code (GDELT's -capnlp: operator). Repeatable; every value must be absent.; `exclude_onscreen_text` (array, optional) — Exclude clips whose OCR'd onscreen text matches this value (GDELT's -ocr: operator). Repeatable; every value must be absent.; `exclude_transcript` (array, optional) — Exclude clips whose speech-to-text transcript matches this value (GDELT's -asr: operator). Repeatable; every value must be absent.; `exclude_visual` (array, optional) — Exclude clips whose visual labels match this value (GDELT's -visual: operator). Repeatable; every value must be absent.; `from` (string, optional) — Start of an absolute time window. Accepts YYYY-MM-DD, RFC3339, or GDELT's raw YYYYMMDDHHMMSS. Cannot be combined with timespan.; `onscreen_text` (array, optional) — Search OCR'd onscreen text/chyrons (GDELT's ocr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `show` (string, optional) — Limit to an exact show name.; `station` (string, **required**) — Station to search.; `timespan` (string, optional) — Relative time window ending now, e.g. 1h, 7d, 3m, 1y. Cannot be combined with from/to. Omit both for GDELT's full archive (auto-resolution, back to July 6, 2010).; `to` (string, optional) — End of an absolute time window. Same formats as from.; `transcript` (array, optional) — Search machine-generated speech-to-text transcripts (GDELT's asr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `visual` (array, optional) — Search visual object/activity labels from computer vision (GDELT's visual: operator). Repeatable; multiple values are OR'd together.
+
+### `gdelt_tv_visual_entities`
+
+- **HTTP:** `GET /gdelt/tv-visual-entities`
+- **What:** List GDELT Television 2.0 AI visual entities. Return GDELT's own catalog of computer-vision object/activity.
+- **Params:** `limit` (integer, optional) — Maximum entries to return, most-frequent first.
+
+### `gdelt_tv_wordcloud`
+
+- **HTTP:** `GET /gdelt/tv-wordcloud`
+- **What:** Word cloud for US television news coverage. Return a frequency-ranked word/label cloud for one match.
+- **Params:** `caption` (array, optional) — Search human-provided closed captioning (GDELT's cap: operator). Repeatable; multiple values are OR'd together.; `channel` (string, **required**) — Required. Which match channel to build a word cloud from.; `concept` (array, optional) — Search Google Knowledge Graph concepts extracted from captioning, by MID code (GDELT's capnlp: operator). Repeatable; multiple values are OR'd together.; `day_of_week` (string, optional) — Limit to a day of week, 0 (Sunday) through 7 (Saturday), PST.; `exclude_caption` (array, optional) — Exclude clips whose closed captioning matches this value (GDELT's -cap: operator). Repeatable; every value must be absent.; `exclude_concept` (array, optional) — Exclude clips whose extracted concepts match this MID code (GDELT's -capnlp: operator). Repeatable; every value must be absent.; `exclude_onscreen_text` (array, optional) — Exclude clips whose OCR'd onscreen text matches this value (GDELT's -ocr: operator). Repeatable; every value must be absent.; `exclude_transcript` (array, optional) — Exclude clips whose speech-to-text transcript matches this value (GDELT's -asr: operator). Repeatable; every value must be absent.; `exclude_visual` (array, optional) — Exclude clips whose visual labels match this value (GDELT's -visual: operator). Repeatable; every value must be absent.; `from` (string, optional) — Start of an absolute time window. Accepts YYYY-MM-DD, RFC3339, or GDELT's raw YYYYMMDDHHMMSS. Cannot be combined with timespan.; `onscreen_text` (array, optional) — Search OCR'd onscreen text/chyrons (GDELT's ocr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `show` (string, optional) — Limit to an exact show name.; `station` (string, **required**) — Required. Station to search.; `timespan` (string, optional) — Relative time window ending now, e.g. 1h, 7d, 3m, 1y. Cannot be combined with from/to. GDELT's TV archive starts July 6, 2010.; `to` (string, optional) — End of an absolute time window. Same formats as from.; `transcript` (array, optional) — Search machine-generated speech-to-text transcripts (GDELT's asr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `visual` (array, optional) — Search visual object/activity labels from computer vision (GDELT's visual: operator). Repeatable; multiple values are OR'd together.
 
 ## Geocoding (3)
 
@@ -2848,6 +3534,68 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve Google Play query suggestions. Returns up to 10 suggestions for a search term.
 - **Params:** `country` (string, optional) — Two-letter country code; `lang` (string, optional) — Two-letter language code; `term` (string, **required**) — Search term prefix
 
+## Gymshark (10)
+
+### `gymshark_collection_products`
+
+- **HTTP:** `GET /gymshark/collections/{handle}/products`
+- **What:** List Gymshark collection products. Returns normalized products from one Gymshark (https://row.gymshark.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `gymshark_collections`
+
+- **HTTP:** `GET /gymshark/collections`
+- **What:** List Gymshark collections. Returns normalized collections from Gymshark (https://row.gymshark.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `gymshark_page`
+
+- **HTTP:** `GET /gymshark/pages/{handle}`
+- **What:** Get a Gymshark static page. Returns normalized static page detail for one Gymshark (https://row.gymshark.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `gymshark_pages`
+
+- **HTTP:** `GET /gymshark/pages`
+- **What:** List Gymshark static pages. Returns normalized static pages from Gymshark (https://row.gymshark.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `gymshark_product`
+
+- **HTTP:** `GET /gymshark/products/{handle}`
+- **What:** Get a Gymshark product. Returns normalized product detail for one Gymshark (https://row.gymshark.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `gymshark_product_recommendations`
+
+- **HTTP:** `GET /gymshark/products/{handle}/recommendations`
+- **What:** List Gymshark product recommendations. Returns normalized recommended products for one Gymshark (https://row.gymshark.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `gymshark_products`
+
+- **HTTP:** `GET /gymshark/products`
+- **What:** List Gymshark products. Returns normalized products from Gymshark's (https://row.gymshark.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `gymshark_sitemap_urls`
+
+- **HTTP:** `GET /gymshark/sitemap/urls`
+- **What:** List Gymshark sitemap URLs. Returns capped URL entries from Gymshark's (https://row.gymshark.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `gymshark_sitemaps`
+
+- **HTTP:** `GET /gymshark/sitemaps`
+- **What:** List Gymshark sitemaps. Returns child sitemap URLs from Gymshark's (https://row.gymshark.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `gymshark_store`
+
+- **HTTP:** `GET /gymshark/store`
+- **What:** Get Gymshark store metadata. Returns normalized storefront metadata for Gymshark (https://row.gymshark.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
+
 ## H&M (7)
 
 ### `hm_categories`
@@ -2892,7 +3640,95 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Find nearby H&M physical stores. Returns H&M physical retail store locations near a point: name, phone, full address, and coordinates. Either search, or both lat and lng, is required. search is a free-text zip code or place name that is first resolved to coordinates; if it does not resolve to any location, a well-formed empty result is returned rather than an error. lat and lng, when given directly, skip that resolution step. radius_meters is optional (1000 to 50000, defaults to 10000). A location with no stores within the radius returns a well-formed empty result rather than an error.
 - **Params:** `lat` (number, optional) — Latitude, requires lng; `lng` (number, optional) — Longitude, requires lat; `radius_meters` (integer, optional) — Search radius in meters, 1000 to 50000, defaults to 10000; `search` (string, optional) — Free-text zip code or place name to resolve to coordinates
 
-## IMDb (20)
+## Home Depot (5)
+
+### `homedepot_categories`
+
+- **HTTP:** `GET /homedepot/categories`
+- **What:** Home Depot department taxonomy. Returns Home Depot's top-level department taxonomy (name, path, url) from the homepage's own "All Departments" navigation. Each department's path is directly usable as GET /homedepot/category's path parameter.
+- **Params:** _none_
+
+### `homedepot_category`
+
+- **HTTP:** `GET /homedepot/category`
+- **What:** Browse a Home Depot category or brand page. Returns one Home Depot category or brand browse page's product grid (page 1 only): normalized products with title, image, model, current/original price, and rating/review count, plus the category's total result count. path is the segment of a /b/ URL after "/b/", e.g. "Tools-Power-Tools-Drills-Impact-Drivers/N-5yc1vZc29x"; a full https://www.homedepot.com/b/... URL or a "/b/..." path is also accepted. An unrecognized or blocked path returns an upstream error rather than an empty result.
+- **Params:** `path` (string, **required**) — Home Depot category/brand browse path, e.g. \
+
+### `homedepot_product`
+
+- **HTTP:** `GET /homedepot/product/{id}`
+- **What:** Home Depot product detail. Returns one Home Depot product's full detail: name, description, brand, model, store SKU, GTIN, price, images, aggregate rating and review count, and the featured customer reviews embedded on the product page. id is the numeric product/internet id (the trailing number of a /p/{slug}/{id} URL). The product page does not distinguish an unknown id from a known one in a consistent way, so an unrecognized id may return an upstream error rather than a not-found.
+- **Params:** `id` (string, **required**) — Home Depot product/internet id, e.g. 320326875
+
+### `homedepot_product_questions`
+
+- **HTTP:** `GET /homedepot/product/{id}/questions`
+- **What:** Home Depot product questions and answers. Returns the first page (8 questions) of a Home Depot product's customer questions and answers, plus the product's total Q&A count. id is the numeric product/internet id. A product with no Q&A returns a genuine zero-result response rather than an error.
+- **Params:** `id` (string, **required**) — Home Depot product/internet id, e.g. 328425526
+
+### `homedepot_search`
+
+- **HTTP:** `GET /homedepot/search`
+- **What:** Home Depot keyword search. Returns one page (up to 24 products) of a Home Depot keyword search's product listing: normalized products with title, image, model, current/original price, and rating/review count, plus the search's total result count. q is free-text search keywords, e.g. "impact driver". page is a 1-indexed page number (default 1). An unrecognized/blocked query returns an upstream error rather than an empty result.
+- **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `q` (string, **required**) — Free-text search keywords, e.g. \
+
+## IKEA (8)
+
+### `ikea_availability`
+
+- **HTTP:** `GET /ikea/availability`
+- **What:** Get an IKEA item's real-time stock availability. Returns one IKEA item's real-time home-delivery and click-and-collect stock signal for the requested country. item_no is IKEA's own item number.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `item_no` (string, **required**) — IKEA item number
+
+### `ikea_category`
+
+- **HTTP:** `GET /ikea/category`
+- **What:** Browse an IKEA category. Returns one page of an IKEA category's product listing, with real offset/size pagination and sort. category is IKEA's own category key (e.g. 20649), taken from a category URL's trailing -{key}/ segment or a product's own category_path field.
+- **Params:** `category` (string, **required**) — IKEA category key; `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code; `offset` (integer, optional) — Zero-based result offset; `size` (integer, optional) — Result count (1-100); `sort` (string, optional) — Result order
+
+### `ikea_product`
+
+- **HTTP:** `GET /ikea/product`
+- **What:** Get an IKEA product's detail. Returns one IKEA item's full normalized detail: name, price, rating, every product image, quick facts, and category breadcrumb path. item_no is IKEA's own item number (8 digits, optionally prefixed with "s" for a combination/set article), taken from a search result's item_no field or an ikea.com product page's own URL.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `item_no` (string, **required**) — IKEA item number; `language` (string, optional) — Lowercase 2-letter IKEA site language code
+
+### `ikea_reviews`
+
+- **HTTP:** `GET /ikea/reviews`
+- **What:** Get an IKEA item's highlighted customer reviews. Returns one IKEA item's own highlighted customer reviews (title, rating, text, author) plus its aggregate rating, sourced from the product page's own curated reviews carousel. This is a small, representative set of reviews (a handful per item), not the full paginated review list.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `item_no` (string, **required**) — IKEA item number; `language` (string, optional) — Lowercase 2-letter IKEA site language code
+
+### `ikea_search`
+
+- **HTTP:** `GET /ikea/search`
+- **What:** Search IKEA products. Searches IKEA products and returns normalized name, price, rating, images, colors, and variant data. q is a free-text query; an IKEA item number also resolves as its own single result. country and language select IKEA's per-country site (default us/en). A zero total with an empty products list is a valid no-results response.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code; `q` (string, **required**) — Free-text product search query; `size` (integer, optional) — Result count (1-100)
+
+### `ikea_store`
+
+- **HTTP:** `GET /ikea/store`
+- **What:** Get an IKEA store's detail. Returns one IKEA physical location's full detail: address, geo coordinates, opening hours, and price range. slug is IKEA's own store URL slug, taken from an ikea_stores result's own slug field. Geo, hours, and price range are only present for full/small stores; order points and pick-up-only points return address only.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code; `slug` (string, **required**) — IKEA store URL slug
+
+### `ikea_stores`
+
+- **HTTP:** `GET /ikea/stores`
+- **What:** List IKEA physical store locations. Returns IKEA's own directory of physical locations for the requested country: name, URL slug, region grouping, and location type (Store, Small store, Plan & order point with pick-up, etc). Each slug is usable directly as ikea_store's own slug input.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code
+
+### `ikea_suggest`
+
+- **HTTP:** `GET /ikea/suggest`
+- **What:** Get IKEA search-box typeahead suggestions. Returns IKEA's own search-box typeahead result for a partial or full query: suggested query completions with their own match counts, plus a small number of top matching products. A query with no matches returns a clean empty response.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code; `q` (string, **required**) — Partial or full search term; `size` (integer, optional) — Top-product count (1-20)
+
+## IMDb (23)
+
+### `imdb_charts`
+
+- **HTTP:** `GET /imdb/charts`
+- **What:** IMDb title charts. Returns normalized rows from public IMDb title charts. Chart values: `top_rated_movies`, `top_rated_tv_shows`, `most_popular_movies`, `most_popular_tv_shows`, `top_rated_english_movies`, `lowest_rated_movies`.
+- **Params:** `chart` (string, optional) — IMDb chart; `limit` (integer, optional) — Rows to return, default 25, max 250
 
 ### `imdb_name`
 
@@ -2990,6 +3826,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** IMDb title quotes. Returns normalized public IMDb quote rows for a title. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
+### `imdb_title_ratings`
+
+- **HTTP:** `GET /imdb/title/ratings`
+- **What:** IMDb title ratings breakdown. Returns IMDb's aggregate rating, vote count, ten rating buckets, and country rating summaries. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute IMDb title URL
+
 ### `imdb_title_release_info`
 
 - **HTTP:** `GET /imdb/title/release-info`
@@ -3001,6 +3843,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /imdb/title/reviews`
 - **What:** IMDb title user reviews. Returns normalized public IMDb user review rows. Limit defaults to 10 and clamps to 20. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `limit` (integer, optional) — Rows to return, default 10, max 20; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
+
+### `imdb_title_similar`
+
+- **HTTP:** `GET /imdb/title/similar`
+- **What:** IMDb similar titles. Returns normalized titles from IMDb's public More like this recommendations. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute IMDb title URL
 
 ### `imdb_title_technical_specs`
 
@@ -3105,6 +3953,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /instagram/reels/{id}`
 - **What:** Retrieve Instagram Reels for a user. Returns a feed of Instagram Reels for the specified user ID. Supports pagination via `max_id`.
 - **Params:** `id` (string, **required**) — Numeric Instagram user ID (not a username); `max_id` (string, optional) — Pagination cursor for fetching the next page of Reels
+
+## J.Crew (8)
+
+### `jcrew_categories`
+
+- **HTTP:** `GET /jcrew/categories`
+- **What:** List J.Crew or J.Crew Factory categories. Lists every category and subcategory from the storefront's own header navigation, flattened into department/section/category triples -- resolves the category-discovery gap jcrew-category's own category parameter otherwise leaves as "find one from a storefront URL". Each entry's category value is exactly what jcrew-category's own category parameter accepts. Filter to one department with department (e.g. women, men); omit for every department. Departments vary slightly by site (jcrew.com has an extra "home" department factory.jcrew.com doesn't) -- see the response's own departments field for the live list.
+- **Params:** `department` (string, optional) — Department to filter to, e.g. women, men, boys, girls, accessories, shoes, home (jcrew only) -- omit for every department; `site` (string, optional) — Storefront to list
+
+### `jcrew_category`
+
+- **HTTP:** `GET /jcrew/category`
+- **What:** Browse a J.Crew or J.Crew Factory category. Returns one page (up to 60 products) of a category/browse listing for a category path. category is the slash-separated path segment after the storefront's own /plp/ (e.g. womens/categories/clothing/sweaters) -- use jcrew-categories to discover every valid value instead of guessing from storefront URLs. site selects the storefront (default jcrew). page selects the SFCC-native page (default 1); result_count reports the upstream's true total regardless of page size. A hub-level (non-leaf) category path returns a well-formed empty result rather than an error.
+- **Params:** `category` (string, **required**) — Slash-separated category path -- see jcrew-categories; `page` (integer, optional) — One-based page; `site` (string, optional) — Storefront to browse
+
+### `jcrew_product`
+
+- **HTTP:** `GET /jcrew/product`
+- **What:** Get a J.Crew or J.Crew Factory product. Returns full product detail for one style: name, brand, description, category, list price, aggregate rating, every purchasable color, and every color+size combination as a separate priced/stocked SKU. pid is a style id (e.g. CX415), as returned by jcrew-search's products[].id field. site must match the storefront the pid belongs to (default jcrew). A single call covers every color and size of the style -- no per-color lookup needed.
+- **Params:** `pid` (string, **required**) — Style id, from a search result's id field; `site` (string, optional) — Storefront the pid belongs to
+
+### `jcrew_product_reviews`
+
+- **HTTP:** `GET /jcrew/product/reviews`
+- **What:** Get reviews for a J.Crew or J.Crew Factory product. Returns one page of a product's customer reviews (author, location, date, rating, headline, body, and verified-purchase flag), plus the product's overall rating summary (average rating, rating count, per-star histogram, and recommended ratio). pid is a style id (e.g. CX415), as returned by jcrew-search's products[].id field. site must match the storefront the pid belongs to (default jcrew). A product with no reviews yet, or a well-formed but unrecognized pid, returns a well-formed empty result, not an error.
+- **Params:** `page` (integer, optional) — One-based page, 10 reviews per page; `pid` (string, **required**) — Style id, from a search result's id field; `site` (string, optional) — Storefront the pid belongs to
+
+### `jcrew_search`
+
+- **HTTP:** `GET /jcrew/search`
+- **What:** Search J.Crew or J.Crew Factory products. Searches the product catalog for either storefront (select with site, default jcrew). Returns normalized product summaries with USD pricing, gender, and a description, plus the search index's own facets (gender, fabric, category, size, color, price range, and others) with live per-option counts. sort selects relevance (default), price_asc, or price_desc. filter narrows results by one or more facet name:value pairs (comma-separated, e.g. productGender:Men,styleFabric:Cashmere) taken from a prior response's own facets[].name/facets[].options[].value fields -- not curated against a fixed list, since the facet set is large and can change. This is best-effort relevance, not a guaranteed keyword match: for an obscure alphanumeric keyword the upstream search index falls back to its own semantically-related results instead of an empty list, and there is no reliable field in the response to distinguish a true keyword match from that fallback.
+- **Params:** `filter` (string, optional) — Comma-separated facet name:value pairs, e.g. productGender:Men,styleFabric:Cashmere; `keyword` (string, **required**) — Search keyword; `page` (integer, optional) — One-based page; `per_page` (integer, optional) — Results per page; `site` (string, optional) — Storefront to search; `sort` (string, optional) — Sort order
+
+### `jcrew_size_chart`
+
+- **HTTP:** `GET /jcrew/size-chart`
+- **What:** Get the size chart for a J.Crew or J.Crew Factory product. Returns real body measurements per size (chest, waist, hip, sleeve, length, or a subset depending on the style/category), in both inches and centimeters. pid is a style id, as returned by jcrew-search's products[].id field. site must match the storefront the pid belongs to (default jcrew). A measurement value of 0 means that column doesn't apply to this style (e.g. hip on a top) -- the upstream itself doesn't distinguish that from a genuine zero, so this endpoint passes it through as-is.
+- **Params:** `pid` (string, **required**) — Style id, from a search result's id field; `site` (string, optional) — Storefront the pid belongs to
+
+### `jcrew_stores`
+
+- **HTTP:** `GET /jcrew/stores`
+- **What:** Find J.Crew or J.Crew Factory store locations. Returns one storefront's full open-store directory (address, phone, coordinates, services, weekly hours). site selects the storefront and accepts jcrew or factory; defaults to jcrew. Give lat and lng together to sort by distance from that point (each store's distance_miles is then populated); omit both for the upstream's own order.
+- **Params:** `lat` (number, optional) — Latitude to sort distance from (must be given together with lng); `lng` (number, optional) — Longitude to sort distance from (must be given together with lat); `site` (string, optional) — Storefront whose stores to return
+
+### `jcrew_suggest`
+
+- **HTTP:** `GET /jcrew/suggest`
+- **What:** Get J.Crew or J.Crew Factory search-box suggestions. Returns the storefront's own search-box suggestions (typeahead) for a partial query -- a flat list of suggested search phrases, each with its own live total result count on the search index. Select the storefront with site (default jcrew). Not product data.
+- **Params:** `query` (string, **required**) — Partial search query; `site` (string, optional) — Storefront to search
 
 ## Jobs (28)
 
@@ -3532,6 +4430,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Kalshi trades. Returns normalized recent Kalshi market trades from credential-free public market-data JSON.
 - **Params:** `cursor` (string, optional) — Pagination cursor from a previous Kalshi response; `limit` (integer, optional) — Rows to return, default 25, max 200; `max_ts` (integer, optional) — Maximum created Unix timestamp in seconds; `min_ts` (integer, optional) — Minimum created Unix timestamp in seconds; `ticker` (string, optional) — Kalshi market ticker filter
 
+## Kickstarter (4)
+
+### `kickstarter_comments`
+
+- **HTTP:** `GET /kickstarter/comments`
+- **What:** Get a Kickstarter campaign's comments. Returns the first page of one Kickstarter campaign's comments feed (Kickstarter's own server-rendered initial batch, typically 40-60 comments; total_count reports the feed's real total). Each comment includes the author, whether the author is the creator (a reply), the posted timestamp, and the comment text. creator and slug are the two path segments of the project URL, e.g. lookingglass and musubi for kickstarter.com/projects/lookingglass/musubi.
+- **Params:** `creator` (string, **required**) — Creator path segment of the project URL; `slug` (string, **required**) — Project slug path segment of the project URL
+
+### `kickstarter_discover`
+
+- **HTTP:** `GET /kickstarter/discover`
+- **What:** Browse or search Kickstarter's Discover surface. Returns one page of Kickstarter's own Discover results -- browse by category id and/or a free-text search term, sorted by magic/popularity/newest/end_date/most_funded, optionally filtered by campaign state and/or restricted to staff picks. Each result includes the campaign's funding snapshot (goal, pledged, percent funded, backers), category, location, creator, and cover photo.
+- **Params:** `category_id` (integer, optional) — Kickstarter's own numeric category id (top-level or sub-category), e.g. 16 for Technology; `page` (integer, optional) — 1-based page number; `sort` (string, optional) — Result order; `staff_pick_only` (boolean, optional) — Restrict results to Kickstarter's own \; `state` (array, optional) — Repeatable campaign state filter; `term` (string, optional) — Free-text search query
+
+### `kickstarter_project`
+
+- **HTTP:** `GET /kickstarter/project`
+- **What:** Get a Kickstarter campaign's detail. Returns one Kickstarter campaign's detail: funding snapshot (goal, pledged, percent funded, backers, state, dates), category, creator, cover photo, story text, risks & challenges, update/comment/FAQ counts, and reward/pledge tiers. creator and slug are the two path segments of the project URL, e.g. lookingglass and musubi for kickstarter.com/projects/lookingglass/musubi. Reward tiers are best-effort -- see the endpoint's documentation for when they may be omitted.
+- **Params:** `creator` (string, **required**) — Creator path segment of the project URL; `slug` (string, **required**) — Project slug path segment of the project URL
+
+### `kickstarter_updates`
+
+- **HTTP:** `GET /kickstarter/updates`
+- **What:** Get a Kickstarter campaign's updates feed. Returns one Kickstarter campaign's full updates feed: for each update, its number, title, author, whether the author is the creator, publish date, body text, and comment count. creator and slug are the two path segments of the project URL, e.g. lookingglass and musubi for kickstarter.com/projects/lookingglass/musubi.
+- **Params:** `creator` (string, **required**) — Creator path segment of the project URL; `slug` (string, **required**) — Project slug path segment of the project URL
+
 ## Kohl's (4)
 
 ### `kohls_category`
@@ -3557,6 +4481,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /kohls/suggest`
 - **What:** Kohl's search-box typeahead suggestions. Returns Kohl's own search-box typeahead result for a partial query: a flat list of suggested search phrases (no product data). A nonsense query returns a genuine, well-formed empty list rather than an error.
 - **Params:** `query` (string, **required**) — Partial search text, e.g. \
+
+## Kylie Cosmetics (11)
+
+### `kyliecosmetics_collection_products`
+
+- **HTTP:** `GET /kyliecosmetics/collections/{handle}/products`
+- **What:** List Kylie Cosmetics collection products. Returns normalized products from one Kylie Cosmetics (https://www.kyliecosmetics.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `kyliecosmetics_collections`
+
+- **HTTP:** `GET /kyliecosmetics/collections`
+- **What:** List Kylie Cosmetics collections. Returns normalized collections from Kylie Cosmetics (https://www.kyliecosmetics.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `kyliecosmetics_page`
+
+- **HTTP:** `GET /kyliecosmetics/pages/{handle}`
+- **What:** Get a Kylie Cosmetics static page. Returns normalized static page detail for one Kylie Cosmetics (https://www.kyliecosmetics.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `kyliecosmetics_pages`
+
+- **HTTP:** `GET /kyliecosmetics/pages`
+- **What:** List Kylie Cosmetics static pages. Returns normalized static pages from Kylie Cosmetics (https://www.kyliecosmetics.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `kyliecosmetics_product`
+
+- **HTTP:** `GET /kyliecosmetics/products/{handle}`
+- **What:** Get a Kylie Cosmetics product. Returns normalized product detail for one Kylie Cosmetics (https://www.kyliecosmetics.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `kyliecosmetics_product_recommendations`
+
+- **HTTP:** `GET /kyliecosmetics/products/{handle}/recommendations`
+- **What:** List Kylie Cosmetics product recommendations. Returns normalized recommended products for one Kylie Cosmetics (https://www.kyliecosmetics.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `kyliecosmetics_products`
+
+- **HTTP:** `GET /kyliecosmetics/products`
+- **What:** List Kylie Cosmetics products. Returns normalized products from Kylie Cosmetics's (https://www.kyliecosmetics.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `kyliecosmetics_search_suggest`
+
+- **HTTP:** `GET /kyliecosmetics/search/suggest`
+- **What:** Get Kylie Cosmetics search suggestions. Returns products, collections, and query suggestions from Kylie Cosmetics's (https://www.kyliecosmetics.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `kyliecosmetics_sitemap_urls`
+
+- **HTTP:** `GET /kyliecosmetics/sitemap/urls`
+- **What:** List Kylie Cosmetics sitemap URLs. Returns capped URL entries from Kylie Cosmetics's (https://www.kyliecosmetics.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `kyliecosmetics_sitemaps`
+
+- **HTTP:** `GET /kyliecosmetics/sitemaps`
+- **What:** List Kylie Cosmetics sitemaps. Returns child sitemap URLs from Kylie Cosmetics's (https://www.kyliecosmetics.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `kyliecosmetics_store`
+
+- **HTTP:** `GET /kyliecosmetics/store`
+- **What:** Get Kylie Cosmetics store metadata. Returns normalized storefront metadata for Kylie Cosmetics (https://www.kyliecosmetics.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
 
 ## Letterboxd (8)
 
@@ -3956,7 +4948,27 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List MLB transactions. Lists signings, trades, options, assignments, injured-list moves, and other MLB transactions for a date range.
 - **Params:** `end_date` (string, **required**) — Range end in YYYY-MM-DD format; `player_id` (string, optional) — Numeric MLB player id; `start_date` (string, **required**) — Range start in YYYY-MM-DD format; `team_id` (string, optional) — Numeric MLB team id
 
-## Nike (6)
+## Monitors (3)
+
+### `monitors_checks`
+
+- **HTTP:** `GET /monitors/{id}/checks`
+- **What:** List a monitor's check history. Returns the caller's own monitor's most recent check runs (most recent first, capped at 50), including webhook delivery status per run.
+- **Params:** `id` (string, **required**) — Monitor id
+
+### `monitors_list`
+
+- **HTTP:** `GET /monitors`
+- **What:** List website-change monitors. Returns the caller's own monitors (most recently created first, capped at 100). Free to call.
+- **Params:** _none_
+
+### `monitors_update`
+
+- **HTTP:** `PATCH /monitors/{id}`
+- **What:** Update a website-change monitor. Partially updates one of the caller's own monitors. Free to call. Changing `target_type` or `sitemap` resets the stored diff baseline (fingerprint, snapshot, or URL set), so the next check establishes a fresh baseline instead of comparing against a now-meaningless prior state.
+- **Params:** `id` (string, **required**) — Monitor id; `request` (object, **required**) — Fields to update
+
+## Nike (9)
 
 ### `nike_categories`
 
@@ -3969,6 +4981,24 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /nike/product`
 - **What:** Get a Nike product. Returns normalized product-detail data for one color variant: title, description, pricing, images, every offered size, and every other available color. slug and style_color together reproduce Nike's own product page URL (nike.com/t/<slug>/<style_color>) and are both returned by nike-search's product colors[].slug and colors[].style_color fields.
 - **Params:** `slug` (string, **required**) — Product-detail URL slug, from a search result's colors[].slug field; `style_color` (string, **required**) — Style-color id, from a search result's colors[].style_color field
+
+### `nike_product_availability`
+
+- **HTTP:** `GET /nike/product/availability`
+- **What:** Get Nike product size availability. Returns per-size shipping availability for one product, sourced from the same anonymous mobile backend Nike's own app uses. group_key is the product's rollup key (from a search result's products[].group_key field). Each size carries its label, localized label, the color variant it belongs to, a GTIN, an available flag, Nike's own shipping-availability level (HIGH/LOW/MEDIUM/OOS), and the width grouping (Regular/Wide). Per-store pickup availability is not included -- this reflects online shipping availability.
+- **Params:** `group_key` (string, **required**) — Product rollup key, from a search result's products[].group_key field
+
+### `nike_product_details`
+
+- **HTTP:** `GET /nike/product/details`
+- **What:** Get full Nike product details. Returns full product-group detail for one product's rollup key, sourced from the same anonymous mobile backend Nike's own app uses: shared product copy plus every purchasable color variant (across width groupings), each with its own pricing, sizes, and images. group_key is the product's rollup key, the same value nike-search returns as a products[].group_key field. Unlike nike-product (which returns one color variant by slug/style_color), this returns every color of the product in one response.
+- **Params:** `group_key` (string, **required**) — Product rollup key, from a search result's products[].group_key field
+
+### `nike_product_recommendations`
+
+- **HTTP:** `GET /nike/product/recommendations`
+- **What:** Get Nike product recommendations. Returns Nike's own related-product ("Shop Similar") recommendations for one product, sourced from the same anonymous mobile backend Nike's own app uses. style_color is the anchor product's style-color id (from a search result's colors[].style_color field). Each recommendation carries the product's style-color, rank, title/subtitle, image, PDP URL, and current pricing. Recommendations are Nike's own ranking, not a guaranteed keyword match: an unrecognized style_color returns Nike's fallback recommendations rather than an empty list or an error.
+- **Params:** `style_color` (string, **required**) — Anchor product's style-color id, from a search result's colors[].style_color field
 
 ### `nike_product_reviews`
 
@@ -4043,6 +5073,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /numbeo/indices/rankings-by-country`
 - **What:** Get the global Numbeo country ranking for an index family. Returns the global country-level ranking for a Numbeo index family. Credential-free public Numbeo data (numbeo.com).
 - **Params:** `index` (string, **required**) — Index family
+
+## Oh Polly (11)
+
+### `ohpolly_collection_products`
+
+- **HTTP:** `GET /ohpolly/collections/{handle}/products`
+- **What:** List Oh Polly collection products. Returns normalized products from one Oh Polly (https://www.ohpolly.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `ohpolly_collections`
+
+- **HTTP:** `GET /ohpolly/collections`
+- **What:** List Oh Polly collections. Returns normalized collections from Oh Polly (https://www.ohpolly.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `ohpolly_page`
+
+- **HTTP:** `GET /ohpolly/pages/{handle}`
+- **What:** Get a Oh Polly static page. Returns normalized static page detail for one Oh Polly (https://www.ohpolly.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `ohpolly_pages`
+
+- **HTTP:** `GET /ohpolly/pages`
+- **What:** List Oh Polly static pages. Returns normalized static pages from Oh Polly (https://www.ohpolly.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `ohpolly_product`
+
+- **HTTP:** `GET /ohpolly/products/{handle}`
+- **What:** Get a Oh Polly product. Returns normalized product detail for one Oh Polly (https://www.ohpolly.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `ohpolly_product_recommendations`
+
+- **HTTP:** `GET /ohpolly/products/{handle}/recommendations`
+- **What:** List Oh Polly product recommendations. Returns normalized recommended products for one Oh Polly (https://www.ohpolly.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `ohpolly_products`
+
+- **HTTP:** `GET /ohpolly/products`
+- **What:** List Oh Polly products. Returns normalized products from Oh Polly's (https://www.ohpolly.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `ohpolly_search_suggest`
+
+- **HTTP:** `GET /ohpolly/search/suggest`
+- **What:** Get Oh Polly search suggestions. Returns products, collections, and query suggestions from Oh Polly's (https://www.ohpolly.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `ohpolly_sitemap_urls`
+
+- **HTTP:** `GET /ohpolly/sitemap/urls`
+- **What:** List Oh Polly sitemap URLs. Returns capped URL entries from Oh Polly's (https://www.ohpolly.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `ohpolly_sitemaps`
+
+- **HTTP:** `GET /ohpolly/sitemaps`
+- **What:** List Oh Polly sitemaps. Returns child sitemap URLs from Oh Polly's (https://www.ohpolly.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `ohpolly_store`
+
+- **HTTP:** `GET /ohpolly/store`
+- **What:** Get Oh Polly store metadata. Returns normalized storefront metadata for Oh Polly (https://www.ohpolly.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
 
 ## Old Navy (7)
 
@@ -4546,7 +5644,63 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search for products, users, or launches on Product Hunt. Performs a full-text Product Hunt search and returns matching products, users, or launches.
 - **Params:** `featured` (boolean, optional) — Launch search only: featured launches only; `page` (integer, optional) — Page number (1-based); `query` (string, **required**) — Search keywords; `topics` (string, optional) — Launch search only: comma-separated topic slugs; `type` (string, optional) — Result type: **product** (default), **user**, or **launch**
 
-## Reddit (11)
+## Quince (9)
+
+### `quince_categories`
+
+- **HTTP:** `GET /quince/categories`
+- **What:** List Quince's product facet taxonomy. Returns Quince's full product facet taxonomy sourced from the same Algolia index quince-search uses: every business department (Women, Men, Kids & Baby, Home, CPG, Emerging), department, category, material, primary color, and size value Quince currently has products for, each with its own live product count. The returned business_departments[].value/categories[].value/materials[].value/colors[].value/sizes[].value values are exactly what quince-search accepts as its own department/category/material/color/size parameters. sizes spans every product type Quince sells (apparel letter sizes, shoe sizes, rug/furniture dimensions, bedding sizes, and more) since it is one index-wide facet.
+- **Params:** _none_
+
+### `quince_navigation`
+
+- **HTTP:** `GET /quince/navigation`
+- **What:** Get Quince's header navigation menu. Returns Quince's full header navigation mega-menu: top-level tabs (Women, Men, Home, Baby & Kids, Travel, Bags & Accessories, Jewelry, Beauty & Wellness, Gifts, plus promotional tabs like New Arrivals/Best Sellers/$50 Cashmere), each broken into the same named subcategory groups (for example Apparel, Jewelry, Shoes) shown in Quince's own nav dropdown, with a directly browsable slug on every category and link. This is a distinct taxonomy from quince-categories' Algolia facets: navigation is Quince's own curated site structure, while quince-categories reports live per-value product counts for quince-search's own filter parameters.
+- **Params:** _none_
+
+### `quince_product`
+
+- **HTTP:** `GET /quince/product`
+- **What:** Get a Quince product. Returns normalized product-detail data for one Quince product: title, description, review summary, every selectable option (color swatches with hex codes, sizes), and every color/size variant with its own price, original ("traditional retail") price, stock status, and SKU. handle is the product's URL path on quince.com (for example women/cashmere/cashmere-crewneck-sweater), returned by quince-search's own products[].handle field.
+- **Params:** `handle` (string, **required**) — Product URL handle, from a search result's products[].handle field
+
+### `quince_product_faq`
+
+- **HTTP:** `GET /quince/product/faq`
+- **What:** Get a Quince product's FAQ content. Returns a Quince product's own question/answer content (e.g. sizing, care, fit), from the same structured product data quince-product-reviews uses. handle is the same value quince-product accepts. Not every product carries FAQ content -- a product with none returns a well-formed empty result.
+- **Params:** `handle` (string, **required**) — Product URL handle, from a search result's products[].handle field
+
+### `quince_product_reviews`
+
+- **HTTP:** `GET /quince/product/reviews`
+- **What:** Get Quince product reviews. Returns a sample of a Quince product's normalized customer reviews (author, date, rating, review body), plus the product's overall aggregate rating and review count. handle is the same value quince-product accepts. The reviews returned are the sample Quince's own page carries in its structured product data (confirmed live: 25 reviews on every product sampled during research), not a paginated feed of the full review history. A product with no reviews yet returns a well-formed empty result.
+- **Params:** `handle` (string, **required**) — Product URL handle, from a search result's products[].handle field
+
+### `quince_search`
+
+- **HTTP:** `GET /quince/search`
+- **What:** Search or browse Quince products. Searches or browses Quince's (quince.com) product catalog through its own public Algolia search index. q, department, category, material, color, size, min_price, and max_price are all optional and combine as an AND -- unlike some other families' search/category-browse split, a free-text q can be combined with any of the facet filters in the same request, or every field can be omitted to browse the full catalog by Quince's own relevance/popularity ranking. department accepts one of the values quince-categories' own business_departments[].value field returns (for example Women, Men, Kids & Baby, Home, CPG, Emerging); category, material, color, and size similarly accept values from quince-categories' own categories[].value/materials[].value/colors[].value/sizes[].value fields (or quince-navigation's own browsable category/subcategory slugs for a curated, hierarchical alternative to the flat category facet). Keyword search is Algolia's own typo-tolerant relevance ranking, not a guaranteed exact match. A query with genuinely zero matches (for example a nonsense string) returns a well-formed empty result rather than an error.
+- **Params:** `category` (string, optional) — Category facet filter, from quince-categories' own categories[].value field; `color` (string, optional) — Primary color facet filter, from quince-categories' own colors[].value field; `department` (string, optional) — Business department facet filter, from quince-categories' own business_departments[].value field; `limit` (integer, optional) — Results per page, defaults to 24, maximum 100; `material` (string, optional) — Material facet filter, from quince-categories' own materials[].value field; `max_price` (number, optional) — Maximum price (inclusive), in USD; `min_price` (number, optional) — Minimum price (inclusive), in USD; `page` (integer, optional) — One-based page number, defaults to 1; `q` (string, optional) — Free-text search query; `size` (string, optional) — Size facet filter, from quince-categories' own sizes[].value field
+
+### `quince_sitemap_urls`
+
+- **HTTP:** `GET /quince/sitemap/urls`
+- **What:** List Quince sitemap URLs. Returns capped URL entries from Quince's own sitemaps matching the requested type. Each entry's handle is populated from the URL's own path (tracking/variant query parameters stripped) -- for type products, this is directly the value quince-product's own handle parameter expects.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, subcollections, pages
+
+### `quince_sitemaps`
+
+- **HTTP:** `GET /quince/sitemaps`
+- **What:** List Quince sitemaps. Returns Quince's US-region child sitemaps (products, collections, subcollections, and static pages) with an inferred type, from quince.com's own public sitemap index.
+- **Params:** _none_
+
+### `quince_suggest`
+
+- **HTTP:** `GET /quince/suggest`
+- **What:** Get Quince search suggestions. Returns Quince's own search-box typeahead suggestions for a partial query: a flat list of suggested search phrases, no product data. Pass a suggestion straight through to quince-search's own q parameter for product results. A query with no genuine matches returns a well-formed empty result rather than an error.
+- **Params:** `q` (string, **required**) — Search query prefix
+
+## Reddit (12)
 
 ### `reddit_comments`
 
@@ -4559,6 +5713,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /reddit/domain/{domain}/posts`
 - **What:** List Reddit domain posts. Returns normalized public posts submitted from a linked domain. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
 - **Params:** `after` (string, optional) — Reddit pagination token; `domain` (string, **required**) — Domain hostname, without scheme or path; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
+
+### `reddit_leads`
+
+- **HTTP:** `GET /reddit/leads`
+- **What:** Find Reddit buying-intent leads. Scans a Reddit search page for people actively asking for a product or service, scores each post 0-10 for buying intent, and returns them ranked highest-first with the signals that fired. Self-promotion, hiring posts, freelancer service adverts, revenue-milestone posts, duplicate reposts, and Title Case article headlines are filtered out before scoring. A deterministic prefilter always runs; when `classifier` resolves to `llm` the surviving candidates are additionally refined in one batched model call. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
+- **Params:** `classifier` (string, optional) — Classifier: auto uses the model when configured, heuristic skips it, llm requires it; `limit` (integer, optional) — Maximum leads returned, defaults to 25 and clamps to 100; `min_score` (integer, optional) — Minimum buying-intent score to return, 0-10, defaults to 4; `q` (string, **required**) — What you offer, in plain language; `sort` (string, optional) — Sort: relevance, hot, new, top, or comments; `subreddit` (string, optional) — Restrict the search to a subreddit name, without r/; `time` (string, optional) — Time window: hour, day, week, month, year, or all
 
 ### `reddit_post`
 
@@ -4645,6 +5805,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /redfin/similar`
 - **What:** Get Redfin comparable listings. Returns Redfin's comparable ("similar") listings for a property as normalized listing rows. Faithful pass-through of Redfin's public similars resource.
 - **Params:** `property_id` (string, **required**) — Redfin property id
+
+## Rothy's (11)
+
+### `rothys_collection_products`
+
+- **HTTP:** `GET /rothys/collections/{handle}/products`
+- **What:** List Rothy's collection products. Returns normalized products from one Rothy's (https://www.rothys.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `rothys_collections`
+
+- **HTTP:** `GET /rothys/collections`
+- **What:** List Rothy's collections. Returns normalized collections from Rothy's (https://www.rothys.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `rothys_page`
+
+- **HTTP:** `GET /rothys/pages/{handle}`
+- **What:** Get a Rothy's static page. Returns normalized static page detail for one Rothy's (https://www.rothys.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `rothys_pages`
+
+- **HTTP:** `GET /rothys/pages`
+- **What:** List Rothy's static pages. Returns normalized static pages from Rothy's (https://www.rothys.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `rothys_product`
+
+- **HTTP:** `GET /rothys/products/{handle}`
+- **What:** Get a Rothy's product. Returns normalized product detail for one Rothy's (https://www.rothys.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `rothys_product_recommendations`
+
+- **HTTP:** `GET /rothys/products/{handle}/recommendations`
+- **What:** List Rothy's product recommendations. Returns normalized recommended products for one Rothy's (https://www.rothys.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `rothys_products`
+
+- **HTTP:** `GET /rothys/products`
+- **What:** List Rothy's products. Returns normalized products from Rothy's's (https://www.rothys.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `rothys_search_suggest`
+
+- **HTTP:** `GET /rothys/search/suggest`
+- **What:** Get Rothy's search suggestions. Returns products, collections, and query suggestions from Rothy's's (https://www.rothys.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `rothys_sitemap_urls`
+
+- **HTTP:** `GET /rothys/sitemap/urls`
+- **What:** List Rothy's sitemap URLs. Returns capped URL entries from Rothy's's (https://www.rothys.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `rothys_sitemaps`
+
+- **HTTP:** `GET /rothys/sitemaps`
+- **What:** List Rothy's sitemaps. Returns child sitemap URLs from Rothy's's (https://www.rothys.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `rothys_store`
+
+- **HTTP:** `GET /rothys/store`
+- **What:** Get Rothy's store metadata. Returns normalized storefront metadata for Rothy's (https://www.rothys.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
 
 ## Rotten Tomatoes (9)
 
@@ -4801,7 +6029,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sephora_category`
 
 - **HTTP:** `GET /sephora/category`
-- **What:** Sephora category browse. Returns one page of a Sephora category/browse listing (e.g. Makeup, Skincare), with the same sort and facet filters as /sephora/search. slug is the path segment after sephora.com/shop/, e.g. makeup-cosmetics. An unrecognized slug returns 404.
+- **What:** Sephora category browse. Returns one page of a Sephora category/browse listing (e.g. Makeup, Skincare), with the same sort and facet filters as /sephora/search. slug is the path segment after sephora.com/shop/, e.g. makeup-cosmetics. The response uses Sephora's public catalog search to keep browse listings available when the category page's legacy embedded data is absent.
 - **Params:** `brand` (array, optional) — One or more exact brand names to filter to (OR'd together); repeat the param for multiple values; `filter` (array, optional) — Additional facet:value filters, repeat the param for multiple; facet must be one of: benefits, ingredientpreferences, colorfamily, formulation, size, shoppingpreferences, agerange, skintype, finish, skinconcerns, coverage, hairtype, hairconcerns, hairtexture; `is_new` (boolean, optional) — When true, filters to products flagged New; `page` (integer, optional) — Result page, 1-based, defaults to 1; `price_max` (integer, optional) — Maximum price in whole dollars; must be set together with price_min; `price_min` (integer, optional) — Minimum price in whole dollars; must be set together with price_max; `rating_min` (integer, optional) — Minimum star rating, 1 to 4; `slug` (string, **required**) — Category-page slug; `sort_by` (string, optional) — Sort order, defaults to featured
 
 ### `sephora_product`
@@ -4839,6 +6067,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sephora/suggest`
 - **What:** Sephora search suggestions. Returns Sephora's own search-box type-ahead suggestions for a partial keyword: keyword-completion terms, matching products, and trending/related categories. Sephora's own upstream never returns a genuine zero-result state for a nonempty query -- a deliberately nonsense query still returns unrelated product suggestions.
 - **Params:** `query` (string, **required**) — Partial search keywords
+
+## SHEIN (8)
+
+### `shein_category_filters`
+
+- **HTTP:** `GET /shein/category/filters`
+- **What:** SHEIN category filter facets. Returns the filter facets (sizes, colors, materials, …) and price range for a SHEIN category.
+- **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id
+
+### `shein_category_goods`
+
+- **HTTP:** `GET /shein/category/goods`
+- **What:** SHEIN category product listing. Returns SHEIN's product listing for a category, with the same normalized product-card fields as product search.
+- **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page; `sort` (string, optional) — SHEIN sort code
+
+### `shein_category_nav`
+
+- **HTTP:** `GET /shein/category/nav`
+- **What:** SHEIN category nav tabs. Returns the subcategory navigation tabs for a SHEIN category, each with a representative product.
+- **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id
+
+### `shein_products_aggregation_filters`
+
+- **HTTP:** `POST /shein/products/aggregation-filters`
+- **What:** SHEIN search aggregation filters. Returns the selectable category/brand/size/color filter facets and price range for a SHEIN search query.
+- **Params:** `cat_id` (string, optional) — Numeric SHEIN category id, narrows the facets; `keyword` (string, **required**) — Free-text search query
+
+### `shein_products_detail`
+
+- **HTTP:** `GET /shein/products/detail`
+- **What:** SHEIN product detail. Returns a SHEIN product's detail: identity, copy, price, images, sizes/stock, color variants, and category/brand.
+- **Params:** `goods_id` (string, **required**) — Numeric SHEIN goods id (from a search result's goods_id); `goods_sn` (string, optional) — SHEIN goods serial number, narrows the lookup
+
+### `shein_products_search`
+
+- **HTTP:** `POST /shein/products/search`
+- **What:** SHEIN product search. Returns SHEIN's product search results for a free-text keyword, with normalized name/price/rating/image fields per card.
+- **Params:** `keyword` (string, **required**) — Free-text search query; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page; `sort` (string, optional) — SHEIN sort code
+
+### `shein_search_autocomplete`
+
+- **HTTP:** `POST /shein/search/autocomplete`
+- **What:** SHEIN search autocomplete. Returns SHEIN's search typeahead suggestions for a partial search query.
+- **Params:** `word` (string, **required**) — Partial search query
+
+### `shein_search_keywords`
+
+- **HTTP:** `POST /shein/search/keywords`
+- **What:** SHEIN trending search keywords. Returns the trending search keywords SHEIN's app surfaces in its search box.
+- **Params:** `scene` (string, optional) — Keyword scene (trendStoreChannel); `word_type` (string, optional) — Keyword type (1)
 
 ## Shop.app (16)
 
@@ -4943,8 +6221,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `shopify_collection_products`
 
 - **HTTP:** `GET /shopify/collections/{handle}/products`
-- **What:** List Shopify collection products. Returns normalized products from a public Shopify collection `/products.json` endpoint.
-- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `url` (string, **required**) — Shopify storefront URL
+- **What:** List Shopify collection products. Returns normalized products from a public Shopify collection `/products.json` endpoint. `sortBy` and dynamic facet-filter query params (e.g. `fit`, `canonicalColour`) only take effect for headless storefronts served via the embedded-SSR-JSON fallback transport (`transport_mode: "ssr_embedded"`) and return an invalid-param error if supplied against a classic-transport store, since Shopify's classic public catalog JSON has no server-side sort or filter support.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `sortBy` (string, optional) — SSR-fallback transport only (transport_mode ssr_embedded). Allowed values: sortLTH, sortHTL, newest. Omit for the storefront's default relevancy order. Rejected as an invalid param for classic-transport stores.; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_collections`
 
@@ -4979,8 +6257,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `shopify_products`
 
 - **HTTP:** `GET /shopify/products`
-- **What:** List Shopify products. Returns normalized products from a public Shopify `/products.json` endpoint. Valid empty result pages return `200` with an empty products array.
-- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `url` (string, **required**) — Shopify storefront URL
+- **What:** List Shopify products. Returns normalized products from a public Shopify `/products.json` endpoint. Valid empty result pages return `200` with an empty products array. `sortBy` and dynamic facet-filter query params (e.g. `fit`, `canonicalColour`) only take effect for headless storefronts served via the embedded-SSR-JSON fallback transport (`transport_mode: "ssr_embedded"`) and return an invalid-param error if supplied against a classic-transport store, since Shopify's classic public catalog JSON has no server-side sort or filter support.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `sortBy` (string, optional) — SSR-fallback transport only (transport_mode ssr_embedded). Allowed values: sortLTH, sortHTL, newest. Omit for the storefront's default relevancy order. Rejected as an invalid param for classic-transport stores.; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_search_suggest`
 
@@ -5019,6 +6297,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /similarweb/web/{domain}`
 - **What:** Get SimilarWeb Web Info. Returns traffic and engagement data from SimilarWeb for a specific domain.
 - **Params:** `domain` (string, **required**) — Domain to fetch SimilarWeb data for
+
+## SKIMS (11)
+
+### `skims_collection_products`
+
+- **HTTP:** `GET /skims/collections/{handle}/products`
+- **What:** List SKIMS collection products. Returns normalized products from one SKIMS (https://skims.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `skims_collections`
+
+- **HTTP:** `GET /skims/collections`
+- **What:** List SKIMS collections. Returns normalized collections from SKIMS (https://skims.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `skims_page`
+
+- **HTTP:** `GET /skims/pages/{handle}`
+- **What:** Get a SKIMS static page. Returns normalized static page detail for one SKIMS (https://skims.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `skims_pages`
+
+- **HTTP:** `GET /skims/pages`
+- **What:** List SKIMS static pages. Returns normalized static pages from SKIMS (https://skims.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `skims_product`
+
+- **HTTP:** `GET /skims/products/{handle}`
+- **What:** Get a SKIMS product. Returns normalized product detail for one SKIMS (https://skims.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `skims_product_recommendations`
+
+- **HTTP:** `GET /skims/products/{handle}/recommendations`
+- **What:** List SKIMS product recommendations. Returns normalized recommended products for one SKIMS (https://skims.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `skims_products`
+
+- **HTTP:** `GET /skims/products`
+- **What:** List SKIMS products. Returns normalized products from SKIMS's (https://skims.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `skims_search_suggest`
+
+- **HTTP:** `GET /skims/search/suggest`
+- **What:** Get SKIMS search suggestions. Returns products, collections, and query suggestions from SKIMS's (https://skims.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `skims_sitemap_urls`
+
+- **HTTP:** `GET /skims/sitemap/urls`
+- **What:** List SKIMS sitemap URLs. Returns capped URL entries from SKIMS's (https://skims.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `skims_sitemaps`
+
+- **HTTP:** `GET /skims/sitemaps`
+- **What:** List SKIMS sitemaps. Returns child sitemap URLs from SKIMS's (https://skims.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `skims_store`
+
+- **HTTP:** `GET /skims/store`
+- **What:** Get SKIMS store metadata. Returns normalized storefront metadata for SKIMS (https://skims.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
 
 ## SofaScore (15)
 
@@ -5504,6 +6850,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Steam's weekly top-sellers chart for a country. Returns the store's weekly top-sellers chart for a country, each rank carrying the full store item (name, price, weighted community tags, review summary, platforms). cc selects the country whose sales ranking and currency are returned. Credential-free public Steam store top-sellers API.
 - **Params:** `cc` (string, optional) — Country code (ISO) whose weekly sales ranking is returned; `l` (string, optional) — Steam store language name
 
+## Steve Madden (11)
+
+### `stevemadden_collection_products`
+
+- **HTTP:** `GET /stevemadden/collections/{handle}/products`
+- **What:** List Steve Madden collection products. Returns normalized products from one Steve Madden (https://www.stevemadden.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `stevemadden_collections`
+
+- **HTTP:** `GET /stevemadden/collections`
+- **What:** List Steve Madden collections. Returns normalized collections from Steve Madden (https://www.stevemadden.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `stevemadden_page`
+
+- **HTTP:** `GET /stevemadden/pages/{handle}`
+- **What:** Get a Steve Madden static page. Returns normalized static page detail for one Steve Madden (https://www.stevemadden.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `stevemadden_pages`
+
+- **HTTP:** `GET /stevemadden/pages`
+- **What:** List Steve Madden static pages. Returns normalized static pages from Steve Madden (https://www.stevemadden.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `stevemadden_product`
+
+- **HTTP:** `GET /stevemadden/products/{handle}`
+- **What:** Get a Steve Madden product. Returns normalized product detail for one Steve Madden (https://www.stevemadden.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `stevemadden_product_recommendations`
+
+- **HTTP:** `GET /stevemadden/products/{handle}/recommendations`
+- **What:** List Steve Madden product recommendations. Returns normalized recommended products for one Steve Madden (https://www.stevemadden.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `stevemadden_products`
+
+- **HTTP:** `GET /stevemadden/products`
+- **What:** List Steve Madden products. Returns normalized products from Steve Madden's (https://www.stevemadden.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `stevemadden_search_suggest`
+
+- **HTTP:** `GET /stevemadden/search/suggest`
+- **What:** Get Steve Madden search suggestions. Returns products, collections, and query suggestions from Steve Madden's (https://www.stevemadden.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `stevemadden_sitemap_urls`
+
+- **HTTP:** `GET /stevemadden/sitemap/urls`
+- **What:** List Steve Madden sitemap URLs. Returns capped URL entries from Steve Madden's (https://www.stevemadden.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `stevemadden_sitemaps`
+
+- **HTTP:** `GET /stevemadden/sitemaps`
+- **What:** List Steve Madden sitemaps. Returns child sitemap URLs from Steve Madden's (https://www.stevemadden.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `stevemadden_store`
+
+- **HTTP:** `GET /stevemadden/store`
+- **What:** Get Steve Madden store metadata. Returns normalized storefront metadata for Steve Madden (https://www.stevemadden.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
+
 ## StockX (5)
 
 ### `stockx_brands`
@@ -5619,6 +7033,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /tesla-jobs/list`
 - **What:** Tesla Jobs listing. Searches Tesla's public careers site (tesla.com/careers) via its own careers-state JSON endpoint. Tesla's own endpoint always returns its entire global job dataset regardless of query parameters; this filters and paginates that snapshot server-side. Listings carry identity/department/location metadata only — call the job endpoint for the full description, responsibilities, and requirements.
 - **Params:** `location` (string, optional) — Filter by location, case-insensitive substring match; `page` (integer, optional) — Page number, 1-based; `page_size` (integer, optional) — Results per page, up to 100; `query` (string, optional) — Filter by title or department, case-insensitive substring match
+
+## The Body Shop (11)
+
+### `thebodyshop_collection_products`
+
+- **HTTP:** `GET /thebodyshop/collections/{handle}/products`
+- **What:** List The Body Shop collection products. Returns normalized products from one The Body Shop (https://www.thebodyshop.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `thebodyshop_collections`
+
+- **HTTP:** `GET /thebodyshop/collections`
+- **What:** List The Body Shop collections. Returns normalized collections from The Body Shop (https://www.thebodyshop.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `thebodyshop_page`
+
+- **HTTP:** `GET /thebodyshop/pages/{handle}`
+- **What:** Get a The Body Shop static page. Returns normalized static page detail for one The Body Shop (https://www.thebodyshop.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `thebodyshop_pages`
+
+- **HTTP:** `GET /thebodyshop/pages`
+- **What:** List The Body Shop static pages. Returns normalized static pages from The Body Shop (https://www.thebodyshop.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `thebodyshop_product`
+
+- **HTTP:** `GET /thebodyshop/products/{handle}`
+- **What:** Get a The Body Shop product. Returns normalized product detail for one The Body Shop (https://www.thebodyshop.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `thebodyshop_product_recommendations`
+
+- **HTTP:** `GET /thebodyshop/products/{handle}/recommendations`
+- **What:** List The Body Shop product recommendations. Returns normalized recommended products for one The Body Shop (https://www.thebodyshop.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `thebodyshop_products`
+
+- **HTTP:** `GET /thebodyshop/products`
+- **What:** List The Body Shop products. Returns normalized products from The Body Shop's (https://www.thebodyshop.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `thebodyshop_search_suggest`
+
+- **HTTP:** `GET /thebodyshop/search/suggest`
+- **What:** Get The Body Shop search suggestions. Returns products, collections, and query suggestions from The Body Shop's (https://www.thebodyshop.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `thebodyshop_sitemap_urls`
+
+- **HTTP:** `GET /thebodyshop/sitemap/urls`
+- **What:** List The Body Shop sitemap URLs. Returns capped URL entries from The Body Shop's (https://www.thebodyshop.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `thebodyshop_sitemaps`
+
+- **HTTP:** `GET /thebodyshop/sitemaps`
+- **What:** List The Body Shop sitemaps. Returns child sitemap URLs from The Body Shop's (https://www.thebodyshop.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `thebodyshop_store`
+
+- **HTTP:** `GET /thebodyshop/store`
+- **What:** Get The Body Shop store metadata. Returns normalized storefront metadata for The Body Shop (https://www.thebodyshop.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
 
 ## Threads (5)
 
@@ -6298,6 +7780,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** A Vinted seller's public storefront profile. Returns a Vinted seller's public storefront profile: username, self-disclosed coarse location, rating, and follower/following counts. Deliberately excludes online-presence and activity data (last-seen timestamps, upload-frequency badges) present on the live page. Public data, sourced from Vinted's own server-rendered member page.
 - **Params:** `id` (string, **required**) — Numeric Vinted member ID, from a /vinted/item result's seller link
 
+## Walgreens (1)
+
+### `walgreens_stores`
+
+- **HTTP:** `GET /walgreens/stores`
+- **What:** Find nearby Walgreens stores. Returns Walgreens stores near a latitude/longitude or a zip code, nearest first: name, address, phone, hours, and in-store services (pharmacy, clinic, photo, and more) for each. Public data sourced from Walgreens' own store locator.
+- **Params:** `latitude` (number, optional) — Latitude; provide with longitude, or provide zip instead; `longitude` (number, optional) — Longitude; provide with latitude, or provide zip instead; `zip` (string, optional) — US ZIP code; used when latitude/longitude are omitted
+
 ## Walmart (3)
 
 ### `walmart_product`
@@ -6349,13 +7839,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `web_scrape`
 
 - **HTTP:** `POST /web/scrape`
-- **What:** Scrape a URL into markdown, HTML, links or metadata. Fetches a single public URL and returns clean content in the requested formats (markdown, html, raw_html, links, metadata). With render=auto the request starts as a fast HTTP fetch and escalates to a real browser when the page is blocked or rendered with JavaScript. only_main_content (default true) strips navigation, headers, footers and other boilerplate before conversion. Only public pages are supported; respect each site's terms of use and robots directives.
+- **What:** Scrape a URL into markdown, HTML, links or metadata. Fetches a single public URL and returns clean content in the requested formats (markdown, html, raw_html, links, metadata). The request body IS the ScrapeOption object itself — e.g. {"url": "https://example.com"} — do not wrap it in an extra key. With render=auto the request starts as a fast HTTP fetch and escalates to a real browser when the page is blocked or rendered with JavaScript; backend only pins a specific headless-browser engine for the browser tier and is not a render mode. only_main_content (default true) strips navigation, headers, footers and other boilerplate before conversion. Only public pages are supported; respect each site's terms of use and robots directives. A handful of popular sites (Amazon, Reddit, Yelp, LinkedIn, and others) already have a dedicated, more reliable endpoint elsewhere in this API — a failed scrape against one of them names it.
 - **Params:** `scrapeOption` (object, **required**) — Scrape options
 
 ### `web_techstack`
 
 - **HTTP:** `POST /web/techstack`
-- **What:** Tech stack — detect what a website is built with. Fetches a public URL and fingerprints the web technologies it is built with — a BuiltWith / Wappalyzer-style detector. Returns a list of detected `technologies`, each with its `categories`, a `confidence` (`high`, `medium`, `low`), an optional `version`, and the `evidence` that matched. Covers JavaScript frameworks and libraries (React, Vue.js, Angular, Svelte, jQuery), web frameworks / static site generators (Next.js, Nuxt.js, Gatsby, Remix, SvelteKit, Astro, Hugo), CMS and website builders (WordPress, Drupal, Joomla, Ghost, Wix, Squarespace, Webflow), e-commerce (Shopify, WooCommerce, Magento, BigCommerce), analytics, ad pixels, and tag managers (Google Analytics, Google Tag Manager, Meta Pixel, LinkedIn, Bing, TikTok/Pinterest/Reddit pixels, Segment, Hotjar, Microsoft Clarity), CDNs, UI frameworks and fonts, payments (Stripe, PayPal, Klarna), live chat, marketing automation, A/B testing, consent management, CAPTCHAs (reCAPTCHA, hCaptcha, Turnstile), video, and search. It also inspects response headers (from a plain HTTP fetch) to identify the web server (nginx, Apache, IIS), the CDN / hosting provider (Cloudflare, CloudFront, Fastly, Vercel, Netlify), and the server-side language / framework (PHP, ASP.NET, Ruby on Rails, Django, Laravel, Express). Results are directional, not exhaustive. The `render` fetch strategy is one of `browser` (headless browser that executes JavaScript — the default, so client-injected scripts like analytics, tag managers and pixels are detected), `auto` (Chrome-impersonated HTTP, escalating to a real browser only when blocked or JS-rendered), or `http` (HTTP only, no JavaScript — fastest, but sees only the server HTML); defaults to `browser`. Only public pages are supported; respect each site's terms of use and robots directives.
+- **What:** Tech stack — detect what a website is built with. Fetches a public URL and fingerprints the web technologies it is built with — a BuiltWith / Wappalyzer-style detector. Returns a list of detected `technologies`, each with its `categories`, a `confidence` (`high`, `medium`, `low`), an optional `version`, and the `evidence` that matched. Covers JavaScript frameworks and libraries (React, Vue.js, Angular, Svelte, jQuery), web frameworks / static site generators (Next.js, Nuxt.js, Gatsby, Remix, SvelteKit, Astro, Hugo), CMS and website builders (WordPress, Drupal, Joomla, Ghost, Wix, Squarespace, Webflow), e-commerce (Shopify, WooCommerce, Magento, BigCommerce), analytics, ad pixels, and tag managers (Google Analytics, Google Tag Manager, Meta Pixel, LinkedIn, Bing, TikTok/Pinterest/Reddit pixels, Segment, Hotjar, Microsoft Clarity), CDNs, UI frameworks and fonts, payments (Stripe, PayPal, Klarna), live chat, marketing automation, A/B testing, consent management, CAPTCHAs (reCAPTCHA, hCaptcha, Turnstile), video, and search. It also inspects response headers (from a plain HTTP fetch) to identify the web server (nginx, Apache, IIS), the CDN / hosting provider (Cloudflare, CloudFront, Fastly, Vercel, Netlify), and the server-side language / framework (PHP, ASP.NET, Ruby on Rails, Django, Laravel, Express). Results are directional, not exhaustive. The `render` fetch strategy is one of `browser` (headless browser that executes JavaScript — the default, so client-injected scripts like analytics, tag managers and pixels are detected), `auto` (Chrome-impersonated HTTP, escalating to a real browser only when blocked or JS-rendered), or `http` (HTTP only, no JavaScript — fastest, but sees only the server HTML); defaults to `browser`. Only public pages are supported; respect each site's terms of use and robots directives. Also returns `unmatched_evidence` (when present) — third-party script/stylesheet host domains and a `<meta generator>` value the detector saw on the page but doesn't yet have a named signature for; useful for spotting a vendor worth requesting coverage for.
 - **Params:** `request` (object, **required**) — Target URL (and optional render strategy)
 
 ## Whatnot (3)

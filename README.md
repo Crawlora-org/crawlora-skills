@@ -24,8 +24,8 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 
 | Skill | What it does | Platforms |
 |---|---|---|
-| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured data from **any** of the 1118 Crawlora endpoints; teaches auth, credits, and the full catalog. | all 123 |
-| [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (109 endpoints) |
+| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured data from **any** of the 1404 Crawlora endpoints; teaches auth, credits, and the full catalog. | all 153 |
+| [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (122 endpoints) |
 | [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, Shopify, Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara |
 | [`youtube-research`](skills/youtube-research) | Transcripts, comments, video/channel metadata, search — no `yt-dlp`. | YouTube |
 | [`app-review-mining`](skills/app-review-mining) | App details, reviews, ratings, rankings, similar apps (ASO). | App Store, Google Play |
