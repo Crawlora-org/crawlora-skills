@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**1404 endpoints across 153 platform group(s).**
+**1407 endpoints across 153 platform group(s).**
 
 ## Adidas (5)
 
@@ -4948,12 +4948,30 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List MLB transactions. Lists signings, trades, options, assignments, injured-list moves, and other MLB transactions for a date range.
 - **Params:** `end_date` (string, **required**) — Range end in YYYY-MM-DD format; `player_id` (string, optional) — Numeric MLB player id; `start_date` (string, **required**) — Range start in YYYY-MM-DD format; `team_id` (string, optional) — Numeric MLB team id
 
-## Monitors (3)
+## Monitors (6)
 
 ### `monitors_checks`
 
 - **HTTP:** `GET /monitors/{id}/checks`
 - **What:** List a monitor's check history. Returns the caller's own monitor's most recent check runs (most recent first, capped at 50), including webhook delivery status per run.
+- **Params:** `id` (string, **required**) — Monitor id
+
+### `monitors_create`
+
+- **HTTP:** `POST /monitors`
+- **What:** Create a website-change monitor. Creates a monitor that periodically checks a page or sitemap for changes and can notify a webhook. Free to call -- only completed check runs (services/webmonitor's cron-driven scrape/sitemap fetch) consume credits, at 1 credit per completed run regardless of target type or whether a change was detected. `target_type` defaults to "page" (exact-fingerprint diff of the scraped page). "sitemap" watches the sitemap at `url` for added/removed entries instead, honoring `sitemap.include_patterns`/`exclude_patterns` (shell-style globs matched against each URL's path) and `sitemap.max_urls` (default 5000, hard cap 10000).
+- **Params:** `request` (object, **required**) — Monitor definition
+
+### `monitors_delete`
+
+- **HTTP:** `DELETE /monitors/{id}`
+- **What:** Delete a website-change monitor. Deletes one of the caller's own monitors. Free to call. Does not delete its past check history.
+- **Params:** `id` (string, **required**) — Monitor id
+
+### `monitors_get`
+
+- **HTTP:** `GET /monitors/{id}`
+- **What:** Get a website-change monitor. Returns one of the caller's own monitors by id. Free to call.
 - **Params:** `id` (string, **required**) — Monitor id
 
 ### `monitors_list`
