@@ -6,12 +6,12 @@
   },
   "metadata": {
     "description": "Crawlora Agent Skills — structured public web data (search, e-commerce, social, finance, app stores, media, reviews, travel, sports, jobs, prediction markets, gaming, real estate, and more) via the Crawlora REST API.",
-    "version": "1.10.4"
+    "version": "1.11.0"
   },
   "plugins": [
     {
       "name": "crawlora-skills",
-      "description": "25 Agent Skills for fetching structured public web data with the Crawlora API: an umbrella catalog skill, a hosted-datasets skill, plus product/price, YouTube, app-review, SERP/keyword, finance/markets, prediction-markets, movie/TV, job-market, social-media, travel/hotel, sports, Twitch, music/podcast, book, gaming, anime/manga, developer/OSS, restaurant/food-delivery, business-review/trust, resale/secondhand, real-estate/autos, Yahoo-network, and web-utilities research recipes.",
+      "description": "28 Agent Skills for fetching structured public web data with the Crawlora API: an umbrella catalog skill, a hosted-datasets skill, plus product/price, YouTube, app-review, SERP/keyword, finance/markets, prediction-markets, movie/TV, job-market, social-media, travel/hotel, sports, Twitch, music/podcast, book, gaming, anime/manga, developer/OSS, restaurant/food-delivery, business-review/trust, resale/secondhand, real-estate/autos, Yahoo-network, web-utilities, website-monitoring, patents, and GDELT news/TV research recipes.",
       "source": "./",
       "homepage": "https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills",
       "repository": "https://github.com/Crawlora-org/crawlora-skills",
@@ -43,7 +43,10 @@
         "./skills/resale-secondhand-research",
         "./skills/real-estate-autos-research",
         "./skills/yahoo-network-research",
-        "./skills/web-utilities-research"
+        "./skills/web-utilities-research",
+        "./skills/website-monitoring",
+        "./skills/patents-research",
+        "./skills/gdelt-research"
       ]
     }
   ]

@@ -24,9 +24,9 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 
 | Skill | What it does | Platforms |
 |---|---|---|
-| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured data from **any** of the 1404 Crawlora endpoints; teaches auth, credits, and the full catalog. | all 153 |
+| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured data from **any** of the 1407 Crawlora endpoints; teaches auth, credits, and the full catalog. | all 153 |
 | [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (122 endpoints) |
-| [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, Shopify, Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara |
+| [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, Shopify (+ 14 pinned DTC brands, see `shopify-research`), Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, Walgreens (stores only), IKEA, Chewy |
 | [`youtube-research`](skills/youtube-research) | Transcripts, comments, video/channel metadata, search — no `yt-dlp`. | YouTube |
 | [`app-review-mining`](skills/app-review-mining) | App details, reviews, ratings, rankings, similar apps (ASO). | App Store, Google Play |
 | [`serp-keyword-research`](skills/serp-keyword-research) | SERP snapshots, autocomplete keyword ideas, Google Trends. | Google, Bing, Brave, DuckDuckGo, Yahoo, Google Trends |
@@ -36,7 +36,7 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`job-market-research`](skills/job-market-research) | Search postings, pull any company's ATS board directly, hiring signals, freelance gigs. | Indeed, Google/Amazon/Apple/Meta/Tesla Jobs, 15+ ATS platforms, Upwork, Fiverr |
 | [`social-media-research`](skills/social-media-research) | Public profiles, posts, engagement, search, and trending topics. | Instagram, TikTok, Threads, Bluesky, X, Pinterest, LinkedIn, Facebook, Reddit |
 | [`travel-hotel-research`](skills/travel-hotel-research) | Hotel/flight/attraction search and reviews, short-term rentals, event tickets. | Booking.com, Expedia, Agoda, TripAdvisor, Trip.com, Airbnb, Ticketmaster |
-| [`sports-scores-research`](skills/sports-scores-research) | Live scores, standings, rosters, player/team stats, boxscores, endurance routes. | ESPN, SofaScore, MLB, Strava |
+| [`sports-scores-research`](skills/sports-scores-research) | Live scores, standings, rosters, player/team stats, boxscores, sportsbook odds, endurance routes. | ESPN, SofaScore, MLB, Strava, DraftKings Sportsbook |
 | [`twitch-research`](skills/twitch-research) | Channel profile/live status, streams by game, clips, VODs, search, top games, team rosters, VOD chat replay. | Twitch |
 | [`music-podcast-research`](skills/music-podcast-research) | Tracks/albums/artists/playlists, podcast shows/episodes, record pressings, SoundCloud track/user stats. | Spotify, Spotify Podcasts, Apple Podcasts, Discogs, SoundCloud |
 | [`book-research`](skills/book-research) | Book/author ratings and reviews, reading lists, audiobooks. | Goodreads, Apple Books |
@@ -44,11 +44,14 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`anime-manga-research`](skills/anime-manga-research) | Title detail, characters, staff, rankings, airing schedule. | Anime, Manga |
 | [`developer-oss-research`](skills/developer-oss-research) | Repo/user/org profiles, trending, contributors; Chrome extension detail/reviews. | GitHub, Chrome Web Store |
 | [`restaurant-food-delivery-research`](skills/restaurant-food-delivery-research) | Restaurant reviews/reservations, delivery search and menus, grocery search. | Yelp, OpenTable, DoorDash, Uber Eats, Instacart |
-| [`business-review-trust-research`](skills/business-review-trust-research) | Product launches, business reputation, verified startup revenue, software reviews. | Product Hunt, TrustMRR, Trustpilot, Capterra |
+| [`business-review-trust-research`](skills/business-review-trust-research) | Product launches, business reputation, verified startup revenue, software reviews, crowdfunding campaigns. | Product Hunt, TrustMRR, Trustpilot, Capterra, BBB, Kickstarter |
 | [`resale-secondhand-research`](skills/resale-secondhand-research) | C2C resale, streetwear/sneaker, and handmade marketplace search. | Poshmark, Etsy, Vinted, StockX, Mercari, Depop, Whatnot |
 | [`real-estate-autos-research`](skills/real-estate-autos-research) | Home search/estimates/market trends, used-car search and dealer/listing detail. | Zillow, Redfin, CarMax, Autotrader, Cars.com |
 | [`yahoo-network-research`](skills/yahoo-network-research) | Yahoo's editorial content network: category/home story feeds and full articles across autos, entertainment, health, life, news (with comments), and shopping/tech; deeper scores/standings/rosters for Yahoo Sports. Yahoo Finance and Yahoo Search are separate skills. | Yahoo Autos, Yahoo Entertainment, Yahoo Health, Yahoo Life, Yahoo News, Yahoo Shopping, Yahoo Sports, Yahoo Tech |
 | [`web-utilities-research`](skills/web-utilities-research) | URL scraping/extraction, tech-stack fingerprinting, geocoding, cost of living, trade records, site traffic, brand lookup. | Geocoding, Numbeo, ImportYeti, SimilarWeb, Brand, Web (scrape/extract/techstack) |
+| [`website-monitoring`](skills/website-monitoring) | Create/list/update/delete website-change monitors (page-diff or sitemap-track), get a signed webhook on change — no polling loop of your own. | Monitors |
+| [`patents-research`](skills/patents-research) | Full-text patent search (keyword/inventor/assignee), bibliographic detail, claims/citations/family, CPC classification lookup. | Google Patents, USPTO Patent Public Search |
+| [`gdelt-research`](skills/gdelt-research) | Global news search, coverage/sentiment timelines, sentence-level co-occurrence search; US TV transcripts/captions/on-screen-text/visual-label search. | GDELT, GDELT Television 2.0 AI |
 
 ### Per-platform skills
 

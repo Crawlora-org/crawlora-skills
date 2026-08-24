@@ -103,14 +103,14 @@ const SKILLS = {
     "Airbnb",
     "Ticketmaster",
   ],
-  "sports-scores-research": ["ESPN", "SofaScore", "MLB", "Strava"],
+  "sports-scores-research": ["ESPN", "SofaScore", "MLB", "Strava", "DraftKings Sportsbook"],
   "music-podcast-research": ["Spotify", "SpotifyPodcasts", "ApplePodcasts", "Discogs", "SoundCloud"],
   "book-research": ["Goodreads", "AppleBooks", "Audible"],
   "gaming-research": ["Steam", "PlayStation"],
   "anime-manga-research": ["Anime", "Manga"],
   "developer-oss-research": ["GitHub", "ChromeWebStore"],
   "restaurant-food-delivery-research": ["DoorDash", "Yelp", "UberEats", "Instacart", "OpenTable"],
-  "business-review-trust-research": ["ProductHunt", "TrustMRR", "Trustpilot", "Capterra", "BBB"],
+  "business-review-trust-research": ["ProductHunt", "TrustMRR", "Trustpilot", "Capterra", "BBB", "Kickstarter"],
   "resale-secondhand-research": [
     "Poshmark",
     "Etsy",
@@ -198,6 +198,13 @@ const SKILLS = {
     "Yahoo Sports",
     "Yahoo Tech",
   ],
+
+  // 2026-08-24 new dedicated skills, per external-demand research (see
+  // docs/memory/sdk-mcp-skills-release-pipeline.md in webscraping-fe):
+  // established competitor MCP servers/products exist for all three.
+  "website-monitoring": ["Monitors"],
+  "patents-research": ["Google Patents", "USPTO Patent Public Search"],
+  "gdelt-research": ["GDELT"],
 };
 
 const groupsOf = (t) => (t._http && t._http.group) || "Other";

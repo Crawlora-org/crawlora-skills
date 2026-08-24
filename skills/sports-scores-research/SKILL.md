@@ -1,13 +1,14 @@
 ---
 name: sports-scores-research
-description: Pulls live scores, standings, rosters, and player/team stats via the Crawlora API — ESPN (most sports/leagues), SofaScore (global soccer + more), MLB's own stats API, and Strava (routes, clubs, challenges) — returning clean JSON. Use when the user wants a live scoreboard, a team or player's stats, league standings, a game's boxscore/play-by-play, head-to-head history, or an endurance-sport route/club.
+description: Pulls live scores, standings, rosters, player/team stats, and betting odds via the Crawlora API — ESPN (most sports/leagues), SofaScore (global soccer + more), MLB's own stats API, Strava (routes, clubs, challenges), and DraftKings Sportsbook (moneyline/spread/total odds, futures, live events) — returning clean JSON. Use when the user wants a live scoreboard, a team or player's stats, league standings, a game's boxscore/play-by-play, head-to-head history, sportsbook odds, or an endurance-sport route/club.
 ---
 
 # Sports & athletics research
 
-Pull live scoreboards, standings, rosters, player/team stats, and endurance-
-sport routes/clubs across four sports-data sources as normalized JSON from
-the Crawlora API — no scraping scoreboard widgets or stat pages.
+Pull live scoreboards, standings, rosters, player/team stats, sportsbook
+odds, and endurance-sport routes/clubs across five sports-data sources as
+normalized JSON from the Crawlora API — no scraping scoreboard widgets or
+stat pages.
 
 ## When to use this skill
 
@@ -17,6 +18,8 @@ the Crawlora API — no scraping scoreboard widgets or stat pages.
 - "Give me the boxscore / play-by-play for <game>."
 - "Head-to-head history between <team A> and <team B>."
 - League news, rankings/polls, or betting-odds snapshots (where exposed).
+- "What are the odds / spread / total for <game>?" or "what are the futures
+  odds to win <league>?" (DraftKings Sportsbook).
 - "Find running/biking/hiking routes in <region>" or "look up this Strava club."
 
 ## Setup (one-time)
@@ -50,6 +53,14 @@ the Crawlora API — no scraping scoreboard widgets or stat pages.
    plus `country`+`region` slugs) to browse routes; `/strava/routes/detail`
    (`path`) for one route; `/strava/clubs/{id}` for a club; `/strava/challenges`
    for current public challenges.
+5. **DraftKings Sportsbook** — `/draftkings/sportsbook/leagues` to list
+   sports/leagues (get a `league_id`), then `/draftkings/sportsbook/odds`
+   (`league_id`) for every upcoming event's moneyline/spread/total.
+   `/draftkings/sportsbook/live` for live events; `/draftkings/sportsbook/event`
+   (+ `/event-markets` with `subcategory_id`) for one event's full market
+   detail; `/draftkings/sportsbook/futures` (`league_id`+`subcategory_id`)
+   for futures markets. `/draftkings/sportsbook/teams` and `/team` cover
+   team lookups.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
 
@@ -71,6 +82,10 @@ scripts/crawlora.sh /mlb/player-stats id=<mlb-id> group=hitting | jq '.'
 # Strava:
 scripts/crawlora.sh /strava/challenges | jq '.'
 scripts/crawlora.sh /strava/routes sport=hiking country=<country-slug> region=<region-slug> | jq '.'
+
+# DraftKings Sportsbook odds:
+scripts/crawlora.sh /draftkings/sportsbook/leagues | jq '.'
+scripts/crawlora.sh /draftkings/sportsbook/odds league_id=<league-id> | jq '.'
 ```
 
 Raw `curl` fallback:
@@ -83,18 +98,22 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 ## Endpoint reference
 
 See [`reference/endpoints.md`](reference/endpoints.md) for every ESPN,
-SofaScore, MLB, and Strava endpoint this skill uses.
+SofaScore, MLB, Strava, and DraftKings Sportsbook endpoint this skill uses.
 
 ## Examples
 
 - **Live game tracker:** `/espn/scoreboard` or `/sofascore/live-events`
   polled on an interval to report score changes as they happen.
-- **Pre-game brief:** `/sofascore/event-h2h` (history) + `/sofascore/event-odds`
-  (market expectation) + both teams' `/sofascore/team-events` (recent form).
+- **Pre-game brief:** `/sofascore/event-h2h` (history) +
+  `/draftkings/sportsbook/odds` or `/sofascore/event-odds` (market
+  expectation) + both teams' `/sofascore/team-events` (recent form).
 - **Season stat leaders:** `/mlb/league-stats` or `/espn/rankings` for
   top performers, then `/mlb/player-stats` / `/espn/athlete` for the detail.
 - **Roster/transaction watch:** `/mlb/team-roster` + `/mlb/transactions` to
   track who's been added or dropped this week.
+- **Title-odds tracking:** `/draftkings/sportsbook/futures` for a league's
+  championship/award odds, compared against `/espn/rankings` for the
+  editorial consensus.
 
 ## Notes & limits
 

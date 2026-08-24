@@ -1,13 +1,13 @@
 ---
 name: business-review-trust-research
-description: Researches software/SaaS products and business reputation via the Crawlora API — Product Hunt launches/makers/alternatives, Trustpilot business reviews, TrustMRR revenue-verified startups, Capterra software reviews, and BBB (Better Business Bureau) business profiles, complaint history, and Scam Tracker reports — returning clean JSON. Use when the user wants a product's launch/review history, a company's Trustpilot or BBB reputation, a startup's verified revenue, or software alternatives/reviews before buying.
+description: Researches software/SaaS products, business reputation, and crowdfunding campaigns via the Crawlora API — Product Hunt launches/makers/alternatives, Trustpilot business reviews, TrustMRR revenue-verified startups, Capterra software reviews, BBB (Better Business Bureau) business profiles/complaint history/Scam Tracker reports, and Kickstarter campaign discovery/funding/updates/comments — returning clean JSON. Use when the user wants a product's launch/review history, a company's Trustpilot or BBB reputation, a startup's verified revenue, software alternatives/reviews before buying, or a crowdfunding campaign's funding status and backer updates.
 ---
 
 # Business & software review research
 
 Look up product launches, business reputation, verified startup revenue,
-and software reviews across five platforms as normalized JSON from the
-Crawlora API — no scraping review-site pages.
+software reviews, and crowdfunding campaigns across six platforms as
+normalized JSON from the Crawlora API — no scraping review-site pages.
 
 ## When to use this skill
 
@@ -16,6 +16,7 @@ Crawlora API — no scraping review-site pages.
 - "How much revenue does this startup actually make?" (TrustMRR — payment-provider-verified)
 - "What are the reviews / alternatives for this software?" (Capterra)
 - "Is this business BBB accredited? What's its rating, and any complaints or scam reports against it?" (BBB)
+- "How's this Kickstarter campaign doing? What updates has the creator posted?"
 - Vendor due-diligence before buying or partnering.
 
 ## Setup (one-time)
@@ -50,6 +51,13 @@ Crawlora API — no scraping review-site pages.
    `/bbb/category` browses by industry; `/bbb/scamtracker/search` and
    `/bbb/scamtracker/{id}` cover consumer-reported scam listings, with
    `/bbb/scamtracker/state-stats` for state/province aggregates.
+6. **Kickstarter** — `/kickstarter/discover` (`term` free-text and/or
+   `category_id`, plus `state`/`sort`/`staff_pick_only`) to browse or
+   search campaigns, then `/kickstarter/project` (`creator`+`slug`, both
+   the corresponding path segments of the campaign URL) for the funding
+   snapshot (goal, pledged, percent funded, backers, status).
+   `/kickstarter/updates` and `/kickstarter/comments` (same `creator`+`slug`)
+   cover the creator's update feed and the campaign's comment thread.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
 
@@ -71,6 +79,10 @@ scripts/crawlora.sh /capterra/search q="project management software" | jq '.'
 
 # BBB:
 scripts/crawlora.sh /bbb/search q="acme plumbing" | jq '.'
+
+# Kickstarter:
+scripts/crawlora.sh /kickstarter/discover term="board game" | jq '.'
+scripts/crawlora.sh /kickstarter/project creator=<creator-slug> slug=<project-slug> | jq '.'
 ```
 
 Raw `curl` fallback:
@@ -83,7 +95,8 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 ## Endpoint reference
 
 See [`reference/endpoints.md`](reference/endpoints.md) for every Product
-Hunt, Trustpilot, TrustMRR, Capterra, and BBB endpoint this skill uses.
+Hunt, Trustpilot, TrustMRR, Capterra, BBB, and Kickstarter endpoint this
+skill uses.
 
 ## Examples
 
@@ -98,6 +111,9 @@ Hunt, Trustpilot, TrustMRR, Capterra, and BBB endpoint this skill uses.
 - **Local-business trust check:** `/bbb/search` + `/bbb/business` (rating,
   accreditation) + `/bbb/business/complaints` before hiring a contractor
   or vendor; cross-check `/bbb/scamtracker/search` for reported scams.
+- **Campaign due diligence:** `/kickstarter/project` (funding snapshot) +
+  `/kickstarter/updates` (has the creator been communicating?) before
+  backing a campaign.
 
 ## Notes & limits
 
@@ -108,4 +124,8 @@ Hunt, Trustpilot, TrustMRR, Capterra, and BBB endpoint this skill uses.
 - **Trustpilot's `slug` is usually the business's domain** (e.g.
   `acmecorp.com`), not a display name — resolve via
   `/trustpilot/business-units/search` if unsure.
+- **Kickstarter's `creator`+`slug` are the two path segments of a project
+  URL** (`kickstarter.com/projects/{creator}/{slug}`) — copy them directly
+  from a campaign link or a `/kickstarter/discover` result rather than
+  guessing.
 - Reviews/lists are paginated — pass `page` to walk beyond the first page.
