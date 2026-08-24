@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**129 endpoints across 20 platform group(s).**
+**181 endpoints across 28 platform group(s).**
 
 ## Amazon (3)
 
@@ -821,3 +821,331 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /zara/suggest`
 - **What:** Get Zara search-box suggestions for a partial keyword. Returns Zara's own search-suggestion (typeahead) results for a partial keyword, the same suggestions shown while typing into Zara's search box. A nonsense query returns a normal response with an empty suggestions array rather than a fallback/recommended set.
 - **Params:** `query` (string, **required**) — Partial search keyword
+
+## Adidas (5)
+
+### `adidas_product`
+
+- **HTTP:** `GET /adidas/product`
+- **What:** Get an Adidas product. Returns normalized product-detail data for one Adidas SKU: name, brand, category, description, pricing (current/standard/sale), images, and every purchasable size variant. product_id is the Adidas SKU (e.g. JI0397), taken from a search result's products[].id field or the trailing segment of an Adidas product page URL. An unknown product_id returns a not-found error.
+- **Params:** `product_id` (string, **required**) — Adidas SKU/product id, from a search result's products[].id field
+
+### `adidas_search`
+
+- **HTTP:** `GET /adidas/search`
+- **What:** Search or browse Adidas products. Searches Adidas.com product listings by keyword, or browses a category listing by taxonomy slug, with real pagination and sort options. Exactly one of query or category is required. Returns normalized product summaries (title, price, rating, images, color variants) plus facet filter groups, sort options, and (for category browse) a breadcrumb trail. Keyword search is best-effort relevance, not a guaranteed match: an obscure keyword returns whatever Adidas's own search index surfaces. A genuinely empty keyword search returns an empty product list, and requesting a page beyond the available result pages (or an unknown category) returns a not-found error. Category values are the path segment after /us/ in an Adidas category URL (e.g. women-athletic_sneakers); they can also be read from the url fields of a search/category response's own filters and breadcrumbs.
+- **Params:** `category` (string, optional) — Category/taxonomy slug, the path segment after /us/ in an Adidas category URL. Exactly one of query or category is required.; `page` (integer, optional) — One-based page number, defaults to 1; `query` (string, optional) — Search keyword. Exactly one of query or category is required.; `sort` (string, optional) — Sort order. Allowed values: price-low-to-high, newest-to-oldest, top-sellers, price-high-to-low. Omitted means relevance.
+
+### `adidas_store`
+
+- **HTTP:** `GET /adidas/store`
+- **What:** Get an Adidas store. Returns normalized detail for one Adidas retail store: name, status, phone, description, full address, coordinates, opening hours, and in-store services (e.g. Click and Collect, Free Wi-Fi). store_id is the numeric Adidas store id, taken from an adidas-stores response's stores[].id field. An unknown store_id returns a not-found error.
+- **Params:** `store_id` (string, **required**) — Adidas store id, from a stores response's stores[].id field
+
+### `adidas_stores`
+
+- **HTTP:** `GET /adidas/stores`
+- **What:** Find nearby Adidas stores. Returns Adidas physical retail stores nearest to a coordinate, sourced from Adidas's own store-finder API: name, address, phone, coordinates, distance in miles, opening hours, and in-store feature flags. lat and lng are both required. Adidas's upstream ignores a caller-supplied radius and returns the nearest ~20 stores ordered by distance. A location with no stores returns an empty list rather than an error.
+- **Params:** `lat` (number, **required**) — Latitude, -90 to 90; `lng` (number, **required**) — Longitude, -180 to 180; `page` (integer, optional) — Zero-based page number, defaults to 0
+
+### `adidas_suggest`
+
+- **HTTP:** `GET /adidas/suggest`
+- **What:** Get Adidas search suggestions. Returns the top matching products for a partial query, the same search-as-you-type preview Adidas's own search box shows. Adidas has no separate term-autocomplete index, so each suggestion is a matching product (id, title, url, image, price) rather than a completed search phrase. Best-effort relevance: an obscure query returns whatever Adidas's own search surfaces.
+- **Params:** `query` (string, **required**) — Partial search query
+
+## Best Buy (11)
+
+### `bestbuy_brands`
+
+- **HTTP:** `GET /bestbuy/brands`
+- **What:** Get Best Buy's full brand directory. Returns Best Buy's full brand directory (name, category id, url), sourced from the site's own "Name Brands" page. Each id is directly usable as bestbuy_category's category_id input.
+- **Params:** _none_
+
+### `bestbuy_categories`
+
+- **HTTP:** `GET /bestbuy/categories`
+- **What:** Get Best Buy's top-level shopping departments. Returns Best Buy's top-level shopping departments (name, category id, url), sourced from the homepage's own category carousel. Each id is directly usable as bestbuy_category's category_id input.
+- **Params:** _none_
+
+### `bestbuy_categories_trending`
+
+- **HTTP:** `GET /bestbuy/categories/trending`
+- **What:** Get Best Buy's fine-grained trending product-type categories. Returns Best Buy's fine-grained, often deeply-nested product-type categories (e.g. "Windows Laptops", "55-Inch TVs (55 - 64 in)", "PS5 Consoles") sourced from the homepage's own "Best Selling" section -- much more specific than bestbuy_categories' ~25 top-level departments. Each id is directly usable as bestbuy_category's category_id input.
+- **Params:** _none_
+
+### `bestbuy_category`
+
+- **HTTP:** `GET /bestbuy/category`
+- **What:** Get a Best Buy category's product listing. Returns one page (up to 24) of one Best Buy category's normalized product listing (sku, title, url, image, price, rating, review count). category_id is a Best Buy category id, e.g. pcmcat138500050001, found in a category page URL's trailing <id>.c?id=<id> segment. page is the optional 1-indexed page number (defaults to 1); requesting a page past the last one returns an empty products list, not an error.
+- **Params:** `category_id` (string, **required**) — Best Buy category id; `page` (integer, optional) — 1-indexed page number, defaults to 1
+
+### `bestbuy_category_subcategories`
+
+- **HTTP:** `GET /bestbuy/category/subcategories`
+- **What:** Get a Best Buy category's own sibling/child categories. Returns a Best Buy category's own sibling/child category set (name, category id, url), sourced from that category page's own "Category" filter facet. Each id is directly usable as bestbuy_category's category_id input. category_id is a Best Buy category id, e.g. pcmcat138500050001, found in a category page URL's trailing <id>.c?id=<id> segment. A leaf category with no siblings returns an empty list, not an error.
+- **Params:** `category_id` (string, **required**) — Best Buy category id
+
+### `bestbuy_product`
+
+- **HTTP:** `GET /bestbuy/product`
+- **What:** Get a Best Buy product's detail. Returns one Best Buy product's normalized detail (name, brand, model, color, price, availability, rating, images, breadcrumbs), sourced from the product page's own schema.org Product structured-data block. sku is the numeric Best Buy SKU shown on bestbuy.com product pages and URLs.
+- **Params:** `sku` (string, **required**) — Numeric Best Buy SKU
+
+### `bestbuy_product_questions`
+
+- **HTTP:** `GET /bestbuy/product/questions`
+- **What:** Get a Best Buy product's customer questions and answers. Returns the customer questions (with answers, when present) Best Buy embeds directly on a product's page: question text, answer text, who answered, and when. sku is the numeric Best Buy SKU shown on bestbuy.com product pages and URLs. A product with no questions asked yet returns an empty list, not an error.
+- **Params:** `sku` (string, **required**) — Numeric Best Buy SKU
+
+### `bestbuy_product_related`
+
+- **HTTP:** `GET /bestbuy/product/related`
+- **What:** Get a Best Buy product's related products. Returns the organic (non-sponsored) related products Best Buy embeds in a product page's own comparison table (sku, name, url, image, price). sku is the numeric Best Buy SKU shown on bestbuy.com product pages and URLs. A product page with no comparison table returns an empty list, not an error.
+- **Params:** `sku` (string, **required**) — Numeric Best Buy SKU
+
+### `bestbuy_product_reviews`
+
+- **HTTP:** `GET /bestbuy/product/reviews`
+- **What:** Get a Best Buy product's customer reviews. Returns page 1 (up to 20) of one Best Buy product's normalized customer reviews (rating, title, text, author, posted date, tags such as Verified Purchaser, recommended flag, helpful/unhelpful counts), sourced from the product's dedicated reviews page. sku is the numeric Best Buy SKU shown on bestbuy.com product pages and URLs.
+- **Params:** `sku` (string, **required**) — Numeric Best Buy SKU
+
+### `bestbuy_search`
+
+- **HTTP:** `GET /bestbuy/search`
+- **What:** Search Best Buy's product catalog. Returns one page (up to 24) of one Best Buy keyword search's normalized product listing (sku, title, url, image, price, rating, review count). q is free-text search keywords, e.g. "laptop". page is the optional 1-indexed page number (defaults to 1); requesting a page past the last one returns an empty products list, not an error.
+- **Params:** `page` (integer, optional) — 1-indexed page number, defaults to 1; `q` (string, **required**) — Search keywords
+
+### `bestbuy_stores`
+
+- **HTTP:** `GET /bestbuy/stores`
+- **What:** Get Best Buy's physical stores in one city. Returns Best Buy's physical store locations in one city (name, address, phone, coordinates, rating, hours), sourced from Best Buy's own SEO store directory. state is one of the 50 US state codes plus dc and pr: `al`, `ak`, `az`, `ar`, `ca`, `co`, `ct`, `de`, `dc`, `fl`, `ga`, `hi`, `id`, `il`, `in`, `ia`, `ks`, `ky`, `la`, `me`, `md`, `ma`, `mi`, `mn`, `ms`, `mo`, `mt`, `ne`, `nv`, `nh`, `nj`, `nm`, `ny`, `nc`, `nd`, `oh`, `ok`, `or`, `pa`, `pr`, `ri`, `sc`, `sd`, `tn`, `tx`, `ut`, `vt`, `va`, `wa`, `wv`, `wi`, `wy`. city is free text matched case-insensitively against that state's own directory (e.g. "Chicago").
+- **Params:** `city` (string, **required**) — City name; `state` (string, **required**) — Two-letter state/territory code
+
+## Home Depot (5)
+
+### `homedepot_categories`
+
+- **HTTP:** `GET /homedepot/categories`
+- **What:** Home Depot department taxonomy. Returns Home Depot's top-level department taxonomy (name, path, url) from the homepage's own "All Departments" navigation. Each department's path is directly usable as GET /homedepot/category's path parameter.
+- **Params:** _none_
+
+### `homedepot_category`
+
+- **HTTP:** `GET /homedepot/category`
+- **What:** Browse a Home Depot category or brand page. Returns one Home Depot category or brand browse page's product grid (page 1 only): normalized products with title, image, model, current/original price, and rating/review count, plus the category's total result count. path is the segment of a /b/ URL after "/b/", e.g. "Tools-Power-Tools-Drills-Impact-Drivers/N-5yc1vZc29x"; a full https://www.homedepot.com/b/... URL or a "/b/..." path is also accepted. An unrecognized or blocked path returns an upstream error rather than an empty result.
+- **Params:** `path` (string, **required**) — Home Depot category/brand browse path, e.g. \
+
+### `homedepot_product`
+
+- **HTTP:** `GET /homedepot/product/{id}`
+- **What:** Home Depot product detail. Returns one Home Depot product's full detail: name, description, brand, model, store SKU, GTIN, price, images, aggregate rating and review count, and the featured customer reviews embedded on the product page. id is the numeric product/internet id (the trailing number of a /p/{slug}/{id} URL). The product page does not distinguish an unknown id from a known one in a consistent way, so an unrecognized id may return an upstream error rather than a not-found.
+- **Params:** `id` (string, **required**) — Home Depot product/internet id, e.g. 320326875
+
+### `homedepot_product_questions`
+
+- **HTTP:** `GET /homedepot/product/{id}/questions`
+- **What:** Home Depot product questions and answers. Returns the first page (8 questions) of a Home Depot product's customer questions and answers, plus the product's total Q&A count. id is the numeric product/internet id. A product with no Q&A returns a genuine zero-result response rather than an error.
+- **Params:** `id` (string, **required**) — Home Depot product/internet id, e.g. 328425526
+
+### `homedepot_search`
+
+- **HTTP:** `GET /homedepot/search`
+- **What:** Home Depot keyword search. Returns one page (up to 24 products) of a Home Depot keyword search's product listing: normalized products with title, image, model, current/original price, and rating/review count, plus the search's total result count. q is free-text search keywords, e.g. "impact driver". page is a 1-indexed page number (default 1). An unrecognized/blocked query returns an upstream error rather than an empty result.
+- **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `q` (string, **required**) — Free-text search keywords, e.g. \
+
+## Sephora (7)
+
+### `sephora_category`
+
+- **HTTP:** `GET /sephora/category`
+- **What:** Sephora category browse. Returns one page of a Sephora category/browse listing (e.g. Makeup, Skincare), with the same sort and facet filters as /sephora/search. slug is the path segment after sephora.com/shop/, e.g. makeup-cosmetics. The response uses Sephora's public catalog search to keep browse listings available when the category page's legacy embedded data is absent.
+- **Params:** `brand` (array, optional) — One or more exact brand names to filter to (OR'd together); repeat the param for multiple values; `filter` (array, optional) — Additional facet:value filters, repeat the param for multiple; facet must be one of: benefits, ingredientpreferences, colorfamily, formulation, size, shoppingpreferences, agerange, skintype, finish, skinconcerns, coverage, hairtype, hairconcerns, hairtexture; `is_new` (boolean, optional) — When true, filters to products flagged New; `page` (integer, optional) — Result page, 1-based, defaults to 1; `price_max` (integer, optional) — Maximum price in whole dollars; must be set together with price_min; `price_min` (integer, optional) — Minimum price in whole dollars; must be set together with price_max; `rating_min` (integer, optional) — Minimum star rating, 1 to 4; `slug` (string, **required**) — Category-page slug; `sort_by` (string, optional) — Sort order, defaults to featured
+
+### `sephora_product`
+
+- **HTTP:** `GET /sephora/product`
+- **What:** Sephora product detail. Returns one Sephora product's full detail (every color/shade variant with its own price and availability, rating, review count, and a sample of recent reviews), from Sephora's credential-free public JSON-LD. `product_id` is the full product-page slug, e.g. `lip-sleeping-mask-P420652` -- copy it from the path segment after sephora.com/product/ on any product page; unlike some other retailers, an arbitrary or partial slug does not resolve.
+- **Params:** `product_id` (string, **required**) — Full Sephora product-page slug
+
+### `sephora_product_questions`
+
+- **HTTP:** `GET /sephora/product/questions`
+- **What:** Sephora product questions and answers. Returns one page of a Sephora product's customer Q&A: each question plus every answer it received (text, author, whether it's a brand answer, helpful votes). product_id is the Sephora productGroupID, e.g. P420652 -- the same value /sephora/product returns as product_group_id.
+- **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Sephora productGroupID
+
+### `sephora_product_reviews`
+
+- **HTTP:** `GET /sephora/product/reviews`
+- **What:** Sephora product reviews. Returns one page of a Sephora product's full customer reviews (title, body, rating, author, helpful votes, secondary ratings, photos), plus the product's site-wide rating rollup (average rating, recommended ratio, star-count histogram). product_id is the Sephora productGroupID, e.g. P420652 -- the same value /sephora/product returns as product_group_id.
+- **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Sephora productGroupID
+
+### `sephora_search`
+
+- **HTTP:** `GET /sephora/search`
+- **What:** Sephora product search. Searches Sephora's product catalog by keyword, with real page-based pagination. Returns normalized products with brand, pricing, rating, and review count. Sephora's own search never returns a genuine zero-result state for a nonempty keyword -- an unrecognized/nonsense keyword still returns a full, unrelated fallback result set rather than an empty one. price_min/price_max must be provided together (whole dollars) -- upstream silently ignores a one-sided price range rather than filtering or erroring, so this endpoint rejects a one-sided range as invalid instead of passing it through. brand and filter each accept multiple values (OR'd together within the same facet); brand/rating_min/is_new/filter/price_min/price_max can all be combined with each other (AND'd together across different facets).
+- **Params:** `brand` (array, optional) — One or more exact brand names to filter to (OR'd together); repeat the param for multiple values; `filter` (array, optional) — Additional facet:value filters, repeat the param for multiple; facet must be one of: benefits, ingredientpreferences, colorfamily, formulation, size, shoppingpreferences, agerange, skintype, finish, skinconcerns, coverage, hairtype, hairconcerns, hairtexture; `is_new` (boolean, optional) — When true, filters to products flagged New; `page` (integer, optional) — Result page, 1-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 100, defaults to 60; `price_max` (integer, optional) — Maximum price in whole dollars; must be set together with price_min; `price_min` (integer, optional) — Minimum price in whole dollars; must be set together with price_max; `query` (string, **required**) — Search keyword; `rating_min` (integer, optional) — Minimum star rating, 1 to 4; `sort_by` (string, optional) — Sort order, defaults to featured
+
+### `sephora_stores`
+
+- **HTTP:** `GET /sephora/stores`
+- **What:** Sephora store locator. Returns Sephora physical store locations near a coordinate (address, hours, BOPIS/curbside/same-day flags). Renders through a JS-executing browser backend, unlike every other Sephora endpoint -- the store-locator data call itself is plain HTTP, but it requires a per-visit access token minted by an endpoint gated behind a bot-management JS challenge, so responses may take longer.
+- **Params:** `latitude` (number, **required**) — Latitude, -90 to 90; `limit` (integer, optional) — Max stores to return, 1 to 50, defaults to 10; `longitude` (number, **required**) — Longitude, -180 to 180; `radius` (integer, optional) — Search radius in miles, 1 to 500, defaults to 50
+
+### `sephora_suggest`
+
+- **HTTP:** `GET /sephora/suggest`
+- **What:** Sephora search suggestions. Returns Sephora's own search-box type-ahead suggestions for a partial keyword: keyword-completion terms, matching products, and trending/related categories. Sephora's own upstream never returns a genuine zero-result state for a nonempty query -- a deliberately nonsense query still returns unrelated product suggestions.
+- **Params:** `query` (string, **required**) — Partial search keywords
+
+## SHEIN (8)
+
+### `shein_category_filters`
+
+- **HTTP:** `GET /shein/category/filters`
+- **What:** SHEIN category filter facets. Returns the filter facets (sizes, colors, materials, …) and price range for a SHEIN category.
+- **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id
+
+### `shein_category_goods`
+
+- **HTTP:** `GET /shein/category/goods`
+- **What:** SHEIN category product listing. Returns SHEIN's product listing for a category, with the same normalized product-card fields as product search.
+- **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page; `sort` (string, optional) — SHEIN sort code
+
+### `shein_category_nav`
+
+- **HTTP:** `GET /shein/category/nav`
+- **What:** SHEIN category nav tabs. Returns the subcategory navigation tabs for a SHEIN category, each with a representative product.
+- **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id
+
+### `shein_products_aggregation_filters`
+
+- **HTTP:** `POST /shein/products/aggregation-filters`
+- **What:** SHEIN search aggregation filters. Returns the selectable category/brand/size/color filter facets and price range for a SHEIN search query.
+- **Params:** `cat_id` (string, optional) — Numeric SHEIN category id, narrows the facets; `keyword` (string, **required**) — Free-text search query
+
+### `shein_products_detail`
+
+- **HTTP:** `GET /shein/products/detail`
+- **What:** SHEIN product detail. Returns a SHEIN product's detail: identity, copy, price, images, sizes/stock, color variants, and category/brand.
+- **Params:** `goods_id` (string, **required**) — Numeric SHEIN goods id (from a search result's goods_id); `goods_sn` (string, optional) — SHEIN goods serial number, narrows the lookup
+
+### `shein_products_search`
+
+- **HTTP:** `POST /shein/products/search`
+- **What:** SHEIN product search. Returns SHEIN's product search results for a free-text keyword, with normalized name/price/rating/image fields per card.
+- **Params:** `keyword` (string, **required**) — Free-text search query; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page; `sort` (string, optional) — SHEIN sort code
+
+### `shein_search_autocomplete`
+
+- **HTTP:** `POST /shein/search/autocomplete`
+- **What:** SHEIN search autocomplete. Returns SHEIN's search typeahead suggestions for a partial search query.
+- **Params:** `word` (string, **required**) — Partial search query
+
+### `shein_search_keywords`
+
+- **HTTP:** `POST /shein/search/keywords`
+- **What:** SHEIN trending search keywords. Returns the trending search keywords SHEIN's app surfaces in its search box.
+- **Params:** `scene` (string, optional) — Keyword scene (trendStoreChannel); `word_type` (string, optional) — Keyword type (1)
+
+## Walgreens (1)
+
+### `walgreens_stores`
+
+- **HTTP:** `GET /walgreens/stores`
+- **What:** Find nearby Walgreens stores. Returns Walgreens stores near a latitude/longitude or a zip code, nearest first: name, address, phone, hours, and in-store services (pharmacy, clinic, photo, and more) for each. Public data sourced from Walgreens' own store locator.
+- **Params:** `latitude` (number, optional) — Latitude; provide with longitude, or provide zip instead; `longitude` (number, optional) — Longitude; provide with latitude, or provide zip instead; `zip` (string, optional) — US ZIP code; used when latitude/longitude are omitted
+
+## IKEA (8)
+
+### `ikea_availability`
+
+- **HTTP:** `GET /ikea/availability`
+- **What:** Get an IKEA item's real-time stock availability. Returns one IKEA item's real-time home-delivery and click-and-collect stock signal for the requested country. item_no is IKEA's own item number.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `item_no` (string, **required**) — IKEA item number
+
+### `ikea_category`
+
+- **HTTP:** `GET /ikea/category`
+- **What:** Browse an IKEA category. Returns one page of an IKEA category's product listing, with real offset/size pagination and sort. category is IKEA's own category key (e.g. 20649), taken from a category URL's trailing -{key}/ segment or a product's own category_path field.
+- **Params:** `category` (string, **required**) — IKEA category key; `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code; `offset` (integer, optional) — Zero-based result offset; `size` (integer, optional) — Result count (1-100); `sort` (string, optional) — Result order
+
+### `ikea_product`
+
+- **HTTP:** `GET /ikea/product`
+- **What:** Get an IKEA product's detail. Returns one IKEA item's full normalized detail: name, price, rating, every product image, quick facts, and category breadcrumb path. item_no is IKEA's own item number (8 digits, optionally prefixed with "s" for a combination/set article), taken from a search result's item_no field or an ikea.com product page's own URL.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `item_no` (string, **required**) — IKEA item number; `language` (string, optional) — Lowercase 2-letter IKEA site language code
+
+### `ikea_reviews`
+
+- **HTTP:** `GET /ikea/reviews`
+- **What:** Get an IKEA item's highlighted customer reviews. Returns one IKEA item's own highlighted customer reviews (title, rating, text, author) plus its aggregate rating, sourced from the product page's own curated reviews carousel. This is a small, representative set of reviews (a handful per item), not the full paginated review list.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `item_no` (string, **required**) — IKEA item number; `language` (string, optional) — Lowercase 2-letter IKEA site language code
+
+### `ikea_search`
+
+- **HTTP:** `GET /ikea/search`
+- **What:** Search IKEA products. Searches IKEA products and returns normalized name, price, rating, images, colors, and variant data. q is a free-text query; an IKEA item number also resolves as its own single result. country and language select IKEA's per-country site (default us/en). A zero total with an empty products list is a valid no-results response.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code; `q` (string, **required**) — Free-text product search query; `size` (integer, optional) — Result count (1-100)
+
+### `ikea_store`
+
+- **HTTP:** `GET /ikea/store`
+- **What:** Get an IKEA store's detail. Returns one IKEA physical location's full detail: address, geo coordinates, opening hours, and price range. slug is IKEA's own store URL slug, taken from an ikea_stores result's own slug field. Geo, hours, and price range are only present for full/small stores; order points and pick-up-only points return address only.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code; `slug` (string, **required**) — IKEA store URL slug
+
+### `ikea_stores`
+
+- **HTTP:** `GET /ikea/stores`
+- **What:** List IKEA physical store locations. Returns IKEA's own directory of physical locations for the requested country: name, URL slug, region grouping, and location type (Store, Small store, Plan & order point with pick-up, etc). Each slug is usable directly as ikea_store's own slug input.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code
+
+### `ikea_suggest`
+
+- **HTTP:** `GET /ikea/suggest`
+- **What:** Get IKEA search-box typeahead suggestions. Returns IKEA's own search-box typeahead result for a partial or full query: suggested query completions with their own match counts, plus a small number of top matching products. A query with no matches returns a clean empty response.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code; `q` (string, **required**) — Partial or full search term; `size` (integer, optional) — Top-product count (1-20)
+
+## Chewy (7)
+
+### `chewy_categories`
+
+- **HTTP:** `GET /chewy/categories`
+- **What:** Browse Chewy's category taxonomy tree. Returns Chewy's category taxonomy tree: how to discover group_id values for chewy_category, not the products within a category. Omitting group_id returns all top-level departments (Dog, Cat, Horse, Bird, Fish, Reptile, Small Pet, Farm and Livestock Supplies, Wild Bird and Wildlife Supplies, Pharmacy, Pet Parents); a group_id expands that specific group's own subtree instead. depth controls how many levels of subcategories are expanded in one call.
+- **Params:** `depth` (integer, optional) — How many levels of subcategories to expand, 1 to 3 (default 2); `group_id` (string, optional) — Chewy category group id to expand, e.g. 332 for Dog Food. Omit for the full top-level department tree.
+
+### `chewy_category`
+
+- **HTTP:** `GET /chewy/category`
+- **What:** Browse a Chewy category listing. Returns one page (36 products) of a Chewy category/browse listing's product grid (price, autoship price/discount, stock, rating, images), plus embedded facets and breadcrumbs. group_id is Chewy's own numeric category id -- the trailing id segment of a chewy.com/b/<slug>-<id> browse URL, e.g. 294 for /b/dry-food-294. Every breadcrumbs[].group_id and facets[].options[].value in a response is a ready-to-use group_id for a follow-up call, so a caller can discover the full category taxonomy starting from a known category. A group_id Chewy does not recognize returns a 404 rather than an unfiltered listing. sort and filter narrow/reorder the listing; every facets[].value paired with one of that facet's options[].value from any prior response is a valid filter key:value pair (e.g. brand, breed size, flavor, price range, customer rating -- whichever facets that category exposes).
+- **Params:** `filter` (array, optional) — Repeatable, up to 10. Each value is \; `group_id` (string, **required**) — Chewy's numeric category id, e.g. \; `page` (integer, optional) — Page number, 36 products per page (default 1); `sort` (string, optional) — Sort order. One of byRelevance, byNewest, byPopularity, byLowestPrice, byHighestPrice, byRating, byRatingCount. Defaults to Chewy's own relevance ordering when omitted.
+
+### `chewy_gtin_lookup`
+
+- **HTTP:** `GET /chewy/gtin-lookup`
+- **What:** Resolve Chewy GTIN/UPC barcodes to part numbers. Resolves a batch of up to 20 GTIN/UPC barcodes to their Chewy part numbers in one call. gtins is a comma-separated list of barcodes, e.g. "192268541316". A barcode Chewy does not recognize is omitted from part_numbers and listed in not_found rather than causing the whole call to fail. The resolved part_numbers values feed directly into chewy_product/chewy_products.
+- **Params:** `gtins` (string, **required**) — Comma-separated GTIN/UPC barcodes, up to 20
+
+### `chewy_product`
+
+- **HTTP:** `GET /chewy/product`
+- **What:** Get a Chewy product's detail. Returns one Chewy product's full normalized detail: name, brand, description, images, price, stock, rating and its star-count breakdown, category breadcrumbs, customer questions and answers, and customer reviews. id is the numeric id from a chewy.com PDP URL, e.g. 185468 from https://www.chewy.com/frisco-lion-mane-dog-cat-costume/dp/185468 -- also the same value a chewy_category response's products[].part_number field carries for that product's own default variant.
+- **Params:** `id` (string, **required**) — Numeric id from a chewy.com PDP URL
+
+### `chewy_products`
+
+- **HTTP:** `GET /chewy/products`
+- **What:** Get a batch of Chewy products' lightweight summaries. Returns a batch of up to 20 Chewy products' lightweight summaries (price, rating, stock, images) in one call. part_numbers is a comma-separated list of Chewy part numbers, e.g. "52448,767758" -- the same value chewy_product returns as part_number/parent_part_number, and chewy_category/chewy_search return as products[].part_number. A part number Chewy does not recognize is omitted from products and listed in not_found rather than causing the whole call to fail.
+- **Params:** `part_numbers` (string, **required**) — Comma-separated Chewy part numbers, up to 20
+
+### `chewy_search`
+
+- **HTTP:** `GET /chewy/search`
+- **What:** Search Chewy by keyword. Returns one page of a Chewy keyword search's normalized product listing (price, autoship price/discount, stock, rating, images), plus embedded facets. q is free-text search keywords, e.g. "salmon dog food". A generic query that strongly matches one of Chewy's own categories (e.g. "dog food", "cat litter", "leash") is transparently redirected to that category's listing, the same real results a chewy.com visitor would see -- source_url reflects the actual listing fetched. sort and filter narrow/reorder the listing; every facets[].value paired with one of that facet's options[].value from any prior response is a valid filter key:value pair.
+- **Params:** `filter` (array, optional) — Repeatable, up to 10. Each value is \; `page` (integer, optional) — Page number, 36 products per page (default 1); `q` (string, **required**) — Free-text search keywords; `sort` (string, optional) — Sort order. One of byRelevance, byNewest, byPopularity, byLowestPrice, byHighestPrice, byRating, byRatingCount. Defaults to Chewy's own relevance ordering when omitted.
+
+### `chewy_suggest`
+
+- **HTTP:** `GET /chewy/suggest`
+- **What:** Chewy search-box typeahead suggestions. Returns Chewy's own search-box typeahead result for a partial query term: search-term suggestions (some resolving directly to a category/brand browse URL via their own url field) plus a handful of educational-content article suggestions. term is a partial query, e.g. "salmon dog" or "blue buff".
+- **Params:** `term` (string, **required**) — Partial search text

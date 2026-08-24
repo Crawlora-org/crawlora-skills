@@ -1,6 +1,6 @@
 ---
 name: shopify-research
-description: Researches independent Shopify-powered storefronts — products, collections, pages, sitemaps, search suggestions, and product recommendations — using the Crawlora API, returning clean JSON for any store by domain. Use when the user asks to audit a Shopify store's catalog, crawl its sitemap, look up a product or collection, or pull search/recommendation data — instead of scraping the store's pages directly.
+description: Researches independent Shopify-powered storefronts — products, collections, pages, sitemaps, search suggestions, and product recommendations — using the Crawlora API, returning clean JSON for any store by domain, plus 14 pre-wired DTC brand storefronts (Allbirds, Brooklinen, Cole Haan, Everlane, Fashion Nova, Gymshark, J.Crew, Kylie Cosmetics, Oh Polly, Quince, Rothy's, SKIMS, Steve Madden, The Body Shop). Use when the user asks to audit a Shopify store's catalog, crawl its sitemap, look up a product or collection, or pull search/recommendation data — instead of scraping the store's pages directly.
 ---
 
 # Shopify store research
@@ -9,7 +9,10 @@ Look up and crawl independent Shopify-powered storefronts — products,
 collections, pages, sitemaps, predictive search, and product recommendations
 — all as normalized JSON from the Crawlora API, with no HTML scraping. Works
 against any Shopify store by domain (not Shop.app; see the separate
-`shop-app-research` skill for that).
+`shop-app-research` skill for that), plus 14 brand storefronts with their own
+pre-wired, no-`url`-needed endpoints: Allbirds, Brooklinen, Cole Haan,
+Everlane, Fashion Nova, Gymshark, J.Crew, Kylie Cosmetics, Oh Polly, Quince,
+Rothy's, SKIMS, Steve Madden, and The Body Shop.
 
 ## When to use this skill
 
@@ -52,6 +55,11 @@ Every call takes the storefront's `url` (the store's public domain, e.g.
    store without paginating every list endpoint.
 7. **Search** — `/shopify/search/suggest` (`q=`, optional `types=`) returns
    predictive-search products, collections, and query suggestions.
+8. **Brand-pinned stores** — the same operations exist under a brand prefix
+   with no `url` param needed, e.g. `/allbirds/products`,
+   `/rothys/products/{handle}`, `/skims/sitemap/urls`. Use these instead of
+   `/shopify/...?url=...` when the user names one of the 14 pre-wired
+   brands directly.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
 
@@ -79,7 +87,8 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 ## Endpoint reference
 
 See [`reference/endpoints.md`](reference/endpoints.md) for every Shopify
-endpoint this skill uses (method, path, params, description).
+endpoint this skill uses (method, path, params, description), including
+the 14 brand-pinned mirrors.
 
 ## Examples
 

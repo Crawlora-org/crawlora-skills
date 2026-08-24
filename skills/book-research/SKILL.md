@@ -1,12 +1,13 @@
 ---
 name: book-research
-description: Researches books, authors, and audiobooks via the Crawlora API — Goodreads (books, authors, reviews, lists, quotes) and Apple Books (books, audiobooks, series, reviews, charts) — returning clean JSON. Use when the user wants a book's ratings/reviews, an author's bibliography, curated reading lists, or audiobook details and charts.
+description: Researches books, authors, and audiobooks via the Crawlora API — Goodreads (books, authors, reviews, lists, quotes), Apple Books (books, audiobooks, series, reviews, charts), and Audible (audiobook catalog search, product detail, narrators/series, reviews, charts, editorial lists) — returning clean JSON. Use when the user wants a book's ratings/reviews, an author's bibliography, curated reading lists, or audiobook details and charts.
 ---
 
 # Book & audiobook research
 
-Look up books, authors, reviews, and audiobooks across Goodreads and Apple
-Books as normalized JSON from the Crawlora API — no scraping book-catalog pages.
+Look up books, authors, reviews, and audiobooks across Goodreads, Apple
+Books, and Audible as normalized JSON from the Crawlora API — no scraping
+book-catalog pages.
 
 ## When to use this skill
 
@@ -14,7 +15,8 @@ Books as normalized JSON from the Crawlora API — no scraping book-catalog page
 - "What has this author written?" (bibliography, quotes)
 - "Give me a curated list" (Goodreads genre/lists pages).
 - "Find this on Apple Books / is there an audiobook?"
-- "What's charting on Apple Books right now?"
+- "What's charting on Apple Books / Audible right now?"
+- "Who narrates this audiobook, and what else is in the series?" (Audible)
 
 ## Setup (one-time)
 
@@ -37,6 +39,12 @@ Books as normalized JSON from the Crawlora API — no scraping book-catalog page
    `/reviews`, `/similar`), with `/apple-books/audiobook-series/{id}` and
    `/apple-books/series/{id}` for series. `/apple-books/charts` shows what's
    popular by country/genre.
+3. **Audible** — `/audible/search` (`keywords`) to find a title's `asin`,
+   then `/audible/product/{asin}` for detail (narrators, runtime, series)
+   plus `/audible/product/{asin}/reviews` and `/audible/product/{asin}/related`.
+   `/audible/series/{asin}` walks a series; `/audible/categories` and
+   `/audible/category/{id}` browse by genre; `/audible/charts` and
+   `/audible/list/{list}` cover bestseller/editorial lists.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
 
@@ -50,6 +58,9 @@ scripts/crawlora.sh /goodreads/book/54493401 | jq '.'
 # Apple Books:
 scripts/crawlora.sh /apple-books/search term="Project Hail Mary" | jq '.'
 scripts/crawlora.sh /apple-books/charts | jq '.'
+
+# Audible:
+scripts/crawlora.sh /audible/search keywords="Project Hail Mary" | jq '.'
 ```
 
 Raw `curl` fallback:
@@ -61,8 +72,8 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 
 ## Endpoint reference
 
-See [`reference/endpoints.md`](reference/endpoints.md) for every Goodreads
-and Apple Books endpoint this skill uses.
+See [`reference/endpoints.md`](reference/endpoints.md) for every Goodreads,
+Apple Books, and Audible endpoint this skill uses.
 
 ## Examples
 
@@ -72,8 +83,8 @@ and Apple Books endpoint this skill uses.
 - **"What should I read next?"** — `/apple-books/book/{id}/similar` or a
   Goodreads genre/list page for recommendations in a category.
 - **Audiobook vs. print check:** `/apple-books/book/{id}` alongside
-  `/apple-books/audiobook/search` for the same title to see if a narrated
-  edition exists.
+  `/apple-books/audiobook/search` or `/audible/search` for the same title
+  to see if a narrated edition exists and who narrates it.
 
 ## Notes & limits
 

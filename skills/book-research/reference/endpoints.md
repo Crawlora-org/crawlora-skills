@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**22 endpoints across 2 platform group(s).**
+**32 endpoints across 3 platform group(s).**
 
 ## Goodreads (10)
 
@@ -143,3 +143,65 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /apple-books/series/{id}`
 - **What:** Retrieve an Apple Books series and its full book list. Returns series metadata and the full ordered list of books in the series from Apple Books' public catalog page.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Apple Books numeric series ID; `lang` (string, optional) — Result language tag
+
+## Audible (10)
+
+### `audible_categories`
+
+- **HTTP:** `GET /audible/categories`
+- **What:** Get Audible's genre/category tree. Returns Audible's full genre/category tree (root genres with their subgenres), including the category ids accepted by GET /audible/search's category_id filter. Credential-free public catalog data from api.audible.com.
+- **Params:** _none_
+
+### `audible_category`
+
+- **HTTP:** `GET /audible/category/{id}`
+- **What:** Get one Audible category node. Returns one Audible category node and its immediate children by id — cheaper than fetching the full tree from GET /audible/categories when only one node is needed. Credential-free public catalog data from api.audible.com.
+- **Params:** `id` (string, **required**) — Audible category id from GET /audible/categories
+
+### `audible_charts`
+
+- **HTTP:** `GET /audible/charts`
+- **What:** Get an Audible chart (audible.com/charts). Returns one page of an Audible chart — a ranked list with real chart position, price, and rating that has no equivalent on api.audible.com's public JSON API. This is an HTML scrape of audible.com/charts, a different, less stable source class than the rest of this family, though its own filters (category, access level, language, duration, Audible-Originals-only) were individually verified to actually change results. category_id, access_level, and content_type=podcasts are mutually exclusive.
+- **Params:** `access_level` (string, optional) — Membership access level, default all; `category_id` (string, optional) — Restrict to a category id from GET /audible/categories; `chart` (string, optional) — Chart type, default most_listened; `content_type` (string, optional) — Content type, default audiobooks; `duration` (string, optional) — Runtime-length filter, default all; `language` (string, optional) — Language filter, default all; `originals_only` (boolean, optional) — Restrict to Audible Originals only; `page` (integer, optional) — 1-based result page, default 1, 20 results per page
+
+### `audible_editorial_list`
+
+- **HTTP:** `GET /audible/list/{list}`
+- **What:** Get an Audible curated editorial list. Returns one of Audible's hand-curated "Popular Lists" pages, normalized into its themed shelves (heading + ordered ASINs). This is an HTML scrape of a marketing/editorial page (audible.com), not api.audible.com's JSON API — pair an ASIN from any shelf with GET /audible/products (batch) or GET /audible/product/{asin} for full title/author/price/rating detail. "Best of the Year" is not covered — its layout has no consistent structure to parse.
+- **Params:** `list` (string, **required**) — Editorial list slug
+
+### `audible_product`
+
+- **HTTP:** `GET /audible/product/{asin}`
+- **What:** Get an Audible audiobook. Returns a normalized Audible audiobook: description, authors, narrators, series, category ladders, publisher, release date, runtime, language, sample audio URL, rating (overall/performance/story), and public list price. Credential-free public catalog data from api.audible.com.
+- **Params:** `asin` (string, **required**) — Audible ASIN
+
+### `audible_product_related`
+
+- **HTTP:** `GET /audible/product/{asin}/related`
+- **What:** Get Audible titles related to an audiobook. Returns Audible titles related to a given ASIN by a required relation type: same series, same narrator, same author, next in series, or raw upstream similarity. Credential-free public catalog data from api.audible.com.
+- **Params:** `asin` (string, **required**) — Audible ASIN; `limit` (integer, optional) — Max results, default 10, max 50; `similarity_type` (string, **required**) — How to relate titles to the given ASIN
+
+### `audible_product_reviews`
+
+- **HTTP:** `GET /audible/product/{asin}/reviews`
+- **What:** Get an Audible audiobook's customer reviews. Returns a page of an Audible audiobook's customer reviews (author, title, body, overall/performance/story ratings, helpful votes, submission date). Credential-free public catalog data from api.audible.com.
+- **Params:** `asin` (string, **required**) — Audible ASIN; `limit` (integer, optional) — Max reviews, default 10, max 50; `page` (integer, optional) — Zero-based result page, default 0
+
+### `audible_products`
+
+- **HTTP:** `GET /audible/products`
+- **What:** Get multiple Audible audiobooks in one call. Returns normalized Audible audiobooks for up to 50 ASINs in a single request — the same fields as GET /audible/product/{asin}. Unrecognized ASINs are silently omitted rather than failing the whole batch. Credential-free public catalog data from api.audible.com.
+- **Params:** `asins` (string, **required**) — Comma-separated Audible ASINs, up to 50
+
+### `audible_search`
+
+- **HTTP:** `GET /audible/search`
+- **What:** Search Audible's catalog. Searches Audible's audiobook catalog by keyword, title, author, narrator, or category id. At least one filter is required. Credential-free public catalog data from api.audible.com.
+- **Params:** `author` (string, optional) — Match by author name; `category_id` (string, optional) — Restrict to a category id from GET /audible/categories; `limit` (integer, optional) — Max results, default 10, max 50; `narrator` (string, optional) — Match by narrator name; `page` (integer, optional) — Zero-based result page, default 0; `q` (string, optional) — Free-text query matched across title, subtitle, and author; `title` (string, optional) — Match by title
+
+### `audible_series`
+
+- **HTTP:** `GET /audible/series/{asin}`
+- **What:** Get an Audible series' ordered book list. Returns an Audible series and every book in it, in series order. A series has its own ASIN distinct from any book in it — find one via a book's series[].asin field from GET /audible/product/{asin}. Credential-free public catalog data from api.audible.com.
+- **Params:** `asin` (string, **required**) — Audible series ASIN, from a product's series[].asin field

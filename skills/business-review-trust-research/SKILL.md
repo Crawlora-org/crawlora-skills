@@ -1,12 +1,12 @@
 ---
 name: business-review-trust-research
-description: Researches software/SaaS products and business reputation via the Crawlora API — Product Hunt launches/makers/alternatives, Trustpilot business reviews, TrustMRR revenue-verified startups, and Capterra software reviews — returning clean JSON. Use when the user wants a product's launch/review history, a company's Trustpilot reputation, a startup's verified revenue, or software alternatives/reviews before buying.
+description: Researches software/SaaS products and business reputation via the Crawlora API — Product Hunt launches/makers/alternatives, Trustpilot business reviews, TrustMRR revenue-verified startups, Capterra software reviews, and BBB (Better Business Bureau) business profiles, complaint history, and Scam Tracker reports — returning clean JSON. Use when the user wants a product's launch/review history, a company's Trustpilot or BBB reputation, a startup's verified revenue, or software alternatives/reviews before buying.
 ---
 
 # Business & software review research
 
 Look up product launches, business reputation, verified startup revenue,
-and software reviews across four platforms as normalized JSON from the
+and software reviews across five platforms as normalized JSON from the
 Crawlora API — no scraping review-site pages.
 
 ## When to use this skill
@@ -15,6 +15,7 @@ Crawlora API — no scraping review-site pages.
 - "What are people saying about <company> on Trustpilot?"
 - "How much revenue does this startup actually make?" (TrustMRR — payment-provider-verified)
 - "What are the reviews / alternatives for this software?" (Capterra)
+- "Is this business BBB accredited? What's its rating, and any complaints or scam reports against it?" (BBB)
 - Vendor due-diligence before buying or partnering.
 
 ## Setup (one-time)
@@ -42,6 +43,13 @@ Crawlora API — no scraping review-site pages.
    browses by category.
 4. **Capterra** — `/capterra/search` (`q`) to find a `product_id`, then
    `/capterra/product` for detail and `/capterra/product/reviews` for user reviews.
+5. **BBB (Better Business Bureau)** — `/bbb/search` (`q`) to find a business
+   profile URL, then `/bbb/business` for the profile (rating, accreditation)
+   plus `/bbb/business/reviews`, `/bbb/business/complaints`, and
+   `/bbb/business/more-info` for rating reasons and service area.
+   `/bbb/category` browses by industry; `/bbb/scamtracker/search` and
+   `/bbb/scamtracker/{id}` cover consumer-reported scam listings, with
+   `/bbb/scamtracker/state-stats` for state/province aggregates.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
 
@@ -60,6 +68,9 @@ scripts/crawlora.sh /trustmrr/leaderboard | jq '.'
 
 # Capterra:
 scripts/crawlora.sh /capterra/search q="project management software" | jq '.'
+
+# BBB:
+scripts/crawlora.sh /bbb/search q="acme plumbing" | jq '.'
 ```
 
 Raw `curl` fallback:
@@ -72,7 +83,7 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 ## Endpoint reference
 
 See [`reference/endpoints.md`](reference/endpoints.md) for every Product
-Hunt, Trustpilot, TrustMRR, and Capterra endpoint this skill uses.
+Hunt, Trustpilot, TrustMRR, Capterra, and BBB endpoint this skill uses.
 
 ## Examples
 
@@ -84,6 +95,9 @@ Hunt, Trustpilot, TrustMRR, and Capterra endpoint this skill uses.
 - **Bootstrapped-revenue research:** `/trustmrr/startup/{slug}` for one
   company's verified MRR trend, or `/trustmrr/leaderboard` for the top
   earners in a category.
+- **Local-business trust check:** `/bbb/search` + `/bbb/business` (rating,
+  accreditation) + `/bbb/business/complaints` before hiring a contractor
+  or vendor; cross-check `/bbb/scamtracker/search` for reported scams.
 
 ## Notes & limits
 

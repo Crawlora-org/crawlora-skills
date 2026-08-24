@@ -1,6 +1,6 @@
 ---
 name: product-price-research
-description: Researches products, prices, sellers, and reviews across 20 major online marketplaces and big-box/specialty retailers (Amazon, eBay, Shopify stores, Shop.app, Target, Costco, Zalando, Walmart, Nike, Zara, and more) using the Crawlora API, returning clean JSON. Use when the user asks to find a product, compare prices or sellers, track listings, or pull marketplace/retailer reviews — instead of scraping store pages.
+description: Researches products, prices, sellers, and reviews across 28 major online marketplaces and big-box/specialty retailers (Amazon, eBay, Shopify stores, Shop.app, Target, Costco, Walmart, Nike, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, IKEA, Chewy, and more) using the Crawlora API, returning clean JSON. Use when the user asks to find a product, compare prices or sellers, track listings, or pull marketplace/retailer reviews — instead of scraping store pages.
 ---
 
 # Product & price research
@@ -9,8 +9,9 @@ Look up and compare products, prices, sellers, and reviews across Amazon,
 eBay, Shopify storefronts, Shop.app, Target, Costco, Zalando, Walmart, H&M,
 Kohl's, Lululemon, Macy's, Nike, Old Navy (plus Gap, Banana Republic, and
 Athleta under the same endpoints), Sam's Club, Ulta Beauty, Wayfair, Wish,
-Zappos, and Zara — all as normalized JSON from the Crawlora API, with no
-HTML scraping.
+Zappos, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, IKEA, and
+Chewy — all as normalized JSON from the Crawlora API, with no HTML
+scraping. Walgreens is store-locator only (no product catalog).
 
 ## When to use this skill
 
@@ -23,7 +24,9 @@ HTML scraping.
 - "Browse category X on Wayfair / Kohl's / Sam's Club" when the retailer has
   no keyword search of its own.
 - Apparel/beauty catalog lookups spanning Nike, Zara, H&M, Old Navy/Gap/Banana
-  Republic/Athleta, Lululemon, or Ulta Beauty.
+  Republic/Athleta, Lululemon, Ulta Beauty, Adidas, or Sephora.
+- Home-goods/electronics/pet lookups spanning Home Depot, Best Buy, IKEA, or Chewy.
+- "Find the nearest Walgreens" (store locator only — no product catalog).
 
 ## Setup (one-time)
 
@@ -51,6 +54,15 @@ Pick the marketplace, then the job:
    `/samsclub/category`, and `/wayfair/categories` → `/wayfair/category`.
    Macy's has neither search nor category browse at all — only direct
    `productId` lookup (below) plus `/macys/suggest` typeahead.
+   `/adidas/search` (`query` or `category`, exactly one required),
+   `/bestbuy/search` (`q`), `/homedepot/search` (`q`), `/sephora/search`
+   (`query`, plus `brand`/`filter`/`price_min`+`price_max`
+   as a matched pair/`rating_min`/`is_new` facets), `/ikea/search`
+   (`q`, or an IKEA item number resolves directly), and `/chewy/search`
+   (`q` — a strong category match like "dog food" transparently redirects
+   to that category listing) round out search. **Walgreens has no product
+   catalog at all** — `/walgreens/stores` (lat/lon or zip) is its only
+   endpoint, for store lookup.
 2. **Detail** — fetch a specific product (`/amazon/product`, `/ebay/item`,
    `/shopify/products/{handle}`, `/shop-app/products/{id}`,
    `/target/product` (`tcin`), `/costco/product/{id}`, `/walmart/product/{item_id}`,
@@ -58,7 +70,12 @@ Pick the marketplace, then the job:
    `/nike/product` (`slug`+`style_color`), `/oldnavy/product` (`pid`+`brand`),
    `/lululemon/product/{product_id}`, `/macys/product/{productId}`,
    `/samsclub/product/{id}`, `/ulta/product/{productId}`, `/wayfair/product/{id}`,
-   `/wish/product/{id}`, `/zappos/product/{productId}`, `/zara/product/{productId}`)
+   `/wish/product/{id}`, `/zappos/product/{productId}`, `/zara/product/{productId}`,
+   `/adidas/product` (`product_id`), `/bestbuy/product` (`sku`),
+   `/homedepot/product/{id}`, `/sephora/product` (`product_id` — the full
+   product-page slug like `lip-sleeping-mask-P420652`, not just the SKU),
+   `/shein/products/detail` (`goods_id`+`goods_sn`), `/ikea/product`
+   (`item_no`), `/chewy/product` (`id`))
    for price, variants, specs. **Kohl's has no standalone product-detail
    endpoint** — product cards (including `web_id`, needed for reviews below)
    only come back embedded in `/kohls/category`'s listing.
@@ -73,7 +90,11 @@ Pick the marketplace, then the job:
    H&M, Lululemon, Sam's Club, and Zappos surface reviews (when present)
    embedded in their own product-detail call instead of a separate endpoint;
    Wayfair and Zara expose no reviews at all — Wayfair's product detail only
-   has an aggregate rating.
+   has an aggregate rating. `/bestbuy/product/reviews` (`sku`),
+   `/sephora/product/reviews` (`product_id`), and `/ikea/reviews`
+   (`item_no`) cover those three separately; Home Depot and Chewy surface
+   reviews embedded in their own product-detail call instead. **Adidas and
+   SHEIN expose no review/rating data at all.**
 5. **Compare** the JSON fields (price, currency, rating, seller) and answer.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
@@ -90,13 +111,20 @@ scripts/crawlora.sh /walmart/search q="standing desk" | jq '.'
 scripts/crawlora.sh /zalando/search q="running shoes" market=de | jq '.'
 scripts/crawlora.sh /nike/search keyword="running shoes" | jq '.'
 scripts/crawlora.sh /ulta/search query="retinol serum" | jq '.'
+scripts/crawlora.sh /bestbuy/search q="laptop" | jq '.'
+scripts/crawlora.sh /sephora/search query="retinol serum" | jq '.'
+scripts/crawlora.sh /chewy/search q="salmon dog food" | jq '.'
 
 # Product detail:
 scripts/crawlora.sh /amazon/product asin=B0XXXXXXX | jq '{title,price}'
+scripts/crawlora.sh /ikea/product item_no=00263850 | jq '.'
 
 # Category browse (no keyword search on this platform):
 scripts/crawlora.sh /wayfair/category category=478390 | jq '.'
 scripts/crawlora.sh /zara/category/2420463/products | jq '.'
+
+# Store locator only (no product catalog):
+scripts/crawlora.sh /walgreens/stores zip=10001 | jq '.'
 ```
 
 Raw `curl` fallback:
