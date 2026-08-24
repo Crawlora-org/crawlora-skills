@@ -1,6 +1,6 @@
 ---
 name: wayfair-research
-description: Browses Wayfair's category taxonomy and pulls category product grids and product detail (price, brand, stock status, rating, variants, images) using the Crawlora API, returning clean JSON. Use when the user asks to browse a Wayfair category, list products in a Wayfair department, or look up a specific Wayfair product by id — instead of scraping wayfair.com. This is a narrow skill: there is no full-text product search or reviews endpoint, only category browsing and product detail.
+description: Browses Wayfair's category taxonomy and pulls category product grids and product detail (price, brand, stock status, rating, variants, images) using the Crawlora API, returning clean JSON. Use when the user asks to browse a Wayfair category, list products in a Wayfair department, or look up a specific Wayfair product by id — instead of scraping wayfair.com. This is a narrow skill — there is no full-text product search or reviews endpoint, only category browsing and product detail.
 ---
 
 # Wayfair research
