@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `monitors_create`
 
 - **HTTP:** `POST /monitors`
-- **What:** Create a website-change monitor. Creates a monitor that periodically checks a page or sitemap for changes and can notify a webhook. Free to call -- only completed check runs (services/webmonitor's cron-driven scrape/sitemap fetch) consume credits, at 1 credit per completed run regardless of target type or whether a change was detected. `target_type` defaults to "page" (exact-fingerprint diff of the scraped page). "sitemap" watches the sitemap at `url` for added/removed entries instead, honoring `sitemap.include_patterns`/`exclude_patterns` (shell-style globs matched against each URL's path) and `sitemap.max_urls` (default 5000, hard cap 10000).
+- **What:** Create a website-change monitor. Creates a monitor that periodically checks a page or sitemap for changes and can notify a webhook. Free to call -- only completed check runs consume credits, at 1 credit per completed run regardless of target type or whether a change was detected. `target_type` defaults to "page" (exact-fingerprint diff of the scraped page). "sitemap" watches the sitemap at `url` for added/removed entries instead, honoring `sitemap.include_patterns`/`exclude_patterns` (shell-style globs matched against each URL's path) and `sitemap.max_urls` (default 5000, hard cap 10000).
 - **Params:** `request` (object, **required**) — Monitor definition
 
 ### `monitors_delete`
