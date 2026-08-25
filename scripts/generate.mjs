@@ -199,8 +199,7 @@ const SKILLS = {
     "Yahoo Tech",
   ],
 
-  // 2026-08-24 new dedicated skills, per external-demand research (see
-  // docs/memory/sdk-mcp-skills-release-pipeline.md in webscraping-fe):
+  // 2026-08-24 new dedicated skills, per external-demand research:
   // established competitor MCP servers/products exist for all three.
   "website-monitoring": ["Monitors"],
   "patents-research": ["Google Patents", "USPTO Patent Public Search"],
