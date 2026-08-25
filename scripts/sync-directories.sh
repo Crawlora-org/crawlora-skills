@@ -20,8 +20,7 @@
 # REPLACES skills/<name>/ with a symlink into .agents/skills/<name>/ — which
 # collides with and destroys this repo's own real skills/<name>/ directories.
 # That's why step 1 below always runs from a throwaway scratch directory.
-# See docs/memory/crawlora-skills-built-pushed.md in webscraping-fe for the
-# full incident writeup.
+# See the team's internal incident writeup for the full history.
 
 set -e
 
@@ -81,4 +80,4 @@ done
 echo ""
 echo "Done. Web-only steps (agentskill.sh import, skillsdirectory.com,"
 echo "claudeskills.club, awesomeclaude.ai PR) are NOT covered by this script"
-echo "— see docs/skill-directories-submission-runbook.md in webscraping-fe."
+echo "— see the team's internal submission runbook for those steps."
