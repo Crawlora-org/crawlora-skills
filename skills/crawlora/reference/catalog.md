@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**1407 endpoints across 153 platform group(s).**
+**1414 endpoints across 154 platform group(s).**
 
 ## Adidas (5)
 
@@ -2152,19 +2152,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /datasets/techstack/facets`
 - **What:** Facet the website tech-stack dataset. Returns distribution counts over the website tech-stack index (dataset id enum value `techstack`), honoring the same filters as search — the technology / category market-share view. Facet enum: `technology`, `category`, `cms`, `ecommerce`, `cdn`, `web_server`, `server_language`, `analytics`, `tld`, `render_tier`, `seed_source`.
-- **Params:** `any_of` (array, optional) — Repeatable exact technology name; the site must use at least one (OR); `category` (string, optional) — Exact category filter, e.g. Ecommerce, CMS, Analytics; `cdn` (string, optional) — Exact CDN / hosting filter, e.g. Cloudflare, Fastly, Vercel; `cms` (string, optional) — Exact CMS filter, e.g. WordPress, Shopify, Webflow; `ecommerce` (string, optional) — Exact e-commerce platform filter, e.g. Shopify, WooCommerce, Magento; `facet` (string, **required**) — Facet enum: technology, category, cms, ecommerce, cdn, web_server, server_language, analytics, tld, render_tier, seed_source; `has_captcha` (boolean, optional) — true keeps only sites with a detected CAPTCHA; `min_tech_count` (integer, optional) — Minimum number of detected technologies, 0 or greater; `not` (array, optional) — Repeatable exact technology name the site must NOT use (excludes); `q` (string, optional) — Substring match on the site domain, max 256 characters; `reachable` (boolean, optional) — true keeps only sites whose homepage was fetched; `render_tier` (string, optional) — Fetch-tier filter. Enum: http, browser; `run_id` (string, optional) — Scan run id; defaults to the latest run; `seed_source` (string, optional) — Source filter for where the domain was discovered, e.g. tranco; `server_language` (string, optional) — Exact server language / framework filter, e.g. PHP, ASP.NET, Ruby on Rails; `technology` (array, optional) — Repeatable exact technology name the site MUST use (AND); `tld` (string, optional) — Exact top-level-domain filter, e.g. com, org, io; `web_server` (string, optional) — Exact web-server filter, e.g. nginx, Apache, IIS
+- **Params:** `any_of` (array, optional) — Repeatable exact technology name; the site must use at least one (OR); `category` (string, optional) — Exact category filter, e.g. Ecommerce, CMS, Analytics; `cdn` (string, optional) — Exact CDN / hosting filter, e.g. Cloudflare, Fastly, Vercel; `cms` (string, optional) — Exact CMS filter, e.g. WordPress, Shopify, Webflow; `ecommerce` (string, optional) — Exact e-commerce platform filter, e.g. Shopify, WooCommerce, Magento; `facet` (string, **required**) — Facet enum: technology, category, cms, ecommerce, cdn, web_server, server_language, analytics, tld, render_tier, seed_source; `has_captcha` (boolean, optional) — true keeps only sites with a detected CAPTCHA; `is_infrastructure` (boolean, optional) — false (the common case) excludes backend CDN/DNS/cloud-vendor hostnames that rank highly but were never meant to serve a public homepage, keeping only real, human-navigable sites; true keeps only those backend hostnames; `min_tech_count` (integer, optional) — Minimum number of detected technologies, 0 or greater; `not` (array, optional) — Repeatable exact technology name the site must NOT use (excludes); `q` (string, optional) — Substring match on the site domain, max 256 characters; `reachable` (boolean, optional) — true keeps only sites whose homepage was fetched; `render_tier` (string, optional) — Fetch-tier filter. Enum: http, browser; `run_id` (string, optional) — Scan run id; defaults to the latest run; `seed_source` (string, optional) — Source filter for where the domain was discovered, e.g. tranco; `server_language` (string, optional) — Exact server language / framework filter, e.g. PHP, ASP.NET, Ruby on Rails; `technology` (array, optional) — Repeatable exact technology name the site MUST use (AND); `tld` (string, optional) — Exact top-level-domain filter, e.g. com, org, io; `web_server` (string, optional) — Exact web-server filter, e.g. nginx, Apache, IIS
 
 ### `datasets_techstack_item`
 
 - **HTTP:** `GET /datasets/techstack/items/{domain}`
-- **What:** Get a site from the website tech-stack dataset. Returns one site by its domain from dataset id enum value `techstack`, including every detected technology (name, categories, confidence, version, evidence) plus the CMS / e-commerce / CDN / web-server / server-language rollups. Returns 404 when the domain is not in the index.
+- **What:** Get a site from the website tech-stack dataset. Returns one site by its domain from dataset id enum value `techstack`, including every detected technology (name, categories, confidence, version, evidence) plus the CMS / e-commerce / CDN / web-server / server-language rollups. Also flags whether the domain looks like backend CDN/DNS/cloud-vendor infrastructure rather than a real, human-navigable site (see `is_infrastructure`). Returns 404 when the domain is not in the index.
 - **Params:** `domain` (string, **required**) — Site domain, e.g. shopify.com (a scheme and www. are stripped)
 
 ### `datasets_techstack_search`
 
 - **HTTP:** `GET /datasets/techstack/search`
 - **What:** Search the website tech-stack dataset. Searches the website tech-stack index (dataset id enum value `techstack`) — one record per site listing the web technologies it is built with (frameworks, CMS, e-commerce, analytics, CDNs, servers, and more), BuiltWith / Wappalyzer-style. The reverse-index filters are the point: repeat `technology` to require several at once (AND), `any_of` to match at least one (OR), and `not` to exclude — e.g. sites on `Shopify` and `Klaviyo` but not `Recharge`. Sort enum: `relevance`, `rank_asc`, `tech_count_desc`, `domain_asc`, `crawled_desc`. render_tier enum: `http`, `browser`.
-- **Params:** `any_of` (array, optional) — Repeatable exact technology name; the site must use at least one (OR); `category` (string, optional) — Exact category filter, e.g. Ecommerce, CMS, Analytics, Payment, CDN; `cdn` (string, optional) — Exact CDN / hosting filter, e.g. Cloudflare, Fastly, Vercel; `cms` (string, optional) — Exact CMS filter, e.g. WordPress, Shopify, Webflow; `ecommerce` (string, optional) — Exact e-commerce platform filter, e.g. Shopify, WooCommerce, Magento; `has_captcha` (boolean, optional) — true keeps only sites with a detected CAPTCHA; `min_tech_count` (integer, optional) — Minimum number of detected technologies, 0 or greater; `not` (array, optional) — Repeatable exact technology name the site must NOT use (excludes); `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Substring match on the site domain, max 256 characters; `reachable` (boolean, optional) — true keeps only sites whose homepage was fetched, false only sites that could not be fetched; `render_tier` (string, optional) — Fetch-tier filter. Enum: http, browser; `run_id` (string, optional) — Scan run id; defaults to the latest run; `seed_source` (string, optional) — Source filter for where the domain was discovered, e.g. tranco; `server_language` (string, optional) — Exact server language / framework filter, e.g. PHP, ASP.NET, Ruby on Rails; `sort` (string, optional) — Sort enum: relevance, rank_asc, tech_count_desc, domain_asc, crawled_desc; `technology` (array, optional) — Repeatable exact technology name the site MUST use (AND), e.g. technology=Shopify&technology=Klaviyo; `tld` (string, optional) — Exact top-level-domain filter, e.g. com, org, io; `web_server` (string, optional) — Exact web-server filter, e.g. nginx, Apache, IIS
+- **Params:** `any_of` (array, optional) — Repeatable exact technology name; the site must use at least one (OR); `category` (string, optional) — Exact category filter, e.g. Ecommerce, CMS, Analytics, Payment, CDN; `cdn` (string, optional) — Exact CDN / hosting filter, e.g. Cloudflare, Fastly, Vercel; `cms` (string, optional) — Exact CMS filter, e.g. WordPress, Shopify, Webflow; `ecommerce` (string, optional) — Exact e-commerce platform filter, e.g. Shopify, WooCommerce, Magento; `has_captcha` (boolean, optional) — true keeps only sites with a detected CAPTCHA; `is_infrastructure` (boolean, optional) — false (the common case) excludes backend CDN/DNS/cloud-vendor hostnames that rank highly but were never meant to serve a public homepage, keeping only real, human-navigable sites; true keeps only those backend hostnames; `min_tech_count` (integer, optional) — Minimum number of detected technologies, 0 or greater; `not` (array, optional) — Repeatable exact technology name the site must NOT use (excludes); `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Substring match on the site domain, max 256 characters; `reachable` (boolean, optional) — true keeps only sites whose homepage was fetched, false only sites that could not be fetched; `render_tier` (string, optional) — Fetch-tier filter. Enum: http, browser; `run_id` (string, optional) — Scan run id; defaults to the latest run; `seed_source` (string, optional) — Source filter for where the domain was discovered, e.g. tranco; `server_language` (string, optional) — Exact server language / framework filter, e.g. PHP, ASP.NET, Ruby on Rails; `sort` (string, optional) — Sort enum: relevance, rank_asc, tech_count_desc, domain_asc, crawled_desc; `technology` (array, optional) — Repeatable exact technology name the site MUST use (AND), e.g. technology=Shopify&technology=Klaviyo; `tld` (string, optional) — Exact top-level-domain filter, e.g. com, org, io; `web_server` (string, optional) — Exact web-server filter, e.g. nginx, Apache, IIS
 
 ### `datasets_trustmrr_facets`
 
@@ -4649,7 +4649,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `lululemon_stores`
 
 - **HTTP:** `GET /lululemon/stores`
-- **What:** Browse lululemon's physical store directory. Returns lululemon's own complete physical store directory (480 US and 86 Canada locations as of this endpoint's own research), including regular weekly hours and in-store amenities. All filters are optional and applied locally after fetching the full directory -- there is no live geo-search API on a credential-free host for this platform (see notes/lululemon-maintenance.md). country and state are free-text equality filters against the values this directory actually carries (2-letter codes, e.g. US/CA, NY/CA), not an enforced enum. lat and lng (both required together) filter to stores within radius_miles (1 to 500, defaults to 50), sorted nearest-first.
+- **What:** Browse lululemon's physical store directory. Returns lululemon's own complete physical store directory (480 US and 86 Canada locations as of this endpoint's own research), including regular weekly hours and in-store amenities. All filters are optional and applied locally after fetching the full directory -- there is no live geo-search API on a credential-free host for this platform. country and state are free-text equality filters against the values this directory actually carries (2-letter codes, e.g. US/CA, NY/CA), not an enforced enum. lat and lng (both required together) filter to stores within radius_miles (1 to 500, defaults to 50), sorted nearest-first.
 - **Params:** `country` (string, optional) — Filter to one country by its 2-letter code; `lat` (number, optional) — Latitude, requires lng; `lng` (number, optional) — Longitude, requires lat; `radius_miles` (number, optional) — Search radius in miles, 1 to 500, defaults to 50; `state` (string, optional) — Filter to one state/province by its 2-letter code
 
 ## Macy's (3)
@@ -4959,7 +4959,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `monitors_create`
 
 - **HTTP:** `POST /monitors`
-- **What:** Create a website-change monitor. Creates a monitor that periodically checks a page or sitemap for changes and can notify a webhook. Free to call -- only completed check runs (services/webmonitor's cron-driven scrape/sitemap fetch) consume credits, at 1 credit per completed run regardless of target type or whether a change was detected. `target_type` defaults to "page" (exact-fingerprint diff of the scraped page). "sitemap" watches the sitemap at `url` for added/removed entries instead, honoring `sitemap.include_patterns`/`exclude_patterns` (shell-style globs matched against each URL's path) and `sitemap.max_urls` (default 5000, hard cap 10000).
+- **What:** Create a website-change monitor. Creates a monitor that periodically checks a page or sitemap for changes and can notify a webhook. Free to call -- only completed check runs consume credits, at 1 credit per completed run regardless of target type or whether a change was detected. `target_type` defaults to "page" (exact-fingerprint diff of the scraped page). "sitemap" watches the sitemap at `url` for added/removed entries instead, honoring `sitemap.include_patterns`/`exclude_patterns` (shell-style globs matched against each URL's path) and `sitemap.max_urls` (default 5000, hard cap 10000).
 - **Params:** `request` (object, **required**) — Monitor definition
 
 ### `monitors_delete`
@@ -7152,7 +7152,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search public Threads posts. Returns the public first page of Threads search results for a query. Logged-out search does not expose a continuation cursor.
 - **Params:** `q` (string, **required**) — Search query (1-100 characters)
 
-## Ticketmaster (11)
+## Ticketmaster (15)
 
 ### `ticketmaster_attraction`
 
@@ -7165,6 +7165,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /ticketmaster/attraction-events`
 - **What:** List an attraction's Ticketmaster events. Returns upcoming Ticketmaster events for one attraction. The sort enum accepts `relevance` and `date`.
 - **Params:** `id` (string, **required**) — Numeric Ticketmaster attraction id; `page` (integer, optional) — Zero-based page (0-49); `sort` (string, optional) — Result order
+
+### `ticketmaster_attraction_related`
+
+- **HTTP:** `GET /ticketmaster/attraction-related`
+- **What:** List a Ticketmaster attraction's related attractions. Returns the "Fans Also Viewed" attractions shown on one attraction's own page. An attraction with no recommendation data returns a valid empty list.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster attraction id
+
+### `ticketmaster_attraction_reviews`
+
+- **HTTP:** `GET /ticketmaster/attraction-reviews`
+- **What:** List a Ticketmaster attraction's fan reviews. Returns paginated fan reviews for one attraction, including its aggregate rating and Ticketmaster's own AI-generated review summary.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster attraction id; `limit` (integer, optional) — Reviews per page (10-50); `offset` (integer, optional) — Result offset (0-9995)
 
 ### `ticketmaster_discover_categories`
 
@@ -7208,10 +7220,22 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Suggest Ticketmaster artists, events, and venues. Returns autocomplete suggestions for a partial query.
 - **Params:** `q` (string, **required**) — Partial artist, event, team, or venue query
 
+### `ticketmaster_trending_attractions`
+
+- **HTTP:** `GET /ticketmaster/trending-attractions`
+- **What:** List trending Ticketmaster attractions. Returns a ranked list of currently-trending attractions across every segment (music, sports, arts and theater, family), not scoped to one category or city.
+- **Params:** _none_
+
 ### `ticketmaster_venue`
 
 - **HTTP:** `GET /ticketmaster/venue`
 - **What:** Get a Ticketmaster venue. Returns normalized details and visitor information for one Ticketmaster venue.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster venue id
+
+### `ticketmaster_venue_enhanced_details`
+
+- **HTTP:** `GET /ticketmaster/venue-enhanced-details`
+- **What:** Get a Ticketmaster venue's enhanced branding details. Returns header branding imagery and external links (the venue's own site, resident teams) for major venues. Smaller venues without enhanced content return 404.
 - **Params:** `id` (string, **required**) — Numeric Ticketmaster venue id
 
 ### `ticketmaster_venue_events`
@@ -7219,6 +7243,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /ticketmaster/venue-events`
 - **What:** List a venue's Ticketmaster events. Returns upcoming Ticketmaster events at one venue. The sort enum accepts `relevance` and `date`.
 - **Params:** `id` (string, **required**) — Numeric Ticketmaster venue id; `page` (integer, optional) — Zero-based page (0-49); `sort` (string, optional) — Result order
+
+## TicketWeb (3)
+
+### `ticketweb_event`
+
+- **HTTP:** `GET /ticketweb/event`
+- **What:** Get a TicketWeb event. Returns normalized details for one TicketWeb event: venue, dates, age restriction, delivery methods, and per-tier ticket pricing (base price, fee breakdown, and total) when tickets are on sale. `has_tickets` is false and `sections` is empty for a free/RSVP event with no paid tickets, a sold-out event, or an access-code-gated event -- TicketWeb's own data does not reliably distinguish these three cases at this level, so the response reports the shared observable state (no purchasable sections) rather than guessing which applies.
+- **Params:** `id` (string, **required**) — Numeric TicketWeb event id
+
+### `ticketweb_search`
+
+- **HTTP:** `GET /ticketweb/search`
+- **What:** Search TicketWeb events. Searches TicketWeb events by artist, event, or venue. A zero count with an empty events list is a valid no-results response. availability is one of `in_stock`, `sold_out`, `unknown` per event.
+- **Params:** `page` (integer, optional) — One-based result page, 1-50; `q` (string, **required**) — Artist, event, or venue query
+
+### `ticketweb_venue`
+
+- **HTTP:** `GET /ticketweb/venue`
+- **What:** Get a TicketWeb venue. Returns one TicketWeb venue's detail (name, address) plus one page of its upcoming events. A zero count with an empty events list on page 1 is a valid "no upcoming events" response.
+- **Params:** `id` (string, **required**) — Numeric TicketWeb venue id; `page` (integer, optional) — One-based page of upcoming events, 1-50
 
 ## TikTok (25)
 
@@ -7837,7 +7881,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `wayfair_category`
 
 - **HTTP:** `GET /wayfair/category`
-- **What:** Browse a Wayfair category. Returns a Wayfair category page's product grid, with real page-based pagination. category accepts a bare Wayfair category id ("478390"), a "c"-prefixed id ("c478390"), a category slug ("office-chairs-c478390"), or a full category URL copied from wayfair.com -- only the trailing category id is used. Returns normalized products with name, brand, pricing, and image.
+- **What:** Browse a Wayfair category. Returns a Wayfair category page's product grid, with real page-based pagination. category accepts a bare Wayfair category id ("478390"), a "c"-prefixed id ("c478390"), a category slug ("office-chairs-c478390"), or a full category URL copied from wayfair.com. The trailing category id is resolved to Wayfair's current canonical URL through its published sitemap. Returns normalized products with name, brand, pricing, and image.
 - **Params:** `category` (string, **required**) — Wayfair category id, slug, or URL; `page` (integer, optional) — Result page, 1-based, defaults to 1
 
 ### `wayfair_product`
@@ -7863,7 +7907,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `web_techstack`
 
 - **HTTP:** `POST /web/techstack`
-- **What:** Tech stack — detect what a website is built with. Fetches a public URL and fingerprints the web technologies it is built with — a BuiltWith / Wappalyzer-style detector. Returns a list of detected `technologies`, each with its `categories`, a `confidence` (`high`, `medium`, `low`), an optional `version`, and the `evidence` that matched. Covers JavaScript frameworks and libraries (React, Vue.js, Angular, Svelte, jQuery), web frameworks / static site generators (Next.js, Nuxt.js, Gatsby, Remix, SvelteKit, Astro, Hugo), CMS and website builders (WordPress, Drupal, Joomla, Ghost, Wix, Squarespace, Webflow), e-commerce (Shopify, WooCommerce, Magento, BigCommerce), analytics, ad pixels, and tag managers (Google Analytics, Google Tag Manager, Meta Pixel, LinkedIn, Bing, TikTok/Pinterest/Reddit pixels, Segment, Hotjar, Microsoft Clarity), CDNs, UI frameworks and fonts, payments (Stripe, PayPal, Klarna), live chat, marketing automation, A/B testing, consent management, CAPTCHAs (reCAPTCHA, hCaptcha, Turnstile), video, and search. It also inspects response headers (from a plain HTTP fetch) to identify the web server (nginx, Apache, IIS), the CDN / hosting provider (Cloudflare, CloudFront, Fastly, Vercel, Netlify), and the server-side language / framework (PHP, ASP.NET, Ruby on Rails, Django, Laravel, Express). Results are directional, not exhaustive. The `render` fetch strategy is one of `browser` (headless browser that executes JavaScript — the default, so client-injected scripts like analytics, tag managers and pixels are detected), `auto` (Chrome-impersonated HTTP, escalating to a real browser only when blocked or JS-rendered), or `http` (HTTP only, no JavaScript — fastest, but sees only the server HTML); defaults to `browser`. Only public pages are supported; respect each site's terms of use and robots directives. Also returns `unmatched_evidence` (when present) — third-party script/stylesheet host domains and a `<meta generator>` value the detector saw on the page but doesn't yet have a named signature for; useful for spotting a vendor worth requesting coverage for.
+- **What:** Tech stack — detect what a website is built with. Fetches a public URL and fingerprints the web technologies it is built with — a BuiltWith / Wappalyzer-style detector. Returns a list of detected `technologies`, each with its `categories`, a `confidence` (`high`, `medium`, `low`), an optional `version`, and the `evidence` that matched. Covers JavaScript frameworks and libraries (React, Vue.js, Angular, Svelte, jQuery), web frameworks / static site generators (Next.js, Nuxt.js, Gatsby, Remix, SvelteKit, Astro, Hugo), CMS and website builders (WordPress, Drupal, Joomla, Ghost, Wix, Squarespace, Webflow), e-commerce (Shopify, WooCommerce, Magento, BigCommerce), analytics, ad pixels, and tag managers (Google Analytics, Google Tag Manager, Meta Pixel, LinkedIn, Bing, TikTok/Pinterest/Reddit pixels, Segment, Hotjar, Microsoft Clarity), CDNs, UI frameworks and fonts, payments (Stripe, PayPal, Klarna), live chat, marketing automation, A/B testing, consent management, CAPTCHAs (reCAPTCHA, hCaptcha, Turnstile), video, and search. It also inspects response headers (from a plain HTTP fetch) to identify the web server (nginx, Apache, IIS), the CDN / hosting provider (Cloudflare, CloudFront, Fastly, Vercel, Netlify), and the server-side language / framework (PHP, ASP.NET, Ruby on Rails, Django, Laravel, Express). Results are directional, not exhaustive. The `render` fetch strategy is one of `browser` (headless browser that executes JavaScript — the default, so client-injected scripts like analytics, tag managers and pixels are detected), `auto` (Chrome-impersonated HTTP, escalating to a real browser only when blocked or JS-rendered), or `http` (HTTP only, no JavaScript — fastest, but sees only the server HTML); defaults to `browser`. Only public pages are supported; respect each site's terms of use and robots directives. Also returns `unmatched_evidence` (when present) — third-party script/stylesheet host domains and a `<meta generator>` value the detector saw on the page but doesn't yet have a named signature for; useful for spotting a vendor worth requesting coverage for. `is_infrastructure` flags a URL whose host looks like backend CDN/DNS/cloud-vendor infrastructure rather than a real, human-navigable website. `reachable` is false only when the target could not be fetched at all (even after an automatic www./plain-HTTP retry) — `technologies` may still be partially populated from DNS-based signals alone in that case, and `failure_reason` explains what happened.
 - **Params:** `request` (object, **required**) — Target URL (and optional render strategy)
 
 ## Whatnot (3)

@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**49 endpoints across 7 platform group(s).**
+**53 endpoints across 7 platform group(s).**
 
 ## Booking (8)
 
@@ -248,7 +248,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Airbnb stays. Returns normalized Airbnb public web search results.
 - **Params:** `adults` (integer, optional) — Adult guests; `check_in` (string, optional) — Check-in date; `check_out` (string, optional) — Check-out date; `currency` (string, optional) — Currency for bounded map search; `location` (string, **required**) — Location; `ne_lat` (number, optional) — Northeast latitude for bounded map search; `ne_lng` (number, optional) — Northeast longitude for bounded map search; `page` (integer, optional) — 1-based page; `sw_lat` (number, optional) — Southwest latitude for bounded map search; `sw_lng` (number, optional) — Southwest longitude for bounded map search; `zoom` (integer, optional) — Map zoom for bounded map search
 
-## Ticketmaster (11)
+## Ticketmaster (15)
 
 ### `ticketmaster_attraction`
 
@@ -261,6 +261,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /ticketmaster/attraction-events`
 - **What:** List an attraction's Ticketmaster events. Returns upcoming Ticketmaster events for one attraction. The sort enum accepts `relevance` and `date`.
 - **Params:** `id` (string, **required**) — Numeric Ticketmaster attraction id; `page` (integer, optional) — Zero-based page (0-49); `sort` (string, optional) — Result order
+
+### `ticketmaster_attraction_related`
+
+- **HTTP:** `GET /ticketmaster/attraction-related`
+- **What:** List a Ticketmaster attraction's related attractions. Returns the "Fans Also Viewed" attractions shown on one attraction's own page. An attraction with no recommendation data returns a valid empty list.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster attraction id
+
+### `ticketmaster_attraction_reviews`
+
+- **HTTP:** `GET /ticketmaster/attraction-reviews`
+- **What:** List a Ticketmaster attraction's fan reviews. Returns paginated fan reviews for one attraction, including its aggregate rating and Ticketmaster's own AI-generated review summary.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster attraction id; `limit` (integer, optional) — Reviews per page (10-50); `offset` (integer, optional) — Result offset (0-9995)
 
 ### `ticketmaster_discover_categories`
 
@@ -304,10 +316,22 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Suggest Ticketmaster artists, events, and venues. Returns autocomplete suggestions for a partial query.
 - **Params:** `q` (string, **required**) — Partial artist, event, team, or venue query
 
+### `ticketmaster_trending_attractions`
+
+- **HTTP:** `GET /ticketmaster/trending-attractions`
+- **What:** List trending Ticketmaster attractions. Returns a ranked list of currently-trending attractions across every segment (music, sports, arts and theater, family), not scoped to one category or city.
+- **Params:** _none_
+
 ### `ticketmaster_venue`
 
 - **HTTP:** `GET /ticketmaster/venue`
 - **What:** Get a Ticketmaster venue. Returns normalized details and visitor information for one Ticketmaster venue.
+- **Params:** `id` (string, **required**) — Numeric Ticketmaster venue id
+
+### `ticketmaster_venue_enhanced_details`
+
+- **HTTP:** `GET /ticketmaster/venue-enhanced-details`
+- **What:** Get a Ticketmaster venue's enhanced branding details. Returns header branding imagery and external links (the venue's own site, resident teams) for major venues. Smaller venues without enhanced content return 404.
 - **Params:** `id` (string, **required**) — Numeric Ticketmaster venue id
 
 ### `ticketmaster_venue_events`
