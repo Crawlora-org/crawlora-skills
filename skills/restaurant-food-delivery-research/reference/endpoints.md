@@ -19,8 +19,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `doordash_feed`
 
 - **HTTP:** `GET /doordash/feed`
-- **What:** Get DoorDash store discovery feed. Returns nearby trending restaurants, grocery stores, and promotional offers from the Android mobile guest experience for a location. No DoorDash account or caller-supplied token is required.
-- **Params:** `latitude` (number, **required**) — Consumer latitude; `limit` (integer, optional) — Max stores to return; `longitude` (number, **required**) — Consumer longitude; `offset` (integer, optional) — Feed offset
+- **What:** Get DoorDash store discovery feed. Returns nearby stores for a location from the Android mobile guest experience: store ID, name, cover image and tags, plus rating, price range, delivery fee and ETA when the upstream feed surface reports them. Those metric fields are omitted rather than estimated when it does not, so treat their absence as "not reported". No DoorDash account or caller-supplied token is required.
+- **Params:** `latitude` (number, **required**) — Consumer latitude; `limit` (integer, optional) — Max stores to return; `longitude` (number, **required**) — Consumer longitude; `offset` (integer, optional) — Number of stores to skip
 
 ### `doordash_search`
 
@@ -43,8 +43,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `doordash_search_items`
 
 - **HTTP:** `GET /doordash/search/items`
-- **What:** Search DoorDash dishes and items. Search for specific dishes or items across nearby merchants from the Android mobile guest experience. No DoorDash account or caller-supplied token is required.
-- **Params:** `latitude` (number, **required**) — Consumer latitude; `longitude` (number, **required**) — Consumer longitude; `query` (string, **required**) — Search text
+- **What:** Search DoorDash dishes and items. Searches menu items across nearby merchants from the Android mobile guest experience. Nearby candidate stores are selected first, then their menus are read and every item whose name or description matches the query is returned with its parent store. At most five proximity-ranked stores are inspected per request, and a store whose menu cannot be read is skipped, so results are best-effort across that candidate set. An empty result array means no candidate store menu matched, not that no nearby merchant sells the item. No DoorDash account or caller-supplied token is required.
+- **Params:** `asapOnly` (boolean, optional) — Keep only stores currently available ASAP; `dashPassOnly` (boolean, optional) — Keep only DashPass-eligible stores; `latitude` (number, **required**) — Consumer latitude; `longitude` (number, **required**) — Consumer longitude; `maxDistanceMiles` (number, optional) — Maximum displayed distance in miles; `pickupOnly` (boolean, optional) — Keep only pickup-enabled stores; `query` (string, **required**) — Dish or item search text; `tag` (string, optional) — Cuisine or store tag used to narrow candidate stores
 
 ### `doordash_store`
 
@@ -67,8 +67,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `doordash_store_item`
 
 - **HTTP:** `GET /doordash/store/{store_id}/item/{item_id}`
-- **What:** Get DoorDash menu item details. Returns details for a specific menu item from the Android mobile guest experience. No DoorDash account or caller-supplied token is required.
-- **Params:** `item_id` (string, **required**) — Menu item ID or name; `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
+- **What:** Get DoorDash menu item details. Returns details for a specific menu item from the Android mobile guest experience. The item is matched by name, case-insensitively, against the store menu: DoorDash's anonymous menu surface exposes no stable per-item identifier, so use a name returned by the store menu or item search. A name that is not on the menu returns 404; no substitute item is returned. No DoorDash account or caller-supplied token is required.
+- **Params:** `item_id` (string, **required**) — Menu item name, matched case-insensitively; `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
 
 ### `doordash_store_menu`
 

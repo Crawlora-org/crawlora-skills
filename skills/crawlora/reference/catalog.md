@@ -6,9 +6,139 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**1414 endpoints across 154 platform group(s).**
+**1873 endpoints across 215 platform group(s).**
 
-## Adidas (5)
+## 7NOW (13)
+
+### `sevennow_catalog`
+
+- **HTTP:** `GET /7now/catalog`
+- **What:** Get one 7NOW store's live product catalog. Returns one 7NOW store's browsable category list, a paginated item listing per catalog section (each with real per-item pricing, active promotions, calories, UPC and image), and a live active/out-of-stock inventory count for that store. store_id comes from GET /7now/stores; lat and lon are accepted but inert (store_id alone selects the store). The catalog is genuinely store-scoped, not a national price list. skip/limit page every item section uniformly (limit is capped at 50, defaults to 20).
+- **Params:** `lat` (number, optional) — Accepted but inert -- store_id alone selects the store; responses are byte-identical with any value or none. Forwarded upstream for fidelity with 7now.com's own client.; `limit` (integer, optional) — Max items returned per catalog section, 1-50. Defaults to 20.; `lon` (number, optional) — Accepted but inert -- see lat.; `skip` (integer, optional) — Pagination offset, applied uniformly to every catalog section. Defaults to 0.; `store_id` (string, **required**) — 7NOW store id, from GET /7now/stores.
+
+### `sevennow_categories`
+
+- **HTTP:** `GET /7now/categories`
+- **What:** List every category id one 7NOW store accepts. Enumerates every value GET /7now/category accepts for a store, so callers do not have to pull the full catalog to discover them. 7NOW has two disjoint id spaces behind that one parameter: `departments` are the store's 10 permanent browsable departments (Fresh Food, Drinks, Snacks, Candy, Ice Cream, Beer & Seltzer, Tobacco, Grocery, Household, Personal Care), and `shelves` are the merchandising rows the homepage currently features ("$2 Deals", "What's New", "Only At 7-Eleven", seasonal ones). Both work as category_id. Shelves rotate with promotions and seasons, so re-read them rather than caching ids long-term. store_id comes from GET /7now/stores; lat and lon are accepted but inert (store_id alone selects the store).
+- **Params:** `lat` (number, optional) — Accepted but inert -- store_id alone selects the store; responses are byte-identical with any value or none. Forwarded upstream for fidelity with 7now.com's own client.; `lon` (number, optional) — Accepted but inert -- see lat.; `store_id` (string, **required**) — 7NOW store id, from GET /7now/stores.
+
+### `sevennow_category`
+
+- **HTTP:** `GET /7now/category`
+- **What:** Browse one 7NOW store's category by subcategory. Returns one 7NOW store's top-level category broken into its real subcategory groups (e.g. Fresh Food -> Pizza, Wings & Chicken Bites, Subs & Sandwiches, ...), each with its own paginated, priced item list and live availability, plus a category-wide availability summary. Complements GET /7now/catalog, whose per-category section is a single flat list -- this is the same data organized the way 7now.com's own category page groups it. store_id comes from GET /7now/stores and category_id from GET /7now/categories -- which accepts both the store's permanent departments and the merchandising shelves its homepage features, since 7NOW uses one parameter for two id spaces. An invalid or empty category_id returns a normal 200 with an empty subcategories array, not an error.
+- **Params:** `category_id` (string, **required**) — Category id, from GET /7now/categories -- either a department or a merchandising shelf.; `limit` (integer, optional) — Max items returned per subcategory group, 1-50. Defaults to 20.; `skip` (integer, optional) — Pagination offset, applied uniformly to every subcategory group. Defaults to 0.; `store_id` (string, **required**) — 7NOW store id, from GET /7now/stores.; `subcategory` (string, optional) — Restrict to one subcategory group by exact name (from a prior call's subcategories[].name).
+
+### `sevennow_combo`
+
+- **HTTP:** `GET /7now/combo`
+- **What:** Get one 7NOW bundle deal's pick-from groups. Expands one bundle deal into its structure: each pick-from group's name, how many items the shopper picks from it, and every eligible item with live pricing and availability -- e.g. the "$6.99 Pizza" bundle returns one group, "Eligible Whole Pizzas", holding six priced pizzas. Also returns the bundle's shopper-facing headline and full legal terms. promo_id comes from GET /7now/combos' combos[].promo_id, and store_id from GET /7now/stores. The upstream also accepts a plain item-discount promotion id but answers one with unnamed groups -- for those, GET /7now/promotion's flat item list is the right endpoint. An unknown promo_id returns 404.
+- **Params:** `promo_id` (string, **required**) — Promotion id, from GET /7now/combos' combos[].promo_id.; `store_id` (string, **required**) — 7NOW store id, from GET /7now/stores.
+
+### `sevennow_combos`
+
+- **HTTP:** `GET /7now/combos`
+- **What:** List a 7NOW store's bundle deals. Lists every bundle deal a store offers -- 7NOW's combo-builder products, where a fixed price buys one item from each of several groups (e.g. "$6.99 Pizza", "Bone In Wing Combo"). GET /7now/search surfaces a combo only when a query happens to match one, so this is the only way to enumerate a store's bundles. Each entry carries the promotion id behind it: pass it to GET /7now/combo for the actual pick-from groups, or to GET /7now/promotion for a flat list of every eligible item. store_id comes from GET /7now/stores; lat and lon are accepted but inert (store_id alone selects the store).
+- **Params:** `lat` (number, optional) — Accepted but inert -- store_id alone selects the store; responses are byte-identical with any value or none. Forwarded upstream for fidelity with 7now.com's own client.; `lon` (number, optional) — Accepted but inert -- see lat.; `store_id` (string, **required**) — 7NOW store id, from GET /7now/stores.
+
+### `sevennow_deals`
+
+- **HTTP:** `GET /7now/deals`
+- **What:** List every discounted item in one 7NOW store. Returns every currently discounted item in a store, paginated, each with the promotion driving the discount -- its id, shopper-facing description ("2 for $4", "On Sale $7"), promotional price where the offer has a single-unit one, and run dates. A busy store carries several hundred; the response also reports a store-wide availability summary across all of them before paging. This is the store-wide offers listing: the per-category browse endpoints surface promotions only for the items they happen to return, and pulling them all otherwise means walking the entire catalog. Pass a promos[].id to GET /7now/promotion to see every item that same promotion covers. store_id comes from GET /7now/stores; lat and lon are accepted but inert (store_id alone selects the store).
+- **Params:** `lat` (number, optional) — Accepted but inert -- store_id alone selects the store; responses are byte-identical with any value or none. Forwarded upstream for fidelity with 7now.com's own client.; `limit` (integer, optional) — Max items returned, 1-100. Defaults to 20.; `lon` (number, optional) — Accepted but inert -- see lat.; `skip` (integer, optional) — Pagination offset. Defaults to 0.; `store_id` (string, **required**) — 7NOW store id, from GET /7now/stores.
+
+### `sevennow_offers`
+
+- **HTTP:** `GET /7now/offers`
+- **What:** List a 7NOW store's advertised promotional campaigns. Returns every promotional campaign a store currently advertises -- the headline, body copy, legal terms and artwork behind offers like "$6.99 Pizza" or "2/$5 Gatorade 28oz". This is campaign-level and complements the item-level views: GET /7now/deals answers "which items are discounted and why", while this answers "what is this store advertising, and on what terms". The full legal terms are available nowhere else. Each campaign points somewhere: promo_ids[] feed GET /7now/promotion (or GET /7now/combo when the campaign advertises a bundle), while a category campaign instead carries target_id, a category_id GET /7now/category accepts. store_id comes from GET /7now/stores; lat and lon are accepted but inert (store_id alone selects the store).
+- **Params:** `lat` (number, optional) — Accepted but inert -- store_id alone selects the store; responses are byte-identical with any value or none. Forwarded upstream for fidelity with 7now.com's own client.; `lon` (number, optional) — Accepted but inert -- see lat.; `store_id` (string, **required**) — 7NOW store id, from GET /7now/stores.
+
+### `sevennow_popular`
+
+- **HTTP:** `GET /7now/popular`
+- **What:** Get 7NOW trending search terms. Returns the trending search terms 7NOW shows in its own search box. Two axes select the index and both matter. vertical picks the catalogue: `convenience` and `restaurant` return different terms for the same store, and `global` is the genuinely national cross-vertical list. store_id (from GET /7now/stores) then narrows to that store's region within the vertical -- a New York store returns index NY_NE, a Florida store SE, and omitting it returns the vertical-wide list. The restaurant vertical is the exception: it ignores store_id entirely, returning identical terms for every store. The response echoes back both the vertical and the regional index the terms came from.
+- **Params:** `store_id` (string, optional) — 7NOW store id, from GET /7now/stores. Selects that store's regional index within the chosen vertical; omit for the vertical-wide list. Ignored by the restaurant vertical.; `vertical` (string, optional) — Which trending index to read. One of: convenience, restaurant, global. Defaults to convenience.
+
+### `sevennow_product`
+
+- **HTTP:** `GET /7now/product`
+- **What:** Get one 7NOW product's full reference record. Returns one product's complete reference record: description, the full nutrition panel (serving size, calories, fat, cholesterol, sodium, carbohydrates, protein, vitamins and allergen "contains" list), the declared ingredient list, the allergen statement, size and flavor variants, related products, and any attached promotions. product_id comes from GET /7now/search, /7now/catalog or /7now/category. This record is store-independent and deliberately carries no price, availability or stock -- use those three endpoints for per-store pricing and availability. An unknown product_id returns a 404.
+- **Params:** `product_id` (string, **required**) — 7NOW product id, from GET /7now/search, /7now/catalog or /7now/category.
+
+### `sevennow_promotion`
+
+- **HTTP:** `GET /7now/promotion`
+- **What:** List every item one 7NOW promotion covers. Expands one promotion into every item it applies to in a store, plus the promotion's own offer type, terms, and run dates. GET /7now/deals reads discount-to-item (here is a discounted product, here is why); this reads it the other way round (here is an offer, here is everything it covers) -- e.g. a "2 for $4" tea promotion expands to all five flavours in it. promo_id comes from GET /7now/deals' items[].promos[].id, and store_id from GET /7now/stores. An unknown promo_id returns 404.
+- **Params:** `limit` (integer, optional) — Max items returned, 1-100. Defaults to 20.; `promo_id` (string, **required**) — Promotion id, from GET /7now/deals' items[].promos[].id.; `skip` (integer, optional) — Pagination offset. Defaults to 0.; `store_id` (string, **required**) — 7NOW store id, from GET /7now/stores.
+
+### `sevennow_search`
+
+- **HTTP:** `GET /7now/search`
+- **What:** Search one 7NOW store's products. Returns one 7NOW store's keyword search results: matching products and combo deals with current pricing (list price, everyday sale price, and any further active promotion), live availability, and a sponsored-brand facet list relevant to the query. store_id comes from GET /7now/stores. A query matching nothing returns a normal 200 with an empty items array, not an error.
+- **Params:** `limit` (integer, optional) — Max results returned, 1-50. Defaults to 20.; `q` (string, **required**) — Keyword search term.; `skip` (integer, optional) — Pagination offset. Defaults to 0.; `store_id` (string, **required**) — 7NOW store id, from GET /7now/stores.
+
+### `sevennow_stores`
+
+- **HTTP:** `GET /7now/stores`
+- **What:** Find 7NOW delivery stores near an address. Resolves a free-text delivery address, street, city and state, or postal code to the nearest 7NOW-enabled 7-Eleven stores, nearest first. Each store carries its store_id, address, coordinates, straight-line distance in miles from the resolved address, the banner it trades under, its Nielsen DMA, and its per-day alcohol sale windows -- upstream's own encoding of the local law, which is why a day can hold more than one window (a New York store's Sunday runs 0000-0200 and 0800-2359). An empty alcohol_sale_hours means upstream publishes no windows for that store, which is not the same as it selling no alcohol. The response also carries the Uber H3 cell for the resolved address. Use store_id with GET /7now/catalog, /7now/categories, /7now/deals, /7now/offers or /7now/combos to browse that store. An address that cannot be geocoded, or one with no nearby 7NOW coverage, returns a 404.
+- **Params:** `address` (string, **required**) — Free-text delivery address, street, city and state, or postal code.
+
+### `sevennow_suggest`
+
+- **HTTP:** `GET /7now/suggest`
+- **What:** Get 7NOW search-term suggestions. Returns search-term completions for a partial query, e.g. "chi" -> "chips ahoy", "chips", "chicken". No store is required. q must be at least 3 characters -- shorter values return a typed invalid-param error, matching upstream's own enforced minimum. vertical selects which search index to complete against, and the indexes are materially different rather than variations on one list: for "chi", `convenience` answers "chips ahoy, chips, chicken wings" while `restaurant` answers "chipotle, chinese food, chili". `global` is a sparse cross-vertical index -- many prefixes legitimately return no suggestions there.
+- **Params:** `q` (string, **required**) — Partial search term, at least 3 characters.; `vertical` (string, optional) — Which search index to complete against. One of: convenience, restaurant, global. Defaults to convenience.
+
+## Accor (8)
+
+### `accor_amenities`
+
+- **HTTP:** `GET /accor/amenities`
+- **What:** Accor amenity reference catalog. Returns the anonymous public Accor amenity catalog with stable amenity codes, labels, categories, and display ordering. It is reference data for interpreting hotel search facets; booking, rates, rooms, reviews, and account data are excluded.
+- **Params:** _none_
+
+### `accor_brands`
+
+- **HTTP:** `GET /accor/brands`
+- **What:** Accor brand directory. Returns the Accor brand directory published on the public brands page, with each brand's name, slug, and source URL. Booking, rates, rooms, reviews, contacts, and location are excluded.
+- **Params:** _none_
+
+### `accor_catalog_hotels`
+
+- **HTTP:** `GET /accor/catalog/hotels`
+- **What:** Search the Accor hotel catalog. Searches Accor's anonymous public hotel catalog by text, hotel code, or latitude/longitude radius. Results contain static property identity and broad location metadata plus catalog relevance/distance; contact details, precise hotel coordinates, payment, loyalty, media, rates, rooms, reviews, and booking data are excluded.
+- **Params:** `hotel_id` (string, optional) — Four-character Accor hotel code; `latitude` (number, optional) — Search-center latitude (-90 to 90); `limit` (integer, optional) — Results per request (1 to 50); `longitude` (number, optional) — Search-center longitude (-180 to 180); `offset` (integer, optional) — Zero-based result offset (0 to 300); `query` (string, optional) — Destination or hotel text (at least two characters); `radius_km` (number, optional) — Search radius in kilometers (0.1 to 100; defaults to 10 for coordinate searches)
+
+### `accor_destination_hotels`
+
+- **HTTP:** `GET /accor/destination/hotels`
+- **What:** Accor hotels in a destination. Returns the static list of hotels published on one Accor destination directory page (world, continent, country, region, department, city, district, or place), optionally narrowed by a theme facet. Each hotel carries its code, name, source URL, and broad city/country. Booking, rates, rooms, reviews, contacts, and precise location are excluded.
+- **Params:** `destination_type` (string, **required**) — Destination level: world, continent, country, region, department, city, district, or place; `slug` (string, optional) — Destination page slug, e.g. hotels-dusseldorf-v1158. Required for every type except world.; `theme` (string, optional) — Optional theme facet: 4-stars, 5-stars, apart-hotel, breakfast, budget-friendly, business, eco-certified, family-friendly, fitness, luxury, meetings-and-events, parking, pet-friendly, pool, resorts, or spa
+
+### `accor_property`
+
+- **HTTP:** `GET /accor/property`
+- **What:** Accor hotel metadata. Returns static public metadata for one Accor hotel code, including name, brand, city/country, explicitly listed amenities, and published check-in/check-out times. Booking, rates, rooms, reviews, contacts, and precise location are excluded.
+- **Params:** `hotel_code` (string, **required**) — Four-character Accor hotel code
+
+### `accor_search`
+
+- **HTTP:** `GET /accor/search`
+- **What:** Search Accor hotels. Searches the public Accor hotel index by destination or hotel name, with optional country, city, brand, star, page, and page-size filters. Results contain static hotel identity, location labels, ratings, and source URLs; booking, rates, rooms, reviews, loyalty, and payment flows are excluded.
+- **Params:** `brand` (string, optional) — Accor brand code facet; `city` (string, optional) — City facet; `country` (string, optional) — Country facet; `language` (string, optional) — Index locale; `limit` (integer, optional) — Results per page, 1-100; `page` (integer, optional) — Zero-based result page; `query` (string, **required**) — Destination or hotel query (at least two characters); `stars` (integer, optional) — Exact star facet
+
+### `accor_search_details`
+
+- **HTTP:** `GET /accor/search/details`
+- **What:** Accor place coordinates and viewport. Resolves an anonymous Accor search suggestion identifier to its description, coordinates, viewport, radius, and address components. It uses the same public place-details source as the Accor search box; booking, rates, rooms, reviews, and account data are excluded.
+- **Params:** `id` (string, **required**) — Identifier returned by Accor search suggestions; `language` (string, optional) — Optional locale; `source` (string, **required**) — Suggestion source
+
+### `accor_search_suggest`
+
+- **HTTP:** `GET /accor/search/suggest`
+- **What:** Accor destination and hotel search suggestions. Returns anonymous Accor typeahead suggestions for a partial destination or hotel query, including destination/place and hotel identifiers, types, labels, and match metadata. It uses the public search-box suggestion source only; booking, rates, rooms, reviews, and result-list requests are excluded.
+- **Params:** `language` (string, optional) — Optional locale used by the suggestion source; `query` (string, **required**) — Partial destination or hotel query (at least two characters)
+
+## Adidas (7)
 
 ### `adidas_product`
 
@@ -16,10 +146,22 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get an Adidas product. Returns normalized product-detail data for one Adidas SKU: name, brand, category, description, pricing (current/standard/sale), images, and every purchasable size variant. product_id is the Adidas SKU (e.g. JI0397), taken from a search result's products[].id field or the trailing segment of an Adidas product page URL. An unknown product_id returns a not-found error.
 - **Params:** `product_id` (string, **required**) — Adidas SKU/product id, from a search result's products[].id field
 
+### `adidas_product_review_topics`
+
+- **HTTP:** `GET /adidas/product/review-topics`
+- **What:** Get Adidas review topics for a product. Returns the topics an Adidas product model's customer reviews can be filtered by -- the "filter by topic" chips the product page shows, commonly satisfaction, comfort, color, purchase, fit, appearance, quality and style. Feed a topics[].topic value back to /adidas/product/reviews as its topic parameter to return only reviews about that aspect. The topic vocabulary is per model, not a fixed list: a shoe exposes fit and comfort topics that an accessory does not, so read it per model rather than hard-coding it. model_number is the Adidas model number (e.g. SAMBAU2312) -- NOT the SKU: take it from an adidas_search result's products[].model_number field. A model with no reviews, including a well-formed but unrecognized model_number, returns an empty topics list rather than an error. Note the label field is a display form of topic, not translated text: Adidas returns the same English values for every locale on this route.
+- **Params:** `locale` (string, optional) — Locale accepted for consistency with the reviews endpoint. Allowed values: cs_CZ, da_DK, de_AT, de_CH, de_DE, el_GR, en_AE, en_AU, en_CA, en_GB, en_IE, en_IL, en_IN, en_NZ, en_PH, en_SG, en_US, en_ZA, es_AR, es_CL, es_CO, es_ES, es_MX, es_PE, fr_BE, fr_CA, fr_CH, fr_FR, id_ID, it_CH, it_IT, ja_JP, ko_KR, nl_BE, nl_NL, pl_PL, pt_BR, pt_PT, ru_RU, sk_SK, sv_SE, th_TH, tr_TR, zh_HK, zh_TW. Defaults to en_US. Note Adidas returns the same English topic labels regardless of this value.; `model_number` (string, **required**) — Adidas model number, from an adidas_search result's products[].model_number field
+
+### `adidas_product_reviews`
+
+- **HTTP:** `GET /adidas/product/reviews`
+- **What:** Get Adidas product reviews. Returns one page of customer reviews for an Adidas product model, plus the model's rating summary: overall rating, star histogram, percentage of reviewers who recommend it, per-attribute averages (Size, Width, Comfort, Quality with their own scale labels), and Adidas's AI-generated review digest when one exists. Each review carries the rating, headline, body, author nickname, purchased colorway, helpful/not-helpful vote counts, badges, customer photos, and submission time. model_number is the Adidas model number (e.g. SAMBAU2312) -- NOT the SKU: take it from an adidas_search result's products[].model_number field, which is a different value from products[].id. Reviews are returned 10 per page. Reviews are scoped to review text written in the requested locale's language, and most of the US catalog's reviews are English, so a non-English locale commonly returns rating statistics and a localized summary with an empty reviews list. A model with no reviews -- including a well-formed but unrecognized model_number -- returns an empty reviews list rather than an error, because Adidas answers 200 with a zero count rather than 404.
+- **Params:** `locale` (string, optional) — Locale for the review-summary language, the secondary-rating scale labels, and the language of the reviews returned. Allowed values: cs_CZ, da_DK, de_AT, de_CH, de_DE, el_GR, en_AE, en_AU, en_CA, en_GB, en_IE, en_IL, en_IN, en_NZ, en_PH, en_SG, en_US, en_ZA, es_AR, es_CL, es_CO, es_ES, es_MX, es_PE, fr_BE, fr_CA, fr_CH, fr_FR, id_ID, it_CH, it_IT, ja_JP, ko_KR, nl_BE, nl_NL, pl_PL, pt_BR, pt_PT, ru_RU, sk_SK, sv_SE, th_TH, tr_TR, zh_HK, zh_TW. Defaults to en_US.; `model_number` (string, **required**) — Adidas model number, from an adidas_search result's products[].model_number field; `page` (integer, optional) — One-based page number, 10 reviews per page, defaults to 1; `rating` (integer, optional) — Return only reviews with this star rating. Allowed values: 1, 2, 3, 4, 5. Omitted returns every rating.; `topic` (string, optional) — Return only reviews about one topic. Valid values are per-model -- read them from /adidas/product/review-topics for the same model_number (commonly satisfaction, comfort, color, purchase, fit, appearance, quality, style). An unrecognized topic returns a 400 listing the model's own topics.
+
 ### `adidas_search`
 
 - **HTTP:** `GET /adidas/search`
-- **What:** Search or browse Adidas products. Searches Adidas.com product listings by keyword, or browses a category listing by taxonomy slug, with real pagination and sort options. Exactly one of query or category is required. Returns normalized product summaries (title, price, rating, images, color variants) plus facet filter groups, sort options, and (for category browse) a breadcrumb trail. Keyword search is best-effort relevance, not a guaranteed match: an obscure keyword returns whatever Adidas's own search index surfaces. A genuinely empty keyword search returns an empty product list, and requesting a page beyond the available result pages (or an unknown category) returns a not-found error. Category values are the path segment after /us/ in an Adidas category URL (e.g. women-athletic_sneakers); they can also be read from the url fields of a search/category response's own filters and breadcrumbs.
+- **What:** Search or browse Adidas products. Searches Adidas.com product listings by keyword, or browses a category listing by taxonomy slug, with real pagination and sort options. Exactly one of query or category is required. Returns normalized product summaries (title, price, rating, images, color variants) plus facet filter groups, sort options, and (for category browse) a breadcrumb trail. Keyword search is best-effort relevance, not a guaranteed match: an obscure keyword returns whatever Adidas's own search index surfaces. A genuinely empty keyword search returns an empty product list, and requesting a page beyond the available result pages (or an unknown category) returns a not-found error. Category values are the path segment after /us/ in an Adidas category URL (e.g. women-athletic_sneakers); they can also be read from the url fields of a search/category response's own filters and breadcrumbs. Facets are applied by composing them into the category slug rather than by a separate parameter: each filters[].values[].slug is a token you splice into the category value (e.g. category=women-black-athletic_sneakers applies the Color=Black facet, and category=women-athletic_sneakers-prime applies Shipping=PRIME). Use filters[].key (the facet's stable name, e.g. searchcolor) rather than filters[].id, which is an opaque per-deployment UUID that cannot be used to build a request. Note the token's position within the slug varies by facet, so compose from a slug you have seen rather than assuming a fixed order.
 - **Params:** `category` (string, optional) — Category/taxonomy slug, the path segment after /us/ in an Adidas category URL. Exactly one of query or category is required.; `page` (integer, optional) — One-based page number, defaults to 1; `query` (string, optional) — Search keyword. Exactly one of query or category is required.; `sort` (string, optional) — Sort order. Allowed values: price-low-to-high, newest-to-oldest, top-sellers, price-high-to-low. Omitted means relevance.
 
 ### `adidas_store`
@@ -32,7 +174,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /adidas/stores`
 - **What:** Find nearby Adidas stores. Returns Adidas physical retail stores nearest to a coordinate, sourced from Adidas's own store-finder API: name, address, phone, coordinates, distance in miles, opening hours, and in-store feature flags. lat and lng are both required. Adidas's upstream ignores a caller-supplied radius and returns the nearest ~20 stores ordered by distance. A location with no stores returns an empty list rather than an error.
-- **Params:** `lat` (number, **required**) — Latitude, -90 to 90; `lng` (number, **required**) — Longitude, -180 to 180; `page` (integer, optional) — Zero-based page number, defaults to 0
+- **Params:** `lat` (number, **required**) — Latitude, -90 to 90; `lng` (number, **required**) — Longitude, -180 to 180; `page` (integer, optional) — Accepted only as 0. Adidas's store finder returns every nearby store (up to 20) in a single page, so any higher value is always empty and is rejected as an invalid parameter.
 
 ### `adidas_suggest`
 
@@ -292,6 +434,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List an anime's staff. Returns the people credited on an anime (name, production role, occupations, image), paginated. Credential-free public AniList data.
 - **Params:** `id` (string, **required**) — AniList anime id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50
 
+## AppInsights (4)
+
+### `apk_teardown_compare_ownership`
+
+- **HTTP:** `GET /apk-teardown/compare-ownership`
+- **What:** Compare two apk-teardown jobs for evidence of common ownership. Compares two DIFFERENT completed jobs (not versions of the same app) for signals of common ownership -- shared signing certificate, SDK/analytics identifiers, and more.
+- **Params:** `job_id_a` (string, **required**) — First job ID; `job_id_b` (string, **required**) — Second job ID
+
+### `apk_teardown_diff`
+
+- **HTTP:** `GET /apk-teardown/diff`
+- **What:** Diff two completed apk-teardown jobs. Compares two already-completed jobs -- typically two versions of the same app -- and returns what changed (permissions, signing, SDKs, size, and more).
+- **Params:** `job_id_a` (string, **required**) — First job ID; `job_id_b` (string, **required**) — Second job ID
+
+### `apk_teardown_submit`
+
+- **HTTP:** `POST /apk-teardown/jobs`
+- **What:** Submit an APK for static teardown analysis. Uploads a single .apk/.xapk file (up to 400MB), or set file_url to have the server fetch it from an https:// URL instead -- exactly one of "file" or "file_url" must be given, not both. Enqueues a Tier 1 static-analysis job -- manifest, permissions, signing, SDK detection, tech stack, locales, and more. Poll the returned poll_path for the result, or set webhook_url for push delivery. Identical uploads (by sha256) within 48h return the existing job instead of re-running analysis. file_url is validated (https only, must resolve to a public address -- no loopback/private/link-local targets) and every redirect hop is re-validated the same way before being followed.
+- **Params:** _none_
+
+### `apk_teardown_timeline`
+
+- **HTTP:** `GET /apk-teardown/timeline`
+- **What:** Build a version timeline across 2+ apk-teardown jobs. Compares 2+ completed jobs the caller asserts are versions of the same app and returns the consecutive pairwise diff for each version transition, sorted by version code.
+- **Params:** `job_ids` (string, **required**) — Comma-separated list of 2+ completed job ids, any order
+
 ## Apple Jobs (2)
 
 ### `apple_jobs_job`
@@ -305,6 +473,122 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /apple-jobs/search`
 - **What:** Apple Jobs search. Searches Apple's public careers site (jobs.apple.com) via its server-rendered search page's embedded job data. Page size is fixed by Apple at 20 results. Search results carry identity/location/team metadata only — call the job endpoint for the full description and qualifications.
 - **Params:** `location` (string, optional) — Location filter in Apple's own slug format, e.g. united-states-USA or singapore-SGP; `page` (integer, optional) — Page number, 1-based; `q` (string, **required**) — Search query
+
+## Apple Maps (19)
+
+### `apple_maps_autocomplete`
+
+- **HTTP:** `GET /apple-maps/autocomplete`
+- **What:** Get Apple Maps search suggestions for a partial query. Returns Apple Maps typeahead suggestions for a partial query near a coordinate: query completions, matching businesses (resolved to the same place summary the search endpoint returns, with the place ID the place endpoint takes), and addresses.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag. Defaults to en-US.; `latitude` (number, **required**) — Center latitude the suggestions are biased to; `longitude` (number, **required**) — Center longitude the suggestions are biased to; `query` (string, **required**) — Partial search text to complete; `span` (number, optional) — Viewport size in degrees around the center. Defaults to 0.05; minimum 0.001, maximum 5.
+
+### `apple_maps_categories`
+
+- **HTTP:** `GET /apple-maps/categories`
+- **What:** List Apple Maps browse categories for an area. Returns the "Find Nearby" browse categories Apple Maps offers for an area (for example Restaurants, Coffee Shops, Gas Stations, Hotels, Parking, Grocery Stores), each with the key and name the category-search endpoint takes. The set is location-aware.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag. Defaults to en-US.; `latitude` (number, **required**) — Center latitude; `longitude` (number, **required**) — Center longitude; `span` (number, optional) — Viewport size in degrees around the center. Defaults to 0.05; minimum 0.001, maximum 5.
+
+### `apple_maps_category_search`
+
+- **HTTP:** `GET /apple-maps/category-search`
+- **What:** Browse one Apple Maps category near a coordinate. Returns places in one browse category near a coordinate without a keyword, in the same shape as the search endpoint (place summaries, region, relocation flag, and the refinement filters block). The category is a name from the categories endpoint for the same area (case-insensitive) or its key; an unknown name returns 400 listing the categories available there. Filters and sort work exactly as on the search endpoint.
+- **Params:** `category` (string, **required**) — Category name (e.g. Coffee Shops, Restaurants) or key from /apple-maps/categories for the same area; `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `filters` (string, optional) — Comma-separated filter keys from the filters block of an unfiltered category search for the same category and area. Unknown keys return 400 listing the available keys. Costs a second upstream call.; `lang` (string, optional) — Display language as a BCP 47 tag. Defaults to en-US.; `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Max places returned. Defaults to 25, maximum 100.; `longitude` (number, **required**) — Search center longitude; `sort` (string, optional) — Result order. Costs a second upstream call.; `span` (number, optional) — Search viewport size in degrees around the center. Defaults to 0.05; minimum 0.001, maximum 5.
+
+### `apple_maps_directions`
+
+- **HTTP:** `GET /apple-maps/directions`
+- **What:** Get Apple Maps driving, walking, or cycling directions. Returns Apple Maps routes between an origin and a destination, with optional intermediate stops, for driving, walking, or cycling. Each route carries its name, whether it is Apple's main or an alternate route, distance, live/historic/free-flow durations, toll and highway flags, Apple's route description and traffic note, and per-leg turn-by-turn steps (maneuver, road, shield, instruction text, distance, duration); detail=full adds each leg's path as coordinates. Departure time and avoid-tolls/highways/stairs preferences are supported. Transit routing is not available.
+- **Params:** `avoid_highways` (boolean, optional) — Driving only: prefer routes without highways; `avoid_stairs` (boolean, optional) — Walking only: prefer routes without stairs; `avoid_tolls` (boolean, optional) — Driving only: prefer routes without tolls; `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `depart_at` (string, optional) — Departure time as RFC 3339 for traffic-aware estimates. Defaults to now.; `destination_latitude` (number, **required**) — Destination latitude; `destination_longitude` (number, **required**) — Destination longitude; `detail` (string, optional) — How much of each route to return. Defaults to steps.; `lang` (string, optional) — Language for road names and instructions as a BCP 47 tag. Defaults to en-US.; `mode` (string, optional) — Travel mode. Defaults to driving.; `origin_latitude` (number, **required**) — Origin latitude; `origin_longitude` (number, **required**) — Origin longitude; `via` (string, optional) — Intermediate stops as lat,lng pairs separated by |, at most 8
+
+### `apple_maps_eta`
+
+- **HTTP:** `GET /apple-maps/eta`
+- **What:** Get Apple Maps travel-time estimates between two points. Returns Apple Maps travel-time estimates between an origin and a destination: for each transport type Apple reports (driving always; walking when requested), the live best estimate, the historic and free-flow durations, and the route distance. Cheaper than the directions endpoint when only the time and distance are needed. Apple has no cycling ETA; use the directions endpoint for cycling.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `destination_latitude` (number, **required**) — Destination latitude; `destination_longitude` (number, **required**) — Destination longitude; `mode` (string, optional) — Travel mode. Defaults to driving.; `origin_latitude` (number, **required**) — Origin latitude; `origin_longitude` (number, **required**) — Origin longitude
+
+### `apple_maps_guide`
+
+- **HTTP:** `GET /apple-maps/guides/guide`
+- **What:** Get one Apple Guide with its places. Returns one Apple Guide (curated collection) by id: title, description, last-modified time, cover photos, source link, publisher, and every place in the guide with the publisher's blurb for it plus the place's Apple place ID, name, category, coordinates, address, phone, website, rating, price level, hours, and photo.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `guide_id` (string, **required**) — Guide id: from the guides home, a publisher page, a place's guide_ids, or the curated= value in a maps.apple.com/guides URL; `lang` (string, optional) — Display language as a BCP 47 tag, e.g. en-US, fr-FR. Defaults to en-US.
+
+### `apple_maps_guides`
+
+- **HTTP:** `GET /apple-maps/guides`
+- **What:** Browse the Apple Guides home page worldwide or for one city. Returns the Apple Guides home page for the Worldwide scope or one city: the featured guide, the guide carousels (expert recommendations, latest, and similar rows), the city shortcut list, and the browse-by-publisher list. Each guide carries its id (the value the guide endpoint takes), title, description, last-modified time, place count, cover photo, source link, and publisher; each publisher carries its id, name, subtitle, website, and guide count.
+- **Params:** `city_id` (string, optional) — City id from /apple-maps/guides/cities. Omit for the Worldwide guides home.; `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag, e.g. en-US, fr-FR. Defaults to en-US.
+
+### `apple_maps_guides_cities`
+
+- **HTTP:** `GET /apple-maps/guides/cities`
+- **What:** List the regions and cities Apple Guides cover. Returns the Apple Guides city picker: every region (North America, Europe, Australia, and any Apple adds) with the cities it publishes guides for, each with its id, country, coordinates, and cover photo. Pass a city id to the guides home, publishers, or publisher endpoints to scope them to that city; omit it for the Worldwide scope.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag, e.g. en-US, fr-FR. Region and city names follow it. Defaults to en-US.
+
+### `apple_maps_guides_lookup`
+
+- **HTTP:** `GET /apple-maps/guides/lookup`
+- **What:** Resolve up to 20 Apple Guide ids to guide summaries. Returns guide summaries (id, title, description, last-modified time, place count, cover photo, source link) for up to 20 guide ids in one call, for example the guide_ids a place carries. Ids Apple does not return are listed in not_found. Publisher details are not part of this lookup; use the guide endpoint for a single guide's publisher and places.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `guide_ids` (string, **required**) — Comma-separated Apple guide ids, 1 to 20; `lang` (string, optional) — Display language as a BCP 47 tag. Defaults to en-US.
+
+### `apple_maps_guides_nearby`
+
+- **HTTP:** `GET /apple-maps/guides/nearby`
+- **What:** Get the Apple Guides curated for the area around a coordinate. Returns the guides Apple suggests for the area around a coordinate ("Guides We Love" for that location) as guide summaries, plus the Apple Guides city the area belongs to (with the city id the guides home endpoint takes). A coordinate outside any guides city returns an empty list.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag. Defaults to en-US.; `latitude` (number, **required**) — Latitude of the area; `longitude` (number, **required**) — Longitude of the area; `span` (number, optional) — Viewport size in degrees around the center. Defaults to 0.05; minimum 0.001, maximum 5.
+
+### `apple_maps_guides_publisher`
+
+- **HTTP:** `GET /apple-maps/guides/publisher`
+- **What:** Get one Apple Guides publisher and its guides. Returns one Apple Guides publisher by id: name, subtitle, website, guide count, the cities the publisher offers as filters, and its guides (each with id, title, description, last-modified time, place count, cover photo, and source link). Pass one of the publisher's own city ids as city_id to return only the guides for that city.
+- **Params:** `city_id` (string, optional) — Restrict to one city: an id from this publisher's own cities list; `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag, e.g. en-US, fr-FR. Defaults to en-US.; `publisher_id` (string, **required**) — Publisher id: from the guides home or publishers list, a guide's publisher.id, or the publisher= value in a maps.apple.com/guides URL
+
+### `apple_maps_guides_publishers`
+
+- **HTTP:** `GET /apple-maps/guides/publishers`
+- **What:** List Apple Guides publishers worldwide or for one city. Returns the Apple Guides "Browse by Publisher" list for the Worldwide scope or one city, sorted by name: each publisher's id (the value the publisher endpoint takes), name, subtitle, website, and number of guides. With no city_id this is the complete enumeration of every publisher Apple lists, usable as the id lookup table for the publisher endpoint.
+- **Params:** `city_id` (string, optional) — City id from /apple-maps/guides/cities. Omit for the Worldwide publisher list.; `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag, e.g. en-US, fr-FR. Defaults to en-US.
+
+### `apple_maps_place`
+
+- **HTTP:** `GET /apple-maps/place`
+- **What:** Get one Apple Maps place's full detail. Returns one Apple Maps place by its place ID: name, type, category taxonomy, coordinates, formatted and structured address, phone numbers, website, rating and review count, price level, weekly opening hours, amenities (payment, accessibility, parking, and similar yes/no attributes), photos, review snippets (text, rating, time, and source link, without reviewer identity), the business-claim link, and the IDs of Apple Guides that include the place. Accepts either the external place ID (starts with I, the place-id= value in a maps.apple.com/place URL) or the numeric ID from a search result.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code selecting Apple's regional catalog. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag, e.g. en-US, ja-JP, de-DE. Defaults to en-US.; `place_id` (string, **required**) — Apple place ID: external form (I594FECA0B369D14A) or numeric id from a search result
+
+### `apple_maps_place_photos`
+
+- **HTTP:** `GET /apple-maps/place/photos`
+- **What:** List every photo Apple Maps carries for a place. Returns all of a place's photos (the place endpoint caps at 20): the business cover photo first when present, then the hero photo, then every categorized photo with its category (Food & Drink, Interior, Exterior, ...), width and height.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag, e.g. en-US. Defaults to en-US.; `place_id` (string, **required**) — Apple place ID (external I... form or numeric id)
+
+### `apple_maps_places`
+
+- **HTTP:** `GET /apple-maps/places`
+- **What:** Get full detail for up to 20 Apple Maps places in one call. Returns the same full detail as the place endpoint for up to 20 place IDs in a single upstream call, plus the list of requested IDs Apple did not return. Accepts the external I... form and the numeric id interchangeably.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag. Defaults to en-US.; `place_ids` (string, **required**) — Comma-separated Apple place ids, 1 to 20
+
+### `apple_maps_reverse_geocode`
+
+- **HTTP:** `GET /apple-maps/reverse-geocode`
+- **What:** Reverse-geocode a coordinate with Apple Maps. Returns Apple Maps' address record for a coordinate: the matched place name and type (an address, street, or area of interest such as a neighborhood), the formatted and structured address, the matched center, the IANA timezone, and the display region.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag. Defaults to en-US.; `latitude` (number, **required**) — Latitude to reverse-geocode; `longitude` (number, **required**) — Longitude to reverse-geocode
+
+### `apple_maps_search`
+
+- **HTTP:** `GET /apple-maps/search`
+- **What:** Search Apple Maps places near a coordinate. Returns Apple Maps places matching a keyword, business name, category, or street address near a coordinate. Each place carries its Apple place ID (the value the place endpoint takes), name, category, coordinates, formatted and structured address, phone, website, rating and review count, price level, weekly opening hours, and a hero photo. Apple returns a bounded set per viewport (around 25 places for the default span) with no pagination; widen the span or move the center to cover more area. When nothing matches near the center Apple may relocate the search to a default region, reported by relocated=true and the region bounds. The response's filters block lists the refinement chips Apple offers for this query and area (open now, top rated, in guides, cuisines, price bands, amenities, accolades, sort); pass their keys back as filters and sort to refine the same search.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code selecting Apple's regional catalog. Defaults to US.; `filters` (string, optional) — Comma-separated filter keys from the filters block of an unfiltered search for the same query and area, e.g. OPEN_NOW, TOP_RATED, FEATURED_IN_GUIDES, PRICE_RANGE_MODERATE, modern_pizza_restaurant, ACCEPTS_CREDIT_CARDS. Unknown keys return 400 listing the available keys. Costs a second upstream search.; `lang` (string, optional) — Display language as a BCP 47 tag, e.g. en-US, ja-JP, de-DE. Defaults to en-US.; `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Max places returned. Defaults to 25, maximum 100.; `longitude` (number, **required**) — Search center longitude; `query` (string, **required**) — Keyword, business name, category, or street address to search for; `sort` (string, optional) — Result order. Costs a second upstream search.; `span` (number, optional) — Search viewport size in degrees of latitude/longitude around the center. Defaults to 0.05 (roughly a 5km box); minimum 0.001, maximum 5.
+
+### `apple_maps_transit_departures`
+
+- **HTTP:** `GET /apple-maps/transit-departures`
+- **What:** Get a transit stop's lines and live departures from Apple Maps. Returns a transit stop or station's systems (e.g. BART, Muni Metro), lines (name, shield, color), and the upcoming departures Apple Maps shows, each with the line, headsign, direction, scheduled and live times, and real-time status. Takes the stop's Apple place ID (find stops with the search endpoint, e.g. a station name). A place that is not a transit stop returns 404.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag, e.g. en-US. Defaults to en-US.; `place_id` (string, **required**) — Apple place ID of a transit stop or station (external I... form or numeric id)
+
+### `apple_maps_venue_browse`
+
+- **HTTP:** `GET /apple-maps/venue/browse`
+- **What:** Browse the stores and places inside a venue on Apple Maps. Returns an indoor venue's directory (mall, airport, stadium: categories such as Clothes, Shoes, Food, All Shops with their subcategories and levels) and, when a category is given, the places inside the venue for that category with the same summary shape as search. Find venues with the search endpoint; a place without a directory returns 404, an unknown category returns 400 listing the available ones.
+- **Params:** `category` (string, optional) — Directory category or subcategory to browse, by name (case-insensitive) or key from the venue's directory. Omit to list the directory only.; `country` (string, optional) — Two-letter ISO 3166-1 country code. Defaults to US.; `lang` (string, optional) — Display language as a BCP 47 tag, e.g. en-US. Defaults to en-US.; `limit` (integer, optional) — Max places returned. Defaults to 25, maximum 100.; `place_id` (string, **required**) — Apple place ID of the venue (external I... form or numeric id)
 
 ## AppleBooks (12)
 
@@ -504,6 +788,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve App Store version history. Returns the version history entries shown in the App Store "What's New" section.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag
 
+## Arbys (5)
+
+### `arbys_categories`
+
+- **HTTP:** `GET /arbys/categories`
+- **What:** List Arby's menu categories. Returns Arby's US menu's top-level categories -- Slow Roasted Beef, Crispy Juicy Chicken, Meals, Sides & Snacks, Beverages, Desserts, Kids Menu and others. Each entry's slug is the value GET /arbys/menu takes. store_id (optional, default 0) selects which pricing snapshot categories' item counts are read from; the default 0 is Arby's own reference catalog and carries no prices at all -- pass a store_id you already know (for example one you have seen on arbys.com after picking a location) to price GET /arbys/menu's items against a specific store. There is no location-lookup endpoint in this family.
+- **Params:** `store_id` (integer, optional) — Optional. Store id to read the catalog from, default 0 (Arby's priceless national reference catalog).
+
+### `arbys_directory`
+
+- **HTTP:** `GET /arbys/directory`
+- **What:** Browse Arby's US store directory by state and city. Returns one level of Arby's US store directory: every state Arby's serves with its store count (no params), one state's cities (state given), or one city's stores (state and city given) -- id, address, and phone only, pair with GET /arbys/location for hours/amenities/status. Unlike GET /arbys/locations, this needs no coordinate; it is a plain browse of the whole ~3,200-store US chain.
+- **Params:** `city` (string, optional) — Optional. City name, requires state. Omit to list every city in the state.; `state` (string, optional) — Optional. Two-letter US state abbreviation. Omit to list every state.
+
+### `arbys_location`
+
+- **HTTP:** `GET /arbys/location`
+- **What:** Look up one Arby's restaurant by store id. Returns one Arby's restaurant directly by its store id (e.g. one found via GET /arbys/locations), with the same address, hours, amenities, and capability fields as that endpoint's results, minus distance (there is no search center for a direct lookup).
+- **Params:** `store_id` (integer, **required**) — A real Arby's store id, e.g. one returned by GET /arbys/locations
+
+### `arbys_locations`
+
+- **HTTP:** `GET /arbys/locations`
+- **What:** Find Arby's restaurants near a coordinate. Returns Arby's restaurants within a radius of a coordinate, nearest first, with address, phone, coordinates, distance, open/closed status, hours, amenities, and pickup/delivery capability flags. Each result's store_id also prices GET /arbys/menu and GET /arbys/categories. To search from a free-text address instead of coordinates, resolve it first with GET /geocoding/search.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Optional. Maximum stores per page, 1-50, default 10.; `longitude` (number, **required**) — Search center longitude; `page` (integer, optional) — Optional. Zero-based page index, default 0.; `radius` (integer, optional) — Optional. Search radius in miles, 1-50, default 50. Upstream hard-blocks any radius over 50.
+
+### `arbys_menu`
+
+- **HTTP:** `GET /arbys/menu`
+- **What:** List one Arby's menu category's items with full nutrition and price. Returns the items in one Arby's menu category, each with its stable product code, name, description, image, tags, availability, a full per-serving nutrition panel (calories, total and saturated fat, trans fat, cholesterol, sodium, carbohydrate, fiber, sugar, protein and serving weight), and a price when store_id resolves to a priced catalog. Category slugs come from GET /arbys/categories. store_id (optional, default 0) is Arby's own priceless national reference catalog; pass a store_id you already know to get that store's pricing instead -- there is no location-lookup endpoint in this family, so store_id is a passthrough value, not something this API can look up for you. A price of exactly 0 on an item is a genuine free add-on, distinct from the default catalog's complete absence of pricing.
+- **Params:** `category` (string, **required**) — Category slug from /arbys/categories; `store_id` (integer, optional) — Optional. Same store id semantics as /arbys/categories.
+
 ## Audible (10)
 
 ### `audible_categories`
@@ -642,6 +958,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Better Business Bureau businesses. Searches bbb.org for businesses by name or category near a location. Returns each business's BBB rating letter grade, accreditation status, categories, service areas, contact info, and profile URL. Credential-free public Better Business Bureau data.
 - **Params:** `location` (string, **required**) — City and state (e.g. 'Austin, TX') or a ZIP code; `page` (integer, optional) — Result page, default 1; `query` (string, **required**) — Business name or category/service keyword
 
+## BBC (4)
+
+### `bbc_article`
+
+- **HTTP:** `GET /bbc/article`
+- **What:** Get BBC News article content. Returns a BBC News article's public metadata and body paragraphs from a canonical article URL. Live pages are not supported.
+- **Params:** `url` (string, **required**) — Canonical BBC News article URL
+
+### `bbc_headlines`
+
+- **HTTP:** `GET /bbc/headlines`
+- **What:** Get BBC News section headlines. Returns fresh headlines from a public BBC News RSS section. section defaults to world.
+- **Params:** `section` (string, optional) — BBC News RSS section, defaults to world
+
+### `bbc_live`
+
+- **HTTP:** `GET /bbc/live`
+- **What:** Get a BBC News live-page text snapshot. Returns the current server-rendered text updates from one canonical BBC News live URL. It does not subscribe to updates or return broadcast, player, or stream data.
+- **Params:** `url` (string, **required**) — Canonical BBC News live URL
+
+### `bbc_search`
+
+- **HTTP:** `GET /bbc/search`
+- **What:** Search public BBC pages. Returns a bounded page of public BBC search-result metadata. Media entries link only to their BBC landing pages; streams, downloads, and transcripts are not returned.
+- **Params:** `page` (integer, optional) — Results page, defaults to 1; `q` (string, **required**) — Search query, up to 120 characters
+
 ## Best Buy (11)
 
 ### `bestbuy_brands`
@@ -709,6 +1051,76 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /bestbuy/stores`
 - **What:** Get Best Buy's physical stores in one city. Returns Best Buy's physical store locations in one city (name, address, phone, coordinates, rating, hours), sourced from Best Buy's own SEO store directory. state is one of the 50 US state codes plus dc and pr: `al`, `ak`, `az`, `ar`, `ca`, `co`, `ct`, `de`, `dc`, `fl`, `ga`, `hi`, `id`, `il`, `in`, `ia`, `ks`, `ky`, `la`, `me`, `md`, `ma`, `mi`, `mn`, `ms`, `mo`, `mt`, `ne`, `nv`, `nh`, `nj`, `nm`, `ny`, `nc`, `nd`, `oh`, `ok`, `or`, `pa`, `pr`, `ri`, `sc`, `sd`, `tn`, `tx`, `ut`, `vt`, `va`, `wa`, `wv`, `wi`, `wy`. city is free text matched case-insensitively against that state's own directory (e.g. "Chicago").
 - **Params:** `city` (string, **required**) — City name; `state` (string, **required**) — Two-letter state/territory code
+
+## BigCommerce (3)
+
+### `bigcommerce_category`
+
+- **HTTP:** `GET /bigcommerce/category`
+- **What:** Browse a BigCommerce storefront category. Returns one normalized product-listing page from a public BigCommerce storefront category page. url must be the full public category-page URL. page is 1-indexed and defaults to 1.
+- **Params:** `page` (integer, optional) — 1-indexed category page, defaults to 1; `url` (string, **required**) — Full public BigCommerce category page URL
+
+### `bigcommerce_product`
+
+- **HTTP:** `GET /bigcommerce/product`
+- **What:** Get a BigCommerce storefront product. Returns normalized product detail from a public BigCommerce storefront product page. url must be the full public product-page URL for a BigCommerce Stencil storefront.
+- **Params:** `url` (string, **required**) — Full public BigCommerce product page URL
+
+### `bigcommerce_search`
+
+- **HTTP:** `GET /bigcommerce/search`
+- **What:** Search a BigCommerce storefront. Returns one normalized product-search page from a public BigCommerce storefront. url must be the public storefront origin; an optional caller path or query is ignored. q is required search text. page is 1-indexed and defaults to 1.
+- **Params:** `page` (integer, optional) — 1-indexed search page, defaults to 1; `q` (string, **required**) — Search text; `url` (string, **required**) — Public BigCommerce storefront origin
+
+## Bilibili (8)
+
+### `bilibili_anime_home`
+
+- **HTTP:** `GET /bilibili/anime-home`
+- **What:** Get Bilibili anime home sections. Returns the anonymous anime homepage's featured titles, latest updates, schedule, popular ranking, and new recommendations. Personalized rotating feed items are excluded.
+- **Params:** _none_
+
+### `bilibili_autocomplete`
+
+- **HTTP:** `GET /bilibili/autocomplete`
+- **What:** Get Bilibili search suggestions. Returns Bilibili search-box query suggestions for partial text. An empty suggestion list is a valid response when nothing matches.
+- **Params:** `q` (string, **required**) — Partial search text
+
+### `bilibili_guochuang_home`
+
+- **HTTP:** `GET /bilibili/guochuang-home`
+- **What:** Get Bilibili Chinese-animation home sections. Returns the anonymous Chinese-animation homepage's featured titles, latest updates, schedule, popular ranking, and new recommendations. Personalized rotating feed items are excluded.
+- **Params:** _none_
+
+### `bilibili_must_watch`
+
+- **HTTP:** `GET /bilibili/must-watch`
+- **What:** Get Bilibili's curated must-watch videos. Returns Bilibili's curated must-watch collection, separated into established classics and the latest additions.
+- **Params:** _none_
+
+### `bilibili_popular`
+
+- **HTTP:** `GET /bilibili/popular`
+- **What:** Get current popular Bilibili videos. Returns Bilibili's current popular-video feed in upstream order. Pass next_cursor back as cursor to continue to the next batch.
+- **Params:** `cursor` (integer, optional) — Upstream cursor from the previous response; defaults to 0
+
+### `bilibili_ranking`
+
+- **HTTP:** `GET /bilibili/ranking`
+- **What:** Get the current Bilibili all-site ranking. Returns the current official all-site ranking with video engagement, category, and creator metadata in rank order.
+- **Params:** _none_
+
+### `bilibili_vertical_home`
+
+- **HTTP:** `GET /bilibili/vertical-home`
+- **What:** Get Bilibili documentary, movie, TV, or variety home sections. Returns stable server-rendered editorial sections for one Bilibili vertical. Allowed category values: documentary, movie, tv, variety. Rotating feeds, pagination, account state, and streaming URLs are excluded.
+- **Params:** `category` (string, **required**) — Vertical: documentary, movie, tv, variety
+
+### `bilibili_weekly`
+
+- **HTTP:** `GET /bilibili/weekly`
+- **What:** Get a Bilibili weekly selected-video issue. Returns one issue from Bilibili's weekly selected-video archive. Omit number to resolve and return the latest issue.
+- **Params:** `number` (integer, optional) — Positive issue number; omit for the latest issue
 
 ## Bing (5)
 
@@ -786,6 +1198,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Bluesky's current trending topics. Returns Bluesky's current trending topics and suggested feeds, each with a link to its feed. Public data, sourced from the AT Protocol's public, credential-free AppView API. This surface is less stable than the rest of this family -- Bluesky may change its shape without notice.
 - **Params:** _none_
 
+## Bonhams (5)
+
+### `bonhams_auction_detail`
+
+- **HTTP:** `GET /bonhams/auctions/{id}`
+- **What:** Get a Bonhams auction's normalized facts. Returns one Bonhams auction's normalized facts by id: title, category, department, country, currency, sale dates, and lot count. Unlike the search endpoint, this is not restricted to upcoming/live auctions -- a historical/ended auction id resolves too. Credential-free public data from bonhams.com's own search API.
+- **Params:** `id` (string, **required**) — Bonhams auction id
+
+### `bonhams_auction_lots`
+
+- **HTTP:** `GET /bonhams/auctions/{id}/lots`
+- **What:** List the lots in a Bonhams auction. Returns the normalized lot listing for one Bonhams auction, optionally filtered by department and/or a free-text query. Credential-free public data from bonhams.com's own search API.
+- **Params:** `department` (string, optional) — Comma-separated department names (not a fixed enum -- varies per auction); `id` (string, **required**) — Bonhams auction id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 48, max 100; `q` (string, optional) — Free-text search across lot title, catalog description, and footnotes
+
+### `bonhams_auction_search`
+
+- **HTTP:** `GET /bonhams/auctions/search`
+- **What:** Search Bonhams auctions. Searches and filters Bonhams' auctions. Default status "upcoming" excludes ended auctions, matching bonhams.com's own default; "past" browses Bonhams' full historical auction archive instead. Credential-free public data from bonhams.com's own search API.
+- **Params:** `auction_type` (string, optional) — Comma-separated auction types; `category` (string, optional) — Comma-separated categories. Allowed values: 20th & 21st Century Art, Asian Art, Books, History & Science, Classic Art, Decorative Arts & Furniture, Handbags, Jewels & Watches, Motoring, Popular Culture, Wine & Whisky.; `country` (string, optional) — Comma-separated country names (not a fixed enum -- live facet); `month` (string, optional) — Comma-separated month-and-year values, e.g. \; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 24, max 100; `q` (string, optional) — Free-text search across auction title and department names; `status` (string, optional) — Filters by bidding/completion status, default upcoming
+
+### `bonhams_lot_detail`
+
+- **HTTP:** `GET /bonhams/lots/{auctionId}/{lotNumber}`
+- **What:** Get a Bonhams lot's normalized facts. Returns one Bonhams lot's normalized facts: title, estimate range, hammer/realized price (once sold), sale date, category, department, and lot number. Full lot description prose, condition-report text, and additional images are not reproduced -- see the response fields. Credential-free public data from bonhams.com's own search API.
+- **Params:** `auctionId` (string, **required**) — Bonhams auction id; `lotNumber` (string, **required**) — Bonhams lot number
+
+### `bonhams_lot_search`
+
+- **HTTP:** `GET /bonhams/lots/search`
+- **What:** Search Bonhams lots across every auction. Searches Bonhams lots across every auction, current and historical -- including sold/prices-realized lots -- optionally filtered by department, country, a GBP-normalized estimate price range, and/or a free-text query, in a caller-selected sort order. Without a query and without an explicit sort, results are ordered by most recently active sale date first. Credential-free public data from bonhams.com's own search API.
+- **Params:** `country` (string, optional) — Comma-separated country names (not a fixed enum -- live facet); `department` (string, optional) — Comma-separated department names (not a fixed enum -- large, changes over time); `max_price_gbp` (number, optional) — Maximum estimate, in GBP (converted from each lot's own sale currency), inclusive. Omit or 0 for no maximum.; `min_price_gbp` (number, optional) — Minimum estimate, in GBP (converted from each lot's own sale currency), inclusive. Omit or 0 for no minimum.; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 48, max 100; `q` (string, optional) — Free-text search across lot title, catalog description, and footnotes; `sort` (string, optional) — Result order. Default: Typesense relevance ranking when q is set, otherwise recency (most recently active sale date first).
+
 ## Booking (8)
 
 ### `booking_attractions_detail`
@@ -835,6 +1279,20 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /booking/search`
 - **What:** Search Booking.com hotels. Returns normalized Booking.com hotel search results for a destination and date range.
 - **Params:** `adults` (integer, optional) — Number of adults, 1-9, default 2; `checkin` (string, **required**) — Check-in date, YYYY-MM-DD; `checkout` (string, **required**) — Check-out date, YYYY-MM-DD; `children` (integer, optional) — Number of children, 0-9; `page` (integer, optional) — 1-based result page, default 1; `query` (string, **required**) — Destination name or city; `rooms` (integer, optional) — Number of rooms, 1-8, default 1
+
+## Boots (2)
+
+### `boots_search`
+
+- **HTTP:** `GET /boots/search`
+- **What:** Search Boots UK products and categories. Returns one page of Boots UK's public product catalog, including product cards and live facets. Supply `q`, one or more hierarchical `category` keys, or both. Use repeatable `filter=facet_key:option_key` values from that response's dynamic facets, plus the dedicated price and stock controls. `sort` accepts `relevance`, `price_low_to_high`, `price_high_to_low`, `top_rated`, `best_seller`, or `newest`.
+- **Params:** `category` (array, optional) — Repeat the exact category hierarchy keys from root through the desired leaf; required unless q is supplied; `filter` (array, optional) — Repeat a dynamic facet filter as facet_key:option_key, using key/option values returned in facets; category, currentPrice, and inStock use their dedicated parameters; `in_stock` (boolean, optional) — true hides out-of-stock items; false leaves stock unfiltered; `page` (integer, optional) — Page from 1 through 1000; `page_size` (integer, optional) — Results per page from 1 through 48; `price_max` (number, optional) — Inclusive maximum GBP price; may be combined with price_min; `price_min` (number, optional) — Inclusive minimum GBP price; may be combined with price_max; `q` (string, optional) — Free-text product query; required unless category is supplied; `sort` (string, optional) — Sort: relevance, price_low_to_high, price_high_to_low, top_rated, best_seller, or newest
+
+### `boots_suggest`
+
+- **HTTP:** `GET /boots/suggest`
+- **What:** Get Boots UK search-box suggestions. Returns Boots UK's own public typeahead phrases for a partial product query. The suggestions are search terms only; pass one to boots-search's q parameter for product cards and live facets.
+- **Params:** `q` (string, **required**) — Partial product query
 
 ## Box Office Mojo (21)
 
@@ -1072,6 +1530,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Brooklinen store metadata. Returns normalized storefront metadata for Brooklinen (https://www.brooklinen.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
 - **Params:** _none_
 
+## Burger King (4)
+
+### `burgerking_availability`
+
+- **HTTP:** `GET /burgerking/availability`
+- **What:** Get one Burger King restaurant's real-time fulfillment status. Returns one restaurant's live open/closed status per order channel (curbside, delivery, drive-thru, eat-in, mobile-order drive-thru, takeout), distinct from /burgerking/locations' published weekly schedule. Each channel carries whether it is taking orders right now, its current open window when open, and the following window's start/end -- a channel with no current or next window at all means this restaurant does not offer it, not merely that it is closed. Also returns the restaurant's own local time, timezone and an overall available flag. Setting forecast=true additionally returns a multi-day forward schedule per channel, including two catering-only channels not present in the current-status list.
+- **Params:** `forecast` (boolean, optional) — Include a multi-day forward schedule per channel (default false); `market` (string, optional) — RBI market the store belongs to, one of `US`, `CA` (default `US`); `store_id` (string, **required**) — Burger King's numeric store id, from /burgerking/locations
+
+### `burgerking_locations`
+
+- **HTTP:** `GET /burgerking/locations`
+- **What:** Find Burger King restaurants near a location. Returns Burger King restaurants near a latitude/longitude. Each restaurant carries its internal id and numeric store id (the value /burgerking/menu and /burgerking/availability take), full address with coordinates, phone, the operating franchise group, amenity flags (breakfast, delivery, drive-thru, playground, takeout, wifi, halal, dark kitchen) and the full published week of hours for dining room, drive-thru, delivery and curbside separately. A coordinate with no nearby Burger King returns an empty list rather than an error. Setting include_availability=true additionally returns each restaurant's live per-channel open/closed status in one call, the same shape /burgerking/availability returns -- note that path is capped at a fixed page (up to 20 restaurants) rather than honoring max_results beyond that. Setting delivery_only=true instead restricts results to restaurants that Burger King's own delivery service actually considers deliverable to this coordinate -- a genuine delivery-zone match, not the same set as filtering has_delivery=true. include_availability and delivery_only cannot be combined.
+- **Params:** `delivery_only` (boolean, optional) — Restrict to restaurants that actually deliver to this coordinate, a genuine delivery-zone match distinct from the has_delivery flag (default false); `include_availability` (boolean, optional) — Include each restaurant's live per-channel open/closed status (default false); `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `market` (string, optional) — RBI market to search, one of `US`, `CA` (default `US`); `max_results` (integer, optional) — Maximum restaurants to return, 1-50 (default 20); `radius` (integer, optional) — Search radius in meters, 1-50000 (default 8000)
+
+### `burgerking_menu`
+
+- **HTTP:** `GET /burgerking/menu`
+- **What:** Get one Burger King restaurant's full priced menu. Returns one restaurant's full menu grouped into categories (e.g. "Breakfast Sandwiches", "Flame Grilled Burgers"). Every entry is an item, a combo, or a picker (a variant-choice product such as "choose your drink size") and carries a delivery and pickup price -- these genuinely differ -- plus calories, detailed nutrition facts and flagged allergens when Burger King publishes them, and an image. Prices and availability reflect this specific restaurant, not a national default.
+- **Params:** `market` (string, optional) — RBI market the store belongs to, one of `US`, `CA` (default `US`); `store_id` (string, **required**) — Burger King's numeric store id, from /burgerking/locations
+
+### `burgerking_product`
+
+- **HTTP:** `GET /burgerking/product`
+- **What:** Get one Burger King item, combo, or picker's full detail and customization tree. Returns one menu entry's full detail (name, description, price, image, nutrition, allergens) plus its customization tree, when it has one -- a combo's courses and their swappable entree/side/drink choices, a picker's size/variant choices, or a customizable item's ingredient toggle groups (e.g. "Bacon": no/regular/extra) and their price deltas. Options recurses through the full upstream structure, so a combo's entree choice carries its own ingredient toggles too, not just the combo's own top-level courses. A plain, non-customizable item returns an empty options list.
+- **Params:** `item_id` (string, **required**) — The item, combo, or picker id, from /burgerking/menu; `market` (string, optional) — RBI market the store belongs to, one of `US`, `CA` (default `US`); `store_id` (string, **required**) — Burger King's numeric store id, from /burgerking/locations
+
 ## Capterra (3)
 
 ### `capterra_product`
@@ -1150,7 +1634,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Cars.com vehicle listing detail. Returns a normalized Cars.com vehicle listing: full vehicle spec (make, model, trim, mileage, colors, engine, transmission, fuel economy, a key-specs table), Cars.com's own deal-fairness rating and predicted fair price, categorized equipment features, an AutoCheck-derived vehicle history report, Cars.com's own price-change history, the seller's notes, dealer detail (name, rating, address, website, phones, hours) or private-seller detail for a for-sale-by-owner listing, and certified-pre-owned/manufacturer-program detail when applicable. Credential-free public data sourced directly from Cars.com's own public GraphQL API.
 - **Params:** `listing_id` (string, **required**) — Cars.com listing id (a UUID), the path segment of a /vehicledetail/{listing_id}/ URL
 
-## Chewy (7)
+## Chewy (14)
+
+### `chewy_brands`
+
+- **HTTP:** `GET /chewy/brands`
+- **What:** List Chewy's brand directory. Returns one page of Chewy's full brand directory -- roughly 7,600 brands -- with each brand's id, name, Chewy's own written description, image, parent-catalog group, and its child brands where a brand umbrellas others (Purina lists 27). This is the whole catalog of brands, unlike chewy_facets, which only reports the brands present in one category's listing. Pass name to look up a single brand by exact name, case-insensitive; it is an exact match upstream, not a search, so "Purina" matches while "purina pro" does not. To filter products by a brand, pass the brand's NAME to chewy_category or chewy_search as filter=brand_facet:<name> -- facet_id is the join key onto chewy_facets' own option ids and is not accepted by the filter parameter.
+- **Params:** `limit` (integer, optional) — Brands per page, 1 to 500 (default 100).; `name` (string, optional) — Return only the brand with this exact name, case-insensitive. Exact match, not a search.; `page` (integer, optional) — Page number, 1-based (default 1).
 
 ### `chewy_categories`
 
@@ -1161,8 +1651,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `chewy_category`
 
 - **HTTP:** `GET /chewy/category`
-- **What:** Browse a Chewy category listing. Returns one page (36 products) of a Chewy category/browse listing's product grid (price, autoship price/discount, stock, rating, images), plus embedded facets and breadcrumbs. group_id is Chewy's own numeric category id -- the trailing id segment of a chewy.com/b/<slug>-<id> browse URL, e.g. 294 for /b/dry-food-294. Every breadcrumbs[].group_id and facets[].options[].value in a response is a ready-to-use group_id for a follow-up call, so a caller can discover the full category taxonomy starting from a known category. A group_id Chewy does not recognize returns a 404 rather than an unfiltered listing. sort and filter narrow/reorder the listing; every facets[].value paired with one of that facet's options[].value from any prior response is a valid filter key:value pair (e.g. brand, breed size, flavor, price range, customer rating -- whichever facets that category exposes).
-- **Params:** `filter` (array, optional) — Repeatable, up to 10. Each value is \; `group_id` (string, **required**) — Chewy's numeric category id, e.g. \; `page` (integer, optional) — Page number, 36 products per page (default 1); `sort` (string, optional) — Sort order. One of byRelevance, byNewest, byPopularity, byLowestPrice, byHighestPrice, byRating, byRatingCount. Defaults to Chewy's own relevance ordering when omitted.
+- **What:** Browse a Chewy category listing. Returns one page (36 products) of a Chewy category/browse listing's product grid (price, autoship price/discount, stock, rating, images), plus embedded facets and breadcrumbs. group_id is Chewy's own numeric category id -- the trailing id segment of a chewy.com/b/<slug>-<id> browse URL, e.g. 294 for /b/dry-food-294. Every breadcrumbs[].group_id and facets[].options[].value in a response is a ready-to-use group_id for a follow-up call, so a caller can discover the full category taxonomy starting from a known category. A group_id Chewy does not recognize returns a 404 rather than an unfiltered listing. sort and filter narrow/reorder the listing; every facets[].value paired with one of that facet's options[].value from any prior response is a valid filter key:value pair (e.g. brand, breed size, flavor, price range, customer rating -- whichever facets that category exposes). Set include_content to also return the category's curated editorial content -- Chewy's own FAQ question/answer pairs, the rich category description, and the SEO page title and meta description; it costs no extra upstream call and is omitted entirely when not requested. A keyword search carries none of this content, so it is a category-only addition.
+- **Params:** `filter` (array, optional) — Repeatable, up to 10. Each value is \; `group_id` (string, **required**) — Chewy's numeric category id, e.g. \; `include_content` (boolean, optional) — Also return the category's curated editorial content -- Chewy's own FAQ question/answer pairs, the rich category description, and the SEO page title/meta description. Costs no extra upstream call. Omitted entirely when false (the default).; `page` (integer, optional) — Page number, 36 products per page (default 1); `sort` (string, optional) — Sort order. One of byRelevance, byNewest, byPopularity, byLowestPrice, byHighestPrice, byRating, byRatingCount. Defaults to Chewy's own relevance ordering when omitted.
+
+### `chewy_facets`
+
+- **HTTP:** `GET /chewy/facets`
+- **What:** List a Chewy category or search's refinement options. Returns the full set of refinement options (facets) a Chewy category or keyword search can be narrowed by -- brand, sub-category, lifestage, food form, breed size, special diet, health feature, flavor, ingredient, packaging type, price band, customer rating, and whichever other dimensions that listing exposes -- with each option's product count. No products are returned, so this is a much smaller call than chewy_category/chewy_search when only the option set is wanted. The Brand dimension is effectively Chewy's brand directory for the requested listing: each brand option carries its product count and, where Chewy publishes one, its own chewy.com/brands/<slug>-<id> landing-page slug in seo_hvf_slug. Exactly one of group_id or q is required. Every facets[].value paired with one of that facet's options[].value is a ready-to-use filter key:value pair for this endpoint, chewy_category, and chewy_search alike; passing filter here narrows the listing first, so the returned counts describe the already-narrowed result set. A group_id Chewy does not recognize returns a 404 rather than an empty option set.
+- **Params:** `filter` (array, optional) — Repeatable, up to 10. Each value is \; `group_id` (string, optional) — Chewy's numeric category id, e.g. \; `q` (string, optional) — Free-text search keywords to return refinement options for, e.g. \
 
 ### `chewy_gtin_lookup`
 
@@ -1170,11 +1666,35 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Resolve Chewy GTIN/UPC barcodes to part numbers. Resolves a batch of up to 20 GTIN/UPC barcodes to their Chewy part numbers in one call. gtins is a comma-separated list of barcodes, e.g. "192268541316". A barcode Chewy does not recognize is omitted from part_numbers and listed in not_found rather than causing the whole call to fail. The resolved part_numbers values feed directly into chewy_product/chewy_products.
 - **Params:** `gtins` (string, **required**) — Comma-separated GTIN/UPC barcodes, up to 20
 
+### `chewy_inventory`
+
+- **HTTP:** `GET /chewy/inventory`
+- **What:** Look up live warehouse inventory for a batch of Chewy products. Returns Chewy's live warehouse inventory position for up to 20 products in one call, keyed by part number: the availability status, total units on hand, units inbound/in progress, units already reserved against unshipped orders, and the quantity actually available to the storefront. This is the only Chewy surface that carries real quantities -- every other endpoint in this family reports stock as a single boolean, so "36 units left" and "84,386 units left" are indistinguishable there. Quantities are live and move between calls. Part numbers Chewy does not return inventory for are reported in not_found; if none resolve the response is a 404.
+- **Params:** `part_numbers` (string, **required**) — Comma-separated Chewy part numbers, up to 20 per request, e.g. \
+
+### `chewy_item_attributes`
+
+- **HTTP:** `GET /chewy/item-attributes`
+- **What:** Look up a batch of Chewy products' structured attributes and handling flags. Returns Chewy's own specification table for up to 20 products in one call, keyed by part number -- the structured attribute list (lifestage, pet type, product type, material, made-in country, packaging type, flavor, defining size, plus long-form key-benefits and cautions copy), together with the handling and compliance flags that govern how an item ships (pharmaceutical, prescription vet-diet, frozen, refrigerated, single-tablet, gift card), its bundle structure and component SKUs, its autoship eligibility/discount and preset reorder cadence, its merchandising classification path, and the numeric category group ids it belongs to (each usable directly as chewy_category's group_id). This complements rather than repeats chewy_products and chewy_product: price, rating, images, reviews, and descriptions stay on those endpoints, and the attribute table is not available from either. Use the group parameter to return a single attribute group. Part numbers Chewy does not recognize are reported in not_found; if none of them resolve the response is a 404.
+- **Params:** `group` (string, optional) — Return only attributes in one group. One of DEFINING, STANDARD, EXTENDED, HIDDEN. Omit for every group.; `part_numbers` (string, **required**) — Comma-separated Chewy part numbers, up to 20 per request, e.g. \
+
 ### `chewy_product`
 
 - **HTTP:** `GET /chewy/product`
-- **What:** Get a Chewy product's detail. Returns one Chewy product's full normalized detail: name, brand, description, images, price, stock, rating and its star-count breakdown, category breadcrumbs, customer questions and answers, and customer reviews. id is the numeric id from a chewy.com PDP URL, e.g. 185468 from https://www.chewy.com/frisco-lion-mane-dog-cat-costume/dp/185468 -- also the same value a chewy_category response's products[].part_number field carries for that product's own default variant.
+- **What:** Get a Chewy product's detail. Returns one Chewy product's full normalized detail: name, brand, description, images, price, stock, rating and its star-count breakdown, category breadcrumbs, customer questions and answers, and customer reviews. id is the numeric id from a chewy.com PDP URL, e.g. 185468 from https://www.chewy.com/frisco-lion-mane-dog-cat-costume/dp/185468 -- also the same value a chewy_category response's products[].part_number field carries for that product's own default variant. The response also carries the item's shipping weight and package dimensions as Chewy states them, its per-order purchase limit, and any promotions currently attached to it (each with a type such as "Spend $X" or "BOGO", plus short and long descriptions).
 - **Params:** `id` (string, **required**) — Numeric id from a chewy.com PDP URL
+
+### `chewy_product_questions`
+
+- **HTTP:** `GET /chewy/product-questions`
+- **What:** List a Chewy product's customer questions and answers, paginated. Returns one page of a Chewy product's customer questions, each with its answers (text, author, date, staff flag, helpful count). chewy_product embeds only the first 20 questions with no way to page past them; this endpoint reaches the whole set. id is the numeric id from any chewy.com PDP URL, and questions are shared across a product's variants, so any variant's id returns the same set. Each question reports answers_total alongside its answers array, so a caller can tell when answers were truncated by answer_limit. Chewy offers no sort or filter on questions, so this endpoint deliberately exposes paging only.
+- **Params:** `answer_limit` (integer, optional) — Answers to return per question, 1 to 20 (default 10). Each question also reports answers_total.; `id` (string, **required**) — The numeric id from a chewy.com PDP URL, e.g. \; `limit` (integer, optional) — Questions per page, 1 to 50 (default 20).; `page` (integer, optional) — Page number, 1-based (default 1).
+
+### `chewy_product_reviews`
+
+- **HTTP:** `GET /chewy/product-reviews`
+- **What:** List a Chewy product's customer reviews, paginated. Returns one page of a Chewy product's customer reviews -- rating, title, body, author, submission date, helpful count, incentivized flag, and contributor badge -- with sorting and positive/negative filtering. chewy_product embeds only the first 20 reviews with no way to page past them; this endpoint reaches the whole set (products routinely carry thousands). id is the numeric id from any chewy.com PDP URL, and reviews are shared across a product's variants, so any variant's id returns the same set. total is the count for the current filter, so it drops when filter is applied, while rating_count stays the product's overall rating tally.
+- **Params:** `filter` (string, optional) — Restrict to POSITIVE (4-5 star) or NEGATIVE (1-3 star) reviews. Omit for all.; `id` (string, **required**) — The numeric id from a chewy.com PDP URL, e.g. \; `limit` (integer, optional) — Reviews per page, 1 to 50 (default 20).; `page` (integer, optional) — Page number, 1-based (default 1).; `sort` (string, optional) — Sort order. One of MOST_RELEVANT, NEWEST, OLDEST, HIGHEST_RATING, LOWEST_RATING, PHOTOS. Defaults to Chewy's own ordering when omitted.
 
 ### `chewy_products`
 
@@ -1191,8 +1711,114 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `chewy_suggest`
 
 - **HTTP:** `GET /chewy/suggest`
-- **What:** Chewy search-box typeahead suggestions. Returns Chewy's own search-box typeahead result for a partial query term: search-term suggestions (some resolving directly to a category/brand browse URL via their own url field) plus a handful of educational-content article suggestions. term is a partial query, e.g. "salmon dog" or "blue buff".
-- **Params:** `term` (string, **required**) — Partial search text
+- **What:** Chewy search-box typeahead suggestions. Returns Chewy's own search-box typeahead result for a partial query term: search-term suggestions (some resolving directly to a category/brand browse URL via their own url field) plus a handful of educational-content article suggestions. term is a partial query, e.g. "salmon dog" or "blue buff". Omit term entirely to get what Chewy shows on an empty search box instead: its current Popular Searches (each resolving to a category or brand listing) and Popular Articles.
+- **Params:** `term` (string, optional) — Partial search text, e.g. \
+
+### `chewy_variants`
+
+- **HTTP:** `GET /chewy/variants`
+- **What:** List every size/flavor variant of a Chewy product. Returns the full roster of purchasable variants for the product a given item belongs to -- every size, flavor, or color Chewy sells it in -- with each variant's own part number, price, Autoship price, stock, images, and the defining option that distinguishes it (e.g. Size = Medium). id is the numeric id from any chewy.com PDP URL; passing any one variant's id returns that variant's whole family, and the variant you asked for is flagged with is_requested. This answers a question chewy_product cannot: chewy_product describes only the single variant it was given and names its parent, but never lists the siblings or their prices. Only the defining option is returned, not the full attribute table -- use chewy_item_attributes for that.
+- **Params:** `id` (string, **required**) — The numeric id from a chewy.com PDP URL, e.g. \
+
+## Chick-fil-A (8)
+
+### `chick_fil_a_content`
+
+- **HTTP:** `GET /chick-fil-a/content`
+- **What:** Browse Chick-fil-A press releases, legal documents and press-kit assets. Returns one page of a Chick-fil-A editorial corpus. `type` selects which: `press-room` (289 press releases), `story` (189 blog articles), `page` (147 standalone corporate pages such as hunger relief and community programmes), `legal` (28 terms, policies and promotion rules) or `downloadable-asset` (45 press-kit media entries, which carry a title and link only and never a body). Between them these are every content-bearing corpus Chick-fil-A publishes outside the menu and restaurant catalogs. Article bodies are opt-in via include_body because a single press release runs to roughly 22KB, so a default-on page of 20 would be several hundred KB; without it the endpoint returns titles, links, publish dates and excerpts.
+- **Params:** `include_body` (boolean, optional) — Include the full article body (default false -- bodies are large); `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Entries per page, 1-100 (default 20); `search` (string, optional) — Free-text filter. Results are relevance-ranked when present; otherwise newest first.; `type` (string, **required**) — Which corpus. One of press-room, story, page, legal, downloadable-asset.
+
+### `chick_fil_a_content_taxonomy`
+
+- **HTTP:** `GET /chick-fil-a/content-taxonomy`
+- **What:** List the category and tag vocabularies Chick-fil-A classifies its content under. Returns one page of a content taxonomy's terms, each with its id, name, slug, parent and the number of entries carrying it. Every id is a ready-to-use `category` or `tag` filter value on GET /chick-fil-a/content, which is what makes the editorial corpora navigable rather than only pageable. `taxonomy` selects the vocabulary: `press_category` (16 terms) and `press_tag` (96) classify press releases, `story_category` (9) and `story_tag` (74) classify blog stories, `legal_category` (8) and `downloadable_asset_category` (7) classify those corpora, and `campaign` (9) is applied across several at once. Terms are ordered by name.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Terms per page, 1-100 (default 20); `taxonomy` (string, **required**) — Which vocabulary. One of press_category, press_tag, story_category, story_tag, legal_category, downloadable_asset_category, campaign.
+
+### `chick_fil_a_faq`
+
+- **HTTP:** `GET /chick-fil-a/faq`
+- **What:** Browse Chick-fil-A customer FAQs. Returns one page of Chick-fil-A's published customer FAQ corpus (522 entries at time of writing) across 30 categories -- Chick-fil-A One membership, points and rewards, digital ordering and payment, delivery support, sweepstakes terms, and more. Each entry carries the question, the answer as plain text, the answer's original HTML (a fair number of answers use links, lists and tables that plain text loses), and its resolved categories. Every categories[].id is a ready-to-use value for the category filter. search matches over question and answer text and is relevance-ranked; without it entries come back alphabetically so a caller can page through the whole corpus deterministically.
+- **Params:** `category` (string, optional) — Comma-separated faq_category term ids, up to 20, from any prior response's categories[].id; `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Entries per page, 1-100 (default 20); `search` (string, optional) — Free-text filter over question and answer text. Results are relevance-ranked when present.
+
+### `chick_fil_a_location`
+
+- **HTTP:** `GET /chick-fil-a/location`
+- **What:** Get one Chick-fil-A restaurant's address and hours. Returns one Chick-fil-A restaurant's street address, opening hours, cuisine description and photo, selected by either its numeric id or its slug (supply exactly one of the two -- passing both is rejected). opening_hours carries one entry per day; a day Chick-fil-A publishes as closed (notably every Sunday, and every day for a seasonal or food-truck location that is not currently operating) comes back with closed=true and empty opens/closes rather than a placeholder time. This response carries a postal address but no latitude/longitude -- Chick-fil-A does not publish coordinates for its restaurants, and this endpoint does not synthesize them.
+- **Params:** `id` (integer, optional) — Numeric WordPress post id. Supply either id or slug, not both.; `slug` (string, optional) — Restaurant slug, e.g. from a directory response. Supply either id or slug, not both.
+
+### `chick_fil_a_locations`
+
+- **HTTP:** `GET /chick-fil-a/locations`
+- **What:** Browse Chick-fil-A restaurant locations. Returns one page of Chick-fil-A's restaurant directory (3,467 restaurants at time of writing): each restaurant's id, slug, name, US state and its page URL. search filters by free text over restaurant names and is relevance-ranked; without it restaurants come back alphabetically so a caller can page through the whole directory deterministically. This index deliberately carries no address or hours -- Chick-fil-A does not expose them on the directory listing. Pass a slug from here to GET /chick-fil-a/location to get street address and opening hours for one restaurant.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Restaurants per page, 1-100 (default 20); `search` (string, optional) — Free-text filter over restaurant names. Results are relevance-ranked when present.
+
+### `chick_fil_a_menu`
+
+- **HTTP:** `GET /chick-fil-a/menu`
+- **What:** Browse the Chick-fil-A menu. Returns one page of Chick-fil-A's published menu catalog (567 items at time of writing): item name, slug, Chick-fil-A's own item tag, an ordering deep link, and the taxonomy term ids the item belongs to. Every id in a response's menu_taxonomy_ids, menu_item_type_ids, menu_item_group_ids and nutrition_table_menu_ids is a ready-to-use filter value for a follow-up call, and GET /chick-fil-a/menu-taxonomy lists each taxonomy's terms with their names. search filters by free text and is ranked by relevance; without it items come back alphabetically so a caller can page through the whole catalog deterministically. Note this catalog carries no prices or nutrition values -- Chick-fil-A does not publish either through this source.
+- **Params:** `menu_item_group` (string, optional) — Comma-separated menu_item_group term ids (the grouping a variant belongs to), up to 20; `menu_item_type` (string, optional) — Comma-separated menu_item_type term ids (ITEM, ITEM_GROUPING, MODIFIER), up to 20; `menu_taxonomy` (string, optional) — Comma-separated menu_taxonomy term ids (menu section, e.g. Breakfast, Beverages), up to 20; `nutrition_table_menu` (string, optional) — Comma-separated nutrition_table_menu term ids (published nutrition-table grouping), up to 20; `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Items per page, 1-100 (default 20); `search` (string, optional) — Free-text filter over item names. Results are relevance-ranked when present.
+
+### `chick_fil_a_menu_item`
+
+- **HTTP:** `GET /chick-fil-a/menu-item`
+- **What:** Get one Chick-fil-A menu item. Returns one Chick-fil-A menu item, selected by either its numeric id or its slug (supply exactly one of the two -- passing both is rejected). Unlike the listing endpoint, this resolves the item's taxonomy term ids to names, so menu_sections, item_types, item_groups and nutrition_tables each come back as {id, name, slug} triples rather than bare ids. Term resolution is best-effort: if the taxonomy lookups fail the item is still returned with ids and empty names rather than failing the whole call. This item detail carries no price and no nutrition values -- Chick-fil-A does not publish either through this source.
+- **Params:** `id` (integer, optional) — Numeric WordPress post id. Supply either id or slug, not both.; `slug` (string, optional) — Item slug, e.g. from a listing response. Supply either id or slug, not both.
+
+### `chick_fil_a_menu_taxonomy`
+
+- **HTTP:** `GET /chick-fil-a/menu-taxonomy`
+- **What:** List one Chick-fil-A menu taxonomy's terms. Returns one page of terms for a single Chick-fil-A menu taxonomy, with each term's id, name, slug, parent and how many menu items carry it. This is how to discover the filter ids GET /chick-fil-a/menu accepts. taxonomy must be one of `menu_taxonomy` (customer-facing menu section -- Breakfast, Beverages, Catering Entrées, ... 36 terms), `menu_item_type` (`ITEM`, `ITEM_GROUPING`, `MODIFIER` -- 3 terms), `menu_item_group` (the grouping a variant belongs to, e.g. "Bacon, Egg & Cheese Biscuit" -- 100+ terms), or `nutrition_table_menu` (the grouping used by Chick-fil-A's published nutrition tables -- 18 terms). Terms come back alphabetically.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Terms per page, 1-100 (default 20); `taxonomy` (string, **required**) — Which taxonomy to list. One of menu_taxonomy, menu_item_type, menu_item_group, nutrition_table_menu.
+
+## Chipotle (8)
+
+### `chipotle_ingredients`
+
+- **HTTP:** `GET /chipotle/ingredients`
+- **What:** Get Chipotle's ingredient content catalog. Returns Chipotle's raw-ingredient content pages -- sourcing story, marketing copy, imagery -- and the per-item recipe breakdown. ingredients[] has one entry per raw ingredient (Avocado, Yellow Onion, ...), each with its facts/sourcing copy and the menu_item_ids it appears in. ingredient_groups[] is the reverse view: one entry per recipe category (proteins, rice and beans, ...) listing each item's exact ingredient_keys, joinable against ingredients[].key for the human-readable name. Nothing else in this family exposes either ingredient content or recipe-level composition.
+- **Params:** `channel` (string, optional) — Ordering surface. One of web, web-mobile. Default web-mobile.; `region` (string, optional) — Country catalog. One of US, CA. Default US.
+
+### `chipotle_meals`
+
+- **HTTP:** `GET /chipotle/meals`
+- **What:** Get Chipotle's preset meal definitions. Returns Chipotle's preset meal definitions -- the named combinations its ordering flow offers (Build-Your-Own Chicken and similar), each with an id, name, type and a description listing what the meal contains. Takes no parameters.
+- **Params:** _none_
+
+### `chipotle_menu`
+
+- **HTTP:** `GET /chipotle/menu`
+- **What:** Get Chipotle's national menu catalog. Returns Chipotle's restaurant-independent menu catalog -- every item it sells nationally, split into entrees, sides and drinks, with each item's category, type, primary filling and full customization tree. Takes no parameters. Prices are deliberately omitted from this response: Chipotle prices per restaurant, so the upstream returns every price as zero here, and surfacing a field of zeros would read as "free" rather than "unpriced". Use GET /chipotle/restaurant/menu for real prices.
+- **Params:** _none_
+
+### `chipotle_menu_metadata`
+
+- **HTTP:** `GET /chipotle/menu/metadata`
+- **What:** Get Chipotle's menu presentation metadata. Returns Chipotle's menu presentation metadata -- the data no other Chipotle endpoint carries. Categories are the menu nav sections (Burrito, Bowl, Salad, ...) with their own description, imagery and the customization sections each offers. Items carry per-item nutrition (calories and portion) and dietary tag codes. Item sections and item groups describe the customization pick-groups and shared item aliases (e.g. cauliflower rice offered as both an entree side and a taco filling). Dietary tag groups are the full tag taxonomy (Plant Based, Lifestyle, I'm Avoiding, ...) that item dietary tag codes join against for a human-readable name and badge. Join on item_id against /chipotle/menu or /chipotle/restaurant/menu for prices; this endpoint has none.
+- **Params:** `channel` (string, optional) — Ordering surface. One of web, web-mobile. Default web-mobile.; `region` (string, optional) — Country catalog. One of US, CA. Default US.
+
+### `chipotle_restaurant`
+
+- **HTTP:** `GET /chipotle/restaurant`
+- **What:** Get one Chipotle restaurant. Returns one Chipotle restaurant by its numeric restaurant number. Note this single-restaurant route returns a leaner record than GET /chipotle/restaurants: the proximity search accepts an embeds parameter that pulls in hours and capability flags, and no such parameter exists here, so those fields may be absent. If you need the full record for a known restaurant, call /chipotle/restaurants with a tight radius around it instead.
+- **Params:** `restaurant_number` (string, **required**) — Chipotle's numeric restaurant id
+
+### `chipotle_restaurant_meals`
+
+- **HTTP:** `GET /chipotle/restaurant/meals`
+- **What:** List one Chipotle restaurant's preset meals with prices. Returns the preset meals one Chipotle restaurant sells -- group Build-Your-Own packs, the High Protein line and limited-time Influencer meals -- each with its dine-in and delivery price at that restaurant, calorie label, dietary and macro tags, the components that make it up, merchandising tags and images. Prices are genuinely restaurant-specific: the same Build-Your-Own Chicken pack is priced differently from one location to another, so this is the endpoint to use for real pricing rather than /chipotle/meals, which lists the national meal definitions with no prices at all. Calorie labels are a range for build-your-own meals and a single figure for fixed ones, so they are returned as strings. Restaurant numbers come from GET /chipotle/restaurants.
+- **Params:** `meal_type` (string, optional) — Filter to one meal family. One of BuildYourOwn, HighProtein, Influencer.; `restaurant_number` (string, **required**) — Chipotle's numeric restaurant id, from /chipotle/restaurants
+
+### `chipotle_restaurant_menu`
+
+- **HTTP:** `GET /chipotle/restaurant/menu`
+- **What:** Get one Chipotle restaurant's menu with prices. Returns one restaurant's live online menu split into entrees, sides, drinks and non-food items. This is the only Chipotle endpoint that carries prices: every item has both a dine-in price and a delivery price, which genuinely differ. Each item also carries its full customization tree -- contents (the individual fillings, salsas and sides that make it up, each with their own price pair) and content_groups (how many picks each group allows). Prices are per-restaurant, so two restaurants will legitimately return different numbers for the same item.
+- **Params:** `include_unavailable` (boolean, optional) — Include items the restaurant currently has unavailable (default false); `restaurant_number` (string, **required**) — Chipotle's numeric restaurant id
+
+### `chipotle_restaurants`
+
+- **HTTP:** `GET /chipotle/restaurants`
+- **What:** Find Chipotle restaurants near a location. Returns Chipotle restaurants near a latitude/longitude, ordered by distance. Each restaurant carries its number (the id every other Chipotle endpoint takes), name, status, full postal address with coordinates, published open/close hours per day, nearest cross streets, timezone, and capability flags (Chipotlane pickup, online ordering, catering, curbside pickup, dining room open, walk-up window). A coordinate with no Chipotle nearby returns an empty list rather than an error.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `page` (integer, optional) — 0-based page index (default 0); `page_size` (integer, optional) — Restaurants per page, 1-50 (default 10); `radius` (integer, optional) — Search radius in meters, 1-80000 (default 8000)
 
 ## ChromeWebStore (12)
 
@@ -1267,6 +1893,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /chromewebstore/suggest`
 - **What:** Suggest Chrome Web Store search terms. Returns item-name suggestions for a search prefix, drawn from the top store-search results. Defaults: `num=8`, `country=us`, `lang=en`.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Two-letter language code; `num` (integer, optional) — Maximum number of suggestions; `term` (string, **required**) — Search prefix to autocomplete
+
+## CNN (3)
+
+### `cnn_article`
+
+- **HTTP:** `GET /cnn/article`
+- **What:** CNN article content. Returns a CNN article's headline, description, author, publication and update times, section, image, and body paragraphs. Provide a canonical cnn.com article URL.
+- **Params:** `url` (string, **required**) — Canonical cnn.com article URL
+
+### `cnn_headlines`
+
+- **HTTP:** `GET /cnn/headlines`
+- **What:** CNN section headlines. Returns the current CNN headline stream for one section, including title, article URL, description, publication time, and image when available.
+- **Params:** `section` (string, optional) — CNN section. Allowed values: world, us, politics, business, health, entertainment, style, travel, sports, science, climate, weather, opinion. Default world.
+
+### `cnn_live_story`
+
+- **HTTP:** `GET /cnn/live-story`
+- **What:** CNN live story updates. Returns a CNN live story's title, description, update time, and chronological post updates. Provide a canonical cnn.com live-news URL.
+- **Params:** `url` (string, **required**) — Canonical cnn.com live-news URL
 
 ## CoinGecko (21)
 
@@ -1516,7 +2162,249 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Find nearby Costco warehouses. Returns Costco warehouses near a latitude/longitude, sorted by distance: name, address, and distance for each. Public data sourced from Costco's own warehouse locator backend.
 - **Params:** `latitude` (number, **required**) — Latitude; `longitude` (number, **required**) — Longitude
 
-## Datasets (122)
+## CourtListener (3)
+
+### `courtlistener_courts`
+
+- **HTTP:** `GET /courtlistener/courts`
+- **What:** Browse CourtListener courts. Lists CourtListener's anonymous public court directory. Provide court_id to retrieve one court. page is used only for directory browsing and is 1-indexed. The endpoint does not retrieve dockets, opinions, judges, or account data.
+- **Params:** `court_id` (string, optional) — CourtListener court identifier; `page` (integer, optional) — Directory page, 1-indexed
+
+### `courtlistener_people`
+
+- **HTTP:** `GET /courtlistener/people`
+- **What:** Browse CourtListener judicial people. Lists CourtListener's anonymous public judicial-person directory. Provide person_id to retrieve one public person record. The response contains only public directory and position-summary metadata; sensitive biographical fields are excluded.
+- **Params:** `cursor` (string, optional) — Cursor from a prior response's next_cursor field; `person_id` (integer, optional) — CourtListener person identifier
+
+### `courtlistener_search`
+
+- **HTTP:** `GET /courtlistener/search`
+- **What:** Search CourtListener opinions. Searches CourtListener's public opinion-search index by text and returns normalized opinion-result metadata with a cursor for the next page. The endpoint uses CourtListener's anonymous public search data and does not retrieve authenticated opinion detail, dockets, judges, alerts, or account data.
+- **Params:** `cursor` (string, optional) — Cursor from a prior response's next_cursor field; `q` (string, **required**) — Opinion search text
+
+## Cricinfo (22)
+
+### `cricinfo_calendar`
+
+- **HTTP:** `GET /cricinfo/calendar`
+- **What:** Get the Cricinfo international calendar. Returns the dated international match calendar currently published by Cricinfo. It includes match-day names and the associated series labels.
+- **Params:** _none_
+
+### `cricinfo_commentary`
+
+- **HTTP:** `GET /cricinfo/commentary`
+- **What:** Get Cricinfo match commentary. Returns the latest ball-by-ball and editorial commentary embedded in a public Cricinfo match page. `url` may be a canonical full-scorecard or live-score URL.
+- **Params:** `limit` (integer, optional) — Maximum commentary entries returned, from 1 to 100; `url` (string, **required**) — Canonical Cricinfo full-scorecard or live-score URL
+
+### `cricinfo_grounds`
+
+- **HTTP:** `GET /cricinfo/grounds`
+- **What:** List Cricinfo grounds. Returns the featured public ground directory snapshot and the country index used to discover Cricinfo venue pages. Use the existing venue endpoint for detailed ground profiles.
+- **Params:** `limit` (integer, optional) — Maximum featured grounds returned, from 1 to 100
+
+### `cricinfo_live_matches`
+
+- **HTTP:** `GET /cricinfo/live`
+- **What:** Get Cricinfo live matches. Returns the current public live-score feed, including live, upcoming, and recently completed match cards with their canonical scorecard URLs.
+- **Params:** _none_
+
+### `cricinfo_match`
+
+- **HTTP:** `GET /cricinfo/match`
+- **What:** Get a Cricinfo match scorecard. Returns a public Cricinfo match scorecard with match state, team scores, and available innings totals and batter/bowler lines. Upcoming matches return an empty innings list. `url` must be a canonical `https://www.cricinfo.com/series/.../(full-scorecard|live-cricket-score)` URL; live-score URLs are normalized to the paired scorecard.
+- **Params:** `url` (string, **required**) — Canonical Cricinfo full-scorecard or live-cricket-score URL
+
+### `cricinfo_news`
+
+- **HTTP:** `GET /cricinfo/news`
+- **What:** Get latest Cricinfo news. Returns a bounded snapshot of Cricinfo's latest public stories, including titles, summaries, authors, genres, publication times, images, and associated match or series identifiers.
+- **Params:** `limit` (integer, optional) — Maximum stories returned, from 1 to 100
+
+### `cricinfo_photos`
+
+- **HTTP:** `GET /cricinfo/photos`
+- **What:** Get latest Cricinfo photos. Returns bounded metadata for the latest public Cricinfo photos, including captions, credits, dimensions, dates, and image variants. Media files are not downloaded by the endpoint.
+- **Params:** `limit` (integer, optional) — Maximum photos returned, from 1 to 100
+
+### `cricinfo_rankings`
+
+- **HTTP:** `GET /cricinfo/rankings`
+- **What:** Get ICC rankings from Cricinfo. Returns ICC rankings (team or player) from a Cricinfo rankings page. `url` must be a canonical `https://www.cricinfo.com/rankings/...` URL.
+- **Params:** `url` (string, **required**) — Canonical Cricinfo rankings URL
+
+### `cricinfo_records`
+
+- **HTTP:** `GET /cricinfo/records`
+- **What:** Get a Cricinfo record table. Returns a bounded normalized table from a public Cricinfo records page. `record` is a relative Statsguru record path such as `batting/most_runs_career.html`. `class` must be one of `1`, `2`, `3`, `4`, `5`, `6`, `8`, `9`, `10`, `11`, `12`, `20`, `21`, `22`, or `23`.
+- **Params:** `class` (integer, **required**) — Record match-class. Allowed values: 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 20, 21, 22, 23; `current` (string, optional) — Record currentness selector; `id` (string, optional) — Numeric record subject identifier; `record` (string, **required**) — Relative Statsguru record path; `type` (string, optional) — Record subject type
+
+### `cricinfo_records_index`
+
+- **HTTP:** `GET /cricinfo/records/index`
+- **What:** List Cricinfo records catalog. Returns the public Cricinfo records catalog, including match classes, record categories, selectable teams or entities, and example suggestions. Use the existing records endpoint to retrieve a specific table.
+- **Params:** _none_
+
+### `cricinfo_rss`
+
+- **HTTP:** `GET /cricinfo/rss`
+- **What:** Read a Cricinfo RSS feed. Returns a normalized public Cricinfo RSS feed. `url` must be one of Cricinfo's official news, live-score, country-story, or player-story RSS URLs.
+- **Params:** `url` (string, **required**) — Official Cricinfo RSS feed URL
+
+### `cricinfo_scores`
+
+- **HTTP:** `GET /cricinfo/scores`
+- **What:** Get current Cricinfo match scores. Returns the current match cards in Cricinfo's public homepage snapshot, including match state, scores, and canonical scorecard URLs. This is a point-in-time feed, not a fixture archive or streaming subscription.
+- **Params:** _none_
+
+### `cricinfo_series`
+
+- **HTTP:** `GET /cricinfo/series`
+- **What:** Get a Cricinfo series schedule and standings. Returns a series's match schedule and standings from its dedicated page. `series_id` must be the slug-and-ID portion of a canonical Cricinfo series URL, such as `indian-premier-league-2024-1410320`.
+- **Params:** `series_id` (string, **required**) — Slug-and-ID portion of a canonical series URL
+
+### `cricinfo_squads`
+
+- **HTTP:** `GET /cricinfo/squads`
+- **What:** Get a Cricinfo team squad. Returns recent public squad announcements and player rosters from a Cricinfo team profile, including player roles and withdrawal or overseas markers when published.
+- **Params:** `url` (string, **required**) — Canonical Cricinfo team profile URL
+
+### `cricinfo_stats`
+
+- **HTTP:** `GET /cricinfo/stats`
+- **What:** Query Cricinfo Statsguru. Returns a bounded normalized Statsguru table. `class` must be one of `1`, `2`, `3`, `4`, `5`, `6`, `8`, `9`, `10`, `11`, `12`, `20`, `21`, `22`, or `23`; `type` must be one of `batting`, `bowling`, `fielding`, `allround`, `fow`, `team`, `official`, or `aggregate`; `view` may be `innings`, `match`, `series`, `ground`, `host`, `opposition`, `year`, or `season`.
+- **Params:** `class` (integer, **required**) — Statsguru match-class. Allowed values: 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 20, 21, 22, 23; `ground` (string, optional) — Numeric ground identifier; `host` (string, optional) — Numeric host-country identifier; `limit` (integer, optional) — Maximum rows returned, from 1 to 100; `opposition` (string, optional) — Numeric opposition team identifier; `orderby` (string, optional) — Statsguru sort column; `orderby_desc` (boolean, optional) — Sort descending when true; `player` (string, optional) — Numeric Cricinfo player identifier; `season` (string, optional) — Season formatted as YYYY or YYYY/YY; `span_max` (string, optional) — Statsguru ending date; `span_min` (string, optional) — Statsguru starting date; `team` (string, optional) — Numeric Cricinfo team identifier; `type` (string, **required**) — Statsguru statistic family; `view` (string, optional) — Statsguru table view
+
+### `cricinfo_story`
+
+- **HTTP:** `GET /cricinfo/story`
+- **What:** Get a Cricinfo story. Returns a public Cricinfo news article, match report, preview, or live blog. The response includes stable story metadata, typed content blocks, live-blog entries when present, and related links.
+- **Params:** `url` (string, **required**) — Canonical Cricinfo story, report, preview, or live-blog URL
+
+### `cricinfo_team`
+
+- **HTTP:** `GET /cricinfo/team`
+- **What:** Get a Cricinfo team profile. Returns public team identity, profile text, recent fixtures and results, and the rolling batting and bowling leaders shown on a Cricinfo team page.
+- **Params:** `url` (string, **required**) — Canonical Cricinfo team profile URL
+
+### `cricinfo_team_schedule`
+
+- **HTTP:** `GET /cricinfo/team/schedule`
+- **What:** Get a Cricinfo team match schedule. Returns a team's recent fixtures and results from its dedicated page. `url` must be a canonical `https://www.cricinfo.com/team/...` URL.
+- **Params:** `url` (string, **required**) — Canonical Cricinfo team URL
+
+### `cricinfo_teams`
+
+- **HTTP:** `GET /cricinfo/teams`
+- **What:** List Cricinfo teams. Returns Cricinfo's grouped public team directory, including international, domestic, and franchise team identities.
+- **Params:** _none_
+
+### `cricinfo_venue`
+
+- **HTTP:** `GET /cricinfo/venue`
+- **What:** Get a Cricinfo cricket-ground profile. Returns structured metadata, associated home teams, and the editorial profile for a public Cricinfo cricket-ground page. `url` must be a canonical `https://www.cricinfo.com/cricket-grounds/...` or legacy `/ci/content/ground/...html` URL.
+- **Params:** `url` (string, **required**) — Canonical Cricinfo cricket-ground URL
+
+### `cricinfo_venue_matches`
+
+- **HTTP:** `GET /cricinfo/venue/matches`
+- **What:** Get matches at a Cricinfo venue. Returns upcoming fixtures and recent results listed on a public Cricinfo ground page. `url` must be a canonical `https://www.cricinfo.com/cricket-grounds/...` URL.
+- **Params:** `url` (string, **required**) — Canonical Cricinfo cricket-ground URL
+
+### `cricinfo_videos`
+
+- **HTTP:** `GET /cricinfo/videos`
+- **What:** Get Cricinfo videos. Returns a bounded snapshot of Cricinfo's public video hub, including curated, trending, and genre-associated video metadata. Media files are not downloaded by the endpoint.
+- **Params:** `limit` (integer, optional) — Maximum videos returned, from 1 to 100
+
+## Culvers (7)
+
+### `culvers_calendar`
+
+- **HTTP:** `GET /culvers/calendar`
+- **What:** Get one Culver's restaurant's flavor-of-the-day and daily soup schedule. Returns the full published schedule for one Culver's restaurant: the flavor of the day for every upcoming calendar date, plus the soups served on each date. Culver's publishes roughly a two-month forward window, and the schedule is genuinely per-restaurant -- two restaurants on the same date routinely feature different soups. slug comes from GET /culvers/directory. GET /culvers/store returns only today's and tomorrow's flavor; use this endpoint for the whole calendar.
+- **Params:** `slug` (string, **required**) — Restaurant slug from /culvers/directory
+
+### `culvers_categories`
+
+- **HTTP:** `GET /culvers/categories`
+- **What:** List Culver's national menu categories. Returns Culver's national menu's category list -- ButterBurgers, Chicken, Fish & Seafood, Combos & Baskets, Sides, Frozen Custard, Beverages and others -- each with its slug (the value GET /culvers/menu takes), a featured flag, and sort order.
+- **Params:** _none_
+
+### `culvers_directory`
+
+- **HTTP:** `GET /culvers/directory`
+- **What:** Browse Culver's restaurant-URL index. Returns one page of Culver's own restaurant-URL sitemap (~1,121 restaurants). Each entry's slug is the value GET /culvers/store takes.
+- **Params:** `page` (integer, optional) — Optional. 1-based page, default 1.; `page_size` (integer, optional) — Optional. Entries per page, 1-500, default 100.
+
+### `culvers_flavor`
+
+- **HTTP:** `GET /culvers/flavor`
+- **What:** Get one Culver's Fresh Frozen Custard flavor's detail. Returns one Fresh Frozen Custard flavor's full detail, including its declared allergens, a component-by-component ingredient breakdown, and Culver's own flavor-category labels. slug comes from GET /culvers/calendar (flavors[].slug) or GET /culvers/store (flavors_of_the_day[].slug).
+- **Params:** `slug` (string, **required**) — Flavor slug from /culvers/calendar or /culvers/store
+
+### `culvers_item`
+
+- **HTTP:** `GET /culvers/item`
+- **What:** Look up one Culver's menu item's full detail. Returns one Culver's menu item's full detail, including its size/topping modifier tree with each option's own calories and nutrition link. category and item slugs come from GET /culvers/categories and GET /culvers/menu.
+- **Params:** `category` (string, **required**) — Category slug from /culvers/categories; `item` (string, **required**) — Item slug from /culvers/menu
+
+### `culvers_menu`
+
+- **HTTP:** `GET /culvers/menu`
+- **What:** List one Culver's menu category's items. Returns the items in one Culver's menu category, each with name, description, image, and a link to Culver's nutrition guide. Category slugs come from GET /culvers/categories. Prices are not published on the national catalog -- Culver's only prices items once a specific restaurant is selected client-side, and no credential-free per-restaurant pricing source was found; see GET /culvers/item for full modifier/topping detail.
+- **Params:** `category` (string, **required**) — Category slug from /culvers/categories
+
+### `culvers_store`
+
+- **HTTP:** `GET /culvers/store`
+- **What:** Look up one Culver's restaurant by its directory slug. Returns one Culver's restaurant's address, phone, coordinates, open/closed status, fulfillment hours, handoff options, online-order link, and today's flavor(s) of the day. slug comes from GET /culvers/directory.
+- **Params:** `slug` (string, **required**) — Restaurant slug from /culvers/directory
+
+## CVS (7)
+
+### `cvs_brands`
+
+- **HTTP:** `GET /cvs/brands`
+- **What:** CVS brand directory. Returns CVS.com's full brand directory (name and path). Each brand's path is directly usable as GET /cvs/category's path parameter to browse that brand's products.
+- **Params:** _none_
+
+### `cvs_categories`
+
+- **HTTP:** `GET /cvs/categories`
+- **What:** CVS category taxonomy. Returns CVS.com's full category/subcategory navigation taxonomy (name and path, nested to whatever depth the upstream carries). Each node's path is directly usable as GET /cvs/category's path parameter.
+- **Params:** _none_
+
+### `cvs_category`
+
+- **HTTP:** `GET /cvs/category`
+- **What:** Browse a CVS OTC category page. Returns one page of a CVS.com OTC (over-the-counter) retail category, subcategory, or brand page's product grid: normalized products with title, brand, image, current/original price, and sponsored/featured/new-product flags; the total result count; and the facets (brand, color, size, price range, and other category-specific attributes, each with its selectable values and result counts) available to filter the page further. Covers the non-prescription retail catalog only. path is the segment of a page URL after "/shop/", e.g. "beauty" (top-level category), "health-medicine/allergy-sinus" (subcategory), or "brand-shop/s/safe-home" (brand page); a full https://www.cvs.com/shop/... URL or a "/shop/..." path is also accepted. Any of these can also carry an optional facet-filter suffix in the site's own URL shape, e.g. "beauty/makeup/eyes/q/CoverGirl/Black/brpc" to filter to brand CoverGirl and color Black -- see the response's facets field for which values/type codes a given category supports; filter values are case-sensitive exactly as the site renders them. page is a 1-indexed page number (default 1). sort is an optional result order matching the site's own Sort By control. CVS.com is only available from US/US-territory egress; a request from an unsupported region returns an upstream error rather than an empty result.
+- **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `path` (string, **required**) — CVS category, subcategory, or brand-page URL path, optionally with a /q/{value}/{typeCode} facet-filter suffix, e.g. \; `sort` (string, optional) — Result sort order, default the site's own relevance order. One of pa (Price Low to High), pd (Price High to Low), tr (Top Rated), rc (Most Reviewed), az (Name A-Z), za (Name Z-A)
+
+### `cvs_product`
+
+- **HTTP:** `GET /cvs/product/{slug}`
+- **What:** CVS OTC product detail. Returns one CVS.com OTC (over-the-counter) retail product's detail: name, description, brand, category, price, currency, online availability, image gallery, and aggregate rating. Covers the non-prescription retail catalog only -- this does not cover prescription items, pharmacy ordering, or any patient-specific data. slug is the segment of a product page URL after "/shop/", e.g. "safe-home-premium-radon-test-kit-prodid-945948"; a full https://www.cvs.com/shop/... URL is also accepted. CVS.com is only available from US/US-territory egress; a request from an unsupported region returns an upstream error rather than an empty result.
+- **Params:** `slug` (string, **required**) — CVS product page URL slug, e.g. \
+
+### `cvs_product_ingredients`
+
+- **HTTP:** `GET /cvs/product-ingredients/{slug}`
+- **What:** CVS OTC product ingredients. Returns one CVS.com OTC (over-the-counter) retail product's ingredient/label statement: active ingredients, inactive ingredients, and the vendor's full free-text ingredient paragraph (which, for OTC drug products, frequently also carries a Drug Facts-style purpose note). This is sourced from the product's own dedicated ingredients page, a separate page from the main product detail endpoint. Covers the non-prescription retail catalog only -- this does not cover prescription items, pharmacy ordering, or any patient-specific data. slug is the segment of a product page URL after "/shop/", e.g. "e-l-f-16hr-camo-concealer-prodid-2370023"; a full https://www.cvs.com/shop/... URL is also accepted. Some products (particularly non-consumable goods) may return empty ingredient fields -- this reflects upstream having no label data for that product, not an error. CVS.com is only available from US/US-territory egress; a request from an unsupported region returns an upstream error rather than an empty result.
+- **Params:** `slug` (string, **required**) — CVS product page URL slug, e.g. \
+
+### `cvs_search`
+
+- **HTTP:** `GET /cvs/search`
+- **What:** Search CVS OTC products by keyword. Performs a keyword search across CVS.com's non-prescription retail/OTC catalog and returns one page of results: normalized products with title, brand, image, current/original price, and sponsored/featured/new-product flags; the total result count; and the facets (brand, color, size, price range, and other attributes, each with its selectable values and result counts) available to filter the results further. This is the same product-search backend cvs-category reads, just reached by keyword instead of by category/brand path. Covers the non-prescription retail catalog only. q is the search keyword or phrase, required. page is a 1-indexed page number (default 1). sort is an optional result order matching cvs-category's own Sort By values. CVS.com is only available from US/US-territory egress; a request from an unsupported region returns an upstream error rather than an empty result.
+- **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `q` (string, **required**) — Search keyword or phrase; `sort` (string, optional) — Result sort order, default relevance. One of pa (Price Low to High), pd (Price High to Low), tr (Top Rated), rc (Most Reviewed), az (Name A-Z), za (Name Z-A)
+
+### `cvs_store_locator`
+
+- **HTTP:** `GET /cvs/store-locator`
+- **What:** CVS store locator. Returns nearby CVS store locations for a ZIP code, a free-text address/city/state, or a latitude/longitude pair: address, phone, fax, distance, and retail store hours, plus a has_pharmacy existence flag and a list of general service indicators (e.g. photo, ATM, same-day delivery). Covers general store info only -- this does not return pharmacy hours, pharmacy phone, prescription data, or any patient-specific information. zip is a 5-digit US ZIP code; alternatively supply address (a free-text location such as a city, state, or street address) or latitude and longitude together. When more than one is supplied, zip wins, then address, then latitude/longitude. Optionally narrow results to stores carrying one specific service via the service param (the same code vocabulary the response's services field uses); only one service value is accepted per request. CVS.com is only available from US/US-territory egress; a request from an unsupported region returns an upstream error rather than an empty result.
+- **Params:** `address` (string, optional) — Free-text location -- a city, state, or street address, e.g. \; `latitude` (number, optional) — Latitude, used together with longitude when zip and address are not supplied; `longitude` (number, optional) — Longitude, used together with latitude when zip and address are not supplied; `service` (string, optional) — Narrow results to stores carrying one specific service; `zip` (string, optional) — 5-digit US ZIP code, e.g. \
+
+## Datasets (126)
 
 ### `datasets_airbnb_facets`
 
@@ -1659,8 +2547,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_creators_search`
 
 - **HTTP:** `GET /datasets/creators/search`
-- **What:** Search the TikTok creators dataset. Searches TikTok creators stored in a search index (one document per creator), with follower counts, verified status, niche, and engagement. Deleted and private accounts are excluded by default; set `include_inactive=true` to include them for historical lookups. Sort enum: `followers_desc`, `engagement_desc`, `likes_desc`, `relevance`. Coverage note: `followers_desc`, `likes_desc`, and `relevance` are backed by profile fields present across the full dataset; the post-level engagement metrics (`engagement_rate`, `avg_views`, and the nested `post_stats` object) and the `engagement_desc` sort are currently populated for a growing subset of creators, prioritizing the highest-reach accounts. Creators without these metrics are still returned but sort last under `engagement_desc` and omit those fields.
-- **Params:** `country` (string, optional) — Exact creator country/region filter, max 128 characters; `handle` (string, optional) — Exact handle lookup (case-insensitive), e.g. khaby.lame; returns the single creator with that exact @handle; `has_email` (boolean, optional) — Filter by contact-email presence; true keeps only creators with an email; `include_inactive` (boolean, optional) — Include deleted/private accounts; defaults to false (only live accounts returned); `min_followers` (integer, optional) — Minimum follower count; `niche` (string, optional) — Exact content-niche filter, max 128 characters; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over handle, nickname and bio, max 256 characters; `sort` (string, optional) — Sort enum: followers_desc, engagement_desc, likes_desc, relevance. engagement_desc ranks by post-level engagement rate, currently populated for a subset of creators (highest-reach first); creators without it sort last; `verified` (boolean, optional) — Filter by verified badge; true keeps only verified creators
+- **What:** Search the TikTok creators dataset. Searches TikTok creators stored in a search index (one document per creator), with follower counts, verified status, niche, and engagement. Deleted and private accounts are excluded by default; set `include_inactive=true` to include them for historical lookups. Sort enum: `followers_desc`, `engagement_desc`, `likes_desc`, `relevance`. Coverage note: `followers_desc`, `likes_desc`, and `relevance` are backed by profile fields present across the full dataset; the post-level engagement metrics (`engagement_rate`, `avg_views`, and the nested `post_stats` object) and the `engagement_desc` sort are currently populated for a growing subset of creators, prioritizing the highest-reach accounts. Creators without these metrics are still returned but sort last under `engagement_desc` and omit those fields. Sound fields: `post_stats.top_sounds` holds only a creator's FIVE most-used sounds from the sampled posts, ranked by use count with ties broken by lowest `music_id`, so it is a top-5 view and not the creator's full sound list; `post_stats.distinct_sounds` gives the true number of different sounds the sample used. Use each sound's `original` boolean to tell TikTok-generated original audio from catalogue tracks - do NOT infer it from the title, because TikTok localizes the original-audio label (`sonido original`, `som original`, `оригинальный звук`, and at least fifteen more), so a title match silently reclassifies original audio as named tracks.
+- **Params:** `country` (string, optional) — Exact creator country/region filter, max 128 characters; `handle` (string, optional) — Exact handle lookup (case-insensitive), e.g. khaby.lame; returns the single creator with that exact @handle; `has_email` (boolean, optional) — Filter by contact-email presence; true keeps only creators with an email; `include_email` (boolean, optional) — Return the stored contact email instead of a blanked value. Off by default for everyone, and honoured only for entitled (non-Free) API keys; `include_inactive` (boolean, optional) — Include deleted/private accounts; defaults to false (only live accounts returned); `min_followers` (integer, optional) — Minimum follower count; `niche` (string, optional) — Exact content-niche filter, max 128 characters; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over handle, nickname and bio, max 256 characters; `sort` (string, optional) — Sort enum: followers_desc, engagement_desc, likes_desc, relevance. engagement_desc ranks by post-level engagement rate, currently populated for a subset of creators (highest-reach first); creators without it sort last; `verified` (boolean, optional) — Filter by verified badge; true keeps only verified creators
 
 ### `datasets_facebook_pages_facets`
 
@@ -1743,13 +2631,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_google_map_facets`
 
 - **HTTP:** `GET /datasets/google-map-businesses/facets`
-- **What:** Facet stored Google Maps businesses. Returns terms aggregation counts for Google Maps businesses. Facet enum: `category`, `country`, `state`, `county`, `city`, `town`, `website_status`. Category facet values are exact locale-specific Google Maps labels and can be localized, non-ASCII, or contain punctuation; pass a returned value unchanged to the category filter.
-- **Params:** `category` (string, optional) — Exact locale-specific Google Maps category label; use the category facet to discover values, max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `facet` (string, **required**) — Facet enum: category, country, state, county, city, town, website_status; `has_geo` (boolean, optional) — Filter by location presence: true keeps only mappable businesses with coordinates; false isolates locationless service-area businesses that have no map location; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering; `lon` (number, optional) — Longitude for radius filtering; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
+- **What:** Facet stored Google Maps businesses. Returns terms aggregation counts for Google Maps businesses. Facet enum: `category`, `country`, `state`, `state_code`, `county`, `county_code`, `city`, `town`, `website_status`. Category facet values are exact locale-specific Google Maps labels and can be localized, non-ASCII, or contain punctuation; pass a returned value unchanged to the category filter. `state` and `county` keep each country's own administrative vocabulary (e.g. `Provincia de Madrid`, `Département du Nord`); `state_code` and `county_code` are the matching ISO 3166-2 codes (e.g. `ES-MD`, `FR-59`) and are the stable cross-country grouping key. Rows not yet resolved carry no code and are absent from the code facets.
+- **Params:** `category` (string, optional) — Exact locale-specific Google Maps category label; use the category facet to discover values, max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Country filter. Accepts the full English name (\; `county` (string, optional) — Exact county filter, max 128 characters; `county_code` (string, optional) — Exact ISO 3166-2 county/district code filter, e.g. FR-59 or IT-RM, max 128 characters; use facet=county_code to discover values; `facet` (string, **required**) — Facet enum: category, country, state, state_code, county, county_code, city, town, website_status; `has_geo` (boolean, optional) — Filter by location presence: true keeps only mappable businesses with coordinates; false isolates locationless service-area businesses that have no map location; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering; `lon` (number, optional) — Longitude for radius filtering; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `permanently_closed` (boolean, optional) — Closure filter. true keeps only businesses Google marks Permanently closed; false excludes them, keeping every business not known to be closed. Most rows have never been status-checked and are returned with permanently_closed null, which means unknown, not open.; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `state_code` (string, optional) — Exact ISO 3166-2 state/region code filter, e.g. US-CA or FR-HDF, max 128 characters; use facet=state_code to discover values; `town` (string, optional) — Exact town filter, max 128 characters
 
 ### `datasets_google_map_item`
 
 - **HTTP:** `GET /datasets/google-map-businesses/items/{place_id}`
-- **What:** Get a stored Google Maps business. Returns one stored Google Maps business by Google place_id from dataset id enum value `google-map-businesses`. The `category` field contains the exact Google Maps category label returned for the business locale and can be localized, non-ASCII, or contain punctuation. A `rating` of `null` means no aggregate rating is available. A `review_count` of `null` means Google did not return a count; numeric `0` means Google confirmed zero reviews. Locationless service-area businesses (online/mobile/home-based) have a `null` `geo`.
+- **What:** Get a stored Google Maps business. Returns one stored Google Maps business by Google place_id from dataset id enum value `google-map-businesses`. The `category` field contains the exact Google Maps category label returned for the business locale and can be localized, non-ASCII, or contain punctuation. A `rating` of `null` means no aggregate rating is available. A `review_count` of `null` means Google did not return a count; numeric `0` means Google confirmed zero reviews. Locationless service-area businesses (online/mobile/home-based) have a `null` `geo`. A `permanently_closed` of `true` means Google marks the business permanently closed; `false` means a crawl confirmed it does not; `null` means the business has not been status-checked since capture shipped on 2026-08-31 and is UNKNOWN, not open — so any total computed from this dataset includes an unknown number of closed businesses.
 - **Params:** `place_id` (string, **required**) — Google Place ID, max 256 characters
 
 ### `datasets_google_map_nearby`
@@ -1761,8 +2649,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_google_map_search`
 
 - **HTTP:** `GET /datasets/google-map-businesses/search`
-- **What:** Search stored Google Maps businesses. Searches Google Maps business records stored in a search index. Sort enum: `relevance`, `updated_at_desc`, `rating_desc`, `review_count_desc`, `distance_asc`. `category` is the exact Google Maps category label returned for the business locale; it can be localized, non-ASCII, or contain punctuation, so use the category facet to discover exact filter values. A `rating` of `null` means no aggregate rating is available. A `review_count` of `null` means Google did not return a count; numeric `0` means Google confirmed zero reviews. `rating_desc` sorts unrated businesses last, and `min_rating` above 0 excludes them. Use `has_geo=false` to isolate locationless service-area businesses (which have a `null` `geo`).
-- **Params:** `category` (string, optional) — Exact locale-specific Google Maps category label; use the category facet to discover values, max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Exact country filter, max 128 characters; `county` (string, optional) — Exact county filter, max 128 characters; `has_geo` (boolean, optional) — Filter by location presence: true keeps only mappable businesses with coordinates; false isolates locationless service-area businesses that have no map location; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering or distance sort; `lon` (number, optional) — Longitude for radius filtering or distance sort; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `town` (string, optional) — Exact town filter, max 128 characters
+- **What:** Search stored Google Maps businesses. Searches Google Maps business records stored in a search index. Sort enum: `relevance`, `updated_at_desc`, `rating_desc`, `review_count_desc`, `distance_asc`. `category` is the exact Google Maps category label returned for the business locale; it can be localized, non-ASCII, or contain punctuation, so use the category facet to discover exact filter values. A `rating` of `null` means no aggregate rating is available. A `review_count` of `null` means Google did not return a count; numeric `0` means Google confirmed zero reviews. `rating_desc` sorts unrated businesses last, and `min_rating` above 0 excludes them. Use `has_geo=false` to isolate locationless service-area businesses (which have a `null` `geo`). A `permanently_closed` of `true` means Google marks the business permanently closed; `false` means a crawl confirmed it does not; `null` means the business has not been status-checked since capture shipped on 2026-08-31 and is UNKNOWN, not open — so any total computed from this dataset includes an unknown number of closed businesses. Use `permanently_closed=false` to exclude the confirmed-closed ones.
+- **Params:** `category` (string, optional) — Exact locale-specific Google Maps category label; use the category facet to discover values, max 128 characters; `city` (string, optional) — Exact city filter, max 128 characters; `country` (string, optional) — Country filter. Accepts the full English name (\; `county` (string, optional) — Exact county filter, max 128 characters; `county_code` (string, optional) — Exact ISO 3166-2 county/district code filter, e.g. FR-59 or IT-RM, max 128 characters; use facet=county_code to discover values; `has_geo` (boolean, optional) — Filter by location presence: true keeps only mappable businesses with coordinates; false isolates locationless service-area businesses that have no map location; `has_phone` (boolean, optional) — Filter by phone presence; `has_website` (boolean, optional) — Filter by website presence; `lat` (number, optional) — Latitude for radius filtering or distance sort; `lon` (number, optional) — Longitude for radius filtering or distance sort; `min_rating` (number, optional) — Minimum rating, 0 through 5. Businesses with no aggregate Google rating are returned with rating null, so any min_rating above 0 excludes them.; `min_review_count` (integer, optional) — Minimum review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `permanently_closed` (boolean, optional) — Closure filter. true keeps only businesses Google marks Permanently closed; false excludes them, keeping every business not known to be closed. Most rows have never been status-checked and are returned with permanently_closed null, which means unknown, not open.; `q` (string, optional) — Full-text business search query, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon when supplied; `sort` (string, optional) — Sort enum: relevance, updated_at_desc, rating_desc, review_count_desc, distance_asc; `state` (string, optional) — Exact state filter, max 128 characters; `state_code` (string, optional) — Exact ISO 3166-2 state/region code filter, e.g. US-CA or FR-HDF, max 128 characters; use facet=state_code to discover values; `town` (string, optional) — Exact town filter, max 128 characters
 
 ### `datasets_housing_markets_facets`
 
@@ -2094,6 +2982,30 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the SEC institutional positions dataset. Searches institutional investment managers' quarterly 13F portfolio holdings stored in a search index. Filter by manager_cik for a manager's full reported portfolio (an exact, reliable filter), or by issuer_name/cusip for a best-effort view of which managers reported a position in an issuer — SEC publishes no authoritative CUSIP-to-CIK mapping, so the issuer side is never a guaranteed-resolved join. Sort enum: `value_desc`, `value_asc`, `shares_desc`.
 - **Params:** `cusip` (string, optional) — Exact CUSIP filter, max 16 characters; `issuer_name` (string, optional) — Issuer-name text filter (best-effort match, not a resolved CIK join), max 256 characters; `manager_cik` (string, optional) — Exact institutional-manager CIK filter, numeric or zero-padded; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: value_desc, value_asc, shares_desc
 
+### `datasets_starbucks_stores_facets`
+
+- **HTTP:** `GET /datasets/starbucks-stores/facets`
+- **What:** Facet stored Starbucks stores. Returns terms aggregation counts for the Starbucks store directory. Facet enum: `country`, `state`, `market`, `amenities`, `ownership_type_code`. Accepts the same filter parameters as search to scope the aggregation.
+- **Params:** `amenity` (string, optional) — Amenity code filter, e.g. DT; `city` (string, optional) — Exact city filter; `country` (string, optional) — ISO-3166-1 alpha-2 country filter; `facet` (string, **required**) — Facet enum: country, state, market, amenities, ownership_type_code; `market` (string, optional) — Crawl-provenance market filter. One of: us, ca; `q` (string, optional) — Full-text search over store name, city, and address; `state` (string, optional) — State/region code filter
+
+### `datasets_starbucks_stores_item`
+
+- **HTTP:** `GET /datasets/starbucks-stores/items/{store_number}`
+- **What:** Get a stored Starbucks store. Returns one stored Starbucks store by its store number (e.g. `101-54`) from dataset id `starbucks-stores`. `country` is the store's true country while `market` is crawl provenance. Hours (`schedule`) and `amenities` may be empty for stores outside the US, Canada, Europe, and the Gulf; an empty schedule means "not published for this market", not "closed".
+- **Params:** `store_number` (string, **required**) — Starbucks store number, e.g. 101-54
+
+### `datasets_starbucks_stores_nearby`
+
+- **HTTP:** `GET /datasets/starbucks-stores/nearby`
+- **What:** Find nearby stored Starbucks stores. Returns stored Starbucks stores within a radius of a point, nearest first, from dataset id `starbucks-stores`. lat, lon, and radius_m are required. Unlike the live /starbucks/stores endpoint (which caps at 50 near a point), this queries the full grid-tiled directory, so it can return every store in the radius.
+- **Params:** `amenity` (string, optional) — Amenity code filter, e.g. DT; `country` (string, optional) — ISO-3166-1 alpha-2 country filter; `lat` (number, **required**) — Center latitude, from -90 through 90; `lon` (number, **required**) — Center longitude, from -180 through 180; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; `radius_m` (integer, **required**) — Search radius in meters, 1 through 50000
+
+### `datasets_starbucks_stores_search`
+
+- **HTTP:** `GET /datasets/starbucks-stores/search`
+- **What:** Search the Starbucks store directory. Searches the worldwide Starbucks store directory (dataset id `starbucks-stores`), built by grid-tiling the store locator around its 50-result cap. Each store has its store number, name, phone, full address, coordinates, weekly hours, amenity codes, and pick-up options. Store discovery is global, but hours, amenities, and phone numbers are populated per market and are largely absent outside the US, Canada, Europe, and the Gulf; an empty schedule means "not published for this market", not "closed". `country` is the store's true country while `market` is crawl provenance (the US host geocodes worldwide). Supports full-text `q`, `country`/`state`/`city`/`market`/`amenity` filters, `lat`/`lon`/`radius_m` radius filtering, and `sort` (relevance, distance_asc).
+- **Params:** `amenity` (string, optional) — Amenity code filter, e.g. DT (Drive-Thru), XO (Mobile Order and Pay); `city` (string, optional) — Exact city filter; `country` (string, optional) — ISO-3166-1 alpha-2 country filter, e.g. US, GB, JP; `lat` (number, optional) — Latitude for radius filtering or distance sort, requires lon; `lon` (number, optional) — Longitude for radius filtering or distance sort, requires lat; `market` (string, optional) — Crawl-provenance market filter. One of: us, ca; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text search over store name, city, and address, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon; `sort` (string, optional) — Sort enum: relevance, distance_asc; `state` (string, optional) — State/region code filter, e.g. WA
+
 ### `datasets_steam_achievements_search`
 
 - **HTTP:** `GET /datasets/steam-achievements/search`
@@ -2250,6 +3162,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the YouTube creators dataset. Searches public YouTube channel profiles stored in a search index — subscriber, video and view counts, region, bio and links, discovered via Common Crawl and Wikidata and hydrated from each channel's public About page. Sort enum: `relevance`, `followers_desc`, `followers_asc`, `views_desc`, `videos_desc`, `hydrated_at_desc`, `hydrated_at_asc`. Some channels hide their subscriber, video, or view count; the `_available` flags on each item distinguish a hidden count (stored as `0`, `*_available: false`) from a genuine `0`.
 - **Params:** `channel_id` (string, optional) — Exact channel id filter (e.g. UCxxxxxxxxxxxxxxxxxxxxxxxx), max 128 characters; `discovery_source` (string, optional) — Exact filter for how the channel was discovered (e.g. commoncrawl, wikidata), max 128 characters; `followers_count_available` (boolean, optional) — Filter by whether the channel exposes a public subscriber count; `has_bio` (boolean, optional) — Filter by a non-empty About bio; `has_links` (boolean, optional) — Filter by at least one linked external URL; `hydrated_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `hydrated_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `joined_after` (string, optional) — Channels created on or after this date (RFC3339 or YYYY-MM-DD); `joined_before` (string, optional) — Channels created on or before this date (RFC3339 or YYYY-MM-DD); `max_followers` (integer, optional) — Maximum subscriber count; `max_videos` (integer, optional) — Maximum uploaded-video count; `max_views` (integer, optional) — Maximum total view count; `min_followers` (integer, optional) — Minimum subscriber count; `min_videos` (integer, optional) — Minimum uploaded-video count; `min_views` (integer, optional) — Minimum total view count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over channel_name and bio, max 256 characters; `region` (string, optional) — Exact channel region/country filter (case-insensitive), max 128 characters; `sort` (string, optional) — Sort enum: relevance, followers_desc, followers_asc, views_desc, videos_desc, hydrated_at_desc, hydrated_at_asc; `videos_count_available` (boolean, optional) — Filter by whether the channel has a known uploaded-video count; `views_count_available` (boolean, optional) — Filter by whether the channel has a known total view count
 
+## Deliveroo (5)
+
+### `deliveroo_fulfillment_times`
+
+- **HTTP:** `GET /deliveroo/fulfillment-times`
+- **What:** Get Deliveroo's live delivery and pickup scheduling windows for a location. Returns the exact same "Choose a day" / "Choose a time" scheduled-ordering data the real site's own order-ahead picker shows for a location, for both delivery and pickup: an ASAP option plus every day currently open for a scheduled order, each with its real time slots and UNIX timestamps.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `market` (string, optional) — Deliveroo national market to search (default uk)
+
+### `deliveroo_restaurant`
+
+- **HTTP:** `GET /deliveroo/restaurant`
+- **What:** Get one Deliveroo restaurant, grocery, or shopping partner's detail. Returns one Deliveroo partner's detail by uname -- restaurant, grocery, or shopping store alike, distinguished by branch_type: name, address, currency, branch/fulfillment type, rating, review count, a hero image, and whether it currently accepts orders.
+- **Params:** `market` (string, optional) — Deliveroo national market the uname was found in (default uk); `uname` (string, **required**) — Restaurant slug, from a search response's uname field
+
+### `deliveroo_restaurant_menu`
+
+- **HTTP:** `GET /deliveroo/restaurant/menu`
+- **What:** Get one Deliveroo restaurant, grocery, or shopping partner's priced catalog. Returns one partner's full menu or catalog grouped into categories -- restaurant menus, grocery aisles, and shopping-store catalogs all use this same endpoint (see /deliveroo/search's collection parameter). Every item carries a name, description, product-meta text when the upstream provides it (calorie counts on restaurant items, per-unit pricing like "380g · £15.79/kg" on grocery/shopping items), price, availability, and its resolved customization options (e.g. "Choose your meal", "Add ingredients?") with each option's own price and required/multi-select bounds.
+- **Params:** `market` (string, optional) — Deliveroo national market the uname was found in (default uk); `uname` (string, **required**) — Restaurant slug, from a search response's uname field
+
+### `deliveroo_search`
+
+- **HTTP:** `GET /deliveroo/search`
+- **What:** Search Deliveroo restaurants, groceries, or shopping stores near a location. Returns the restaurants (or, with collection set, grocery/shopping stores) Deliveroo's own catalog serves for a latitude/longitude in the given market -- the location's entire feed, not a curated subset (confirmed live: up to 2,700+ results for a single coordinate). Each result carries its uname (the value the restaurant and menu endpoints take), name, image, branch_type, and, when available, rating, delivery time, and distance. Optional collection, cuisine, dietary, dish, min_rating, max_delivery_minutes, max_delivery_fee_pounds, has_offer, deliveroos_choice, and sort parameters narrow and order the same feed -- call /deliveroo/search/filters for the current, complete, location-scoped list of every valid cuisine/dietary/dish value with live result counts. A location with no coverage returns an empty list rather than an error.
+- **Params:** `collection` (string, optional) — Optional, passed straight through to the upstream. Selects the Deliveroo partner vertical: omit for restaurants/takeaways (default), grocery for supermarkets and convenience stores, shopping for non-food retail -- both confirmed live; other values may exist and are not rejected. Every result uses the same uname contract for /deliveroo/restaurant and /deliveroo/restaurant/menu.; `cuisine` (array, optional) — Optional, repeatable Deliveroo cuisine filter, e.g. cuisine=american&cuisine=asian. Passed straight through to the upstream; call /deliveroo/search/filters for the current, complete, location-scoped list of valid values. An unrecognized value is silently ignored by the upstream, not rejected.; `deliveroos_choice` (boolean, optional) — When true, only returns results in Deliveroo's own Deliveroo's Choice curated collection. Combines with collection (e.g. collection=grocery&deliveroos_choice=true narrows to Deliveroo's Choice within the grocery vertical) rather than conflicting with it.; `dietary` (array, optional) — Optional, repeatable Deliveroo dietary filter passed straight through to the upstream, e.g. dietary=vegan. Call /deliveroo/search/filters for the current, complete list of valid values. An unrecognized value is silently ignored by the upstream, not rejected.; `dish` (array, optional) — Optional, repeatable Deliveroo dish-level filter passed straight through to the upstream, e.g. dish=pizza&dish=sushi. Call /deliveroo/search/filters for the current, complete, location-scoped list of valid values. An unrecognized value is silently ignored by the upstream, not rejected.; `has_offer` (boolean, optional) — When true, only returns results currently running an offer/promotion; `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Restaurants to return, clamped to 100 (default 20); `longitude` (number, **required**) — Search center longitude; `market` (string, optional) — Deliveroo national market to search (default uk); `max_delivery_fee_pounds` (integer, optional) — Maximum delivery fee in GBP; `max_delivery_minutes` (integer, optional) — Maximum estimated delivery time in minutes; `min_rating` (number, optional) — Minimum star rating filter; `sort` (string, optional) — Result ordering; `top_rated` (boolean, optional) — When true, only returns results Deliveroo itself marks top-rated (its own 4.5+ threshold). Equivalent to min_rating=4.5; ignored if min_rating is also set.
+
+### `deliveroo_search_filters`
+
+- **HTTP:** `GET /deliveroo/search/filters`
+- **What:** Get Deliveroo's live search filter and sort catalog for a location. Returns the exact same sort and filter catalog -- every cuisine, dietary tag, dish, delivery-time tier, delivery-fee tier, star-rating tier, and offer flag, each with a live result count for this location -- that the real search page's own filter dropdowns are populated from. Every option's query_param/query_value pair is the literal query string /deliveroo/search accepts for that filter.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `market` (string, optional) — Deliveroo national market to search (default uk)
+
 ## Depop (10)
 
 ### `depop_brands`
@@ -2356,6 +3300,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the Discogs database. Searches Discogs releases, masters, artists, and labels. Credential-free official Discogs database data.
 - **Params:** `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 50, max 100; `q` (string, **required**) — Search query; `type` (string, optional) — Result type filter
 
+## Dominos (6)
+
+### `dominos_coupons`
+
+- **HTTP:** `GET /dominos/coupons`
+- **What:** Get one Domino's store's available coupons and deals. Returns one Domino's US store's available coupons and deals: standalone coupons (code, name, description, price, valid service methods, and any alternate promo/marketing codes that resolve to the same coupon), plus tiered volume-discount coupon groups (e.g. "order 7+ pizzas, get 15% off"). Reads the same structured menu response as GET /dominos/menu, so it costs no additional upstream request. A store can genuinely have zero active coupons -- an empty list is not an error. Store ids come from GET /dominos/store-locator. An unknown store id returns 404.
+- **Params:** `store_id` (string, **required**) — Domino's store id, from /dominos/store-locator
+
+### `dominos_customization`
+
+- **HTTP:** `GET /dominos/customization`
+- **What:** Get one Domino's store's full build-your-own customization catalog. Returns one Domino's US store's full build-your-own customization catalog, grouped by product category (Domino's own internal names, e.g. "BuildYourOwnDomino" for pizza, "GSalad" for garden salads): every selectable size, crust/flavor style, topping, and side, each with its own code, name, description, dietary/placement flags (e.g. Meat, Vege, Sauce, WholeOnly), and any other attributes Domino's attaches (e.g. ExclusiveGroup for mutually-exclusive options). Also returns cooking instructions (bake level, cut style, seasoning), grouped. Reads the same structured menu response as GET /dominos/menu, so it costs no additional upstream request. Store ids come from GET /dominos/store-locator. An unknown store id returns 404.
+- **Params:** `store_id` (string, **required**) — Domino's store id, from /dominos/store-locator
+
+### `dominos_menu`
+
+- **HTTP:** `GET /dominos/menu`
+- **What:** Get one Domino's store's full structured menu. Returns one Domino's US store's full menu, normalized into a flat list of categories (each with a stable code/name path, e.g. "Pizza > Specialty Pizzas") and their items. Each item carries its code, name, description, and product type, plus every purchasable variant (size/style) with its own code, name, and price. Store ids come from GET /dominos/store-locator. An unknown store id returns 404.
+- **Params:** `store_id` (string, **required**) — Domino's store id, from /dominos/store-locator
+
+### `dominos_nutrition`
+
+- **HTTP:** `GET /dominos/nutrition`
+- **What:** Get calorie information for one Domino's product configuration. Returns calorie information (Domino's own "Cal-O-Meter" data) for one product at one store. For a named/fixed menu item (a specialty pizza, bread, wing, pasta, sandwich, salad, drink, or dessert -- any item code from GET /dominos/menu), give only store_id and product_code; the item's default configuration is used. For a build-your-own pizza, also give size, base, and any topping codes -- calories are computed for that exact configuration, matching Domino's own live calculator. size and base must be given together; toppings requires both. Reads live, not from a cache -- each call creates and discards one anonymous cart server-side, so it is slower than this family's other endpoints. An unknown product code, or an invalid size/base/topping combination, returns an error.
+- **Params:** `base` (string, optional) — Build-your-own crust code. Required together with size.; `product_code` (string, **required**) — A product code from /dominos/menu's items[].code -- a named/fixed item, or a build-your-own base (e.g. S_PIZZA); `size` (string, optional) — Build-your-own size code, from /dominos/menu's variants. Required together with base.; `store_id` (string, **required**) — Domino's store id, from /dominos/store-locator; `toppings` (array, optional) — Repeatable. Topping codes to add to a build-your-own pizza. Only used together with size+base.
+
+### `dominos_store`
+
+- **HTTP:** `GET /dominos/store`
+- **What:** Get one Domino's store's full profile record. Returns one Domino's US store's full profile -- richer than /dominos/store-locator's per-store summary. Includes the store's complete weekly hours (general hours and each service method's own hours, Monday-first, with every open/close window per day), Domino's own free-text hours summary per service method, per-service-method estimated wait windows, open/online status, per-service-method order availability (delivery, carryout, drive-up carryout, dine-in), contactless option status, and delivery/carryout order minimums. Store ids come from GET /dominos/store-locator. An unknown store id returns 404.
+- **Params:** `store_id` (string, **required**) — Domino's store id, from /dominos/store-locator
+
+### `dominos_store_locator`
+
+- **HTTP:** `GET /dominos/store-locator`
+- **What:** Find Domino's stores near an address, city/state, or ZIP code. Returns Domino's US stores that can serve a location: store id, address with coordinates, phone, open/online status, per-service-method availability (delivery, carryout, drive-up carryout), contactless option status, Domino's own hours summary per service method, and estimated wait windows. At least one of postal_code, or both city and state, is required; address is an optional street line that improves precision when combined with city/state. The response's query field echoes how Domino's own address resolver actually interpreted the input, including its granularity (e.g. resolved to a specific street range vs. only a city/region).
+- **Params:** `address` (string, optional) — Optional street address line; `city` (string, optional) — City name (required together with state if postal_code is not given); `postal_code` (string, optional) — US ZIP code (can be used alone instead of city/state); `service_method` (string, optional) — One of: Delivery, Carryout. Default Delivery; `state` (string, optional) — Two-letter US state code (required together with city if postal_code is not given)
+
 ## DoorDash (12)
 
 ### `doordash_explore`
@@ -2367,8 +3349,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `doordash_feed`
 
 - **HTTP:** `GET /doordash/feed`
-- **What:** Get DoorDash store discovery feed. Returns nearby trending restaurants, grocery stores, and promotional offers from the Android mobile guest experience for a location. No DoorDash account or caller-supplied token is required.
-- **Params:** `latitude` (number, **required**) — Consumer latitude; `limit` (integer, optional) — Max stores to return; `longitude` (number, **required**) — Consumer longitude; `offset` (integer, optional) — Feed offset
+- **What:** Get DoorDash store discovery feed. Returns nearby stores for a location from the Android mobile guest experience: store ID, name, cover image and tags, plus rating, price range, delivery fee and ETA when the upstream feed surface reports them. Those metric fields are omitted rather than estimated when it does not, so treat their absence as "not reported". No DoorDash account or caller-supplied token is required.
+- **Params:** `latitude` (number, **required**) — Consumer latitude; `limit` (integer, optional) — Max stores to return; `longitude` (number, **required**) — Consumer longitude; `offset` (integer, optional) — Number of stores to skip
 
 ### `doordash_search`
 
@@ -2391,8 +3373,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `doordash_search_items`
 
 - **HTTP:** `GET /doordash/search/items`
-- **What:** Search DoorDash dishes and items. Search for specific dishes or items across nearby merchants from the Android mobile guest experience. No DoorDash account or caller-supplied token is required.
-- **Params:** `latitude` (number, **required**) — Consumer latitude; `longitude` (number, **required**) — Consumer longitude; `query` (string, **required**) — Search text
+- **What:** Search DoorDash dishes and items. Searches menu items across nearby merchants from the Android mobile guest experience. Nearby candidate stores are selected first, then their menus are read and every item whose name or description matches the query is returned with its parent store. At most five proximity-ranked stores are inspected per request, and a store whose menu cannot be read is skipped, so results are best-effort across that candidate set. An empty result array means no candidate store menu matched, not that no nearby merchant sells the item. No DoorDash account or caller-supplied token is required.
+- **Params:** `asapOnly` (boolean, optional) — Keep only stores currently available ASAP; `dashPassOnly` (boolean, optional) — Keep only DashPass-eligible stores; `latitude` (number, **required**) — Consumer latitude; `longitude` (number, **required**) — Consumer longitude; `maxDistanceMiles` (number, optional) — Maximum displayed distance in miles; `pickupOnly` (boolean, optional) — Keep only pickup-enabled stores; `query` (string, **required**) — Dish or item search text; `tag` (string, optional) — Cuisine or store tag used to narrow candidate stores
 
 ### `doordash_store`
 
@@ -2415,8 +3397,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `doordash_store_item`
 
 - **HTTP:** `GET /doordash/store/{store_id}/item/{item_id}`
-- **What:** Get DoorDash menu item details. Returns details for a specific menu item from the Android mobile guest experience. No DoorDash account or caller-supplied token is required.
-- **Params:** `item_id` (string, **required**) — Menu item ID or name; `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
+- **What:** Get DoorDash menu item details. Returns details for a specific menu item from the Android mobile guest experience. The item is matched by name, case-insensitively, against the store menu: DoorDash's anonymous menu surface exposes no stable per-item identifier, so use a name returned by the store menu or item search. A name that is not on the menu returns 404; no substitute item is returned. No DoorDash account or caller-supplied token is required.
+- **Params:** `item_id` (string, **required**) — Menu item name, matched case-insensitively; `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
 
 ### `doordash_store_menu`
 
@@ -2535,6 +3517,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /duckduckgo/video`
 - **What:** Search DuckDuckGo video results. Returns normalized DuckDuckGo video results for a query string: title, destination URL, description, duration, thumbnail, publisher/uploader, published time, and view count, plus page-based pagination. Results are fetched from DuckDuckGo's own video JSON API.
 - **Params:** `page` (integer, optional) — 1-based page number, defaults to 1; `q` (string, **required**) — Search query; `region` (string, optional) — DuckDuckGo region/locale code, e.g. us-en, uk-en, wt-wt (worldwide, the default)
+
+## Dunkin (4)
+
+### `dunkin_directory`
+
+- **HTTP:** `GET /dunkin/directory`
+- **What:** Browse the Dunkin store directory. Returns one level of Dunkin's store directory tree. Omit path for the root, which lists every US state Dunkin operates in; pass a state's path (e.g. "ny") to list its cities, or a state/city path (e.g. "ny/new-york") to list its stores. Each child carries its name, path, URL and how many stores sit under that branch. A child with is_store true is a store rather than another directory level -- pass its path (a store id) to GET /dunkin/store. This is a directory browse, not a proximity search: use GET /dunkin/nearby for a radius lookup.
+- **Params:** `path` (string, optional) — Directory path from a previous response's children[].path: a state code (e.g. \
+
+### `dunkin_menu`
+
+- **HTTP:** `GET /dunkin/menu`
+- **What:** Get Dunkin's national menu. Returns Dunkin's national menu: item names, descriptions and photos grouped into categories (Iced Drinks, Hot Drinks, Frozen Drinks, Sandwiches & Wraps, Savory Bites, Donuts & Bakery, Snacks and Sides). Dunkin publishes one shared menu across every US store, so this takes no store parameter. Does not carry prices or nutrition -- pricing varies by market/franchisee and isn't part of this content.
+- **Params:** _none_
+
+### `dunkin_nearby`
+
+- **HTTP:** `GET /dunkin/nearby`
+- **What:** Find Dunkin stores near a coordinate, nearest first. Returns Dunkin restaurants within a radius of a latitude/longitude, ordered nearest first, each with its distance in miles and kilometres, full address, phone, coordinates, the published week of hours, whether it's permanently closed, amenities, payment methods, pickup/delivery service types, which third-party delivery platforms are active, its Google Place id, timezone, and website/menu/order URLs. This is the proximity search the directory browse cannot do -- GET /dunkin/directory walks a state to city to store tree, which requires knowing the administrative path in advance. Each result carries the store id as `path`, which GET /dunkin/store also takes, so the two chain directly. `total_in_radius` reports how many stores fall inside the radius overall, which is usually far more than one page; use `offset` to walk it. A coordinate with no Dunkin nearby returns an empty list rather than an error.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Maximum stores to return, 1-50 (default 10); `longitude` (number, **required**) — Search center longitude; `offset` (integer, optional) — Result offset for paging through total_in_radius (default 0); `radius` (integer, optional) — Search radius in miles, 1-100 (default 25)
+
+### `dunkin_store`
+
+- **HTTP:** `GET /dunkin/store`
+- **What:** Get one Dunkin store's detail. Returns one Dunkin store: name, full postal address, phone, coordinates, opening hours for every day of the week, whether it's permanently closed, amenities (curbside pickup, drive-thru, wifi, kosher, turbo oven, K-Cup pods), Dunkin's own free-text feature labels, accepted payment methods, pickup/delivery service types, which third-party delivery platforms are active, the Google Place id, and the store's website/menu/order URLs. path is a store id -- from a /dunkin/directory child with is_store true, a /dunkin/nearby result's path, or the trailing digits of a dunkindonuts.com store URL. An unknown id returns a 404.
+- **Params:** `path` (string, **required**) — A Dunkin store id, from a /dunkin/directory child with is_store true, a /dunkin/nearby result's path, or the trailing digits of a dunkindonuts.com store URL
 
 ## eBay (10)
 
@@ -2892,6 +3900,68 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Fashion Nova store metadata. Returns normalized storefront metadata for Fashion Nova (https://www.fashionnova.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
 - **Params:** _none_
 
+## FiveGuys (10)
+
+### `fiveguys_directory`
+
+- **HTTP:** `GET /fiveguys/directory`
+- **What:** Browse the Five Guys restaurant directory by state and city. Returns one level of Five Guys' US restaurant directory: the 50 states at the root, one state's cities when path is a state (e.g. `il`), and that city's restaurants when path is a city (e.g. `il/chicago`). Each child carries the path to pass back as this endpoint's `path`, and a `location_count` of how many restaurants sit under it. At the deepest level children are restaurants themselves (`is_location` true) -- pass their path to GET /fiveguys/store for the full profile. Use this to enumerate or browse locations; use GET /fiveguys/search or /fiveguys/nearby to find them by query or coordinate instead.
+- **Params:** `path` (string, optional) — Optional. Directory path from a previous response's children[].path, e.g. \
+
+### `fiveguys_faq`
+
+- **HTTP:** `GET /fiveguys/faq`
+- **What:** List Five Guys' published customer FAQ. Returns one page of Five Guys' published customer FAQ corpus -- 142 entries across 17 categories (Menu, Nutritional and Allergens, Ordering, Gift Card, Careers, Franchise, App, Company, The Crew, and others), filterable by category id and free text, in English (default) or Spanish via `lang`. Get valid category values from GET /fiveguys/faq-categories using the same `lang` -- category ids are language-specific.
+- **Params:** `category` (string, optional) — Optional. Comma-separated faq_category term ids, from GET /fiveguys/faq-categories.; `lang` (string, optional) — Optional. Content language: en (default) or es.; `page` (integer, optional) — Optional. 1-based page number, default 1.; `per_page` (integer, optional) — Optional. Entries per page, 1-100, default 20.; `search` (string, optional) — Optional. Free-text filter over question and answer text.
+
+### `fiveguys_faq_categories`
+
+- **HTTP:** `GET /fiveguys/faq-categories`
+- **What:** List Five Guys FAQ categories. Returns every published Five Guys FAQ category with its id, name, slug, and entry count -- use an id here as GET /fiveguys/faq's category filter. Available in English (default) and Spanish via `lang`; ids differ between languages, so pass the same `lang` to both endpoints.
+- **Params:** `lang` (string, optional) — Optional. Content language: en (default) or es. Category ids differ per language -- feed ids from a given language back into GET /fiveguys/faq with the same lang.
+
+### `fiveguys_menu`
+
+- **HTTP:** `GET /fiveguys/menu`
+- **What:** List Five Guys menu categories and items. Returns Five Guys' public menu content: every category (Burgers, Fries, Shakes, Hot Dogs, Sandwiches, Drinks, Toppings) -- each with its own short description and cover image, plus its items' name, description, calories, and image -- or one category's items when category is given. Five Guys publishes no per-item price on this surface -- pricing is store-scoped and lives only behind its ordering flow, which this endpoint does not cover. Available in English (default) and Spanish via `lang`. Calories are shown exactly as published: a single value for most items, or a range (e.g. fries' "530-1100") for build-your-own items whose calories vary by size and toppings. Some items (drink categories, a few build-your-own items) publish no calorie figure at all; their calories field is omitted rather than estimated.
+- **Params:** `category` (string, optional) — Optional. One category slug to return only that category's items. Omit to return the full menu across every category. With lang=en (the default) one of: burgers, fries, shakes, dogs, sandwiches, drinks, toppings. With lang=es the slugs differ -- read them from a lang=es response's categories[].slug.; `lang` (string, optional) — Optional. Content language: en (default) or es.
+
+### `fiveguys_nearby`
+
+- **HTTP:** `GET /fiveguys/nearby`
+- **What:** Find Five Guys restaurants near a coordinate. Returns Five Guys restaurants within a radius of a latitude/longitude. Each result carries a full profile: a short area/plaza label distinguishing it from other locations, address, phone, weekly in-store hours plus a separate delivery-hours schedule when published, price tier, restaurant-amenity labels (e.g. Takeout, Dine In, Curbside), pickup/delivery service labels, order/delivery/menu URLs, a Google Place id, and distance in miles/kilometers from the given coordinate. `total_results` reports how many restaurants fall inside the radius overall, usually more than one page; use `offset` to page. A coordinate with no Five Guys nearby returns an empty list rather than an error.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Maximum restaurants to return, 1-50 (default 10); `longitude` (number, **required**) — Search center longitude; `offset` (integer, optional) — Result offset for paging through total_results (default 0); `radius` (integer, optional) — Search radius in miles, 1-100 (default 25)
+
+### `fiveguys_nutrition`
+
+- **HTTP:** `GET /fiveguys/nutrition`
+- **What:** Get the current Five Guys nutrition & allergen PDF guide's location. Resolves the live location of Five Guys' current dated nutrition & allergen guide PDF (calories, full macro nutrition and allergen data per item) directly from fiveguys.com -- the guide's own file path changes when Five Guys republishes it (observed monthly), so this endpoint always discovers the current link rather than returning a fixed one. Returns the PDF's direct download URL plus best-effort size and last-modified metadata read from the PDF's own response headers. This endpoint returns metadata and a link to the guide, not its table parsed into structured fields -- pair it with GET /fiveguys/menu for structured per-item calories.
+- **Params:** _none_
+
+### `fiveguys_ordering_locations`
+
+- **HTTP:** `GET /fiveguys/ordering-locations`
+- **What:** Find Five Guys restaurants near a coordinate with ordering details. Returns Five Guys restaurants near a latitude/longitude as Five Guys' own ordering platform publishes them, with commerce detail no other endpoint in this family carries: per-store delivery fee, delivery and pickup order minimums, whether the store is currently accepting orders at all, the handoff modes an order placed now could actually use (delivery, pickup, curbside, dine-in, drive-thru, dispatch), group-order/coupon/loyalty support, how many days ahead an order may be scheduled, and the store's own order URL. Set `include_hours` to also return each store's dated business and delivery calendars -- concrete dated windows rather than the recurring weekly schedule the locator endpoints publish, so they reflect holiday and special hours a weekly schedule cannot express. This is a different upstream from GET /fiveguys/nearby, which returns the marketing/locator record: the two describe the same restaurants but do not share ids, and this one carries a per-store name ("Five Guys Austin Arbor") where the locator publishes the generic brand name. Use each result's `id` with GET /fiveguys/ordering-menu for that store's priced menu. A coordinate with no Five Guys nearby returns an empty list rather than an error.
+- **Params:** `days` (integer, optional) — Days of calendar to return from today, 1-30 (default 7). Only meaningful with include_hours.; `include_hours` (boolean, optional) — Include each store's dated business and delivery calendars; `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Maximum restaurants to return, 1-50 (default 10); `longitude` (number, **required**) — Search center longitude; `radius` (integer, optional) — Search radius in miles, 1-50 (default 20)
+
+### `fiveguys_ordering_menu`
+
+- **HTTP:** `GET /fiveguys/ordering-menu`
+- **What:** Get one Five Guys store's priced menu from the ordering platform. Returns one restaurant's full menu exactly as Five Guys' own ordering platform sells it, including real per-item prices -- the one field no other endpoint in this family can surface (GET /fiveguys/menu is fiveguys.com's own marketing content and carries no price at all). Categories and items are returned with name, description, price, calories (a single value or a real range, e.g. a fountain drink sized at checkout), an image, and whether the platform currently has the item available. id is the ordering platform's own restaurant id from GET /fiveguys/ordering-locations' locations[].id -- it is not a Yext entity id and does not correspond to any id from GET /fiveguys/search, /fiveguys/nearby, /fiveguys/directory, or /fiveguys/store.
+- **Params:** `id` (string, **required**) — The ordering platform's restaurant id, from GET /fiveguys/ordering-locations' locations[].id
+
+### `fiveguys_search`
+
+- **HTTP:** `GET /fiveguys/search`
+- **What:** Search Five Guys restaurants by free-text location. Returns Five Guys restaurants matching a free-text location query -- a city, a zip/postal code, a street address, or a landmark -- the same way restaurants.fiveguys.com's own locator search box works. Yext's own query understanding geocodes the text server-side, so no separate geocoding call is needed. Each result carries a full profile: a short area/plaza label distinguishing it from other locations, address, phone, weekly in-store hours plus a separate delivery-hours schedule when published, price tier, restaurant-amenity labels (e.g. Takeout, Dine In, Curbside), pickup/delivery service labels, order/delivery/menu URLs, a Google Place id, and distance in miles/kilometers from the resolved query location. `total_results` reports how many restaurants matched overall, usually more than one page; use `offset` to page. A query that resolves to nowhere Five Guys operates returns an empty list rather than an error.
+- **Params:** `limit` (integer, optional) — Maximum restaurants to return, 1-50 (default 10); `offset` (integer, optional) — Result offset for paging through total_results (default 0); `query` (string, **required**) — Free-text location: a city, a zip/postal code, a street address, or a landmark
+
+### `fiveguys_store`
+
+- **HTTP:** `GET /fiveguys/store`
+- **What:** Get one Five Guys restaurant by its locator path. Returns one Five Guys restaurant's full published profile by its locator slug -- address, phone, weekly in-store hours, separate delivery hours, coordinate, Google Place id, restaurant-amenity labels, and order/delivery/menu URLs. Get a path from GET /fiveguys/search or /fiveguys/nearby's `locations[].path`, or from GET /fiveguys/directory's `children[].path` where `is_location` is true. It also returns three detail-only extras that search and nearby results do not carry: `description` (this restaurant's own blurb, templated but genuinely per-location), `photos` (its published gallery images, omitted for the many locations that publish none), and `breadcrumbs` (the directory trail above it, each entry's `path` feeding straight back into GET /fiveguys/directory). Two fields available on search and nearby results are not published on this surface and are omitted here: `price_range` and `pickup_and_delivery_services`. A `profile` block, populated best-effort from a second Yext key, adds further per-restaurant detail no other field in this family carries: `google_attributes` (structured amenity flags, richer than `services`), `review_page_url`/`review_invite_url`, `featured_message`/`featured_message_url`, `google_cid`/`facebook_store_id`, `routable_latitude`/`routable_longitude` (a driving destination, distinct from the display coordinate), `payment_options`, `meals_served`, `services`, `permanently_closed`, `directory_listing_url`, `franchisee_group` (the operator of this specific restaurant -- a corporate code or a franchisee's own company name), `facebook_vanity_url` (this location's own Facebook handle), and `faq` (this restaurant's own generated question set, distinct from the national corpus GET /fiveguys/faq serves). Passing a state or city path returns 404 -- use GET /fiveguys/directory for those.
+- **Params:** `id` (string, optional) — The restaurant's entity id, e.g. \; `path` (string, optional) — The restaurant's locator slug, e.g. \
+
 ## Fiverr (3)
 
 ### `fiverr_gig`
@@ -2911,6 +3981,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /fiverr/seller/{username}`
 - **What:** Get Fiverr seller profile. Returns a normalized Fiverr seller profile: display name, one-liner title, description, country, seller level, verification status, hourly rate, spoken languages, join date, and the seller's gig ids. Public data sourced from Fiverr's own server-rendered seller profile pages via a real browser-rendering backend.
 - **Params:** `username` (string, **required**) — Fiverr seller username, e.g. from a search result's seller_username field
+
+## Foodpanda (4)
+
+### `foodpanda_restaurant`
+
+- **HTTP:** `GET /foodpanda/restaurant`
+- **What:** Get one foodpanda restaurant's detail. Returns one foodpanda restaurant's detail by code: name, address, coordinates, budget tier, rating and review count, cuisines, minimum order amount, minimum delivery fee, delivery/pickup availability, timezone, and a hero image. Supplying latitude and longitude only affects the (optional) computed fields the upstream itself returns for that coordinate; it does not filter or reject the lookup.
+- **Params:** `code` (string, **required**) — Restaurant code, from /foodpanda/search's code field; `latitude` (number, optional) — Caller latitude, optional; `longitude` (number, optional) — Caller longitude, optional; `market` (string, optional) — Delivery Hero market the restaurant belongs to. Defaults to sg.
+
+### `foodpanda_restaurant_menu`
+
+- **HTTP:** `GET /foodpanda/restaurant/menu`
+- **What:** Get one foodpanda restaurant's menu with prices. Returns one restaurant's full menu grouped into categories, plus opening hours, price range, cuisines served, and aggregate rating. Every item carries a title, description, image, sold-out flag, and price -- original_price plus discounted_price when the item is currently discounted.
+- **Params:** `code` (string, **required**) — Restaurant code, from /foodpanda/search's code field; `market` (string, optional) — Delivery Hero market the restaurant belongs to. Defaults to sg.
+
+### `foodpanda_restaurant_reviews`
+
+- **HTTP:** `GET /foodpanda/restaurant/reviews`
+- **What:** Get a sample of one foodpanda restaurant's customer reviews. Returns a sample of real customer reviews for one restaurant -- author name, publish date, review text, and a 1-5 rating. This is the curated sample the restaurant's own storefront page embeds for search-engine rich results, not the full review corpus a logged-in customer would see in the app; the number returned scales with the restaurant's popularity rather than being a fixed cap, and can be empty for a restaurant with few or no reviews.
+- **Params:** `code` (string, **required**) — Restaurant code, from /foodpanda/search's code field; `market` (string, optional) — Delivery Hero market the restaurant belongs to. Defaults to sg.
+
+### `foodpanda_search`
+
+- **HTTP:** `GET /foodpanda/search`
+- **What:** Search foodpanda restaurants near a location. Returns restaurants delivering to a latitude/longitude in a foodpanda market, optionally filtered by a numeric cuisine id (from a prior response's cuisines[].id). Each restaurant carries its code (the value the restaurant and menu endpoints take), name, address, coordinates, budget tier, rating, cuisines, minimum order amount and delivery fee, delivery/pickup availability, and a hero image. A location with no coverage returns an empty list rather than an error.
+- **Params:** `cuisine_id` (integer, optional) — Numeric cuisine id to filter by, from a restaurant's cuisines[].id; `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Restaurants to return, clamped to 50 (default 20); `longitude` (number, **required**) — Search center longitude; `market` (string, optional) — Delivery Hero market. Defaults to sg.; `offset` (integer, optional) — Result offset for pagination (default 0)
 
 ## GDELT (12)
 
@@ -3109,6 +4205,68 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /github/user/{username}/repos`
 - **What:** List a GitHub user's public repositories. Returns a page of a user's public repositories (tech-stack signal).
 - **Params:** `direction` (string, optional) — Sort direction; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `sort` (string, optional) — Sort field; `type` (string, optional) — Repository type; `username` (string, **required**) — GitHub username
+
+## GOAT (10)
+
+### `goat_collection`
+
+- **HTTP:** `GET /goat/collection`
+- **What:** Get a GOAT curated product collection. Returns a page of one of GOAT's curated product collections (an editorial rail like "top trending" or "new arrivals"), the same call GOAT's own product-page "you may also like" rails and homepage modules use. Collection slugs are not enumerable by this API -- capture one from a live GOAT page. Credential-free public data.
+- **Params:** `exclude_product_ids` (string, optional) — Omit specific products by id, comma-separated; `limit` (integer, optional) — Results per page, defaults to 12, maximum 100; `page` (integer, optional) — 1-indexed result page, defaults to 1; `slug` (string, **required**) — GOAT collection slug, e.g. as seen in a curated rail on GOAT's own site
+
+### `goat_countries`
+
+- **HTTP:** `GET /goat/countries`
+- **What:** Get GOAT countries. Returns every country GOAT recognizes -- the accepted values for GET /goat/product/{slug}'s country_code parameter -- with the currency and size unit (us, uk, eu) GOAT localizes to for each, plus whether GOAT ships and accepts returns there. Every country is listed, not only the shippable ones, because country_code localizes pricing and is accepted for all of them; filter on ships_to if you want only GOAT's shipping destinations. Credential-free public data.
+- **Params:** _none_
+
+### `goat_curated`
+
+- **HTTP:** `GET /goat/curated`
+- **What:** Get GOAT curated links. Returns the shelf of editorially curated links GOAT is currently promoting in its own search box: seasonal collections, specific product searches, and browse-all entry points. Every link is actionable against this API -- a collection link carries a value for GET /goat/collection, a search link carries a query for GET /goat/search. Credential-free public data.
+- **Params:** _none_
+
+### `goat_listings_count`
+
+- **HTTP:** `GET /goat/listings/count`
+- **What:** Get GOAT live listing count. Returns how many listings GOAT currently has live across its whole marketplace. This is the only way to see GOAT's true catalog size, because GET /goat/search's total_results saturates at 10000 on a broad query and cannot report a total above that ceiling. Credential-free public data.
+- **Params:** _none_
+
+### `goat_product`
+
+- **HTTP:** `GET /goat/product/{slug}`
+- **What:** Get GOAT product detail. Returns a normalized GOAT product: identity/descriptive metadata (name, brand, SKU, colorway, designer, silhouette, taxonomy, materials, release date, retail price, editorial story, images, full size range, other products featured alongside it), plus live per-size/condition pricing and stock status (lowest price, GOAT Instant Ship price, last sold price, highest current buyer offer). Credential-free public data combining GOAT's own product-page payload with its live pricing and offers APIs.
+- **Params:** `country_code` (string, optional) — ISO 3166-1 alpha-2 country code used to localize per-size pricing, defaults to US; `slug` (string, **required**) — GOAT product URL slug, the path segment of a https://www.goat.com/sneakers/{slug} product page
+
+### `goat_product_recommended`
+
+- **HTTP:** `GET /goat/product/{slug}/recommended`
+- **What:** Get GOAT recommended products for a product. Returns the recommended/related products GOAT's own product page shows for a given product (other colorways, similar products) -- descriptive metadata only, no live pricing. Credential-free public data from GOAT's own product-page recommendation API.
+- **Params:** `count` (integer, optional) — Number of recommended products to return, defaults to 8, maximum 24; `slug` (string, **required**) — GOAT product URL slug to find related products for
+
+### `goat_search`
+
+- **HTTP:** `GET /goat/search`
+- **What:** Search GOAT products. Searches or browses GOAT's sneaker/streetwear/collectibles catalog by free-text query and/or facet filters (category, footwear sub-type, activity, color, gender, condition, brand, release year, price range, release-date range, silhouette, designer, in-stock/under-retail/instant-ship, curated collection), returning normalized product summaries (brand, silhouette, category, image, stock status, headline pricing across all sizes) plus the total matching count. Query is optional -- a facet filter alone browses the catalog the same way GOAT's own category/brand pages do. Credential-free public data from the same JSON API backing GOAT's own search page.
+- **Params:** `activities` (string, optional) — Filter by activity (sneakers only), comma-separated for multiple values; `brands` (string, optional) — Filter by one or more brand slugs, comma-separated, e.g. air-jordan,nike. GET /goat/search/facets lists GOAT's top brands; long-tail brands are valid here even when absent from that list; `categories` (string, optional) — Filter by category, comma-separated for multiple values. See GET /goat/search/facets for the current live list; `collection_slug` (string, optional) — Scope results to a GOAT curated collection (see GET /goat/collection), combinable with query, every other filter, and sort; `colors` (string, optional) — Filter by color, comma-separated for multiple values; `conditions` (string, optional) — Filter by item condition, comma-separated for multiple values; `designers` (string, optional) — Filter by one or more designers, comma-separated, matching GOAT's own naming (see a product's designer field); `genders` (string, optional) — Filter by gender, comma-separated for multiple values; `in_stock` (boolean, optional) — Only include products currently in stock; `instant_ship` (boolean, optional) — Only include products with GOAT Instant Ship availability; `limit` (integer, optional) — Results per page, defaults to 12, maximum 100; `page` (integer, optional) — 1-indexed result page, defaults to 1; `price_cents_max` (integer, optional) — Only include results priced at or below this amount, in cents; `price_cents_min` (integer, optional) — Only include results priced at or above this amount, in cents; `product_types` (string, optional) — Filter by footwear sub-type, comma-separated for multiple values; `query` (string, optional) — Free-text search query, e.g. a model name, colorway, or style code. Optional -- omit to browse by facet filters alone; `released_after` (string, optional) — Only include products released on or after this date (YYYY-MM-DD, UTC); `released_before` (string, optional) — Only include products released on or before this date (YYYY-MM-DD, UTC); `silhouettes` (string, optional) — Filter by one or more silhouettes, comma-separated, matching GOAT's own naming (see a product's silhouette field); `sort` (string, optional) — Result sort order, defaults to relevance; `under_retail` (boolean, optional) — Only include products currently trading below original retail price; `years` (string, optional) — Filter by season year(s), comma-separated, e.g. 2025,2026. See GET /goat/search/facets for the current live list
+
+### `goat_search_facets`
+
+- **HTTP:** `GET /goat/search/facets`
+- **What:** Get GOAT search facet values. Returns the accepted values for goat_search's filter parameters: categories, colors, genders, conditions, brands, and years are read live from GOAT's own search API so a value GOAT adds is discoverable without any client-side change, while product_types and activities are served from a maintained list because GOAT exposes no live facet for them. brands is GOAT's top brands ordered by product count, not the complete brand list -- when brands_truncated is true, brands beyond the ones listed exist and remain valid goat_search values. Credential-free public data.
+- **Params:** _none_
+
+### `goat_suggest`
+
+- **HTTP:** `GET /goat/suggest`
+- **What:** Autocomplete a GOAT search. Returns GOAT's own search-box autocomplete for a partial query: matching curated collections and matching products. The collections carry the slug values accepted by GET /goat/collection and by GET /goat/search's collection_slug parameter, making this the way to discover collection slugs. Credential-free public data.
+- **Params:** `limit` (integer, optional) — Maximum curated collections to return. Defaults to 8, maximum 20. Does not affect the product count, which upstream fixes at 25; `query` (string, **required**) — Partial search text to autocomplete
+
+### `goat_trending_searches`
+
+- **HTTP:** `GET /goat/searches/trending`
+- **What:** Get GOAT trending searches. Returns the search terms GOAT is currently surfacing as popular, in GOAT's own ranking order -- the same list its own search box shows. Each term is free text ready to pass to GET /goat/search's query parameter. Credential-free public data.
+- **Params:** _none_
 
 ## Goodreads (10)
 
@@ -3534,6 +4692,70 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve Google Play query suggestions. Returns up to 10 suggestions for a search term.
 - **Params:** `country` (string, optional) — Two-letter country code; `lang` (string, optional) — Two-letter language code; `term` (string, **required**) — Search term prefix
 
+## Grubhub (7)
+
+### `grubhub_availability`
+
+- **HTTP:** `GET /grubhub/availability`
+- **What:** Check ordering availability for a batch of Grubhub restaurants. Returns current ordering state for up to 20 restaurants in one call, relative to a diner location. Each entry reports whether the restaurant is open overall and per channel (these can differ), whether delivery and pickup are offered at all as distinct from open right now, whether it delivers to the supplied coordinate, blackout and overloaded flags, distance, delivery and pickup time estimates, delivery fee, order minimum, cuisines, and the next time an order can be sent per channel -- useful when a restaurant is currently closed. The response echoes the requested ids so a caller can tell which ones Grubhub returned nothing for.
+- **Params:** `latitude` (number, **required**) — Diner location latitude -- availability is relative to it; `longitude` (number, **required**) — Diner location longitude; `restaurant_ids` (string, **required**) — Comma-separated Grubhub restaurant ids, up to 20
+
+### `grubhub_offers`
+
+- **HTTP:** `GET /grubhub/offers`
+- **What:** Get one Grubhub restaurant's currently active promotions. Returns the promotional offers a Grubhub restaurant is currently running -- free items, BOGO deals, spend-and-save discounts -- the same data that drives the "2 offers available" badge on the site's own restaurant cards. An empty list is the common, legitimate case: most restaurants have no active promotion at any given moment. `amount.value` is 0 for a free-item offer since the item itself is the value, not a monetary discount; `amount.amount_maximum` then caps the item's dollar value, and `amount.order_minimum` is the spend threshold required to unlock it.
+- **Params:** `latitude` (number, **required**) — Diner location latitude; `longitude` (number, **required**) — Diner location longitude; `restaurant_id` (string, **required**) — Grubhub restaurant id
+
+### `grubhub_restaurant`
+
+- **HTTP:** `GET /grubhub/restaurant`
+- **What:** Get one Grubhub restaurant's detail. Returns one Grubhub restaurant: name, address with coordinates, timezone, phone, cuisines, star rating, price tier, whether online ordering is available, whether it offers delivery and pickup, delivery fee, coupon availability, restaurant tags and the full published week of service hours. Note this endpoint publishes fewer economics than GET /grubhub/search -- delivery minimum and the delivery/pickup time estimates come back empty here, so use the search endpoint when you need those.
+- **Params:** `restaurant_id` (string, **required**) — Grubhub's numeric restaurant id, from /grubhub/search
+
+### `grubhub_restaurant_menu`
+
+- **HTTP:** `GET /grubhub/restaurant/menu`
+- **What:** Get one Grubhub restaurant's menu with prices. Returns one restaurant's full menu grouped into categories. Every item carries a base price, a delivery price and a pickup price, which genuinely differ, plus a min and max price bounding items whose price varies with the options chosen. Items also carry a description, a popularity flag, availability, tags and an image. Amounts are given both in minor units (cents) and as a decimal value.
+- **Params:** `include_unavailable` (boolean, optional) — Include items the restaurant currently has unavailable (default false); `restaurant_id` (string, **required**) — Grubhub's numeric restaurant id, from /grubhub/search
+
+### `grubhub_restaurant_reviews`
+
+- **HTTP:** `GET /grubhub/restaurant/reviews`
+- **What:** Get one Grubhub restaurant's reviews and rating histogram. Returns one restaurant's customer reviews plus its 1-5 star rating histogram. Each review carries the star rating, the written body, the reviewer's display name and how many reviews they have written, the review date, Grubhub's own sentiment classification, the diner type, and the specific menu items the review is attached to -- Grubhub ties each review to what the diner actually ordered. sort accepts `timeCreated_desc` (most recent, the default) and `ratingValue_desc` (highest rated). Note the written-review corpus and the headline rating shown in search are separate systems upstream, so a restaurant can report a large rating count in search while returning few or no written reviews here.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `page_size` (integer, optional) — Reviews per page, 1-50 (default 20); `restaurant_id` (string, **required**) — Grubhub's numeric restaurant id, from /grubhub/search; `sort` (string, optional) — One of timeCreated_desc, ratingValue_desc. Default timeCreated_desc.
+
+### `grubhub_search`
+
+- **HTTP:** `GET /grubhub/search`
+- **What:** Search Grubhub restaurants near a location. Returns restaurants delivering to (or offering pickup at) a latitude/longitude, optionally filtered by keyword over restaurant names, cuisines and dishes. Each restaurant carries its id (the value every other Grubhub endpoint takes), name, full address with coordinates, phone, cuisines, star rating and rating count, Grubhub's 1-4 price tier, distance, open state, delivery and pickup fees and minimums, service fee, delivery and pickup time estimates, coupon availability and total menu item count. A location Grubhub does not serve returns an empty list rather than an error.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `order_method` (string, optional) — One of delivery, pickup. Default delivery.; `page` (integer, optional) — 1-based page number (default 1); `page_size` (integer, optional) — Restaurants per page, 1-50 (default 20); `search` (string, optional) — Keyword over restaurant names, cuisines and dishes
+
+### `grubhub_timepicker`
+
+- **HTTP:** `GET /grubhub/timepicker`
+- **What:** Get one Grubhub restaurant's future orderable time-slot calendar. Returns every future delivery or pickup time slot Grubhub will accept an order for, up to 7 days ahead. This is what powers the site's own "schedule my order" picker: `/grubhub/availability` tells you whether a restaurant is orderable right now plus one "next" time, while this returns the full future slot calendar a caller would need to build an actual date-and-time picker. Slots are grouped by date and given as full timestamps carrying the restaurant's real UTC offset for that instant, so a caller never has to resolve daylight-saving transitions themselves. Requesting `location_mode=DELIVERY` returns delivery slots only; `PICKUP` returns pickup slots only -- the upstream only computes one side per call.
+- **Params:** `days` (integer, optional) — How many days ahead to fetch, 1-7 (default 7); `latitude` (number, **required**) — Diner location latitude; `location_mode` (string, **required**) — Which slot grid to return; `longitude` (number, **required**) — Diner location longitude; `restaurant_id` (string, **required**) — Grubhub restaurant id
+
+## Guardian (3)
+
+### `guardian_article`
+
+- **HTTP:** `GET /guardian/article`
+- **What:** Get Guardian article content. Returns a Guardian article's public metadata and body paragraphs from a canonical article URL. Live-blog timelines are not supported.
+- **Params:** `url` (string, **required**) — Canonical www.theguardian.com article URL
+
+### `guardian_headlines`
+
+- **HTTP:** `GET /guardian/headlines`
+- **What:** Get Guardian section headlines. Returns fresh headlines from a public Guardian RSS section. section defaults to world.
+- **Params:** `section` (string, optional) — Guardian RSS section, defaults to world
+
+### `guardian_topic`
+
+- **HTTP:** `GET /guardian/topic`
+- **What:** Get Guardian topic archive. Returns a paginated public Guardian topic or category archive. topic is a Guardian tag or section slug and page defaults to 1.
+- **Params:** `page` (integer, optional) — 1-based archive page, defaults to 1; `topic` (string, **required**) — Guardian tag or section slug
+
 ## Gymshark (10)
 
 ### `gymshark_collection_products`
@@ -3640,7 +4862,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Find nearby H&M physical stores. Returns H&M physical retail store locations near a point: name, phone, full address, and coordinates. Either search, or both lat and lng, is required. search is a free-text zip code or place name that is first resolved to coordinates; if it does not resolve to any location, a well-formed empty result is returned rather than an error. lat and lng, when given directly, skip that resolution step. radius_meters is optional (1000 to 50000, defaults to 10000). A location with no stores within the radius returns a well-formed empty result rather than an error.
 - **Params:** `lat` (number, optional) — Latitude, requires lng; `lng` (number, optional) — Longitude, requires lat; `radius_meters` (integer, optional) — Search radius in meters, 1000 to 50000, defaults to 10000; `search` (string, optional) — Free-text zip code or place name to resolve to coordinates
 
-## Home Depot (5)
+## Home Depot (6)
 
 ### `homedepot_categories`
 
@@ -3651,8 +4873,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `homedepot_category`
 
 - **HTTP:** `GET /homedepot/category`
-- **What:** Browse a Home Depot category or brand page. Returns one Home Depot category or brand browse page's product grid (page 1 only): normalized products with title, image, model, current/original price, and rating/review count, plus the category's total result count. path is the segment of a /b/ URL after "/b/", e.g. "Tools-Power-Tools-Drills-Impact-Drivers/N-5yc1vZc29x"; a full https://www.homedepot.com/b/... URL or a "/b/..." path is also accepted. An unrecognized or blocked path returns an upstream error rather than an empty result.
-- **Params:** `path` (string, **required**) — Home Depot category/brand browse path, e.g. \
+- **What:** Browse a Home Depot category or brand page. Returns one page of a Home Depot category or brand browse page's product grid: normalized products with title, image, model, current/original price, and rating/review count, plus the category's total result count and the refinement facets the page offers. path is the segment of a /b/ URL after "/b/", e.g. "Tools-Power-Tools-Drills-Impact-Drivers/N-5yc1vZc29x"; a full https://www.homedepot.com/b/... URL or a "/b/..." path is also accepted. sort selects the result ordering and is one of best_match, top_sellers, top_rated, price_low_to_high, price_high_to_low, most_popular, delivery_date; omit it to keep the site's default ordering. page is a 1-indexed page number (default 1, maximum 42), 24 products per page. Each returned facet's path is directly usable as this endpoint's own path parameter to drill down. An unrecognized or blocked path returns an upstream error rather than an empty result.
+- **Params:** `page` (integer, optional) — 1-indexed page number, default 1, maximum 42 (24 products per page); `path` (string, **required**) — Home Depot category/brand browse path, e.g. \; `sort` (string, optional) — Result ordering. One of: best_match, top_sellers, top_rated, price_low_to_high, price_high_to_low, most_popular, delivery_date. Omit for the site's default ordering
 
 ### `homedepot_product`
 
@@ -3671,6 +4893,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /homedepot/search`
 - **What:** Home Depot keyword search. Returns one page (up to 24 products) of a Home Depot keyword search's product listing: normalized products with title, image, model, current/original price, and rating/review count, plus the search's total result count. q is free-text search keywords, e.g. "impact driver". page is a 1-indexed page number (default 1). An unrecognized/blocked query returns an upstream error rather than an empty result.
 - **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `q` (string, **required**) — Free-text search keywords, e.g. \
+
+### `homedepot_suggest`
+
+- **HTTP:** `GET /homedepot/suggest`
+- **What:** Home Depot search suggestions. Returns Home Depot's own search-box typeahead suggestions for a partial query, in the site's own ranking order. term is the partial search text, e.g. "drill". Each suggestion's term is directly usable as GET /homedepot/search's q parameter. A term that matches nothing returns an empty suggestion list rather than an error.
+- **Params:** `term` (string, **required**) — Partial search text, e.g. \
+
+## Hotels.com (7)
+
+### `hotels_autocomplete`
+
+- **HTTP:** `GET /hotels/autocomplete`
+- **What:** Get Hotels.com destination suggestions. Returns anonymous Hotels.com search-box suggestions for a partial destination or property name. Availability and prices are not included.
+- **Params:** `q` (string, **required**) — Partial destination or property name
+
+### `hotels_offers`
+
+- **HTTP:** `POST /hotels/offers`
+- **What:** Get Hotels.com room offers. Returns the public room/unit offer summaries shown for one Hotels.com property and date range, including room labels and non-transactional offer messages. Booking, checkout, payment, and reservation tokens are never returned. property_id is the numeric global property id from a Search response.
+- **Params:** `request` (object, **required**) — Room offers request
+
+### `hotels_property`
+
+- **HTTP:** `POST /hotels/property`
+- **What:** Get Hotels.com property details. Returns public static metadata from one canonical Hotels.com property page, including name, address, rating, images, and amenities. Date-bound availability, prices, booking, and review content are excluded.
+- **Params:** `request` (object, **required**) — Canonical Hotels.com property URL
+
+### `hotels_rates`
+
+- **HTTP:** `POST /hotels/rates`
+- **What:** Get Hotels.com rates for one property. Returns one Hotels.com property's date-bound rates and availability: the same normalized property card Search returns, with the live per-night and per-stay prices Hotels.com shows for the requested dates. property_id is the numeric global property id from a Search response's properties[].id; it is distinct from the legacy /ho<id>/ URL id.
+- **Params:** `request` (object, **required**) — Rates request
+
+### `hotels_reviews`
+
+- **HTTP:** `POST /hotels/reviews`
+- **What:** Get Hotels.com guest reviews. Returns one Hotels.com property's review overview: the overall rating (0-10) with its descriptive label, the per-category sub-ratings (cleanliness, service, amenities, and so on), and a bounded set of highlighted guest reviews with reviewer, date, rating label, text, and verified-stay flag. property_id is the numeric global property id from a Search response's properties[].id. This mirrors the property page's Guest reviews section; the full paginated review archive is not exposed.
+- **Params:** `request` (object, **required**) — Reviews request
+
+### `hotels_reviews_archive`
+
+- **HTTP:** `POST /hotels/reviews/archive`
+- **What:** List Hotels.com guest reviews. Returns one page of public guest reviews for a Hotels.com property, including reviewer, date, traveler type, rating label, title, and message. Use page and page_size to walk the archive; the response reports whether another page is available. property_id is the numeric global property id from a Search response's properties[].id. Booking, account, and private review data are not included.
+- **Params:** `request` (object, **required**) — Review archive request
+
+### `hotels_search`
+
+- **HTTP:** `POST /hotels/search`
+- **What:** Search Hotels.com hotels. Returns a page of date-bound Hotels.com hotel search results for either a free-text destination or a numeric Hotels.com region_id: normalized property cards with per-night and per-stay prices, review score and count, location, thumbnail, amenities, and promotional badges. Provide exactly one of query or region_id; region_id skips destination typeahead resolution. Prices are the live rates Hotels.com shows for the requested check-in and check-out dates.
+- **Params:** `request` (object, **required**) — Search request
 
 ## IKEA (8)
 
@@ -4004,7 +5276,39 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get J.Crew or J.Crew Factory search-box suggestions. Returns the storefront's own search-box suggestions (typeahead) for a partial query -- a flat list of suggested search phrases, each with its own live total result count on the search index. Select the storefront with site (default jcrew). Not product data.
 - **Params:** `query` (string, **required**) — Partial search query; `site` (string, optional) — Storefront to search
 
-## Jobs (28)
+## JimmyJohns (5)
+
+### `jimmy_johns_menu`
+
+- **HTTP:** `GET /jimmy-johns/menu`
+- **What:** Get one Jimmy John's restaurant's full menu. Returns one Jimmy John's restaurant's full menu as a category tree: every category and its products, with name, description, calorie range, base cost and image. restaurant_id comes from GET /jimmy-johns/nearby. Many sandwiches price entirely through a size selection rather than a base cost, so cost is commonly 0 for those items -- see GET /jimmy-johns/modifiers for the real per-size price.
+- **Params:** `restaurant_id` (integer, **required**) — Olo restaurant id from /jimmy-johns/nearby
+
+### `jimmy_johns_modifiers`
+
+- **HTTP:** `GET /jimmy-johns/modifiers`
+- **What:** Get one Jimmy John's menu product's customization options. Returns one menu product's full customization tree: size, bread, and per-ingredient choices (extra/regular/light/none), each with its real price and calorie delta. Groups nest -- picking a size choice can reveal a bread group, which can reveal one group per ingredient -- so a size step, a bread step, and every "Customize Sandwich" ingredient all live in one recursive tree. product_id comes from GET /jimmy-johns/menu.
+- **Params:** `product_id` (integer, **required**) — Product id from a /jimmy-johns/menu product
+
+### `jimmy_johns_nearby`
+
+- **HTTP:** `GET /jimmy-johns/nearby`
+- **What:** Find Jimmy John's restaurants near a coordinate. Returns Jimmy John's restaurants within a radius of a coordinate, nearest first, using Jimmy John's own Olo-backed ordering API (a separate host from the locator this family's sitemap and store endpoints read). Each result carries restaurant_id -- pass it to GET /jimmy-johns/menu for that restaurant's full menu. The upstream's own radius parameter does not narrow its result set, so distance filtering and sorting happen here.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Maximum restaurants to return, 1-50 (default 10); `longitude` (number, **required**) — Search center longitude; `radius` (integer, optional) — Search radius in miles, 1-100 (default 15)
+
+### `jimmy_johns_sitemap`
+
+- **HTTP:** `GET /jimmy-johns/sitemap`
+- **What:** Browse Jimmy John's store-URL index. Returns one page of Jimmy John's sitemap-declared store index -- 9,700+ URLs at time of writing. Jimmy John's publishes three page variants per store (sandwiches, delivery, catering) and all three appear in the sitemap, so each entry carries a kind and the store number they share; filter with the kind parameter to enumerate one variant per restaurant. `sandwiches` is the canonical variant. A page past the end returns an empty list rather than an error, so a caller can walk to exhaustion.
+- **Params:** `kind` (string, optional) — Filter by page variant. One of sandwiches, delivery, catering. Default all.; `page` (integer, optional) — 1-based page within the shard (default 1); `page_size` (integer, optional) — Entries per page, 1-500 (default 100); `shard` (integer, optional) — Sitemap shard index (default 0)
+
+### `jimmy_johns_store`
+
+- **HTTP:** `GET /jimmy-johns/store`
+- **What:** Get one Jimmy John's store's detail. Returns one Jimmy John's store: name, postal address, phone, coordinates, cuisine description and the published week of opening hours. Store paths come from GET /jimmy-johns/sitemap. Note Jimmy John's main site is behind a bot challenge that serves a page with HTTP 200, so this family reads the separate locator subdomain instead. For menu data, see GET /jimmy-johns/nearby and GET /jimmy-johns/menu, which read a separate ordering API.
+- **Params:** `path` (string, **required**) — Store path from a /jimmy-johns/sitemap entry
+
+## Jobs (30)
 
 ### `jobs_ashby_board`
 
@@ -4096,6 +5400,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List a company's Personio job board. Lists a company's public Personio board feed (XML), normalized to the shared Job shape with detail inline, optionally filtered by department, location, or remote. The company is the Personio subdomain from its careers URL https://{company}.jobs.personio.de/. Credential-free public ATS feed.
 - **Params:** `company` (string, **required**) — Personio subdomain (careers URL); `department` (string, optional) — Filter: department contains; `location` (string, optional) — Filter: location contains; `remote` (boolean, optional) — Filter by remote (true or false)
 
+### `jobs_phenom_board`
+
+- **HTTP:** `GET /jobs/phenom/board`
+- **What:** Search a Phenom People tenant's job board. Searches a company's public Phenom People career site (a white-labeled domain such as careers.whataburger.com or jobs.cvshealth.com — Phenom serves the search-results page as server-rendered HTML with the job data embedded inline, not a JSON API, but this is still credential-free public data with no auth, cookie, or session required). domain is the tenant's careers domain from its careers URL. Paged via offset/limit; limit is a best-effort page-size hint some tenants ignore, so count always reflects what actually came back.
+- **Params:** `category` (string, optional) — Filter: category contains; `domain` (string, **required**) — Phenom tenant careers domain (careers URL); `keywords` (string, optional) — Free-text keyword search; `limit` (integer, optional) — Page size hint, default 10, max 100 (some tenants ignore this and return their own configured page size regardless); `location` (string, optional) — Filter: location contains; `offset` (integer, optional) — Page offset, default 0; `sort` (string, optional) — Sort order, default relevant
+
+### `jobs_phenom_job`
+
+- **HTTP:** `GET /jobs/phenom/job`
+- **What:** Get a single Phenom People job. Returns a single Phenom People job with its full HTML/text description, category, and apply URL. domain is the tenant's careers domain (as in the board endpoint); id is the jobId/reqId from a board listing (e.g. JR10002958).
+- **Params:** `domain` (string, **required**) — Phenom tenant careers domain; `id` (string, **required**) — Phenom job id from a board listing
+
 ### `jobs_pinpoint_board`
 
 - **HTTP:** `GET /jobs/pinpoint/board`
@@ -4173,6 +5489,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /jobs/workday/job`
 - **What:** Get a single Workday job. Returns a single Workday posting's full detail (description, location, req id). path is the externalPath from a board listing. tenant/datacenter/site as in the board endpoint. Credential-free public ATS JSON.
 - **Params:** `datacenter` (string, **required**) — Workday datacenter shard; `path` (string, **required**) — Job externalPath from a board listing; `site` (string, **required**) — Workday career site; `tenant` (string, **required**) — Workday tenant
+
+## Just Eat (3)
+
+### `justeat_restaurant`
+
+- **HTTP:** `GET /justeat/restaurant`
+- **What:** Get one Just Eat restaurant's detail. Returns one Just Eat restaurant's detail by unique_name: name, address, primary cuisine, rating, and whether it currently accepts orders.
+- **Params:** `unique_name` (string, **required**) — Restaurant slug, from a search response's unique_name field
+
+### `justeat_restaurant_menu`
+
+- **HTTP:** `GET /justeat/restaurant/menu`
+- **What:** Get one Just Eat restaurant's menu with prices. Returns one restaurant's full menu grouped into categories. Every item carries a name, description, image, price, and calorie/energy text when the upstream provides it. Items with customization options (e.g. "Dip 1/2") carry a modifier_groups list with each option's own price. Non-restaurant stores (groceries, alcohol, pharmacy, electronics, and similar) return every item under a single "All items" category rather than the site's own finer-grained grouping.
+- **Params:** `unique_name` (string, **required**) — Restaurant slug, from a search response's unique_name field
+
+### `justeat_search`
+
+- **HTTP:** `GET /justeat/search`
+- **What:** Search Just Eat restaurants near a UK postcode. Returns Just Eat's full restaurant listing for a UK postcode -- every restaurant the site's own area page carries, ordered as Just Eat's default "best match" sort presents them (or by sort_by, if set), not a curated subset. Each restaurant carries its unique_name (the value the restaurant and menu endpoints take), name, image, rating, delivery time window, and open-now status. A postcode with no coverage returns an empty list rather than an error.
+- **Params:** `filter` (array, optional) — Repeatable. Just Eat's own area-page filter slugs (e.g. open_now, or a cuisine tile's slug), passed through as-is and OR'd together. Also reaches non-restaurant categories -- groceries, alcohol, pharmacy, electronics, and more -- via the same mechanism, e.g. filter=groceries. See the endpoint markdown for the confirmed slug list. An unrecognized slug narrows to a smaller or empty result rather than erroring.; `limit` (integer, optional) — Restaurants to return, clamped to 100 (default 20); `postcode` (string, **required**) — UK postcode to search near; `sort_by` (string, optional) — Result order, matching the area page's own Sort by control. Default best_match.
 
 ## JustWatch (21)
 
@@ -4430,6 +5766,50 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Kalshi trades. Returns normalized recent Kalshi market trades from credential-free public market-data JSON.
 - **Params:** `cursor` (string, optional) — Pagination cursor from a previous Kalshi response; `limit` (integer, optional) — Rows to return, default 25, max 200; `max_ts` (integer, optional) — Maximum created Unix timestamp in seconds; `min_ts` (integer, optional) — Minimum created Unix timestamp in seconds; `ticker` (string, optional) — Kalshi market ticker filter
 
+## KFC (7)
+
+### `kfc_delivery_estimate`
+
+- **HTTP:** `GET /kfc/delivery-estimate`
+- **What:** Check KFC delivery serviceability and estimated fee for one store and address. Checks whether a KFC restaurant's delivery integration can deliver to a given address and, when it can, the estimated delivery fee (broken down by fee line item) and pickup/dropoff time. This reads the same checkout-time estimate KFC's own site calls -- it does not add an item to a cart or place an order, and takes no payment or account information. serviceable is true only when the upstream returned a real estimate; a false value with reason populated covers every other case seen live: the delivery provider not enabled at this store, the address being outside the delivery zone, or the delivery marketplace itself reporting the store temporarily inactive. order_subtotal materially affects the fee estimate (KFC's own fee schedules can vary by order size), so it is required rather than defaulted. pickup_at defaults to 30 minutes from now (an "order now" style estimate) when omitted.
+- **Params:** `address1` (string, **required**) — Delivery address line 1; `address2` (string, optional) — Delivery address line 2; `city` (string, **required**) — Delivery address city; `country_code` (string, optional) — Delivery address country code (default US); `delivery_provider` (string, optional) — Delivery provider to check (default DOORDASH); `latitude` (number, **required**) — Delivery address latitude; `longitude` (number, **required**) — Delivery address longitude; `order_subtotal` (number, **required**) — Order subtotal before fees, in dollars; `pickup_at` (string, optional) — RFC3339 pickup time (default 30 minutes from now); `postal_code` (string, **required**) — Delivery address postal code; `state` (string, **required**) — Delivery address state, two-letter code; `store_number` (string, **required**) — KFC's alphanumeric store number, from /kfc/stores or /kfc/nearby
+
+### `kfc_menu`
+
+- **HTTP:** `GET /kfc/menu`
+- **What:** Get one KFC restaurant's full priced menu. Returns one restaurant's full menu grouped into categories (e.g. "Deals", "Combos", "Tenders"). Every entry is a product, a bundle (a combo or family meal), or a standalone priced variant -- type tells callers which -- and carries a price in USD cents plus a decimal dollar value, and an image when the upstream publishes one. Prices reflect this specific restaurant and order channel, not a national default. channel selects which order channel the menu is priced for (web ordering by default); prices can genuinely differ by channel (e.g. a delivery-marketplace channel vs. web).
+- **Params:** `channel` (string, optional) — Order channel the menu is priced for (default WEB); `store_number` (string, **required**) — KFC's alphanumeric store number, from /kfc/stores or /kfc/nearby
+
+### `kfc_nearby`
+
+- **HTTP:** `GET /kfc/nearby`
+- **What:** Find KFC restaurants near a location. Returns KFC restaurants near a latitude/longitude, nearest first. A coordinate with no nearby KFC returns an empty list rather than an error. Each restaurant carries its store number, full address with coordinates, phone, whether it currently accepts online orders, its timezone, and its distance from the search point in miles. occasion restricts results to restaurants that offer a given order channel (e.g. only drive-thru locations).
+- **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `max_results` (integer, optional) — Maximum restaurants to return, 1-50 (default 20); `occasion` (string, optional) — Restrict to restaurants offering this order channel; `radius_miles` (number, optional) — Search radius in miles, 0.1-100 (default 10)
+
+### `kfc_promotion`
+
+- **HTTP:** `GET /kfc/promotion`
+- **What:** Look up one KFC promotion by its redemption code or serialized code. Returns one promotion by its redemption code (the code a customer types in at checkout) or its serialized code (a unique per-print QR/serial code, e.g. from a printed coupon, that resolves to a shared redemption code and its promotion). Exactly one of code or serialized_code is required. A serialized-code lookup additionally returns that code's own usage metadata (redemption_code, times_used, code_status, group_status, effective_date, expiration_date) alongside the promotion. An unknown or expired code returns a 404 rather than a null success payload.
+- **Params:** `code` (string, optional) — The redemption code as a customer would type it in at checkout. Exactly one of code or serialized_code is required; `serialized_code` (string, optional) — A unique per-print serialized/QR code that resolves to a shared redemption code. Exactly one of code or serialized_code is required
+
+### `kfc_promotions`
+
+- **HTTP:** `GET /kfc/promotions`
+- **What:** Get one KFC restaurant's current public promotions. Returns one restaurant's current public promotions -- current deals and offers KFC's storefront marks as public, with each promotion's id, internal and display name, description, and whether it applies automatically or requires a redemption code. A store with no active public promotions returns an empty list rather than an error.
+- **Params:** `store_number` (string, **required**) — KFC's alphanumeric store number, from /kfc/stores or /kfc/nearby
+
+### `kfc_store`
+
+- **HTTP:** `GET /kfc/store`
+- **What:** Get one KFC restaurant by its store number. Returns one KFC restaurant's detail by its exact store number, from /kfc/stores or /kfc/nearby, including its recurring open hours per order channel (carryout, delivery, dine-in, drive-thru, catering carryout). A channel this restaurant does not offer at all is omitted from hours rather than reported as always-closed.
+- **Params:** `store_number` (string, **required**) — KFC's alphanumeric store number, from /kfc/stores or /kfc/nearby
+
+### `kfc_stores`
+
+- **HTTP:** `GET /kfc/stores`
+- **What:** Search KFC restaurants by city, state, postal code, name, franchise code, or store number. Returns KFC restaurants matching a city/state/postal code/name/franchise code/store number filter. At least one filter is required -- an unfiltered call would enumerate every US restaurant in one response, which this endpoint intentionally does not expose. Each restaurant carries its store number (the value /kfc/menu and /kfc/promotions take), full address with coordinates, phone, whether it currently accepts online orders, and its timezone. appear_in_store_results (default true) excludes internal/test records KFC's own storefront does not surface in customer-facing search -- confirmed live that a raw filter can otherwise return non-orderable administrative entries alongside real restaurants.
+- **Params:** `appear_in_store_results` (boolean, optional) — Restrict to restaurants shown in customer-facing search, excluding internal/test entries (default true); `city` (string, optional) — Restaurant city; `franchise_code` (string, optional) — Exact franchise/operator code; `max_results` (integer, optional) — Maximum restaurants to return, 1-50 (default 20); `name` (string, optional) — Restaurant name, partial match; `postal_code` (string, optional) — Restaurant postal code; `sort` (string, optional) — Sort order; `state` (string, optional) — Restaurant state, two-letter code; `store_number` (string, optional) — Exact store number
+
 ## Kickstarter (4)
 
 ### `kickstarter_comments`
@@ -4481,6 +5861,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /kohls/suggest`
 - **What:** Kohl's search-box typeahead suggestions. Returns Kohl's own search-box typeahead result for a partial query: a flat list of suggested search phrases (no product data). A nonsense query returns a genuine, well-formed empty list rather than an error.
 - **Params:** `query` (string, **required**) — Partial search text, e.g. \
+
+## Kroger (9)
+
+### `kroger_category`
+
+- **HTTP:** `GET /kroger/category`
+- **What:** Browse a Kroger category. Browses a Kroger product category and returns normalized product cards plus facet groups, in the same shape as kroger-search. slug and category_id together identify the category (e.g. "pet" and "27" for kroger.com/pl/pet/27). Served from Kroger's own search JSON API using category_id as a taxonomy filter, with real upstream pagination; it falls back to parsing the rendered category page if that path is unavailable, and the source field reports which path answered. Facet filters and sort apply to the JSON path only: when any of them is set, a JSON-path failure returns an error rather than silently falling back to unfiltered results.
+- **Params:** `brands` (string, optional) — Comma-separated brand names to filter by, taken verbatim from a previous response's facets; `category_id` (string, **required**) — Category numeric taxonomy id; `flavor` (string, optional) — Comma-separated flavor facet values; `more_options` (string, optional) — Comma-separated more-options facet values; `nutrition` (string, optional) — Comma-separated nutrition/dietary facet values; `page` (integer, optional) — One-based result page; `price_max` (number, optional) — Upper bound of the price filter; required to filter on price; `price_min` (number, optional) — Lower bound of the price filter; defaults to 0; `savings` (string, optional) — Comma-separated savings facet values; `scent` (string, optional) — Comma-separated scent facet values; `slug` (string, **required**) — Category URL slug segment; `sort` (string, optional) — Result order. One of: relevance, name_asc, popularity_desc
+
+### `kroger_coupons`
+
+- **HTTP:** `GET /kroger/coupons`
+- **What:** Get Kroger digital coupons. Returns a page of Kroger's public digital coupons: savings value, requirement text and quantity, brand, categories, redemption modalities, promotional tags, image, and start/end/expiry dates. Optionally narrow to one product (upc) or brand. This is the anonymous public coupon catalog -- per-account clipping state is not returned.
+- **Params:** `brand` (string, optional) — Narrow to one brand's coupons; `location_id` (string, optional) — Kroger store/location id that scopes coupons; `page` (integer, optional) — One-based result page; `page_size` (integer, optional) — Coupons per page, 1-200; `upc` (string, optional) — Narrow to coupons applying to one Kroger product
+
+### `kroger_product`
+
+- **HTTP:** `GET /kroger/product`
+- **What:** Get a Kroger product. Returns normalized product detail for one Kroger item: title, description, image, brand, category trail, price/availability, and rating, sourced from the product page's own schema.org structured data.
+- **Params:** `upc` (string, **required**) — Kroger product UPC/id (the last path segment of the product page URL)
+
+### `kroger_product_reviews`
+
+- **HTTP:** `GET /kroger/product/reviews`
+- **What:** Get a Kroger product's customer reviews. Returns one page of a Kroger product's customer reviews -- review text, star rating, recommendation flag, helpful-vote counts, and customer photo URLs -- alongside the product's full star histogram. Customer display names are deliberately not returned.
+- **Params:** `page` (integer, optional) — One-based review page; `page_size` (integer, optional) — Reviews per page, 1-100; `upc` (string, **required**) — Kroger product UPC/id
+
+### `kroger_products`
+
+- **HTTP:** `GET /kroger/products`
+- **What:** Get full Kroger product detail in bulk. Returns full normalized detail for up to 50 Kroger products in one call, from Kroger's own product API. Carries materially more than kroger-product: a nutrition-facts panel with ingredients, allergens and dietary flags; store-specific price and stock level; a full star-rating histogram; the merchandising hierarchy; and every image perspective. location_id scopes price and stock to one store.
+- **Params:** `location_id` (string, optional) — Kroger store/location id that scopes price and stock; `upcs` (string, **required**) — Comma-separated Kroger product UPCs, up to 50
+
+### `kroger_related_tags`
+
+- **HTTP:** `GET /kroger/related-tags`
+- **What:** Get Kroger search-refinement tags. Returns the search-refinement chips Kroger shows above its own results for a query (e.g. "chips ahoy" returns "chewy", "chunky", "thins"). Each tag carries the full follow-on query it maps to, so results feed straight back into kroger-search.
+- **Params:** `location_id` (string, optional) — Kroger store/location id that scopes results; `query` (string, **required**) — Search term to get refinement tags for
+
+### `kroger_search`
+
+- **HTTP:** `GET /kroger/search`
+- **What:** Search Kroger products. Searches Kroger products by keyword and returns normalized product cards (price, unit price, brand, size, stock level) plus the facet groups Kroger offers for the query (brands, nutrition, savings, price range and more). Served from Kroger's own search JSON API with real upstream pagination; if that path is unavailable it falls back to parsing the rendered search page, and the source field reports which path answered. Facet filters and sort apply to the JSON path only: when any of them is set, a JSON-path failure returns an error rather than silently falling back to unfiltered results.
+- **Params:** `brands` (string, optional) — Comma-separated brand names to filter by, taken verbatim from a previous response's facets; `flavor` (string, optional) — Comma-separated flavor facet values; `more_options` (string, optional) — Comma-separated more-options facet values; `nutrition` (string, optional) — Comma-separated nutrition/dietary facet values; `page` (integer, optional) — One-based result page; `price_max` (number, optional) — Upper bound of the price filter; required to filter on price; `price_min` (number, optional) — Lower bound of the price filter; defaults to 0; `query` (string, **required**) — Search keyword; `savings` (string, optional) — Comma-separated savings facet values; `scent` (string, optional) — Comma-separated scent facet values; `sort` (string, optional) — Result order. One of: relevance, name_asc, popularity_desc
+
+### `kroger_store`
+
+- **HTTP:** `GET /kroger/store`
+- **What:** Get one Kroger store's detail. Returns one Kroger store's public detail: postal address, geographic coordinates, phone number, displayed opening hours (including any daily break hours), and whether it has a drive-thru. store_id is the same store/location id kroger-products and kroger-suggest accept.
+- **Params:** `store_id` (string, **required**) — Kroger store/location id
+
+### `kroger_suggest`
+
+- **HTTP:** `GET /kroger/suggest`
+- **What:** Get Kroger search-box suggestions. Returns Kroger's own search-box suggestions for a (possibly empty) query, sourced directly from Kroger's public suggestions API rather than the rendered search page. An empty query returns Kroger's default "trending" shopping shortcuts instead of an error. location_id scopes results to one Kroger store and defaults to a confirmed-working store id when omitted.
+- **Params:** `location_id` (string, optional) — Kroger store/location id; `query` (string, optional) — Partial search text; omit for trending default suggestions
 
 ## Kylie Cosmetics (11)
 
@@ -4549,6 +5985,52 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /kyliecosmetics/store`
 - **What:** Get Kylie Cosmetics store metadata. Returns normalized storefront metadata for Kylie Cosmetics (https://www.kyliecosmetics.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
 - **Params:** _none_
+
+## Lazada (5)
+
+### `lazada_categories`
+
+- **HTTP:** `GET /lazada/categories`
+- **What:** Get a Lazada country storefront's category directory. Returns one Lazada country storefront's public category directory from the server-rendered LazMall navigation menu. The response includes top-level groups, categories, and subcategory links; it does not include product listings.
+- **Params:** `country` (string, optional) — Lazada country storefront. Defaults to id.
+
+### `lazada_category_products`
+
+- **HTTP:** `GET /lazada/category-products`
+- **What:** Get a Lazada country storefront's product listing for one category. Returns one Lazada country storefront's product listing for one category, optionally filtered to one brand within it. Product cards include item ids, canonical product URLs, images, prices, ratings, and review counts, with pagination and sort. The category (and optional brand) value is the raw Lazada path slug, not a display name -- use the categories endpoint's own returned URLs to discover a category's slug.
+- **Params:** `brand` (string, optional) — Optional brand path slug to filter within the category.; `category` (string, **required**) — Lazada category path slug, e.g. \; `country` (string, optional) — Lazada country storefront. Defaults to id.; `page` (integer, optional) — Result page, 1-indexed. Defaults to 1.; `sort` (string, optional) — Sort order. Defaults to popularity.
+
+### `lazada_home`
+
+- **HTTP:** `GET /lazada/home`
+- **What:** Get a Lazada country storefront's homepage feed. Returns one Lazada country storefront's anonymous homepage feed: current flash-sale product cards, featured category links, and (where shown) an official-stores carousel. Product-detail and free-text catalog pages are not included because Lazada's stateless routes currently return an anti-bot challenge on every country domain.
+- **Params:** `country` (string, optional) — Lazada country storefront. Defaults to id.
+
+### `lazada_product`
+
+- **HTTP:** `GET /lazada/product`
+- **What:** Get a Lazada country storefront's product-detail page. Returns one Lazada country storefront's product-detail page: title, brand, full description, image gallery, category breadcrumb, and selectable variant properties. item_id (and, for a specific variant, sku_id) are the same ids the search, category-products, and home endpoints already return as item_id. Price is best-effort, read from the page's own display-tracking data rather than a dedicated pricing field; rating and review count are not available on this endpoint because Lazada fetches them client-side after the initial page load.
+- **Params:** `country` (string, optional) — Lazada country storefront. Defaults to id.; `item_id` (integer, **required**) — Lazada item id.; `sku_id` (integer, optional) — Optional Lazada sku id, for a specific variant.
+
+### `lazada_search`
+
+- **HTTP:** `GET /lazada/search`
+- **What:** Search a Lazada country storefront's catalog by keyword. Returns one Lazada country storefront's free-text catalog search results: product cards with item ids, canonical product URLs, images, prices in the storefront's own currency, ratings, and review counts, with pagination and sort. Lazada's own search always substitutes generic or trending items rather than returning a genuinely empty result set, so an empty items list or a low total_results is not by itself a reliable "no matches" signal.
+- **Params:** `country` (string, optional) — Lazada country storefront. Defaults to id.; `page` (integer, optional) — Result page, 1-indexed. Defaults to 1.; `q` (string, **required**) — Free-text search query.; `sort` (string, optional) — Sort order. Defaults to popularity.
+
+## Leboncoin (2)
+
+### `leboncoin_listing`
+
+- **HTTP:** `GET /leboncoin/listing`
+- **What:** Get a Leboncoin public listing. Returns normalized public metadata for one supplied Leboncoin ad URL. It excludes seller identity and contacts, precise location, payment, delivery, and account data.
+- **Params:** `url` (string, **required**) — Canonical public ad URL returned by leboncoin-search
+
+### `leboncoin_search`
+
+- **HTTP:** `GET /leboncoin/search`
+- **What:** Search Leboncoin public listings. Returns normalized public listing cards from one Leboncoin location page. This endpoint excludes contacts, seller profiles, accounts, and transaction data.
+- **Params:** `location` (string, **required**) — Public Leboncoin location slug
 
 ## Letterboxd (8)
 
@@ -4672,7 +6154,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Macy's search-box suggestions. Returns Macy's own search-box suggestions (typeahead) for a partial query: a flat list of suggested search phrases, no product data. A partial query with no real matches returns a normal, empty result rather than an error.
 - **Params:** `query` (string, **required**) — Partial search query
 
-## Manga (3)
+## Manga (6)
 
 ### `manga_rankings`
 
@@ -4691,6 +6173,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /manga/title/{id}`
 - **What:** Get a manga. Returns a normalized manga by AniList id: titles, MyAnimeList id, scores, popularity, favourites, format, status, chapters, volumes, genres, ranked tags, dates, description, and images. Pass mal=true to additionally enrich the response with the MyAnimeList community score (mal block: score on a 0-10 scale, plus scored-by count), scraped credential-free from the public MAL page. Credential-free public AniList data.
 - **Params:** `id` (string, **required**) — AniList manga id; `mal` (boolean, optional) — Enrich with the MyAnimeList community score (adds one fetch; omitted when the title has no MAL id)
+
+### `manga_title_characters`
+
+- **HTTP:** `GET /manga/title/{id}/characters`
+- **What:** List a manga's characters. Returns a manga's cast (character name, native name, billed role, image, favourites), paginated. The AniList id space is shared between anime and manga but the two do not overlap, so an anime id here returns 404 -- use GET /anime/title/{id}/characters for those. Credential-free public AniList data.
+- **Params:** `id` (string, **required**) — AniList manga id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50
+
+### `manga_title_recommendations`
+
+- **HTTP:** `GET /manga/title/{id}/recommendations`
+- **What:** List titles recommended alongside a manga. Returns the titles AniList users recommend alongside a manga, most-recommended first, each with its community rating and full title record. Recommendations can cross media types -- a manga's list may include anime -- so read each entry's own type rather than assuming manga. An anime id here returns 404 -- use GET /anime/title/{id}/recommendations for those. Credential-free public AniList data.
+- **Params:** `id` (string, **required**) — AniList manga id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50
+
+### `manga_title_staff`
+
+- **HTTP:** `GET /manga/title/{id}/staff`
+- **What:** List a manga's staff credits. Returns the people credited on a manga -- author, artist, assistants, and per-language translation and lettering credits -- with each person's role, occupations and image, paginated. Manga roles carry detail anime credits do not: a long-running series records volume ranges per credit (e.g. "Story & Art (vols 1-41)", "Supervisor (vols 41- )"). An anime id here returns 404 -- use GET /anime/title/{id}/staff for those. Credential-free public AniList data.
+- **Params:** `id` (string, **required**) — AniList manga id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50
+
+## McDonalds (6)
+
+### `mcdonalds_categories`
+
+- **HTTP:** `GET /mcdonalds/categories`
+- **What:** List McDonald's menu categories. Returns one market's McDonald's menu categories -- 13 in the United States at time of writing, including breakfast, burgers, chicken-and-fish-sandwiches, mcnuggets-and-mccrispy-strips, snack-wrap, fries-sides, happy-meal, sweets-treats, mccafe-coffees, drinks, sauces-and-condiments and the two value menus; other markets publish their own, from 6 in Switzerland to 17 in Australia. Each entry's slug is the value GET /mcdonalds/menu takes. Slugs are not portable between markets, so pass the same country back. Eight markets publish a reachable menu, fewer than the ten the restaurant locator covers.
+- **Params:** `country` (string, optional) — Market (default us). One of us, ca, gb, au, ie, nz, ch, se.
+
+### `mcdonalds_item`
+
+- **HTTP:** `GET /mcdonalds/item`
+- **What:** Get one McDonald's item's nutrition. Returns one McDonald's item's published nutrition detail: the full per-serving nutrient list (calories, protein, carbohydrates, total and saturated fat, trans fat, cholesterol, sodium, fibre, sugars, vitamins and minerals -- 21 values for a Big Mac), each with a stable machine key, a unit and a percent-daily-value where McDonald's prints one; plus the item's marketing description, allergen statement, full ingredient statement and image. Item ids come from GET /mcdonalds/menu and are market-specific, so pass the same country back. Seven markets serve this endpoint, fewer than the eight publishing a menu -- Great Britain has a menu but no nutrition surface. Combo meals legitimately carry no nutrient list. Prices are not available on this surface.
+- **Params:** `country` (string, optional) — Market (default us). One of us, ca, au, ie, nz, ch, se. Must match the market the item id came from.; `item_id` (string, **required**) — McDonald's numeric product id, from /mcdonalds/menu
+
+### `mcdonalds_item_list`
+
+- **HTTP:** `GET /mcdonalds/item-list`
+- **What:** Get nutrition and allergen detail for a batch of McDonald's items. Returns the same published nutrition detail as GET /mcdonalds/item for up to 20 items in one call, plus the per-component ingredient and allergen breakdown that the single-item endpoint does not expose -- a composite item's overall allergen statement is the union of its parts' (a burger's bun, patty, cheese and condiment each carry their own ingredient statement and allergens), so this is the source to use when the full breakdown matters, not just the item-level summary. Item ids come from GET /mcdonalds/menu and are market-specific, so pass the same country back. The response echoes the requested ids so a caller can tell which ones McDonald's returned nothing for.
+- **Params:** `country` (string, optional) — Market (default us). One of us, ca, au, ie, nz, ch, se. Must match the market the item ids came from.; `item_ids` (string, **required**) — Comma-separated McDonald's numeric product ids, up to 20
+
+### `mcdonalds_menu`
+
+- **HTTP:** `GET /mcdonalds/menu`
+- **What:** List one McDonald's menu category's items. Returns the items in one McDonald's menu category: each item's numeric id, name, product page URL and image. The item id is what GET /mcdonalds/item takes for full nutrition. Category slugs come from GET /mcdonalds/categories and must be paired with the country they came from -- both slugs and item ids are market-specific. Prices are not available; McDonald's does not publish them on this surface. A calorie label is included per item where the category page prints one, which is often blank.
+- **Params:** `category` (string, **required**) — Category slug from /mcdonalds/categories; `country` (string, optional) — Market (default us). One of us, ca, gb, au, ie, nz, ch, se. Must match the market the slug came from.
+
+### `mcdonalds_restaurant_menu`
+
+- **HTTP:** `GET /mcdonalds/restaurant-menu`
+- **What:** Get one McDonald's restaurant's priced menu. Returns one restaurant's full menu with real prices: item name, image and independently-priced eat-in, pickup and delivery listings, since a McDonald's restaurant genuinely sells a different catalog (and different prices) per channel -- delivery is typically marked up over eat-in/pickup, and some items are channel-exclusive. Where McDonald's publishes a curated substitute or add-on list for an item (a meal's drink upgrade, a dip-able item's sauce choices), each real alternative is included with its own eat-in/pickup price delta -- plain entree or side substitution is not covered, since McDonald's does not publish a curated candidate list for it. This is the only endpoint in this family that publishes prices; every other McDonald's endpoint's source never does. US restaurants only. The store id comes from GET /mcdonalds/restaurants' store_id field.
+- **Params:** `store_id` (string, **required**) — McDonald's numeric store number, from /mcdonalds/restaurants
+
+### `mcdonalds_restaurants`
+
+- **HTTP:** `GET /mcdonalds/restaurants`
+- **What:** Find McDonald's restaurants near a location. Returns McDonald's restaurants near a latitude/longitude, in any of ten markets. Each restaurant carries its store id, name, street address, city, state, postal code, phone, coordinates, timezone, open status, today's dining and drive-thru hours, the full published week of hours, and McDonald's own amenity codes (for example DRIVETHRU, WIFI, MOBILEOFFERS, GIFTCARDS). A delivery deep link is included where McDonald's publishes one; note it points at a third-party delivery platform. A coordinate with no McDonald's nearby returns an empty list rather than an error. Set country to search outside the United States -- the locator covers more markets than the menu and item endpoints do, so a country valid here is not necessarily valid there.
+- **Params:** `country` (string, optional) — Market to search (default us). One of us, gb, ca, au, de, ie, nz, ch, nl, se.; `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `max_results` (integer, optional) — Maximum restaurants to return, 1-50 (default 10); `radius` (integer, optional) — Search radius in miles, 1-100 (default 20)
 
 ## Mercari (5)
 
@@ -5204,6 +6742,224 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Find Old Navy, Gap, Banana Republic, or Athleta store locations. Searches physical store locations for one storefront by free-text search (zip code or city) and/or coordinates. Provide search, or both lat and lng. Select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`). Returns each nearby store's name, full address, phone number, coordinates, distance, and specialties (e.g. "In-Store Shopping", "Outlet"). This is location search only -- it does not report per-item, per-store stock levels; use oldnavy-product-availability for that.
 - **Params:** `brand` (string, optional) — Storefront to search; `lat` (number, optional) — Latitude (must be given together with lng); `lng` (number, optional) — Longitude (must be given together with lat); `search` (string, optional) — Zip code or city to search near
 
+## OpenSea (36)
+
+### `opensea_activity`
+
+- **HTTP:** `GET /opensea/activity`
+- **What:** List marketplace-wide OpenSea activity. Returns the live cross-collection activity feed — every sale, listing, offer, transfer, and mint OpenSea indexes, newest first, with the collection each event belongs to. Filter with `event_types` for a marketplace-wide trade tape.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `event_types` (string, optional) — Comma-separated event types; `limit` (integer, optional) — Events per page, 1-100
+
+### `opensea_categories`
+
+- **HTTP:** `GET /opensea/categories`
+- **What:** List OpenSea's browse categories. Returns OpenSea's category taxonomy as top-level groups and their child categories, with display names. The child slugs are the canonical category identifiers used across the marketplace.
+- **Params:** _none_
+
+### `opensea_chains`
+
+- **HTTP:** `GET /opensea/chains`
+- **What:** List the chains OpenSea indexes. Returns every blockchain OpenSea indexes, with its identifier, display name, and architecture. The identifiers are the accepted values for the `chain` path parameter on the item endpoints.
+- **Params:** _none_
+
+### `opensea_collection`
+
+- **HTTP:** `GET /opensea/collection/{slug}`
+- **What:** Get an OpenSea collection. Returns public marketplace metadata and trading statistics for one NFT collection: name, description, imagery, verification flag, contract address and chain, social links, current floor price and top collection offer, plus lifetime and rolling one-hour/one-day/seven-day/thirty-day sales, volume, and floor-price change. Delisted and blacklisted collections return 404 rather than an empty payload.
+- **Params:** `slug` (string, **required**) — OpenSea collection slug
+
+### `opensea_collection_activity`
+
+- **HTTP:** `GET /opensea/collection/{slug}/activity`
+- **What:** List an OpenSea collection's marketplace activity. Returns a cursor-paginated feed of marketplace events for a collection — sales, listings, offers, transfers, mints, and collection/trait offers — with the counterparties, price, marketplace, and transaction hash. Filter with `event_types` to narrow the feed, for example `event_types=SALE` for a sales-only history.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `event_types` (string, optional) — Comma-separated event types; `limit` (integer, optional) — Events per page, 1-100; `slug` (string, **required**) — OpenSea collection slug
+
+### `opensea_collection_best_deals`
+
+- **HTTP:** `GET /opensea/collection/{slug}/best-deals`
+- **What:** List an OpenSea collection's best-value listings. Returns the listed items OpenSea surfaces as the best value in a collection, judged against each item's rarity and the collection floor. This is the curated "best deals" shelf from the collection page, not a generic price sort.
+- **Params:** `slug` (string, **required**) — OpenSea collection slug
+
+### `opensea_collection_chart`
+
+- **HTTP:** `GET /opensea/collection/{slug}/chart`
+- **What:** Get an OpenSea collection's price or volume history. Returns a time series for a collection — either its floor price or its traded volume — over the requested window, with each sample in both the settlement token and USD. Use `metric=floor_price` for the floor line and `metric=volume` for the volume bars.
+- **Params:** `metric` (string, optional) — Series to return; `slug` (string, **required**) — OpenSea collection slug; `timeframe` (string, optional) — Window
+
+### `opensea_collection_depth`
+
+- **HTTP:** `GET /opensea/collection/{slug}/depth`
+- **What:** Get an OpenSea collection's order book. Returns the full bid/ask ladder for a collection: resting listings and offers grouped into price levels with the quantity available at each. This is the depth chart behind OpenSea's own collection page, and it is the fastest way to see how thin or deep the book is above the floor.
+- **Params:** `slug` (string, **required**) — OpenSea collection slug
+
+### `opensea_collection_holders`
+
+- **HTTP:** `GET /opensea/collection/{slug}/holders`
+- **What:** List an OpenSea collection's holders. Returns a cursor-paginated leaderboard of wallets holding items in the collection, ranked by quantity held, with each holder's address and display name where OpenSea publishes one.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `limit` (integer, optional) — Holders per page, 1-100; `slug` (string, **required**) — OpenSea collection slug; `sort_direction` (string, optional) — Sort direction by quantity held
+
+### `opensea_collection_items`
+
+- **HTTP:** `GET /opensea/collection/{slug}/items`
+- **What:** List items in an OpenSea collection. Returns a cursor-paginated page of NFTs in a collection with their traits, rarity rank, current owner, best standing listing, and last sale price. Pass `cursor` from `next_page_cursor` to page forward. Narrow the result set with `listed_only`, `traits`, a `min_price`/`max_price` band, or a `min_rarity`/`max_rarity` rank band — the filters combine, so `traits=Fur:Solid Gold&listed_only=true` returns only buyable Solid Gold apes.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `limit` (integer, optional) — Items per page, 1-100; `listed_only` (boolean, optional) — Only return items with a standing listing; `max_price` (number, optional) — Maximum listing price in the collection's native token; `max_rarity` (integer, optional) — Maximum rarity rank; `min_price` (number, optional) — Minimum listing price in the collection's native token; `min_rarity` (integer, optional) — Minimum rarity rank (1 is rarest); `slug` (string, **required**) — OpenSea collection slug; `sort_by` (string, optional) — Sort field; `sort_direction` (string, optional) — Sort direction; `traits` (string, optional) — Comma-separated trait_type:value pairs
+
+### `opensea_collection_offers`
+
+- **HTTP:** `GET /opensea/collection/{slug}/offers`
+- **What:** List an OpenSea collection's offer book. Returns the collection-wide offer book as price levels: how many standing offers sit at each price per item, plus the aggregate offer count and total value across the whole collection. Offers are sorted by price.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `limit` (integer, optional) — Price levels per page, 1-100; `slug` (string, **required**) — OpenSea collection slug; `sort_direction` (string, optional) — Sort direction by offer price
+
+### `opensea_collection_rarest_items`
+
+- **HTTP:** `GET /opensea/collection/{slug}/rarest-items`
+- **What:** List an OpenSea collection's rarest listed items. Returns the rarest items in a collection that currently have a standing listing, each with its rarity rank, traits, and asking price. Unlike the trait endpoints, this shelf is scoped to what is actually buyable right now.
+- **Params:** `slug` (string, **required**) — OpenSea collection slug
+
+### `opensea_collection_search_items`
+
+- **HTTP:** `GET /opensea/collection/{slug}/search-items`
+- **What:** Search items inside an OpenSea collection. Runs a keyword search scoped to one collection — matching on item name and trait values — and returns the hits with rarity rank and best standing listing. Narrower than `/opensea/collection/{slug}/items`, which lists everything.
+- **Params:** `limit` (integer, optional) — Results per page, 1-100; `query` (string, **required**) — Search keyword; `slug` (string, **required**) — OpenSea collection slug
+
+### `opensea_collection_social_proof`
+
+- **HTTP:** `GET /opensea/collection/{slug}/social-proof`
+- **What:** Get an OpenSea collection's social following. Returns how many accounts follow or watch a collection, plus the notable collectors OpenSea highlights for it. Useful as a demand signal alongside the trading stats.
+- **Params:** `slug` (string, **required**) — OpenSea collection slug
+
+### `opensea_collection_top_sales`
+
+- **HTTP:** `GET /opensea/collection/{slug}/top-sales`
+- **What:** List an OpenSea collection's highest-value sales. Returns the highest-value sales ever recorded for a collection, with the buyer, seller, price, and transaction hash for each. Unlike `/opensea/collection/{slug}/activity?event_types=SALE`, which is a reverse-chronological feed, this is ranked by sale price.
+- **Params:** `slug` (string, **required**) — OpenSea collection slug
+
+### `opensea_collection_trait_offers`
+
+- **HTTP:** `GET /opensea/collection/{slug}/trait-offers`
+- **What:** List an OpenSea collection's trait offer book. Returns standing offers scoped to a specific trait value rather than the whole collection, as price levels with the trait type and value attached. Useful for pricing rare-trait items against the collection floor.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `limit` (integer, optional) — Price levels per page, 1-100; `slug` (string, **required**) — OpenSea collection slug; `sort_direction` (string, optional) — Sort direction by offer price
+
+### `opensea_collection_traits`
+
+- **HTTP:** `GET /opensea/collection/{slug}/traits`
+- **What:** List an OpenSea collection's traits. Returns a cursor-paginated page of the collection's trait types and the values each takes, with per-value item counts where OpenSea publishes them. Numeric traits carry a comparison operator.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `limit` (integer, optional) — Trait types per page, 1-100; `slug` (string, **required**) — OpenSea collection slug
+
+### `opensea_collections`
+
+- **HTTP:** `GET /opensea/collections`
+- **What:** Look up several OpenSea collections at once. Resolves up to 50 collections in a single call from a comma-separated `slugs` list, returning each one's floor price, verification flag, headline stats, and per-marketplace listed-item counts. Use this instead of calling `/opensea/collection/{slug}` in a loop — it costs one upstream request regardless of how many slugs you pass. The `markets` array shows how many items are listed on OpenSea versus other marketplaces for the same collection.
+- **Params:** `slugs` (string, **required**) — Comma-separated collection slugs, at most 50
+
+### `opensea_drops`
+
+- **HTTP:** `GET /opensea/drops`
+- **What:** List the OpenSea drop calendar. Returns the NFT drop calendar — either upcoming mints or recently minted drops — with each drop's contract, chain, and parent collection. Use `type=UPCOMING` to watch for launches and `type=RECENTLY_MINTED` for ones that just went live.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `limit` (integer, optional) — Drops per page, 1-100; `type` (string, optional) — Calendar window
+
+### `opensea_item`
+
+- **HTTP:** `GET /opensea/item/{chain}/{contract_address}/{token_id}`
+- **What:** Get a single OpenSea NFT. Returns one NFT addressed by chain, contract address, and token id, including its traits, rarity rank, current owner, parent collection, best standing listing, and best standing offer. Call `/opensea/chains` for the accepted `chain` values.
+- **Params:** `chain` (string, **required**) — Chain identifier from /opensea/chains; `contract_address` (string, **required**) — NFT contract address; `token_id` (string, **required**) — Token id within the contract
+
+### `opensea_item_activity`
+
+- **HTTP:** `GET /opensea/item/{chain}/{contract_address}/{token_id}/activity`
+- **What:** List one OpenSea NFT's event history. Returns the marketplace event history for a single NFT — sales, listings, offers, transfers, and mints — with counterparties, price, and transaction hash. Filter with `event_types`, for example `event_types=SALE,TRANSFER` for an ownership trail.
+- **Params:** `chain` (string, **required**) — Chain identifier from /opensea/chains; `contract_address` (string, **required**) — NFT contract address; `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `event_types` (string, optional) — Comma-separated event types; `limit` (integer, optional) — Events per page, 1-100; `token_id` (string, **required**) — Token id within the contract
+
+### `opensea_item_chart`
+
+- **HTTP:** `GET /opensea/item/{chain}/{contract_address}/{token_id}/chart`
+- **What:** Get an OpenSea NFT's sale-price history. Returns every indexed sale of one NFT with its timestamp and price, in both the settlement token and USD — the price history behind the chart on an item page. An item that has never sold returns an empty `points` list. For collection-level sale history use `/opensea/collection/{slug}/activity?event_types=SALE`.
+- **Params:** `chain` (string, **required**) — Chain identifier from /opensea/chains; `contract_address` (string, **required**) — NFT contract address; `token_id` (string, **required**) — Token id within the contract
+
+### `opensea_item_depth`
+
+- **HTTP:** `GET /opensea/item/{chain}/{contract_address}/{token_id}/depth`
+- **What:** Get an OpenSea NFT's order book. Returns the bid/ask ladder for a single NFT: resting listings and offers grouped into price levels with the quantity at each. Useful for ERC-1155 items where many units trade at different prices.
+- **Params:** `chain` (string, **required**) — Chain identifier from /opensea/chains; `contract_address` (string, **required**) — NFT contract address; `token_id` (string, **required**) — Token id within the contract
+
+### `opensea_item_listings`
+
+- **HTTP:** `GET /opensea/item/{chain}/{contract_address}/{token_id}/listings`
+- **What:** List standing listings for an OpenSea NFT. Returns every standing sell order for one NFT, with price, quantity, validity window, marketplace, and the maker's wallet. An item with no active listings returns an empty list rather than a 404.
+- **Params:** `chain` (string, **required**) — Chain identifier from /opensea/chains; `contract_address` (string, **required**) — NFT contract address; `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `limit` (integer, optional) — Listings per page, 1-100; `sort_direction` (string, optional) — Sort direction by price; `token_id` (string, **required**) — Token id within the contract
+
+### `opensea_item_offers`
+
+- **HTTP:** `GET /opensea/item/{chain}/{contract_address}/{token_id}/offers`
+- **What:** List standing offers for an OpenSea NFT. Returns every standing bid on one NFT, with price, quantity, validity window, marketplace, and the maker's wallet. An item with no active offers returns an empty list rather than a 404.
+- **Params:** `chain` (string, **required**) — Chain identifier from /opensea/chains; `contract_address` (string, **required**) — NFT contract address; `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `limit` (integer, optional) — Offers per page, 1-100; `token_id` (string, **required**) — Token id within the contract
+
+### `opensea_item_owners`
+
+- **HTTP:** `GET /opensea/item/{chain}/{contract_address}/{token_id}/owners`
+- **What:** List the owners of an OpenSea NFT. Returns the wallets holding one NFT plus the total owner count. ERC-721 items resolve to a single owner; ERC-1155 items can have many, each with the quantity held.
+- **Params:** `chain` (string, **required**) — Chain identifier from /opensea/chains; `contract_address` (string, **required**) — NFT contract address; `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `limit` (integer, optional) — Owners per page, 1-100; `token_id` (string, **required**) — Token id within the contract
+
+### `opensea_most_watched`
+
+- **HTTP:** `GET /opensea/most-watched`
+- **What:** List the most watchlisted OpenSea collections. Returns the collections most added to watchlists on OpenSea, with their current floor price and headline stats. A demand signal that leads trading volume, since watchlisting precedes buying.
+- **Params:** `limit` (integer, optional) — Collections to return, 1-100
+
+### `opensea_profile`
+
+- **HTTP:** `GET /opensea/profile/{identifier}`
+- **What:** Get a public OpenSea profile. Returns the public profile for a wallet, resolved from a wallet address, an ENS name, or an OpenSea username: display name, avatar and banner imagery, verification flag, and linked social handles. Wallet balances, portfolio value, and profit/loss are deliberately not exposed.
+- **Params:** `identifier` (string, **required**) — Wallet address, ENS name, or OpenSea username
+
+### `opensea_profile_activity`
+
+- **HTTP:** `GET /opensea/profile/{identifier}/activity`
+- **What:** List a wallet's NFT marketplace activity. Returns a cursor-paginated feed of a wallet's NFT marketplace events — sales, listings, offers, transfers, and mints — with the counterparty, price, and collection for each. Accepts a wallet address, ENS name, or OpenSea username. Scoped to NFT events only; token transfers and swaps are not returned.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `event_types` (string, optional) — Comma-separated event types; `identifier` (string, **required**) — Wallet address, ENS name, or OpenSea username; `limit` (integer, optional) — Events per page, 1-100
+
+### `opensea_profile_collections`
+
+- **HTTP:** `GET /opensea/profile/{identifier}/collections`
+- **What:** List the collections a wallet holds. Returns the collections a wallet holds items in, with how many items it holds in each and that collection's current floor price. Useful for valuing a wallet's holdings collection by collection.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `identifier` (string, **required**) — Wallet address, ENS name, or OpenSea username; `limit` (integer, optional) — Collections per page, 1-100
+
+### `opensea_profile_created`
+
+- **HTTP:** `GET /opensea/profile/{identifier}/created`
+- **What:** List the collections a wallet created. Returns the collections a wallet created, as opposed to the ones it holds, each with its floor price and trading statistics. Use this to find a creator's full body of work from any one of their collections' contract deployer address.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `identifier` (string, **required**) — Wallet address, ENS name, or OpenSea username; `limit` (integer, optional) — Collections per page, 1-100; `sort_by` (string, optional) — Sort field; `sort_direction` (string, optional) — Sort direction
+
+### `opensea_profile_items`
+
+- **HTTP:** `GET /opensea/profile/{identifier}/items`
+- **What:** List the NFTs a wallet holds. Returns a cursor-paginated page of the NFTs held by a wallet, with each item's collection, rarity rank, and best standing listing. Accepts a wallet address, ENS name, or OpenSea username; a non-address identifier costs one extra resolution lookup.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `identifier` (string, **required**) — Wallet address, ENS name, or OpenSea username; `limit` (integer, optional) — Items per page, 1-100; `sort_direction` (string, optional) — Sort direction by received date
+
+### `opensea_profile_search_items`
+
+- **HTTP:** `GET /opensea/profile/{identifier}/search-items`
+- **What:** Search the NFTs a wallet holds. Runs a keyword search across a wallet's holdings, matching on item and collection name, and returns the hits with rarity rank and best standing listing. Narrower than `/opensea/profile/{identifier}/items`, which lists everything the wallet holds.
+- **Params:** `identifier` (string, **required**) — Wallet address, ENS name, or OpenSea username; `limit` (integer, optional) — Results per page, 1-100; `query` (string, **required**) — Search keyword
+
+### `opensea_rankings`
+
+- **HTTP:** `GET /opensea/rankings`
+- **What:** List ranked OpenSea collections. Returns the collections on one of OpenSea's ranking boards for a given window, each with its ranking score, floor price, and rolling stats. `TRENDING` ranks by recent momentum, `TOP` by absolute volume, and `NEW` surfaces recently launched collections.
+- **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous next_page_cursor; `limit` (integer, optional) — Collections per page, 1-100; `ranking` (string, optional) — Ranking board; `timeframe` (string, optional) — Ranking window
+
+### `opensea_search_collections`
+
+- **HTTP:** `GET /opensea/search/collections`
+- **What:** Search OpenSea collections by keyword. Runs a keyword search across OpenSea collections and returns the matches with floor price, verification flag, and headline stats. Use this to resolve a human-readable name to the `slug` the other collection endpoints take.
+- **Params:** `limit` (integer, optional) — Results per page, 1-100; `query` (string, **required**) — Search keyword
+
+### `opensea_top_movers`
+
+- **HTTP:** `GET /opensea/top-movers`
+- **What:** List the biggest movers on OpenSea. Returns the collections with the largest recent floor-price and volume moves, each with its current floor and rolling one-hour and one-day stats. Complements `/opensea/rankings`, which ranks by score rather than by change.
+- **Params:** `limit` (integer, optional) — Collections to return, 1-100
+
 ## OpenTable (4)
 
 ### `opentable_restaurant`
@@ -5229,6 +6985,310 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /opentable/search`
 - **What:** Search OpenTable restaurants near a location. Searches restaurants by free-text term (cuisine, name, neighborhood) near a latitude/longitude, for a given date/time and party size, including inline live availability per result. Credential-free.
 - **Params:** `date_time` (string, optional) — Reservation date/time, RFC3339-minute local format; defaults to now; `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `party_size` (integer, optional) — Party size, default 2; `size` (integer, optional) — Max results, default 10; `term` (string, **required**) — Free-text search term
+
+## Otto (3)
+
+### `otto_categories`
+
+- **HTTP:** `GET /otto/categories`
+- **What:** Get Otto.de's top-level categories. Returns the public top-level category navigation from Otto.de's server-rendered homepage. Each entry includes its canonical browsing URL.
+- **Params:** _none_
+
+### `otto_product`
+
+- **HTTP:** `GET /otto/product`
+- **What:** Get an Otto.de product. Returns a product's public detail, images, selectable colors and sizes. This endpoint uses a browser renderer because Otto.de product pages require JavaScript rendering.
+- **Params:** `url` (string, **required**) — Canonical Otto.de product URL returned by otto-search
+
+### `otto_search`
+
+- **HTTP:** `GET /otto/search`
+- **What:** Search Otto.de products. Searches Otto.de's public catalogue and returns the server-rendered product cards. offset advances by Otto's fixed 109-card page size; valid values are 0, 109, 218, and so on.
+- **Params:** `offset` (integer, optional) — Result offset; non-negative multiple of 109; `q` (string, **required**) — Product search keyword
+
+## Pandamart (6)
+
+### `pandamart_search`
+
+- **HTTP:** `GET /pandamart/search`
+- **What:** Search pandamart darkstores near a location. Returns pandamart grocery/convenience darkstores delivering to a latitude/longitude. Each store carries its code (the value the store and products endpoints take), name, address, coordinates, budget tier, chain, minimum order amount and delivery fee, delivery/pickup availability, and a hero image. A location with no coverage returns an empty list rather than an error.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Darkstores to return, clamped to 50 (default 20); `longitude` (number, **required**) — Search center longitude; `market` (string, optional) — Delivery Hero market. One of sg, pk, bd, hk, my, ph. Defaults to sg.; `offset` (integer, optional) — Result offset for pagination (default 0)
+
+### `pandamart_store`
+
+- **HTTP:** `GET /pandamart/store`
+- **What:** Get one pandamart darkstore's detail. Returns one pandamart darkstore's detail by code: name, address, coordinates, budget tier, chain, minimum order amount, minimum delivery fee, delivery/pickup availability, timezone, and a hero image. Supplying latitude and longitude only affects the (optional) computed fields the upstream itself returns for that coordinate; it does not filter or reject the lookup.
+- **Params:** `code` (string, **required**) — Darkstore code, from /pandamart/search's code field; `latitude` (number, optional) — Caller latitude, optional; `longitude` (number, optional) — Caller longitude, optional; `market` (string, optional) — Delivery Hero market the store belongs to. One of sg, pk, bd, hk, my, ph. Defaults to sg.
+
+### `pandamart_store_categories`
+
+- **HTTP:** `GET /pandamart/store/categories`
+- **What:** Get one pandamart darkstore's category tree. Returns one darkstore's full category tree: every category and sub-category, each with the upstream-reported product count and (for top-level categories) an image. Sourced from the same page /pandamart/store/products reads, so it costs no extra request beyond a plain store lookup. This lists what categories exist and how large they are -- it does not fetch the items inside any one category, which still requires a resolved delivery-address session this repo could not reproduce. Sub-category product counts are frequently 0 upstream; only top-level counts are reliably populated.
+- **Params:** `code` (string, **required**) — Darkstore code, from /pandamart/search's code field; `market` (string, optional) — Delivery Hero market the store belongs to. One of sg, pk, bd, hk, my, ph. Defaults to sg.
+
+### `pandamart_store_product`
+
+- **HTTP:** `GET /pandamart/store/product`
+- **What:** Get one pandamart product's full detail. Returns one product's full detail by ID: the same fields a shelf/search result carries plus category_id and, for weighable/grocery items, per-unit pricing and nutrition attributes. Resolves the store's page slug internally, so only the darkstore code and product ID are needed.
+- **Params:** `code` (string, **required**) — Darkstore code, from /pandamart/search's code field; `market` (string, optional) — Delivery Hero market the store belongs to. One of sg, pk, bd, hk, my, ph. Defaults to sg.; `product_id` (string, **required**) — Product ID, from a search/products/categories response's id field
+
+### `pandamart_store_products`
+
+- **HTTP:** `GET /pandamart/store/products`
+- **What:** Get one pandamart darkstore's product showcase. Returns one darkstore's product showcase: every named shelf its own home page displays (deals, new arrivals, category highlights, etc.), each with real prices, stock, and availability. This is the curated set of shelves the store's home page surfaces, not the full category-browsable catalog -- browsing into a specific category page requires a resolved delivery-address session this repo could not reproduce server-side.
+- **Params:** `code` (string, **required**) — Darkstore code, from /pandamart/search's code field; `market` (string, optional) — Delivery Hero market the store belongs to. One of sg, pk, bd, hk, my, ph. Defaults to sg.
+
+### `pandamart_store_search`
+
+- **HTTP:** `GET /pandamart/store/search`
+- **What:** Search for products within one pandamart darkstore. Searches by keyword within one darkstore's own catalog -- the pandamart equivalent of the search box on a darkstore page. Unlike the product showcase's curated shelves, this reaches the store's full catalog by keyword. Returns matching products with real prices, stock, and availability, plus total_products and has_more for pagination via page/limit.
+- **Params:** `code` (string, **required**) — Darkstore code, from /pandamart/search's code field; `limit` (integer, optional) — Products per page, clamped to 10-50 (default 20); `market` (string, optional) — Delivery Hero market the store belongs to. One of sg, pk, bd, hk, my, ph. Defaults to sg.; `page` (integer, optional) — 1-based result page (default 1); `query` (string, **required**) — Product search text; `sort` (string, optional) — Result order. One of RELEVANCE, PRICE_ASC, PRICE_DESC. Defaults to RELEVANCE.
+
+## Panera (13)
+
+### `panera_at_work_locations`
+
+- **HTTP:** `GET /panera/at-work-locations`
+- **What:** Get Panera Bread's Panera at Work workplace-delivery locations. Returns the full national Panera at Work location list -- a separate B2B workplace-delivery drop-off program from ordinary cafe pickup/delivery covered by GET /panera/locations. Each location carries its address, coordinates, delivery contact, lead time, the cafe id that services it, and its scheduled drop-off/order-cutoff times per weekday. This is a small, national dataset -- no query parameters are needed.
+- **Params:** _none_
+
+### `panera_cafe`
+
+- **HTTP:** `GET /panera/cafe`
+- **What:** Get one Panera Bread cafe's detail and hours. Returns one Panera Bread cafe's address, phone, coordinates, amenity flags, per-fulfillment-channel availability (dine-in, storefront/pickup, rapid pickup, drive-thru, curbside, delivery -- each with its own available/open-now/lead-time-minutes and weekly hours where Panera publishes them) and the published storefront hours for the next calendar week with concrete dates. Cafe ids come from GET /panera/locations. An unknown cafe id returns a 404.
+- **Params:** `cafe_id` (integer, **required**) — Panera cafe id, from /panera/locations
+
+### `panera_catering_delivery_info`
+
+- **HTTP:** `GET /panera/catering-delivery-info`
+- **What:** Get one Panera Bread cafe's catering delivery fee, minimum order, hours and lead times. Returns one cafe's catering delivery fee, minimum order amount, weekly delivery hours, order-size lead-time tiers (e.g. a $750+ order needs a longer lead time than a smaller one), and upcoming available delivery dates with their order windows. This is Panera's catering delivery flow specifically -- catering pickup happens at the cafe itself, whose hours are already covered by GET /panera/cafe. Returns 404 if the cafe does not offer catering delivery.
+- **Params:** `cafe_id` (integer, **required**) — Panera cafe id, from /panera/locations
+
+### `panera_catering_menu`
+
+- **HTTP:** `GET /panera/catering-menu`
+- **What:** Get one Panera Bread cafe's catering menu with prices, nutrition and allergens. Returns one cafe's catering category list and its full catering item catalog, priced for that specific cafe -- Panera's catering ordering flow is a separate application from its retail site, with its own category structure, pricing and item availability (confirmed live: the same item priced differently between a placeholder default cafe and a real cafe). Categories are a flat list (catering does not publish a category hierarchy the way the retail menu does). Each item carries its price, product type, portion label, whether it is customizable, a full published nutrient panel (calories, calories from fat, fat, saturated fat, trans fat, cholesterol, sodium, carbohydrates, dietary fiber, total sugars, protein, caffeine -- richer than the retail menu's calories/caffeine-only surface), its allergen statement (contains / may-contain, each with an id and display name), and a live in_stock flag from this cafe's current catering stockout feed for today. Cafe ids come from GET /panera/locations.
+- **Params:** `cafe_id` (integer, **required**) — Panera cafe id, from /panera/locations
+
+### `panera_geocode`
+
+- **HTTP:** `GET /panera/geocode`
+- **What:** Geocode a free-text address for Panera Bread's locator. Resolves a free-text address, city, or postal code to coordinates using Panera Bread's own locator geocoder -- the same lookup its site uses to center a cafe search. Returns latitude/longitude plus the resolved city, state, country and formatted address. An address Panera cannot resolve returns a single result with resolved false rather than an error.
+- **Params:** `address` (string, **required**) — Free-text address, city, or postal code
+
+### `panera_item_detail`
+
+- **HTTP:** `GET /panera/item-detail`
+- **What:** Get one Panera Bread menu item's full detail. Returns one menu item's full description, ingredient statement, a full per-serving nutrient panel (richer than GET /panera/menu's calories/caffeine-only surface), its allergen statement, and every selectable size with its own price and calories. item_id may be negative -- GET /panera/menu itself surfaces negative item ids for some items, and they resolve fine here. Returns 404 if Panera publishes no detail page for the given item id at this cafe.
+- **Params:** `cafe_id` (integer, **required**) — Panera cafe id, from /panera/locations; `item_id` (integer, **required**) — Menu item id, from /panera/menu
+
+### `panera_item_options`
+
+- **HTTP:** `GET /panera/item-options`
+- **What:** Get one Panera Bread menu item's selectable option groups. Returns one item's selectable option groups: for a combo, each group is a slot to fill (for example "pick 4 sandwiches", "pick 1 soup"), listing every eligible choice; for a single customizable item, each group is one topping/add-in/amount choice (for example No, Light, Regular, Extra). Each group has min_allowed and max_allowed (how many selections it requires). Each option is one selectable choice, with its own selectable variants (amount tiers) each carrying an item_id and price -- price 0 for a variant included at no extra charge. Panera does not publish a resolved display name for options or groups on this surface, so each option carries its raw upstream image_key as the caller-facing identifier instead of a name. An item that is not customizable, or an unknown item id, returns an empty groups list rather than an error -- Panera's own API does not distinguish the two cases. Item ids come from GET /panera/menu.
+- **Params:** `cafe_id` (integer, **required**) — Panera cafe id, from /panera/locations; `item_id` (integer, **required**) — Menu item id, from /panera/menu
+
+### `panera_locations`
+
+- **HTTP:** `GET /panera/locations`
+- **What:** Browse Panera Bread's US cafe locator. Returns one level of Panera Bread's US cafe locator tree. Omit both state and city to list every US state and territory Panera serves, each with its cafe count. Pass state to list every city in that state, each with its full cafe list -- id, name, street address, city, state, postal code, phone, coordinates and per-cafe amenity flags (for example hasDriveThru, hasDelivery, hasCurbside, hasKiosk). Pass both state and city to narrow to that one city's cafes. A state Panera does not serve, or a city with no match, returns an empty list rather than an error.
+- **Params:** `city` (string, optional) — City name. Requires state. Omit to list every city in the state.; `state` (string, optional) — Two-letter US state abbreviation. Omit to list every state.
+
+### `panera_menu`
+
+- **HTTP:** `GET /panera/menu`
+- **What:** Get one Panera Bread cafe's full menu with prices, nutrition and allergens. Returns one cafe's full category tree (with subcategories) and its complete item catalog, priced for that specific cafe -- Panera's prices are genuinely per-cafe, not a national list (the same salad has been confirmed live at different prices in Chicago and New York). Each item carries its price, product type, whether it is customizable, its published nutrients (Panera's placard API only ever publishes Calories and Caffeine on this surface -- a fuller macro/micronutrient breakdown is not available credential-free), its allergen statement (contains / may-contain, each with an id and display name), Panera's own wellness/dietary labels (for example Vegan, Vegetarian, Gluten Conscious), and a live in_stock flag from this cafe's current stockout feed. Cafe ids come from GET /panera/locations. An unknown cafe id returns a 404.
+- **Params:** `cafe_id` (integer, **required**) — Panera cafe id, from /panera/locations
+
+### `panera_quantity_rules`
+
+- **HTTP:** `GET /panera/quantity-rules`
+- **What:** Get one Panera Bread cafe's order-quantity limits. Returns one cafe's active order-quantity limits -- promotional or supply-constrained items Panera caps per order (for example a seasonal souffle limited to 6 within a 2-day window). Each rule has a scope (item or group), the item ids it applies to, and one or more day-offset windows each with its own max_quantity. A cafe with no active limits returns an empty rules list, not an error. Cafe ids come from GET /panera/locations.
+- **Params:** `cafe_id` (integer, **required**) — Panera cafe id, from /panera/locations
+
+### `panera_retired_products`
+
+- **HTTP:** `GET /panera/retired-products`
+- **What:** Get Panera Bread's retired and seasonal menu items. Returns items no longer on the active menu, resolved through the given cafe's own version map -- either permanently retired (availability_stage RETIRED) or currently out of seasonal rotation (SEASONAL, may return). Each item carries its name, description, portion label and image key. Cafe ids come from GET /panera/locations.
+- **Params:** `cafe_id` (integer, **required**) — Panera cafe id, from /panera/locations
+
+### `panera_time_slots`
+
+- **HTTP:** `GET /panera/time-slots`
+- **What:** Get one Panera Bread cafe's available order time-slot windows. Returns one cafe's available pickup/delivery order time-slot windows for one date, plus that date's overall open/close time. Unlike GET /panera/cafe's published storefront hours, this reflects live order-slot availability, not just when the cafe is open -- an empty windows list is a legitimate outcome (e.g. the cafe is closed that day), not an error. date must be YYYY-MM-DD, interpreted in the cafe's own local timezone.
+- **Params:** `cafe_id` (integer, **required**) — Panera cafe id, from /panera/locations; `date` (string, **required**) — Date, YYYY-MM-DD
+
+### `panera_upsell_suggestions`
+
+- **HTTP:** `GET /panera/upsell-suggestions`
+- **What:** Get one Panera Bread cafe's per-item upsell suggestions. Returns Panera's own suggested add-ons per menu item (for example "Extra Turkey" and "Extra Bacon" for a Bacon Turkey Bravo sandwich). Item ids on this surface are in a separate id space from /panera/menu's item_id, but both the item and its suggestions carry their own resolved names, so no cross-reference is needed. Cafe ids come from GET /panera/locations.
+- **Params:** `cafe_id` (integer, **required**) — Panera cafe id, from /panera/locations
+
+## Papa John's (23)
+
+### `papajohns_allergens`
+
+- **HTTP:** `GET /papajohns/allergens`
+- **What:** Get Papa John's full allergen guide. Returns Papa John's complete published item x allergen matrix (crusts, sauces, cheeses, meats, veggies, and more), grouped by section, each item flagged for peanut, tree nut, egg, milk, wheat, soy, fish, shellfish, and sesame content.
+- **Params:** _none_
+
+### `papajohns_colombia_menu`
+
+- **HTTP:** `GET /papajohns/colombia/menu`
+- **What:** Get the Papa John's Colombia priced menu (COP). Returns Papa John's **Colombia** menu with prices in Colombian pesos. Every product lists its priced SKU variants across the four axes Colombia sells on — size, dough, crust and sauce — each with its own price and availability. Colombia runs its own ordering platform, independent of the six markets behind GET /papajohns/intl/menu and of Peru and El Salvador, so it has its own endpoint. Prices are Colombian pesos and are not comparable with any other market. The full catalog is paged through before returning, so the response is complete rather than a first page.
+- **Params:** `category` (string, optional) — Return only categories whose name contains this text, case-insensitive, e.g. Pizzas or Bebidas; `include_variants` (boolean, optional) — Include every priced SKU variant. Default true; set false for a lighter response carrying only each product's cheapest price.
+
+### `papajohns_deals`
+
+- **HTTP:** `GET /papajohns/deals`
+- **What:** List a Papa John's restaurant's current promotions. Returns the promotions a Papa John's US or Canada restaurant is currently running. Each offer carries its redemption code, title, description, offer price and — where the deal advertises a saving — the struck-through regular price, plus its artwork and deal-builder link. Pass a store_id from GET /papajohns/store or GET /papajohns/nearby: promotions are store-specific, and the national response is largely placeholders prompting the customer to choose a store, which are omitted here rather than returned as real offers.
+- **Params:** `store_id` (string, optional) — Restaurant id from GET /papajohns/store or GET /papajohns/nearby. Omit for national promotions.
+
+### `papajohns_directory`
+
+- **HTTP:** `GET /papajohns/directory`
+- **What:** Browse the Papa John's store directory. Returns one level of Papa John's store directory. Omit path for the root country index, then pass a child's path to descend through state, city, and store levels. Each child includes its name, path, URL, store count when available, and whether it is a store leaf. Pass a store child's path to GET /papajohns/store. This is a directory browse; use GET /papajohns/nearby for a coordinate search.
+- **Params:** `path` (string, optional) — Directory path from a previous response's children[].path; omit for the root country index
+
+### `papajohns_elsalvador_menu`
+
+- **HTTP:** `GET /papajohns/elsalvador/menu`
+- **What:** Get the Papa John's El Salvador priced menu (USD). Returns Papa John's **El Salvador** menu with prices in US dollars. Each pizza lists its full size and crust price matrix — every combination of size (Grande, Gigante) and crust (Masa Original, Masa Delgada, Orilla Rellena de Queso) with that combination's own price — while sides, desserts and extras carry a single price. El Salvador runs its own ordering platform, independent of the six markets behind GET /papajohns/intl/menu and of Colombia and Peru, so it has its own endpoint. This is El Salvador's national menu; the site itself notes that choosing a restaurant can reveal further items.
+- **Params:** `category` (string, optional) — Return only categories whose name contains this text, case-insensitive. One of: Pizzas, Entradas, Postres, Extras
+
+### `papajohns_india_deal`
+
+- **HTTP:** `GET /papajohns/india/deal`
+- **What:** Get one Papa John's India deal's composition (INR). Returns one Papa John's **India** combo or offer with its full composition: each slot in the deal (with its quantity, size, and whether it can be skipped) and every menu item eligible to fill that slot, with each choice's own price in Indian Rupees. This is materially more than the deal row in GET /papajohns/india/menu, which carries only the deal's name, price, and pricing rule. price_type is one of fixedPrice, BuyXGetY, HalfAndHalf, or variablePrice; only fixedPrice deals report a non-zero price. India market only.
+- **Params:** `deal_id` (string, **required**) — Deal id from GET /papajohns/india/menu (items with kind=deal)
+
+### `papajohns_india_menu`
+
+- **HTTP:** `GET /papajohns/india/menu`
+- **What:** Get the Papa John's India priced menu (INR). Returns Papa John's **India** menu with live prices in Indian Rupees, from papajohns.in's own ordering backend. This is the India market only -- prices, items, and availability are India-specific and are not comparable to Papa John's US/Canada data (see GET /papajohns/nutrition for US national reference data). Returns every category with its items and deals: list price, strike-through price where a discount is active, dietary tags (Veg, Non Veg, Spicy), images, and the store/channel/day combinations where an item is blacked out. Set include_options=true to also get each item's full size, crust, topping, sauce, and drizzle tree with per-option prices -- this makes the response very large, so prefer GET /papajohns/india/menu/item for one item's options. Pricing is franchise-wide rather than per-store; store_id, channel_id, and day filter item availability, not price, and only take effect when all three are supplied.
+- **Params:** `category_id` (string, optional) — Return only this category id; `channel_id` (string, optional) — Order channel. One of: 1 (Delivery), 2 (Take Away), 3 (Dine In), 4 (Drive Through Pickup). Only applies together with store_id and day.; `day` (string, optional) — Weekday. One of: 0 (Sunday), 1 (Monday), 2 (Tuesday), 3 (Wednesday), 4 (Thursday), 5 (Friday), 6 (Saturday). Only applies together with store_id and channel_id.; `include_options` (boolean, optional) — Include every item's full size/crust/topping option tree with prices. Default false.; `store_id` (string, optional) — Hide items blacked out at this store id (see GET /papajohns/india/stores). Only applies together with channel_id and day.; `tag` (string, optional) — Return only items carrying this tag, e.g. Veg, Non Veg, Spicy. Case-insensitive.
+
+### `papajohns_india_menu_item`
+
+- **HTTP:** `GET /papajohns/india/menu/item`
+- **What:** Get one Papa John's India item with its full options (INR). Returns one Papa John's **India** menu item with its complete customization tree: every size, and for each size every crust, topping, dipping sauce, drizzle, and base sauce with that option's own price in Indian Rupees. The option group flagged base_price carries the item's base price for that size (the crust group on pizzas) rather than an add-on charge; half_price is the surcharge when the option is applied to one half of a pizza. India market only -- prices are Indian Rupees. Use GET /papajohns/india/menu to discover item ids.
+- **Params:** `item_id` (string, **required**) — Item id (saleitem_id) from GET /papajohns/india/menu
+
+### `papajohns_india_stores`
+
+- **HTTP:** `GET /papajohns/india/stores`
+- **What:** List Papa John's India restaurants. Returns every Papa John's **India** restaurant with its address, phone, coordinates, and weekly opening hours broken down per order channel (delivery, take away, dine in, drive-through pickup). These store ids are what GET /papajohns/india/menu's store_id availability filter is keyed on. India market only -- for US/Canada stores use GET /papajohns/directory, GET /papajohns/store, or GET /papajohns/nearby.
+- **Params:** `channel_id` (string, optional) — Return only hours for this order channel. One of: 1 (Delivery), 2 (Take Away), 3 (Dine In), 4 (Drive Through Pickup).
+
+### `papajohns_intl_deals`
+
+- **HTTP:** `GET /papajohns/intl/deals`
+- **What:** List Papa John's active promotions (international). Returns the promotions currently running in one of six international markets: Chile, Costa Rica, Guatemala, Panama, Portugal, and Spain, for either delivery or pickup. Each promotion carries its headline product, description, artwork, the weekdays it runs on, and its start and end dates. Offers that upstream has marked inactive are omitted rather than returned as live.
+- **Params:** `dispatch_method` (string, **required**) — One of: pj_delivery (delivery offers), in_store (pickup/dine-in offers); `market` (string, **required**) — Market. One of: chile, costa-rica, guatemala, panama, portugal, spain
+
+### `papajohns_intl_ingredients`
+
+- **HTTP:** `GET /papajohns/intl/ingredients`
+- **What:** Get a Papa John's menu's ingredient catalog (international). Returns every topping, sauce, and cheese a pizza can be built with on one menu, in one of six international markets: Chile, Costa Rica, Guatemala, Panama, Portugal, and Spain. Each ingredient reports its family (meat, vegetable, base sauce, and so on), whether it is included on pizzas by default, whether it is charged at the premium rather than the normal rate, and whether it can be applied to just one half. The response also carries what one extra ingredient costs at each size, for both the normal and premium rates. Menu ids come from GET /papajohns/intl/stores.
+- **Params:** `category` (string, optional) — Return only one ingredient category. One of: base_cheese, base_sauce, extra_cheese, extra_sauce, meat, not_ingredient, premium, vegetable; `market` (string, **required**) — Market. One of: chile, costa-rica, guatemala, panama, portugal, spain; `menu_id` (string, **required**) — Menu id from a restaurant returned by GET /papajohns/intl/stores
+
+### `papajohns_intl_menu`
+
+- **HTTP:** `GET /papajohns/intl/menu`
+- **What:** Get a Papa John's restaurant's priced menu (international). Returns one Papa John's restaurant's full menu with that restaurant's own prices, in one of six international markets: Chile, Costa Rica, Guatemala, Panama, Portugal, and Spain. Prices are per restaurant, not national, so two restaurants in the same market can differ. Each pizza lists every size and crust combination it is sold in with that combination's own price and, where published, its calorie and portion figures; sides, drinks and desserts list their own portions. Machine codes for size and crust are returned alongside the market's own display labels in the local language. Currency is whatever the market trades in -- euros in Spain and Portugal, Chilean pesos in Chile, and so on -- so do not compare figures across markets. Use GET /papajohns/intl/stores to find a store_id. For India use GET /papajohns/india/menu; for the US and Canada see GET /papajohns/nutrition.
+- **Params:** `food_type` (string, optional) — Return only products carrying this dietary or heat marker. One of: hot, mild, spicy, vegetarian. Products upstream does not mark are excluded.; `kind` (string, optional) — Return only one product kind. One of: pizza, side; `market` (string, **required**) — Market. One of: chile, costa-rica, guatemala, panama, portugal, spain; `store_id` (string, **required**) — Restaurant id from GET /papajohns/intl/stores. Prices are specific to this restaurant.
+
+### `papajohns_intl_offer`
+
+- **HTTP:** `GET /papajohns/intl/offer`
+- **What:** Get one Papa John's offer's composition (international). Returns one promotional offer's full composition in one of six international markets: Chile, Costa Rica, Guatemala, Panama, Portugal, and Spain. This is what a promotion banner from GET /papajohns/intl/deals actually contains: the offer's own price, each choice step a customer works through in order (e.g. "pick your family pizza", "pick a side"), and every product eligible at that step with the surcharge picking it adds. It also carries the offer's ingredient rules -- how many extras are free, the minimum and maximum that may be chosen, and which ingredient families are allowed. Offer ids come from the offer_id field on a deal.
+- **Params:** `market` (string, **required**) — Market. One of: chile, costa-rica, guatemala, panama, portugal, spain; `offer_id` (string, **required**) — Offer id from the offer_id field on GET /papajohns/intl/deals
+
+### `papajohns_intl_product`
+
+- **HTTP:** `GET /papajohns/intl/product`
+- **What:** Get one Papa John's product (international). Returns one product's own catalog record in one of six international markets: Chile, Costa Rica, Guatemala, Panama, Portugal, and Spain -- its description, imagery, dietary markers, and customization rules (whether toppings may be changed, how many extra ingredients are included free, and whether it can be used as one half of a half-and-half pizza). This record carries no price, because pricing is per restaurant: use GET /papajohns/intl/menu for prices. Product ids come from that same endpoint.
+- **Params:** `market` (string, **required**) — Market. One of: chile, costa-rica, guatemala, panama, portugal, spain; `product_id` (string, **required**) — Product id from GET /papajohns/intl/menu
+
+### `papajohns_intl_stores`
+
+- **HTTP:** `GET /papajohns/intl/stores`
+- **What:** Find Papa John's restaurants in an international market. Returns Papa John's restaurants in one of six international markets: Chile, Costa Rica, Guatemala, Panama, Portugal, and Spain -- either every restaurant near a coordinate, or one known restaurant looked up by id. Each restaurant carries its address, coordinates, phone, per-weekday opening hours split by fulfillment channel, accepted payment methods, delivery zones with their minimum-order and free-delivery thresholds, and live delivery/pickup open flags. Restaurants come back ranked by distance with no radius limit, five at a time by default; page and limit walk the rest, and the response reports total_count, the market's whole restaurant total. The returned id is what GET /papajohns/intl/menu prices against, and menu_id is what GET /papajohns/intl/ingredients reads. This covers those six markets only -- for India use GET /papajohns/india/stores, and for the US and Canada use GET /papajohns/directory, GET /papajohns/store, or GET /papajohns/nearby.
+- **Params:** `fulfillment` (string, optional) — One of: delivery (default, every nearby restaurant), pickup (only restaurants accepting pickup orders). Ignored when store_id is supplied.; `latitude` (string, optional) — Latitude to search around. Required unless store_id is supplied.; `limit` (integer, optional) — Restaurants per page, 1-100. Ignored for a store_id lookup and for pickup, neither of which is paginated.; `longitude` (string, optional) — Longitude to search around. Required unless store_id is supplied.; `market` (string, **required**) — Market. One of: chile, costa-rica, guatemala, panama, portugal, spain; `page` (integer, optional) — One-based page of the distance-ranked restaurants. Ignored for a store_id lookup and for pickup, neither of which is paginated.; `store_id` (string, optional) — Look up one known restaurant by id instead of searching a coordinate. Supply either store_id, or both latitude and longitude.
+
+### `papajohns_menu`
+
+- **HTTP:** `GET /papajohns/menu`
+- **What:** Get a Papa John's restaurant's priced menu. Returns a Papa John's US or Canada restaurant's full menu with that restaurant's own prices. Prices are per restaurant, not national -- the same 14-inch pizza can differ by several dollars between two stores -- so pass a store_id from GET /papajohns/store or GET /papajohns/nearby. Omitting it returns the national default menu, flagged as national_default in the response. Each category is returned with its sections and product groups, and every orderable SKU carries its price, calories, serving size, slice count and image. Set include_options to also get each product group's customization axes: every size and crust it is sold in, and every preparation instruction (how much cheese, how well done) with its choices. This is the US and Canada menu -- for India use GET /papajohns/india/menu, and for Chile, Costa Rica, Guatemala, Panama, Portugal or Spain use GET /papajohns/intl/menu.
+- **Params:** `category` (string, optional) — Return only one category. One of: dippingsauces, desserts, drinks, extras, papabowls, pizza, sandwiches, sides, wings; `include_options` (boolean, optional) — Include each product group's sizes, crusts and preparation instructions. Default false.; `store_id` (string, optional) — Restaurant id from GET /papajohns/store or GET /papajohns/nearby. Omit for the national default menu.
+
+### `papajohns_menu_item`
+
+- **HTTP:** `GET /papajohns/menu/item`
+- **What:** Get one Papa John's menu item with its options. Returns one Papa John's US or Canada menu SKU with that restaurant's price for it, together with the full customization axes of the product group it belongs to: every size and crust the product is sold in, and every preparation instruction with its choices and default. The response also names the category and section the item sits under. Pass a store_id so the price is that restaurant's; omitting it returns the national default price. SKUs come from GET /papajohns/menu.
+- **Params:** `sku` (string, **required**) — Product sku from GET /papajohns/menu; `store_id` (string, optional) — Restaurant id from GET /papajohns/store or GET /papajohns/nearby. Omit for the national default price.
+
+### `papajohns_nearby`
+
+- **HTTP:** `GET /papajohns/nearby`
+- **What:** Find Papa John's stores near a coordinate. Returns Papa John's stores within a radius of a latitude/longitude, ordered nearest first, with distance, address, phone, hours, timezone, price range, fulfillment services, payment options, and ordering link. The response includes total_in_radius and offset paging. A coordinate with no nearby stores returns an empty list.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Maximum stores to return, 1-50 (default 10); `longitude` (number, **required**) — Search center longitude; `offset` (integer, optional) — Result offset, 0 or greater (default 0); `radius` (integer, optional) — Search radius in miles, 1-100 (default 25)
+
+### `papajohns_nutrition`
+
+- **HTTP:** `GET /papajohns/nutrition`
+- **What:** Get one Papa John's nutritional-details category. Returns Papa John's own published nutrition-facts panel for every item in one category -- full pizzas by name, or a single ingredient family (crust, cheese, sauce, toppings). Each item lists every published size/crust variant with serving size and a full nutrition-facts breakdown (calories, fat, cholesterol, sodium, carbohydrate, fiber, sugars, protein). This is Papa John's national reference data, not priced per-store data -- see GET /papajohns/directory for store lookup.
+- **Params:** `category` (string, **required**) — One of: cheese, crust, desserts, dipping-sauces, drinks, extras, papa-bowls, papadias, pizzas, sandwiches, sauce, sides, toppings, wings
+
+### `papajohns_peru_menu`
+
+- **HTTP:** `GET /papajohns/peru/menu`
+- **What:** Get the Papa John's Peru priced menu (PEN). Returns Papa John's **Peru** menu with prices in Peruvian soles, covering the full catalog with categories, images and per-product pricing. Peru runs its own ordering platform, independent of the six markets behind GET /papajohns/intl/menu and of Colombia and El Salvador, so it has its own endpoint. Prices are Peruvian soles and are not comparable with any other market.
+- **Params:** `category` (string, optional) — Return only categories whose name contains this text, case-insensitive, e.g. Promociones or Combos
+
+### `papajohns_poland_menu`
+
+- **HTTP:** `GET /papajohns/poland/menu`
+- **What:** Get the Papa John's Poland priced menu (PLN). Returns Papa John's **Poland** menu with prices in Polish zloty. Russia and Poland run one franchise platform of their own, separate from the six markets behind GET /papajohns/intl/menu and from Colombia, Peru and El Salvador, so each has its own endpoint. The catalog is national -- it does not vary by city -- and every product lists its priced variants with size, dough and any stuffed crust. Prices are zloty and are not comparable with any other market.
+- **Params:** `category` (string, optional) — Return only sections whose name or slug contains this text, case-insensitive. Slugs work in either market, e.g. pizza, combo, deserty, napitki, sauce, zakuski
+
+### `papajohns_russia_menu`
+
+- **HTTP:** `GET /papajohns/russia/menu`
+- **What:** Get the Papa John's Russia priced menu (RUB). Returns Papa John's **Russia** menu with prices in Russian roubles. Russia and Poland run one franchise platform of their own, separate from the six markets behind GET /papajohns/intl/menu and from Colombia, Peru and El Salvador, so each has its own endpoint. The catalog is national -- it does not vary by city -- and every product lists its priced variants with size, dough and any stuffed crust. Prices are roubles and are not comparable with any other market.
+- **Params:** `category` (string, optional) — Return only sections whose name or slug contains this text, case-insensitive. Slugs work in either market, e.g. pizza, combo, deserty, napitki, sauce, zakuski
+
+### `papajohns_store`
+
+- **HTTP:** `GET /papajohns/store`
+- **What:** Get one Papa John's store. Returns one Papa John's store's published profile: address, phone, coordinates, general and pickup hours, timezone, Google Place id, and ordering link. The path comes from a store child returned by GET /papajohns/directory. Passing a directory path returns 404.
+- **Params:** `path` (string, **required**) — Store path from a /papajohns/directory child marked is_store=true
+
+## Patreon (4)
+
+### `patreon_creator`
+
+- **HTTP:** `GET /patreon/creator`
+- **What:** Get a public Patreon creator profile. Returns public profile metadata from a creator's Patreon page: creator identity, summary, images, membership and creation counts, public earnings snapshot, membership/RSS availability flags, and public external profile links. handle is the creator's page handle, e.g. CachyOS for patreon.com/CachyOS.
+- **Params:** `handle` (string, **required**) — Creator page handle
+
+### `patreon_creator_tiers`
+
+- **HTTP:** `GET /patreon/creator/tiers`
+- **What:** Get a creator's public Patreon membership tiers. Returns published membership tiers and their published benefits from a creator's public Patreon page. It excludes member-only entitlements, tier capacity, and member counts. handle is the creator's page handle, e.g. CachyOS for patreon.com/CachyOS.
+- **Params:** `handle` (string, **required**) — Creator page handle
+
+### `patreon_explore`
+
+- **HTTP:** `GET /patreon/explore`
+- **What:** Browse public Patreon creators by topic. Returns Patreon's public curated creator shelves for one topic: Top creators, Popular this week, and New on Patreon. topic must be one of podcasts_and_shows, visual_arts, tabletop_games, video_games, music, lifestyle, writing, handicrafts, apps_and_software, social_impact.
+- **Params:** `topic` (string, **required**) — Public Explore topic. Allowed values: podcasts_and_shows, visual_arts, tabletop_games, video_games, music, lifestyle, writing, handicrafts, apps_and_software, social_impact
+
+### `patreon_rss`
+
+- **HTTP:** `GET /patreon/rss`
+- **What:** Get an explicitly public Patreon podcast RSS feed. Returns public podcast channel metadata and episodes from Patreon's canonical public RSS feed. campaign_id and show_id are the numeric IDs in the public feed URL. Private member feeds and authentication URLs are not supported.
+- **Params:** `campaign_id` (string, **required**) — Numeric Patreon campaign id; `show_id` (string, **required**) — Numeric Patreon show id
 
 ## Pinterest (8)
 
@@ -5311,6 +7371,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /pitchbook/limited-partner`
 - **What:** PitchBook limited partner profile. Returns the free/teaser content of a PitchBook limited partner (institutional investor, e.g. pension fund, endowment, or insurance company) profile page: overview, description, contact, and a preview of fund commitments. PitchBook gates most numeric figures and full lists behind a paid subscription; those come through as empty cells rather than being fabricated. Some limited partner profiles have no FAQ section (thinner profiles) -- this is normal, not a sign of a blocked or broken response. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — PitchBook limited partner id; `url` (string, optional) — Absolute https://pitchbook.com/profiles/limited-partner/<id> URL
+
+## Pizza Hut (6)
+
+### `pizzahut_bundle_choices`
+
+- **HTTP:** `GET /pizzahut/bundle-choices`
+- **What:** Get one Pizza Hut deal/combo's full choice-builder tree. Returns one deal/combo's full choice-builder tree -- every named slot it offers (e.g. "1st Pizza", "Wings or Fries", "1st Dip") and every product variant a caller can pick to fill that slot, each with the real price delta selecting it adds over the bundle's base price (zero for a variant already covered by the deal, positive for an upgrade such as a larger size or a specialty pizza). This is a different structure from /pizzahut/modifiers -- that endpoint customizes toppings/sauces on one product variant, while this endpoint swaps whole product variants in and out of a multi-item combo. bundle_code comes from /pizzahut/menu's code field on a type=bundle item.
+- **Params:** `bundle_code` (string, **required**) — A deal/combo's bundle code, from /pizzahut/menu's code field on a type=bundle item; `channel` (string, optional) — Order channel the deal and pricing reflect (default WEB); `store_number` (string, **required**) — Pizza Hut's store number, from /pizzahut/stores
+
+### `pizzahut_delivery_estimate`
+
+- **HTTP:** `GET /pizzahut/delivery-estimate`
+- **What:** Check Pizza Hut delivery serviceability and estimated fee for one store and address. Checks whether a Pizza Hut restaurant's delivery integration can deliver to a given address and, when it can, the estimated delivery fee (broken down by fee line item) and pickup/dropoff time. This reads the same checkout-time estimate Pizza Hut's own site calls -- it does not add an item to a cart or place an order, and takes no payment or account information. serviceable is true only when the upstream returned a real estimate; a false value with reason populated covers every other case seen live, such as the requested delivery_provider not being enabled at that store. For the default INTERNAL provider, a serviceable result does not by itself confirm the address is within a real deliverable radius -- see this endpoint's markdown doc for the caveat. order_subtotal materially affects the fee estimate, so it is required rather than defaulted. pickup_at defaults to 30 minutes from now (an "order now" style estimate) when omitted.
+- **Params:** `address1` (string, **required**) — Delivery address line 1; `address2` (string, optional) — Delivery address line 2; `city` (string, **required**) — Delivery address city; `country_code` (string, optional) — Delivery address country code (default US); `delivery_provider` (string, optional) — Delivery provider to check (default INTERNAL); `latitude` (number, **required**) — Delivery address latitude; `longitude` (number, **required**) — Delivery address longitude; `order_subtotal` (number, **required**) — Order subtotal before fees, in dollars; `pickup_at` (string, optional) — RFC3339 pickup time (default 30 minutes from now); `postal_code` (string, **required**) — Delivery address postal code; `state` (string, **required**) — Delivery address state, two-letter code; `store_number` (string, **required**) — Pizza Hut's store number, from /pizzahut/stores
+
+### `pizzahut_menu`
+
+- **HTTP:** `GET /pizzahut/menu`
+- **What:** Get one Pizza Hut restaurant's full priced menu. Returns one restaurant's full menu grouped into categories (e.g. "Pizza", "Wings", "Deals"). Every entry is a product, a bundle (a deal or combo), or a standalone priced variant -- type tells callers which -- and carries a price in USD cents plus a decimal dollar value, and an image when the upstream publishes one. A product item also lists variants: every other priced size/crust/style option beyond its default (e.g. a pizza's Personal Pan through Large Original Stuffed Crust). Prices reflect this specific restaurant and order channel, not a national default. channel selects which order channel the menu is priced for (web ordering by default); prices can genuinely differ by channel (e.g. a delivery-marketplace channel vs. web). Some restaurants also carry products with no category at all (e.g. individual dip cup flavors); these are returned separately as uncategorized_items rather than silently dropped.
+- **Params:** `channel` (string, optional) — Order channel the menu is priced for (default WEB); `store_number` (string, **required**) — Pizza Hut's store number, from /pizzahut/stores
+
+### `pizzahut_modifiers`
+
+- **HTTP:** `GET /pizzahut/modifiers`
+- **What:** Get one Pizza Hut product variant's full customization tree. Returns one product variant's full build-your-own customization tree -- every slot (e.g. "Pizza Sauce", "Pizza Cheese", "Pizza Toppings", "Crust Finishers"), every modifier within it (a specific topping, sauce flavor, or seasoning), and every weight/placement option (e.g. Light, Regular, Extra, or a Left/Right/Whole pizza-half placement) with its own real price delta -- zero for an amount already included by default, a positive upcharge for an "extra" option. variant_code comes from /pizzahut/menu's variant_code or variants[].variant_code fields.
+- **Params:** `channel` (string, optional) — Order channel the customization tree and pricing reflect (default WEB); `store_number` (string, **required**) — Pizza Hut's store number, from /pizzahut/stores; `variant_code` (string, **required**) — A product's specific size/crust/style variant code, from /pizzahut/menu
+
+### `pizzahut_store`
+
+- **HTTP:** `GET /pizzahut/store`
+- **What:** Get one Pizza Hut restaurant by its store number. Returns one Pizza Hut restaurant's detail by its exact store number, from /pizzahut/stores, including its recurring open hours per order channel (carryout, delivery, dine-in, drive-thru, catering carryout) plus each channel's ordering constraints -- minimum/maximum order amount, whether tipping is offered, and accepted payment methods. A channel this restaurant does not offer at all is omitted from hours rather than reported as always-closed.
+- **Params:** `store_number` (string, **required**) — Pizza Hut's store number, from /pizzahut/stores
+
+### `pizzahut_stores`
+
+- **HTTP:** `GET /pizzahut/stores`
+- **What:** Search Pizza Hut restaurants by city, state, postal code, name, franchise code, or store number. Returns Pizza Hut restaurants matching a city/state/postal code/name/franchise code/store number filter. At least one filter is required -- an unfiltered call would enumerate every US restaurant in one response, which this endpoint intentionally does not expose. Each restaurant carries its store number (the value /pizzahut/menu and /pizzahut/store take), full address with coordinates, phone, whether it currently accepts online orders, and its timezone.
+- **Params:** `accepting_online_orders` (boolean, optional) — Restrict to restaurants currently accepting (true) or not accepting (false) online orders. Unfiltered (upstream default) unless set; `appear_in_store_results` (boolean, optional) — Restrict to restaurants Pizza Hut's own storefront marks customer-facing. Unfiltered (upstream default) unless set -- passing true returns zero results for every region tested during research, so it is not defaulted on; `city` (string, optional) — Restaurant city; `franchise_code` (string, optional) — Exact franchise/operator code; `is_archived` (boolean, optional) — Set true to include archived/closed restaurant records, which the upstream default (unset) already excludes. Set false to make that exclusion explicit; `max_results` (integer, optional) — Maximum restaurants to return, 1-50 (default 20); `name` (string, optional) — Restaurant name, partial match; `postal_code` (string, optional) — Restaurant postal code; `sort` (string, optional) — Sort order; `state` (string, optional) — Restaurant state, two-letter code; `store_number` (string, optional) — Exact store number
 
 ## PlayStation (8)
 
@@ -5544,6 +7642,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Polymarket token spreads. Returns public CLOB spreads for up to 25 Polymarket token ids. This uses credential-free public CLOB market-data JSON and does not require a Polymarket user token, wallet signature, cookies, or personal account authentication.
 - **Params:** `body` (object, **required**) — Token ids request body
 
+## Popeyes (8)
+
+### `popeyes_faq`
+
+- **HTTP:** `GET /popeyes/faq`
+- **What:** List Popeyes' published customer-support FAQ. Returns a page of Popeyes' published customer-support FAQ -- questions and answers such as "How do I remove items from my cart?". This is public help-center content, not account/order-specific support state, and does not require an order id or any customer identifier.
+- **Params:** `limit` (integer, optional) — Maximum FAQ entries to return, 1-100 (default 20); `offset` (integer, optional) — Number of FAQ entries to skip, for paging (default 0)
+
+### `popeyes_location`
+
+- **HTTP:** `GET /popeyes/location`
+- **What:** Look up one Popeyes restaurant directly by store id. Returns one restaurant's full detail -- the same fields /popeyes/locations returns per restaurant (address, coordinates, phone, operator, amenity flags, full published hours) -- looked up directly by its numeric store id instead of a coordinate/radius search. Useful when the store id is already known, e.g. from a prior /popeyes/locations call. An unknown store id returns a 404.
+- **Params:** `market` (string, optional) — Restaurant market: `US` (default) or `CA`; `store_id` (string, **required**) — Popeyes' numeric store id, from /popeyes/locations
+
+### `popeyes_locations`
+
+- **HTTP:** `GET /popeyes/locations`
+- **What:** Find Popeyes restaurants near a location. Returns Popeyes restaurants near a latitude/longitude. Each restaurant carries its internal id and numeric store id (the value /popeyes/menu takes), full address with coordinates, phone, the operating franchise group, amenity flags (breakfast, delivery, drive-thru, playground, takeout, wifi, halal, dark kitchen) and the full published week of hours for dining room, drive-thru, delivery and curbside separately. A coordinate with no nearby Popeyes returns an empty list rather than an error.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `market` (string, optional) — Restaurant market: `US` (default) or `CA`; `max_results` (integer, optional) — Maximum restaurants to return, 1-50 (default 20); `radius` (integer, optional) — Search radius in meters, 1-50000 (default 8000)
+
+### `popeyes_menu`
+
+- **HTTP:** `GET /popeyes/menu`
+- **What:** Get one Popeyes restaurant's menu with real per-store pricing. Returns one restaurant's menu grouped into categories (e.g. "Big Box", "Chicken Wraps"). Every entry is an item, a combo, a picker (a variant-choice product such as "choose your side") or a bundle, and carries a price reflecting this specific restaurant when Popeyes reports one for that exact entry -- a missing price does not mean the item is free, it means this restaurant's pricing call did not cover that entry. Some menu entries are published directly at the top level outside any named section; these are grouped into a synthetic "Featured" category (featured true). Entries of type ITEM also carry published nutrition facts and allergen data when Popeyes reports them for that item; COMBO/PICKER/BUNDLE entries do not carry their own nutrition/allergen data.
+- **Params:** `market` (string, optional) — Restaurant market: `US` (default) or `CA`; `store_id` (string, **required**) — Popeyes' numeric store id, from /popeyes/locations
+
+### `popeyes_offers`
+
+- **HTTP:** `GET /popeyes/offers`
+- **What:** List Popeyes' promotional deals and coupons. Returns a page of Popeyes' promotional offers/deals catalog -- named value deals (e.g. "3Pc Signature Chicken for $5"), percentage-off combos, and paper coupons. This is CMS content describing the offer catalog, the same kind of public data /popeyes/menu already reads from -- not a personalized or store-specific list, and not account/loyalty state. A missing price does not mean free; a price of 0 means the offer's discount is not expressed as a flat price (see offer_tag/name instead, e.g. a percentage-off deal). requires_authentication reflects the offer's own published redemption rules, not any account state this endpoint reads. The catalog spans hundreds of entries including ones no longer running; there is no upstream "currently active" flag, so pages should be read as reference data, not a guarantee every entry is live right now.
+- **Params:** `limit` (integer, optional) — Maximum offers to return, 1-100 (default 20); `market` (string, optional) — Restaurant market: US (default) or CA; `offset` (integer, optional) — Number of offers to skip, for paging (default 0)
+
+### `popeyes_promotions`
+
+- **HTTP:** `GET /popeyes/promotions`
+- **What:** List Popeyes Rewards' bonus-points promotion catalog. Returns a page of Popeyes Rewards' bonus-points promotion catalog -- flat or multiplied points bonuses tied to a qualifying purchase (e.g. "Get Double Bonus Points on Your Cart, minimum $20"), distinct from /popeyes/offers (priced menu deals) and /popeyes/quests (multi-step challenges). This is public CMS content, not a signed-in member's own applied-promotions state. points_multiplier and bonus_points are mutually exclusive in practice -- a promotion is either an "Nx points" campaign or a flat bonus. start_date/end_date bound the promotion's published active window when Popeyes sets one; both empty means no published window restriction, not that the promotion is permanently active.
+- **Params:** `limit` (integer, optional) — Maximum promotions to return, 1-100 (default 20); `market` (string, optional) — Restaurant market: US (default) or CA; `offset` (integer, optional) — Number of promotions to skip, for paging (default 0)
+
+### `popeyes_quests`
+
+- **HTTP:** `GET /popeyes/quests`
+- **What:** List Popeyes Rewards' loyalty-challenge catalog. Returns a page of Popeyes Rewards' loyalty-challenge catalog -- named multi-step challenges and their reward (e.g. "Make Two Purchases, Get FREE Chicken Sandwich in the form of 550 Bonus Points"). This is public CMS content describing the challenge and its incentive, the same class of public promotional data as /popeyes/offers -- not scoped to any signed-in member and does not report which quests a given account has completed or activated. step_count is how many steps make up the quest; this build does not expose each step's own purchase-requirement rules.
+- **Params:** `limit` (integer, optional) — Maximum quests to return, 1-100 (default 20); `market` (string, optional) — Restaurant market: US (default) or CA; `offset` (integer, optional) — Number of quests to skip, for paging (default 0)
+
+### `popeyes_rewards`
+
+- **HTTP:** `GET /popeyes/rewards`
+- **What:** List Popeyes Rewards' points-redemption catalog. Returns a page of Popeyes Rewards' points-redemption catalog -- menu items and combos a member can redeem directly for a fixed number of loyalty points (e.g. "600 points for Cheese Bites"), distinct from /popeyes/offers (priced deals), /popeyes/quests (challenges) and /popeyes/promotions (bonus-points campaigns). This is public CMS content, not a signed-in member's own points balance or redemption history. points is the loyalty points cost to redeem; other per-account/per-order redemption restrictions Popeyes may publish on a reward are not exposed by this endpoint.
+- **Params:** `limit` (integer, optional) — Maximum rewards to return, 1-100 (default 20); `market` (string, optional) — Restaurant market: US (default) or CA; `offset` (integer, optional) — Number of rewards to skip, for paging (default 0)
+
 ## Poshmark (8)
 
 ### `poshmark_brand`
@@ -5718,6 +7866,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Quince search suggestions. Returns Quince's own search-box typeahead suggestions for a partial query: a flat list of suggested search phrases, no product data. Pass a suggestion straight through to quince-search's own q parameter for product results. A query with no genuine matches returns a well-formed empty result rather than an error.
 - **Params:** `q` (string, **required**) — Search query prefix
 
+## Raising Cane's (6)
+
+### `raisingcanes_directory`
+
+- **HTTP:** `GET /raisingcanes/directory`
+- **What:** Browse the Raising Cane's store directory. Returns one level of Raising Cane's store directory tree. Omit path for the root, which lists the US states Raising Cane's operates in; pass a child's path to descend (state to cities, city to stores). Each child carries its name, path, URL and how many stores sit under that branch. A child with is_store true is a store record rather than another directory level -- pass its path to GET /raisingcanes/store. This is a directory browse, not a proximity search: use GET /raisingcanes/nearby for a radius lookup.
+- **Params:** `path` (string, optional) — Directory path from a previous response's children[].path, e.g. la. Omit for the root state index.
+
+### `raisingcanes_menu`
+
+- **HTTP:** `GET /raisingcanes/menu`
+- **What:** Get Raising Cane's full published menu. Returns Raising Cane's full published menu: every section (Combos, Tailgates, Extras, Drinks) and every item, each with its name, Raising Cane's own item description (commonly ending in a calorie count or range), and image. This is a single fixed national menu page, not a per-store or per-region menu -- it takes no parameters. Raising Cane's does not publish price on this page; pricing lives behind the separate order.raisingcanes.com ordering flow, which needs a selected store and is out of scope here.
+- **Params:** _none_
+
+### `raisingcanes_nearby`
+
+- **HTTP:** `GET /raisingcanes/nearby`
+- **What:** Find Raising Cane's stores near a coordinate, nearest first. Returns Raising Cane's restaurants within a radius of a latitude/longitude, ordered nearest first, each with its distance in miles and kilometres, address, coordinates, timezone, price tier and which pickup/delivery services it offers. This proximity result carries less detail than GET /raisingcanes/store (Raising Cane's own nearby-search key is not configured with hours or phone) -- each result's `path` chains straight into GET /raisingcanes/store for the full record. `total_in_radius` reports how many stores fall inside the radius overall, which is usually far more than one page; use `offset` to walk it. A coordinate with no Raising Cane's nearby returns an empty list rather than an error.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Maximum stores to return, 1-50 (default 10); `longitude` (number, **required**) — Search center longitude; `offset` (integer, optional) — Result offset for paging through total_in_radius (default 0); `radius` (integer, optional) — Search radius in miles, 1-100 (default 25)
+
+### `raisingcanes_promotion`
+
+- **HTTP:** `GET /raisingcanes/promotion`
+- **What:** Get one Raising Cane's promotion's terms. Returns one Raising Cane's promotion's published official terms: title and official-rules text (eligibility, prize details, effective date), exactly as the promotion's own page publishes them, as separate paragraphs in publication order. Promotion paths come from GET /raisingcanes/promotions entries. A path with no promotion at it (expired, mistyped, or the empty path some index entries carry) returns a 404.
+- **Params:** `path` (string, **required**) — Promotion page slug from a /raisingcanes/promotions entry's path
+
+### `raisingcanes_promotions`
+
+- **HTTP:** `GET /raisingcanes/promotions`
+- **What:** Browse Raising Cane's promotions index. Returns Raising Cane's full promotions index: every current and past sweepstakes, giveaway, and other promotion the site links to, grouped under Raising Cane's own category headings (e.g. "Sweepstakes & Giveaways", "Lucky Promotions", "First Promotions"). Each entry's path chains into GET /raisingcanes/promotion for that promotion's full official-rules text. Some entries carry an empty path -- Raising Cane's own index links a since-expired promotion back to the homepage rather than removing the entry; treat an empty path as no longer resolvable rather than a bug.
+- **Params:** _none_
+
+### `raisingcanes_store`
+
+- **HTTP:** `GET /raisingcanes/store`
+- **What:** Get one Raising Cane's store's detail. Returns one Raising Cane's store: name, full postal address, phone, coordinates, its general weekly hours plus separately published dine-in and drive-thru hours, Raising Cane's own per-store amenity labels (e.g. DRIVE_THRU, CURBSIDE_PICKUP), which pickup/delivery services it offers, and its Google Place id. Store paths come from GET /raisingcanes/directory entries whose is_store is true. Passing a directory path here returns a 404 rather than a hollow record.
+- **Params:** `path` (string, **required**) — Store path from a /raisingcanes/directory child with is_store true
+
 ## Reddit (12)
 
 ### `reddit_comments`
@@ -5823,6 +8009,82 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /redfin/similar`
 - **What:** Get Redfin comparable listings. Returns Redfin's comparable ("similar") listings for a property as normalized listing rows. Faithful pass-through of Redfin's public similars resource.
 - **Params:** `property_id` (string, **required**) — Redfin property id
+
+## Rightmove (8)
+
+### `rightmove_agent_branch`
+
+- **HTTP:** `GET /rightmove/agents/{id}`
+- **What:** Get Rightmove estate agent branch details. Returns one estate-agent branch profile from Rightmove, including address, telephones, service flags, industry affiliations, and the branch's own sales and lettings listing previews. The slug segments in Rightmove agent URLs are cosmetic; the branch resolves by numeric id alone.
+- **Params:** `id` (string, **required**) — Rightmove agent branch id
+
+### `rightmove_agents`
+
+- **HTTP:** `GET /rightmove/agents`
+- **What:** List Rightmove estate agents for a location. Lists estate-agent branches from Rightmove's estate-agents directory for a location, with branch display name, brand, address, telephones, sales/lettings flags, logo, and a link to the branch profile. 20 agents per page.
+- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete (numeric location id required); `page` (integer, optional) — Result page (default 1)
+
+### `rightmove_autocomplete`
+
+- **HTTP:** `GET /rightmove/autocomplete`
+- **What:** Get Rightmove location autocomplete suggestions. Returns location suggestions from Rightmove's autocomplete API for a given query.
+- **Params:** `limit` (integer, optional) — Maximum suggestions to return (default 10, max 20); `query` (string, **required**) — Location query
+
+### `rightmove_commercial_search`
+
+- **HTTP:** `GET /rightmove/commercial/search`
+- **What:** Search Rightmove commercial property. Search Rightmove's commercial property listings for sale or to let, with price, floor-area (sq ft), and commercial-property-type filters. For to-let listings the price amount follows the listing's own frequency (monthly or yearly).
+- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_price` (integer, optional) — Maximum price in whole GBP units, not pence; `max_size` (integer, optional) — Maximum floor area in square feet; `min_price` (integer, optional) — Minimum price in whole GBP units, not pence; `min_size` (integer, optional) — Minimum floor area in square feet; `page` (integer, optional) — Result page (default 1); `property_type` (string, optional) — Commercial property type filter (e.g. office, retail, industrial, warehouse, land, hotel, leisure); `status` (string, optional) — Listing status (default buy)
+
+### `rightmove_new_homes_search`
+
+- **HTTP:** `GET /rightmove/new-homes/search`
+- **What:** Search Rightmove new homes for sale. Search Rightmove's new-homes-for-sale listings for a location, with price, bedroom, bathroom, and property-type filters. Results are individual new-build homes and plots (with development flags), not development-level cards.
+- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_bathrooms` (number, optional) — Maximum bathrooms; `max_bedrooms` (integer, optional) — Maximum bedrooms; `max_price` (integer, optional) — Maximum price in whole GBP units, not pence; `min_bathrooms` (number, optional) — Minimum bathrooms; `min_bedrooms` (integer, optional) — Minimum bedrooms; `min_price` (integer, optional) — Minimum price in whole GBP units, not pence; `page` (integer, optional) — Result page (default 1); `property_type` (string, optional) — Property type filter (e.g. detached, flat, apartment, semi-detached, terrace, bungalow)
+
+### `rightmove_property`
+
+- **HTTP:** `GET /rightmove/properties/{id}`
+- **What:** Get Rightmove property details. Returns detailed information for a specific Rightmove property by ID.
+- **Params:** `id` (string, **required**) — Rightmove property ID
+
+### `rightmove_search`
+
+- **HTTP:** `GET /rightmove/search`
+- **What:** Search Rightmove properties. Search for properties on Rightmove with filters for location, price, bedrooms, etc.
+- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_bathrooms` (number, optional) — Maximum bathrooms; `max_bedrooms` (integer, optional) — Maximum bedrooms; `max_price` (integer, optional) — Maximum price in whole GBP units, not pence; `min_bathrooms` (number, optional) — Minimum bathrooms; `min_bedrooms` (integer, optional) — Minimum bedrooms; `min_price` (integer, optional) — Minimum price in whole GBP units, not pence; `page` (integer, optional) — Result page (default 1); `property_type` (string, optional) — Property type filter; `status` (string, optional) — Listing status (default for_sale)
+
+### `rightmove_student_search`
+
+- **HTTP:** `GET /rightmove/student/search`
+- **What:** Search Rightmove student accommodation. Search Rightmove's student-accommodation listings for a location, with monthly-rent, bedroom, and furnishing filters. Prices are monthly rents in whole GBP units.
+- **Params:** `furnish_type` (string, optional) — Furnishing filter; `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_bedrooms` (integer, optional) — Maximum bedrooms; `max_price` (integer, optional) — Maximum monthly rent in whole GBP units, not pence; `min_bedrooms` (integer, optional) — Minimum bedrooms; `min_price` (integer, optional) — Minimum monthly rent in whole GBP units, not pence; `page` (integer, optional) — Result page (default 1)
+
+## Roblox (4)
+
+### `roblox_badges`
+
+- **HTTP:** `GET /roblox/badges`
+- **What:** List Roblox experience badges. Returns one cursor-paginated page of public badge metadata for a Roblox experience. Pass next_cursor back unchanged as cursor. No user-awarded badge data is returned.
+- **Params:** `cursor` (string, optional) — Opaque cursor returned by a previous response; `universe_id` (integer, **required**) — Positive Roblox universe id
+
+### `roblox_game`
+
+- **HTTP:** `GET /roblox/game`
+- **What:** Get a Roblox experience. Returns public catalog detail for one Roblox experience, including aggregate votes and its public icon. This endpoint does not return player, account, purchase, or server data.
+- **Params:** `universe_id` (integer, **required**) — Positive Roblox universe id
+
+### `roblox_rankings`
+
+- **HTTP:** `GET /roblox/rankings`
+- **What:** List Roblox game rankings. Returns a public Roblox game shelf. Allowed sort_id values: top-trending, up-and-coming, top-playing-now, fun-with-friends, top-revisited.
+- **Params:** `sort_id` (string, optional) — Ranking shelf: top-trending, up-and-coming, top-playing-now, fun-with-friends, top-revisited
+
+### `roblox_search`
+
+- **HTTP:** `GET /roblox/search`
+- **What:** Search Roblox experiences. Searches anonymous public Roblox game experiences. The opaque page_token continues the same search.
+- **Params:** `page_token` (string, optional) — Opaque page token returned by a previous search; `q` (string, **required**) — Experience search query
 
 ## Rothy's (11)
 
@@ -5947,6 +8209,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /rottentomatoes/series`
 - **What:** Rotten Tomatoes series detail. Returns normalized Rotten Tomatoes TV series metadata and scorecard data from a credential-free public series page. Pass exactly one of `path` or `url`.
 - **Params:** `path` (string, optional) — Rotten Tomatoes series path; `url` (string, optional) — Absolute https://www.rottentomatoes.com series URL
+
+## Rover (4)
+
+### `rover_sitter_profile`
+
+- **HTTP:** `GET /rover/sitter/{slug}`
+- **What:** Get Rover sitter profile. Returns a normalized Rover sitter/walker profile: name, photo, bio, star rating, review count, repeat-client count, years of experience, neighborhood/city/state, starting price, Star Sitter status, the services offered with per-service pricing, and public review excerpts from the sitter's own profile page. Public data sourced from Rover's own server-rendered profile pages.
+- **Params:** `slug` (string, **required**) — Rover sitter profile slug, the trailing path segment of a search result's profile_url field
+
+### `rover_sitter_search`
+
+- **HTTP:** `GET /rover/search`
+- **What:** Search Rover sitters and walkers. Searches Rover's public sitter/walker listings by location and service type, returning normalized sitter summaries (name, profile image, rating, review count, repeat-client count, years of experience, neighborhood/city/state, starting price, Star Sitter status, and a short bio). Public data sourced from Rover's own server-rendered search pages.
+- **Params:** `location` (string, **required**) — Free-text address, city, or zip code, e.g. \; `max_price` (integer, optional) — Maximum starting rate in whole dollars.; `min_price` (integer, optional) — Minimum starting rate in whole dollars.; `page` (integer, optional) — 1-based result page. Defaults to 1.; `pet_type` (string, optional) — Filter by pet species. One of: `dog`, `cat`.; `service_type` (string, **required**) — Service category to search. One of: `overnight-boarding`, `overnight-traveling`, `drop-in`, `doggy-day-care`, `dog-walking`.; `star_sitter_only` (boolean, optional) — Restrict results to Rover's \
+
+### `rover_trainer_profile`
+
+- **HTTP:** `GET /rover/trainer/{slug}`
+- **What:** Get Rover dog trainer profile. Returns a normalized Rover dog trainer profile: name, photo, headline, experience and availability details, training methodology, rating, review count, repeat-client count, years of training, skill/behavior tags, and education credentials. Public data sourced from Rover's own server-rendered training profile pages.
+- **Params:** `slug` (string, **required**) — Rover trainer profile slug, the trailing path segment of a trainer search result's profile_url field
+
+### `rover_trainer_search`
+
+- **HTTP:** `GET /rover/trainer-search`
+- **What:** Search Rover dog trainers. Searches Rover's public dog trainer listings by location, returning normalized trainer summaries (name, profile image, headline, experience details, rating, review count, repeat-client count, years of experience, city/state/zip, starting price, training methodology, and skill/behavior tags). Public data sourced from Rover's own server-rendered training search pages.
+- **Params:** `location` (string, **required**) — Free-text address, city, or zip code, e.g. \
 
 ## Sam's Club (5)
 
@@ -6085,6 +8373,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sephora/suggest`
 - **What:** Sephora search suggestions. Returns Sephora's own search-box type-ahead suggestions for a partial keyword: keyword-completion terms, matching products, and trending/related categories. Sephora's own upstream never returns a genuine zero-result state for a nonempty query -- a deliberately nonsense query still returns unrelated product suggestions.
 - **Params:** `query` (string, **required**) — Partial search keywords
+
+## Shake Shack (4)
+
+### `shakeshack_locations`
+
+- **HTTP:** `GET /shakeshack/locations`
+- **What:** Browse Shake Shack's store index. Returns one page of Shake Shack's store index, parsed off the single, fully server-rendered /locations page. That page carries two independent sections: an interactive map (coordinates, no structured address) and an accessible "Full List of Locations" text index (structured address, no coordinates). Each entry's source field says which section it came from -- "map" or "list" -- not a business classification; both round-trip through GET /shakeshack/store by path, which always returns full structured address and coordinates regardless of source.
+- **Params:** `page` (integer, optional) — 1-based page (default 1); `page_size` (integer, optional) — Entries per page, 1-500 (default 100)
+
+### `shakeshack_menu`
+
+- **HTTP:** `GET /shakeshack/menu`
+- **What:** Get one Shake Shack location's full menu. Returns one Shake Shack location's full menu as a category tree: every category and its products, with name, description, base calories, allergens, a promotional/dietary badge when published (e.g. "LIMITED TIME ONLY", "VEGETARIAN"), image, and a full customization tree (size, additions, removals, allergen flags), each choice carrying its own price and calorie delta. location_id comes from GET /shakeshack/nearby. Many items, most notably burgers, price entirely through a required size selection rather than a base price, so price is commonly 0 for those items -- the real price lives on the size modifier's own choices.
+- **Params:** `location_id` (integer, **required**) — Location id from /shakeshack/nearby
+
+### `shakeshack_nearby`
+
+- **HTTP:** `GET /shakeshack/nearby`
+- **What:** Find Shake Shack locations near a coordinate. Returns Shake Shack locations within a radius of a coordinate, nearest first, using Shake Shack's own Olo-backed ordering API (a separate source from GET /shakeshack/locations, which reads the main site's store directory instead). Each result carries location_id, real-time weekly hours, which fulfillment modes are currently enabled (dine-in, pickup, delivery, curbside, drive-thru, walk-up, drive-up), and Shake Shack's own delivery fee schedule. Pass location_id to GET /shakeshack/menu for that location's full menu.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Maximum locations to return, 1-50 (default 10); `longitude` (number, **required**) — Search center longitude; `radius` (integer, optional) — Search radius in miles, 1-50 (default 15)
+
+### `shakeshack_store`
+
+- **HTTP:** `GET /shakeshack/store`
+- **What:** Get one Shake Shack store's detail. Returns one Shake Shack store: postal address, coordinates, phone (when published), a Monday-first week of opening hours (omitted for a location that publishes no schedule, seen on venue/kiosk-shaped locations such as inside a stadium), and the order types Shake Shack publishes for it, e.g. "Dine In", "Delivery". Store paths come from GET /shakeshack/locations, either the aliased "location/<slug>" form or the legacy "node/<id>" form -- both resolve to the same record, and the response's own path field always reports the canonical alias. A path with neither shape, or one that does not resolve to a real store page, returns a 404.
+- **Params:** `path` (string, **required**) — Store path from a /shakeshack/locations entry
 
 ## SHEIN (8)
 
@@ -6476,6 +8790,80 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** SofaScore competition seasons. Returns the season list for a competition from SofaScore's credential-free public JSON. Use a returned season id with the standings and round-events endpoints.
 - **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id
 
+## Sonic (12)
+
+### `sonic_availability`
+
+- **HTTP:** `GET /sonic/availability`
+- **What:** List a Sonic Drive-In restaurant's order-ahead time slots. Returns the bookable order-ahead windows for one Sonic Drive-In restaurant, grouped by service channel and local date. Each window has a UTC start_time and end_time. Also returns the store's timezone, how long each window lasts (slot_duration_minutes), the prep/handoff buffer before the first bookable window (lead_time_minutes), and service_types -- every channel the store supports, which is a superset of the channels that currently have windows. fulfillment selects the request method and accepts exactly `PICKUP` or `DELIVERY`; note the per-window service_type is a separate, finer vocabulary and can be `ORDER_AHEAD`, `CURBSIDE_PICKUP`, `DRIVE_THROUGH`, `STORE`, `PICKUP` or `DELIVERY`. A closed or fully-booked restaurant returns an empty channels array with total_slots 0, not an error. An unknown store_id returns 404.
+- **Params:** `fulfillment` (string, optional) — Fulfillment method: PICKUP or DELIVERY. Defaults to PICKUP.; `store_id` (string, **required**) — Sonic store number, e.g. from /sonic/nearby
+
+### `sonic_categories`
+
+- **HTTP:** `GET /sonic/categories`
+- **What:** List Sonic Drive-In menu categories. Returns Sonic Drive-In's national menu's top-level categories -- Breakfast, Value, Limited Time, Combos, Burgers, Chicken, Hot Dogs, Sandwiches, Snacks & Sides, Sweets, Tea & Coffee, Lemonades & Limeades, Sodas, Slushes, Refreshers, Wacky Pack Kids Meals and others -- each with its slug (the value GET /sonic/menu takes) and a page_count of subcategory/item pages nested under it.
+- **Params:** _none_
+
+### `sonic_deals`
+
+- **HTTP:** `GET /sonic/deals`
+- **What:** List Sonic Drive-In's current promotions. Returns the promotions currently published on Sonic Drive-In's national deals page -- each with its marketing headline, public name, description, legal terms, call-to-action label and link, and creative image. This page is not listed in Sonic's own sitemap, so GET /sonic/sitemap will never surface it. Deals are national marketing offers, not per-store pricing; there is no price field in this source. Between campaigns Sonic can publish the page with no promotions at all, which returns an empty deals array with count 0 rather than an error.
+- **Params:** _none_
+
+### `sonic_directory`
+
+- **HTTP:** `GET /sonic/directory`
+- **What:** Browse Sonic Drive-In's restaurant directory by country, state and city. Returns Sonic Drive-In's restaurant directory as a country to state to city tree, with a restaurant count at every level. Use it to discover which states and cities have restaurants before calling GET /sonic/locations or GET /sonic/nearby. Each city carries both its display name and the slug that composes into a store path. Counts here describe listed restaurants and are internally consistent (the city counts sum to total_count); GET /sonic/locations enumerates a larger set of store pages, so the two totals intentionally differ.
+- **Params:** _none_
+
+### `sonic_item`
+
+- **HTTP:** `GET /sonic/item`
+- **What:** Look up one Sonic Drive-In menu item's detail. Returns one menu page's detail: name, description, image, and a link to Sonic's site-wide nutrition/allergen guide PDF. path must be a "menu" section path with kind category, subcategory, or item from GET /sonic/sitemap (or a path copied from a GET /sonic/menu-adjacent page you already know).
+- **Params:** `path` (string, **required**) — A menu page path from /sonic/sitemap (section=menu)
+
+### `sonic_location_suggest`
+
+- **HTTP:** `GET /sonic/location-suggest`
+- **What:** Complete an address into coordinates for Sonic Drive-In store search. Completes a partial address, place, city, state or ZIP into ranked matches, each already carrying the latitude and longitude that GET /sonic/nearby takes -- so a caller can run a Sonic restaurant search from free text instead of coordinates. Each suggestion's layer describes its granularity and is one of `address`, `locality`, `state`, `postalCode` or `place`, and confidence is one of `exact`, `interpolated` or `fallback`. Results are restricted to one country (default US). A query that matches nothing returns an empty suggestions array with count 0, not an error.
+- **Params:** `country` (string, optional) — ISO 3166-1 alpha-2 country code to restrict results to. Defaults to US.; `limit` (integer, optional) — Maximum suggestions, 1-25. Defaults to 5. Upstream may return fewer.; `query` (string, **required**) — Partial address, place, city, state or ZIP to complete
+
+### `sonic_locations`
+
+- **HTTP:** `GET /sonic/locations`
+- **What:** List Sonic Drive-In restaurants with ready-made store paths. Returns Sonic Drive-In's restaurant listing one page at a time, each entry already split into its country, state, city and address parts plus a ready-made path value that GET /sonic/store takes -- so enumerating restaurants needs no path parsing. Filter by state and/or city to narrow the list; city slugs come from GET /sonic/directory. Results are sorted by path so paging is reproducible. This listing covers more store pages than GET /sonic/directory counts, since the directory counts listed restaurants while this enumerates every published store page; a filter that matches nothing returns an empty locations array with total 0, not an error.
+- **Params:** `city` (string, optional) — City slug to filter by, from /sonic/directory; `page` (integer, optional) — 1-based page number. Defaults to 1.; `page_size` (integer, optional) — Entries per page, 1-500. Defaults to 100.; `state` (string, optional) — Two-letter state or province code to filter by
+
+### `sonic_menu`
+
+- **HTTP:** `GET /sonic/menu`
+- **What:** List one Sonic Drive-In menu category's items. Returns the items in one Sonic Drive-In menu category, each with its name and published calorie count. Category slugs come from GET /sonic/categories. Some entries are themselves a nested size/variant group (e.g. "Coffee" expands to Small/Medium/Large/Rt.44 orderable sizes) rather than a single orderable product -- there is no price or full nutrition panel in this source, only calories; see GET /sonic/item for description, image, and a link to Sonic's nutrition guide.
+- **Params:** `category` (string, **required**) — Category slug from /sonic/categories
+
+### `sonic_nearby`
+
+- **HTTP:** `GET /sonic/nearby`
+- **What:** Find Sonic Drive-In restaurants near a coordinate. Returns Sonic Drive-In restaurants within a radius of a latitude/longitude, nearest first, one page at a time. Each result carries the same detail as GET /sonic/store -- address, phone, coordinates, open/closed status, amenities, weekly hours per fulfillment channel, and delivery-provider deep links -- plus distance_miles from the search centre, so ranking or mapping results needs no follow-up call per store. Use this instead of paging GET /sonic/sitemap when you know roughly where you are looking. An area with no restaurants returns an empty stores array with total_stores 0, not an error.
+- **Params:** `latitude` (number, **required**) — Latitude of the search centre, -90 to 90; `limit` (integer, optional) — Stores per page, 1-50. Defaults to 10.; `longitude` (number, **required**) — Longitude of the search centre, -180 to 180; `page` (integer, optional) — Zero-based page number. Defaults to 0.; `radius` (integer, optional) — Search radius in miles, 1-100. Defaults to 25.
+
+### `sonic_nutrition_documents`
+
+- **HTTP:** `GET /sonic/nutrition-documents`
+- **What:** List Sonic Drive-In's official nutrition and allergen documents. Returns the nutrition, allergen and ingredient documents Sonic Drive-In publishes nationally -- the printable menu, the Spanish-language menu, the nutrition guide, allergen information, and the ingredient statement -- each with a directly fetchable URL, file name, MIME type, size in bytes, and the date it was last republished. These are the only structured nutrition source Sonic publishes; per-item macro and micronutrient values are not available anywhere on the public site, and GET /sonic/menu carries calories only. Files are large print-ready PDFs (several megabytes each), so check size_bytes before downloading.
+- **Params:** _none_
+
+### `sonic_sitemap`
+
+- **HTTP:** `GET /sonic/sitemap`
+- **What:** Browse Sonic Drive-In's menu-page or store-locator sitemap. Returns one page of Sonic Drive-In's own sitemap: section=menu lists every menu category/subcategory/item page (298 pages), section=locations lists every store-directory page (state/city/store, ~3,365 stores). Each entry's path is what GET /sonic/item (menu section) or GET /sonic/store (locations section, kind=store) takes.
+- **Params:** `kind` (string, optional) — Optional. Filter by page kind. menu: index, category, subcategory, item. locations: index, state, city, store.; `page` (integer, optional) — Optional. 1-based page, default 1.; `page_size` (integer, optional) — Optional. Entries per page, 1-500, default 100.; `section` (string, **required**) — Which sitemap to read
+
+### `sonic_store`
+
+- **HTTP:** `GET /sonic/store`
+- **What:** Look up one Sonic Drive-In restaurant by its locator path. Returns one Sonic Drive-In restaurant's address, phone, coordinates, open/closed status, amenities, weekly hours broken down per fulfillment channel (order-ahead, pickup, curbside, in-store, delivery, drive-through), and delivery-provider deep links (DoorDash, GrubHub, Uber Eats, Postmates). path must be a "locations" section, kind=store path from GET /sonic/sitemap.
+- **Params:** `path` (string, **required**) — A store path from /sonic/sitemap (section=locations, kind=store)
+
 ## SoundCloud (5)
 
 ### `soundcloud_playlist`
@@ -6507,6 +8895,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /soundcloud/user-tracks`
 - **What:** Get a SoundCloud user's own uploaded tracks. Returns a user/artist's own uploaded tracks, most recent first: title, artwork, playback/likes/comment/repost counts. Public data sourced from SoundCloud's own JSON API.
 - **Params:** `limit` (integer, optional) — Number of tracks to return (default 20, max 50); `url` (string, **required**) — Full soundcloud.com user/artist profile URL
+
+## SparkFun (4)
+
+### `sparkfun_categories`
+
+- **HTTP:** `GET /sparkfun/categories`
+- **What:** List SparkFun categories. Lists public SparkFun top-level browse categories with URL keys for sparkfun-category.
+- **Params:** _none_
+
+### `sparkfun_category`
+
+- **HTTP:** `GET /sparkfun/category`
+- **What:** Browse a SparkFun category. Returns paginated public products and dynamic facet filters for a SparkFun category URL key. Each filter must be `attribute:value`; use values from the response's filters array.
+- **Params:** `filter` (array, optional) — Repeatable dynamic facet in attribute:value form; `page` (integer, optional) — One-based result page (1-100); `per_page` (integer, optional) — Products per page (1-24); `url_key` (string, **required**) — SparkFun category URL key
+
+### `sparkfun_product`
+
+- **HTTP:** `GET /sparkfun/product`
+- **What:** Get a SparkFun product. Returns public product metadata, price, stock status, images, categories, a cleaned description, and SparkFun-related product recommendations for one SKU.
+- **Params:** `sku` (string, **required**) — SparkFun product SKU
+
+### `sparkfun_search`
+
+- **HTTP:** `GET /sparkfun/search`
+- **What:** Search SparkFun products. Searches public SparkFun product data with pagination and dynamic facet filters. Each filter must be `attribute:value`; use values from the response's filters array.
+- **Params:** `filter` (array, optional) — Repeatable dynamic facet in attribute:value form; `page` (integer, optional) — One-based result page (1-100); `per_page` (integer, optional) — Products per page (1-24); `q` (string, **required**) — Product search query
 
 ## Spotify (30)
 
@@ -6739,6 +9153,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /spotify-podcasts/show/recommendations`
 - **What:** Retrieve Spotify podcast recommendations. Returns normalized related Spotify shows and episodes from Spotify's show recommendations response.
 - **Params:** `uri` (string, optional) — Spotify show URI
+
+## Starbucks (5)
+
+### `starbucks_menu`
+
+- **HTTP:** `GET /starbucks/menu`
+- **What:** Browse the full Starbucks menu. Returns Starbucks' full menu as a category tree: top-level categories, their child categories, and every product with its product number, form, product type, sizes, default size, availability, and image. Pair a product's product_number and form with /starbucks/product to fetch full detail including nutrition. store_number optionally scopes the menu to one store, using a store number from /starbucks/stores; a store-scoped menu marks items that store does not carry with availability NotAvailableHere, while the unscoped menu reports everything as Available. market selects which country catalog to return, one of us or ca, defaulting to us; the two differ substantially (roughly 282 US products vs 253 CA, with exclusives on both sides). Only these two markets are available: every other Starbucks country site runs a different platform, and the European ones disallow API access in robots.txt.
+- **Params:** `market` (string, optional) — Starbucks country site to read. One of: us, ca. Defaults to us; `store_number` (string, optional) — Starbucks store number to scope availability to, e.g. 101-54
+
+### `starbucks_nearest_store`
+
+- **HTTP:** `GET /starbucks/nearest-store`
+- **What:** Locate the closest Starbucks to a coordinate. Returns the coordinates and distance of the single closest Starbucks store to a point. Both lat and lng are required. This endpoint returns coordinates only, not store details: it is what Starbucks' own store locator uses to centre its map. Use /starbucks/stores for full store records. A point with no nearby store returns a well-formed result with found set to false rather than an error. market selects which Starbucks country site answers, one of us or ca, defaulting to us.
+- **Params:** `lat` (number, **required**) — Latitude; `lng` (number, **required**) — Longitude; `market` (string, optional) — Starbucks country site to read. One of: us, ca. Defaults to us
+
+### `starbucks_nutrition`
+
+- **HTTP:** `POST /starbucks/product/{product_number}/{form}/nutrition`
+- **What:** Recalculate nutrition for a customized Starbucks drink. Recalculates calories, fat, sugars, and protein for a customized build of a Starbucks beverage: swap the milk, change the number of espresso shots or syrup pumps, and get the real figures for that exact drink rather than the standard recipe. Starbucks only offers this for four hot espresso beverages; product_number and form must be one of 406/hot (Caffe Americano), 407/hot (Caffe Latte), 408/hot (Caffe Mocha), or 413/hot (Caramel Macchiato). Any other product returns an invalid-parameter error naming the four that work. size_sku comes from a /starbucks/product result's sizes[].sku. modifiers is the COMPLETE build, not a change-set: start from that size's default_recipe, adjust what you want, and send the whole list back; an empty list is rejected. Each modifier needs a sku, an optional quantity (defaults to 1, and is the dial that matters for countable modifiers like espresso shots), and an optional replaced_sku when substituting a pick-one slot such as the milk. This returns Starbucks' own four-value dynamic-nutrition panel, which is smaller than the full per-size panel /starbucks/product returns for the standard build.
+- **Params:** `form` (string, **required**) — Product form. Only hot is supported for this endpoint; `product_number` (string, **required**) — Starbucks numeric product id. One of: 406, 407, 408, 413; `request` (object, **required**) — The size and the complete modifier build
+
+### `starbucks_product`
+
+- **HTTP:** `GET /starbucks/product/{product_number}/{form}`
+- **What:** Get one Starbucks product with nutrition. Returns one Starbucks product's full detail: name, description, product type, image, Rewards star cost, customization options, and every size with its own nutrition panel (serving size, calories, calories from fat, and per-fact values for total fat with saturated and trans fat subfacts, cholesterol, sodium, total carbohydrates, protein, and caffeine). product_number is the numeric id from a /starbucks/menu result or a product page URL. form is that product's form; allowed values are hot, iced, single, packaged, whole-bean, and via. store_number optionally scopes availability to one store. Starbucks does not expose dollar pricing on this surface, so no price is returned; star_cost is the Rewards star cost. market selects which country catalog to resolve against, one of us or ca, defaulting to us. Each size also carries its default_recipe, the standard build, which is the required starting point for the /starbucks/product/{product_number}/{form}/nutrition endpoint. An unknown product number, or a form that product is not sold in, returns not found.
+- **Params:** `form` (string, **required**) — Product form. One of: hot, iced, single, packaged, whole-bean, via; `market` (string, optional) — Starbucks country site to read. One of: us, ca. Defaults to us; `product_number` (string, **required**) — Starbucks numeric product id; `store_number` (string, optional) — Starbucks store number to scope availability to, e.g. 101-54
+
+### `starbucks_stores`
+
+- **HTTP:** `GET /starbucks/stores`
+- **What:** Find nearby Starbucks stores worldwide. Returns Starbucks store locations near a point: store number, name, phone, full address, coordinates, weekly opening hours, amenities, and pick-up options. Either place, or both lat and lng, is required. place is free-text (city, address, or postal code) and is geocoded by Starbucks itself, so it works worldwide. market selects which Starbucks country site answers, one of us or ca, defaulting to us; this is not cosmetic even for stores, because the same store reports different operational data depending on the host. There is no filter parameter: Starbucks' own API accepts a features amenity filter but silently ignores it, so it is deliberately not offered here; filter on each store's returned amenities instead. A place Starbucks cannot resolve returns a well-formed empty result with place_not_found set to true rather than an error. The upstream returns at most 50 stores per request and supports no pagination; result_capped is true when that ceiling was reached. Store discovery works worldwide, but hours, amenities, and phone numbers are populated per market and may be absent outside the US and UK.
+- **Params:** `lat` (number, optional) — Latitude, requires lng; `lng` (number, optional) — Longitude, requires lat; `market` (string, optional) — Starbucks country site to read. One of: us, ca. Defaults to us; `place` (string, optional) — Free-text city, address, or postal code, geocoded by Starbucks
 
 ## Steam (21)
 
@@ -6994,6 +9440,120 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Strava route-index listing for a sport, country, and region. Returns a page of Strava's public route recommendations for a sport, country, and region (state, or state/city). `sport` values: `hiking`, `road-biking`, `mountain-biking`, `trail-running`, `gravel-biking`. Public data, sourced from Strava's own server-rendered route pages.
 - **Params:** `country` (string, **required**) — Country slug, e.g. usa; `page` (integer, optional) — Page number, starting at 1; `region` (string, **required**) — Region slug: a state (colorado) or state/city (colorado/boulder); `sport` (string, **required**) — Route sport. Allowed values: hiking, road-biking, mountain-biking, trail-running, gravel-biking
 
+## Subway (6)
+
+### `subway_available_times`
+
+- **HTTP:** `GET /subway/available-times`
+- **What:** Get one Subway store's available pickup times. Returns one Subway store's forward-looking pickup schedule -- every time slot the store is currently accepting orders for, as RFC3339 UTC instants, earliest first. Slots begin at the store's next orderable time (roughly half an hour out, not immediately) and run through closing, so the list reflects real remaining capacity for today rather than the store's advertised opening hours. Store IDs come from a GET /subway/store or GET /subway/nearby result's store_id field. A store that is closed or past its last slot for the day returns an empty slots array, which is a valid answer rather than an error. interval_minutes reports the spacing between consecutive slots as measured from the response itself.
+- **Params:** `limit` (integer, optional) — Maximum slots to return (1-200). Defaults to every slot the store offers.; `store_id` (string, **required**) — Store ID from a /subway/store or /subway/nearby result's store_id
+
+### `subway_combos`
+
+- **HTTP:** `GET /subway/combos`
+- **What:** Get one Subway store's bundle/combo categories. Returns one Subway store's bundle and combo categories with the price ranges they advertise -- min_bundled_price (cheapest as a bundle) and a_la_carte_price (cheapest bought separately). Unlike GET /subway/menu, which is US-only, this works in other markets: confirmed against US, GB and DE stores. It is NOT an itemised menu -- the upstream route behind it carries categories and prices only, with no individual products, no nutrition panels and no allergen disclosures. Use GET /subway/menu for a full itemised menu where it is available. A store with no bundles configured returns an empty categories array, which is a valid answer rather than an error. Store IDs come from a GET /subway/store or GET /subway/nearby result's store_id field.
+- **Params:** `culture` (string, optional) — Preferred translation culture for display names, e.g. en-US, en-GB, de-DE. Falls back to the category's default name.; `store_id` (string, **required**) — Store ID from a /subway/store or /subway/nearby result's store_id
+
+### `subway_menu`
+
+- **HTTP:** `GET /subway/menu`
+- **What:** Get one Subway store's full menu. Returns one Subway store's complete menu: every category, every product, and for each purchasable size (Footlong, 6-inch, etc.) its price, full nutrition panel (calories, fat, sodium, protein and more) and allergen disclosures. Store IDs come from a GET /subway/store result's store_id field. This endpoint currently covers US stores only: the upstream menu route it reads is not served for non-US stores, which return 404 -- see GET /subway/combos for the bundle/combo categories that are available in other markets. Categories carry is_main_category: true for human-browsable menu sections (Sandwiches, Drinks, Salads, ...) and false for Subway's own internal build/customization groupings, which are included for completeness but are not meant to be shown as menu sections on their own.
+- **Params:** `store_id` (string, **required**) — Store ID from a /subway/store result's store_id
+
+### `subway_nearby`
+
+- **HTTP:** `GET /subway/nearby`
+- **What:** Search Subway stores near a coordinate or address. Returns Subway stores nearest first to a coordinate or a free-text address/city/ZIP, with live open/closed status, payment methods, catering link, and feature flags. This is the proximity search GET /subway/sitemap cannot do directly -- the sitemap enumerates the whole world for bulk scraping, this answers "what is near this point" with distance and live attributes the sitemap/store locator does not carry. Each store's store_id is the same value GET /subway/menu takes, and can be passed back here as store_id to re-read one store's live attributes directly.
+- **Params:** `features` (string, optional) — Comma-separated. Restricts results to stores with ALL listed features. Allowed values: HAS_BREAKFAST, IS_REMOTEORDER_ACCEPTED, HAS_HALAL, HAS_DRIVETHROUGH, HAS_CATERING, HAS_CURBSIDE, IS_OPERATING.; `latitude` (number, optional) — Search center latitude. Set together with longitude, or set query or store_id instead -- exactly one search mode.; `limit` (integer, optional) — Maximum stores to return, 1-20 (default 10); `longitude` (number, optional) — Search center longitude.; `offset` (string, optional) — Opaque pagination cursor from a previous response's next_offset; `query` (string, optional) — Free-text address, city or ZIP to search near. Alternative to latitude/longitude and store_id.; `store_id` (string, optional) — Look up one store directly by its store_id, from GET /subway/store or a prior /subway/nearby result. Alternative to latitude/longitude and query.
+
+### `subway_sitemap`
+
+- **HTTP:** `GET /subway/sitemap`
+- **What:** Browse Subway's global store-URL index. Returns one page of Subway's sitemap-declared store index -- 22,700+ URLs across 2 shards at time of writing, covering a country/region/city/street tree worldwide. This is the cheapest way to enumerate Subway locations, and it is the entry point Subway's own robots.txt declares. Each entry carries its URL, the locator path GET /subway/store takes, and a depth: the deepest entries are store pages, shallower ones are country, region and city directory pages listed in the same sitemap. A page past the end returns an empty list rather than an error, so a caller can walk to exhaustion.
+- **Params:** `page` (integer, optional) — 1-based page within the shard (default 1); `page_size` (integer, optional) — Entries per page, 1-500 (default 100); `shard` (integer, optional) — Sitemap shard index (default 0). shard_count in the response says how many exist.
+
+### `subway_store`
+
+- **HTTP:** `GET /subway/store`
+- **What:** Get one Subway store's detail. Returns one Subway store's detail: address, coordinates, phone (display and E.164), opening hours, and the locator's own entity profile -- IANA timezone, Google Place ID and CID for joining to Google Maps data, franchise number, price range, published services and meal types, and explicit online-ordering/catering/drive-through flags. Boolean flags are omitted entirely when the locator does not publish them, so an absent flag is not a false one. open reflects the location's published status (a store flagged closed long-term), which is distinct from whether it is currently within its opening hours. store_id is the value GET /subway/menu and GET /subway/available-times take. Paths come from a GET /subway/sitemap entry.
+- **Params:** `path` (string, **required**) — Store path from a /subway/sitemap entry
+
+## Swiggy (4)
+
+### `swiggy_collections`
+
+- **HTTP:** `GET /swiggy/collections`
+- **What:** List Swiggy's curated collections for a location. Returns the curated dish/cuisine collections Swiggy's own homepage surfaces for a latitude/longitude (e.g. "Idli", "Biryani", "Dosa"). Each collection's id is the value /swiggy/search's collection_id param takes to browse restaurants within it. The response also carries is_serviceable, which says whether Swiggy delivers to the requested coordinates at all: false means the coordinates are outside Swiggy's delivery coverage, so the empty collections list is a coverage answer rather than a location that simply has no curated collections.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude
+
+### `swiggy_restaurant`
+
+- **HTTP:** `GET /swiggy/restaurant`
+- **What:** Get one Swiggy restaurant's detail. Returns one Swiggy restaurant's detail by id: name, city, area, address, postal code, coordinates, phone, cuisines, cost for two, rating and total rating count, delivery time, weekly opening hours with the current open/closed callout, plus the promotions Swiggy currently shows on that restaurant's page (headline discount, conditions, and coupon code when one is needed). Swiggy has no lighter restaurant-detail-only source -- this reads the same upstream as /swiggy/restaurant/menu, just without the menu items.
+- **Params:** `latitude` (number, **required**) — Caller latitude (required by Swiggy's own menu API); `longitude` (number, **required**) — Caller longitude (required by Swiggy's own menu API); `restaurant_id` (string, **required**) — Restaurant id, from /swiggy/search's id field
+
+### `swiggy_restaurant_menu`
+
+- **HTTP:** `GET /swiggy/restaurant/menu`
+- **What:** Get one Swiggy restaurant's menu with prices. Returns one restaurant's full menu grouped into categories, plus its restaurant summary. Every item carries a name, description, category, price, discounted_price when currently discounted, veg/non-veg flag, stock status, an image, and Swiggy's own per-dish rating and review count where it carries one. A category nested under a parent group on the live site (e.g. "Whopper" under "Burgers, Wraps & Tacos") is flattened to one level: its title is the parent's, with subcategory set to its own name. The response also carries the restaurant's current promotions in offers, the same block /swiggy/restaurant returns.
+- **Params:** `latitude` (number, **required**) — Caller latitude (required by Swiggy's own menu API); `longitude` (number, **required**) — Caller longitude (required by Swiggy's own menu API); `restaurant_id` (string, **required**) — Restaurant id, from /swiggy/search's id field
+
+### `swiggy_search`
+
+- **HTTP:** `GET /swiggy/search`
+- **What:** Search Swiggy restaurants near a location. Returns restaurants delivering to a latitude/longitude, optionally filtered by a keyword or browsed within a curated collection. With no query and no collection_id this browses the nearby-restaurant listing; with a query it runs a keyword search across restaurant names, cuisines, and dishes; with a collection_id (from /swiggy/collections) it browses restaurants within that curated collection. query and collection_id are mutually exclusive. Keyword search has two result tabs, selected with tab: dish (the default) returns restaurants that serve a matching dish, each with the matching dishes, their prices, and Swiggy's own per-dish rating where it has one, in a dishes array; restaurant returns restaurants whose own name or cuisine matches, a wider set with no dishes. tab, veg, min_rating and offers are only valid together with query. sort works with either query (relevance, delivery_time, rating) or collection_id (those three plus cost_low_to_high and cost_high_to_low), and is rejected on a plain nearby browse. Each restaurant carries its id (the value the restaurant and menu endpoints take), name, cuisines, cost for two, rating, delivery time, open/closed status, a hero image, and, where one is shown, an external_rating block with the third-party aggregate score, count, and source. Where the result card advertises a promotion it also carries offers, the same title/description/tag shape /swiggy/restaurant returns (a listing card never carries a coupon code, and a card showing both a discount and a separate free-delivery benefit returns them as two entries). is_promoted is present and true only for a result Swiggy itself labels a sponsored placement rather than an organic one. unavailable_message is present only when Swiggy says the restaurant cannot currently be ordered from and carries its own reason; it is not the inverse of is_open, since Swiggy reports a restaurant as open while still refusing orders for the requested location. A plain nearby browse also returns is_serviceable, which says whether Swiggy delivers to the requested coordinates at all: false means the coordinates are outside Swiggy's delivery coverage, so the empty restaurants list is a coverage answer rather than a no-matches answer, while an empty list without the field means no matches in a served area. It is omitted on keyword search and on a collection_id browse, neither of which carries Swiggy's own coverage marker.
+- **Params:** `collection_id` (string, optional) — Optional curated collection id from /swiggy/collections's id field. Browses restaurants within that collection instead of the plain nearby listing. Mutually exclusive with query.; `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `min_rating` (number, optional) — Only return restaurants rated at or above this score (0-5). Only valid together with query.; `offers` (boolean, optional) — Only return restaurants currently running an offer. Only valid together with query.; `offset` (string, optional) — Opaque pagination cursor from a prior response's next_offset (not meaningful when query is set); `query` (string, optional) — Optional keyword to search restaurants and dishes by, at least 2 characters. Mutually exclusive with collection_id.; `sort` (string, optional) — Optional sort order. With query: relevance, delivery_time, rating. With collection_id: those three plus cost_low_to_high and cost_high_to_low. Not valid on a plain nearby browse.; `tab` (string, optional) — Which keyword-search result tab to read: dish (default, restaurants serving a matching dish, each with a dishes array) or restaurant (restaurants whose own name/cuisine matches). Only valid together with query.; `veg` (boolean, optional) — Only return vegetarian results: veg dishes on tab=dish, pure-veg restaurants on tab=restaurant. Only valid together with query.
+
+## TacoBell (8)
+
+### `taco_bell_app_menu`
+
+- **HTTP:** `GET /taco-bell/app-menu`
+- **What:** Get one Taco Bell restaurant's full app-ordering catalog, combos included. Returns one Taco Bell US restaurant's complete app-ordering catalog by store number: every category, every individually orderable product, AND every combo (kind "bundle") it carries. This is the only endpoint in this family that publishes combos at all -- each one resolved down to its full slot composition (choices[], each with min/max selections and the product codes it defaults to when not customized), not just a name and price. Also returns the store's named ordering windows (dayparts) and, per item, which dayparts it is orderable in. Comes from a different, credential-free backend than every other endpoint in this family -- no cookie, session, or account is required. Store numbers come from GET /taco-bell/stores.
+- **Params:** `store_number` (string, **required**) — Taco Bell store number, from /taco-bell/stores
+
+### `taco_bell_categories`
+
+- **HTTP:** `GET /taco-bell/categories`
+- **What:** List Taco Bell menu categories. Returns Taco Bell's US menu categories -- 17 at time of writing, including tacos, burritos, quesadillas, nachos, bowls, breakfast, drinks, snacks-sweets, specialties, party-packs, vegetarian, boxes-and-combos and the value menus. Each entry's slug is the value GET /taco-bell/menu takes. A category flagged hidden_from_menu is one Taco Bell does not surface in its own navigation; it is still fetchable. Takes no parameters.
+- **Params:** _none_
+
+### `taco_bell_menu`
+
+- **HTTP:** `GET /taco-bell/menu`
+- **What:** List one Taco Bell menu category's items with prices and calories. Returns the items in one Taco Bell US menu category, each with its product code, name, price, calorie count, product and food type, image, and flags for whether it is customizable, has a meatless variant, and is currently available in store. Category slugs come from GET /taco-bell/categories, and the endpoint accepts either the bare slug (`tacos`) or the full path form (`/food/tacos`). Taco Bell is one of the few brands publishing both price and calories in the same payload.
+- **Params:** `category` (string, **required**) — Category slug from /taco-bell/categories
+
+### `taco_bell_nutrition`
+
+- **HTTP:** `GET /taco-bell/nutrition`
+- **What:** Get one Taco Bell menu item's full nutrition panel, allergens and ingredients. Returns the complete nutrition-facts panel for one Taco Bell US menu item -- fats (total, saturated, trans, poly- and monounsaturated), cholesterol, sodium, potassium, carbohydrates, fiber, sugars including added sugars, protein, and the vitamin and mineral figures -- plus serving size and weight and the item's declared allergens. Values are unrounded as published, in the panel's own units: grams for fats, carbohydrates and protein, milligrams for cholesterol, sodium, potassium, calcium, iron and caffeine, and micrograms for vitamin D. This goes well beyond the calorie count on /taco-bell/menu and /taco-bell/product, which is all the menu pages themselves carry. The full component-by-component ingredient statement is available via include_ingredients; it runs to several kilobytes per item, so it is off by default.
+- **Params:** `category` (string, **required**) — Category slug from /taco-bell/categories; `include_ingredients` (boolean, optional) — Include the full ingredient statement (default false -- it is long); `product` (string, **required**) — Product slug, the last segment of a /food/{category}/{product} URL
+
+### `taco_bell_product`
+
+- **HTTP:** `GET /taco-bell/product`
+- **What:** Get one Taco Bell menu item's full detail, including its customization matrix. Returns one Taco Bell US menu item in full: product code, name, description, price, rounded and unrounded calorie counts, every published image rendition, and cross-sell/upsell references. The distinguishing part is `customizations` -- the option groups the item accepts (proteins, included ingredients, add-ons, sauces, shells, upgrades, and Supreme/Fresco add and remove sets), each option carrying its own calorie delta and add-on price. Calorie deltas can be negative, since the Fresco style replaces sauces. Slugs come from GET /taco-bell/menu, and both the bare slug and the full path form are accepted.
+- **Params:** `category` (string, **required**) — Category slug from /taco-bell/categories; `product` (string, **required**) — Product slug, the last segment of a /food/{category}/{product} URL
+
+### `taco_bell_store`
+
+- **HTTP:** `GET /taco-bell/store`
+- **What:** Get one Taco Bell restaurant's full record, including the whole week's hours and dayparts. Returns one Taco Bell US restaurant by store number: address and coordinates, phone, open status, timezone, delivery and online-ordering state, Taco Bell's per-store capability flags, mobile-pickup status and geofencing radius. Where GET /taco-bell/stores gives only today's window for each nearby restaurant, this returns the full published week, Monday-first, and each day's dayparts. Dayparts matter for ordering: Taco Bell's menu availability is daypart-scoped, so breakfast items and Balance Of Day items are orderable in different windows of the same day. Store numbers come from GET /taco-bell/stores.
+- **Params:** `store_number` (string, **required**) — Taco Bell store number, from /taco-bell/stores
+
+### `taco_bell_store_menu`
+
+- **HTTP:** `GET /taco-bell/store-menu`
+- **What:** Get one Taco Bell restaurant's full live catalog in a single call. Returns one Taco Bell US restaurant's entire menu -- every category and item in one call, each with its price, calories, product and food type, image, and whether it is currently carried and displayed at THIS store. Where GET /taco-bell/menu returns one category's items from the national default catalog, this is store-scoped: some items are absent or hidden at some restaurants, and this is the only endpoint that shows that per store. Also returns the store's current happy-hour discount window, published nowhere else in this family. The response can be cached at the edge for up to 24 hours, so treat it as a recent snapshot of what the store carries rather than a live per-second signal; for a store's serving-time windows (breakfast vs. Balance Of Day, etc.) use GET /taco-bell/store instead. Store numbers come from GET /taco-bell/stores.
+- **Params:** `store_number` (string, **required**) — Taco Bell store number, from /taco-bell/stores
+
+### `taco_bell_stores`
+
+- **HTTP:** `GET /taco-bell/stores`
+- **What:** Find Taco Bell restaurants near a location. Returns Taco Bell US restaurants near a latitude/longitude, ordered by distance. Each store carries its store number, full postal address with coordinates, phone, distance, open status, timezone, today's published opening and closing hours, and Taco Bell's own per-store capability flags (breakfast, drive-thru, delivery, mobile ordering, open late, pickup shelves, Live Mas Cafe, online). A coordinate with no Taco Bell nearby returns an empty list rather than an error.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `page` (integer, optional) — 0-based page index (default 0); `page_size` (integer, optional) — Stores per page, 1-50 (default 10)
+
 ## Target (7)
 
 ### `target_categories`
@@ -7037,6 +9597,50 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /target/search`
 - **What:** Search Target products. Searches Target products and returns normalized products plus every filter group and option available for the current result set. Pass option ids back through filter_ids as a comma-separated list. A zero total with an empty products list is a valid no-results response. The sort enum accepts `relevance`, `featured`, `price-low`, `price-high`, `rating`, `bestselling`, and `newest`.
 - **Params:** `filter_ids` (string, optional) — Comma-separated Target filter option ids; `page` (integer, optional) — One-based page (1-50); `q` (string, **required**) — Product search query; `sort` (string, optional) — Result order; `store_id` (integer, optional) — Target store id used for pricing
+
+## Tes (7)
+
+### `tes_job_detail`
+
+- **HTTP:** `GET /tes/jobs/detail`
+- **What:** Get a Tes teaching job. Returns normalized detail for one job posting by its numeric id (the id field returned by tes-job-search): employer, location, salary, contract terms/types, dates, and application contact/URL, plus a short excerpt of the listing description rather than the full long-form HTML copy.
+- **Params:** `id` (string, **required**) — Tes job id
+
+### `tes_job_employer`
+
+- **HTTP:** `GET /tes/jobs/employer`
+- **What:** Get a Tes jobs employer profile. Returns normalized detail for one jobs employer profile by its numeric id (the trailing id in tes-job-detail's employer_url field, e.g. .../jobs/employer/epsom-college-1039424 -- the 1039424): name, location, school type/phase/funding status/gender/age range, an about description, its postal address, and every currently-open position listed on the employer's own profile page (id, title, url -- call tes-job-detail with each id for the full posting).
+- **Params:** `id` (string, **required**) — Tes employer id
+
+### `tes_job_search`
+
+- **HTTP:** `GET /tes/jobs/search`
+- **What:** Search Tes teaching jobs. Searches Tes's (tes.com) teaching-jobs board. Returns normalized listing facts (title, employer, location, salary, contract terms/types) plus a short excerpt of the listing description, not the full long-form job-description copy, and the same live faceted-search breakdown (position/subject/workplace category trees with counts, plus contract type/term counts) the real search page renders as its filter sidebar. location is a free-text place name (a UK town/city, an international city, or a bare country name) resolved to coordinates via Tes's own location-autocomplete endpoint; omit for Tes's own default market, "United Kingdom". radius_miles selects the search radius around location. contract_type and contract_term are validated against Tes's own small, closed label sets. position, subject, and workplace are comma-separated passthrough filters -- Tes's own category labels are numerous and can change, so read a prior response's own facets.positions[].value (and facets.positions[].children[].value)/facets.subjects[].value/facets.workplaces[].children[].value for the live, current set rather than guessing. salary_min filters to jobs with an advertised salary at or above that amount (in the searched market's local currency); Tes's own filter panel offers only a minimum, no maximum.
+- **Params:** `contract_term` (string, optional) — Contract term; `contract_type` (string, optional) — Contract type; `keywords` (string, optional) — Job title or keyword; `location` (string, optional) — Free-text place name resolved via Tes's own location autocomplete; `page` (integer, optional) — One-based page; `page_size` (integer, optional) — Results per page; `position` (string, optional) — Comma-separated position category label(s) -- see the endpoint markdown; `radius_miles` (integer, optional) — Search radius around location, in miles; `salary_min` (integer, optional) — Minimum advertised salary, in the searched market's local currency; `sort` (string, optional) — Sort order; `subject` (string, optional) — Comma-separated subject label(s) -- see the endpoint markdown; `workplace` (string, optional) — Comma-separated workplace/organisation-type label(s) -- see the endpoint markdown
+
+### `tes_resource_detail`
+
+- **HTTP:** `GET /tes/resources/detail`
+- **What:** Get a Tes teaching resource. Returns normalized detail for one teaching resource by its numeric id (the id field returned by tes-resource-search). Descriptive facts (title, subject, age range, resource type, author, price, rating, licence label), a per-file attachment list (file type, size, and a preview thumbnail -- metadata only), and the most recent page of reviews are returned -- not the downloadable resource file itself, which robots.txt already disallows scraping regardless.
+- **Params:** `country` (string, optional) — Storefront market for pricing/currency; `id` (string, **required**) — Tes resource id
+
+### `tes_resource_search`
+
+- **HTTP:** `GET /tes/resources/search`
+- **What:** Search Tes teaching resources. Searches Tes's (tes.com) teaching-resources marketplace. Returns normalized listing facts (title, author, price, rating, downloads) -- not full listing descriptions -- out of respect for Tes's general reproduction/republication restriction. query is optional: omit it (alone, or combined with key_stage/subject/on_sale) for pure filter-driven or fully unfiltered browsing, matching Tes's own search API. sort mirrors the real search page's own Sort by dropdown; key_stage and subject mirror its left-hand Refine by filters (both closed, validated enums taken from Tes's own facet taxonomy, and always resolved against Tes's own single GB-taxonomy regardless of country). country controls result currency/localisation only (confirmed live for all seven values); it does not change which key_stage/subject values are valid.
+- **Params:** `country` (string, optional) — Storefront market; `key_stage` (string, optional) — Filter by age range; `on_sale` (boolean, optional) — Filter to discounted resources only; `page` (integer, optional) — One-based page; `page_size` (integer, optional) — Results per page; `query` (string, optional) — Search keywords -- omit for filter-driven or unfiltered browsing; `sort` (string, optional) — Sort order; `subject` (string, optional) — Filter by subject -- one of Tes's own top-level subject facet labels; see the endpoint markdown for the full list (two of the 29 values contain a comma, which is why this parameter is not expressed as a Swagger Enums() list)
+
+### `tes_resource_shop`
+
+- **HTTP:** `GET /tes/resources/shop`
+- **What:** Get a Tes teaching-resources author shop. Returns normalized detail for one teaching-resources author/seller shop by its username (from tes-resource-search/tes-resource-detail's author field, or the trailing path segment of author_url): display name, average rating, upload/view/download counts, a bio, and a page of that author's resource listing (id, title, price, thumbnail -- call tes-resource-detail with each id for subject/age-range/resource-type/rating/description). subject narrows the listing to one of the subject tabs shown on the shop's own page; these vary per author and are not a curated enum.
+- **Params:** `page` (integer, optional) — One-based page; `subject` (string, optional) — Subject tab to filter the listing to -- see the shop's own page for the current set; `username` (string, **required**) — Tes author username
+
+### `tes_school_search`
+
+- **HTTP:** `GET /tes/schools/search`
+- **What:** Search the Tes Schools Directory. Searches Tes's (tes.com) public Schools Directory by school name or location. Returns normalized listing facts (name, logo, a short description, address) for each matching school/employer. Each result's id is the same employer id tes-job-employer accepts, so a caller can go straight from a name/location search to a full employer profile (school type/phase/funding status/gender/age range, and its currently-open positions) without first needing a job posting to discover the id.
+- **Params:** `page` (integer, optional) — One-based page; `page_size` (integer, optional) — Results per page; `query` (string, **required**) — School name or location
 
 ## Tesla Jobs (2)
 
@@ -7460,6 +10064,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get a TMDB TV chart. Returns a TMDB TV chart (popular, top rated, airing today, or on the air). Credential-free public TMDB data.
 - **Params:** `category` (string, optional) — TV chart, default popular; `date_from` (string, optional) — First-air date lower bound (YYYY-MM-DD); `date_to` (string, optional) — First-air date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max shows, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TMDB genre ids
 
+## Tokopedia (8)
+
+### `tokopedia_autocomplete`
+
+- **HTTP:** `GET /tokopedia/autocomplete`
+- **What:** Autocomplete Tokopedia product searches. Returns current public Tokopedia search suggestions for a partial keyword. Suggestions include canonical product-search URLs and are not product-search results.
+- **Params:** `q` (string, **required**) — Partial product keyword, up to 100 characters
+
+### `tokopedia_category`
+
+- **HTTP:** `GET /tokopedia/category`
+- **What:** Browse a Tokopedia category. Returns public product cards from a canonical Tokopedia category path. `path` must begin with `/p/`; use the category page path, not a product or search URL.
+- **Params:** `path` (string, **required**) — Canonical Tokopedia category path beginning with /p/
+
+### `tokopedia_home`
+
+- **HTTP:** `GET /tokopedia/home`
+- **What:** Get Tokopedia home recommendations. Returns public product-card recommendations for a current Tokopedia home tab. Omit `tab_id` for the first available tab; discover other tabs through `/tokopedia/home/tabs`.
+- **Params:** `page` (integer, optional) — Recommendation page from 1 through 5; `tab_id` (string, optional) — Current ID from /tokopedia/home/tabs
+
+### `tokopedia_home_tabs`
+
+- **HTTP:** `GET /tokopedia/home/tabs`
+- **What:** List Tokopedia home recommendation tabs. Returns the current public home-recommendation tabs. Use a returned `id` as `tab_id` with `/tokopedia/home`.
+- **Params:** _none_
+
+### `tokopedia_product`
+
+- **HTTP:** `GET /tokopedia/product`
+- **What:** Get a Tokopedia product's public detail. Returns public product detail from a canonical Tokopedia shop domain and product key. This endpoint does not accept arbitrary URLs; numeric product IDs are returned when the product page exposes them but cannot be used as lookup input.
+- **Params:** `product_key` (string, **required**) — Canonical Tokopedia product key; `shop_domain` (string, **required**) — Canonical Tokopedia shop domain
+
+### `tokopedia_product_review_filters`
+
+- **HTTP:** `GET /tokopedia/product/review-filters`
+- **What:** Get Tokopedia product review-filter metadata. Returns which public review media, rating, and topic filters are available for a numeric product ID. It does not return review text, review media, or a review archive.
+- **Params:** `product_id` (string, **required**) — Numeric Tokopedia product ID
+
+### `tokopedia_search`
+
+- **HTTP:** `GET /tokopedia/search`
+- **What:** Search Tokopedia products. Returns public Tokopedia product cards for a keyword from Tokopedia's public product-search operation. `sort` accepts `3` (lowest price), `4` (highest price), `5` (most reviewed), `9` (newest), or `23` (most relevant). Repeat `filter` as `key:value` using values from `/tokopedia/search/filters`.
+- **Params:** `filter` (array, optional) — Repeat live key:value filter selections from /tokopedia/search/filters; `page` (integer, optional) — Search page from 1 through 5; `q` (string, **required**) — Product keyword; `sort` (integer, optional) — Sort: 3 lowest price, 4 highest price, 5 most reviewed, 9 newest, 23 most relevant
+
+### `tokopedia_search_filters`
+
+- **HTTP:** `GET /tokopedia/search/filters`
+- **What:** Get Tokopedia search filters and sorts. Returns the live filter tree and supported sort choices for a Tokopedia product search. The response includes categories when the current query exposes them, store type, delivery location, price, rating, offer, condition, recency, shipping, and stock options as applicable.
+- **Params:** `q` (string, **required**) — Product keyword
+
 ## Trip.com (2)
 
 ### `tripcom_hotel_detail`
@@ -7758,7 +10412,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Upwork job postings. Searches Upwork's public job listings by free-text keyword, returning normalized job summaries (title, budget, experience level, duration, posted date, description snippet, skill tags). Public data sourced from Upwork's own server-rendered search pages via a real browser-rendering backend.
 - **Params:** `page` (integer, optional) — 1-based result page. Defaults to 1.; `q` (string, **required**) — Free-text job search keyword
 
-## Usage (4)
+## Usage (5)
 
 ### `usage_endpoints`
 
@@ -7771,6 +10425,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /usage/me/overview`
 - **What:** Get current user's usage overview. Returns a JWT-authenticated user's current billing snapshot plus recent request and credit consumption metrics for the selected UTC time range. The `requests` summary is limited to product API traffic and excludes console, billing, usage, and user-management endpoints.
 - **Params:** `from` (string, optional) — Custom lower bound in RFC3339 format when range=custom; `range` (string, optional) — Time range preset. Defaults to the current billing period.; `to` (string, optional) — Custom upper bound in RFC3339 format when range=custom
+
+### `usage_platform_adjacency`
+
+- **HTTP:** `GET /usage/platform-adjacency`
+- **What:** Get cross-user platform reach and co-usage. Returns, per scraping platform, how many real users have used it (lifetime, successful requests only), its request volume, top entry endpoints, and which other platforms those users also use. Aggregated across all customers with internal, static, and console traffic excluded; recomputed at most once per 24 hours and served from cache. Powers the console dashboard's "Explore more" recommendation.
+- **Params:** _none_
 
 ### `usage_recent_ips`
 
@@ -7910,6 +10570,82 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Tech stack — detect what a website is built with. Fetches a public URL and fingerprints the web technologies it is built with — a BuiltWith / Wappalyzer-style detector. Returns a list of detected `technologies`, each with its `categories`, a `confidence` (`high`, `medium`, `low`), an optional `version`, and the `evidence` that matched. Covers JavaScript frameworks and libraries (React, Vue.js, Angular, Svelte, jQuery), web frameworks / static site generators (Next.js, Nuxt.js, Gatsby, Remix, SvelteKit, Astro, Hugo), CMS and website builders (WordPress, Drupal, Joomla, Ghost, Wix, Squarespace, Webflow), e-commerce (Shopify, WooCommerce, Magento, BigCommerce), analytics, ad pixels, and tag managers (Google Analytics, Google Tag Manager, Meta Pixel, LinkedIn, Bing, TikTok/Pinterest/Reddit pixels, Segment, Hotjar, Microsoft Clarity), CDNs, UI frameworks and fonts, payments (Stripe, PayPal, Klarna), live chat, marketing automation, A/B testing, consent management, CAPTCHAs (reCAPTCHA, hCaptcha, Turnstile), video, and search. It also inspects response headers (from a plain HTTP fetch) to identify the web server (nginx, Apache, IIS), the CDN / hosting provider (Cloudflare, CloudFront, Fastly, Vercel, Netlify), and the server-side language / framework (PHP, ASP.NET, Ruby on Rails, Django, Laravel, Express). Results are directional, not exhaustive. The `render` fetch strategy is one of `browser` (headless browser that executes JavaScript — the default, so client-injected scripts like analytics, tag managers and pixels are detected), `auto` (Chrome-impersonated HTTP, escalating to a real browser only when blocked or JS-rendered), or `http` (HTTP only, no JavaScript — fastest, but sees only the server HTML); defaults to `browser`. Only public pages are supported; respect each site's terms of use and robots directives. Also returns `unmatched_evidence` (when present) — third-party script/stylesheet host domains and a `<meta generator>` value the detector saw on the page but doesn't yet have a named signature for; useful for spotting a vendor worth requesting coverage for. `is_infrastructure` flags a URL whose host looks like backend CDN/DNS/cloud-vendor infrastructure rather than a real, human-navigable website. `reachable` is false only when the target could not be fetched at all (even after an automatic www./plain-HTTP retry) — `technologies` may still be partially populated from DNS-based signals alone in that case, and `failure_reason` explains what happened.
 - **Params:** `request` (object, **required**) — Target URL (and optional render strategy)
 
+## Wendys (10)
+
+### `wendys_categories`
+
+- **HTTP:** `GET /wendys/categories`
+- **What:** List Wendy's national menu categories. Returns every category on Wendy's national (restaurant-agnostic) menu, grouped by which of Wendy's own top-level day-parts (Lunch/Dinner, Breakfast) it appears under -- a few categories such as Coffee and Beverages appear under both. No restaurant selection is required; this is the same catalog a signed-out visitor sees before ever picking a location. Each category's slug is what GET /wendys/menu takes.
+- **Params:** _none_
+
+### `wendys_directory`
+
+- **HTTP:** `GET /wendys/directory`
+- **What:** Browse the Wendy's store directory. Returns one level of Wendy's store directory tree. Omit path for the root, which lists Canada and the United States; pass a child's path to descend (country to states, state to cities, city to stores -- a single-store city links directly to its store page one level early). Each child carries its name, path, URL and, at the country/state/city levels, how many stores sit under that branch. A child with is_store true is a store page rather than another directory level -- pass its path to GET /wendys/store.
+- **Params:** `path` (string, optional) — Directory path from a previous response's children[].path, e.g. united-states/oh. Omit for the root country index.
+
+### `wendys_item`
+
+- **HTTP:** `GET /wendys/item`
+- **What:** Get one Wendy's menu item's (or combo's) detail. Returns one item's full detail. A simple item (is_combo false) returns its description, base price, calories, every size/weight variant (e.g. Small/Medium/Large fries, each with its own price and calories, with is_default marking the one Wendy's own page pre-selects), and every modifier component -- default (comes with the item), extra (a paid add-on) and required (the caller must pick one option from a named group, e.g. a salad's dressing) -- each with its own ingredient description and allergen list, since Wendy's publishes allergens per-component rather than as one whole-item field. The top-level allergens field is the union across default components and each required group's default-selected option only. A combo (is_combo true) instead returns combo_slots: its entree/side/drink composition and every product each slot can be built from, since a combo's own price and calories vary by what is chosen. A combo slot's product ids are the same items sold standalone in their own categories -- call this endpoint again on one of those for its own full component/allergen detail. Category and item slugs come from GET /wendys/categories and GET /wendys/menu.
+- **Params:** `category` (string, **required**) — Category slug from /wendys/categories; `item` (string, **required**) — Item slug from /wendys/menu's items[].slug
+
+### `wendys_menu`
+
+- **HTTP:** `GET /wendys/menu`
+- **What:** List one Wendy's menu category's items. Returns every item in one category of Wendy's national menu: id, name, slug, Wendy's own displayed price and calorie strings, whether it is a combo (its GET /wendys/item response returns combo_slots instead of components/variants), a limited-time-offer flag, and whether it has required customization (e.g. a salad's dressing choice). Category slugs come from GET /wendys/categories.
+- **Params:** `category` (string, **required**) — Category slug from /wendys/categories
+
+### `wendys_nearby`
+
+- **HTTP:** `GET /wendys/nearby`
+- **What:** Find Wendy's stores near a coordinate or address. Returns Wendy's stores within a radius of a search location, nearest first, via order.wendys.com's own restaurant-selector proximity search (the "Use Current Location" / "City, State, or Zipcode" flow at order.wendys.com's start-an-order screen) -- a materially richer, real-distance source than locations.wendys.com's classic-Yext locator (GET /wendys/directory, /wendys/store), which publishes no geosearch of its own. The search location is either a latitude/longitude pair or a free-text address query param (city/state, zip code, or full street address) that Wendy's own service geocodes server-side -- exactly one form is required; address takes priority if both are given. Each store carries its address, coordinates, phone, distance in miles, open/closed status, its published week of general and breakfast hours, and a few order-availability flags (breakfast, carry-out, mobile order, drive-thru, delivery, wifi) the ordering app itself uses to decide whether to offer the store for the current order type.
+- **Params:** `address` (string, optional) — Free-text city/state, zip code, or street address to search near. An alternative to latitude/longitude -- required unless both of those are given.; `latitude` (number, optional) — Search center latitude. Required unless address is given.; `limit` (integer, optional) — Maximum stores to return, 1-50, default 25; `longitude` (number, optional) — Search center longitude. Required unless address is given.; `radius` (integer, optional) — Search radius in miles, 1-100, default 20
+
+### `wendys_nutrition`
+
+- **HTTP:** `GET /wendys/nutrition`
+- **What:** Get one Wendy's menu item's full nutrition-facts panel. Returns one item's (or combo's) complete nutrition-facts panel -- calories, fat, cholesterol, sodium, carbohydrate, protein, vitamins and minerals -- as real numbers, plus declared allergens. A simple item's panel is for its default configuration (default bun/size, default condiments, no extras, no required-group substitutions). A combo's panel (is_combo true) is the *combined* total across every slot's default option in one request, the same way a caller building the full order would sum it themselves -- combo_selections lists which option each slot was computed for. GET /wendys/item and GET /wendys/menu only ever carry a calorie count, because that is all Wendy's own menu pages themselves publish inline; the full panel is fetched separately by Wendy's own "Nutrition" tab, and this endpoint resolves and calls that same source so a caller does not have to reverse-engineer it. A nutrient Wendy's does not publish is omitted from the response rather than reported as zero. Category and item slugs come from GET /wendys/categories and GET /wendys/menu.
+- **Params:** `category` (string, **required**) — Category slug from /wendys/categories; `item` (string, **required**) — Item slug from /wendys/menu's items[].slug -- a combo slug is accepted
+
+### `wendys_restaurant`
+
+- **HTTP:** `GET /wendys/restaurant`
+- **What:** Get one Wendy's restaurant's detail by store id. Returns one restaurant's detail looked up by its numeric store id -- the same id GET /wendys/nearby's stores[].store_id returns -- via order.wendys.com's own restaurant-selector API, rather than a locations.wendys.com Yext locator path (see GET /wendys/store, which needs a directory path instead). Publishes richer per-store data than the Yext locator: whether each fulfillment mode (carry-out, dine-in, drive-thru) is physically offered at all (not just currently open, as GET /wendys/nearby's flags reflect), plus feature flags (wifi, mobile order/pay, Coke Freestyle, digital coupons, loyalty, gift cards) and the published week of general and breakfast hours.
+- **Params:** `store_id` (string, **required**) — Numeric store id, e.g. from /wendys/nearby's stores[].store_id
+
+### `wendys_store`
+
+- **HTTP:** `GET /wendys/store`
+- **What:** Get one Wendy's store's detail. Returns one Wendy's store: name, full postal address, phone, coordinates, the published week of general restaurant hours and, separately, drive-thru hours (Wendy's often publishes these on different schedules), which third-party delivery platforms the store's own page links to, and the restaurant id and ordering URL used to start an order there. Store paths come from GET /wendys/directory entries whose is_store is true. Passing a directory path here returns a 404 rather than a hollow record.
+- **Params:** `path` (string, **required**) — Store path from a /wendys/directory child with is_store true
+
+### `wendys_store_menu`
+
+- **HTTP:** `GET /wendys/store-menu`
+- **What:** Get one Wendy's restaurant's full priced/offered menu. Returns one restaurant's own priced, offered item list -- real local pricing (including full combo bundle prices, which GET /wendys/item deliberately does not compute, since a combo's own price varies by what's chosen in each slot) and any store-specific promotional items, rather than Wendy's own generic/average national-menu listing (GET /wendys/menu, /wendys/item). Found via static analysis of Wendy's official Android app and confirmed credential-free: a cold, cookie-less request with just a store id returns real data, no session or account required.
+- **Params:** `store_id` (string, **required**) — Numeric store id, e.g. from /wendys/nearby's stores[].store_id or /wendys/restaurant's store_id
+
+### `wendys_time_slots`
+
+- **HTTP:** `GET /wendys/time-slots`
+- **What:** Get one Wendy's restaurant's available mobile-order time slots. Returns one restaurant's available mobile-order arrival ("check-in") time slots -- the times a caller can schedule a mobile pickup order for, distinct from the restaurant's general open/close hours (GET /wendys/restaurant, /wendys/store). Found via static analysis of Wendy's official Android app and confirmed credential-free: a cold, cookie-less request with just a store id returns real available slots, no session or account required.
+- **Params:** `store_id` (string, **required**) — Numeric store id, e.g. from /wendys/nearby's stores[].store_id or /wendys/restaurant's store_id
+
+## Whataburger (2)
+
+### `whataburger_sitemap`
+
+- **HTTP:** `GET /whataburger/sitemap`
+- **What:** Browse Whataburger's store-URL index. Returns one page of Whataburger's sitemap-declared store index -- about 3,950 URLs at time of writing. Unlike some other store locators in this API, Whataburger publishes a single flat sitemap file rather than a sharded index. Each entry carries a kind: "store" is a restaurant's canonical detail page, "curbside" and "delivery" are separate pages Whataburger publishes for that same restaurant's curbside or delivery service, and "directory" is a state- or city-level listing page with no address of its own. Filter with kind to enumerate one page variant. A page past the end returns an empty list rather than an error, so a caller can walk to exhaustion.
+- **Params:** `kind` (string, optional) — Filter by page kind. One of store, curbside, delivery, directory. Default all.; `page` (integer, optional) — 1-based page (default 1); `page_size` (integer, optional) — Entries per page, 1-500 (default 100)
+
+### `whataburger_store`
+
+- **HTTP:** `GET /whataburger/store`
+- **What:** Get one Whataburger store's detail. Returns one Whataburger store: postal address, coordinates, phone, published week of opening hours, the restaurant services (curbside, delivery) Whataburger lists for it, and a per-channel hours breakdown (dine-in, drive-thru, curbside, delivery) where the channel's hours genuinely differ from the store's top-level hours. Store paths come from GET /whataburger/sitemap -- a store's canonical, curbside and delivery page paths all describe the same physical restaurant and return the same address; the response's own path field always reports the canonical page. Passing a state or city directory path returns a 404 rather than a hollow record. Note Whataburger's ordering/menu site returns no usable response for automated requests, so there is no credential-free menu source and this family is a locator only.
+- **Params:** `path` (string, **required**) — Store path from a /whataburger/sitemap entry
+
 ## Whatnot (3)
 
 ### `whatnot_browse`
@@ -7929,6 +10665,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /whatnot/live/{id}`
 - **What:** Get a Whatnot live show's current shop feed. Returns a Whatnot live show's current shop feed: every product, auction, and giveaway listing currently visible in the show, each with its seller's rating. Public data sourced from Whatnot's own GraphQL API.
 - **Params:** `id` (string, **required**) — Whatnot live show id, e.g. from a browse result's id field
+
+## Wingstop (6)
+
+### `wingstop_delivery_store`
+
+- **HTTP:** `GET /wingstop/delivery-store`
+- **What:** Find the Wingstop store that delivers to an address. Given a delivery address, returns the single Wingstop store that will deliver there, plus its drive time. Returns 404 when no Wingstop store delivers to that address. The returned slug can be passed directly as GET /wingstop/menu's path with service_mode=delivery.
+- **Params:** `address1` (string, **required**) — Delivery address line 1; `city` (string, **required**) — Delivery address city; `country_code` (string, optional) — Delivery address country code. Defaults to US.; `latitude` (number, **required**) — Delivery address latitude; `longitude` (number, **required**) — Delivery address longitude; `postal_code` (string, **required**) — Delivery address postal code; `state` (string, **required**) — Delivery address state (region)
+
+### `wingstop_directory`
+
+- **HTTP:** `GET /wingstop/directory`
+- **What:** Browse the Wingstop store directory. Returns one level of Wingstop's store directory tree. Omit path for the root, which lists the single US country node; descend country to states, states to cities, cities to stores. Each child carries its name, path, url and kind (country, state, city, or store). A child with is_store true (kind store) is a store record rather than another directory level -- pass its path to GET /wingstop/store.
+- **Params:** `path` (string, optional) — Directory path from a previous response's children[].path, e.g. us/tx. Omit for the root.
+
+### `wingstop_flavors`
+
+- **HTTP:** `GET /wingstop/flavors`
+- **What:** Get Wingstop's flavor catalog. Returns Wingstop's full sauce and dry-rub flavor catalog: name, description, image, a 0 (no heat) to 5 (hottest) heat scale, whether it's a dry rub or wet sauce, and new/popular/limited-time badges. Includes retired flavors (is_active false) still present in Wingstop's own feed.
+- **Params:** _none_
+
+### `wingstop_menu`
+
+- **HTTP:** `GET /wingstop/menu`
+- **What:** Get one Wingstop store's priced menu. Returns one Wingstop store's full priced, categorized menu for carryout or delivery: every category, each listing's variants (a standalone item has one variant; a size/flavor family such as "6 pc Wing Combo" has one variant per size or preparation) with price, description and calorie range, plus store-level pricing context (currency, tax rate, prep lead time). Store paths come from GET /wingstop/directory entries whose is_store is true, or a GET /wingstop/store response's own path.
+- **Params:** `path` (string, **required**) — Store path from a /wingstop/directory child with is_store true, or a /wingstop/store response's own path; `service_mode` (string, optional) — One of: carryout, delivery. Defaults to carryout.
+
+### `wingstop_nearby`
+
+- **HTTP:** `GET /wingstop/nearby`
+- **What:** Search Wingstop stores near a coordinate. Returns Wingstop stores within a radius of a coordinate, sorted nearest first, with enough detail per store (address, phone, general hours, fulfillment channels) that a follow-up GET /wingstop/store call is often unnecessary. Each result's slug can be passed directly as GET /wingstop/menu's path.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `radius` (integer, optional) — Search radius in miles, 1-100. Defaults to 20.
+
+### `wingstop_store`
+
+- **HTTP:** `GET /wingstop/store`
+- **What:** Get one Wingstop store's detail. Returns one Wingstop store: name, full postal address, phone, coordinates, its general weekly hours plus a per-channel breakdown (pickup, delivery, takeout, drive-through), which pickup/delivery services it offers, its operating status, price tier and Google Place id. Store paths come from GET /wingstop/directory entries whose is_store is true. Passing a directory path here returns a 404 rather than a hollow record.
+- **Params:** `path` (string, **required**) — Store path from a /wingstop/directory child with is_store true
 
 ## Wish (6)
 
@@ -7967,6 +10741,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /wish/suggest`
 - **What:** Get Wish search suggestions. Returns Wish's own search-suggestion (typeahead) result for a partial search term: a flat list of suggested search terms, no product data. A partial term with no matches returns a normal, empty result rather than an error.
 - **Params:** `query` (string, **required**) — Partial search term
+
+## Wolt (8)
+
+### `wolt_cities`
+
+- **HTTP:** `GET /wolt/cities`
+- **What:** List every city Wolt operates in, with coordinates. Returns Wolt's own live directory of every city it operates in, each with the coordinate pair the rest of the Wolt endpoints take, plus its slug, country codes, and timezone. Every other Wolt endpoint is resolved purely from a coordinate, so this is the discovery step that makes them usable without an external geocoder. Optionally restrict to one country, or pass a reference coordinate to have each city carry its distance and the list returned nearest-first.
+- **Params:** `country` (string, optional) — Optional ISO 3166-1 country code to restrict the directory to, alpha-2 (FI) or alpha-3 (FIN), case-insensitive.; `latitude` (number, optional) — Optional reference latitude. Must be given together with longitude.; `longitude` (number, optional) — Optional reference longitude. Must be given together with latitude.
+
+### `wolt_collections`
+
+- **HTTP:** `GET /wolt/collections`
+- **What:** Get Wolt's curated homepage restaurant/store collections for a location. Returns Wolt's own curated homepage restaurant/store lists for a location (e.g. top-rated, newest, hot-this-week -- whichever collections Wolt's own ops team currently curates for that market), read from Wolt's anonymous homepage endpoint. Each restaurant carries the same fields /wolt/search returns. The response also carries is_serviceable, which says whether Wolt delivers to the requested coordinates at all: false means the coordinates are outside Wolt's delivery coverage, so the empty collections list is a coverage answer rather than a served location whose homepage happens to carry no curated lists.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude
+
+### `wolt_restaurant`
+
+- **HTTP:** `GET /wolt/restaurant`
+- **What:** Get one Wolt restaurant or store's detail. Returns one Wolt restaurant or store's public detail by its slug: name, address, coordinates, timezone, phone, website, rating, currency, price range, cuisine tags, category ids (the values /wolt/search's category parameter accepts), opening hours, delivery hours, delivery methods, pickup availability, order minimum, and service fee estimate.
+- **Params:** `slug` (string, **required**) — Wolt restaurant/store slug, from /wolt/search's slug field
+
+### `wolt_restaurant_availability`
+
+- **HTTP:** `GET /wolt/restaurant/availability`
+- **What:** Get one Wolt restaurant or store's live availability and delivery estimate. Returns one restaurant/store's live availability for a delivery coordinate: whether it is open and online right now, the next open and close times, delivery and pickup time estimates in minutes, the delivery fee, the order minimum, the venue's distance, and any discount campaign labels Wolt currently shows on its public page. Coordinates are optional but change the answer materially -- Wolt resolves delivery availability, the fee, the estimate, and the distance against them; without coordinates the venue's generic, location-independent status is returned and delivery_method_default is UNAVAILABLE.
+- **Params:** `latitude` (number, optional) — Optional delivery-address latitude. Must be given together with longitude.; `longitude` (number, optional) — Optional delivery-address longitude. Must be given together with latitude.; `slug` (string, **required**) — Wolt restaurant/store slug, from /wolt/search's slug field
+
+### `wolt_restaurant_menu`
+
+- **HTTP:** `GET /wolt/restaurant/menu`
+- **What:** Get one Wolt restaurant or store's menu. Returns one restaurant/store's menu grouped into categories, plus its restaurant summary. Each item carries a name, description, price, dietary tags, and image, read from Wolt's own anonymous menu API in a single call. The response's loading_strategy field reports whether the items are included: full means every category carries its items, while partial means Wolt does not bulk-load this venue's assortment, so the categories come back real but with empty item lists and the venue's items are reachable only by keyword through /wolt/restaurant/menu/search. Large stores of any type -- supermarkets, pharmacies, drugstores, DIY and toy stores -- are commonly partial; restaurants are full.
+- **Params:** `slug` (string, **required**) — Wolt restaurant/store slug, from /wolt/search's slug field
+
+### `wolt_restaurant_menu_search`
+
+- **HTTP:** `GET /wolt/restaurant/menu/search`
+- **What:** Search one Wolt restaurant or store's menu by keyword. Searches one restaurant's or store's own items by keyword, using Wolt's own in-venue item search. This is the only way to reach the items of a large grocery or retail store: /wolt/restaurant/menu returns those venues' categories with no items, because Wolt itself only loads such an assortment a slice at a time. Matching works across languages, so an English keyword finds locally-named products. Each item carries a name, description, price, dietary tags, image, and -- for packaged retail products -- a barcode, pack size, and per-unit comparison price. A keyword is required; a no-match keyword returns an empty item list rather than an error.
+- **Params:** `limit` (integer, optional) — Max items returned. Defaults to 30, maximum 100.; `query` (string, **required**) — Keyword to match against this venue's own item names and descriptions; `slug` (string, **required**) — Wolt restaurant/store slug, from /wolt/search's slug field
+
+### `wolt_search`
+
+- **HTTP:** `GET /wolt/search`
+- **What:** Search Wolt restaurants and stores near a coordinate. Returns restaurants and stores near a coordinate, optionally filtered by a keyword or browsed by category. With none of those, this reads Wolt's own plain location browse; with a query it uses Wolt's own keyword search across restaurant/store names, dishes, and cuisines; with a category it browses Wolt's own per-category listing (the same page a homepage cuisine tile links to) -- call /wolt/search/filters for the current, complete, location-scoped list of valid category values. category and query cannot be combined. A keyword search additionally accepts sort, product_line, and open_now; those three apply to keyword search only and return a 400 without query. Each result carries its slug (the value the restaurant and menu endpoints take), name, address, coordinates, tags, price range, rating, and delivery estimate; the two browse modes additionally carry each venue's own category ids. The response also carries is_serviceable, which says whether Wolt delivers to the requested coordinates at all: false means the coordinates are outside Wolt's delivery coverage, so the empty results list is a coverage answer rather than a no-matches answer. A keyword that simply matches nothing inside a covered area returns an empty list with is_serviceable true. Call /wolt/cities for the coordinates of every city Wolt operates in.
+- **Params:** `category` (string, optional) — Optional Wolt category id to browse by instead of a keyword search, e.g. pizza, sushi, vegan. Call /wolt/search/filters for the current, complete, location-scoped list of valid values. Cannot be combined with query. A value Wolt does not recognize at all returns a 404; a real category this particular market does not use returns an empty list, since the taxonomy is location-scoped and markets differ.; `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Max restaurants/stores returned. Defaults to 30, maximum 100.; `longitude` (number, **required**) — Search center longitude; `open_now` (boolean, optional) — When true, restrict results to venues currently delivering. Only applies together with query.; `product_line` (string, optional) — Optional store-type filter. Only applies together with query. Which store types a market actually stocks varies by country; one absent from the searched market returns no results rather than an error.; `query` (string, optional) — Optional keyword to search restaurant/store names, dishes, or cuisines by. Cannot be combined with category.; `sort` (string, optional) — Optional result ordering. Only applies together with query -- Wolt exposes sorting on its keyword search only, not on its plain browse or category listings.
+
+### `wolt_search_filters`
+
+- **HTTP:** `GET /wolt/search/filters`
+- **What:** Get Wolt's live search category catalog for a location. Returns the current, location-scoped catalog of every value /wolt/search's category parameter accepts, each with a live restaurant count when Wolt's own homepage currently features that category as one of its curated tiles -- the same data Wolt's own search page's cuisine tiles are populated from.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude
 
 ## X (3)
 
@@ -8780,6 +11604,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Zara search-box suggestions for a partial keyword. Returns Zara's own search-suggestion (typeahead) results for a partial keyword, the same suggestions shown while typing into Zara's search box. A nonsense query returns a normal response with an empty suggestions array rather than a fallback/recommended set.
 - **Params:** `query` (string, **required**) — Partial search keyword
 
+## Zaxbys (3)
+
+### `zaxbys_menu`
+
+- **HTTP:** `GET /zaxbys/menu`
+- **What:** Get Zaxby's national reference menu. Returns Zaxby's full national reference menu: every category and product, with description, calories, image, and a full recursive customization tree (size/protein/sauce choices, each with its own real price delta). This is national reference data, not store-priced -- most items list cost 0 because real pricing is store-specific and requires a signed-in ordering session this endpoint does not have. Many items price entirely through a required customization selection rather than a base cost, so cost 0 on an item is expected, not a bug.
+- **Params:** _none_
+
+### `zaxbys_nearby`
+
+- **HTTP:** `GET /zaxbys/nearby`
+- **What:** Find Zaxby's stores near a coordinate. Returns Zaxby's stores within a radius of a coordinate, nearest first: full address, phone, coordinates, current open status, per-channel hours (dine-in, drive-thru, carryout, pickup, delivery), and fulfillment/amenity flags. Each result's store_id pairs with GET /zaxbys/store for the same record on its own.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Maximum stores to return, 1-50 (default 10); `longitude` (number, **required**) — Search center longitude; `radius` (integer, optional) — Search radius in miles, 1-100 (default 25)
+
+### `zaxbys_store`
+
+- **HTTP:** `GET /zaxbys/store`
+- **What:** Get one Zaxby's store's full detail. Returns one Zaxby's store's full detail by its store id: address, phone, coordinates, current open status, per-channel hours, and fulfillment/amenity flags. store_id comes from a GET /zaxbys/nearby result.
+- **Params:** `store_id` (integer, **required**) — zapi.zaxbys.com's own numeric store id, from a /zaxbys/nearby result
+
 ## Zillow (3)
 
 ### `zillow_autocomplete`
@@ -8799,3 +11643,35 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /zillow/search`
 - **What:** Search Zillow listings. Returns normalized Zillow public listing search results. Callers must pass complete map bounds from autocomplete when available, or a region id fallback.
 - **Params:** `east` (number, optional) — Map east bound from autocomplete; `location` (string, **required**) — Display location; `north` (number, optional) — Map north bound from autocomplete; `page` (integer, optional) — 1-based page; `region_id` (integer, optional) — Zillow region id from autocomplete, used when complete bounds are not provided; `region_type` (integer, optional) — Zillow region type from autocomplete, used with region_id fallback; `south` (number, optional) — Map south bound from autocomplete; `status` (string, optional) — Search context. Allowed values: for_sale (aliases sale, for-sale), for_rent (aliases rent, for-rent), sold; `west` (number, optional) — Map west bound from autocomplete
+
+## Zomato (5)
+
+### `zomato_collection`
+
+- **HTTP:** `GET /zomato/collection`
+- **What:** Get one Zomato curated collection's restaurant list. Returns one Zomato curated collection's restaurant list (name, cuisines, locality, rating, and headline review count where Zomato's own response includes them). Reads the same underlying page-render source as /zomato/restaurant and /zomato/restaurant/menu, pointed at the collection's own page instead of a restaurant's.
+- **Params:** `url` (string, **required**) — Canonical public Zomato collection URL, from /zomato/collections's url field
+
+### `zomato_collections`
+
+- **HTTP:** `GET /zomato/collections`
+- **What:** List Zomato's curated restaurant collections for a city. Returns Zomato's own curated "best of" restaurant collections for a city (e.g. "Best pubs & bars", "Iconic restaurants", "Insta-worthy spots") -- distinct editorial groupings of restaurants, not a keyword/geo search. Each collection's url is the value /zomato/collection takes. Zomato curates collections for larger cities only; a real city it curates none for returns a 404.
+- **Params:** `city` (string, **required**) — Zomato public city slug, e.g. \
+
+### `zomato_restaurant`
+
+- **HTTP:** `GET /zomato/restaurant`
+- **What:** Get one Zomato restaurant's detail. Returns one Zomato restaurant's public detail by its canonical URL: name, address, locality, city, postcode, coordinates, phone, cuisines, headline rating plus Zomato's separate dining and delivery rating aggregates, the full weekly opening-hours table, open/closed and delivery-only/dark-kitchen status, and delivery metadata (ETA, minimum order, pickup availability). Zomato has no lighter restaurant-detail-only source -- this reads the same upstream as /zomato/restaurant/menu, just without the menu items.
+- **Params:** `url` (string, **required**) — Canonical public Zomato restaurant URL, from /zomato/search's url field
+
+### `zomato_restaurant_menu`
+
+- **HTTP:** `GET /zomato/restaurant/menu`
+- **What:** Get one Zomato restaurant's menu. Returns one restaurant's menu grouped into categories, plus its restaurant summary. A category is named by Zomato's own sub-heading when it has one (e.g. "Veg Burgers") and otherwise by the menu section it sits under (e.g. "Burgers"), since most restaurants name only the section level. Each item carries a name, description, veg/non-veg flag, image, and price when Zomato's own anonymous response includes one -- confirmed live, item prices are commonly gated behind login for the delivery-ordering flow, so price is frequently absent even though the item itself is public.
+- **Params:** `url` (string, **required**) — Canonical public Zomato restaurant URL, from /zomato/search's url field
+
+### `zomato_search`
+
+- **HTTP:** `GET /zomato/search`
+- **What:** Search Zomato restaurants in a city. Returns restaurants in a Zomato city, optionally filtered by a keyword. With no query this reads Zomato's own city-wide delivery listing, which pages through an opaque cursor (~12 restaurants per page: pass a response's next_cursor back as cursor until has_more is false, which marks the end of the city's listing) and accepts Zomato's own sort and Pure Veg filters; with a query it uses Zomato's own keyword search across restaurant names, dishes, and cuisines, which returns a single unpaginated result set. Each restaurant carries its url (the value the restaurant and menu endpoints take), name, cuisines, cost for two, rating, distance from the city location, delivery time, whether Zomato currently delivers from it, whether the placement is promoted (sponsored), and — on the plain city-wide listing — Zomato's own headline offer badges.
+- **Params:** `city` (string, **required**) — Zomato public city slug, e.g. \; `cursor` (string, optional) — Opaque pagination cursor from a previous city-wide listing response's next_cursor. Carries its own sort/pure_veg selection, so pass it on its own.; `pure_veg` (boolean, optional) — When true, restricts the city-wide listing to restaurants Zomato itself marks Pure Veg (used only when query is omitted); `query` (string, optional) — Optional keyword to search restaurant names, dishes, or cuisines by. Omit for the plain city-wide delivery listing.; `sort` (string, optional) — Sort order for the city-wide listing (used only when query is omitted)

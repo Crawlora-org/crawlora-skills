@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**12 endpoints across 2 platform group(s).**
+**15 endpoints across 2 platform group(s).**
 
 ## Anime (9)
 
@@ -64,7 +64,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List an anime's staff. Returns the people credited on an anime (name, production role, occupations, image), paginated. Credential-free public AniList data.
 - **Params:** `id` (string, **required**) — AniList anime id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50
 
-## Manga (3)
+## Manga (6)
 
 ### `manga_rankings`
 
@@ -83,3 +83,21 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /manga/title/{id}`
 - **What:** Get a manga. Returns a normalized manga by AniList id: titles, MyAnimeList id, scores, popularity, favourites, format, status, chapters, volumes, genres, ranked tags, dates, description, and images. Pass mal=true to additionally enrich the response with the MyAnimeList community score (mal block: score on a 0-10 scale, plus scored-by count), scraped credential-free from the public MAL page. Credential-free public AniList data.
 - **Params:** `id` (string, **required**) — AniList manga id; `mal` (boolean, optional) — Enrich with the MyAnimeList community score (adds one fetch; omitted when the title has no MAL id)
+
+### `manga_title_characters`
+
+- **HTTP:** `GET /manga/title/{id}/characters`
+- **What:** List a manga's characters. Returns a manga's cast (character name, native name, billed role, image, favourites), paginated. The AniList id space is shared between anime and manga but the two do not overlap, so an anime id here returns 404 -- use GET /anime/title/{id}/characters for those. Credential-free public AniList data.
+- **Params:** `id` (string, **required**) — AniList manga id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50
+
+### `manga_title_recommendations`
+
+- **HTTP:** `GET /manga/title/{id}/recommendations`
+- **What:** List titles recommended alongside a manga. Returns the titles AniList users recommend alongside a manga, most-recommended first, each with its community rating and full title record. Recommendations can cross media types -- a manga's list may include anime -- so read each entry's own type rather than assuming manga. An anime id here returns 404 -- use GET /anime/title/{id}/recommendations for those. Credential-free public AniList data.
+- **Params:** `id` (string, **required**) — AniList manga id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50
+
+### `manga_title_staff`
+
+- **HTTP:** `GET /manga/title/{id}/staff`
+- **What:** List a manga's staff credits. Returns the people credited on a manga -- author, artist, assistants, and per-language translation and lettering credits -- with each person's role, occupations and image, paginated. Manga roles carry detail anime credits do not: a long-running series records volume ranges per credit (e.g. "Story & Art (vols 1-41)", "Supervisor (vols 41- )"). An anime id here returns 404 -- use GET /anime/title/{id}/staff for those. Credential-free public AniList data.
+- **Params:** `id` (string, **required**) — AniList manga id; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 10, max 50

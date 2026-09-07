@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**48 endpoints across 9 platform group(s).**
+**50 endpoints across 9 platform group(s).**
 
 ## Indeed (3)
 
@@ -104,7 +104,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Tesla Jobs listing. Searches Tesla's public careers site (tesla.com/careers) via its own careers-state JSON endpoint. Tesla's own endpoint always returns its entire global job dataset regardless of query parameters; this filters and paginates that snapshot server-side. Listings carry identity/department/location metadata only — call the job endpoint for the full description, responsibilities, and requirements.
 - **Params:** `location` (string, optional) — Filter by location, case-insensitive substring match; `page` (integer, optional) — Page number, 1-based; `page_size` (integer, optional) — Results per page, up to 100; `query` (string, optional) — Filter by title or department, case-insensitive substring match
 
-## Jobs (28)
+## Jobs (30)
 
 ### `jobs_ashby_board`
 
@@ -195,6 +195,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /jobs/personio/feed`
 - **What:** List a company's Personio job board. Lists a company's public Personio board feed (XML), normalized to the shared Job shape with detail inline, optionally filtered by department, location, or remote. The company is the Personio subdomain from its careers URL https://{company}.jobs.personio.de/. Credential-free public ATS feed.
 - **Params:** `company` (string, **required**) — Personio subdomain (careers URL); `department` (string, optional) — Filter: department contains; `location` (string, optional) — Filter: location contains; `remote` (boolean, optional) — Filter by remote (true or false)
+
+### `jobs_phenom_board`
+
+- **HTTP:** `GET /jobs/phenom/board`
+- **What:** Search a Phenom People tenant's job board. Searches a company's public Phenom People career site (a white-labeled domain such as careers.whataburger.com or jobs.cvshealth.com — Phenom serves the search-results page as server-rendered HTML with the job data embedded inline, not a JSON API, but this is still credential-free public data with no auth, cookie, or session required). domain is the tenant's careers domain from its careers URL. Paged via offset/limit; limit is a best-effort page-size hint some tenants ignore, so count always reflects what actually came back.
+- **Params:** `category` (string, optional) — Filter: category contains; `domain` (string, **required**) — Phenom tenant careers domain (careers URL); `keywords` (string, optional) — Free-text keyword search; `limit` (integer, optional) — Page size hint, default 10, max 100 (some tenants ignore this and return their own configured page size regardless); `location` (string, optional) — Filter: location contains; `offset` (integer, optional) — Page offset, default 0; `sort` (string, optional) — Sort order, default relevant
+
+### `jobs_phenom_job`
+
+- **HTTP:** `GET /jobs/phenom/job`
+- **What:** Get a single Phenom People job. Returns a single Phenom People job with its full HTML/text description, category, and apply URL. domain is the tenant's careers domain (as in the board endpoint); id is the jobId/reqId from a board listing (e.g. JR10002958).
+- **Params:** `domain` (string, **required**) — Phenom tenant careers domain; `id` (string, **required**) — Phenom job id from a board listing
 
 ### `jobs_pinpoint_board`
 

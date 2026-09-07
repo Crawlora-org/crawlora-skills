@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**181 endpoints across 28 platform group(s).**
+**191 endpoints across 28 platform group(s).**
 
 ## Amazon (3)
 
@@ -822,7 +822,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Zara search-box suggestions for a partial keyword. Returns Zara's own search-suggestion (typeahead) results for a partial keyword, the same suggestions shown while typing into Zara's search box. A nonsense query returns a normal response with an empty suggestions array rather than a fallback/recommended set.
 - **Params:** `query` (string, **required**) — Partial search keyword
 
-## Adidas (5)
+## Adidas (7)
 
 ### `adidas_product`
 
@@ -830,10 +830,22 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get an Adidas product. Returns normalized product-detail data for one Adidas SKU: name, brand, category, description, pricing (current/standard/sale), images, and every purchasable size variant. product_id is the Adidas SKU (e.g. JI0397), taken from a search result's products[].id field or the trailing segment of an Adidas product page URL. An unknown product_id returns a not-found error.
 - **Params:** `product_id` (string, **required**) — Adidas SKU/product id, from a search result's products[].id field
 
+### `adidas_product_review_topics`
+
+- **HTTP:** `GET /adidas/product/review-topics`
+- **What:** Get Adidas review topics for a product. Returns the topics an Adidas product model's customer reviews can be filtered by -- the "filter by topic" chips the product page shows, commonly satisfaction, comfort, color, purchase, fit, appearance, quality and style. Feed a topics[].topic value back to /adidas/product/reviews as its topic parameter to return only reviews about that aspect. The topic vocabulary is per model, not a fixed list: a shoe exposes fit and comfort topics that an accessory does not, so read it per model rather than hard-coding it. model_number is the Adidas model number (e.g. SAMBAU2312) -- NOT the SKU: take it from an adidas_search result's products[].model_number field. A model with no reviews, including a well-formed but unrecognized model_number, returns an empty topics list rather than an error. Note the label field is a display form of topic, not translated text: Adidas returns the same English values for every locale on this route.
+- **Params:** `locale` (string, optional) — Locale accepted for consistency with the reviews endpoint. Allowed values: cs_CZ, da_DK, de_AT, de_CH, de_DE, el_GR, en_AE, en_AU, en_CA, en_GB, en_IE, en_IL, en_IN, en_NZ, en_PH, en_SG, en_US, en_ZA, es_AR, es_CL, es_CO, es_ES, es_MX, es_PE, fr_BE, fr_CA, fr_CH, fr_FR, id_ID, it_CH, it_IT, ja_JP, ko_KR, nl_BE, nl_NL, pl_PL, pt_BR, pt_PT, ru_RU, sk_SK, sv_SE, th_TH, tr_TR, zh_HK, zh_TW. Defaults to en_US. Note Adidas returns the same English topic labels regardless of this value.; `model_number` (string, **required**) — Adidas model number, from an adidas_search result's products[].model_number field
+
+### `adidas_product_reviews`
+
+- **HTTP:** `GET /adidas/product/reviews`
+- **What:** Get Adidas product reviews. Returns one page of customer reviews for an Adidas product model, plus the model's rating summary: overall rating, star histogram, percentage of reviewers who recommend it, per-attribute averages (Size, Width, Comfort, Quality with their own scale labels), and Adidas's AI-generated review digest when one exists. Each review carries the rating, headline, body, author nickname, purchased colorway, helpful/not-helpful vote counts, badges, customer photos, and submission time. model_number is the Adidas model number (e.g. SAMBAU2312) -- NOT the SKU: take it from an adidas_search result's products[].model_number field, which is a different value from products[].id. Reviews are returned 10 per page. Reviews are scoped to review text written in the requested locale's language, and most of the US catalog's reviews are English, so a non-English locale commonly returns rating statistics and a localized summary with an empty reviews list. A model with no reviews -- including a well-formed but unrecognized model_number -- returns an empty reviews list rather than an error, because Adidas answers 200 with a zero count rather than 404.
+- **Params:** `locale` (string, optional) — Locale for the review-summary language, the secondary-rating scale labels, and the language of the reviews returned. Allowed values: cs_CZ, da_DK, de_AT, de_CH, de_DE, el_GR, en_AE, en_AU, en_CA, en_GB, en_IE, en_IL, en_IN, en_NZ, en_PH, en_SG, en_US, en_ZA, es_AR, es_CL, es_CO, es_ES, es_MX, es_PE, fr_BE, fr_CA, fr_CH, fr_FR, id_ID, it_CH, it_IT, ja_JP, ko_KR, nl_BE, nl_NL, pl_PL, pt_BR, pt_PT, ru_RU, sk_SK, sv_SE, th_TH, tr_TR, zh_HK, zh_TW. Defaults to en_US.; `model_number` (string, **required**) — Adidas model number, from an adidas_search result's products[].model_number field; `page` (integer, optional) — One-based page number, 10 reviews per page, defaults to 1; `rating` (integer, optional) — Return only reviews with this star rating. Allowed values: 1, 2, 3, 4, 5. Omitted returns every rating.; `topic` (string, optional) — Return only reviews about one topic. Valid values are per-model -- read them from /adidas/product/review-topics for the same model_number (commonly satisfaction, comfort, color, purchase, fit, appearance, quality, style). An unrecognized topic returns a 400 listing the model's own topics.
+
 ### `adidas_search`
 
 - **HTTP:** `GET /adidas/search`
-- **What:** Search or browse Adidas products. Searches Adidas.com product listings by keyword, or browses a category listing by taxonomy slug, with real pagination and sort options. Exactly one of query or category is required. Returns normalized product summaries (title, price, rating, images, color variants) plus facet filter groups, sort options, and (for category browse) a breadcrumb trail. Keyword search is best-effort relevance, not a guaranteed match: an obscure keyword returns whatever Adidas's own search index surfaces. A genuinely empty keyword search returns an empty product list, and requesting a page beyond the available result pages (or an unknown category) returns a not-found error. Category values are the path segment after /us/ in an Adidas category URL (e.g. women-athletic_sneakers); they can also be read from the url fields of a search/category response's own filters and breadcrumbs.
+- **What:** Search or browse Adidas products. Searches Adidas.com product listings by keyword, or browses a category listing by taxonomy slug, with real pagination and sort options. Exactly one of query or category is required. Returns normalized product summaries (title, price, rating, images, color variants) plus facet filter groups, sort options, and (for category browse) a breadcrumb trail. Keyword search is best-effort relevance, not a guaranteed match: an obscure keyword returns whatever Adidas's own search index surfaces. A genuinely empty keyword search returns an empty product list, and requesting a page beyond the available result pages (or an unknown category) returns a not-found error. Category values are the path segment after /us/ in an Adidas category URL (e.g. women-athletic_sneakers); they can also be read from the url fields of a search/category response's own filters and breadcrumbs. Facets are applied by composing them into the category slug rather than by a separate parameter: each filters[].values[].slug is a token you splice into the category value (e.g. category=women-black-athletic_sneakers applies the Color=Black facet, and category=women-athletic_sneakers-prime applies Shipping=PRIME). Use filters[].key (the facet's stable name, e.g. searchcolor) rather than filters[].id, which is an opaque per-deployment UUID that cannot be used to build a request. Note the token's position within the slug varies by facet, so compose from a slug you have seen rather than assuming a fixed order.
 - **Params:** `category` (string, optional) — Category/taxonomy slug, the path segment after /us/ in an Adidas category URL. Exactly one of query or category is required.; `page` (integer, optional) — One-based page number, defaults to 1; `query` (string, optional) — Search keyword. Exactly one of query or category is required.; `sort` (string, optional) — Sort order. Allowed values: price-low-to-high, newest-to-oldest, top-sellers, price-high-to-low. Omitted means relevance.
 
 ### `adidas_store`
@@ -846,7 +858,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /adidas/stores`
 - **What:** Find nearby Adidas stores. Returns Adidas physical retail stores nearest to a coordinate, sourced from Adidas's own store-finder API: name, address, phone, coordinates, distance in miles, opening hours, and in-store feature flags. lat and lng are both required. Adidas's upstream ignores a caller-supplied radius and returns the nearest ~20 stores ordered by distance. A location with no stores returns an empty list rather than an error.
-- **Params:** `lat` (number, **required**) — Latitude, -90 to 90; `lng` (number, **required**) — Longitude, -180 to 180; `page` (integer, optional) — Zero-based page number, defaults to 0
+- **Params:** `lat` (number, **required**) — Latitude, -90 to 90; `lng` (number, **required**) — Longitude, -180 to 180; `page` (integer, optional) — Accepted only as 0. Adidas's store finder returns every nearby store (up to 20) in a single page, so any higher value is always empty and is rejected as an invalid parameter.
 
 ### `adidas_suggest`
 
@@ -922,7 +934,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Best Buy's physical stores in one city. Returns Best Buy's physical store locations in one city (name, address, phone, coordinates, rating, hours), sourced from Best Buy's own SEO store directory. state is one of the 50 US state codes plus dc and pr: `al`, `ak`, `az`, `ar`, `ca`, `co`, `ct`, `de`, `dc`, `fl`, `ga`, `hi`, `id`, `il`, `in`, `ia`, `ks`, `ky`, `la`, `me`, `md`, `ma`, `mi`, `mn`, `ms`, `mo`, `mt`, `ne`, `nv`, `nh`, `nj`, `nm`, `ny`, `nc`, `nd`, `oh`, `ok`, `or`, `pa`, `pr`, `ri`, `sc`, `sd`, `tn`, `tx`, `ut`, `vt`, `va`, `wa`, `wv`, `wi`, `wy`. city is free text matched case-insensitively against that state's own directory (e.g. "Chicago").
 - **Params:** `city` (string, **required**) — City name; `state` (string, **required**) — Two-letter state/territory code
 
-## Home Depot (5)
+## Home Depot (6)
 
 ### `homedepot_categories`
 
@@ -933,8 +945,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `homedepot_category`
 
 - **HTTP:** `GET /homedepot/category`
-- **What:** Browse a Home Depot category or brand page. Returns one Home Depot category or brand browse page's product grid (page 1 only): normalized products with title, image, model, current/original price, and rating/review count, plus the category's total result count. path is the segment of a /b/ URL after "/b/", e.g. "Tools-Power-Tools-Drills-Impact-Drivers/N-5yc1vZc29x"; a full https://www.homedepot.com/b/... URL or a "/b/..." path is also accepted. An unrecognized or blocked path returns an upstream error rather than an empty result.
-- **Params:** `path` (string, **required**) — Home Depot category/brand browse path, e.g. \
+- **What:** Browse a Home Depot category or brand page. Returns one page of a Home Depot category or brand browse page's product grid: normalized products with title, image, model, current/original price, and rating/review count, plus the category's total result count and the refinement facets the page offers. path is the segment of a /b/ URL after "/b/", e.g. "Tools-Power-Tools-Drills-Impact-Drivers/N-5yc1vZc29x"; a full https://www.homedepot.com/b/... URL or a "/b/..." path is also accepted. sort selects the result ordering and is one of best_match, top_sellers, top_rated, price_low_to_high, price_high_to_low, most_popular, delivery_date; omit it to keep the site's default ordering. page is a 1-indexed page number (default 1, maximum 42), 24 products per page. Each returned facet's path is directly usable as this endpoint's own path parameter to drill down. An unrecognized or blocked path returns an upstream error rather than an empty result.
+- **Params:** `page` (integer, optional) — 1-indexed page number, default 1, maximum 42 (24 products per page); `path` (string, **required**) — Home Depot category/brand browse path, e.g. \; `sort` (string, optional) — Result ordering. One of: best_match, top_sellers, top_rated, price_low_to_high, price_high_to_low, most_popular, delivery_date. Omit for the site's default ordering
 
 ### `homedepot_product`
 
@@ -953,6 +965,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /homedepot/search`
 - **What:** Home Depot keyword search. Returns one page (up to 24 products) of a Home Depot keyword search's product listing: normalized products with title, image, model, current/original price, and rating/review count, plus the search's total result count. q is free-text search keywords, e.g. "impact driver". page is a 1-indexed page number (default 1). An unrecognized/blocked query returns an upstream error rather than an empty result.
 - **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `q` (string, **required**) — Free-text search keywords, e.g. \
+
+### `homedepot_suggest`
+
+- **HTTP:** `GET /homedepot/suggest`
+- **What:** Home Depot search suggestions. Returns Home Depot's own search-box typeahead suggestions for a partial query, in the site's own ranking order. term is the partial search text, e.g. "drill". Each suggestion's term is directly usable as GET /homedepot/search's q parameter. A term that matches nothing returns an empty suggestion list rather than an error.
+- **Params:** `term` (string, **required**) — Partial search text, e.g. \
 
 ## Sephora (7)
 
@@ -1106,7 +1124,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get IKEA search-box typeahead suggestions. Returns IKEA's own search-box typeahead result for a partial or full query: suggested query completions with their own match counts, plus a small number of top matching products. A query with no matches returns a clean empty response.
 - **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code; `q` (string, **required**) — Partial or full search term; `size` (integer, optional) — Top-product count (1-20)
 
-## Chewy (7)
+## Chewy (14)
+
+### `chewy_brands`
+
+- **HTTP:** `GET /chewy/brands`
+- **What:** List Chewy's brand directory. Returns one page of Chewy's full brand directory -- roughly 7,600 brands -- with each brand's id, name, Chewy's own written description, image, parent-catalog group, and its child brands where a brand umbrellas others (Purina lists 27). This is the whole catalog of brands, unlike chewy_facets, which only reports the brands present in one category's listing. Pass name to look up a single brand by exact name, case-insensitive; it is an exact match upstream, not a search, so "Purina" matches while "purina pro" does not. To filter products by a brand, pass the brand's NAME to chewy_category or chewy_search as filter=brand_facet:<name> -- facet_id is the join key onto chewy_facets' own option ids and is not accepted by the filter parameter.
+- **Params:** `limit` (integer, optional) — Brands per page, 1 to 500 (default 100).; `name` (string, optional) — Return only the brand with this exact name, case-insensitive. Exact match, not a search.; `page` (integer, optional) — Page number, 1-based (default 1).
 
 ### `chewy_categories`
 
@@ -1117,8 +1141,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `chewy_category`
 
 - **HTTP:** `GET /chewy/category`
-- **What:** Browse a Chewy category listing. Returns one page (36 products) of a Chewy category/browse listing's product grid (price, autoship price/discount, stock, rating, images), plus embedded facets and breadcrumbs. group_id is Chewy's own numeric category id -- the trailing id segment of a chewy.com/b/<slug>-<id> browse URL, e.g. 294 for /b/dry-food-294. Every breadcrumbs[].group_id and facets[].options[].value in a response is a ready-to-use group_id for a follow-up call, so a caller can discover the full category taxonomy starting from a known category. A group_id Chewy does not recognize returns a 404 rather than an unfiltered listing. sort and filter narrow/reorder the listing; every facets[].value paired with one of that facet's options[].value from any prior response is a valid filter key:value pair (e.g. brand, breed size, flavor, price range, customer rating -- whichever facets that category exposes).
-- **Params:** `filter` (array, optional) — Repeatable, up to 10. Each value is \; `group_id` (string, **required**) — Chewy's numeric category id, e.g. \; `page` (integer, optional) — Page number, 36 products per page (default 1); `sort` (string, optional) — Sort order. One of byRelevance, byNewest, byPopularity, byLowestPrice, byHighestPrice, byRating, byRatingCount. Defaults to Chewy's own relevance ordering when omitted.
+- **What:** Browse a Chewy category listing. Returns one page (36 products) of a Chewy category/browse listing's product grid (price, autoship price/discount, stock, rating, images), plus embedded facets and breadcrumbs. group_id is Chewy's own numeric category id -- the trailing id segment of a chewy.com/b/<slug>-<id> browse URL, e.g. 294 for /b/dry-food-294. Every breadcrumbs[].group_id and facets[].options[].value in a response is a ready-to-use group_id for a follow-up call, so a caller can discover the full category taxonomy starting from a known category. A group_id Chewy does not recognize returns a 404 rather than an unfiltered listing. sort and filter narrow/reorder the listing; every facets[].value paired with one of that facet's options[].value from any prior response is a valid filter key:value pair (e.g. brand, breed size, flavor, price range, customer rating -- whichever facets that category exposes). Set include_content to also return the category's curated editorial content -- Chewy's own FAQ question/answer pairs, the rich category description, and the SEO page title and meta description; it costs no extra upstream call and is omitted entirely when not requested. A keyword search carries none of this content, so it is a category-only addition.
+- **Params:** `filter` (array, optional) — Repeatable, up to 10. Each value is \; `group_id` (string, **required**) — Chewy's numeric category id, e.g. \; `include_content` (boolean, optional) — Also return the category's curated editorial content -- Chewy's own FAQ question/answer pairs, the rich category description, and the SEO page title/meta description. Costs no extra upstream call. Omitted entirely when false (the default).; `page` (integer, optional) — Page number, 36 products per page (default 1); `sort` (string, optional) — Sort order. One of byRelevance, byNewest, byPopularity, byLowestPrice, byHighestPrice, byRating, byRatingCount. Defaults to Chewy's own relevance ordering when omitted.
+
+### `chewy_facets`
+
+- **HTTP:** `GET /chewy/facets`
+- **What:** List a Chewy category or search's refinement options. Returns the full set of refinement options (facets) a Chewy category or keyword search can be narrowed by -- brand, sub-category, lifestage, food form, breed size, special diet, health feature, flavor, ingredient, packaging type, price band, customer rating, and whichever other dimensions that listing exposes -- with each option's product count. No products are returned, so this is a much smaller call than chewy_category/chewy_search when only the option set is wanted. The Brand dimension is effectively Chewy's brand directory for the requested listing: each brand option carries its product count and, where Chewy publishes one, its own chewy.com/brands/<slug>-<id> landing-page slug in seo_hvf_slug. Exactly one of group_id or q is required. Every facets[].value paired with one of that facet's options[].value is a ready-to-use filter key:value pair for this endpoint, chewy_category, and chewy_search alike; passing filter here narrows the listing first, so the returned counts describe the already-narrowed result set. A group_id Chewy does not recognize returns a 404 rather than an empty option set.
+- **Params:** `filter` (array, optional) — Repeatable, up to 10. Each value is \; `group_id` (string, optional) — Chewy's numeric category id, e.g. \; `q` (string, optional) — Free-text search keywords to return refinement options for, e.g. \
 
 ### `chewy_gtin_lookup`
 
@@ -1126,11 +1156,35 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Resolve Chewy GTIN/UPC barcodes to part numbers. Resolves a batch of up to 20 GTIN/UPC barcodes to their Chewy part numbers in one call. gtins is a comma-separated list of barcodes, e.g. "192268541316". A barcode Chewy does not recognize is omitted from part_numbers and listed in not_found rather than causing the whole call to fail. The resolved part_numbers values feed directly into chewy_product/chewy_products.
 - **Params:** `gtins` (string, **required**) — Comma-separated GTIN/UPC barcodes, up to 20
 
+### `chewy_inventory`
+
+- **HTTP:** `GET /chewy/inventory`
+- **What:** Look up live warehouse inventory for a batch of Chewy products. Returns Chewy's live warehouse inventory position for up to 20 products in one call, keyed by part number: the availability status, total units on hand, units inbound/in progress, units already reserved against unshipped orders, and the quantity actually available to the storefront. This is the only Chewy surface that carries real quantities -- every other endpoint in this family reports stock as a single boolean, so "36 units left" and "84,386 units left" are indistinguishable there. Quantities are live and move between calls. Part numbers Chewy does not return inventory for are reported in not_found; if none resolve the response is a 404.
+- **Params:** `part_numbers` (string, **required**) — Comma-separated Chewy part numbers, up to 20 per request, e.g. \
+
+### `chewy_item_attributes`
+
+- **HTTP:** `GET /chewy/item-attributes`
+- **What:** Look up a batch of Chewy products' structured attributes and handling flags. Returns Chewy's own specification table for up to 20 products in one call, keyed by part number -- the structured attribute list (lifestage, pet type, product type, material, made-in country, packaging type, flavor, defining size, plus long-form key-benefits and cautions copy), together with the handling and compliance flags that govern how an item ships (pharmaceutical, prescription vet-diet, frozen, refrigerated, single-tablet, gift card), its bundle structure and component SKUs, its autoship eligibility/discount and preset reorder cadence, its merchandising classification path, and the numeric category group ids it belongs to (each usable directly as chewy_category's group_id). This complements rather than repeats chewy_products and chewy_product: price, rating, images, reviews, and descriptions stay on those endpoints, and the attribute table is not available from either. Use the group parameter to return a single attribute group. Part numbers Chewy does not recognize are reported in not_found; if none of them resolve the response is a 404.
+- **Params:** `group` (string, optional) — Return only attributes in one group. One of DEFINING, STANDARD, EXTENDED, HIDDEN. Omit for every group.; `part_numbers` (string, **required**) — Comma-separated Chewy part numbers, up to 20 per request, e.g. \
+
 ### `chewy_product`
 
 - **HTTP:** `GET /chewy/product`
-- **What:** Get a Chewy product's detail. Returns one Chewy product's full normalized detail: name, brand, description, images, price, stock, rating and its star-count breakdown, category breadcrumbs, customer questions and answers, and customer reviews. id is the numeric id from a chewy.com PDP URL, e.g. 185468 from https://www.chewy.com/frisco-lion-mane-dog-cat-costume/dp/185468 -- also the same value a chewy_category response's products[].part_number field carries for that product's own default variant.
+- **What:** Get a Chewy product's detail. Returns one Chewy product's full normalized detail: name, brand, description, images, price, stock, rating and its star-count breakdown, category breadcrumbs, customer questions and answers, and customer reviews. id is the numeric id from a chewy.com PDP URL, e.g. 185468 from https://www.chewy.com/frisco-lion-mane-dog-cat-costume/dp/185468 -- also the same value a chewy_category response's products[].part_number field carries for that product's own default variant. The response also carries the item's shipping weight and package dimensions as Chewy states them, its per-order purchase limit, and any promotions currently attached to it (each with a type such as "Spend $X" or "BOGO", plus short and long descriptions).
 - **Params:** `id` (string, **required**) — Numeric id from a chewy.com PDP URL
+
+### `chewy_product_questions`
+
+- **HTTP:** `GET /chewy/product-questions`
+- **What:** List a Chewy product's customer questions and answers, paginated. Returns one page of a Chewy product's customer questions, each with its answers (text, author, date, staff flag, helpful count). chewy_product embeds only the first 20 questions with no way to page past them; this endpoint reaches the whole set. id is the numeric id from any chewy.com PDP URL, and questions are shared across a product's variants, so any variant's id returns the same set. Each question reports answers_total alongside its answers array, so a caller can tell when answers were truncated by answer_limit. Chewy offers no sort or filter on questions, so this endpoint deliberately exposes paging only.
+- **Params:** `answer_limit` (integer, optional) — Answers to return per question, 1 to 20 (default 10). Each question also reports answers_total.; `id` (string, **required**) — The numeric id from a chewy.com PDP URL, e.g. \; `limit` (integer, optional) — Questions per page, 1 to 50 (default 20).; `page` (integer, optional) — Page number, 1-based (default 1).
+
+### `chewy_product_reviews`
+
+- **HTTP:** `GET /chewy/product-reviews`
+- **What:** List a Chewy product's customer reviews, paginated. Returns one page of a Chewy product's customer reviews -- rating, title, body, author, submission date, helpful count, incentivized flag, and contributor badge -- with sorting and positive/negative filtering. chewy_product embeds only the first 20 reviews with no way to page past them; this endpoint reaches the whole set (products routinely carry thousands). id is the numeric id from any chewy.com PDP URL, and reviews are shared across a product's variants, so any variant's id returns the same set. total is the count for the current filter, so it drops when filter is applied, while rating_count stays the product's overall rating tally.
+- **Params:** `filter` (string, optional) — Restrict to POSITIVE (4-5 star) or NEGATIVE (1-3 star) reviews. Omit for all.; `id` (string, **required**) — The numeric id from a chewy.com PDP URL, e.g. \; `limit` (integer, optional) — Reviews per page, 1 to 50 (default 20).; `page` (integer, optional) — Page number, 1-based (default 1).; `sort` (string, optional) — Sort order. One of MOST_RELEVANT, NEWEST, OLDEST, HIGHEST_RATING, LOWEST_RATING, PHOTOS. Defaults to Chewy's own ordering when omitted.
 
 ### `chewy_products`
 
@@ -1147,5 +1201,11 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `chewy_suggest`
 
 - **HTTP:** `GET /chewy/suggest`
-- **What:** Chewy search-box typeahead suggestions. Returns Chewy's own search-box typeahead result for a partial query term: search-term suggestions (some resolving directly to a category/brand browse URL via their own url field) plus a handful of educational-content article suggestions. term is a partial query, e.g. "salmon dog" or "blue buff".
-- **Params:** `term` (string, **required**) — Partial search text
+- **What:** Chewy search-box typeahead suggestions. Returns Chewy's own search-box typeahead result for a partial query term: search-term suggestions (some resolving directly to a category/brand browse URL via their own url field) plus a handful of educational-content article suggestions. term is a partial query, e.g. "salmon dog" or "blue buff". Omit term entirely to get what Chewy shows on an empty search box instead: its current Popular Searches (each resolving to a category or brand listing) and Popular Articles.
+- **Params:** `term` (string, optional) — Partial search text, e.g. \
+
+### `chewy_variants`
+
+- **HTTP:** `GET /chewy/variants`
+- **What:** List every size/flavor variant of a Chewy product. Returns the full roster of purchasable variants for the product a given item belongs to -- every size, flavor, or color Chewy sells it in -- with each variant's own part number, price, Autoship price, stock, images, and the defining option that distinguishes it (e.g. Size = Medium). id is the numeric id from any chewy.com PDP URL; passing any one variant's id returns that variant's whole family, and the variant you asked for is flagged with is_requested. This answers a question chewy_product cannot: chewy_product describes only the single variant it was given and names its parent, but never lists the siblings or their prices. Only the defining option is returned, not the full attribute table -- use chewy_item_attributes for that.
+- **Params:** `id` (string, **required**) — The numeric id from a chewy.com PDP URL, e.g. \
