@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**29 endpoints across 2 platform group(s).**
+**33 endpoints across 3 platform group(s).**
 
 ## Steam (21)
 
@@ -185,3 +185,29 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /playstation/search`
 - **What:** Search the PlayStation Store. Returns a page of PlayStation Store search results (concepts and products) for a term, with pagination and per-item price, platforms, classification, and media. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page (max 48); `term` (string, **required**) — Search term
+
+## Roblox (4)
+
+### `roblox_badges`
+
+- **HTTP:** `GET /roblox/badges`
+- **What:** List Roblox experience badges. Returns one cursor-paginated page of public badge metadata for a Roblox experience. Pass next_cursor back unchanged as cursor. No user-awarded badge data is returned.
+- **Params:** `cursor` (string, optional) — Opaque cursor returned by a previous response; `universe_id` (integer, **required**) — Positive Roblox universe id
+
+### `roblox_game`
+
+- **HTTP:** `GET /roblox/game`
+- **What:** Get a Roblox experience. Returns public catalog detail for one Roblox experience, including aggregate votes and its public icon. This endpoint does not return player, account, purchase, or server data.
+- **Params:** `universe_id` (integer, **required**) — Positive Roblox universe id
+
+### `roblox_rankings`
+
+- **HTTP:** `GET /roblox/rankings`
+- **What:** List Roblox game rankings. Returns a public Roblox game shelf. Allowed sort_id values: top-trending, up-and-coming, top-playing-now, fun-with-friends, top-revisited.
+- **Params:** `sort_id` (string, optional) — Ranking shelf: top-trending, up-and-coming, top-playing-now, fun-with-friends, top-revisited
+
+### `roblox_search`
+
+- **HTTP:** `GET /roblox/search`
+- **What:** Search Roblox experiences. Searches anonymous public Roblox game experiences. The opaque page_token continues the same search.
+- **Params:** `page_token` (string, optional) — Opaque page token returned by a previous search; `q` (string, **required**) — Experience search query

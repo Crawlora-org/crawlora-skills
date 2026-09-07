@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**45 endpoints across 7 platform group(s).**
+**57 endpoints across 9 platform group(s).**
 
 ## Poshmark (8)
 
@@ -291,3 +291,79 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /whatnot/live/{id}`
 - **What:** Get a Whatnot live show's current shop feed. Returns a Whatnot live show's current shop feed: every product, auction, and giveaway listing currently visible in the show, each with its seller's rating. Public data sourced from Whatnot's own GraphQL API.
 - **Params:** `id` (string, **required**) — Whatnot live show id, e.g. from a browse result's id field
+
+## GOAT (10)
+
+### `goat_collection`
+
+- **HTTP:** `GET /goat/collection`
+- **What:** Get a GOAT curated product collection. Returns a page of one of GOAT's curated product collections (an editorial rail like "top trending" or "new arrivals"), the same call GOAT's own product-page "you may also like" rails and homepage modules use. Collection slugs are not enumerable by this API -- capture one from a live GOAT page. Credential-free public data.
+- **Params:** `exclude_product_ids` (string, optional) — Omit specific products by id, comma-separated; `limit` (integer, optional) — Results per page, defaults to 12, maximum 100; `page` (integer, optional) — 1-indexed result page, defaults to 1; `slug` (string, **required**) — GOAT collection slug, e.g. as seen in a curated rail on GOAT's own site
+
+### `goat_countries`
+
+- **HTTP:** `GET /goat/countries`
+- **What:** Get GOAT countries. Returns every country GOAT recognizes -- the accepted values for GET /goat/product/{slug}'s country_code parameter -- with the currency and size unit (us, uk, eu) GOAT localizes to for each, plus whether GOAT ships and accepts returns there. Every country is listed, not only the shippable ones, because country_code localizes pricing and is accepted for all of them; filter on ships_to if you want only GOAT's shipping destinations. Credential-free public data.
+- **Params:** _none_
+
+### `goat_curated`
+
+- **HTTP:** `GET /goat/curated`
+- **What:** Get GOAT curated links. Returns the shelf of editorially curated links GOAT is currently promoting in its own search box: seasonal collections, specific product searches, and browse-all entry points. Every link is actionable against this API -- a collection link carries a value for GET /goat/collection, a search link carries a query for GET /goat/search. Credential-free public data.
+- **Params:** _none_
+
+### `goat_listings_count`
+
+- **HTTP:** `GET /goat/listings/count`
+- **What:** Get GOAT live listing count. Returns how many listings GOAT currently has live across its whole marketplace. This is the only way to see GOAT's true catalog size, because GET /goat/search's total_results saturates at 10000 on a broad query and cannot report a total above that ceiling. Credential-free public data.
+- **Params:** _none_
+
+### `goat_product`
+
+- **HTTP:** `GET /goat/product/{slug}`
+- **What:** Get GOAT product detail. Returns a normalized GOAT product: identity/descriptive metadata (name, brand, SKU, colorway, designer, silhouette, taxonomy, materials, release date, retail price, editorial story, images, full size range, other products featured alongside it), plus live per-size/condition pricing and stock status (lowest price, GOAT Instant Ship price, last sold price, highest current buyer offer). Credential-free public data combining GOAT's own product-page payload with its live pricing and offers APIs.
+- **Params:** `country_code` (string, optional) — ISO 3166-1 alpha-2 country code used to localize per-size pricing, defaults to US; `slug` (string, **required**) — GOAT product URL slug, the path segment of a https://www.goat.com/sneakers/{slug} product page
+
+### `goat_product_recommended`
+
+- **HTTP:** `GET /goat/product/{slug}/recommended`
+- **What:** Get GOAT recommended products for a product. Returns the recommended/related products GOAT's own product page shows for a given product (other colorways, similar products) -- descriptive metadata only, no live pricing. Credential-free public data from GOAT's own product-page recommendation API.
+- **Params:** `count` (integer, optional) — Number of recommended products to return, defaults to 8, maximum 24; `slug` (string, **required**) — GOAT product URL slug to find related products for
+
+### `goat_search`
+
+- **HTTP:** `GET /goat/search`
+- **What:** Search GOAT products. Searches or browses GOAT's sneaker/streetwear/collectibles catalog by free-text query and/or facet filters (category, footwear sub-type, activity, color, gender, condition, brand, release year, price range, release-date range, silhouette, designer, in-stock/under-retail/instant-ship, curated collection), returning normalized product summaries (brand, silhouette, category, image, stock status, headline pricing across all sizes) plus the total matching count. Query is optional -- a facet filter alone browses the catalog the same way GOAT's own category/brand pages do. Credential-free public data from the same JSON API backing GOAT's own search page.
+- **Params:** `activities` (string, optional) — Filter by activity (sneakers only), comma-separated for multiple values; `brands` (string, optional) — Filter by one or more brand slugs, comma-separated, e.g. air-jordan,nike. GET /goat/search/facets lists GOAT's top brands; long-tail brands are valid here even when absent from that list; `categories` (string, optional) — Filter by category, comma-separated for multiple values. See GET /goat/search/facets for the current live list; `collection_slug` (string, optional) — Scope results to a GOAT curated collection (see GET /goat/collection), combinable with query, every other filter, and sort; `colors` (string, optional) — Filter by color, comma-separated for multiple values; `conditions` (string, optional) — Filter by item condition, comma-separated for multiple values; `designers` (string, optional) — Filter by one or more designers, comma-separated, matching GOAT's own naming (see a product's designer field); `genders` (string, optional) — Filter by gender, comma-separated for multiple values; `in_stock` (boolean, optional) — Only include products currently in stock; `instant_ship` (boolean, optional) — Only include products with GOAT Instant Ship availability; `limit` (integer, optional) — Results per page, defaults to 12, maximum 100; `page` (integer, optional) — 1-indexed result page, defaults to 1; `price_cents_max` (integer, optional) — Only include results priced at or below this amount, in cents; `price_cents_min` (integer, optional) — Only include results priced at or above this amount, in cents; `product_types` (string, optional) — Filter by footwear sub-type, comma-separated for multiple values; `query` (string, optional) — Free-text search query, e.g. a model name, colorway, or style code. Optional -- omit to browse by facet filters alone; `released_after` (string, optional) — Only include products released on or after this date (YYYY-MM-DD, UTC); `released_before` (string, optional) — Only include products released on or before this date (YYYY-MM-DD, UTC); `silhouettes` (string, optional) — Filter by one or more silhouettes, comma-separated, matching GOAT's own naming (see a product's silhouette field); `sort` (string, optional) — Result sort order, defaults to relevance; `under_retail` (boolean, optional) — Only include products currently trading below original retail price; `years` (string, optional) — Filter by season year(s), comma-separated, e.g. 2025,2026. See GET /goat/search/facets for the current live list
+
+### `goat_search_facets`
+
+- **HTTP:** `GET /goat/search/facets`
+- **What:** Get GOAT search facet values. Returns the accepted values for goat_search's filter parameters: categories, colors, genders, conditions, brands, and years are read live from GOAT's own search API so a value GOAT adds is discoverable without any client-side change, while product_types and activities are served from a maintained list because GOAT exposes no live facet for them. brands is GOAT's top brands ordered by product count, not the complete brand list -- when brands_truncated is true, brands beyond the ones listed exist and remain valid goat_search values. Credential-free public data.
+- **Params:** _none_
+
+### `goat_suggest`
+
+- **HTTP:** `GET /goat/suggest`
+- **What:** Autocomplete a GOAT search. Returns GOAT's own search-box autocomplete for a partial query: matching curated collections and matching products. The collections carry the slug values accepted by GET /goat/collection and by GET /goat/search's collection_slug parameter, making this the way to discover collection slugs. Credential-free public data.
+- **Params:** `limit` (integer, optional) — Maximum curated collections to return. Defaults to 8, maximum 20. Does not affect the product count, which upstream fixes at 25; `query` (string, **required**) — Partial search text to autocomplete
+
+### `goat_trending_searches`
+
+- **HTTP:** `GET /goat/searches/trending`
+- **What:** Get GOAT trending searches. Returns the search terms GOAT is currently surfacing as popular, in GOAT's own ranking order -- the same list its own search box shows. Each term is free text ready to pass to GET /goat/search's query parameter. Credential-free public data.
+- **Params:** _none_
+
+## Leboncoin (2)
+
+### `leboncoin_listing`
+
+- **HTTP:** `GET /leboncoin/listing`
+- **What:** Get a Leboncoin public listing. Returns normalized public metadata for one supplied Leboncoin ad URL. It excludes seller identity and contacts, precise location, payment, delivery, and account data.
+- **Params:** `url` (string, **required**) — Canonical public ad URL returned by leboncoin-search
+
+### `leboncoin_search`
+
+- **HTTP:** `GET /leboncoin/search`
+- **What:** Search Leboncoin public listings. Returns normalized public listing cards from one Leboncoin location page. This endpoint excludes contacts, seller profiles, accounts, and transaction data.
+- **Params:** `location` (string, **required**) — Public Leboncoin location slug

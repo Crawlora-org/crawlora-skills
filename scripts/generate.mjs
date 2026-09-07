@@ -56,6 +56,13 @@ const SKILLS = {
     "Walgreens",
     "IKEA",
     "Chewy",
+    "BigCommerce",
+    "Boots",
+    "CVS",
+    "Lazada",
+    "Otto",
+    "Tokopedia",
+    "SparkFun",
   ],
   "youtube-research": ["YouTube"],
   "app-review-mining": ["AppStore", "GooglePlay"],
@@ -80,6 +87,7 @@ const SKILLS = {
     "Meta Jobs",
     "Tesla Jobs",
     "Jobs",
+    "Tes",
     "Upwork",
     "Fiverr",
   ],
@@ -93,6 +101,8 @@ const SKILLS = {
     "LinkedIn",
     "Facebook",
     "Reddit",
+    "Bilibili",
+    "Patreon",
   ],
   "travel-hotel-research": [
     "Booking",
@@ -102,14 +112,25 @@ const SKILLS = {
     "Trip.com",
     "Airbnb",
     "Ticketmaster",
+    "TicketWeb",
+    "Accor",
+    "Hotels.com",
   ],
-  "sports-scores-research": ["ESPN", "SofaScore", "MLB", "Strava", "DraftKings Sportsbook"],
+  "sports-scores-research": ["ESPN", "SofaScore", "MLB", "Strava", "DraftKings Sportsbook", "Cricinfo"],
   "music-podcast-research": ["Spotify", "SpotifyPodcasts", "ApplePodcasts", "Discogs", "SoundCloud"],
   "book-research": ["Goodreads", "AppleBooks", "Audible"],
-  "gaming-research": ["Steam", "PlayStation"],
+  "gaming-research": ["Steam", "PlayStation", "Roblox"],
   "anime-manga-research": ["Anime", "Manga"],
   "developer-oss-research": ["GitHub", "ChromeWebStore"],
-  "restaurant-food-delivery-research": ["DoorDash", "Yelp", "UberEats", "Instacart", "OpenTable"],
+  "restaurant-food-delivery-research": [
+    "DoorDash", "Yelp", "UberEats", "Instacart", "OpenTable", "7NOW",
+    "Arbys", "Burger King", "Chick-fil-A", "Chipotle", "Culvers", "Deliveroo",
+    "Dominos", "Dunkin", "FiveGuys", "Foodpanda", "Grubhub", "JimmyJohns",
+    "Just Eat", "KFC", "Kroger", "McDonalds", "Panera", "Pandamart",
+    "Papa John's", "Pizza Hut", "Popeyes", "Raising Cane's", "Shake Shack",
+    "Sonic", "Starbucks", "Subway", "Swiggy", "TacoBell", "Whataburger",
+    "Wingstop", "Wolt", "Zomato", "Wendys", "Zaxbys",
+  ],
   "business-review-trust-research": ["ProductHunt", "TrustMRR", "Trustpilot", "Capterra", "BBB", "Kickstarter"],
   "resale-secondhand-research": [
     "Poshmark",
@@ -119,8 +140,11 @@ const SKILLS = {
     "Mercari",
     "Depop",
     "Whatnot",
+    "GOAT",
+    "Leboncoin",
   ],
-  "real-estate-autos-research": ["CarMax", "Redfin", "Autotrader", "Zillow", "Cars.com"],
+  "real-estate-autos-research": ["CarMax", "Redfin", "Autotrader", "Zillow", "Cars.com", "Rightmove"],
+  "pet-services-research": ["Rover"],
   "web-utilities-research": ["Numbeo", "Geocoding", "Web", "ImportYeti", "SimilarWeb", "Brand"],
 
   // Per-platform splits of the biggest bundles above (pilot, 2026-08-11) — the bundled
@@ -204,6 +228,15 @@ const SKILLS = {
   "website-monitoring": ["Monitors"],
   "patents-research": ["Google Patents", "USPTO Patent Public Search"],
   "gdelt-research": ["GDELT"],
+
+  // 2026-09-07 coverage expansion: coherent public-data surfaces that had
+  // enough breadth to deserve their own task-oriented entry point.
+  "apple-maps-research": ["Apple Maps"],
+  "news-media-research": ["BBC", "CNN", "Guardian"],
+  "opensea-research": ["OpenSea"],
+  "auction-research": ["Bonhams"],
+  "courtlistener-research": ["CourtListener"],
+  "apk-teardown-research": ["AppInsights"],
 };
 
 const groupsOf = (t) => (t._http && t._http.group) || "Other";

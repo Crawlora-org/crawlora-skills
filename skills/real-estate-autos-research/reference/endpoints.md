@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**20 endpoints across 5 platform group(s).**
+**28 endpoints across 6 platform group(s).**
 
 ## CarMax (7)
 
@@ -137,3 +137,53 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /carsdotcom/vehicle/{listing_id}`
 - **What:** Get Cars.com vehicle listing detail. Returns a normalized Cars.com vehicle listing: full vehicle spec (make, model, trim, mileage, colors, engine, transmission, fuel economy, a key-specs table), Cars.com's own deal-fairness rating and predicted fair price, categorized equipment features, an AutoCheck-derived vehicle history report, Cars.com's own price-change history, the seller's notes, dealer detail (name, rating, address, website, phones, hours) or private-seller detail for a for-sale-by-owner listing, and certified-pre-owned/manufacturer-program detail when applicable. Credential-free public data sourced directly from Cars.com's own public GraphQL API.
 - **Params:** `listing_id` (string, **required**) — Cars.com listing id (a UUID), the path segment of a /vehicledetail/{listing_id}/ URL
+
+## Rightmove (8)
+
+### `rightmove_agent_branch`
+
+- **HTTP:** `GET /rightmove/agents/{id}`
+- **What:** Get Rightmove estate agent branch details. Returns one estate-agent branch profile from Rightmove, including address, telephones, service flags, industry affiliations, and the branch's own sales and lettings listing previews. The slug segments in Rightmove agent URLs are cosmetic; the branch resolves by numeric id alone.
+- **Params:** `id` (string, **required**) — Rightmove agent branch id
+
+### `rightmove_agents`
+
+- **HTTP:** `GET /rightmove/agents`
+- **What:** List Rightmove estate agents for a location. Lists estate-agent branches from Rightmove's estate-agents directory for a location, with branch display name, brand, address, telephones, sales/lettings flags, logo, and a link to the branch profile. 20 agents per page.
+- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete (numeric location id required); `page` (integer, optional) — Result page (default 1)
+
+### `rightmove_autocomplete`
+
+- **HTTP:** `GET /rightmove/autocomplete`
+- **What:** Get Rightmove location autocomplete suggestions. Returns location suggestions from Rightmove's autocomplete API for a given query.
+- **Params:** `limit` (integer, optional) — Maximum suggestions to return (default 10, max 20); `query` (string, **required**) — Location query
+
+### `rightmove_commercial_search`
+
+- **HTTP:** `GET /rightmove/commercial/search`
+- **What:** Search Rightmove commercial property. Search Rightmove's commercial property listings for sale or to let, with price, floor-area (sq ft), and commercial-property-type filters. For to-let listings the price amount follows the listing's own frequency (monthly or yearly).
+- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_price` (integer, optional) — Maximum price in whole GBP units, not pence; `max_size` (integer, optional) — Maximum floor area in square feet; `min_price` (integer, optional) — Minimum price in whole GBP units, not pence; `min_size` (integer, optional) — Minimum floor area in square feet; `page` (integer, optional) — Result page (default 1); `property_type` (string, optional) — Commercial property type filter (e.g. office, retail, industrial, warehouse, land, hotel, leisure); `status` (string, optional) — Listing status (default buy)
+
+### `rightmove_new_homes_search`
+
+- **HTTP:** `GET /rightmove/new-homes/search`
+- **What:** Search Rightmove new homes for sale. Search Rightmove's new-homes-for-sale listings for a location, with price, bedroom, bathroom, and property-type filters. Results are individual new-build homes and plots (with development flags), not development-level cards.
+- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_bathrooms` (number, optional) — Maximum bathrooms; `max_bedrooms` (integer, optional) — Maximum bedrooms; `max_price` (integer, optional) — Maximum price in whole GBP units, not pence; `min_bathrooms` (number, optional) — Minimum bathrooms; `min_bedrooms` (integer, optional) — Minimum bedrooms; `min_price` (integer, optional) — Minimum price in whole GBP units, not pence; `page` (integer, optional) — Result page (default 1); `property_type` (string, optional) — Property type filter (e.g. detached, flat, apartment, semi-detached, terrace, bungalow)
+
+### `rightmove_property`
+
+- **HTTP:** `GET /rightmove/properties/{id}`
+- **What:** Get Rightmove property details. Returns detailed information for a specific Rightmove property by ID.
+- **Params:** `id` (string, **required**) — Rightmove property ID
+
+### `rightmove_search`
+
+- **HTTP:** `GET /rightmove/search`
+- **What:** Search Rightmove properties. Search for properties on Rightmove with filters for location, price, bedrooms, etc.
+- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_bathrooms` (number, optional) — Maximum bathrooms; `max_bedrooms` (integer, optional) — Maximum bedrooms; `max_price` (integer, optional) — Maximum price in whole GBP units, not pence; `min_bathrooms` (number, optional) — Minimum bathrooms; `min_bedrooms` (integer, optional) — Minimum bedrooms; `min_price` (integer, optional) — Minimum price in whole GBP units, not pence; `page` (integer, optional) — Result page (default 1); `property_type` (string, optional) — Property type filter; `status` (string, optional) — Listing status (default for_sale)
+
+### `rightmove_student_search`
+
+- **HTTP:** `GET /rightmove/student/search`
+- **What:** Search Rightmove student accommodation. Search Rightmove's student-accommodation listings for a location, with monthly-rent, bedroom, and furnishing filters. Prices are monthly rents in whole GBP units.
+- **Params:** `furnish_type` (string, optional) — Furnishing filter; `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_bedrooms` (integer, optional) — Maximum bedrooms; `max_price` (integer, optional) — Maximum monthly rent in whole GBP units, not pence; `min_bedrooms` (integer, optional) — Minimum bedrooms; `min_price` (integer, optional) — Minimum monthly rent in whole GBP units, not pence; `page` (integer, optional) — Result page (default 1)

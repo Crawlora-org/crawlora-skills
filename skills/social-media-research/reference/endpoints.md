@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**68 endpoints across 9 platform group(s).**
+**80 endpoints across 11 platform group(s).**
 
 ## Instagram (3)
 
@@ -433,3 +433,79 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /reddit/user/{username}/posts`
 - **What:** List Reddit user posts. Returns normalized public posts from a public Reddit user's submitted feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/
+
+## Bilibili (8)
+
+### `bilibili_anime_home`
+
+- **HTTP:** `GET /bilibili/anime-home`
+- **What:** Get Bilibili anime home sections. Returns the anonymous anime homepage's featured titles, latest updates, schedule, popular ranking, and new recommendations. Personalized rotating feed items are excluded.
+- **Params:** _none_
+
+### `bilibili_autocomplete`
+
+- **HTTP:** `GET /bilibili/autocomplete`
+- **What:** Get Bilibili search suggestions. Returns Bilibili search-box query suggestions for partial text. An empty suggestion list is a valid response when nothing matches.
+- **Params:** `q` (string, **required**) — Partial search text
+
+### `bilibili_guochuang_home`
+
+- **HTTP:** `GET /bilibili/guochuang-home`
+- **What:** Get Bilibili Chinese-animation home sections. Returns the anonymous Chinese-animation homepage's featured titles, latest updates, schedule, popular ranking, and new recommendations. Personalized rotating feed items are excluded.
+- **Params:** _none_
+
+### `bilibili_must_watch`
+
+- **HTTP:** `GET /bilibili/must-watch`
+- **What:** Get Bilibili's curated must-watch videos. Returns Bilibili's curated must-watch collection, separated into established classics and the latest additions.
+- **Params:** _none_
+
+### `bilibili_popular`
+
+- **HTTP:** `GET /bilibili/popular`
+- **What:** Get current popular Bilibili videos. Returns Bilibili's current popular-video feed in upstream order. Pass next_cursor back as cursor to continue to the next batch.
+- **Params:** `cursor` (integer, optional) — Upstream cursor from the previous response; defaults to 0
+
+### `bilibili_ranking`
+
+- **HTTP:** `GET /bilibili/ranking`
+- **What:** Get the current Bilibili all-site ranking. Returns the current official all-site ranking with video engagement, category, and creator metadata in rank order.
+- **Params:** _none_
+
+### `bilibili_vertical_home`
+
+- **HTTP:** `GET /bilibili/vertical-home`
+- **What:** Get Bilibili documentary, movie, TV, or variety home sections. Returns stable server-rendered editorial sections for one Bilibili vertical. Allowed category values: documentary, movie, tv, variety. Rotating feeds, pagination, account state, and streaming URLs are excluded.
+- **Params:** `category` (string, **required**) — Vertical: documentary, movie, tv, variety
+
+### `bilibili_weekly`
+
+- **HTTP:** `GET /bilibili/weekly`
+- **What:** Get a Bilibili weekly selected-video issue. Returns one issue from Bilibili's weekly selected-video archive. Omit number to resolve and return the latest issue.
+- **Params:** `number` (integer, optional) — Positive issue number; omit for the latest issue
+
+## Patreon (4)
+
+### `patreon_creator`
+
+- **HTTP:** `GET /patreon/creator`
+- **What:** Get a public Patreon creator profile. Returns public profile metadata from a creator's Patreon page: creator identity, summary, images, membership and creation counts, public earnings snapshot, membership/RSS availability flags, and public external profile links. handle is the creator's page handle, e.g. CachyOS for patreon.com/CachyOS.
+- **Params:** `handle` (string, **required**) — Creator page handle
+
+### `patreon_creator_tiers`
+
+- **HTTP:** `GET /patreon/creator/tiers`
+- **What:** Get a creator's public Patreon membership tiers. Returns published membership tiers and their published benefits from a creator's public Patreon page. It excludes member-only entitlements, tier capacity, and member counts. handle is the creator's page handle, e.g. CachyOS for patreon.com/CachyOS.
+- **Params:** `handle` (string, **required**) — Creator page handle
+
+### `patreon_explore`
+
+- **HTTP:** `GET /patreon/explore`
+- **What:** Browse public Patreon creators by topic. Returns Patreon's public curated creator shelves for one topic: Top creators, Popular this week, and New on Patreon. topic must be one of podcasts_and_shows, visual_arts, tabletop_games, video_games, music, lifestyle, writing, handicrafts, apps_and_software, social_impact.
+- **Params:** `topic` (string, **required**) — Public Explore topic. Allowed values: podcasts_and_shows, visual_arts, tabletop_games, video_games, music, lifestyle, writing, handicrafts, apps_and_software, social_impact
+
+### `patreon_rss`
+
+- **HTTP:** `GET /patreon/rss`
+- **What:** Get an explicitly public Patreon podcast RSS feed. Returns public podcast channel metadata and episodes from Patreon's canonical public RSS feed. campaign_id and show_id are the numeric IDs in the public feed URL. Private member feeds and authentication URLs are not supported.
+- **Params:** `campaign_id` (string, **required**) — Numeric Patreon campaign id; `show_id` (string, **required**) — Numeric Patreon show id

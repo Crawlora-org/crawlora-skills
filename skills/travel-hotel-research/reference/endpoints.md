@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**53 endpoints across 7 platform group(s).**
+**71 endpoints across 10 platform group(s).**
 
 ## Booking (8)
 
@@ -339,3 +339,117 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /ticketmaster/venue-events`
 - **What:** List a venue's Ticketmaster events. Returns upcoming Ticketmaster events at one venue. The sort enum accepts `relevance` and `date`.
 - **Params:** `id` (string, **required**) — Numeric Ticketmaster venue id; `page` (integer, optional) — Zero-based page (0-49); `sort` (string, optional) — Result order
+
+## TicketWeb (3)
+
+### `ticketweb_event`
+
+- **HTTP:** `GET /ticketweb/event`
+- **What:** Get a TicketWeb event. Returns normalized details for one TicketWeb event: venue, dates, age restriction, delivery methods, and per-tier ticket pricing (base price, fee breakdown, and total) when tickets are on sale. `has_tickets` is false and `sections` is empty for a free/RSVP event with no paid tickets, a sold-out event, or an access-code-gated event -- TicketWeb's own data does not reliably distinguish these three cases at this level, so the response reports the shared observable state (no purchasable sections) rather than guessing which applies.
+- **Params:** `id` (string, **required**) — Numeric TicketWeb event id
+
+### `ticketweb_search`
+
+- **HTTP:** `GET /ticketweb/search`
+- **What:** Search TicketWeb events. Searches TicketWeb events by artist, event, or venue. A zero count with an empty events list is a valid no-results response. availability is one of `in_stock`, `sold_out`, `unknown` per event.
+- **Params:** `page` (integer, optional) — One-based result page, 1-50; `q` (string, **required**) — Artist, event, or venue query
+
+### `ticketweb_venue`
+
+- **HTTP:** `GET /ticketweb/venue`
+- **What:** Get a TicketWeb venue. Returns one TicketWeb venue's detail (name, address) plus one page of its upcoming events. A zero count with an empty events list on page 1 is a valid "no upcoming events" response.
+- **Params:** `id` (string, **required**) — Numeric TicketWeb venue id; `page` (integer, optional) — One-based page of upcoming events, 1-50
+
+## Accor (8)
+
+### `accor_amenities`
+
+- **HTTP:** `GET /accor/amenities`
+- **What:** Accor amenity reference catalog. Returns the anonymous public Accor amenity catalog with stable amenity codes, labels, categories, and display ordering. It is reference data for interpreting hotel search facets; booking, rates, rooms, reviews, and account data are excluded.
+- **Params:** _none_
+
+### `accor_brands`
+
+- **HTTP:** `GET /accor/brands`
+- **What:** Accor brand directory. Returns the Accor brand directory published on the public brands page, with each brand's name, slug, and source URL. Booking, rates, rooms, reviews, contacts, and location are excluded.
+- **Params:** _none_
+
+### `accor_catalog_hotels`
+
+- **HTTP:** `GET /accor/catalog/hotels`
+- **What:** Search the Accor hotel catalog. Searches Accor's anonymous public hotel catalog by text, hotel code, or latitude/longitude radius. Results contain static property identity and broad location metadata plus catalog relevance/distance; contact details, precise hotel coordinates, payment, loyalty, media, rates, rooms, reviews, and booking data are excluded.
+- **Params:** `hotel_id` (string, optional) — Four-character Accor hotel code; `latitude` (number, optional) — Search-center latitude (-90 to 90); `limit` (integer, optional) — Results per request (1 to 50); `longitude` (number, optional) — Search-center longitude (-180 to 180); `offset` (integer, optional) — Zero-based result offset (0 to 300); `query` (string, optional) — Destination or hotel text (at least two characters); `radius_km` (number, optional) — Search radius in kilometers (0.1 to 100; defaults to 10 for coordinate searches)
+
+### `accor_destination_hotels`
+
+- **HTTP:** `GET /accor/destination/hotels`
+- **What:** Accor hotels in a destination. Returns the static list of hotels published on one Accor destination directory page (world, continent, country, region, department, city, district, or place), optionally narrowed by a theme facet. Each hotel carries its code, name, source URL, and broad city/country. Booking, rates, rooms, reviews, contacts, and precise location are excluded.
+- **Params:** `destination_type` (string, **required**) — Destination level: world, continent, country, region, department, city, district, or place; `slug` (string, optional) — Destination page slug, e.g. hotels-dusseldorf-v1158. Required for every type except world.; `theme` (string, optional) — Optional theme facet: 4-stars, 5-stars, apart-hotel, breakfast, budget-friendly, business, eco-certified, family-friendly, fitness, luxury, meetings-and-events, parking, pet-friendly, pool, resorts, or spa
+
+### `accor_property`
+
+- **HTTP:** `GET /accor/property`
+- **What:** Accor hotel metadata. Returns static public metadata for one Accor hotel code, including name, brand, city/country, explicitly listed amenities, and published check-in/check-out times. Booking, rates, rooms, reviews, contacts, and precise location are excluded.
+- **Params:** `hotel_code` (string, **required**) — Four-character Accor hotel code
+
+### `accor_search`
+
+- **HTTP:** `GET /accor/search`
+- **What:** Search Accor hotels. Searches the public Accor hotel index by destination or hotel name, with optional country, city, brand, star, page, and page-size filters. Results contain static hotel identity, location labels, ratings, and source URLs; booking, rates, rooms, reviews, loyalty, and payment flows are excluded.
+- **Params:** `brand` (string, optional) — Accor brand code facet; `city` (string, optional) — City facet; `country` (string, optional) — Country facet; `language` (string, optional) — Index locale; `limit` (integer, optional) — Results per page, 1-100; `page` (integer, optional) — Zero-based result page; `query` (string, **required**) — Destination or hotel query (at least two characters); `stars` (integer, optional) — Exact star facet
+
+### `accor_search_details`
+
+- **HTTP:** `GET /accor/search/details`
+- **What:** Accor place coordinates and viewport. Resolves an anonymous Accor search suggestion identifier to its description, coordinates, viewport, radius, and address components. It uses the same public place-details source as the Accor search box; booking, rates, rooms, reviews, and account data are excluded.
+- **Params:** `id` (string, **required**) — Identifier returned by Accor search suggestions; `language` (string, optional) — Optional locale; `source` (string, **required**) — Suggestion source
+
+### `accor_search_suggest`
+
+- **HTTP:** `GET /accor/search/suggest`
+- **What:** Accor destination and hotel search suggestions. Returns anonymous Accor typeahead suggestions for a partial destination or hotel query, including destination/place and hotel identifiers, types, labels, and match metadata. It uses the public search-box suggestion source only; booking, rates, rooms, reviews, and result-list requests are excluded.
+- **Params:** `language` (string, optional) — Optional locale used by the suggestion source; `query` (string, **required**) — Partial destination or hotel query (at least two characters)
+
+## Hotels.com (7)
+
+### `hotels_autocomplete`
+
+- **HTTP:** `GET /hotels/autocomplete`
+- **What:** Get Hotels.com destination suggestions. Returns anonymous Hotels.com search-box suggestions for a partial destination or property name. Availability and prices are not included.
+- **Params:** `q` (string, **required**) — Partial destination or property name
+
+### `hotels_offers`
+
+- **HTTP:** `POST /hotels/offers`
+- **What:** Get Hotels.com room offers. Returns the public room/unit offer summaries shown for one Hotels.com property and date range, including room labels and non-transactional offer messages. Booking, checkout, payment, and reservation tokens are never returned. property_id is the numeric global property id from a Search response.
+- **Params:** `request` (object, **required**) — Room offers request
+
+### `hotels_property`
+
+- **HTTP:** `POST /hotels/property`
+- **What:** Get Hotels.com property details. Returns public static metadata from one canonical Hotels.com property page, including name, address, rating, images, and amenities. Date-bound availability, prices, booking, and review content are excluded.
+- **Params:** `request` (object, **required**) — Canonical Hotels.com property URL
+
+### `hotels_rates`
+
+- **HTTP:** `POST /hotels/rates`
+- **What:** Get Hotels.com rates for one property. Returns one Hotels.com property's date-bound rates and availability: the same normalized property card Search returns, with the live per-night and per-stay prices Hotels.com shows for the requested dates. property_id is the numeric global property id from a Search response's properties[].id; it is distinct from the legacy /ho<id>/ URL id.
+- **Params:** `request` (object, **required**) — Rates request
+
+### `hotels_reviews`
+
+- **HTTP:** `POST /hotels/reviews`
+- **What:** Get Hotels.com guest reviews. Returns one Hotels.com property's review overview: the overall rating (0-10) with its descriptive label, the per-category sub-ratings (cleanliness, service, amenities, and so on), and a bounded set of highlighted guest reviews with reviewer, date, rating label, text, and verified-stay flag. property_id is the numeric global property id from a Search response's properties[].id. This mirrors the property page's Guest reviews section; the full paginated review archive is not exposed.
+- **Params:** `request` (object, **required**) — Reviews request
+
+### `hotels_reviews_archive`
+
+- **HTTP:** `POST /hotels/reviews/archive`
+- **What:** List Hotels.com guest reviews. Returns one page of public guest reviews for a Hotels.com property, including reviewer, date, traveler type, rating label, title, and message. Use page and page_size to walk the archive; the response reports whether another page is available. property_id is the numeric global property id from a Search response's properties[].id. Booking, account, and private review data are not included.
+- **Params:** `request` (object, **required**) — Review archive request
+
+### `hotels_search`
+
+- **HTTP:** `POST /hotels/search`
+- **What:** Search Hotels.com hotels. Returns a page of date-bound Hotels.com hotel search results for either a free-text destination or a numeric Hotels.com region_id: normalized property cards with per-night and per-stay prices, review score and count, location, thumbnail, amenities, and promotional badges. Provide exactly one of query or region_id; region_id skips destination typeahead resolution. Prices are the live rates Hotels.com shows for the requested check-in and check-out dates.
+- **Params:** `request` (object, **required**) — Search request

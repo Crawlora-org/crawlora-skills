@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**191 endpoints across 28 platform group(s).**
+**223 endpoints across 35 platform group(s).**
 
 ## Amazon (3)
 
@@ -1209,3 +1209,209 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /chewy/variants`
 - **What:** List every size/flavor variant of a Chewy product. Returns the full roster of purchasable variants for the product a given item belongs to -- every size, flavor, or color Chewy sells it in -- with each variant's own part number, price, Autoship price, stock, images, and the defining option that distinguishes it (e.g. Size = Medium). id is the numeric id from any chewy.com PDP URL; passing any one variant's id returns that variant's whole family, and the variant you asked for is flagged with is_requested. This answers a question chewy_product cannot: chewy_product describes only the single variant it was given and names its parent, but never lists the siblings or their prices. Only the defining option is returned, not the full attribute table -- use chewy_item_attributes for that.
 - **Params:** `id` (string, **required**) — The numeric id from a chewy.com PDP URL, e.g. \
+
+## BigCommerce (3)
+
+### `bigcommerce_category`
+
+- **HTTP:** `GET /bigcommerce/category`
+- **What:** Browse a BigCommerce storefront category. Returns one normalized product-listing page from a public BigCommerce storefront category page. url must be the full public category-page URL. page is 1-indexed and defaults to 1.
+- **Params:** `page` (integer, optional) — 1-indexed category page, defaults to 1; `url` (string, **required**) — Full public BigCommerce category page URL
+
+### `bigcommerce_product`
+
+- **HTTP:** `GET /bigcommerce/product`
+- **What:** Get a BigCommerce storefront product. Returns normalized product detail from a public BigCommerce storefront product page. url must be the full public product-page URL for a BigCommerce Stencil storefront.
+- **Params:** `url` (string, **required**) — Full public BigCommerce product page URL
+
+### `bigcommerce_search`
+
+- **HTTP:** `GET /bigcommerce/search`
+- **What:** Search a BigCommerce storefront. Returns one normalized product-search page from a public BigCommerce storefront. url must be the public storefront origin; an optional caller path or query is ignored. q is required search text. page is 1-indexed and defaults to 1.
+- **Params:** `page` (integer, optional) — 1-indexed search page, defaults to 1; `q` (string, **required**) — Search text; `url` (string, **required**) — Public BigCommerce storefront origin
+
+## Boots (2)
+
+### `boots_search`
+
+- **HTTP:** `GET /boots/search`
+- **What:** Search Boots UK products and categories. Returns one page of Boots UK's public product catalog, including product cards and live facets. Supply `q`, one or more hierarchical `category` keys, or both. Use repeatable `filter=facet_key:option_key` values from that response's dynamic facets, plus the dedicated price and stock controls. `sort` accepts `relevance`, `price_low_to_high`, `price_high_to_low`, `top_rated`, `best_seller`, or `newest`.
+- **Params:** `category` (array, optional) — Repeat the exact category hierarchy keys from root through the desired leaf; required unless q is supplied; `filter` (array, optional) — Repeat a dynamic facet filter as facet_key:option_key, using key/option values returned in facets; category, currentPrice, and inStock use their dedicated parameters; `in_stock` (boolean, optional) — true hides out-of-stock items; false leaves stock unfiltered; `page` (integer, optional) — Page from 1 through 1000; `page_size` (integer, optional) — Results per page from 1 through 48; `price_max` (number, optional) — Inclusive maximum GBP price; may be combined with price_min; `price_min` (number, optional) — Inclusive minimum GBP price; may be combined with price_max; `q` (string, optional) — Free-text product query; required unless category is supplied; `sort` (string, optional) — Sort: relevance, price_low_to_high, price_high_to_low, top_rated, best_seller, or newest
+
+### `boots_suggest`
+
+- **HTTP:** `GET /boots/suggest`
+- **What:** Get Boots UK search-box suggestions. Returns Boots UK's own public typeahead phrases for a partial product query. The suggestions are search terms only; pass one to boots-search's q parameter for product cards and live facets.
+- **Params:** `q` (string, **required**) — Partial product query
+
+## CVS (7)
+
+### `cvs_brands`
+
+- **HTTP:** `GET /cvs/brands`
+- **What:** CVS brand directory. Returns CVS.com's full brand directory (name and path). Each brand's path is directly usable as GET /cvs/category's path parameter to browse that brand's products.
+- **Params:** _none_
+
+### `cvs_categories`
+
+- **HTTP:** `GET /cvs/categories`
+- **What:** CVS category taxonomy. Returns CVS.com's full category/subcategory navigation taxonomy (name and path, nested to whatever depth the upstream carries). Each node's path is directly usable as GET /cvs/category's path parameter.
+- **Params:** _none_
+
+### `cvs_category`
+
+- **HTTP:** `GET /cvs/category`
+- **What:** Browse a CVS OTC category page. Returns one page of a CVS.com OTC (over-the-counter) retail category, subcategory, or brand page's product grid: normalized products with title, brand, image, current/original price, and sponsored/featured/new-product flags; the total result count; and the facets (brand, color, size, price range, and other category-specific attributes, each with its selectable values and result counts) available to filter the page further. Covers the non-prescription retail catalog only. path is the segment of a page URL after "/shop/", e.g. "beauty" (top-level category), "health-medicine/allergy-sinus" (subcategory), or "brand-shop/s/safe-home" (brand page); a full https://www.cvs.com/shop/... URL or a "/shop/..." path is also accepted. Any of these can also carry an optional facet-filter suffix in the site's own URL shape, e.g. "beauty/makeup/eyes/q/CoverGirl/Black/brpc" to filter to brand CoverGirl and color Black -- see the response's facets field for which values/type codes a given category supports; filter values are case-sensitive exactly as the site renders them. page is a 1-indexed page number (default 1). sort is an optional result order matching the site's own Sort By control. CVS.com is only available from US/US-territory egress; a request from an unsupported region returns an upstream error rather than an empty result.
+- **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `path` (string, **required**) — CVS category, subcategory, or brand-page URL path, optionally with a /q/{value}/{typeCode} facet-filter suffix, e.g. \; `sort` (string, optional) — Result sort order, default the site's own relevance order. One of pa (Price Low to High), pd (Price High to Low), tr (Top Rated), rc (Most Reviewed), az (Name A-Z), za (Name Z-A)
+
+### `cvs_product`
+
+- **HTTP:** `GET /cvs/product/{slug}`
+- **What:** CVS OTC product detail. Returns one CVS.com OTC (over-the-counter) retail product's detail: name, description, brand, category, price, currency, online availability, image gallery, and aggregate rating. Covers the non-prescription retail catalog only -- this does not cover prescription items, pharmacy ordering, or any patient-specific data. slug is the segment of a product page URL after "/shop/", e.g. "safe-home-premium-radon-test-kit-prodid-945948"; a full https://www.cvs.com/shop/... URL is also accepted. CVS.com is only available from US/US-territory egress; a request from an unsupported region returns an upstream error rather than an empty result.
+- **Params:** `slug` (string, **required**) — CVS product page URL slug, e.g. \
+
+### `cvs_product_ingredients`
+
+- **HTTP:** `GET /cvs/product-ingredients/{slug}`
+- **What:** CVS OTC product ingredients. Returns one CVS.com OTC (over-the-counter) retail product's ingredient/label statement: active ingredients, inactive ingredients, and the vendor's full free-text ingredient paragraph (which, for OTC drug products, frequently also carries a Drug Facts-style purpose note). This is sourced from the product's own dedicated ingredients page, a separate page from the main product detail endpoint. Covers the non-prescription retail catalog only -- this does not cover prescription items, pharmacy ordering, or any patient-specific data. slug is the segment of a product page URL after "/shop/", e.g. "e-l-f-16hr-camo-concealer-prodid-2370023"; a full https://www.cvs.com/shop/... URL is also accepted. Some products (particularly non-consumable goods) may return empty ingredient fields -- this reflects upstream having no label data for that product, not an error. CVS.com is only available from US/US-territory egress; a request from an unsupported region returns an upstream error rather than an empty result.
+- **Params:** `slug` (string, **required**) — CVS product page URL slug, e.g. \
+
+### `cvs_search`
+
+- **HTTP:** `GET /cvs/search`
+- **What:** Search CVS OTC products by keyword. Performs a keyword search across CVS.com's non-prescription retail/OTC catalog and returns one page of results: normalized products with title, brand, image, current/original price, and sponsored/featured/new-product flags; the total result count; and the facets (brand, color, size, price range, and other attributes, each with its selectable values and result counts) available to filter the results further. This is the same product-search backend cvs-category reads, just reached by keyword instead of by category/brand path. Covers the non-prescription retail catalog only. q is the search keyword or phrase, required. page is a 1-indexed page number (default 1). sort is an optional result order matching cvs-category's own Sort By values. CVS.com is only available from US/US-territory egress; a request from an unsupported region returns an upstream error rather than an empty result.
+- **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `q` (string, **required**) — Search keyword or phrase; `sort` (string, optional) — Result sort order, default relevance. One of pa (Price Low to High), pd (Price High to Low), tr (Top Rated), rc (Most Reviewed), az (Name A-Z), za (Name Z-A)
+
+### `cvs_store_locator`
+
+- **HTTP:** `GET /cvs/store-locator`
+- **What:** CVS store locator. Returns nearby CVS store locations for a ZIP code, a free-text address/city/state, or a latitude/longitude pair: address, phone, fax, distance, and retail store hours, plus a has_pharmacy existence flag and a list of general service indicators (e.g. photo, ATM, same-day delivery). Covers general store info only -- this does not return pharmacy hours, pharmacy phone, prescription data, or any patient-specific information. zip is a 5-digit US ZIP code; alternatively supply address (a free-text location such as a city, state, or street address) or latitude and longitude together. When more than one is supplied, zip wins, then address, then latitude/longitude. Optionally narrow results to stores carrying one specific service via the service param (the same code vocabulary the response's services field uses); only one service value is accepted per request. CVS.com is only available from US/US-territory egress; a request from an unsupported region returns an upstream error rather than an empty result.
+- **Params:** `address` (string, optional) — Free-text location -- a city, state, or street address, e.g. \; `latitude` (number, optional) — Latitude, used together with longitude when zip and address are not supplied; `longitude` (number, optional) — Longitude, used together with latitude when zip and address are not supplied; `service` (string, optional) — Narrow results to stores carrying one specific service; `zip` (string, optional) — 5-digit US ZIP code, e.g. \
+
+## Lazada (5)
+
+### `lazada_categories`
+
+- **HTTP:** `GET /lazada/categories`
+- **What:** Get a Lazada country storefront's category directory. Returns one Lazada country storefront's public category directory from the server-rendered LazMall navigation menu. The response includes top-level groups, categories, and subcategory links; it does not include product listings.
+- **Params:** `country` (string, optional) — Lazada country storefront. Defaults to id.
+
+### `lazada_category_products`
+
+- **HTTP:** `GET /lazada/category-products`
+- **What:** Get a Lazada country storefront's product listing for one category. Returns one Lazada country storefront's product listing for one category, optionally filtered to one brand within it. Product cards include item ids, canonical product URLs, images, prices, ratings, and review counts, with pagination and sort. The category (and optional brand) value is the raw Lazada path slug, not a display name -- use the categories endpoint's own returned URLs to discover a category's slug.
+- **Params:** `brand` (string, optional) — Optional brand path slug to filter within the category.; `category` (string, **required**) — Lazada category path slug, e.g. \; `country` (string, optional) — Lazada country storefront. Defaults to id.; `page` (integer, optional) — Result page, 1-indexed. Defaults to 1.; `sort` (string, optional) — Sort order. Defaults to popularity.
+
+### `lazada_home`
+
+- **HTTP:** `GET /lazada/home`
+- **What:** Get a Lazada country storefront's homepage feed. Returns one Lazada country storefront's anonymous homepage feed: current flash-sale product cards, featured category links, and (where shown) an official-stores carousel. Product-detail and free-text catalog pages are not included because Lazada's stateless routes currently return an anti-bot challenge on every country domain.
+- **Params:** `country` (string, optional) — Lazada country storefront. Defaults to id.
+
+### `lazada_product`
+
+- **HTTP:** `GET /lazada/product`
+- **What:** Get a Lazada country storefront's product-detail page. Returns one Lazada country storefront's product-detail page: title, brand, full description, image gallery, category breadcrumb, and selectable variant properties. item_id (and, for a specific variant, sku_id) are the same ids the search, category-products, and home endpoints already return as item_id. Price is best-effort, read from the page's own display-tracking data rather than a dedicated pricing field; rating and review count are not available on this endpoint because Lazada fetches them client-side after the initial page load.
+- **Params:** `country` (string, optional) — Lazada country storefront. Defaults to id.; `item_id` (integer, **required**) — Lazada item id.; `sku_id` (integer, optional) — Optional Lazada sku id, for a specific variant.
+
+### `lazada_search`
+
+- **HTTP:** `GET /lazada/search`
+- **What:** Search a Lazada country storefront's catalog by keyword. Returns one Lazada country storefront's free-text catalog search results: product cards with item ids, canonical product URLs, images, prices in the storefront's own currency, ratings, and review counts, with pagination and sort. Lazada's own search always substitutes generic or trending items rather than returning a genuinely empty result set, so an empty items list or a low total_results is not by itself a reliable "no matches" signal.
+- **Params:** `country` (string, optional) — Lazada country storefront. Defaults to id.; `page` (integer, optional) — Result page, 1-indexed. Defaults to 1.; `q` (string, **required**) — Free-text search query.; `sort` (string, optional) — Sort order. Defaults to popularity.
+
+## Otto (3)
+
+### `otto_categories`
+
+- **HTTP:** `GET /otto/categories`
+- **What:** Get Otto.de's top-level categories. Returns the public top-level category navigation from Otto.de's server-rendered homepage. Each entry includes its canonical browsing URL.
+- **Params:** _none_
+
+### `otto_product`
+
+- **HTTP:** `GET /otto/product`
+- **What:** Get an Otto.de product. Returns a product's public detail, images, selectable colors and sizes. This endpoint uses a browser renderer because Otto.de product pages require JavaScript rendering.
+- **Params:** `url` (string, **required**) — Canonical Otto.de product URL returned by otto-search
+
+### `otto_search`
+
+- **HTTP:** `GET /otto/search`
+- **What:** Search Otto.de products. Searches Otto.de's public catalogue and returns the server-rendered product cards. offset advances by Otto's fixed 109-card page size; valid values are 0, 109, 218, and so on.
+- **Params:** `offset` (integer, optional) — Result offset; non-negative multiple of 109; `q` (string, **required**) — Product search keyword
+
+## Tokopedia (8)
+
+### `tokopedia_autocomplete`
+
+- **HTTP:** `GET /tokopedia/autocomplete`
+- **What:** Autocomplete Tokopedia product searches. Returns current public Tokopedia search suggestions for a partial keyword. Suggestions include canonical product-search URLs and are not product-search results.
+- **Params:** `q` (string, **required**) — Partial product keyword, up to 100 characters
+
+### `tokopedia_category`
+
+- **HTTP:** `GET /tokopedia/category`
+- **What:** Browse a Tokopedia category. Returns public product cards from a canonical Tokopedia category path. `path` must begin with `/p/`; use the category page path, not a product or search URL.
+- **Params:** `path` (string, **required**) — Canonical Tokopedia category path beginning with /p/
+
+### `tokopedia_home`
+
+- **HTTP:** `GET /tokopedia/home`
+- **What:** Get Tokopedia home recommendations. Returns public product-card recommendations for a current Tokopedia home tab. Omit `tab_id` for the first available tab; discover other tabs through `/tokopedia/home/tabs`.
+- **Params:** `page` (integer, optional) — Recommendation page from 1 through 5; `tab_id` (string, optional) — Current ID from /tokopedia/home/tabs
+
+### `tokopedia_home_tabs`
+
+- **HTTP:** `GET /tokopedia/home/tabs`
+- **What:** List Tokopedia home recommendation tabs. Returns the current public home-recommendation tabs. Use a returned `id` as `tab_id` with `/tokopedia/home`.
+- **Params:** _none_
+
+### `tokopedia_product`
+
+- **HTTP:** `GET /tokopedia/product`
+- **What:** Get a Tokopedia product's public detail. Returns public product detail from a canonical Tokopedia shop domain and product key. This endpoint does not accept arbitrary URLs; numeric product IDs are returned when the product page exposes them but cannot be used as lookup input.
+- **Params:** `product_key` (string, **required**) — Canonical Tokopedia product key; `shop_domain` (string, **required**) — Canonical Tokopedia shop domain
+
+### `tokopedia_product_review_filters`
+
+- **HTTP:** `GET /tokopedia/product/review-filters`
+- **What:** Get Tokopedia product review-filter metadata. Returns which public review media, rating, and topic filters are available for a numeric product ID. It does not return review text, review media, or a review archive.
+- **Params:** `product_id` (string, **required**) — Numeric Tokopedia product ID
+
+### `tokopedia_search`
+
+- **HTTP:** `GET /tokopedia/search`
+- **What:** Search Tokopedia products. Returns public Tokopedia product cards for a keyword from Tokopedia's public product-search operation. `sort` accepts `3` (lowest price), `4` (highest price), `5` (most reviewed), `9` (newest), or `23` (most relevant). Repeat `filter` as `key:value` using values from `/tokopedia/search/filters`.
+- **Params:** `filter` (array, optional) — Repeat live key:value filter selections from /tokopedia/search/filters; `page` (integer, optional) — Search page from 1 through 5; `q` (string, **required**) — Product keyword; `sort` (integer, optional) — Sort: 3 lowest price, 4 highest price, 5 most reviewed, 9 newest, 23 most relevant
+
+### `tokopedia_search_filters`
+
+- **HTTP:** `GET /tokopedia/search/filters`
+- **What:** Get Tokopedia search filters and sorts. Returns the live filter tree and supported sort choices for a Tokopedia product search. The response includes categories when the current query exposes them, store type, delivery location, price, rating, offer, condition, recency, shipping, and stock options as applicable.
+- **Params:** `q` (string, **required**) — Product keyword
+
+## SparkFun (4)
+
+### `sparkfun_categories`
+
+- **HTTP:** `GET /sparkfun/categories`
+- **What:** List SparkFun categories. Lists public SparkFun top-level browse categories with URL keys for sparkfun-category.
+- **Params:** _none_
+
+### `sparkfun_category`
+
+- **HTTP:** `GET /sparkfun/category`
+- **What:** Browse a SparkFun category. Returns paginated public products and dynamic facet filters for a SparkFun category URL key. Each filter must be `attribute:value`; use values from the response's filters array.
+- **Params:** `filter` (array, optional) — Repeatable dynamic facet in attribute:value form; `page` (integer, optional) — One-based result page (1-100); `per_page` (integer, optional) — Products per page (1-24); `url_key` (string, **required**) — SparkFun category URL key
+
+### `sparkfun_product`
+
+- **HTTP:** `GET /sparkfun/product`
+- **What:** Get a SparkFun product. Returns public product metadata, price, stock status, images, categories, a cleaned description, and SparkFun-related product recommendations for one SKU.
+- **Params:** `sku` (string, **required**) — SparkFun product SKU
+
+### `sparkfun_search`
+
+- **HTTP:** `GET /sparkfun/search`
+- **What:** Search SparkFun products. Searches public SparkFun product data with pagination and dynamic facet filters. Each filter must be `attribute:value`; use values from the response's filters array.
+- **Params:** `filter` (array, optional) — Repeatable dynamic facet in attribute:value form; `page` (integer, optional) — One-based result page (1-100); `per_page` (integer, optional) — Products per page (1-24); `q` (string, **required**) — Product search query

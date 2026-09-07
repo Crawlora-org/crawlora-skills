@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**50 endpoints across 9 platform group(s).**
+**57 endpoints across 10 platform group(s).**
 
 ## Indeed (3)
 
@@ -285,6 +285,50 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /jobs/workday/job`
 - **What:** Get a single Workday job. Returns a single Workday posting's full detail (description, location, req id). path is the externalPath from a board listing. tenant/datacenter/site as in the board endpoint. Credential-free public ATS JSON.
 - **Params:** `datacenter` (string, **required**) — Workday datacenter shard; `path` (string, **required**) — Job externalPath from a board listing; `site` (string, **required**) — Workday career site; `tenant` (string, **required**) — Workday tenant
+
+## Tes (7)
+
+### `tes_job_detail`
+
+- **HTTP:** `GET /tes/jobs/detail`
+- **What:** Get a Tes teaching job. Returns normalized detail for one job posting by its numeric id (the id field returned by tes-job-search): employer, location, salary, contract terms/types, dates, and application contact/URL, plus a short excerpt of the listing description rather than the full long-form HTML copy.
+- **Params:** `id` (string, **required**) — Tes job id
+
+### `tes_job_employer`
+
+- **HTTP:** `GET /tes/jobs/employer`
+- **What:** Get a Tes jobs employer profile. Returns normalized detail for one jobs employer profile by its numeric id (the trailing id in tes-job-detail's employer_url field, e.g. .../jobs/employer/epsom-college-1039424 -- the 1039424): name, location, school type/phase/funding status/gender/age range, an about description, its postal address, and every currently-open position listed on the employer's own profile page (id, title, url -- call tes-job-detail with each id for the full posting).
+- **Params:** `id` (string, **required**) — Tes employer id
+
+### `tes_job_search`
+
+- **HTTP:** `GET /tes/jobs/search`
+- **What:** Search Tes teaching jobs. Searches Tes's (tes.com) teaching-jobs board. Returns normalized listing facts (title, employer, location, salary, contract terms/types) plus a short excerpt of the listing description, not the full long-form job-description copy, and the same live faceted-search breakdown (position/subject/workplace category trees with counts, plus contract type/term counts) the real search page renders as its filter sidebar. location is a free-text place name (a UK town/city, an international city, or a bare country name) resolved to coordinates via Tes's own location-autocomplete endpoint; omit for Tes's own default market, "United Kingdom". radius_miles selects the search radius around location. contract_type and contract_term are validated against Tes's own small, closed label sets. position, subject, and workplace are comma-separated passthrough filters -- Tes's own category labels are numerous and can change, so read a prior response's own facets.positions[].value (and facets.positions[].children[].value)/facets.subjects[].value/facets.workplaces[].children[].value for the live, current set rather than guessing. salary_min filters to jobs with an advertised salary at or above that amount (in the searched market's local currency); Tes's own filter panel offers only a minimum, no maximum.
+- **Params:** `contract_term` (string, optional) — Contract term; `contract_type` (string, optional) — Contract type; `keywords` (string, optional) — Job title or keyword; `location` (string, optional) — Free-text place name resolved via Tes's own location autocomplete; `page` (integer, optional) — One-based page; `page_size` (integer, optional) — Results per page; `position` (string, optional) — Comma-separated position category label(s) -- see the endpoint markdown; `radius_miles` (integer, optional) — Search radius around location, in miles; `salary_min` (integer, optional) — Minimum advertised salary, in the searched market's local currency; `sort` (string, optional) — Sort order; `subject` (string, optional) — Comma-separated subject label(s) -- see the endpoint markdown; `workplace` (string, optional) — Comma-separated workplace/organisation-type label(s) -- see the endpoint markdown
+
+### `tes_resource_detail`
+
+- **HTTP:** `GET /tes/resources/detail`
+- **What:** Get a Tes teaching resource. Returns normalized detail for one teaching resource by its numeric id (the id field returned by tes-resource-search). Descriptive facts (title, subject, age range, resource type, author, price, rating, licence label), a per-file attachment list (file type, size, and a preview thumbnail -- metadata only), and the most recent page of reviews are returned -- not the downloadable resource file itself, which robots.txt already disallows scraping regardless.
+- **Params:** `country` (string, optional) — Storefront market for pricing/currency; `id` (string, **required**) — Tes resource id
+
+### `tes_resource_search`
+
+- **HTTP:** `GET /tes/resources/search`
+- **What:** Search Tes teaching resources. Searches Tes's (tes.com) teaching-resources marketplace. Returns normalized listing facts (title, author, price, rating, downloads) -- not full listing descriptions -- out of respect for Tes's general reproduction/republication restriction. query is optional: omit it (alone, or combined with key_stage/subject/on_sale) for pure filter-driven or fully unfiltered browsing, matching Tes's own search API. sort mirrors the real search page's own Sort by dropdown; key_stage and subject mirror its left-hand Refine by filters (both closed, validated enums taken from Tes's own facet taxonomy, and always resolved against Tes's own single GB-taxonomy regardless of country). country controls result currency/localisation only (confirmed live for all seven values); it does not change which key_stage/subject values are valid.
+- **Params:** `country` (string, optional) — Storefront market; `key_stage` (string, optional) — Filter by age range; `on_sale` (boolean, optional) — Filter to discounted resources only; `page` (integer, optional) — One-based page; `page_size` (integer, optional) — Results per page; `query` (string, optional) — Search keywords -- omit for filter-driven or unfiltered browsing; `sort` (string, optional) — Sort order; `subject` (string, optional) — Filter by subject -- one of Tes's own top-level subject facet labels; see the endpoint markdown for the full list (two of the 29 values contain a comma, which is why this parameter is not expressed as a Swagger Enums() list)
+
+### `tes_resource_shop`
+
+- **HTTP:** `GET /tes/resources/shop`
+- **What:** Get a Tes teaching-resources author shop. Returns normalized detail for one teaching-resources author/seller shop by its username (from tes-resource-search/tes-resource-detail's author field, or the trailing path segment of author_url): display name, average rating, upload/view/download counts, a bio, and a page of that author's resource listing (id, title, price, thumbnail -- call tes-resource-detail with each id for subject/age-range/resource-type/rating/description). subject narrows the listing to one of the subject tabs shown on the shop's own page; these vary per author and are not a curated enum.
+- **Params:** `page` (integer, optional) — One-based page; `subject` (string, optional) — Subject tab to filter the listing to -- see the shop's own page for the current set; `username` (string, **required**) — Tes author username
+
+### `tes_school_search`
+
+- **HTTP:** `GET /tes/schools/search`
+- **What:** Search the Tes Schools Directory. Searches Tes's (tes.com) public Schools Directory by school name or location. Returns normalized listing facts (name, logo, a short description, address) for each matching school/employer. Each result's id is the same employer id tes-job-employer accepts, so a caller can go straight from a name/location search to a full employer profile (school type/phase/funding status/gender/age range, and its currently-open positions) without first needing a job posting to discover the id.
+- **Params:** `page` (integer, optional) — One-based page; `page_size` (integer, optional) — Results per page; `query` (string, **required**) — School name or location
 
 ## Upwork (3)
 
