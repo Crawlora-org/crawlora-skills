@@ -70,12 +70,21 @@ CATS[linkedin-research]="research,communication,integrations"
 CATS[facebook-research]="research,communication,integrations"
 CATS[reddit-research]="research,communication,integrations"
 
+failed=0
 for name in "${(@k)CATS}"; do
   echo "--- $name (${CATS[$name]}) ---"
-  npx -y clawhub@latest skill publish "skills/$name" \
-    --categories "${CATS[$name]}" \
-    --changelog "Sync via scripts/sync-directories.sh" || true
+  if ! npx -y clawhub@latest skill publish "skills/$name" \
+      --categories "${CATS[$name]}" \
+      --changelog "Sync via scripts/sync-directories.sh"; then
+    echo "FAILED: ClawHub publish for $name" >&2
+    failed=1
+  fi
 done
+
+if (( failed )); then
+  echo "One or more ClawHub skill publishes failed." >&2
+  exit 1
+fi
 
 echo ""
 echo "Done. Web-only steps (agentskill.sh import, skillsdirectory.com,"
