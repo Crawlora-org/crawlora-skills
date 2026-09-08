@@ -73,9 +73,9 @@ for name in "${(@ok)CATS}"; do
     failed=1
     continue
   fi
-  decision=$(node -e 'const p=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")); console.log(p.status === "unchanged" && p.version === p.latestVersion ? "skip" : "publish")' "$SCRATCH/plan.json")
+  decision=$(node -e 'const p=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")); console.log(p.status === "unchanged" ? "skip" : "publish")' "$SCRATCH/plan.json")
   if [[ "$decision" == skip && "${CRAWLORA_SYNC_METADATA:-0}" != 1 ]]; then
-    echo "Current content already exists; public visibility still requires verification."
+    echo "Identical content already stored (possibly pending); verify public visibility without republishing."
     continue
   fi
   if ! npx -y clawhub@latest skill publish "$REPO_ROOT/skills/$name"       --owner tonywangcn --categories "${CATS[$name]}"       --source-repo Crawlora-org/crawlora-skills --source-commit "$SOURCE_COMMIT"       --source-ref main --source-path "skills/$name"       --changelog "Sync skill instructions, references, and helper from GitHub $SOURCE_COMMIT"       --json > "$SCRATCH/result.json"; then
@@ -88,6 +88,6 @@ for name in "${(@ok)CATS}"; do
 done
 
 echo "ClawHub submissions pending publication: $pending. Submission is not proof of public visibility."
-echo "Verify live versions/file hashes and complete agentskill.sh, skillsdirectory.com,"
-echo "claudeskills.club, and the awesome-list PR separately."
+echo "Verify live versions/file hashes and complete skillsdirectory.com,"
+echo "claudeskills.club, claudeskills.info, skills.pub, and the existing awesome-list PR separately."
 exit "$failed"
