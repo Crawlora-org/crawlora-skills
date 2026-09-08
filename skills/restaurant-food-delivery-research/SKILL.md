@@ -6,7 +6,7 @@ description: Researches restaurants and grocery/food delivery via the Crawlora A
 # Restaurant & food-delivery research
 
 Look up restaurant reviews, reservations, and delivery menus, plus grocery
-search, across five platforms as normalized JSON from the Crawlora API — no
+search across restaurant, delivery, and grocery platforms as normalized JSON from the Crawlora API — no
 scraping delivery-app pages.
 
 ## When to use this skill
@@ -75,8 +75,7 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 
 ## Endpoint reference
 
-See [`reference/endpoints.md`](reference/endpoints.md) for every Yelp,
-OpenTable, DoorDash, Uber Eats, and Instacart endpoint this skill uses.
+See [`reference/endpoints.md`](reference/endpoints.md) for the full supported restaurant, chain-menu, delivery, and grocery catalog.
 
 ## Examples
 

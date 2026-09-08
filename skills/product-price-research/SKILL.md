@@ -1,6 +1,6 @@
 ---
 name: product-price-research
-description: Researches products, prices, sellers, and reviews across 28 major online marketplaces and big-box/specialty retailers (Amazon, eBay, Shopify stores, Shop.app, Target, Costco, Walmart, Nike, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, IKEA, Chewy, and more) using the Crawlora API, returning clean JSON. Use when the user asks to find a product, compare prices or sellers, track listings, or pull marketplace/retailer reviews — instead of scraping store pages.
+description: Researches products, prices, sellers, and reviews across major online marketplaces and big-box/specialty retailers (Amazon, eBay, Shopify stores, Shop.app, Target, Costco, Walmart, Nike, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, IKEA, Chewy, and more) using the Crawlora API, returning clean JSON. Use when the user asks to find a product, compare prices or sellers, track listings, or pull marketplace/retailer reviews — instead of scraping store pages.
 ---
 
 # Product & price research
@@ -93,8 +93,11 @@ Pick the marketplace, then the job:
    has an aggregate rating. `/bestbuy/product/reviews` (`sku`),
    `/sephora/product/reviews` (`product_id`), and `/ikea/reviews`
    (`item_no`) cover those three separately; Home Depot and Chewy surface
-   reviews embedded in their own product-detail call instead. **Adidas and
-   SHEIN expose no review/rating data at all.**
+   reviews embedded in their own product-detail call instead. Adidas reviews and rating summaries are available at
+   `/adidas/product/reviews`, using the search result's `model_number` (not its
+   SKU). Discover per-model review topics via `/adidas/product/review-topics`;
+   locale controls review language and can yield an empty review sample. SHEIN
+   exposes no review endpoint in this catalog.
 5. **Compare** the JSON fields (price, currency, rating, seller) and answer.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
