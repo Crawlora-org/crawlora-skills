@@ -3,6 +3,7 @@
 # require their own imports; skills.sh telemetry does not prove those are synced.
 # Usage: ./scripts/sync-directories.sh [all|skills-sh|clawhub]
 # Requires Node 22+, npx, git, and an authenticated ClawHub CLI.
+# Set CRAWLORA_SYNC_METADATA=1 for an intentional categories-only refresh.
 # Run installers only in scratch space: their skills/ directory would otherwise
 # collide with this repository's source folders. --copy avoids source symlinks.
 set -eu
@@ -73,7 +74,7 @@ for name in "${(@ok)CATS}"; do
     continue
   fi
   decision=$(node -e 'const p=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")); console.log(p.status === "unchanged" && p.version === p.latestVersion ? "skip" : "publish")' "$SCRATCH/plan.json")
-  if [[ "$decision" == skip ]]; then
+  if [[ "$decision" == skip && "${CRAWLORA_SYNC_METADATA:-0}" != 1 ]]; then
     echo "Current content already exists; public visibility still requires verification."
     continue
   fi
