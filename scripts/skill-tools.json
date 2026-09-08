@@ -104,5 +104,71 @@
     "sec_insider",
     "sec_institutional_holdings",
     "web_scrape"
+  ],
+  "supplier-sourcing-research": [
+    "importyeti_search",
+    "importyeti_company",
+    "bing_search",
+    "web_scrape",
+    "extract"
+  ],
+  "podcast-guest-research": [
+    "datasets_apple_podcasts_shows_search",
+    "datasets_apple_podcasts_shows_facets",
+    "datasets_apple_podcasts_shows_item",
+    "apple_podcasts_search",
+    "apple_podcasts_episodes_search",
+    "apple_podcasts_show",
+    "apple_podcasts_show_episodes",
+    "apple_podcasts_show_related",
+    "spotify_podcasts_search",
+    "spotify_podcasts_show",
+    "spotify_podcasts_show_episodes",
+    "spotify_podcasts_episode",
+    "bing_search",
+    "web_scrape"
+  ],
+  "startup-acquisition-research": [
+    "datasets_trustmrr_facets",
+    "datasets_trustmrr_history",
+    "datasets_trustmrr_item",
+    "datasets_trustmrr_search",
+    "trustmrr_acquire",
+    "trustmrr_categories",
+    "trustmrr_category",
+    "trustmrr_leaderboard",
+    "trustmrr_marketplace",
+    "trustmrr_startup",
+    "trustmrr_startups",
+    "web_scrape",
+    "bing_search"
+  ],
+  "housing-market-research": [
+    "datasets_housing_markets_search",
+    "datasets_housing_markets_facets",
+    "datasets_housing_markets_item",
+    "redfin_search",
+    "redfin_region_trends"
+  ],
+  "app-market-opportunity-research": [
+    "datasets_apps_search",
+    "datasets_apps_charts_search",
+    "datasets_apps_reviews_search",
+    "appstore_search",
+    "appstore_app",
+    "appstore_similar",
+    "appstore_list",
+    "appstore_reviews",
+    "appstore_version_history",
+    "googleplay_search",
+    "googleplay_app",
+    "googleplay_similar",
+    "googleplay_list",
+    "googleplay_categories",
+    "googleplay_reviews",
+    "google_trends_enums",
+    "google_trends_locations",
+    "google_trends_categories",
+    "google_trends_explore_interest_over_time"
   ]
 }

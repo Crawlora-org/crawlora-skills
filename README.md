@@ -73,15 +73,19 @@ self-contained and do not require the broader bundles to be installed.
 | [`influencer-discovery`](skills/influencer-discovery) | Campaign-fit creator shortlists with selected live profile/content checks. | TikTok, Instagram, YouTube live + datasets |
 | [`journalist-media-research`](skills/journalist-media-research) | Relevant media lists with verified coverage, beat-fit evidence, and public work contact channels. | Journalists dataset, Bing search/news, author and article pages |
 | [`tiktok-ad-research`](skills/tiktok-ad-research) | Matched Top Ads comparisons and evidence-backed creative hypotheses. | TikTok Creative Center Top Ads (ten tools) |
-
 | [`competitor-intelligence`](skills/competitor-intelligence) | Sourced competitor briefs and comparisons of positioning, pricing, reviews, and hiring signals. | Company websites, Product Hunt, Similarweb, Trustpilot, Capterra, jobs dataset |
 | [`techstack-prospecting`](skills/techstack-prospecting) | Technology-qualified domain shortlists with freshness and live validation evidence. | Techstack dataset, website technology detection, brand and web tools |
 | [`customer-feedback-analysis`](skills/customer-feedback-analysis) | Sample-aware review themes, counts, excerpts, and product improvement hypotheses. | App Store, Google Play, Trustpilot, Capterra, Adidas, Reddit, stored app reviews |
 | [`google-trends-research`](skills/google-trends-research) | Comparable search-interest series, regional interest, related queries, and trending topics. | Google Trends (eleven tools) |
 | [`sec-filings-research`](skills/sec-filings-research) | Filing briefs and financial comparisons with document provenance, reporting periods, and units. | SEC EDGAR live tools, stored SEC company and institutional position datasets |
+| [`supplier-sourcing-research`](skills/supplier-sourcing-research) | Supplier shortlists with observed trade relationships, product evidence, and qualification gaps. | ImportYeti, search, public business websites |
+| [`podcast-guest-research`](skills/podcast-guest-research) | Relevant show shortlists, recent-episode evidence, and tailored guest pitch angles. | Apple Podcasts dataset, Apple/Spotify shows and episodes, show websites |
+| [`startup-acquisition-research`](skills/startup-acquisition-research) | Acquisition candidate screening with dated metrics, price comparisons, and diligence questions. | TrustMRR live tools, stored records and daily history, product websites |
+| [`housing-market-research`](skills/housing-market-research) | Comparable US market panels for prices, inventory, time on market, and modeled affordability. | Housing dataset and Redfin |
+| [`app-market-opportunity-research`](skills/app-market-opportunity-research) | App competitor maps, chart trajectories, release evidence, and unmet-need hypotheses. | App/chart/review datasets, App Store, Google Play, Google Trends |
 
-The repository contains **83 installable skills**. The Claude Code marketplace
-bundle includes **45 skills**; the narrower per-platform alternatives below remain
+The repository contains **88 installable skills**. The Claude Code marketplace
+bundle includes **50 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills

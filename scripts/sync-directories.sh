@@ -73,6 +73,9 @@ CATS[influencer-discovery]="research,communication,integrations"
 CATS[journalist-media-research]="research,communication,integrations"
 CATS[tiktok-ad-research]="research,creative,integrations"
 CATS[sec-filings-research]="research,finance,integrations"
+CATS[startup-acquisition-research]="research,finance,integrations"
+CATS[housing-market-research]="research,finance,integrations"
+CATS[podcast-guest-research]="research,communication,integrations"
 
 failed=0
 for name in "${(@k)CATS}"; do

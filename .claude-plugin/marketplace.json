@@ -6,12 +6,12 @@
   },
   "metadata": {
     "description": "Crawlora Agent Skills — structured public web data (search, e-commerce, social, finance, app stores, media, reviews, travel, sports, jobs, prediction markets, gaming, real estate, and more) via the Crawlora REST API.",
-    "version": "1.15.0"
+    "version": "1.16.0"
   },
   "plugins": [
     {
       "name": "crawlora-skills",
-      "description": "45 Agent Skills for structured web research through the Crawlora REST API, including Google Maps lookups, local-business prospecting, influencer discovery, journalist and media research, TikTok ad comparisons, competitor intelligence, technology prospecting, customer feedback analysis, Google Trends, SEC filings, and focused platform research across commerce, social, jobs, finance, travel, media, and more. Additional per-platform skills are available through the skills CLI.",
+      "description": "50 Agent Skills for structured web research through the Crawlora REST API, including Google Maps lookups, local-business prospecting, influencer discovery, journalist and media research, TikTok ad comparisons, competitor intelligence, technology prospecting, customer feedback analysis, Google Trends, SEC filings, supplier sourcing, podcast guest research, startup acquisitions, housing markets, app opportunities, and focused platform research across commerce, social, jobs, finance, travel, media, and more. Additional per-platform skills are available through the skills CLI.",
       "source": "./",
       "homepage": "https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills",
       "repository": "https://github.com/Crawlora-org/crawlora-skills",
@@ -63,7 +63,12 @@
         "./skills/techstack-prospecting",
         "./skills/customer-feedback-analysis",
         "./skills/google-trends-research",
-        "./skills/sec-filings-research"
+        "./skills/sec-filings-research",
+        "./skills/supplier-sourcing-research",
+        "./skills/podcast-guest-research",
+        "./skills/startup-acquisition-research",
+        "./skills/housing-market-research",
+        "./skills/app-market-opportunity-research"
       ]
     }
   ]
