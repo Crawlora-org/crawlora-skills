@@ -60,7 +60,7 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`courtlistener-research`](skills/courtlistener-research) | Search public US opinions and browse courts and judicial-person records for initial legal research. | CourtListener |
 | [`apk-teardown-research`](skills/apk-teardown-research) | Analyze authorized Android packages for permissions, SDKs, libraries, signing, release history, and ownership signals. | AppInsights |
 
-### Prospecting and campaign workflows
+### Focused research and prospecting workflows
 
 These skills combine selected endpoints into a shortlist or comparison with
 source evidence, freshness notes, and explicit selection criteria. They are
@@ -74,8 +74,14 @@ self-contained and do not require the broader bundles to be installed.
 | [`journalist-media-research`](skills/journalist-media-research) | Relevant media lists with verified coverage, beat-fit evidence, and public work contact channels. | Journalists dataset, Bing search/news, author and article pages |
 | [`tiktok-ad-research`](skills/tiktok-ad-research) | Matched Top Ads comparisons and evidence-backed creative hypotheses. | TikTok Creative Center Top Ads (ten tools) |
 
-The repository contains **78 installable skills**. The Claude Code marketplace
-bundle includes **40 skills**; the narrower per-platform alternatives below remain
+| [`competitor-intelligence`](skills/competitor-intelligence) | Sourced competitor briefs and comparisons of positioning, pricing, reviews, and hiring signals. | Company websites, Product Hunt, Similarweb, Trustpilot, Capterra, jobs dataset |
+| [`techstack-prospecting`](skills/techstack-prospecting) | Technology-qualified domain shortlists with freshness and live validation evidence. | Techstack dataset, website technology detection, brand and web tools |
+| [`customer-feedback-analysis`](skills/customer-feedback-analysis) | Sample-aware review themes, counts, excerpts, and product improvement hypotheses. | App Store, Google Play, Trustpilot, Capterra, Adidas, Reddit, stored app reviews |
+| [`google-trends-research`](skills/google-trends-research) | Comparable search-interest series, regional interest, related queries, and trending topics. | Google Trends (eleven tools) |
+| [`sec-filings-research`](skills/sec-filings-research) | Filing briefs and financial comparisons with document provenance, reporting periods, and units. | SEC EDGAR live tools, stored SEC company and institutional position datasets |
+
+The repository contains **83 installable skills**. The Claude Code marketplace
+bundle includes **45 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills

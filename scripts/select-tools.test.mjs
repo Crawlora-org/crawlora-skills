@@ -24,14 +24,14 @@ test("fails closed on catalog drift and invalid selections", () => {
   assert.throws(() => selectTools(catalog, []), /at least one tool/);
 });
 
-test("published workflow selections resolve and keep Maps and ads narrowly scoped", () => {
+test("published workflow selections resolve and keep single-product workflows narrowly scoped", () => {
   const raw = JSON.parse(readFileSync(new URL("./tools.json", import.meta.url)));
   const catalog = Array.isArray(raw) ? raw : raw.tools;
   const selections = JSON.parse(readFileSync(new URL("./skill-tools.json", import.meta.url)));
   for (const names of Object.values(selections)) {
     assert.equal([...selectTools(catalog, names).values()].flat().length, names.length);
   }
-  for (const [skill, prefix] of [["google-maps-research", "google_map_"], ["tiktok-ad-research", "tiktok_top_ads_"]]) {
+  for (const [skill, prefix] of [["google-maps-research", "google_map_"], ["tiktok-ad-research", "tiktok_top_ads_"], ["google-trends-research", "google_trends_"]]) {
     assert.deepEqual([...selections[skill]].sort(), catalog.filter(t => t.name.startsWith(prefix)).map(t => t.name).sort());
   }
 });
