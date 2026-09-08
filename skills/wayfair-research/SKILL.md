@@ -59,7 +59,7 @@ scripts/crawlora.sh /wayfair/categories q="office chairs" | jq '.'
 scripts/crawlora.sh /wayfair/category category=office-chairs-c478390 page=1 | jq '.'
 
 # Product detail (id is a path param):
-scripts/crawlora.sh /wayfair/product/W100794312 | jq '{name,price,rating}'
+scripts/crawlora.sh /wayfair/product/W100794312 | jq '.data'
 ```
 
 Raw `curl` fallback:

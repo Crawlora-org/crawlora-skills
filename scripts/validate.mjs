@@ -72,6 +72,26 @@ for (const skill of skills) {
     errors.push(`${file}: missing ${ref} (run node scripts/generate.mjs)`);
 }
 
+// Public counts and marketplace membership must agree with the actual package.
+const marketplace = JSON.parse(readFileSync(join(ROOT, ".claude-plugin/marketplace.json"), "utf8"));
+const bundled = marketplace.plugins[0].skills;
+const catalog = JSON.parse(readFileSync(join(ROOT, "scripts/tools.json"), "utf8"));
+const readme = readFileSync(join(ROOT, "README.md"), "utf8");
+const groupCount = new Set(catalog.map((tool) => tool._http.group)).size;
+for (const [label, expected, actual] of [
+  ["README installable skills", skills.length, Number(readme.match(/\*\*(\d+) installable skills\*\*/)?.[1])],
+  ["README bundled skills", bundled.length, Number(readme.match(/bundle includes \*\*(\d+) skills\*\*/)?.[1])],
+  ["README catalog tools", catalog.length, Number(readme.match(/([\d,]+) Crawlora MCP tools/)?.[1]?.replaceAll(",", ""))],
+  ["README platform groups", groupCount, Number(readme.match(/all (\d+) platform groups/)?.[1])],
+  ["marketplace description", bundled.length, Number(marketplace.plugins[0].description.match(/^(\d+) Agent Skills/)?.[1])],
+]) {
+  if (actual !== expected) errors.push(`${label}: expected ${expected}, found ${actual}`);
+}
+if (new Set(bundled).size !== bundled.length) errors.push("duplicate marketplace skill entries");
+for (const path of bundled) {
+  if (!existsSync(join(ROOT, path, "SKILL.md"))) errors.push(`marketplace skill missing: ${path}`);
+}
+
 if (errors.length) {
   console.error("SKILL validation FAILED:\n" + errors.map((e) => "  - " + e).join("\n"));
   process.exit(1);

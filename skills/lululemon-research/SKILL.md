@@ -61,7 +61,7 @@ scripts/crawlora.sh /lululemon/categories section="Women" | jq '.'
 scripts/crawlora.sh /lululemon/category category="women-new-styles" cdp_hash="n14f1wz6o10" page=1 | jq '.'
 
 # Product detail (product_id is a path param):
-scripts/crawlora.sh /lululemon/product/prod123456 | jq '{title,price,sizes}'
+scripts/crawlora.sh /lululemon/product/prod123456 | jq '.data'
 
 # Outfit recommendations for one product color:
 scripts/crawlora.sh /lululemon/outfit unified_id="abc123" color_code="0001" | jq '.'

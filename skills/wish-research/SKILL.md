@@ -58,7 +58,7 @@ scripts/crawlora.sh /wish/search query="wireless earbuds" count=30 | jq '.'
 scripts/crawlora.sh /wish/suggest query="wireless ear" | jq '.'
 
 # Product detail:
-scripts/crawlora.sh /wish/product/5f8a1c2e9b3d4a001f7e6c21 | jq '{name,rating,variations}'
+scripts/crawlora.sh /wish/product/5f8a1c2e9b3d4a001f7e6c21 | jq '.data'
 
 # Reviews:
 scripts/crawlora.sh /wish/product/5f8a1c2e9b3d4a001f7e6c21/reviews count=50 | jq '.'

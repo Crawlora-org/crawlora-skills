@@ -55,7 +55,7 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 scripts/crawlora.sh /twitch/channel login=caedrel | jq '.'
 
 # Clips and VODs for a channel:
-scripts/crawlora.sh /twitch/clips login=caedrel limit=10 | jq '.clips[] | {title, views}'
+scripts/crawlora.sh /twitch/clips login=caedrel limit=10 | jq '.data'
 scripts/crawlora.sh /twitch/videos login=lck limit=10 | jq '.'
 
 # Top games, then top streams under one:

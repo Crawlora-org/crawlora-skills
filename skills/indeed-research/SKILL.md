@@ -61,8 +61,7 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 
 ## Endpoint reference
 
-See [`reference/endpoints.md`](reference/endpoints.md) for all 3 Indeed
-endpoints this skill uses.
+See [`reference/endpoints.md`](reference/endpoints.md) for all Indeed endpoints this skill uses.
 
 ## Examples
 

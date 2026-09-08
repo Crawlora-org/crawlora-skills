@@ -61,7 +61,7 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 scripts/crawlora.sh /shop-app/search query="running shoes" in_stock=true | jq '.'
 
 # Product detail:
-scripts/crawlora.sh /shop-app/products/12345 | jq '{title,price}'
+scripts/crawlora.sh /shop-app/products/12345 | jq '.data'
 
 # Browse a shop's catalog, sorted low-to-high:
 scripts/crawlora.sh /shop-app/shops/some-shop-handle/products sort_by=PRICE_LOW_TO_HIGH | jq '.'

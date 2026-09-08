@@ -6,7 +6,7 @@ description: Fetches structured public web data via the Crawlora REST API — se
 # Crawlora — structured public web data
 
 Crawlora is a hosted API that turns public websites into clean, normalized JSON.
-One API key gives you **828 endpoints across 71 platform groups** — search engines,
+One API key gives you the endpoints in the bundled [catalog](reference/catalog.md) — search engines,
 marketplaces, social and video, finance and crypto, maps, app stores, media, and
 reviews — so an agent can fetch real data without running a browser, proxies, or
 HTML parsers.
@@ -57,7 +57,7 @@ scripts/crawlora.sh /google/suggest q="web scraping" | jq '.'
 scripts/crawlora.sh /youtube/transcript/dQw4w9WgXcQ | jq '.'
 
 # POST endpoints take a JSON body (note the -X POST):
-scripts/crawlora.sh -X POST /google/search '{"searchOption":{"q":"web scraping api"}}' | jq '.'
+scripts/crawlora.sh -X POST /google/search '{"keyword":"web scraping api","language":"en","country":"us"}' | jq '.'
 scripts/crawlora.sh -X POST /google/trends/explore/interest-over-time '{"keywords":["bitcoin"]}' | jq '.'
 ```
 
@@ -74,13 +74,13 @@ in the JSON body.
 
 ## Endpoint reference
 
-See [`reference/catalog.md`](reference/catalog.md) for the full list of all 828
+See [`reference/catalog.md`](reference/catalog.md) for the complete list of
 endpoints (method, path, params, description) grouped by platform.
 
 ## Examples
 
 - **Product price:** `scripts/crawlora.sh /amazon/search k="standing desk"` →
-  read `.results[].price` to compare listings.
+  read `.data[].price` to compare listings.
 - **YouTube transcript:** resolve the video id from the URL, then
   `scripts/crawlora.sh /youtube/transcript/<id>` and summarize.
 - **Trend check:** `scripts/crawlora.sh -X POST /google/trends/explore/interest-over-time '{"keywords":["electric bikes"]}'`.

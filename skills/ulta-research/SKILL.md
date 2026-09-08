@@ -58,7 +58,7 @@ scripts/crawlora.sh /ulta/search query="vitamin c serum" | jq '.'
 scripts/crawlora.sh /ulta/category category="shop/skin-care/serums" filter="BENEFIT--BRIGHTENING" | jq '.'
 
 # Product detail (path param) for a specific shade:
-scripts/crawlora.sh /ulta/product/pimprod2020260 sku=2540468 | jq '{name,brand,price}'
+scripts/crawlora.sh /ulta/product/pimprod2020260 sku=2540468 | jq '.data'
 
 # Nearby stores:
 scripts/crawlora.sh /ulta/stores search="60614" | jq '.'

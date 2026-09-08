@@ -52,7 +52,7 @@ scripts/crawlora.sh /costco/categories query="patio furniture" | jq '.'
 scripts/crawlora.sh /costco/search query="robot vacuum" | jq '.'
 
 # Product detail, then availability at a ZIP/state:
-scripts/crawlora.sh /costco/product/1234567 | jq '{title,price}'
+scripts/crawlora.sh /costco/product/1234567 | jq '.data'
 scripts/crawlora.sh /costco/product/1234567/availability postal_code=98101 state=WA | jq '.'
 ```
 

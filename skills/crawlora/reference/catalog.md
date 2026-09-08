@@ -201,6 +201,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /agoda/flights/itinerary-amenities`
 - **What:** Get Agoda flight segment amenities. Returns real-content amenities (aircraft type, seat layout, meals, entertainment, wifi) for one or more flight segments. Copy the segments straight from a flight search response's own segment fields. Credential-free public data from Agoda's own flight content service.
 - **Params:** `body` (object, **required**) — One or more flight segments to fetch amenities for
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
 
 ### `agoda_flights_search`
 
@@ -3581,6 +3582,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /ebay/search`
 - **What:** Search eBay listings. Returns normalized eBay search results.
 - **Params:** `option` (object, **required**) — eBay search payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `ebay_seller`
 
@@ -3781,42 +3783,49 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /expedia/activities/search`
 - **What:** Search Expedia activities. Returns normalized Expedia Things To Do (activities/tours) search results for a free-text destination and date range.
 - **Params:** `option` (object, **required**) — Activity search payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `expedia_flights_search`
 
 - **HTTP:** `POST /expedia/flights/search`
 - **What:** Search Expedia flights. Returns normalized Expedia Flights search results (departing-leg offers) for an origin/destination IATA pair and date range.
 - **Params:** `option` (object, **required**) — Flights search payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `expedia_locations_search`
 
 - **HTTP:** `POST /expedia/locations/search`
 - **What:** Search Expedia destinations. Returns normalized destination/property typeahead suggestions (cities, airports, neighborhoods, hotels) for a free-text term.
 - **Params:** `option` (object, **required**) — Location search payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `expedia_properties_detail`
 
 - **HTTP:** `POST /expedia/properties/detail`
 - **What:** Expedia Stays property detail. Returns a hotel's detail summary (name, star rating, address/coordinates, top amenities) for a known property id.
 - **Params:** `option` (object, **required**) — Property detail payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `expedia_properties_filters`
 
 - **HTTP:** `POST /expedia/properties/filters`
 - **What:** Expedia search filters. Returns the sort and filter facets (amenities, star rating, neighborhood, nightly price range, sort options) available for a Stays search.
 - **Params:** `option` (object, **required**) — Property filters payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `expedia_properties_reviews`
 
 - **HTTP:** `POST /expedia/properties/reviews`
 - **What:** Expedia Stays property guest reviews. Returns a hotel's overall rating and highlighted/recent guest reviews (reviewer, date, rating, message) for a known property id.
 - **Params:** `option` (object, **required**) — Property reviews payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `expedia_properties_search`
 
 - **HTTP:** `POST /expedia/properties/search`
 - **What:** Search Expedia Stays properties. Returns normalized Expedia Stays (hotel) search results for a free-text destination and date range.
 - **Params:** `option` (object, **required**) — Property search payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ## Facebook (2)
 
@@ -4457,6 +4466,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /google/jobs`
 - **What:** Search Google Jobs. Returns normalized Google Jobs results parsed from public Google web responses.
 - **Params:** `option` (object, **required**) — Google Jobs search payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `google_map_place`
 
@@ -4481,6 +4491,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /google/map/search`
 - **What:** Google Maps search API. Returns results from Google Maps based on search options. Rate limit is enforced at 1 request per second.
 - **Params:** `mapSearchOption` (object, **required**) — Search options
+- **REST body:** Send the value of the MCP argument `mapSearchOption` directly as the JSON body; do not wrap it in a `mapSearchOption` property.
 
 ### `google_news`
 
@@ -4493,6 +4504,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /google/search`
 - **What:** Google search API. Returns normalized Google web search results. Results are fetched through proxied browser renderers that race several concurrent renders per request and return the first clean result, with stale-cache fallback when available. The endpoint returns 503 when Google serves a challenge page or unusable HTML. Rate limit is enforced at 1 request per second, and if the limit is exceeded a 429 status code is returned with rate limit headers.
 - **Params:** `searchOption` (object, **required**) — Search options
+- **REST body:** Send the value of the MCP argument `searchOption` directly as the JSON body; do not wrap it in a `searchOption` property.
 
 ### `google_suggest`
 
@@ -4517,36 +4529,42 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /google/trends/explore`
 - **What:** Google Trends explore data. Returns normalized Google Trends keyword analytics from internal Trends widget requests: interest over time, interest by region, related queries, and related topics when available.
 - **Params:** `request` (object, **required**) — Explore request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `google_trends_explore_interest_by_region`
 
 - **HTTP:** `POST /google/trends/explore/interest-by-region`
 - **What:** Google Trends interest by region. Returns only the interest-by-region widget from the Google Trends Explore widget flow. Supports multiple comparison terms and returns an empty interest_by_region array when Google returns no rows.
 - **Params:** `request` (object, **required**) — Explore request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `google_trends_explore_interest_over_time`
 
 - **HTTP:** `POST /google/trends/explore/interest-over-time`
 - **What:** Google Trends interest over time. Returns only the interest-over-time timeline from the Google Trends Explore widget flow. Supports multiple comparison terms.
 - **Params:** `request` (object, **required**) — Explore request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `google_trends_explore_related_topics`
 
 - **HTTP:** `POST /google/trends/explore/related-topics`
 - **What:** Google Trends related topics. Returns only the related topics widget from the Google Trends Explore widget flow. Returns an empty related_topics array when Google returns no topic rows for the requested term/filter combination.
 - **Params:** `request` (object, **required**) — Explore request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `google_trends_explore_rising_queries`
 
 - **HTTP:** `POST /google/trends/explore/rising-queries`
 - **What:** Google Trends explore rising queries. Returns the Rising related queries widget for one or more Google Trends explore terms. Returns an empty queries array when Google returns no rows for the requested term/filter combination.
 - **Params:** `request` (object, **required**) — Explore request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `google_trends_explore_top_queries`
 
 - **HTTP:** `POST /google/trends/explore/top-queries`
 - **What:** Google Trends explore top queries. Returns the Top related queries widget for one or more Google Trends explore terms. Returns an empty queries array when Google returns no rows for the requested term/filter combination.
 - **Params:** `request` (object, **required**) — Explore request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `google_trends_locations`
 
@@ -4565,6 +4583,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /google/trends/trending/detail`
 - **What:** Google Trends trending term detail. Returns the Explore detail widgets for a single trending term, including interest over time, regional interest, top/rising related queries, and related topics when Google returns them.
 - **Params:** `request` (object, **required**) — Trending detail request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `google_videos`
 
@@ -4913,36 +4932,42 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /hotels/offers`
 - **What:** Get Hotels.com room offers. Returns the public room/unit offer summaries shown for one Hotels.com property and date range, including room labels and non-transactional offer messages. Booking, checkout, payment, and reservation tokens are never returned. property_id is the numeric global property id from a Search response.
 - **Params:** `request` (object, **required**) — Room offers request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `hotels_property`
 
 - **HTTP:** `POST /hotels/property`
 - **What:** Get Hotels.com property details. Returns public static metadata from one canonical Hotels.com property page, including name, address, rating, images, and amenities. Date-bound availability, prices, booking, and review content are excluded.
 - **Params:** `request` (object, **required**) — Canonical Hotels.com property URL
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `hotels_rates`
 
 - **HTTP:** `POST /hotels/rates`
 - **What:** Get Hotels.com rates for one property. Returns one Hotels.com property's date-bound rates and availability: the same normalized property card Search returns, with the live per-night and per-stay prices Hotels.com shows for the requested dates. property_id is the numeric global property id from a Search response's properties[].id; it is distinct from the legacy /ho<id>/ URL id.
 - **Params:** `request` (object, **required**) — Rates request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `hotels_reviews`
 
 - **HTTP:** `POST /hotels/reviews`
 - **What:** Get Hotels.com guest reviews. Returns one Hotels.com property's review overview: the overall rating (0-10) with its descriptive label, the per-category sub-ratings (cleanliness, service, amenities, and so on), and a bounded set of highlighted guest reviews with reviewer, date, rating label, text, and verified-stay flag. property_id is the numeric global property id from a Search response's properties[].id. This mirrors the property page's Guest reviews section; the full paginated review archive is not exposed.
 - **Params:** `request` (object, **required**) — Reviews request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `hotels_reviews_archive`
 
 - **HTTP:** `POST /hotels/reviews/archive`
 - **What:** List Hotels.com guest reviews. Returns one page of public guest reviews for a Hotels.com property, including reviewer, date, traveler type, rating label, title, and message. Use page and page_size to walk the archive; the response reports whether another page is available. property_id is the numeric global property id from a Search response's properties[].id. Booking, account, and private review data are not included.
 - **Params:** `request` (object, **required**) — Review archive request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `hotels_search`
 
 - **HTTP:** `POST /hotels/search`
 - **What:** Search Hotels.com hotels. Returns a page of date-bound Hotels.com hotel search results for either a free-text destination or a numeric Hotels.com region_id: normalized property cards with per-night and per-stay prices, review score and count, location, thumbnail, amenities, and promotional badges. Provide exactly one of query or region_id; region_id skips destination typeahead resolution. Prices are the live rates Hotels.com shows for the requested check-in and check-out dates.
 - **Params:** `request` (object, **required**) — Search request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ## IKEA (8)
 
@@ -6499,6 +6524,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /monitors`
 - **What:** Create a website-change monitor. Creates a monitor that periodically checks a page or sitemap for changes and can notify a webhook. Free to call -- only completed check runs consume credits, at 1 credit per completed run regardless of target type or whether a change was detected. `target_type` defaults to "page" (exact-fingerprint diff of the scraped page). "sitemap" watches the sitemap at `url` for added/removed entries instead, honoring `sitemap.include_patterns`/`exclude_patterns` (shell-style globs matched against each URL's path) and `sitemap.max_urls` (default 5000, hard cap 10000).
 - **Params:** `request` (object, **required**) — Monitor definition
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `monitors_delete`
 
@@ -6523,6 +6549,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `PATCH /monitors/{id}`
 - **What:** Update a website-change monitor. Partially updates one of the caller's own monitors. Free to call. Changing `target_type` or `sitemap` resets the stored diff baseline (fingerprint, snapshot, or URL set), so the next check establishes a fresh baseline instead of comparing against a now-meaningless prior state.
 - **Params:** `id` (string, **required**) — Monitor id; `request` (object, **required**) — Fields to update
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ## Nike (9)
 
@@ -7623,24 +7650,28 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /polymarket/tokens/midpoints`
 - **What:** Get Polymarket token midpoints. Returns public CLOB midpoints for up to 25 Polymarket token ids. This uses credential-free public CLOB market-data JSON and does not require a Polymarket user token, wallet signature, cookies, or personal account authentication.
 - **Params:** `body` (object, **required**) — Token ids request body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
 
 ### `polymarket_tokens_orderbooks`
 
 - **HTTP:** `POST /polymarket/tokens/orderbooks`
 - **What:** Get Polymarket token order books. Returns public CLOB order-book depth for up to 25 Polymarket token ids. This uses credential-free public CLOB market-data JSON and does not require a Polymarket user token, wallet signature, cookies, or personal account authentication.
 - **Params:** `body` (object, **required**) — Token ids request body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
 
 ### `polymarket_tokens_prices`
 
 - **HTTP:** `POST /polymarket/tokens/prices`
 - **What:** Get Polymarket token prices. Returns public CLOB buy and sell prices for up to 25 Polymarket token ids. The `side` enum accepts `buy` and `sell`; when omitted, both sides are returned. This uses credential-free public CLOB market-data JSON and does not require a Polymarket user token, wallet signature, cookies, or personal account authentication.
 - **Params:** `body` (object, **required**) — Token ids request body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
 
 ### `polymarket_tokens_spreads`
 
 - **HTTP:** `POST /polymarket/tokens/spreads`
 - **What:** Get Polymarket token spreads. Returns public CLOB spreads for up to 25 Polymarket token ids. This uses credential-free public CLOB market-data JSON and does not require a Polymarket user token, wallet signature, cookies, or personal account authentication.
 - **Params:** `body` (object, **required**) — Token ids request body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
 
 ## Popeyes (8)
 
@@ -9173,6 +9204,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /starbucks/product/{product_number}/{form}/nutrition`
 - **What:** Recalculate nutrition for a customized Starbucks drink. Recalculates calories, fat, sugars, and protein for a customized build of a Starbucks beverage: swap the milk, change the number of espresso shots or syrup pumps, and get the real figures for that exact drink rather than the standard recipe. Starbucks only offers this for four hot espresso beverages; product_number and form must be one of 406/hot (Caffe Americano), 407/hot (Caffe Latte), 408/hot (Caffe Mocha), or 413/hot (Caramel Macchiato). Any other product returns an invalid-parameter error naming the four that work. size_sku comes from a /starbucks/product result's sizes[].sku. modifiers is the COMPLETE build, not a change-set: start from that size's default_recipe, adjust what you want, and send the whole list back; an empty list is rejected. Each modifier needs a sku, an optional quantity (defaults to 1, and is the dial that matters for countable modifiers like espresso shots), and an optional replaced_sku when substituting a pick-one slot such as the milk. This returns Starbucks' own four-value dynamic-nutrition panel, which is smaller than the full per-size panel /starbucks/product returns for the standard build.
 - **Params:** `form` (string, **required**) — Product form. Only hot is supported for this endpoint; `product_number` (string, **required**) — Starbucks numeric product id. One of: 406, 407, 408, 413; `request` (object, **required**) — The size and the complete modifier build
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `starbucks_product`
 
@@ -10557,18 +10589,21 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /extract`
 - **What:** Extract schema-conforming JSON from a URL. Scrapes a public URL into clean Markdown, then returns data that strictly conforms to the supplied bounded JSON Schema.
 - **Params:** `extractOption` (object, **required**) — Extraction options
+- **REST body:** Send the value of the MCP argument `extractOption` directly as the JSON body; do not wrap it in a `extractOption` property.
 
 ### `web_scrape`
 
 - **HTTP:** `POST /web/scrape`
 - **What:** Scrape a URL into markdown, HTML, links or metadata. Fetches a single public URL and returns clean content in the requested formats (markdown, html, raw_html, links, metadata). The request body IS the ScrapeOption object itself — e.g. {"url": "https://example.com"} — do not wrap it in an extra key. With render=auto the request starts as a fast HTTP fetch and escalates to a real browser when the page is blocked or rendered with JavaScript; backend only pins a specific headless-browser engine for the browser tier and is not a render mode. only_main_content (default true) strips navigation, headers, footers and other boilerplate before conversion. Only public pages are supported; respect each site's terms of use and robots directives. A handful of popular sites (Amazon, Reddit, Yelp, LinkedIn, and others) already have a dedicated, more reliable endpoint elsewhere in this API — a failed scrape against one of them names it.
 - **Params:** `scrapeOption` (object, **required**) — Scrape options
+- **REST body:** Send the value of the MCP argument `scrapeOption` directly as the JSON body; do not wrap it in a `scrapeOption` property.
 
 ### `web_techstack`
 
 - **HTTP:** `POST /web/techstack`
 - **What:** Tech stack — detect what a website is built with. Fetches a public URL and fingerprints the web technologies it is built with — a BuiltWith / Wappalyzer-style detector. Returns a list of detected `technologies`, each with its `categories`, a `confidence` (`high`, `medium`, `low`), an optional `version`, and the `evidence` that matched. Covers JavaScript frameworks and libraries (React, Vue.js, Angular, Svelte, jQuery), web frameworks / static site generators (Next.js, Nuxt.js, Gatsby, Remix, SvelteKit, Astro, Hugo), CMS and website builders (WordPress, Drupal, Joomla, Ghost, Wix, Squarespace, Webflow), e-commerce (Shopify, WooCommerce, Magento, BigCommerce), analytics, ad pixels, and tag managers (Google Analytics, Google Tag Manager, Meta Pixel, LinkedIn, Bing, TikTok/Pinterest/Reddit pixels, Segment, Hotjar, Microsoft Clarity), CDNs, UI frameworks and fonts, payments (Stripe, PayPal, Klarna), live chat, marketing automation, A/B testing, consent management, CAPTCHAs (reCAPTCHA, hCaptcha, Turnstile), video, and search. It also inspects response headers (from a plain HTTP fetch) to identify the web server (nginx, Apache, IIS), the CDN / hosting provider (Cloudflare, CloudFront, Fastly, Vercel, Netlify), and the server-side language / framework (PHP, ASP.NET, Ruby on Rails, Django, Laravel, Express). Results are directional, not exhaustive. The `render` fetch strategy is one of `browser` (headless browser that executes JavaScript — the default, so client-injected scripts like analytics, tag managers and pixels are detected), `auto` (Chrome-impersonated HTTP, escalating to a real browser only when blocked or JS-rendered), or `http` (HTTP only, no JavaScript — fastest, but sees only the server HTML); defaults to `browser`. Only public pages are supported; respect each site's terms of use and robots directives. Also returns `unmatched_evidence` (when present) — third-party script/stylesheet host domains and a `<meta generator>` value the detector saw on the page but doesn't yet have a named signature for; useful for spotting a vendor worth requesting coverage for. `is_infrastructure` flags a URL whose host looks like backend CDN/DNS/cloud-vendor infrastructure rather than a real, human-navigable website. `reachable` is false only when the target could not be fetched at all (even after an automatic www./plain-HTTP retry) — `technologies` may still be partially populated from DNS-based signals alone in that case, and `failure_reason` explains what happened.
 - **Params:** `request` (object, **required**) — Target URL (and optional render strategy)
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ## Wendys (10)
 
@@ -10871,6 +10906,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /yahoo-finance/download`
 - **What:** Yahoo Finance batch historical prices. Returns historical price data for up to 25 symbols.
 - **Params:** `request` (object, **required**) — Batch download request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `yahoo_finance_industries`
 
@@ -10913,6 +10949,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /yahoo-finance/screener`
 - **What:** Yahoo Finance custom screener. Runs a constrained Yahoo Finance custom screener query using Yahoo's public screener JSON shape.
 - **Params:** `request` (object, **required**) — Custom screener request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `yahoo_finance_screeners`
 

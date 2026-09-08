@@ -56,7 +56,7 @@ scripts/crawlora.sh /hm/listing category_id=ladies_newarrivals_all page=1 | jq '
 scripts/crawlora.sh /hm/search query="linen shirt" | jq '.'
 
 # Product detail (colors, sizes, reviews):
-scripts/crawlora.sh /hm/product/1234567 | jq '{name,colors}'
+scripts/crawlora.sh /hm/product/1234567 | jq '.data'
 
 # Nearby stores:
 scripts/crawlora.sh /hm/stores search="98101" radius_meters=15000 | jq '.'

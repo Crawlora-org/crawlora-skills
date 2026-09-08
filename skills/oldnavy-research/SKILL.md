@@ -67,7 +67,7 @@ scripts/crawlora.sh /oldnavy/search keyword="linen shirt" | jq '.'
 scripts/crawlora.sh /oldnavy/category cid=5155 page=1 | jq '.'
 
 # Product detail (pid is color-specific, from a search/category colors[].id):
-scripts/crawlora.sh /oldnavy/product pid=123456002 | jq '{name,rating}'
+scripts/crawlora.sh /oldnavy/product pid=123456002 | jq '.data'
 
 # In-store pickup availability near a zip code:
 scripts/crawlora.sh /oldnavy/product/availability pid=123456002 zip=94103 | jq '.'

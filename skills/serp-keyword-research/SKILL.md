@@ -26,7 +26,7 @@ JSON from the Crawlora API.
 
 ## How it works
 
-1. **SERP** — Google search is `POST /google/search` with a `searchOption` body;
+1. **SERP** — Google search is `POST /google/search` with flat `keyword`, `language`, and `country` fields;
    Bing, Brave, DuckDuckGo, and Yahoo are plain `GET` with `q`:
    `/bing/search`, `/brave/search`, `/duckduckgo/search`, `/yahoo-search/search`.
    Cross-check engines for coverage; on a `503` challenge, fall back to another engine.
@@ -52,7 +52,7 @@ scripts/crawlora.sh /yahoo-search/search q="web scraping api" | jq '.'
 scripts/crawlora.sh /google/suggest q="web scraping" | jq '.'
 
 # POST endpoints take a JSON body (note -X POST):
-scripts/crawlora.sh -X POST /google/search '{"searchOption":{"q":"web scraping api"}}' | jq '.'
+scripts/crawlora.sh -X POST /google/search '{"keyword":"web scraping api","language":"en","country":"us"}' | jq '.'
 scripts/crawlora.sh -X POST /google/trends/explore/interest-over-time '{"keywords":["web scraping"]}' | jq '.'
 ```
 

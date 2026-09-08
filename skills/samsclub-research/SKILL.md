@@ -59,7 +59,7 @@ scripts/crawlora.sh /samsclub/departments | jq '.'
 scripts/crawlora.sh /samsclub/category id=980029 page=1 | jq '.'
 
 # Product detail (id is a path param, from a /ip/{slug}/{id} URL):
-scripts/crawlora.sh /samsclub/product/prod20355602 | jq '{name,price,rating}'
+scripts/crawlora.sh /samsclub/product/prod20355602 | jq '.data'
 
 # Related items for the same product:
 scripts/crawlora.sh /samsclub/product/prod20355602/related | jq '.'

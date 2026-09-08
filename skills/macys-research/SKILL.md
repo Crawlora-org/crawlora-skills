@@ -51,7 +51,7 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 
 ```sh
 # Product detail (productId is a path param):
-scripts/crawlora.sh /macys/product/12345678 | jq '{name,price,rating}'
+scripts/crawlora.sh /macys/product/12345678 | jq '.data'
 
 # Reviews for that same product, paginated:
 scripts/crawlora.sh /macys/product/reviews product_id=12345678 page=1 | jq '.'

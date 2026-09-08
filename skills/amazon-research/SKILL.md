@@ -44,7 +44,7 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 scripts/crawlora.sh /amazon/search k="standing desk" | jq '.'
 
 # Product detail (ASIN is a path param):
-scripts/crawlora.sh /amazon/product/B0XXXXXXX | jq '{title,price}'
+scripts/crawlora.sh /amazon/product/B0XXXXXXX | jq '.data'
 
 # Search suggestions (keyword is a path param):
 scripts/crawlora.sh /amazon/suggest/standing | jq '.'

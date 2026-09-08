@@ -43,10 +43,10 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 ```sh
 # Find an app, then pull its reviews (GET, key=value params):
 scripts/crawlora.sh /appstore/search term="notion" | jq '.'
-scripts/crawlora.sh /appstore/reviews id=1232780281 country=us | jq '.reviews[].text'
+scripts/crawlora.sh /appstore/reviews id=1232780281 country=us | jq '.data'
 
-scripts/crawlora.sh /googleplay/search q="notion" | jq '.'
-scripts/crawlora.sh /googleplay/reviews appId="notion.id" | jq '.'
+scripts/crawlora.sh /googleplay/search term="notion" | jq '.'
+scripts/crawlora.sh /googleplay/reviews app_id="notion.id" | jq '.'
 ```
 
 Raw `curl` fallback:

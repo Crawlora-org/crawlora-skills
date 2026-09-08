@@ -171,24 +171,28 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /polymarket/tokens/midpoints`
 - **What:** Get Polymarket token midpoints. Returns public CLOB midpoints for up to 25 Polymarket token ids. This uses credential-free public CLOB market-data JSON and does not require a Polymarket user token, wallet signature, cookies, or personal account authentication.
 - **Params:** `body` (object, **required**) — Token ids request body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
 
 ### `polymarket_tokens_orderbooks`
 
 - **HTTP:** `POST /polymarket/tokens/orderbooks`
 - **What:** Get Polymarket token order books. Returns public CLOB order-book depth for up to 25 Polymarket token ids. This uses credential-free public CLOB market-data JSON and does not require a Polymarket user token, wallet signature, cookies, or personal account authentication.
 - **Params:** `body` (object, **required**) — Token ids request body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
 
 ### `polymarket_tokens_prices`
 
 - **HTTP:** `POST /polymarket/tokens/prices`
 - **What:** Get Polymarket token prices. Returns public CLOB buy and sell prices for up to 25 Polymarket token ids. The `side` enum accepts `buy` and `sell`; when omitted, both sides are returned. This uses credential-free public CLOB market-data JSON and does not require a Polymarket user token, wallet signature, cookies, or personal account authentication.
 - **Params:** `body` (object, **required**) — Token ids request body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
 
 ### `polymarket_tokens_spreads`
 
 - **HTTP:** `POST /polymarket/tokens/spreads`
 - **What:** Get Polymarket token spreads. Returns public CLOB spreads for up to 25 Polymarket token ids. This uses credential-free public CLOB market-data JSON and does not require a Polymarket user token, wallet signature, cookies, or personal account authentication.
 - **Params:** `body` (object, **required**) — Token ids request body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
 
 ## Kalshi (21)
 

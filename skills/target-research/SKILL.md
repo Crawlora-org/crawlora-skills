@@ -55,7 +55,7 @@ scripts/crawlora.sh /target/search q="standing desk" sort=price-low | jq '.'
 scripts/crawlora.sh /target/category-products category_id=5xtg6 store_id=1234 filter_ids=5xtvw | jq '.'
 
 # Product detail:
-scripts/crawlora.sh /target/product tcin=54191097 | jq '{title,price}'
+scripts/crawlora.sh /target/product tcin=54191097 | jq '.data'
 
 # Reviews:
 scripts/crawlora.sh /target/reviews tcin=54191097 per_page=20 | jq '.'

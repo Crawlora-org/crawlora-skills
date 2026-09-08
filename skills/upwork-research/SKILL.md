@@ -69,8 +69,7 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 
 ## Endpoint reference
 
-See [`reference/endpoints.md`](reference/endpoints.md) for all 3 Upwork
-endpoints this skill uses.
+See [`reference/endpoints.md`](reference/endpoints.md) for all Upwork endpoints this skill uses.
 
 ## Examples
 

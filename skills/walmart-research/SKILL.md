@@ -45,7 +45,7 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 scripts/crawlora.sh /walmart/search q="standing desk" | jq '.'
 
 # Product detail (item_id is a path segment, not a query param):
-scripts/crawlora.sh /walmart/product/414781783 | jq '{title,price}'
+scripts/crawlora.sh /walmart/product/414781783 | jq '.data'
 
 # Product reviews:
 scripts/crawlora.sh /walmart/product/414781783/reviews | jq '.'

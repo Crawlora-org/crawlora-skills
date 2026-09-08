@@ -78,7 +78,7 @@ scripts/crawlora.sh /trustmrr/leaderboard | jq '.'
 scripts/crawlora.sh /capterra/search q="project management software" | jq '.'
 
 # BBB:
-scripts/crawlora.sh /bbb/search q="acme plumbing" | jq '.'
+scripts/crawlora.sh /bbb/search query="plumbing" location="Austin, TX" | jq '.'
 
 # Kickstarter:
 scripts/crawlora.sh /kickstarter/discover term="board game" | jq '.'

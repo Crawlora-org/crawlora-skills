@@ -274,6 +274,9 @@ function endpointLine(t) {
   const desc = (t.description || "").replace(/\s+/g, " ").trim();
   if (desc) out.push(`- **What:** ${desc}`);
   out.push(`- **Params:** ${params(t)}`);
+  if (h.body) {
+    out.push(`- **REST body:** Send the value of the MCP argument \`${h.body}\` directly as the JSON body; do not wrap it in a \`${h.body}\` property.`);
+  }
   out.push("");
   return out.join("\n");
 }

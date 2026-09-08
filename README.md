@@ -152,7 +152,7 @@ scripts/crawlora.sh /amazon/search k="standing desk" | jq '.'
 scripts/crawlora.sh /youtube/transcript/dQw4w9WgXcQ | jq '.'
 
 # POST (JSON body)
-scripts/crawlora.sh -X POST /google/search '{"searchOption":{"q":"web scraping api"}}' | jq '.'
+scripts/crawlora.sh -X POST /google/search '{"keyword":"web scraping api","language":"en","country":"us"}' | jq '.'
 ```
 
 ## What's inside

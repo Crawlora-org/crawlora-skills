@@ -63,7 +63,7 @@ scripts/crawlora.sh /zappos/brand brand="nike.zso" page=1 | jq '.'
 scripts/crawlora.sh /zappos/search term="waterproof hiking boots" | jq '.'
 
 # Product detail, with a specific color variant:
-scripts/crawlora.sh /zappos/product/8729238 colorId=6132 | jq '{name,brand,price}'
+scripts/crawlora.sh /zappos/product/8729238 colorId=6132 | jq '.data'
 ```
 
 Raw `curl` fallback:

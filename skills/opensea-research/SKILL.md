@@ -35,7 +35,7 @@ Full endpoint list: [`reference/endpoints.md`](reference/endpoints.md).
 ## Example
 
 ```sh
-scripts/crawlora.sh /opensea/collections search="art" | jq '.'
-scripts/crawlora.sh /opensea/collection slug="example-collection" | jq '.'
+scripts/crawlora.sh /opensea/collections slugs="example-collection" | jq '.'
+scripts/crawlora.sh /opensea/collection/example-collection | jq '.'
 scripts/crawlora.sh /opensea/collection/example-collection/activity | jq '.'
 ```

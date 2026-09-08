@@ -65,42 +65,49 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /expedia/activities/search`
 - **What:** Search Expedia activities. Returns normalized Expedia Things To Do (activities/tours) search results for a free-text destination and date range.
 - **Params:** `option` (object, **required**) — Activity search payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `expedia_flights_search`
 
 - **HTTP:** `POST /expedia/flights/search`
 - **What:** Search Expedia flights. Returns normalized Expedia Flights search results (departing-leg offers) for an origin/destination IATA pair and date range.
 - **Params:** `option` (object, **required**) — Flights search payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `expedia_locations_search`
 
 - **HTTP:** `POST /expedia/locations/search`
 - **What:** Search Expedia destinations. Returns normalized destination/property typeahead suggestions (cities, airports, neighborhoods, hotels) for a free-text term.
 - **Params:** `option` (object, **required**) — Location search payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `expedia_properties_detail`
 
 - **HTTP:** `POST /expedia/properties/detail`
 - **What:** Expedia Stays property detail. Returns a hotel's detail summary (name, star rating, address/coordinates, top amenities) for a known property id.
 - **Params:** `option` (object, **required**) — Property detail payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `expedia_properties_filters`
 
 - **HTTP:** `POST /expedia/properties/filters`
 - **What:** Expedia search filters. Returns the sort and filter facets (amenities, star rating, neighborhood, nightly price range, sort options) available for a Stays search.
 - **Params:** `option` (object, **required**) — Property filters payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `expedia_properties_reviews`
 
 - **HTTP:** `POST /expedia/properties/reviews`
 - **What:** Expedia Stays property guest reviews. Returns a hotel's overall rating and highlighted/recent guest reviews (reviewer, date, rating, message) for a known property id.
 - **Params:** `option` (object, **required**) — Property reviews payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `expedia_properties_search`
 
 - **HTTP:** `POST /expedia/properties/search`
 - **What:** Search Expedia Stays properties. Returns normalized Expedia Stays (hotel) search results for a free-text destination and date range.
 - **Params:** `option` (object, **required**) — Property search payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ## Agoda (8)
 
@@ -121,6 +128,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /agoda/flights/itinerary-amenities`
 - **What:** Get Agoda flight segment amenities. Returns real-content amenities (aircraft type, seat layout, meals, entertainment, wifi) for one or more flight segments. Copy the segments straight from a flight search response's own segment fields. Credential-free public data from Agoda's own flight content service.
 - **Params:** `body` (object, **required**) — One or more flight segments to fetch amenities for
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
 
 ### `agoda_flights_search`
 
@@ -423,33 +431,39 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /hotels/offers`
 - **What:** Get Hotels.com room offers. Returns the public room/unit offer summaries shown for one Hotels.com property and date range, including room labels and non-transactional offer messages. Booking, checkout, payment, and reservation tokens are never returned. property_id is the numeric global property id from a Search response.
 - **Params:** `request` (object, **required**) — Room offers request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `hotels_property`
 
 - **HTTP:** `POST /hotels/property`
 - **What:** Get Hotels.com property details. Returns public static metadata from one canonical Hotels.com property page, including name, address, rating, images, and amenities. Date-bound availability, prices, booking, and review content are excluded.
 - **Params:** `request` (object, **required**) — Canonical Hotels.com property URL
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `hotels_rates`
 
 - **HTTP:** `POST /hotels/rates`
 - **What:** Get Hotels.com rates for one property. Returns one Hotels.com property's date-bound rates and availability: the same normalized property card Search returns, with the live per-night and per-stay prices Hotels.com shows for the requested dates. property_id is the numeric global property id from a Search response's properties[].id; it is distinct from the legacy /ho<id>/ URL id.
 - **Params:** `request` (object, **required**) — Rates request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `hotels_reviews`
 
 - **HTTP:** `POST /hotels/reviews`
 - **What:** Get Hotels.com guest reviews. Returns one Hotels.com property's review overview: the overall rating (0-10) with its descriptive label, the per-category sub-ratings (cleanliness, service, amenities, and so on), and a bounded set of highlighted guest reviews with reviewer, date, rating label, text, and verified-stay flag. property_id is the numeric global property id from a Search response's properties[].id. This mirrors the property page's Guest reviews section; the full paginated review archive is not exposed.
 - **Params:** `request` (object, **required**) — Reviews request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `hotels_reviews_archive`
 
 - **HTTP:** `POST /hotels/reviews/archive`
 - **What:** List Hotels.com guest reviews. Returns one page of public guest reviews for a Hotels.com property, including reviewer, date, traveler type, rating label, title, and message. Use page and page_size to walk the archive; the response reports whether another page is available. property_id is the numeric global property id from a Search response's properties[].id. Booking, account, and private review data are not included.
 - **Params:** `request` (object, **required**) — Review archive request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `hotels_search`
 
 - **HTTP:** `POST /hotels/search`
 - **What:** Search Hotels.com hotels. Returns a page of date-bound Hotels.com hotel search results for either a free-text destination or a numeric Hotels.com region_id: normalized property cards with per-night and per-stay prices, review score and count, location, thumbnail, amenities, and promotional badges. Provide exactly one of query or region_id; region_id skips destination typeahead resolution. Prices are the live rates Hotels.com shows for the requested check-in and check-out dates.
 - **Params:** `request` (object, **required**) — Search request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.

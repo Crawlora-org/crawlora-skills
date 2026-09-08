@@ -6,7 +6,7 @@
 # Usage:
 #   GET  :  crawlora.sh /amazon/search k=laptop s=relevanceblender
 #   GET  :  crawlora.sh /youtube/transcript/dQw4w9WgXcQ
-#   POST :  crawlora.sh -X POST /google/search '{"q":"web scraping api"}'
+#   POST :  crawlora.sh -X POST /google/search '{"keyword":"web scraping api","language":"en","country":"us"}'
 #   POST :  crawlora.sh -X POST /google/trends/explore/interest-over-time '{"keywords":["bitcoin"]}'
 #
 # GET key=value args become the query string. POST takes one JSON body argument

@@ -62,7 +62,7 @@ scripts/crawlora.sh /zara/category/2417941/products | jq '.'
 scripts/crawlora.sh /zara/search query="linen shirt" section="MAN" limit=24 offset=0 | jq '.'
 
 # Product detail (colors, sizes, images):
-scripts/crawlora.sh /zara/product/12345678 | jq '{name,detail}'
+scripts/crawlora.sh /zara/product/12345678 | jq '.data'
 ```
 
 Raw `curl` fallback:

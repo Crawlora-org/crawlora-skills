@@ -51,7 +51,7 @@ scripts/crawlora.sh /zalando/markets | jq '.'
 scripts/crawlora.sh /zalando/search q="running shoes" market=de | jq '.'
 
 # Product detail (sku from a search/category result, same market):
-scripts/crawlora.sh /zalando/product sku=AD116A0FL-Q11 market=de | jq '{title,price}'
+scripts/crawlora.sh /zalando/product sku=AD116A0FL-Q11 market=de | jq '.data'
 
 # Browse a category, and autocomplete a partial query:
 scripts/crawlora.sh /zalando/category category=shoes market=de | jq '.'

@@ -1,52 +1,37 @@
 #!/bin/zsh
-# Re-sync crawlora-skills to the directories that support CLI automation:
-#   1. skills.sh / agentskill.sh install telemetry (via `npx skills add`)
-#   2. ClawHub (via `npx clawhub skill publish`, with real categories set)
-#
-# Run this after adding/changing skills in this repo. Safe to re-run any time
-# — already-published, unchanged skills just no-op with a harmless
-# "Version X already exists" message from ClawHub.
-#
-# Usage:
-#   ./scripts/sync-directories.sh            # run from anywhere; clones/uses
-#                                             # this checkout for ClawHub
-#
-# Requires: `clawhub login` already run once (device-flow auth persists).
-#
-# CRITICAL — do not "simplify" this by running `npx skills add` or
-# `npx clawhub` directly from this repo's own working directory. Both
-# installer CLIs write local install artifacts (.agents/, .claude/,
-# skills-lock.json) into the CURRENT directory, and `skills add` specifically
-# REPLACES skills/<name>/ with a symlink into .agents/skills/<name>/ — which
-# collides with and destroys this repo's own real skills/<name>/ directories.
-# That's why step 1 below always runs from a throwaway scratch directory.
-# See the team's internal incident writeup for the full history.
+# Sync public GitHub skills to skills.sh and ClawHub. Web directories still
+# require their own imports; skills.sh telemetry does not prove those are synced.
+# Usage: ./scripts/sync-directories.sh [all|skills-sh|clawhub]
+# Requires Node 22+, npx, git, and an authenticated ClawHub CLI.
+# Run installers only in scratch space: their skills/ directory would otherwise
+# collide with this repository's source folders. --copy avoids source symlinks.
+set -eu
 
-set -e
-
+mode="${1:-all}"
+case "$mode" in all|skills-sh|clawhub) ;; *) echo "Usage: $0 [all|skills-sh|clawhub]" >&2; exit 2 ;; esac
 REPO_URL="github.com/Crawlora-org/crawlora-skills"
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-
-echo "=== 1/2: skills.sh + agentskill.sh telemetry ==="
-echo "(npx skills add's install telemetry feeds skills.sh directly; this is"
-echo " NOT the same as agentskill.sh's own web-form import — see the runbook"
-echo " for that manual step.)"
+SOURCE_COMMIT="$(git -C "$REPO_ROOT" rev-parse HEAD)"
+git -C "$REPO_ROOT" diff --quiet HEAD -- skills || { echo "Commit skill changes before syncing." >&2; exit 1; }
+REMOTE_COMMIT="$(git -C "$REPO_ROOT" ls-remote origin refs/heads/main | cut -f1)"
+[[ "$SOURCE_COMMIT" == "$REMOTE_COMMIT" ]] || { echo "Push the source commit to main before syncing." >&2; exit 1; }
 SCRATCH=$(mktemp -d)
-(
-  cd "$SCRATCH"
-  npx -y skills add "$REPO_URL" --all
-)
-rm -rf "$SCRATCH"
+trap 'rm -rf "$SCRATCH"' EXIT
+cd "$SCRATCH"
+failed=0
+pending=0
 
-echo ""
-echo "=== 2/2: ClawHub — publish every skill with real categories ==="
-echo "(default: research,integrations — override table below for anything"
-echo " domain-specific; add new skill slugs to CATS as they're created)"
-
-cd "$REPO_ROOT"
+if [[ "$mode" == all || "$mode" == skills-sh ]]; then
+  echo "skills.sh: install the public repository in disposable scratch space"
+  if ! npx -y skills add "$REPO_URL" --all --copy --agent codex -y; then
+    echo "skills.sh install failed; directory indexing is not verified." >&2
+    failed=1
+  fi
+fi
+[[ "$mode" != skills-sh ]] || exit "$failed"
 
 declare -A CATS
-for d in skills/*/; do
+for d in "$REPO_ROOT"/skills/*/; do
   name=$(basename "$d")
   CATS[$name]="research,integrations"
 done
@@ -79,23 +64,29 @@ CATS[podcast-guest-research]="research,communication,integrations"
 CATS[chrome-extension-research]="research,development,integrations"
 CATS[event-venue-research]="research,lifestyle,integrations"
 
-failed=0
-for name in "${(@k)CATS}"; do
-  echo "--- $name (${CATS[$name]}) ---"
-  if ! npx -y clawhub@latest skill publish "skills/$name" \
-      --categories "${CATS[$name]}" \
-      --changelog "Sync via scripts/sync-directories.sh"; then
-    echo "FAILED: ClawHub publish for $name" >&2
+for name in "${(@ok)CATS}"; do
+  echo "ClawHub: $name"
+  # Categories force a new release even when bytes match. Compare first without
+  # catalog metadata, then attach categories and GitHub provenance on changes.
+  if ! npx -y clawhub@latest skill publish "$REPO_ROOT/skills/$name"       --owner tonywangcn --dry-run --json > "$SCRATCH/plan.json"; then
     failed=1
+    continue
   fi
+  decision=$(node -e 'const p=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")); console.log(p.status === "unchanged" && p.version === p.latestVersion ? "skip" : "publish")' "$SCRATCH/plan.json")
+  if [[ "$decision" == skip ]]; then
+    echo "Current content already exists; public visibility still requires verification."
+    continue
+  fi
+  if ! npx -y clawhub@latest skill publish "$REPO_ROOT/skills/$name"       --owner tonywangcn --categories "${CATS[$name]}"       --source-repo Crawlora-org/crawlora-skills --source-commit "$SOURCE_COMMIT"       --source-ref main --source-path "skills/$name"       --changelog "Sync skill instructions, references, and helper from GitHub $SOURCE_COMMIT"       --json > "$SCRATCH/result.json"; then
+    failed=1
+    continue
+  fi
+  result_status=$(node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")).status)' "$SCRATCH/result.json")
+  echo "$name: $result_status"
+  [[ "$result_status" != pending-publication ]] || pending=$((pending + 1))
 done
 
-if (( failed )); then
-  echo "One or more ClawHub skill publishes failed." >&2
-  exit 1
-fi
-
-echo ""
-echo "Done. Web-only steps (agentskill.sh import, skillsdirectory.com,"
-echo "claudeskills.club, awesomeclaude.ai PR) are NOT covered by this script"
-echo "— see the team's internal submission runbook for those steps."
+echo "ClawHub submissions pending publication: $pending. Submission is not proof of public visibility."
+echo "Verify live versions/file hashes and complete agentskill.sh, skillsdirectory.com,"
+echo "claudeskills.club, and the awesome-list PR separately."
+exit "$failed"

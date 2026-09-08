@@ -52,11 +52,11 @@ scripts/crawlora.sh /polymarket/search q="fed rate cut" | jq '.'
 scripts/crawlora.sh /polymarket/event/will-the-fed-cut-rates | jq '.'
 
 # Kalshi:
-scripts/crawlora.sh /kalshi/markets | jq '.markets[:5]'
+scripts/crawlora.sh /kalshi/markets | jq '.data'
 scripts/crawlora.sh /kalshi/market/INXD-24DEC31-T5000/history | jq '.'
 
 # Metaculus:
-scripts/crawlora.sh /metaculus/questions | jq '.results[:5]'
+scripts/crawlora.sh /metaculus/questions | jq '.data'
 scripts/crawlora.sh /metaculus/question/12345/forecasts | jq '.'
 ```
 

@@ -60,7 +60,7 @@ scripts/crawlora.sh /apple-books/search term="Project Hail Mary" | jq '.'
 scripts/crawlora.sh /apple-books/charts | jq '.'
 
 # Audible:
-scripts/crawlora.sh /audible/search keywords="Project Hail Mary" | jq '.'
+scripts/crawlora.sh /audible/search q="Project Hail Mary" | jq '.'
 ```
 
 Raw `curl` fallback:

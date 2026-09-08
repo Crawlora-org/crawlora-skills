@@ -45,8 +45,8 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 scripts/crawlora.sh /youtube/transcript/dQw4w9WgXcQ | jq '.'
 
 # Video metadata + comments:
-scripts/crawlora.sh /youtube/video/dQw4w9WgXcQ | jq '{title,views,channel}'
-scripts/crawlora.sh /youtube/comments/dQw4w9WgXcQ | jq '.comments[].text'
+scripts/crawlora.sh /youtube/video/dQw4w9WgXcQ | jq '.data'
+scripts/crawlora.sh /youtube/comments/dQw4w9WgXcQ | jq '.data'
 
 # Search:
 scripts/crawlora.sh /youtube/search q="web scraping tutorial" | jq '.'

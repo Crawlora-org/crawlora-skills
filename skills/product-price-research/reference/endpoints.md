@@ -65,6 +65,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /ebay/search`
 - **What:** Search eBay listings. Returns normalized eBay search results.
 - **Params:** `option` (object, **required**) — eBay search payload
+- **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `ebay_seller`
 

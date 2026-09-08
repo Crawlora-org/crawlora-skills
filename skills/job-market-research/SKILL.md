@@ -61,7 +61,7 @@ scripts/crawlora.sh /indeed/search q="staff engineer" l="Remote" | jq '.'
 
 # Resolve then pull a company's ATS board:
 scripts/crawlora.sh /jobs/company-search slug=stripe | jq '.'
-scripts/crawlora.sh /jobs/greenhouse/board token=stripe | jq '.jobs | length'
+scripts/crawlora.sh /jobs/greenhouse/board token=stripe | jq '.data'
 
 # Hiring signals:
 scripts/crawlora.sh /jobs/hiring-signals provider=greenhouse token=stripe | jq '.'
@@ -74,7 +74,7 @@ Raw `curl` fallback:
 
 ```sh
 curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
-  "https://api.crawlora.net/api/v1/jobs/lever/postings?board=netflix" | jq '.'
+  "https://api.crawlora.net/api/v1/jobs/lever/postings?company=netflix" | jq '.'
 ```
 
 ## Endpoint reference

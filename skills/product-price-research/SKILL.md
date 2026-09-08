@@ -104,7 +104,7 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 ```sh
 # Search a marketplace (GET, key=value params):
 scripts/crawlora.sh /amazon/search k="standing desk" | jq '.'
-scripts/crawlora.sh /ebay/search q="mechanical keyboard" | jq '.'
+scripts/crawlora.sh -X POST /ebay/search '{"keyword":"mechanical keyboard"}' | jq '.'
 scripts/crawlora.sh /shop-app/search query="running shoes" | jq '.'
 scripts/crawlora.sh /target/search q="standing desk" | jq '.'
 scripts/crawlora.sh /walmart/search q="standing desk" | jq '.'
@@ -116,7 +116,7 @@ scripts/crawlora.sh /sephora/search query="retinol serum" | jq '.'
 scripts/crawlora.sh /chewy/search q="salmon dog food" | jq '.'
 
 # Product detail:
-scripts/crawlora.sh /amazon/product asin=B0XXXXXXX | jq '{title,price}'
+scripts/crawlora.sh /amazon/product/B0XXXXXXX | jq '.data'
 scripts/crawlora.sh /ikea/product item_no=00263850 | jq '.'
 
 # Category browse (no keyword search on this platform):
@@ -137,10 +137,7 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 ## Endpoint reference
 
 See [`reference/endpoints.md`](reference/endpoints.md) for every endpoint
-this skill uses (method, path, params, description) across all 20 platforms:
-Amazon, eBay, Shopify, Shop.app, Target, Costco, Zalando, Walmart, H&M,
-Kohl's, Lululemon, Macy's, Nike, Old Navy (+ Gap, Banana Republic, Athleta),
-Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, and Zara.
+this skill uses, including its method, path, parameters, and platform coverage.
 
 ## Examples
 

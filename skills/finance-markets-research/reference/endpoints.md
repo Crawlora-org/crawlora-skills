@@ -27,6 +27,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /yahoo-finance/download`
 - **What:** Yahoo Finance batch historical prices. Returns historical price data for up to 25 symbols.
 - **Params:** `request` (object, **required**) — Batch download request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `yahoo_finance_industries`
 
@@ -69,6 +70,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /yahoo-finance/screener`
 - **What:** Yahoo Finance custom screener. Runs a constrained Yahoo Finance custom screener query using Yahoo's public screener JSON shape.
 - **Params:** `request` (object, **required**) — Custom screener request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `yahoo_finance_screeners`
 

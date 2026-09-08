@@ -73,7 +73,7 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 
 ```sh
 # Greenhouse — list a board, then pull one job's full description:
-scripts/crawlora.sh /jobs/greenhouse/board token=stripe | jq '.jobs | length'
+scripts/crawlora.sh /jobs/greenhouse/board token=stripe | jq '.data'
 scripts/crawlora.sh /jobs/greenhouse/job token=stripe id=1234567 | jq '.'
 
 # Lever — list postings filtered by department:
@@ -95,7 +95,7 @@ curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
 
 ## Endpoint reference
 
-See [`reference/endpoints.md`](reference/endpoints.md) for all 28 endpoints, their HTTP methods, and full param lists.
+See [`reference/endpoints.md`](reference/endpoints.md) for all endpoints, their HTTP methods, and full param lists.
 
 ## Examples
 

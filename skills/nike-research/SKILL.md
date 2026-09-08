@@ -58,7 +58,7 @@ scripts/crawlora.sh /nike/search category="mens-shoes" | jq '.'
 scripts/crawlora.sh /nike/search keyword="air max" page=2 | jq '.'
 
 # Product detail (slug + style_color from a search result's colors[]):
-scripts/crawlora.sh /nike/product slug="nike-air-max-90-mens-shoes-6n3vKB" style_color="CN8490-002" | jq '{title,price}'
+scripts/crawlora.sh /nike/product slug="nike-air-max-90-mens-shoes-6n3vKB" style_color="CN8490-002" | jq '.data'
 
 # Reviews:
 scripts/crawlora.sh /nike/product/reviews slug="nike-air-max-90-mens-shoes-6n3vKB" style_color="CN8490-002" | jq '.'

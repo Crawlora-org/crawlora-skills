@@ -52,7 +52,7 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 
 ```sh
 # Homes (resolve region_id first, Zillow search needs more than a location string):
-scripts/crawlora.sh /zillow/autocomplete query="Austin, TX" | jq '.results[0]'
+scripts/crawlora.sh /zillow/autocomplete query="Austin, TX" | jq '.data'
 scripts/crawlora.sh /zillow/search location="Austin, TX" region_id=10221 | jq '.'
 scripts/crawlora.sh /redfin/region-trends region_id=30818 region_type=city | jq '.'
 
