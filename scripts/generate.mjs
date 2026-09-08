@@ -16,9 +16,11 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, chmodSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { selectTools } from "./select-tools.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CHECK = process.argv.includes("--check");
+const focusedSkills = JSON.parse(readFileSync(join(ROOT, "scripts/skill-tools.json"), "utf8"));
 
 const tools = JSON.parse(readFileSync(join(ROOT, "scripts/tools.json"), "utf8"));
 const all = Array.isArray(tools) ? tools : tools.tools || Object.values(tools)[0];
@@ -276,7 +278,7 @@ function endpointLine(t) {
   return out.join("\n");
 }
 
-function renderGroups(groupNames, title, intro) {
+function renderGroups(groupNames, title, intro, catalog = byGroup) {
   const lines = [];
   lines.push(`# ${title}`);
   lines.push("");
@@ -290,11 +292,11 @@ function renderGroups(groupNames, title, intro) {
       "`GET` params go in the query string; `POST` params go in a JSON body."
   );
   lines.push("");
-  const total = groupNames.reduce((n, g) => n + (byGroup.get(g)?.length || 0), 0);
+  const total = groupNames.reduce((n, g) => n + (catalog.get(g)?.length || 0), 0);
   lines.push(`**${total} endpoints across ${groupNames.length} platform group(s).**`);
   lines.push("");
   for (const g of groupNames) {
-    const list = byGroup.get(g) || [];
+    const list = catalog.get(g) || [];
     if (!list.length) continue;
     lines.push(`## ${g} (${list.length})`);
     lines.push("");
@@ -325,6 +327,22 @@ for (const [skill, groups] of Object.entries(SKILLS)) {
       groups,
       `${skill} — endpoint reference`,
       `Endpoints this skill uses, grouped by platform. Call them via \`scripts/crawlora.sh\` (see SKILL.md).`
+    ),
+  ]);
+}
+
+// Task-oriented skills can select tools within mixed groups such as Google
+// and Datasets. Fail on removed/renamed tools instead of silently losing coverage.
+for (const [skill, names] of Object.entries(focusedSkills)) {
+  if (skill in SKILLS) throw new Error(`Skill has both group and tool selections: ${skill}`);
+  const selected = selectTools(all, names);
+  outputs.push([
+    `skills/${skill}/reference/endpoints.md`,
+    renderGroups(
+      [...selected.keys()],
+      `${skill} — endpoint reference`,
+      "Only the endpoints used by this workflow. Call them via `scripts/crawlora.sh` (see SKILL.md).",
+      selected,
     ),
   ]);
 }

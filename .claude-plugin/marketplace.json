@@ -6,12 +6,12 @@
   },
   "metadata": {
     "description": "Crawlora Agent Skills — structured public web data (search, e-commerce, social, finance, app stores, media, reviews, travel, sports, jobs, prediction markets, gaming, real estate, and more) via the Crawlora REST API.",
-    "version": "1.13.0"
+    "version": "1.14.0"
   },
   "plugins": [
     {
       "name": "crawlora-skills",
-      "description": "35 Agent Skills for fetching structured public web data with the Crawlora API: an umbrella catalog skill, a hosted-datasets skill, plus product/price, YouTube, app-review, SERP/keyword, finance/markets, prediction-markets, movie/TV, job-market, social-media, travel/hotel, sports, Twitch, music/podcast, book, gaming, anime/manga, developer/OSS, restaurant/food-delivery, business-review/trust, resale/secondhand, real-estate/autos, Yahoo-network, web-utilities, website-monitoring, patents, GDELT news/TV, Apple Maps, news media, OpenSea, auction, CourtListener, APK teardown, and pet-services research recipes.",
+      "description": "40 Agent Skills for structured web research through the Crawlora REST API, including Google Maps lookups, local-business prospecting, influencer discovery, journalist and media research, TikTok ad comparisons, and focused platform research across commerce, social, jobs, finance, travel, media, and more. Additional per-platform skills are available through the skills CLI.",
       "source": "./",
       "homepage": "https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills",
       "repository": "https://github.com/Crawlora-org/crawlora-skills",
@@ -53,7 +53,12 @@
         "./skills/auction-research",
         "./skills/courtlistener-research",
         "./skills/apk-teardown-research",
-        "./skills/pet-services-research"
+        "./skills/pet-services-research",
+        "./skills/google-maps-research",
+        "./skills/local-business-prospecting",
+        "./skills/influencer-discovery",
+        "./skills/journalist-media-research",
+        "./skills/tiktok-ad-research"
       ]
     }
   ]

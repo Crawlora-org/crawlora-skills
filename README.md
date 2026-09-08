@@ -60,6 +60,24 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`courtlistener-research`](skills/courtlistener-research) | Search public US opinions and browse courts and judicial-person records for initial legal research. | CourtListener |
 | [`apk-teardown-research`](skills/apk-teardown-research) | Analyze authorized Android packages for permissions, SDKs, libraries, signing, release history, and ownership signals. | AppInsights |
 
+### Prospecting and campaign workflows
+
+These skills combine selected endpoints into a shortlist or comparison with
+source evidence, freshness notes, and explicit selection criteria. They are
+self-contained and do not require the broader bundles to be installed.
+
+| Skill | What it delivers | Sources |
+|---|---|---|
+| [`google-maps-research`](skills/google-maps-research) | Current place lookups and comparisons, review samples, and photos. | Google Maps (four live tools) |
+| [`local-business-prospecting`](skills/local-business-prospecting) | Deduplicated business shortlists with public contacts and qualification evidence. | Google Maps live + dataset, Apple Maps, Yelp, business websites |
+| [`influencer-discovery`](skills/influencer-discovery) | Campaign-fit creator shortlists with selected live profile/content checks. | TikTok, Instagram, YouTube live + datasets |
+| [`journalist-media-research`](skills/journalist-media-research) | Relevant media lists with verified coverage, beat-fit evidence, and public work contact channels. | Journalists dataset, Bing search/news, author and article pages |
+| [`tiktok-ad-research`](skills/tiktok-ad-research) | Matched Top Ads comparisons and evidence-backed creative hypotheses. | TikTok Creative Center Top Ads (ten tools) |
+
+The repository contains **78 installable skills**. The Claude Code marketplace
+bundle includes **40 skills**; the narrower per-platform alternatives below remain
+individually installable through the `skills` CLI.
+
 ### Per-platform skills
 
 The three biggest bundles above (`product-price-research`, `social-media-research`,
@@ -130,6 +148,7 @@ crawlora-skills/
 ├── lib/crawlora.sh                   # shared REST helper template (GET + POST)
 ├── scripts/
 │   ├── tools.json                    # endpoint catalog (source of truth, from crawlora-mcp)
+│   ├── skill-tools.json              # exact tool selections for focused workflows
 │   ├── generate.mjs                  # emits each skill's reference/ + bundled helper
 │   └── validate.mjs                  # frontmatter + body-length lint
 └── skills/<name>/{SKILL.md, scripts/crawlora.sh, reference/…}
@@ -142,6 +161,7 @@ The endpoint catalog comes from Crawlora's published API catalog (vendored as
 node scripts/generate.mjs        # write
 node scripts/generate.mjs --check  # CI parity check
 node scripts/validate.mjs        # lint all SKILL.md
+node --test scripts/*.test.mjs   # helper and focused-selection tests
 ```
 
 ## Links

@@ -39,9 +39,10 @@ if [ "$method" = "GET" ]; then
   for kv in ${rest[@]+"${rest[@]}"}; do
     [ -n "$kv" ] && qs+=(--data-urlencode "$kv")
   done
-  curl -fsS -G "${auth[@]}" "${qs[@]}" "${base}${path}"
+  curl -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
 else
-  [ -n "$body" ] || body="${rest[0]:-{}}"
+  [ -n "$body" ] || body="${rest[0]:-}"
+  [ -n "$body" ] || body='{}'
   curl -fsS -X "$method" "${auth[@]}" \
     -H "Content-Type: application/json" -d "$body" "${base}${path}"
 fi

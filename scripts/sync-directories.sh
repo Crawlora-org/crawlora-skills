@@ -69,6 +69,9 @@ CATS[pinterest-research]="research,communication,integrations"
 CATS[linkedin-research]="research,communication,integrations"
 CATS[facebook-research]="research,communication,integrations"
 CATS[reddit-research]="research,communication,integrations"
+CATS[influencer-discovery]="research,communication,integrations"
+CATS[journalist-media-research]="research,communication,integrations"
+CATS[tiktok-ad-research]="research,creative,integrations"
 
 failed=0
 for name in "${(@k)CATS}"; do

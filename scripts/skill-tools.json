@@ -1,0 +1,27 @@
+{
+  "google-maps-research": [
+    "google_map_search", "google_map_place", "google_map_place_reviews", "google_map_place_photos"
+  ],
+  "local-business-prospecting": [
+    "datasets_google_map_search", "datasets_google_map_facets", "datasets_google_map_item", "datasets_google_map_nearby",
+    "google_map_search", "google_map_place", "google_map_place_reviews",
+    "apple_maps_search", "apple_maps_place", "yelp_search", "yelp_business", "web_scrape", "extract"
+  ],
+  "influencer-discovery": [
+    "datasets_creators_search",
+    "datasets_instagram_users_search", "datasets_instagram_users_facets", "datasets_instagram_users_item",
+    "datasets_youtube_creators_search", "datasets_youtube_creators_facets", "datasets_youtube_creators_item",
+    "tiktok_search_user", "tiktok_profile", "tiktok_posts", "tiktok_post",
+    "instagram_profile", "instagram_reels", "instagram_post",
+    "youtube_search", "youtube_profile", "youtube_channel_videos", "youtube_video"
+  ],
+  "journalist-media-research": [
+    "datasets_journalists_search", "datasets_journalists_facets", "datasets_journalists_item",
+    "bing_search", "bing_news", "web_scrape"
+  ],
+  "tiktok-ad-research": [
+    "tiktok_top_ads_filters", "tiktok_top_ads_locations", "tiktok_top_ads_location_info",
+    "tiktok_top_ads_suggestions", "tiktok_top_ads_list", "tiktok_top_ads_detail",
+    "tiktok_top_ads_analysis", "tiktok_top_ads_recommend", "tiktok_top_ads_spotlight", "tiktok_top_ads_safety"
+  ]
+}

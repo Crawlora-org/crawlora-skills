@@ -7,7 +7,10 @@ on:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -19,3 +22,7 @@ jobs:
         run: node scripts/generate.mjs --check
       - name: Shell helper syntax
         run: bash -n lib/crawlora.sh
+      - name: Helper regression tests
+        run: node --test scripts/helper.test.mjs
+      - name: Focused endpoint selection
+        run: node --test scripts/select-tools.test.mjs
