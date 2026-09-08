@@ -88,9 +88,12 @@ self-contained and do not require the broader bundles to be installed.
 | [`crowdfunding-campaign-research`](skills/crowdfunding-campaign-research) | Dated campaign benchmarks, creator milestones, and sampled backer concerns. | Kickstarter discovery, project details, updates, comments |
 | [`event-venue-research`](skills/event-venue-research) | Event calendars and venue comparisons with timing, fee, and availability context. | Ticketmaster and TicketWeb |
 | [`hiring-demand-analysis`](skills/hiring-demand-analysis) | Cohort-based hiring snapshots, skill demand, employer concentration, and qualified salary comparisons. | Jobs dataset, corpus facets, company and posting details |
+| [`restaurant-menu-benchmarking`](skills/restaurant-menu-benchmarking) | Branch- and order-mode-aware comparisons of dishes, bundles, menu breadth, and displayed prices. | DoorDash, Uber Eats, Chipotle, McDonald's |
+| [`retail-assortment-gap-analysis`](skills/retail-assortment-gap-analysis) | Catalog coverage ledgers, matched product/variant matrices, and qualified assortment gaps. | Shopify, Target, IKEA |
+| [`short-term-rental-market-research`](skills/short-term-rental-market-research) | Aggregate rental supply, density, mix, and price comparisons with separate live listing examples. | Airbnb market datasets and live listings |
 
-The repository contains **93 installable skills**. The Claude Code marketplace
-bundle includes **55 skills**; the narrower per-platform alternatives below remain
+The repository contains **96 installable skills**. The Claude Code marketplace
+bundle includes **58 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills

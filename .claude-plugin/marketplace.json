@@ -5,18 +5,24 @@
     "email": "hello@crawlora.net"
   },
   "metadata": {
-    "description": "Crawlora Agent Skills — structured public web data (search, e-commerce, social, finance, app stores, media, reviews, travel, sports, jobs, prediction markets, gaming, real estate, and more) via the Crawlora REST API.",
-    "version": "1.17.1"
+    "description": "Crawlora Agent Skills \u2014 structured public web data (search, e-commerce, social, finance, app stores, media, reviews, travel, sports, jobs, prediction markets, gaming, real estate, and more) via the Crawlora REST API.",
+    "version": "1.18.0"
   },
   "plugins": [
     {
       "name": "crawlora-skills",
-      "description": "55 Agent Skills for structured web research through the Crawlora REST API, including Google Maps lookups, local-business prospecting, influencer discovery, journalist and media research, TikTok ad comparisons, competitor intelligence, technology prospecting, customer feedback analysis, Google Trends, SEC filings, supplier sourcing, podcast guest research, startup acquisitions, housing markets, app opportunities, Chrome extensions, Steam niches, crowdfunding campaigns, event and venue comparisons, hiring-demand analysis, and focused platform research across commerce, social, jobs, finance, travel, media, and more. Additional per-platform skills are available through the skills CLI.",
+      "description": "58 Agent Skills for structured web research through the Crawlora REST API, including Google Maps lookups, local-business prospecting, influencer discovery, journalist and media research, TikTok ad comparisons, competitor intelligence, technology prospecting, customer feedback analysis, Google Trends, SEC filings, supplier sourcing, podcast guest research, startup acquisitions, housing markets, app opportunities, Chrome extensions, Steam niches, crowdfunding campaigns, event and venue comparisons, hiring-demand analysis, restaurant menu benchmarking, retail assortment gaps, short-term rental markets, and focused platform research across commerce, social, jobs, finance, travel, media, and more. Additional per-platform skills are available through the skills CLI.",
       "source": "./",
       "homepage": "https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills",
       "repository": "https://github.com/Crawlora-org/crawlora-skills",
       "license": "MIT",
-      "keywords": ["crawlora", "web-scraping", "agent-skills", "web-data", "mcp"],
+      "keywords": [
+        "crawlora",
+        "web-scraping",
+        "agent-skills",
+        "web-data",
+        "mcp"
+      ],
       "strict": false,
       "skills": [
         "./skills/crawlora",
@@ -73,7 +79,10 @@
         "./skills/steam-market-opportunity-research",
         "./skills/crowdfunding-campaign-research",
         "./skills/event-venue-research",
-        "./skills/hiring-demand-analysis"
+        "./skills/hiring-demand-analysis",
+        "./skills/restaurant-menu-benchmarking",
+        "./skills/retail-assortment-gap-analysis",
+        "./skills/short-term-rental-market-research"
       ]
     }
   ]

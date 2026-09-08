@@ -242,5 +242,8 @@
     "datasets_jobs_item",
     "datasets_jobs_companies",
     "datasets_jobs_company_item"
-  ]
+  ],
+  "restaurant-menu-benchmarking": ["doordash_search", "doordash_store", "doordash_store_menu", "ubereats_search", "ubereats_store", "ubereats_store_menu", "chipotle_restaurants", "chipotle_menu", "chipotle_restaurant_menu", "mcdonalds_categories", "mcdonalds_menu"],
+  "retail-assortment-gap-analysis": ["shopify_store", "shopify_collections", "shopify_collection_products", "shopify_products", "shopify_product", "target_categories", "target_category_products", "target_product", "ikea_search", "ikea_category", "ikea_product"],
+  "short-term-rental-market-research": ["datasets_airbnb_search", "datasets_airbnb_facets", "datasets_airbnb_item", "datasets_airbnb_nearby", "airbnb_search", "airbnb_room", "airbnb_room_calendar", "airbnb_room_reviews"]
 }
