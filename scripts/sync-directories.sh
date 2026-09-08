@@ -76,6 +76,8 @@ CATS[sec-filings-research]="research,finance,integrations"
 CATS[startup-acquisition-research]="research,finance,integrations"
 CATS[housing-market-research]="research,finance,integrations"
 CATS[podcast-guest-research]="research,communication,integrations"
+CATS[chrome-extension-research]="research,development,integrations"
+CATS[event-venue-research]="research,lifestyle,integrations"
 
 failed=0
 for name in "${(@k)CATS}"; do

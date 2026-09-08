@@ -83,9 +83,14 @@ self-contained and do not require the broader bundles to be installed.
 | [`startup-acquisition-research`](skills/startup-acquisition-research) | Acquisition candidate screening with dated metrics, price comparisons, and diligence questions. | TrustMRR live tools, stored records and daily history, product websites |
 | [`housing-market-research`](skills/housing-market-research) | Comparable US market panels for prices, inventory, time on market, and modeled affordability. | Housing dataset and Redfin |
 | [`app-market-opportunity-research`](skills/app-market-opportunity-research) | App competitor maps, chart trajectories, release evidence, and unmet-need hypotheses. | App/chart/review datasets, App Store, Google Play, Google Trends |
+| [`chrome-extension-research`](skills/chrome-extension-research) | Extension comparisons with adoption, publisher-change, permission, and privacy evidence. | Chrome Web Store live tools and stored extension history |
+| [`steam-market-opportunity-research`](skills/steam-market-opportunity-research) | Comparable-game studies, activity histories, pricing, and player-feedback hypotheses. | Steam live tools, game/chart/player-count/review/news datasets |
+| [`crowdfunding-campaign-research`](skills/crowdfunding-campaign-research) | Dated campaign benchmarks, creator milestones, and sampled backer concerns. | Kickstarter discovery, project details, updates, comments |
+| [`event-venue-research`](skills/event-venue-research) | Event calendars and venue comparisons with timing, fee, and availability context. | Ticketmaster and TicketWeb |
+| [`hiring-demand-analysis`](skills/hiring-demand-analysis) | Cohort-based hiring snapshots, skill demand, employer concentration, and qualified salary comparisons. | Jobs dataset, corpus facets, company and posting details |
 
-The repository contains **88 installable skills**. The Claude Code marketplace
-bundle includes **50 skills**; the narrower per-platform alternatives below remain
+The repository contains **93 installable skills**. The Claude Code marketplace
+bundle includes **55 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
