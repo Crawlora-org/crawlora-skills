@@ -245,5 +245,7 @@
   ],
   "restaurant-menu-benchmarking": ["doordash_search", "doordash_store", "doordash_store_menu", "ubereats_search", "ubereats_store", "ubereats_store_menu", "chipotle_restaurants", "chipotle_menu", "chipotle_restaurant_menu", "mcdonalds_categories", "mcdonalds_menu"],
   "retail-assortment-gap-analysis": ["shopify_store", "shopify_collections", "shopify_collection_products", "shopify_products", "shopify_product", "target_categories", "target_category_products", "target_product", "ikea_search", "ikea_category", "ikea_product"],
-  "short-term-rental-market-research": ["datasets_airbnb_search", "datasets_airbnb_facets", "datasets_airbnb_item", "datasets_airbnb_nearby", "airbnb_search", "airbnb_room", "airbnb_room_calendar", "airbnb_room_reviews"]
+  "short-term-rental-market-research": ["datasets_airbnb_search", "datasets_airbnb_facets", "datasets_airbnb_item", "datasets_airbnb_nearby", "airbnb_search", "airbnb_room", "airbnb_room_calendar", "airbnb_room_reviews"],
+  "used-car-market-comparison": ["carmax_search", "carmax_vehicle", "carmax_stores", "carmax_store", "autotrader_search", "autotrader_vehicle", "carsdotcom_search", "carsdotcom_vehicle"],
+  "software-vendor-shortlisting": ["capterra_search", "capterra_product", "capterra_reviews", "producthunt_search", "producthunt_product", "producthunt_alternatives", "bing_search", "web_scrape"]
 }

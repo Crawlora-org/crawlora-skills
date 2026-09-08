@@ -91,9 +91,11 @@ self-contained and do not require the broader bundles to be installed.
 | [`restaurant-menu-benchmarking`](skills/restaurant-menu-benchmarking) | Branch- and order-mode-aware comparisons of dishes, bundles, menu breadth, and displayed prices. | DoorDash, Uber Eats, Chipotle, McDonald's |
 | [`retail-assortment-gap-analysis`](skills/retail-assortment-gap-analysis) | Catalog coverage ledgers, matched product/variant matrices, and qualified assortment gaps. | Shopify, Target, IKEA |
 | [`short-term-rental-market-research`](skills/short-term-rental-market-research) | Aggregate rental supply, density, mix, and price comparisons with separate live listing examples. | Airbnb market datasets and live listings |
+| [`used-car-market-comparison`](skills/used-car-market-comparison) | Matched vehicle listings, deduplicated asking-price ranges, and qualified price outliers. | CarMax, Autotrader, Cars.com |
+| [`software-vendor-shortlisting`](skills/software-vendor-shortlisting) | Requirements-based vendor shortlists, pricing scenarios, and evidence-led demo questions. | Capterra, Product Hunt, Bing, official vendor websites |
 
-The repository contains **96 installable skills**. The Claude Code marketplace
-bundle includes **58 skills**; the narrower per-platform alternatives below remain
+The repository contains **98 installable skills**. The Claude Code marketplace
+bundle includes **60 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
