@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**1873 endpoints across 215 platform group(s).**
+**1862 endpoints across 213 platform group(s).**
 
 ## 7NOW (13)
 
@@ -6511,46 +6511,6 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List MLB transactions. Lists signings, trades, options, assignments, injured-list moves, and other MLB transactions for a date range.
 - **Params:** `end_date` (string, **required**) — Range end in YYYY-MM-DD format; `player_id` (string, optional) — Numeric MLB player id; `start_date` (string, **required**) — Range start in YYYY-MM-DD format; `team_id` (string, optional) — Numeric MLB team id
 
-## Monitors (6)
-
-### `monitors_checks`
-
-- **HTTP:** `GET /monitors/{id}/checks`
-- **What:** List a monitor's check history. Returns the caller's own monitor's most recent check runs (most recent first, capped at 50), including webhook delivery status per run.
-- **Params:** `id` (string, **required**) — Monitor id
-
-### `monitors_create`
-
-- **HTTP:** `POST /monitors`
-- **What:** Create a website-change monitor. Creates a monitor that periodically checks a page or sitemap for changes and can notify a webhook. Free to call -- only completed check runs consume credits, at 1 credit per completed run regardless of target type or whether a change was detected. `target_type` defaults to "page" (exact-fingerprint diff of the scraped page). "sitemap" watches the sitemap at `url` for added/removed entries instead, honoring `sitemap.include_patterns`/`exclude_patterns` (shell-style globs matched against each URL's path) and `sitemap.max_urls` (default 5000, hard cap 10000).
-- **Params:** `request` (object, **required**) — Monitor definition
-- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
-
-### `monitors_delete`
-
-- **HTTP:** `DELETE /monitors/{id}`
-- **What:** Delete a website-change monitor. Deletes one of the caller's own monitors. Free to call. Does not delete its past check history.
-- **Params:** `id` (string, **required**) — Monitor id
-
-### `monitors_get`
-
-- **HTTP:** `GET /monitors/{id}`
-- **What:** Get a website-change monitor. Returns one of the caller's own monitors by id. Free to call.
-- **Params:** `id` (string, **required**) — Monitor id
-
-### `monitors_list`
-
-- **HTTP:** `GET /monitors`
-- **What:** List website-change monitors. Returns the caller's own monitors (most recently created first, capped at 100). Free to call.
-- **Params:** _none_
-
-### `monitors_update`
-
-- **HTTP:** `PATCH /monitors/{id}`
-- **What:** Update a website-change monitor. Partially updates one of the caller's own monitors. Free to call. Changing `target_type` or `sitemap` resets the stored diff baseline (fingerprint, snapshot, or URL set), so the next check establishes a fresh baseline instead of comparing against a now-meaningless prior state.
-- **Params:** `id` (string, **required**) — Monitor id; `request` (object, **required**) — Fields to update
-- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
-
 ## Nike (9)
 
 ### `nike_categories`
@@ -10443,38 +10403,6 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /upwork/search`
 - **What:** Search Upwork job postings. Searches Upwork's public job listings by free-text keyword, returning normalized job summaries (title, budget, experience level, duration, posted date, description snippet, skill tags). Public data sourced from Upwork's own server-rendered search pages via a real browser-rendering backend.
 - **Params:** `page` (integer, optional) — 1-based result page. Defaults to 1.; `q` (string, **required**) — Free-text job search keyword
-
-## Usage (5)
-
-### `usage_endpoints`
-
-- **HTTP:** `GET /usage/me/endpoints`
-- **What:** Get current user's endpoint usage breakdown. Returns per-endpoint request and credit totals for the selected UTC time range, ordered by request volume.
-- **Params:** `from` (string, optional) — Custom lower bound in RFC3339 format when range=custom; `limit` (integer, optional) — Maximum endpoints to return. Defaults to 20 and clamps to 100.; `range` (string, optional) — Time range preset. Defaults to the current billing period.; `to` (string, optional) — Custom upper bound in RFC3339 format when range=custom
-
-### `usage_overview`
-
-- **HTTP:** `GET /usage/me/overview`
-- **What:** Get current user's usage overview. Returns a JWT-authenticated user's current billing snapshot plus recent request and credit consumption metrics for the selected UTC time range. The `requests` summary is limited to product API traffic and excludes console, billing, usage, and user-management endpoints.
-- **Params:** `from` (string, optional) — Custom lower bound in RFC3339 format when range=custom; `range` (string, optional) — Time range preset. Defaults to the current billing period.; `to` (string, optional) — Custom upper bound in RFC3339 format when range=custom
-
-### `usage_platform_adjacency`
-
-- **HTTP:** `GET /usage/platform-adjacency`
-- **What:** Get cross-user platform reach and co-usage. Returns, per scraping platform, how many real users have used it (lifetime, successful requests only), its request volume, top entry endpoints, and which other platforms those users also use. Aggregated across all customers with internal, static, and console traffic excluded; recomputed at most once per 24 hours and served from cache. Powers the console dashboard's "Explore more" recommendation.
-- **Params:** _none_
-
-### `usage_recent_ips`
-
-- **HTTP:** `GET /usage/me/recent-ips`
-- **What:** Get current user's recent API client IPs. Returns recent client IP addresses observed for the JWT-authenticated user's product API traffic, ordered by last seen time. Console, billing, usage, and user-management endpoints are excluded.
-- **Params:** `from` (string, optional) — Custom lower bound in RFC3339 format when range=custom; `limit` (integer, optional) — Maximum IPs to return. Defaults to 20 and clamps to 100.; `range` (string, optional) — Time range preset. Defaults to the current billing period.; `to` (string, optional) — Custom upper bound in RFC3339 format when range=custom
-
-### `usage_timeseries`
-
-- **HTTP:** `GET /usage/me/timeseries`
-- **What:** Get current user's usage timeseries. Returns JWT-authenticated request and credit consumption buckets for chart rendering. Results use UTC buckets.
-- **Params:** `bucket` (string, optional) — Bucket size. Defaults to hour for day range and day otherwise.; `endpoint` (string, optional) — Optional endpoint filter; `from` (string, optional) — Custom lower bound in RFC3339 format when range=custom; `range` (string, optional) — Time range preset. Defaults to the current billing period.; `to` (string, optional) — Custom upper bound in RFC3339 format when range=custom
 
 ## USPTO Patent Public Search (2)
 

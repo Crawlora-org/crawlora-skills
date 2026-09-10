@@ -9,9 +9,9 @@
 //       node scripts/generate.mjs --check   (parity check: exit 1 on any diff)
 //
 // Outputs:
-//   skills/crawlora/reference/catalog.md                 (all groups, all endpoints)
+//   skills/crawlora/reference/catalog.md                 (public-data groups/endpoints)
 //   skills/<skill>/reference/endpoints.md                (that skill's groups)
-//   skills/<skill>/scripts/crawlora.sh                   (copy of lib/crawlora.sh)
+//   skills/<skill>/scripts/crawlora.sh                   (generated helper)
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, chmodSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -310,8 +310,12 @@ function renderGroups(groupNames, title, intro, catalog = byGroup) {
 
 const outputs = [];
 
-// Umbrella catalog: every group, alphabetized.
-const allGroupNames = [...byGroup.keys()].sort((a, b) => a.localeCompare(b));
+// Umbrella catalog: public-data groups only, alphabetized. Account usage and
+// website-monitor management are intentionally outside this skill's scope.
+const excludedUmbrellaGroups = new Set(["Monitors", "Usage"]);
+const allGroupNames = [...byGroup.keys()]
+  .filter((group) => !excludedUmbrellaGroups.has(group))
+  .sort((a, b) => a.localeCompare(b));
 outputs.push([
   "skills/crawlora/reference/catalog.md",
   renderGroups(
@@ -352,6 +356,20 @@ for (const [skill, names] of Object.entries(focusedSkills)) {
 
 // Sync the bundled helper into every skill folder.
 const helper = readFileSync(join(ROOT, "lib/crawlora.sh"), "utf8");
+// The umbrella skill intentionally exposes only public-data workflows. Keep
+// account usage and monitor-management paths out of that helper while leaving
+// them available to the dedicated website-monitoring skill.
+const publicDataGuard = `
+# This skill is for public web-data extraction. Keep caller-account surfaces
+# out of the helper even if someone supplies an undocumented path directly.
+case "$path" in
+  /monitors|/monitors/*|/usage|/usage/*)
+    echo "monitor and usage-management paths are not supported by this skill" >&2
+    exit 2
+    ;;
+esac
+
+`;
 // Directories only. A plain readdirSync picks up macOS .DS_Store and any
 // other stray file, and the loop below then tries to mkdir inside it —
 // ENOTDIR, mid-run, after some reference files have already been
@@ -359,7 +377,12 @@ const helper = readFileSync(join(ROOT, "lib/crawlora.sh"), "utf8");
 const skillDirs = readdirSync(join(ROOT, "skills"), { withFileTypes: true })
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name);
-for (const s of skillDirs) outputs.push([`skills/${s}/scripts/crawlora.sh`, helper]);
+for (const s of skillDirs) {
+  const skillHelper = s === "crawlora"
+    ? helper.replace('\nauth=(-H "x-api-key:', `${publicDataGuard}auth=(-H "x-api-key:`)
+    : helper;
+  outputs.push([`skills/${s}/scripts/crawlora.sh`, skillHelper]);
+}
 
 // Executable helper scripts must carry the +x bit — writeFileSync alone
 // leaves them at the default umask (non-executable), which git then commits

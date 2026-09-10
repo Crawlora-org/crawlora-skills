@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 
 const helper = fileURLToPath(new URL("../lib/crawlora.sh", import.meta.url));
+const publicHelper = fileURLToPath(new URL("../skills/crawlora/scripts/crawlora.sh", import.meta.url));
 function request(args) {
   const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
   try {
@@ -40,12 +41,33 @@ test("GET preserves spaces and repeated query keys as separate curl arguments", 
 test("POST preserves flat JSON bodies", () => {
   const body = '{"keyword":"coffee cambridge","language":"en","country":"us"}';
   const args = request(["-X", "POST", "/google/map/search", body]);
-  assert.deepEqual(args.slice(-3), ["-d", body, "https://api.crawlora.net/api/v1/google/map/search"]);
+  assert.deepEqual(args.slice(-3), ["--data-raw", body, "https://api.crawlora.net/api/v1/google/map/search"]);
 });
 
 test("POST supports -d and defaults an omitted body to an empty object", () => {
-  assert.deepEqual(request(["-X", "POST", "/test"]).slice(-3), ["-d", "{}", "https://api.crawlora.net/api/v1/test"]);
+  assert.deepEqual(request(["-X", "POST", "/test"]).slice(-3), ["--data-raw", "{}", "https://api.crawlora.net/api/v1/test"]);
   assert.deepEqual(request(["-X", "POST", "/test", "-d", '{"url":"https://example.com"}']).slice(-3), [
-    "-d", '{"url":"https://example.com"}', "https://api.crawlora.net/api/v1/test",
+    "--data-raw", '{"url":"https://example.com"}', "https://api.crawlora.net/api/v1/test",
   ]);
+});
+
+test("POST treats an @-prefixed body as literal data", () => {
+  assert.deepEqual(request(["-X", "POST", "/test", "@local-file"]).slice(-3), [
+    "--data-raw", "@local-file", "https://api.crawlora.net/api/v1/test",
+  ]);
+});
+
+test("rejects account monitor and usage-management paths", () => {
+  const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
+  try {
+    writeFileSync(join(dir, "curl"), '#!/bin/sh\nexit 99\n', { mode: 0o755 });
+    const result = spawnSync("/bin/bash", [publicHelper, "/monitors"], {
+      encoding: "utf8",
+      env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" },
+    });
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, /not supported by this skill/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

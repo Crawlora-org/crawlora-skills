@@ -33,6 +33,15 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill is for public web-data extraction. Keep caller-account surfaces
+# out of the helper even if someone supplies an undocumented path directly.
+case "$path" in
+  /monitors|/monitors/*|/usage|/usage/*)
+    echo "monitor and usage-management paths are not supported by this skill" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then
@@ -45,6 +54,8 @@ if [ "$method" = "GET" ]; then
 else
   [ -n "$body" ] || body="${rest[0]:-}"
   [ -n "$body" ] || body='{}'
+  # --data-raw prevents curl's @file shorthand from reading local files when
+  # a caller passes a body that starts with @.
   curl -fsS -X "$method" "${auth[@]}" \
-    -H "Content-Type: application/json" -d "$body" "${base}${path}"
+    -H "Content-Type: application/json" --data-raw "$body" "${base}${path}"
 fi
