@@ -14,7 +14,9 @@
 set -euo pipefail
 
 : "${CRAWLORA_API_KEY:?Set CRAWLORA_API_KEY first — get a free key at https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills}"
-base="${CRAWLORA_API_BASE:-https://api.crawlora.net/api/v1}"
+# Fixed, non-overridable: an env-configurable base URL would let anything that
+# can set CRAWLORA_API_BASE redirect this key to an attacker-controlled host.
+base="https://api.crawlora.net/api/v1"
 
 method="GET"
 body=""
