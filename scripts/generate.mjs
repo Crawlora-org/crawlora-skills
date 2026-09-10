@@ -433,8 +433,8 @@ for (const s of skillDirs) {
   }
   const cases = s === "crawlora" ? publicPathCases : routeCases(skillTools);
   const skillHelper = helper.replace(
-    '\nauth=(-H "x-api-key:',
-    `${helperGuard({ cases, label: s })}auth=(-H "x-api-key:`
+    '\n# Keep the API key out of the curl process command line.',
+    `${helperGuard({ cases, label: s })}# Keep the API key out of the curl process command line.`
   );
   outputs.push([`skills/${s}/scripts/crawlora.sh`, skillHelper]);
 }

@@ -46,7 +46,7 @@ Prefer a more specific Crawlora skill if one is installed (e.g.
   Set `CRAWLORA_API_KEY` to the key you received before running the helper.
 
 - All requests go to `https://api.crawlora.net/api/v1` with the header
-  `x-api-key: $CRAWLORA_API_KEY`. A missing/invalid key returns `401`.
+  `CRAWLORA_API_KEY` from the environment. A missing/invalid key returns `401`.
 
 ## How it works
 
@@ -70,12 +70,8 @@ scripts/crawlora.sh -X POST /google/search '{"keyword":"web scraping api","langu
 scripts/crawlora.sh -X POST /google/trends/explore/interest-over-time '{"keywords":["bitcoin"]}' | jq '.'
 ```
 
-Raw `curl` fallback (no helper):
+Use `scripts/crawlora.sh` for all requests; it keeps the API key out of command-line arguments.
 
-```sh
-curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
-  "https://api.crawlora.net/api/v1/bing/search?q=web%20scraping" | jq '.'
-```
 
 The catalog marks each endpoint's HTTP method. Path params like `{id}` are
 substituted into the URL; `GET` params go in the query string; `POST` params go

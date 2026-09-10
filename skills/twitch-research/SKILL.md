@@ -23,8 +23,7 @@ JSON from the Crawlora API — no Twitch developer app, no OAuth, no scraping.
 
 - Get a free Crawlora API key (2,000 credits/mo, no card) at [https://crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills).
 - Set `CRAWLORA_API_KEY` in the environment before running the helper.
-- All requests: `x-api-key: $CRAWLORA_API_KEY` against
-  `https://api.crawlora.net/api/v1`. Missing/invalid key → `401`.
+- The helper reads `CRAWLORA_API_KEY` from the environment and sends requests to `https://api.crawlora.net/api/v1`. Missing/invalid key → `401`.
 
 ## How it works
 
@@ -66,12 +65,8 @@ scripts/crawlora.sh /twitch/streams game=league-of-legends limit=10 | jq '.'
 scripts/crawlora.sh /twitch/vod-comments video=1234567890 offset=0 | jq '.'
 ```
 
-Raw `curl` fallback:
+Use `scripts/crawlora.sh` for all requests; it keeps the API key out of command-line arguments.
 
-```sh
-curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
-  "https://api.crawlora.net/api/v1/twitch/channel?login=caedrel" | jq '.'
-```
 
 ## Endpoint reference
 

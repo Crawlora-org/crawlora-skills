@@ -26,9 +26,10 @@ function request(args) {
 }
 
 test("GET detail without query parameters works with the system Bash", () => {
-  assert.deepEqual(request(["/google/map/place/example"]), [
-    "-fsS", "-G", "-H", "x-api-key: test-key", "https://api.crawlora.net/api/v1/google/map/place/example",
-  ]);
+  const args = request(["/google/map/place/example"]);
+  assert.deepEqual(args.slice(0, 3), ["-fsS", "-G", "--config"]);
+  assert.match(args[3], /crawlora-curl/);
+  assert.equal(args.at(-1), "https://api.crawlora.net/api/v1/google/map/place/example");
 });
 
 test("GET preserves spaces and repeated query keys as separate curl arguments", () => {

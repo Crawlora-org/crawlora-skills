@@ -22,8 +22,7 @@ the Crawlora API — no scraping IMDb pages or parsing streaming-provider HTML.
 
 - Get a free Crawlora API key (2,000 credits/mo, no card) at [https://crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills).
 - Set `CRAWLORA_API_KEY` in the environment before running the helper.
-- All requests: `x-api-key: $CRAWLORA_API_KEY` against
-  `https://api.crawlora.net/api/v1`. Missing/invalid key → `401`.
+- The helper reads `CRAWLORA_API_KEY` from the environment and sends requests to `https://api.crawlora.net/api/v1`. Missing/invalid key → `401`.
 
 ## How it works
 
@@ -64,12 +63,8 @@ scripts/crawlora.sh /justwatch/title/offers id=<raw-justwatch-id> | jq '.'
 scripts/crawlora.sh /boxofficemojo/title id=<mojo-title-id> | jq '.'
 ```
 
-Raw `curl` fallback:
+Use `scripts/crawlora.sh` for all requests; it keeps the API key out of command-line arguments.
 
-```sh
-curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
-  "https://api.crawlora.net/api/v1/metacritic/movie/dune-part-two" | jq '.'
-```
 
 ## Endpoint reference
 

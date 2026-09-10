@@ -21,8 +21,7 @@ no scraping job boards or ATS pages by hand.
 
 - Get a free Crawlora API key (2,000 credits/mo, no card) at [https://crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills).
 - Set `CRAWLORA_API_KEY` in the environment before running the helper.
-- All requests: `x-api-key: $CRAWLORA_API_KEY` against
-  `https://api.crawlora.net/api/v1`. Missing/invalid key → `401`.
+- The helper reads `CRAWLORA_API_KEY` from the environment and sends requests to `https://api.crawlora.net/api/v1`. Missing/invalid key → `401`.
 
 ## How it works
 
@@ -70,12 +69,8 @@ scripts/crawlora.sh /jobs/hiring-signals provider=greenhouse token=stripe | jq '
 scripts/crawlora.sh /upwork/search q="react developer" | jq '.'
 ```
 
-Raw `curl` fallback:
+Use `scripts/crawlora.sh` for all requests; it keeps the API key out of command-line arguments.
 
-```sh
-curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
-  "https://api.crawlora.net/api/v1/jobs/lever/postings?company=netflix" | jq '.'
-```
 
 ## Endpoint reference
 

@@ -96,7 +96,13 @@ esac
 
 
 
-auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
+# Keep the API key out of the curl process command line. A private temporary
+# config supplies the header and is removed automatically on exit.
+curl_config="$(mktemp "${TMPDIR:-/tmp}/crawlora-curl.XXXXXX")"
+chmod 600 "$curl_config"
+trap 'rm -f "$curl_config"' EXIT
+printf 'header = "x-api-key: %s"\n' "$CRAWLORA_API_KEY" >"$curl_config"
+auth=(--config "$curl_config")
 
 if [ "$method" = "GET" ]; then
   # -G + --data-urlencode URL-encodes each value (so spaces etc. are safe).

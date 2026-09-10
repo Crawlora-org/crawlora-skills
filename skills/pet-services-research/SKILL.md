@@ -18,7 +18,7 @@ provider discovery and profile research.
 
 - Get a Crawlora API key at [crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills).
 - Set `CRAWLORA_API_KEY` in the environment before running the helper.
-- Requests use `x-api-key: $CRAWLORA_API_KEY` against `https://api.crawlora.net/api/v1`.
+- The helper reads `CRAWLORA_API_KEY` from the environment and sends requests to `https://api.crawlora.net/api/v1`.
 
 ## How it works
 
