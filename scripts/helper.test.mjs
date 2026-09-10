@@ -58,6 +58,21 @@ test("POST treats an @-prefixed body as literal data", () => {
   ]);
 });
 
+test("GET rejects curl's local-file query shorthand", () => {
+  const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
+  try {
+    writeFileSync(join(dir, "curl"), '#!/bin/sh\nexit 99\n', { mode: 0o755 });
+    const result = spawnSync("/bin/bash", [helper, "/google/search", "q=@local-file"], {
+      encoding: "utf8",
+      env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" },
+    });
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, /@ is not allowed/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("rejects account monitor and usage-management paths", () => {
   const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
   try {

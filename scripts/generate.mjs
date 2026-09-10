@@ -402,6 +402,15 @@ ${cases}
     ;;
 esac
 
+${label === "website-monitoring" ? `# Monitor IDs are single path segments; do not allow a crafted nested path.
+case "$path" in
+  /monitors/*)
+    monitor_suffix="\${path#/monitors/}"
+    case "$monitor_suffix" in */*) echo "invalid monitor path" >&2; exit 2 ;; esac
+    ;;
+esac
+` : ""}
+
 `;
 // Directories only. A plain readdirSync picks up macOS .DS_Store and any
 // other stray file, and the loop below then tries to mkdir inside it —

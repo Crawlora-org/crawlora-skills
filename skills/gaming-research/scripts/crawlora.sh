@@ -91,13 +91,22 @@ case "$path" in
     ;;
 esac
 
+
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then
   # -G + --data-urlencode URL-encodes each value (so spaces etc. are safe).
   qs=()
   for kv in ${rest[@]+"${rest[@]}"}; do
-    [ -n "$kv" ] && qs+=(--data-urlencode "$kv")
+    [ -n "$kv" ] || continue
+    # curl treats both @file and name@file forms as local-file input for
+    # --data-urlencode. Reject @ outright so query arguments cannot disclose
+    # local files to the Crawlora API.
+    case "$kv" in
+      *@*) echo "@ is not allowed in query arguments" >&2; exit 2 ;;
+    esac
+    qs+=(--data-urlencode "$kv")
   done
   curl -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
 else
