@@ -361,12 +361,38 @@ const helper = readFileSync(join(ROOT, "lib/crawlora.sh"), "utf8");
 // account usage, monitor-management, generic scraping, APK-analysis, and
 // dataset paths out of that helper while leaving them available to dedicated
 // skills.
+const publicPathPrefixes = [...new Set(
+  all
+    .filter((tool) => !excludedUmbrellaGroups.has(tool._http.group))
+    .map((tool) => String(tool._http.path).split("/")[1])
+    .filter(Boolean)
+)].sort();
+const publicPathCases = publicPathPrefixes
+  .map((prefix) => `  /${prefix}|/${prefix}/*) ;;`)
+  .join("\n");
 const publicDataGuard = `
 # This skill is for public web-data extraction. Keep caller-account surfaces
 # out of the helper even if someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the public-data umbrella skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a management route through a prefix
+# check, then allow only route families present in the generated public catalog.
 case "$path" in
-  /monitors|/monitors/*|/usage|/usage/*|/web|/web/*|/extract|/apk-teardown|/apk-teardown/*|/datasets|/datasets/*)
-    echo "this path is not supported by the public-data umbrella skill" >&2
+  ""|*[?\#%]*|*..*|*//* )
+    echo "invalid path for the public-data umbrella skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+${publicPathCases}
+  *)
+    echo "path is not in the public-data umbrella catalog" >&2
     exit 2
     ;;
 esac

@@ -66,7 +66,7 @@ test("rejects account monitor and usage-management paths", () => {
       env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" },
     });
     assert.equal(result.status, 2);
-    assert.match(result.stderr, /not supported by the public-data umbrella skill/);
+    assert.match(result.stderr, /public-data umbrella skill/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
