@@ -36,8 +36,8 @@ rest=("${args[@]:1}")
 # This skill is for public web-data extraction. Keep caller-account surfaces
 # out of the helper even if someone supplies an undocumented path directly.
 case "$path" in
-  /monitors|/monitors/*|/usage|/usage/*)
-    echo "monitor and usage-management paths are not supported by this skill" >&2
+  /monitors|/monitors/*|/usage|/usage/*|/web|/web/*|/extract|/apk-teardown|/apk-teardown/*|/datasets|/datasets/*)
+    echo "this path is not supported by the public-data umbrella skill" >&2
     exit 2
     ;;
 esac

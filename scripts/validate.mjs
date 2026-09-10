@@ -77,7 +77,7 @@ const marketplace = JSON.parse(readFileSync(join(ROOT, ".claude-plugin/marketpla
 const bundled = marketplace.plugins[0].skills;
 const catalog = JSON.parse(readFileSync(join(ROOT, "scripts/tools.json"), "utf8"));
 const readme = readFileSync(join(ROOT, "README.md"), "utf8");
-const excludedUmbrellaGroups = new Set(["Monitors", "Usage"]);
+const excludedUmbrellaGroups = new Set(["Monitors", "Usage", "AppInsights", "Datasets", "Web"]);
 const publicCatalog = catalog.filter((tool) => !excludedUmbrellaGroups.has(tool._http.group));
 const groupCount = new Set(publicCatalog.map((tool) => tool._http.group)).size;
 for (const [label, expected, actual] of [

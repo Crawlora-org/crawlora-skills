@@ -310,9 +310,10 @@ function renderGroups(groupNames, title, intro, catalog = byGroup) {
 
 const outputs = [];
 
-// Umbrella catalog: public-data groups only, alphabetized. Account usage and
-// website-monitor management are intentionally outside this skill's scope.
-const excludedUmbrellaGroups = new Set(["Monitors", "Usage"]);
+// Umbrella catalog: public-data groups only, alphabetized. Account usage,
+// website-monitor management, generic scraping, APK analysis, and bulk
+// profile datasets are intentionally outside this skill's scope.
+const excludedUmbrellaGroups = new Set(["Monitors", "Usage", "AppInsights", "Datasets", "Web"]);
 const allGroupNames = [...byGroup.keys()]
   .filter((group) => !excludedUmbrellaGroups.has(group))
   .sort((a, b) => a.localeCompare(b));
@@ -357,14 +358,15 @@ for (const [skill, names] of Object.entries(focusedSkills)) {
 // Sync the bundled helper into every skill folder.
 const helper = readFileSync(join(ROOT, "lib/crawlora.sh"), "utf8");
 // The umbrella skill intentionally exposes only public-data workflows. Keep
-// account usage and monitor-management paths out of that helper while leaving
-// them available to the dedicated website-monitoring skill.
+// account usage, monitor-management, generic scraping, APK-analysis, and
+// dataset paths out of that helper while leaving them available to dedicated
+// skills.
 const publicDataGuard = `
 # This skill is for public web-data extraction. Keep caller-account surfaces
 # out of the helper even if someone supplies an undocumented path directly.
 case "$path" in
-  /monitors|/monitors/*|/usage|/usage/*)
-    echo "monitor and usage-management paths are not supported by this skill" >&2
+  /monitors|/monitors/*|/usage|/usage/*|/web|/web/*|/extract|/apk-teardown|/apk-teardown/*|/datasets|/datasets/*)
+    echo "this path is not supported by the public-data umbrella skill" >&2
     exit 2
     ;;
 esac

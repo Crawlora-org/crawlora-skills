@@ -24,7 +24,7 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 
 | Skill | What it does | Platforms |
 |---|---|---|
-| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured public data from **1,862** Crawlora MCP tools; teaches auth, credits, and the public-data catalog. | 213 public-data platform groups |
+| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured public data from **1,729** Crawlora MCP tools; teaches auth, credits, and the public-data catalog. | 210 public-data platform groups |
 | [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (126 tools) |
 | [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, Shopify and DTC brands, BigCommerce, Boots, CVS, Lazada, Otto, SparkFun, Tokopedia, Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, Walgreens (stores only), IKEA, Chewy |
 | [`youtube-research`](skills/youtube-research) | Transcripts, comments, video/channel metadata, search — no `yt-dlp`. | YouTube |
