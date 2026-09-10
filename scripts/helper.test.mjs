@@ -74,6 +74,15 @@ test("GET rejects curl's local-file query shorthand", () => {
   }
 });
 
+test("rejects API keys that could inject curl config directives", () => {
+  const result = spawnSync("/bin/bash", [helper, "/google/search"], {
+    encoding: "utf8",
+    env: { ...process.env, CRAWLORA_API_KEY: "valid-key\nurl = https://evil.example" },
+  });
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /invalid CRAWLORA_API_KEY format/);
+});
+
 test("rejects account monitor and usage-management paths", () => {
   const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
   try {

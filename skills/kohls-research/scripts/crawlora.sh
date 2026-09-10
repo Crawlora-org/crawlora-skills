@@ -14,6 +14,11 @@
 set -euo pipefail
 
 : "${CRAWLORA_API_KEY:?Set CRAWLORA_API_KEY first — get a free key at https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills}"
+# The key is written to a curl config file below. Restrict it to the key
+# alphabet so a newline, quote, or config directive cannot alter that file.
+case "$CRAWLORA_API_KEY" in
+  *[!A-Za-z0-9._-]*) echo "invalid CRAWLORA_API_KEY format" >&2; exit 2 ;;
+esac
 # Fixed, non-overridable: an env-configurable base URL would let anything that
 # can set CRAWLORA_API_BASE redirect this key to an attacker-controlled host.
 base="https://api.crawlora.net/api/v1"
