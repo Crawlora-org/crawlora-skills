@@ -73,6 +73,8 @@ self-contained and do not require the broader bundles to be installed.
 | [`influencer-discovery`](skills/influencer-discovery) | Campaign-fit creator shortlists with selected live profile/content checks. | TikTok, Instagram, YouTube live + datasets |
 | [`journalist-media-research`](skills/journalist-media-research) | Relevant media lists with verified coverage, beat-fit evidence, and public work contact channels. | Journalists dataset, Bing search/news, author and article pages |
 | [`tiktok-ad-research`](skills/tiktok-ad-research) | Matched Top Ads comparisons and evidence-backed creative hypotheses. | TikTok Creative Center Top Ads (ten tools) |
+| [`tiktok-trend-research`](skills/tiktok-trend-research) | Country-, period-, and surface-aware TikTok trend briefs. | TikTok feeds, Creative Center, hashtags, Explore |
+| [`tiktok-creator-research`](skills/tiktok-creator-research) | TikTok-only public creator vetting with bounded content samples. | TikTok profiles, posts, videos, comments |
 | [`competitor-intelligence`](skills/competitor-intelligence) | Sourced competitor briefs and comparisons of positioning, pricing, reviews, and hiring signals. | Company websites, Product Hunt, Similarweb, Trustpilot, Capterra, jobs dataset |
 | [`techstack-prospecting`](skills/techstack-prospecting) | Technology-qualified domain shortlists with freshness and live validation evidence. | Techstack dataset, website technology detection, brand and web tools |
 | [`customer-feedback-analysis`](skills/customer-feedback-analysis) | Sample-aware review themes, counts, excerpts, and product improvement hypotheses. | App Store, Google Play, Trustpilot, Capterra, Adidas, Reddit, stored app reviews |
@@ -94,8 +96,8 @@ self-contained and do not require the broader bundles to be installed.
 | [`used-car-market-comparison`](skills/used-car-market-comparison) | Matched vehicle listings, deduplicated asking-price ranges, and qualified price outliers. | CarMax, Autotrader, Cars.com |
 | [`software-vendor-shortlisting`](skills/software-vendor-shortlisting) | Requirements-based vendor shortlists, pricing scenarios, and evidence-led demo questions. | Capterra, Product Hunt, Bing, official vendor websites |
 
-The repository contains **98 installable skills**. The Claude Code marketplace
-bundle includes **60 skills**; the narrower per-platform alternatives below remain
+The repository contains **100 installable skills**. The Claude Code marketplace
+bundle includes **62 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills

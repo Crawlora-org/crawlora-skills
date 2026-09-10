@@ -1,118 +1,138 @@
 ---
 name: tiktok-research
-description: Researches TikTok profiles, videos, hashtags, search, trending content, and Creative Center ads intelligence via the Crawlora API, returning clean JSON. Use when the user wants a TikTok creator's profile/videos, hashtag or keyword search, trending hashtags/videos, or competitor ad analysis from TikTok Top Ads — instead of scraping TikTok or the Creative Center directly.
+description: Research public TikTok profiles, videos, comments, hashtags, search results, trending feeds, and Creative Center signals through Crawlora. Use for TikTok-specific discovery or verification instead of scraping TikTok directly; use tiktok-ad-research for ad-only comparisons and influencer-discovery for cross-platform creator shortlists.
 ---
 
 # TikTok research
 
-Look up public TikTok profiles, videos, and comments, run keyword/hashtag/user
-search, track trending hashtags and videos, and pull TikTok Creative Center
-Top Ads intelligence — all as normalized JSON from the Crawlora API, no app
-scraping or unofficial client libraries.
+Use Crawlora's normalized REST endpoints to answer TikTok-specific research
+questions. Keep the result tied to the returned public data: a feed or search
+sample is not a complete census, and a metric is not evidence of why a video or
+ad performed well.
 
-## When to use this skill
+## Setup and requests
 
-- "What's <handle>'s TikTok profile / follower count / recent videos?"
-- "Pull the comments on this TikTok video."
-- "Search TikTok for videos/hashtags/users about <topic>."
-- "What's trending on TikTok right now (hashtags or Creative Center videos)?"
-- "Show me the top-performing TikTok ads for <brand/industry/keyword>."
-- Competitor ad-creative research, hashtag-trend research, or influencer
-  vetting on TikTok.
-
-## Setup (one-time)
-
-- Get a free Crawlora API key (2,000 credits/mo, no card) at [https://crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills).
-- `export CRAWLORA_API_KEY=sk_your_key_here`
-- All requests: `x-api-key: $CRAWLORA_API_KEY` against
-  `https://api.crawlora.net/api/v1`. Missing/invalid key → `401`.
-
-## How it works
-
-Pick the job:
-
-1. **Profile & content** — `/tiktok/profile/{handler}` for a public profile,
-   `/tiktok/posts` for a profile's videos by `secUid`, `/tiktok/post/{id}` for
-   one video's detail, `/tiktok/comments` for a video's top-level comments.
-2. **Search & discovery** — `/tiktok/search` (videos by keyword),
-   `/tiktok/search/hashtag` (hashtags by keyword), `/tiktok/search/user`
-   (users by keyword), `/tiktok/hashtag/{name}` + `/tiktok/hashtags` (hashtag
-   detail then its videos by id), `/tiktok/category` + `/tiktok/explore/{id}`
-   (explore categories then a category's feed).
-3. **Trending** — `/tiktok/trending` (current trending feed),
-   `/tiktok/creative-center/hashtags` and `/tiktok/creative-center/videos`
-   (Creative Center's ranked trending hashtags/videos by country and period —
-   both are anonymous-access-limited, see Notes), `/tiktok/popular-trend/country-industry-meta`
-   (metadata for the popular-trend endpoints).
-4. **Ads intelligence (Creative Center Top Ads)** — `/tiktok/top-ads/list`
-   (search/filter high-performing ads), `/tiktok/top-ads/detail` and
-   `/tiktok/top-ads/analysis` (one ad's detail and interactive-time chart),
-   `/tiktok/top-ads/recommend` and `/tiktok/top-ads/spotlight` (related /
-   handpicked ads), `/tiktok/top-ads/filters`, `/tiktok/top-ads/locations`,
-   `/tiktok/top-ads/location-info`, `/tiktok/top-ads/suggestions`, and
-   `/tiktok/top-ads/safety` (filter/location/suggestion metadata to drive the
-   above).
-
-Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
-
-## Calling the API
+Set `CRAWLORA_API_KEY` to a key from [crawlora.net](https://crawlora.net), then
+run the helper bundled with this skill. It sends `x-api-key` to
+`https://api.crawlora.net/api/v1`; keep the key in the environment and never
+put it in a URL, prompt output, or saved file.
 
 ```sh
-# Profile + videos:
-scripts/crawlora.sh /tiktok/profile/nasa | jq '.'
-scripts/crawlora.sh /tiktok/post/7123456789012345678 | jq '.'
+export CRAWLORA_API_KEY=sk_your_key_here
 
-# Search:
-scripts/crawlora.sh /tiktok/search keyword="ai agents" | jq '.'
-scripts/crawlora.sh /tiktok/search/hashtag keyword="fitness" | jq '.'
-
-# Trending + ads intelligence:
-scripts/crawlora.sh /tiktok/trending | jq '.'
-scripts/crawlora.sh /tiktok/top-ads/list keyword="skincare" country_code=US | jq '.'
+scripts/crawlora.sh /tiktok/profile/chatgpt | jq '.'
+scripts/crawlora.sh /tiktok/search keyword="ai agents" count=20 | jq '.'
+scripts/crawlora.sh /tiktok/post/7444278905264983342 | jq '.'
 ```
 
-Raw `curl` fallback:
+Read [`reference/endpoints.md`](reference/endpoints.md) for the complete
+endpoint list and current parameter names. Check both the HTTP result and the
+JSON envelope: a successful HTTP response can still contain a nonzero
+application `code`, a nested upstream error, or no usable results.
 
-```sh
-curl -fsS -H "x-api-key: $CRAWLORA_API_KEY" \
-  "https://api.crawlora.net/api/v1/tiktok/creative-center/hashtags?country_code=US&period=7" | jq '.'
-```
+## Choose the workflow
 
-## Endpoint reference
+### Profile, videos, and comments
 
-See [`reference/endpoints.md`](reference/endpoints.md) for all TikTok endpoints this skill uses.
+1. Call `/tiktok/profile/{handler}` with the handle without `@`.
+2. For the profile's videos, pass the returned `user.secUid` exactly to
+   `/tiktok/posts`. Do not substitute the numeric user id or display name.
+   `sort_type` is `0` latest, `1` popular, or `2` oldest.
+3. Use `/tiktok/post/{id}` for one video's detail. Use `/tiktok/comments` with
+   that video's `aweme_id` (the video id from its URL) for top-level comments.
+4. Follow returned cursors only to the user's requested bound. Preserve the
+   cursor type and stop when `has_more`/`hasMore` is false; do not assume every
+   TikTok response uses the same casing.
 
-## Examples
+### Search and discovery
 
-- **Hashtag trend research:** `/tiktok/search/hashtag` for candidate
-  hashtags, then `/tiktok/hashtag/{name}` + `/tiktok/hashtags` to pull the id
-  and its top videos, cross-checked against
-  `/tiktok/creative-center/hashtags` for the same country/period.
-- **Competitor ad analysis:** `/tiktok/top-ads/list` filtered by
-  `keyword`/`industry`/`country_code` to find a competitor's top-performing
-  ads, then `/tiktok/top-ads/detail` and `/tiktok/top-ads/analysis` per
-  `material_id` for creative detail and CTR/CVR percentile.
-- **Creator vetting:** `/tiktok/profile/{handler}` + `/tiktok/posts` to check
-  follower count and recent posting cadence, then `/tiktok/comments` on a
-  recent video to sample engagement quality before a partnership.
+- `/tiktok/search` finds videos by keyword.
+- `/tiktok/search/hashtag` finds hashtag/challenge candidates.
+- `/tiktok/search/user` finds users by keyword.
+- `/tiktok/hashtag/{name}` resolves a hashtag and returns its id; pass that id
+  to `/tiktok/hashtags` to retrieve its videos.
+- `/tiktok/category` discovers Explore categories; pass a returned category
+  `type` to `/tiktok/explore/{id}`.
 
-## Notes & limits
+Use identifiers returned by the preceding call. Search matches and hashtag
+counts are evidence from TikTok's current index, not proof that every result is
+about the requested brand or topic. Verify identity from the returned profile,
+caption, source URL, or detail record before making a strong attribution.
 
-- **Credits / pay-on-success:** billed only on `2xx`; free tier 2,000 credits/mo.
-  Key at [https://crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills).
-- **Public data only** — public profiles/videos; no login, no private content.
-  Respect TikTok's terms.
-- **Security:** key lives in `CRAWLORA_API_KEY` only — never hardcode, query-param, or commit it.
-- **Creative Center anonymous limits:** `/tiktok/creative-center/hashtags`
-  always returns at most 3 hashtags, and `/tiktok/creative-center/videos`
-  always returns just page 1 (4 videos) regardless of `country_code`,
-  `period`, or `sort_by` — TikTok gates the full result set behind a
-  logged-in TikTok One account.
-- **Creative Center video coverage is uneven by country:** US, JP, ID, VN,
-  and TH reliably return populated `/tiktok/creative-center/videos` results;
-  other countries have been observed to return an empty array (a genuine
-  no-data response, not an error).
-- **Top Ads `material_id` only:** `/tiktok/top-ads/detail` requires
-  `material_id` — the upstream does not accept `id` or `materialId`.
-- List/search endpoints (`posts`, `hashtags`, `search*`, `comments`) are
-  cursor-paginated — follow the returned `cursor` to walk beyond the first page.
+### Trending and Creative Center
+
+- `/tiktok/trending` returns a current recommended/trending feed.
+- `/tiktok/creative-center/hashtags` returns ranked hashtags for a country and
+  period.
+- `/tiktok/creative-center/videos` returns ranked videos, optionally filtered
+  by content label or `organic_only` and sorted by `views`, `engagement`, or
+  `six_second_views`.
+- `/tiktok/popular-trend/country-industry-meta` provides country and industry
+  metadata when a Creative Center context needs to be explained.
+
+Always report country, period, sort/filter choices, retrieval time, and sample
+size. “Trending” is surface- and time-dependent; do not present it as a global
+or historical ranking.
+
+### Top Ads intelligence
+
+For a matched ad study, first call `/tiktok/top-ads/filters` to discover current
+dynamic country, industry, objective, language, and pattern-label ids. Keep
+period, country, objective, and sort consistent across comparisons. Then:
+
+1. Search `/tiktok/top-ads/list` with the agreed filters and a bounded `limit`.
+   State `period` (`7`, `30`, or `180`) and `order_by` (`for_you`, `impression`,
+   `ctr`, `play_2s_rate`, `play_6s_rate`, `cvr`, or `like`) in the output.
+2. Deduplicate the returned materials and pass each returned `id` as
+   `material_id` to `/tiktok/top-ads/detail`. This is a Top Ads material id,
+   not the ad's TikTok video id; `id` and `materialId` are not accepted by the
+   detail endpoint.
+3. Use `/tiktok/top-ads/analysis` for interactive-time charts and percentiles.
+   Match `metric` and `period_type` across ads. Supported metrics are
+   `retain_ctr`, `retain_cvr`, `click_cnt`, `convert_cnt`, and
+   `play_retain_cnt`.
+4. Use `/tiktok/top-ads/recommend` or `/tiktok/top-ads/spotlight` only as
+   supplemental discovery. Do not mix
+   those handpicked/related materials into a matched filtered sample without
+   labeling them.
+
+For a dedicated competitor-ad comparison or creative brief, the narrower
+`tiktok-ad-research` skill provides the same Top Ads endpoints with a more
+focused deliverable.
+
+## Interpretation and limits
+
+- Public data only: no login, private content, hidden contacts, or audience
+  demographics. A verification badge does not establish audience authenticity.
+- Anonymous Creative Center access is limited. Hashtags return at most three
+  records; videos return only page one (four videos), regardless of the
+  apparent upstream totals. Treat those totals as upstream-reported context,
+  not accessible coverage.
+- Creative Center video availability varies by country. US, JP, ID, VN, and TH
+  have reliably returned populated samples; a valid empty response in another
+  market can mean that TikTok has no anonymous data for that market. Do not
+  retry it indefinitely or call it an outage without other evidence.
+- Creative Center `engagement_rate` and `six_seconds_vtr` are ratios, not
+  percentages. Period-scoped and lifetime fields must not be compared as if
+  they covered the same window.
+- A Top Ads percentile is not a raw CTR/CVR, spend, conversion count, or ROI.
+  Preserve the metric label, period, and units exactly as returned.
+- Signed image/video URLs may expire. Retain stable TikTok source links and
+  ids so the research can be repeated. Do not claim to have watched or heard a
+  creative unless the environment actually exposed the media.
+- Missing fields are unknown, not zero. A failed live refresh may support a
+  clearly labeled stale/dataset observation, but must not silently become a
+  current fact.
+
+## Output and reliability
+
+Return the requested answer with source URLs or stable ids, retrieval time,
+filters, and sample size. For comparisons, keep the same definition and window
+across rows. Separate observed facts from interpretation and label hypotheses
+as hypotheses.
+
+Use bounded requests. On `429`, back off; retry one transient `5xx` when useful.
+Stop on `401`/`403` and report the access limitation. Preserve a clearly
+labeled partial result when some details or comments fail, and inspect the
+application-level `code` before treating an empty or nested response as valid
+data.

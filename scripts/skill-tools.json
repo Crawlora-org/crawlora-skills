@@ -24,6 +24,14 @@
     "tiktok_top_ads_suggestions", "tiktok_top_ads_list", "tiktok_top_ads_detail",
     "tiktok_top_ads_analysis", "tiktok_top_ads_recommend", "tiktok_top_ads_spotlight", "tiktok_top_ads_safety"
   ],
+  "tiktok-trend-research": [
+    "tiktok_trending", "tiktok_creative_center_hashtags", "tiktok_creative_center_videos",
+    "tiktok_search", "tiktok_search_hashtag", "tiktok_challenge", "tiktok_challenge_list",
+    "tiktok_post", "tiktok_category", "tiktok_explore", "tiktok_popular_trend_country_industry_meta"
+  ],
+  "tiktok-creator-research": [
+    "tiktok_search_user", "tiktok_profile", "tiktok_posts", "tiktok_post", "tiktok_comments"
+  ],
   "competitor-intelligence": [
     "bing_search",
     "web_scrape",
