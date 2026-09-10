@@ -71,7 +71,7 @@ for name in "${(@ok)CATS}"; do
   echo "ClawHub: $name"
   # Categories force a new release even when bytes match. Compare first without
   # catalog metadata, then attach categories and GitHub provenance on changes.
-  if ! npx -y clawhub@latest skill publish "$REPO_ROOT/skills/$name"       --owner tonywangcn --dry-run --json > "$SCRATCH/plan.json"; then
+  if ! npx -y clawhub@latest skill publish "$REPO_ROOT/skills/$name"       --owner crawlora-org --dry-run --json > "$SCRATCH/plan.json"; then
     failed=1
     continue
   fi
@@ -80,7 +80,7 @@ for name in "${(@ok)CATS}"; do
     echo "Identical content already stored (possibly pending); verify public visibility without republishing."
     continue
   fi
-  if ! npx -y clawhub@latest skill publish "$REPO_ROOT/skills/$name"       --owner tonywangcn --categories "${CATS[$name]}"       --source-repo Crawlora-org/crawlora-skills --source-commit "$SOURCE_COMMIT"       --source-ref main --source-path "skills/$name"       --changelog "Sync skill instructions, references, and helper from GitHub $SOURCE_COMMIT"       --json > "$SCRATCH/result.json"; then
+  if ! npx -y clawhub@latest skill publish "$REPO_ROOT/skills/$name"       --owner crawlora-org --categories "${CATS[$name]}"       --source-repo Crawlora-org/crawlora-skills --source-commit "$SOURCE_COMMIT"       --source-ref main --source-path "skills/$name"       --changelog "Sync skill instructions, references, and helper from GitHub $SOURCE_COMMIT"       --json > "$SCRATCH/result.json"; then
     failed=1
     continue
   fi
