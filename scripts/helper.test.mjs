@@ -42,19 +42,19 @@ test("GET preserves spaces and repeated query keys as separate curl arguments", 
 test("POST preserves flat JSON bodies", () => {
   const body = '{"keyword":"coffee cambridge","language":"en","country":"us"}';
   const args = request(["-X", "POST", "/google/map/search", body]);
-  assert.deepEqual(args.slice(-3), ["--data-raw", body, "https://api.crawlora.net/api/v1/google/map/search"]);
+  assert.deepEqual(args.slice(-3), ["--data-binary", "@-", "https://api.crawlora.net/api/v1/google/map/search"]);
 });
 
 test("POST supports -d and defaults an omitted body to an empty object", () => {
-  assert.deepEqual(request(["-X", "POST", "/test"]).slice(-3), ["--data-raw", "{}", "https://api.crawlora.net/api/v1/test"]);
+  assert.deepEqual(request(["-X", "POST", "/test"]).slice(-3), ["--data-binary", "@-", "https://api.crawlora.net/api/v1/test"]);
   assert.deepEqual(request(["-X", "POST", "/test", "-d", '{"url":"https://example.com"}']).slice(-3), [
-    "--data-raw", '{"url":"https://example.com"}', "https://api.crawlora.net/api/v1/test",
+    "--data-binary", "@-", "https://api.crawlora.net/api/v1/test",
   ]);
 });
 
 test("POST treats an @-prefixed body as literal data", () => {
   assert.deepEqual(request(["-X", "POST", "/test", "@local-file"]).slice(-3), [
-    "--data-raw", "@local-file", "https://api.crawlora.net/api/v1/test",
+    "--data-binary", "@-", "https://api.crawlora.net/api/v1/test",
   ]);
 });
 

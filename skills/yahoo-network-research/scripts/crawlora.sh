@@ -115,8 +115,8 @@ if [ "$method" = "GET" ]; then
 else
   [ -n "$body" ] || body="${rest[0]:-}"
   [ -n "$body" ] || body='{}'
-  # --data-raw prevents curl's @file shorthand from reading local files when
-  # a caller passes a body that starts with @.
-  curl -fsS -X "$method" "${auth[@]}" \
-    -H "Content-Type: application/json" --data-raw "$body" "${base}${path}"
+  # Stream the body on stdin so curl never interprets a user value as its
+  # @file shorthand (and cannot read local files supplied in a request body).
+  printf '%s' "$body" | curl -fsS -X "$method" "${auth[@]}" \
+    -H "Content-Type: application/json" --data-binary @- "${base}${path}"
 fi
