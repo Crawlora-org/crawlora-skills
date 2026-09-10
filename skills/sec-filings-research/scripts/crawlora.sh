@@ -33,6 +33,49 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the sec-filings-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the sec-filings-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /datasets/sec-companies/facets) ;;
+  /datasets/sec-companies/financials/*) ;;
+  /datasets/sec-companies/insider/*) ;;
+  /datasets/sec-companies/items/*) ;;
+  /datasets/sec-companies/search) ;;
+  /datasets/sec-institutional-positions/facets) ;;
+  /datasets/sec-institutional-positions/search) ;;
+  /sec/company/intelligence) ;;
+  /sec/company/search) ;;
+  /sec/company/submissions) ;;
+  /sec/filing) ;;
+  /sec/filing/sections) ;;
+  /sec/financials) ;;
+  /sec/frames) ;;
+  /sec/full-text-search) ;;
+  /sec/insider) ;;
+  /sec/institutional-holdings) ;;
+  /web/scrape) ;;
+  *)
+    echo "path is not in the sec-filings-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

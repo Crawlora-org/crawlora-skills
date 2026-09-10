@@ -33,6 +33,48 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the competitor-intelligence skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the competitor-intelligence skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /bing/search) ;;
+  /capterra/product) ;;
+  /capterra/product/reviews) ;;
+  /capterra/search) ;;
+  /datasets/jobs/companies) ;;
+  /datasets/jobs/search) ;;
+  /extract) ;;
+  /producthunt/product/*) ;;
+  /producthunt/product/*/alternatives) ;;
+  /producthunt/product/*/launches) ;;
+  /producthunt/search) ;;
+  /similarweb/search) ;;
+  /similarweb/web/*) ;;
+  /trustpilot/business-units/search) ;;
+  /trustpilot/business/*) ;;
+  /trustpilot/business/*/reviews) ;;
+  /web/scrape) ;;
+  *)
+    echo "path is not in the competitor-intelligence skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

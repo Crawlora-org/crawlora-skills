@@ -17,7 +17,7 @@ run the helper bundled with this skill. It sends `x-api-key` to
 [`reference/endpoints.md`](reference/endpoints.md) for exact parameters.
 
 ```sh
-export CRAWLORA_API_KEY=sk_your_key_here
+Set `CRAWLORA_API_KEY` in the environment before running the helper.
 scripts/crawlora.sh /tiktok/profile/username | jq '.'
 scripts/crawlora.sh /tiktok/search/user keyword="running coach" | jq '.'
 ```

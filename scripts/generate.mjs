@@ -370,29 +370,34 @@ const publicPathPrefixes = [...new Set(
 const publicPathCases = publicPathPrefixes
   .map((prefix) => `  /${prefix}|/${prefix}/*) ;;`)
   .join("\n");
-const publicDataGuard = `
-# This skill is for public web-data extraction. Keep caller-account surfaces
-# out of the helper even if someone supplies an undocumented path directly.
+const routePattern = (path) => String(path).replace(/\{[^}]+\}/g, "*");
+const routeCases = (skillTools) => [...new Set(skillTools.map((tool) => routePattern(tool._http.path)))]
+  .sort()
+  .map((pattern) => `  ${pattern}) ;;`)
+  .join("\n");
+const helperGuard = ({ cases, label }) => `
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
 case "$method" in
   GET|POST) ;;
   *)
-    echo "only GET and POST are supported by the public-data umbrella skill" >&2
+    echo "only GET and POST are supported by the ${label} skill" >&2
     exit 2
     ;;
 esac
 
-# Reject path syntax that could smuggle a management route through a prefix
-# check, then allow only route families present in the generated public catalog.
+# Reject path syntax that could smuggle a route through a shell glob check.
 case "$path" in
   ""|*[?\#%]*|*..*|*//* )
-    echo "invalid path for the public-data umbrella skill" >&2
+    echo "invalid path for the ${label} skill" >&2
     exit 2
     ;;
 esac
 case "$path" in
-${publicPathCases}
+${cases}
   *)
-    echo "path is not in the public-data umbrella catalog" >&2
+    echo "path is not in the ${label} skill catalog" >&2
     exit 2
     ;;
 esac
@@ -406,9 +411,22 @@ const skillDirs = readdirSync(join(ROOT, "skills"), { withFileTypes: true })
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name);
 for (const s of skillDirs) {
-  const skillHelper = s === "crawlora"
-    ? helper.replace('\nauth=(-H "x-api-key:', `${publicDataGuard}auth=(-H "x-api-key:`)
-    : helper;
+  let skillTools;
+  if (s === "crawlora") {
+    skillTools = all.filter((tool) => !excludedUmbrellaGroups.has(tool._http.group));
+  } else if (s in SKILLS) {
+    skillTools = SKILLS[s].flatMap((group) => byGroup.get(group) || []);
+  } else if (s in focusedSkills) {
+    const selected = selectTools(all, focusedSkills[s]);
+    skillTools = [...selected.values()].flat();
+  } else {
+    throw new Error(`No endpoint selection found for skill ${s}`);
+  }
+  const cases = s === "crawlora" ? publicPathCases : routeCases(skillTools);
+  const skillHelper = helper.replace(
+    '\nauth=(-H "x-api-key:',
+    `${helperGuard({ cases, label: s })}auth=(-H "x-api-key:`
+  );
   outputs.push([`skills/${s}/scripts/crawlora.sh`, skillHelper]);
 }
 

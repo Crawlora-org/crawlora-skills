@@ -18,7 +18,7 @@ run the helper bundled with this skill. It sends `x-api-key` to
 put it in a URL, prompt output, or saved file.
 
 ```sh
-export CRAWLORA_API_KEY=sk_your_key_here
+Set `CRAWLORA_API_KEY` in the environment before running the helper.
 
 scripts/crawlora.sh /tiktok/profile/chatgpt | jq '.'
 scripts/crawlora.sh /tiktok/search keyword="ai agents" count=20 | jq '.'

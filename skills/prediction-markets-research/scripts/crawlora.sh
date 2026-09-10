@@ -33,6 +33,93 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the prediction-markets-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the prediction-markets-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /kalshi/event/*) ;;
+  /kalshi/event/*/history) ;;
+  /kalshi/event/*/metadata) ;;
+  /kalshi/events) ;;
+  /kalshi/events/multivariate) ;;
+  /kalshi/exchange/schedule) ;;
+  /kalshi/exchange/status) ;;
+  /kalshi/historical/cutoff) ;;
+  /kalshi/historical/market/*) ;;
+  /kalshi/historical/market/*/history) ;;
+  /kalshi/historical/markets) ;;
+  /kalshi/historical/trades) ;;
+  /kalshi/market/*) ;;
+  /kalshi/market/*/history) ;;
+  /kalshi/market/*/orderbook) ;;
+  /kalshi/markets) ;;
+  /kalshi/markets/history) ;;
+  /kalshi/markets/orderbooks) ;;
+  /kalshi/series) ;;
+  /kalshi/series/*) ;;
+  /kalshi/trades) ;;
+  /metaculus/category/*/questions) ;;
+  /metaculus/comments-feed) ;;
+  /metaculus/project/*/questions) ;;
+  /metaculus/question/*) ;;
+  /metaculus/question/*/forecast-history) ;;
+  /metaculus/question/*/forecasts) ;;
+  /metaculus/question/*/metadata) ;;
+  /metaculus/question/*/options) ;;
+  /metaculus/questions) ;;
+  /metaculus/top-comments) ;;
+  /metaculus/tournament/*/questions) ;;
+  /polymarket/activity/trades) ;;
+  /polymarket/clob/market/*) ;;
+  /polymarket/dashboards/macro) ;;
+  /polymarket/event/*) ;;
+  /polymarket/events) ;;
+  /polymarket/events/*/tags) ;;
+  /polymarket/events/similar) ;;
+  /polymarket/fee-types) ;;
+  /polymarket/homepage/feed) ;;
+  /polymarket/leaderboard) ;;
+  /polymarket/market/*) ;;
+  /polymarket/market/*/liquidity) ;;
+  /polymarket/market/*/tags) ;;
+  /polymarket/markets) ;;
+  /polymarket/predictions) ;;
+  /polymarket/rewards/market/*) ;;
+  /polymarket/rewards/markets) ;;
+  /polymarket/search) ;;
+  /polymarket/tag/*) ;;
+  /polymarket/tag/*/related-tags) ;;
+  /polymarket/tags) ;;
+  /polymarket/token/*/midpoint) ;;
+  /polymarket/token/*/orderbook) ;;
+  /polymarket/token/*/price) ;;
+  /polymarket/token/*/price-history) ;;
+  /polymarket/token/*/spread) ;;
+  /polymarket/tokens/midpoints) ;;
+  /polymarket/tokens/orderbooks) ;;
+  /polymarket/tokens/prices) ;;
+  /polymarket/tokens/spreads) ;;
+  *)
+    echo "path is not in the prediction-markets-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

@@ -33,6 +33,130 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the movie-tv-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the movie-tv-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /boxofficemojo/brand) ;;
+  /boxofficemojo/brands) ;;
+  /boxofficemojo/calendar) ;;
+  /boxofficemojo/calendar/changes) ;;
+  /boxofficemojo/calendar/date) ;;
+  /boxofficemojo/date/domestic) ;;
+  /boxofficemojo/franchise) ;;
+  /boxofficemojo/franchises) ;;
+  /boxofficemojo/genre) ;;
+  /boxofficemojo/genres) ;;
+  /boxofficemojo/lifetime-grosses) ;;
+  /boxofficemojo/release) ;;
+  /boxofficemojo/release-group) ;;
+  /boxofficemojo/showdown) ;;
+  /boxofficemojo/showdowns) ;;
+  /boxofficemojo/title) ;;
+  /boxofficemojo/weekend/domestic) ;;
+  /boxofficemojo/weekend/domestic/by-distributor) ;;
+  /boxofficemojo/weekend/domestic/estimates) ;;
+  /boxofficemojo/year/domestic) ;;
+  /boxofficemojo/year/worldwide) ;;
+  /imdb/charts) ;;
+  /imdb/name) ;;
+  /imdb/name/awards) ;;
+  /imdb/name/credits) ;;
+  /imdb/search) ;;
+  /imdb/search/title) ;;
+  /imdb/title) ;;
+  /imdb/title/awards) ;;
+  /imdb/title/company-credits) ;;
+  /imdb/title/credits) ;;
+  /imdb/title/episodes) ;;
+  /imdb/title/filming-locations) ;;
+  /imdb/title/goofs) ;;
+  /imdb/title/keywords) ;;
+  /imdb/title/parental-guide) ;;
+  /imdb/title/public-facts-analysis) ;;
+  /imdb/title/quotes) ;;
+  /imdb/title/ratings) ;;
+  /imdb/title/release-info) ;;
+  /imdb/title/reviews) ;;
+  /imdb/title/similar) ;;
+  /imdb/title/technical-specs) ;;
+  /imdb/title/trivia) ;;
+  /justwatch/age-certifications) ;;
+  /justwatch/discover) ;;
+  /justwatch/episode/by-id) ;;
+  /justwatch/episode/offers) ;;
+  /justwatch/genre/titles) ;;
+  /justwatch/genres) ;;
+  /justwatch/monetization/titles) ;;
+  /justwatch/new) ;;
+  /justwatch/popular) ;;
+  /justwatch/provider/titles) ;;
+  /justwatch/providers) ;;
+  /justwatch/search) ;;
+  /justwatch/season/by-id) ;;
+  /justwatch/season/episodes) ;;
+  /justwatch/show/seasons) ;;
+  /justwatch/title) ;;
+  /justwatch/title/analysis) ;;
+  /justwatch/title/by-id) ;;
+  /justwatch/title/media) ;;
+  /justwatch/title/offers) ;;
+  /justwatch/title/similar) ;;
+  /letterboxd/film/*) ;;
+  /letterboxd/film/*/rating-histogram) ;;
+  /letterboxd/film/*/reviews) ;;
+  /letterboxd/film/*/similar) ;;
+  /letterboxd/member/*) ;;
+  /letterboxd/person/*) ;;
+  /letterboxd/popular) ;;
+  /letterboxd/search) ;;
+  /metacritic/browse) ;;
+  /metacritic/game/*) ;;
+  /metacritic/game/*/critic-reviews) ;;
+  /metacritic/game/*/user-reviews) ;;
+  /metacritic/movie/*) ;;
+  /metacritic/movie/*/critic-reviews) ;;
+  /metacritic/movie/*/user-reviews) ;;
+  /metacritic/tv/*) ;;
+  /metacritic/tv/*/critic-reviews) ;;
+  /metacritic/tv/*/user-reviews) ;;
+  /rottentomatoes/browse/movies) ;;
+  /rottentomatoes/browse/tv) ;;
+  /rottentomatoes/episode) ;;
+  /rottentomatoes/movie) ;;
+  /rottentomatoes/movie/reviews) ;;
+  /rottentomatoes/person) ;;
+  /rottentomatoes/search) ;;
+  /rottentomatoes/season) ;;
+  /rottentomatoes/series) ;;
+  /tmdb/movie/*) ;;
+  /tmdb/movie/list) ;;
+  /tmdb/person/*) ;;
+  /tmdb/person/list) ;;
+  /tmdb/search) ;;
+  /tmdb/tv/*) ;;
+  /tmdb/tv/list) ;;
+  *)
+    echo "path is not in the movie-tv-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

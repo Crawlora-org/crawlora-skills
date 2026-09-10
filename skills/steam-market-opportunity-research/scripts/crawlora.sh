@@ -33,6 +33,50 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the steam-market-opportunity-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the steam-market-opportunity-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /datasets/steam-charts/search) ;;
+  /datasets/steam-games/facets) ;;
+  /datasets/steam-games/items/*) ;;
+  /datasets/steam-games/search) ;;
+  /datasets/steam-news/search) ;;
+  /datasets/steam-playercounts/search) ;;
+  /datasets/steam-reviews/search) ;;
+  /steam/app) ;;
+  /steam/category/*) ;;
+  /steam/items) ;;
+  /steam/news) ;;
+  /steam/players) ;;
+  /steam/reviews) ;;
+  /steam/reviews/histogram) ;;
+  /steam/search) ;;
+  /steam/search/results) ;;
+  /steam/steamspy) ;;
+  /steam/tags) ;;
+  /steam/tags/list) ;;
+  *)
+    echo "path is not in the steam-market-opportunity-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

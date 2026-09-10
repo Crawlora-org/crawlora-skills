@@ -63,10 +63,15 @@ for (const skill of skills) {
 
   if (bodyLines > MAX_BODY_LINES)
     errors.push(`${file}: body too long (${bodyLines} > ${MAX_BODY_LINES} lines) — move detail to reference/`);
+  if (/\bsk_[A-Za-z0-9]{10,}\b/.test(text))
+    errors.push(`${file}: secret-shaped API key literal; use an environment-only setup example`);
 
   // Self-containment: each skill must bundle its helper + a reference file.
-  if (!existsSync(join(ROOT, `skills/${skill}/scripts/crawlora.sh`)))
+  const helperPath = join(ROOT, `skills/${skill}/scripts/crawlora.sh`);
+  if (!existsSync(helperPath))
     errors.push(`${file}: missing scripts/crawlora.sh (run node scripts/generate.mjs)`);
+  else if (!readFileSync(helperPath, "utf8").includes("documented Crawlora route set"))
+    errors.push(`${file}: helper is missing its generated route allowlist (run node scripts/generate.mjs)`);
   const ref = skill === "crawlora" ? "reference/catalog.md" : "reference/endpoints.md";
   if (!existsSync(join(ROOT, `skills/${skill}/${ref}`)))
     errors.push(`${file}: missing ${ref} (run node scripts/generate.mjs)`);

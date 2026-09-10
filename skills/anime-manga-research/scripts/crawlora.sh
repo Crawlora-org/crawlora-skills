@@ -33,6 +33,46 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the anime-manga-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the anime-manga-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /anime/airing-schedule) ;;
+  /anime/character/*) ;;
+  /anime/character/search) ;;
+  /anime/rankings) ;;
+  /anime/search) ;;
+  /anime/title/*) ;;
+  /anime/title/*/characters) ;;
+  /anime/title/*/recommendations) ;;
+  /anime/title/*/staff) ;;
+  /manga/rankings) ;;
+  /manga/search) ;;
+  /manga/title/*) ;;
+  /manga/title/*/characters) ;;
+  /manga/title/*/recommendations) ;;
+  /manga/title/*/staff) ;;
+  *)
+    echo "path is not in the anime-manga-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

@@ -33,6 +33,47 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the shop-app-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the shop-app-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /shop-app/analysis) ;;
+  /shop-app/categories) ;;
+  /shop-app/products/*) ;;
+  /shop-app/products/*/related) ;;
+  /shop-app/products/*/reviews) ;;
+  /shop-app/products/*/shop) ;;
+  /shop-app/products/*/variant) ;;
+  /shop-app/products/*/variants) ;;
+  /shop-app/search) ;;
+  /shop-app/shops/*) ;;
+  /shop-app/shops/*/collections/*/products) ;;
+  /shop-app/shops/*/locations) ;;
+  /shop-app/shops/*/products) ;;
+  /shop-app/shops/*/reviews) ;;
+  /shop-app/shops/*/typeahead) ;;
+  /shop-app/suggestions) ;;
+  *)
+    echo "path is not in the shop-app-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

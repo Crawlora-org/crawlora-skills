@@ -33,6 +33,108 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the finance-markets-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the finance-markets-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /coingecko/categories) ;;
+  /coingecko/category/*/coins) ;;
+  /coingecko/chains) ;;
+  /coingecko/chains/*) ;;
+  /coingecko/coin/*) ;;
+  /coingecko/coin/*/analysis) ;;
+  /coingecko/exchange/*) ;;
+  /coingecko/exchanges) ;;
+  /coingecko/gainers-losers) ;;
+  /coingecko/global) ;;
+  /coingecko/global/charts) ;;
+  /coingecko/learn/articles) ;;
+  /coingecko/markets) ;;
+  /coingecko/new-coins) ;;
+  /coingecko/news) ;;
+  /coingecko/nft/category/*) ;;
+  /coingecko/nfts) ;;
+  /coingecko/search) ;;
+  /coingecko/token-unlocks) ;;
+  /coingecko/treasuries) ;;
+  /coingecko/trending) ;;
+  /congress/report) ;;
+  /congress/stock-disclosures) ;;
+  /pitchbook/advisor) ;;
+  /pitchbook/company) ;;
+  /pitchbook/fund) ;;
+  /pitchbook/investor) ;;
+  /pitchbook/limited-partner) ;;
+  /sec/company/intelligence) ;;
+  /sec/company/search) ;;
+  /sec/company/submissions) ;;
+  /sec/filing) ;;
+  /sec/filing/sections) ;;
+  /sec/financials) ;;
+  /sec/frames) ;;
+  /sec/full-text-search) ;;
+  /sec/insider) ;;
+  /sec/institutional-holdings) ;;
+  /yahoo-finance/calendars) ;;
+  /yahoo-finance/calendars/*) ;;
+  /yahoo-finance/download) ;;
+  /yahoo-finance/industries) ;;
+  /yahoo-finance/industries/*) ;;
+  /yahoo-finance/lookup) ;;
+  /yahoo-finance/market/*/status) ;;
+  /yahoo-finance/market/*/summary) ;;
+  /yahoo-finance/screener) ;;
+  /yahoo-finance/screener/*) ;;
+  /yahoo-finance/screeners) ;;
+  /yahoo-finance/search) ;;
+  /yahoo-finance/sectors) ;;
+  /yahoo-finance/sectors/*) ;;
+  /yahoo-finance/ticker/*/actions) ;;
+  /yahoo-finance/ticker/*/analysts) ;;
+  /yahoo-finance/ticker/*/calendar) ;;
+  /yahoo-finance/ticker/*/capital-gains) ;;
+  /yahoo-finance/ticker/*/dividends) ;;
+  /yahoo-finance/ticker/*/earnings) ;;
+  /yahoo-finance/ticker/*/earnings-dates) ;;
+  /yahoo-finance/ticker/*/financials) ;;
+  /yahoo-finance/ticker/*/funds) ;;
+  /yahoo-finance/ticker/*/history) ;;
+  /yahoo-finance/ticker/*/history-metadata) ;;
+  /yahoo-finance/ticker/*/holders) ;;
+  /yahoo-finance/ticker/*/info) ;;
+  /yahoo-finance/ticker/*/isin) ;;
+  /yahoo-finance/ticker/*/news) ;;
+  /yahoo-finance/ticker/*/options) ;;
+  /yahoo-finance/ticker/*/options/*) ;;
+  /yahoo-finance/ticker/*/quote) ;;
+  /yahoo-finance/ticker/*/sec-filings) ;;
+  /yahoo-finance/ticker/*/shares) ;;
+  /yahoo-finance/ticker/*/shares-full) ;;
+  /yahoo-finance/ticker/*/splits) ;;
+  /yahoo-finance/ticker/*/sustainability) ;;
+  /yahoo-finance/ticker/*/valuation) ;;
+  /yahoo-finance/trending/*) ;;
+  *)
+    echo "path is not in the finance-markets-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

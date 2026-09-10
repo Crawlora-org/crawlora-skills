@@ -33,6 +33,64 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the gaming-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the gaming-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /playstation/browse) ;;
+  /playstation/category) ;;
+  /playstation/concept) ;;
+  /playstation/deals) ;;
+  /playstation/latest) ;;
+  /playstation/page) ;;
+  /playstation/product) ;;
+  /playstation/search) ;;
+  /roblox/badges) ;;
+  /roblox/game) ;;
+  /roblox/rankings) ;;
+  /roblox/search) ;;
+  /steam/achievements) ;;
+  /steam/app) ;;
+  /steam/category/*) ;;
+  /steam/charts/concurrent) ;;
+  /steam/charts/most-played) ;;
+  /steam/charts/top-releases) ;;
+  /steam/community-recommendations) ;;
+  /steam/featured) ;;
+  /steam/featured-categories) ;;
+  /steam/items) ;;
+  /steam/news) ;;
+  /steam/package) ;;
+  /steam/players) ;;
+  /steam/reviews) ;;
+  /steam/reviews/histogram) ;;
+  /steam/search) ;;
+  /steam/search/results) ;;
+  /steam/steamspy) ;;
+  /steam/tags) ;;
+  /steam/tags/list) ;;
+  /steam/top-sellers) ;;
+  *)
+    echo "path is not in the gaming-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

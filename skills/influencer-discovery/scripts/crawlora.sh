@@ -33,6 +33,49 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the influencer-discovery skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the influencer-discovery skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /datasets/creators/search) ;;
+  /datasets/instagram-users/facets) ;;
+  /datasets/instagram-users/items/*) ;;
+  /datasets/instagram-users/search) ;;
+  /datasets/youtube-creators/facets) ;;
+  /datasets/youtube-creators/items/*) ;;
+  /datasets/youtube-creators/search) ;;
+  /instagram/post/*/*) ;;
+  /instagram/profile/*) ;;
+  /instagram/reels/*) ;;
+  /tiktok/post/*) ;;
+  /tiktok/posts) ;;
+  /tiktok/profile/*) ;;
+  /tiktok/search/user) ;;
+  /youtube/channel/*/videos) ;;
+  /youtube/profile/*) ;;
+  /youtube/search) ;;
+  /youtube/video/*) ;;
+  *)
+    echo "path is not in the influencer-discovery skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

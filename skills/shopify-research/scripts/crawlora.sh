@@ -33,6 +33,190 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the shopify-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the shopify-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /allbirds/collections) ;;
+  /allbirds/collections/*/products) ;;
+  /allbirds/pages) ;;
+  /allbirds/pages/*) ;;
+  /allbirds/products) ;;
+  /allbirds/products/*) ;;
+  /allbirds/products/*/recommendations) ;;
+  /allbirds/search/suggest) ;;
+  /allbirds/sitemap/urls) ;;
+  /allbirds/sitemaps) ;;
+  /allbirds/store) ;;
+  /brooklinen/collections) ;;
+  /brooklinen/collections/*/products) ;;
+  /brooklinen/pages) ;;
+  /brooklinen/pages/*) ;;
+  /brooklinen/products) ;;
+  /brooklinen/products/*) ;;
+  /brooklinen/products/*/recommendations) ;;
+  /brooklinen/search/suggest) ;;
+  /brooklinen/sitemap/urls) ;;
+  /brooklinen/sitemaps) ;;
+  /brooklinen/store) ;;
+  /colehaan/collections) ;;
+  /colehaan/collections/*/products) ;;
+  /colehaan/pages) ;;
+  /colehaan/pages/*) ;;
+  /colehaan/products) ;;
+  /colehaan/products/*) ;;
+  /colehaan/products/*/recommendations) ;;
+  /colehaan/search/suggest) ;;
+  /colehaan/sitemap/urls) ;;
+  /colehaan/sitemaps) ;;
+  /colehaan/store) ;;
+  /everlane/collections) ;;
+  /everlane/collections/*/products) ;;
+  /everlane/pages) ;;
+  /everlane/pages/*) ;;
+  /everlane/products) ;;
+  /everlane/products/*) ;;
+  /everlane/products/*/recommendations) ;;
+  /everlane/search/suggest) ;;
+  /everlane/sitemap/urls) ;;
+  /everlane/sitemaps) ;;
+  /everlane/store) ;;
+  /fashionnova/collections) ;;
+  /fashionnova/collections/*/products) ;;
+  /fashionnova/pages) ;;
+  /fashionnova/pages/*) ;;
+  /fashionnova/products) ;;
+  /fashionnova/products/*) ;;
+  /fashionnova/products/*/recommendations) ;;
+  /fashionnova/search/suggest) ;;
+  /fashionnova/sitemap/urls) ;;
+  /fashionnova/sitemaps) ;;
+  /fashionnova/store) ;;
+  /gymshark/collections) ;;
+  /gymshark/collections/*/products) ;;
+  /gymshark/pages) ;;
+  /gymshark/pages/*) ;;
+  /gymshark/products) ;;
+  /gymshark/products/*) ;;
+  /gymshark/products/*/recommendations) ;;
+  /gymshark/sitemap/urls) ;;
+  /gymshark/sitemaps) ;;
+  /gymshark/store) ;;
+  /jcrew/categories) ;;
+  /jcrew/category) ;;
+  /jcrew/product) ;;
+  /jcrew/product/reviews) ;;
+  /jcrew/search) ;;
+  /jcrew/size-chart) ;;
+  /jcrew/stores) ;;
+  /jcrew/suggest) ;;
+  /kyliecosmetics/collections) ;;
+  /kyliecosmetics/collections/*/products) ;;
+  /kyliecosmetics/pages) ;;
+  /kyliecosmetics/pages/*) ;;
+  /kyliecosmetics/products) ;;
+  /kyliecosmetics/products/*) ;;
+  /kyliecosmetics/products/*/recommendations) ;;
+  /kyliecosmetics/search/suggest) ;;
+  /kyliecosmetics/sitemap/urls) ;;
+  /kyliecosmetics/sitemaps) ;;
+  /kyliecosmetics/store) ;;
+  /ohpolly/collections) ;;
+  /ohpolly/collections/*/products) ;;
+  /ohpolly/pages) ;;
+  /ohpolly/pages/*) ;;
+  /ohpolly/products) ;;
+  /ohpolly/products/*) ;;
+  /ohpolly/products/*/recommendations) ;;
+  /ohpolly/search/suggest) ;;
+  /ohpolly/sitemap/urls) ;;
+  /ohpolly/sitemaps) ;;
+  /ohpolly/store) ;;
+  /quince/categories) ;;
+  /quince/navigation) ;;
+  /quince/product) ;;
+  /quince/product/faq) ;;
+  /quince/product/reviews) ;;
+  /quince/search) ;;
+  /quince/sitemap/urls) ;;
+  /quince/sitemaps) ;;
+  /quince/suggest) ;;
+  /rothys/collections) ;;
+  /rothys/collections/*/products) ;;
+  /rothys/pages) ;;
+  /rothys/pages/*) ;;
+  /rothys/products) ;;
+  /rothys/products/*) ;;
+  /rothys/products/*/recommendations) ;;
+  /rothys/search/suggest) ;;
+  /rothys/sitemap/urls) ;;
+  /rothys/sitemaps) ;;
+  /rothys/store) ;;
+  /shopify/collections) ;;
+  /shopify/collections/*/products) ;;
+  /shopify/pages) ;;
+  /shopify/pages/*) ;;
+  /shopify/products) ;;
+  /shopify/products/*) ;;
+  /shopify/products/*/recommendations) ;;
+  /shopify/search/suggest) ;;
+  /shopify/sitemap/urls) ;;
+  /shopify/sitemaps) ;;
+  /shopify/store) ;;
+  /skims/collections) ;;
+  /skims/collections/*/products) ;;
+  /skims/pages) ;;
+  /skims/pages/*) ;;
+  /skims/products) ;;
+  /skims/products/*) ;;
+  /skims/products/*/recommendations) ;;
+  /skims/search/suggest) ;;
+  /skims/sitemap/urls) ;;
+  /skims/sitemaps) ;;
+  /skims/store) ;;
+  /stevemadden/collections) ;;
+  /stevemadden/collections/*/products) ;;
+  /stevemadden/pages) ;;
+  /stevemadden/pages/*) ;;
+  /stevemadden/products) ;;
+  /stevemadden/products/*) ;;
+  /stevemadden/products/*/recommendations) ;;
+  /stevemadden/search/suggest) ;;
+  /stevemadden/sitemap/urls) ;;
+  /stevemadden/sitemaps) ;;
+  /stevemadden/store) ;;
+  /thebodyshop/collections) ;;
+  /thebodyshop/collections/*/products) ;;
+  /thebodyshop/pages) ;;
+  /thebodyshop/pages/*) ;;
+  /thebodyshop/products) ;;
+  /thebodyshop/products/*) ;;
+  /thebodyshop/products/*/recommendations) ;;
+  /thebodyshop/search/suggest) ;;
+  /thebodyshop/sitemap/urls) ;;
+  /thebodyshop/sitemaps) ;;
+  /thebodyshop/store) ;;
+  *)
+    echo "path is not in the shopify-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

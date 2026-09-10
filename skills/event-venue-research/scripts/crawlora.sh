@@ -33,6 +33,45 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the event-venue-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the event-venue-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /ticketmaster/attraction) ;;
+  /ticketmaster/attraction-events) ;;
+  /ticketmaster/discover-categories) ;;
+  /ticketmaster/discover-category-events) ;;
+  /ticketmaster/discover-cities) ;;
+  /ticketmaster/discover-city-events) ;;
+  /ticketmaster/event) ;;
+  /ticketmaster/search-events) ;;
+  /ticketmaster/suggest) ;;
+  /ticketmaster/venue) ;;
+  /ticketmaster/venue-events) ;;
+  /ticketweb/event) ;;
+  /ticketweb/search) ;;
+  /ticketweb/venue) ;;
+  *)
+    echo "path is not in the event-venue-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

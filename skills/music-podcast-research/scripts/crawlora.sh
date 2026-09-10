@@ -33,6 +33,89 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the music-podcast-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the music-podcast-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /apple-podcasts/charts) ;;
+  /apple-podcasts/charts/rankings) ;;
+  /apple-podcasts/episodes/search) ;;
+  /apple-podcasts/new) ;;
+  /apple-podcasts/search) ;;
+  /apple-podcasts/show/*) ;;
+  /apple-podcasts/show/*/episodes) ;;
+  /apple-podcasts/show/*/related) ;;
+  /discogs/artist/*) ;;
+  /discogs/artist/*/releases) ;;
+  /discogs/label/*) ;;
+  /discogs/label/*/releases) ;;
+  /discogs/master/*) ;;
+  /discogs/release/*) ;;
+  /discogs/search) ;;
+  /soundcloud/playlist) ;;
+  /soundcloud/profile) ;;
+  /soundcloud/search) ;;
+  /soundcloud/track) ;;
+  /soundcloud/user-tracks) ;;
+  /spotify-podcasts/categories) ;;
+  /spotify-podcasts/charts) ;;
+  /spotify-podcasts/episode) ;;
+  /spotify-podcasts/home) ;;
+  /spotify-podcasts/search) ;;
+  /spotify-podcasts/show) ;;
+  /spotify-podcasts/show/episodes) ;;
+  /spotify-podcasts/show/recommendations) ;;
+  /spotify/album) ;;
+  /spotify/album/tracks) ;;
+  /spotify/albums/search) ;;
+  /spotify/artist) ;;
+  /spotify/artist/albums) ;;
+  /spotify/artist/playlists) ;;
+  /spotify/artist/related) ;;
+  /spotify/artists/search) ;;
+  /spotify/audiobook) ;;
+  /spotify/audiobook/chapters) ;;
+  /spotify/audiobooks/search) ;;
+  /spotify/chapter) ;;
+  /spotify/episodes/search) ;;
+  /spotify/featured-charts-by-country) ;;
+  /spotify/genre) ;;
+  /spotify/home) ;;
+  /spotify/playlist) ;;
+  /spotify/playlists/search) ;;
+  /spotify/popular-by-country) ;;
+  /spotify/profile) ;;
+  /spotify/profile/followers) ;;
+  /spotify/profile/playlists) ;;
+  /spotify/profiles/search) ;;
+  /spotify/search) ;;
+  /spotify/section) ;;
+  /spotify/shows/search) ;;
+  /spotify/track) ;;
+  /spotify/track/recommended) ;;
+  /spotify/track/similar-albums) ;;
+  /spotify/tracks/search) ;;
+  *)
+    echo "path is not in the music-podcast-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

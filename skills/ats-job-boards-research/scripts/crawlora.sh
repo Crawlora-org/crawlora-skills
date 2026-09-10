@@ -33,6 +33,61 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the ats-job-boards-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the ats-job-boards-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /jobs/ashby/board) ;;
+  /jobs/company-search) ;;
+  /jobs/eightfold/board) ;;
+  /jobs/eightfold/job) ;;
+  /jobs/gem/board) ;;
+  /jobs/greenhouse/board) ;;
+  /jobs/greenhouse/job) ;;
+  /jobs/hiring-signals) ;;
+  /jobs/icims/board) ;;
+  /jobs/icims/job) ;;
+  /jobs/lever/posting) ;;
+  /jobs/lever/postings) ;;
+  /jobs/oracle/board) ;;
+  /jobs/oracle/job) ;;
+  /jobs/personio/feed) ;;
+  /jobs/phenom/board) ;;
+  /jobs/phenom/job) ;;
+  /jobs/pinpoint/board) ;;
+  /jobs/recruitee/offer) ;;
+  /jobs/recruitee/offers) ;;
+  /jobs/rippling/board) ;;
+  /jobs/rippling/job) ;;
+  /jobs/smartrecruiters/posting) ;;
+  /jobs/smartrecruiters/postings) ;;
+  /jobs/teamtailor/jobs) ;;
+  /jobs/ukg/board) ;;
+  /jobs/workable/posting) ;;
+  /jobs/workable/postings) ;;
+  /jobs/workday/board) ;;
+  /jobs/workday/job) ;;
+  *)
+    echo "path is not in the ats-job-boards-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

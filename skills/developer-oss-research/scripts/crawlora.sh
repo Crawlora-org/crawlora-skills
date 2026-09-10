@@ -33,6 +33,60 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the developer-oss-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the developer-oss-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /chromewebstore/categories) ;;
+  /chromewebstore/category) ;;
+  /chromewebstore/charts) ;;
+  /chromewebstore/collection) ;;
+  /chromewebstore/developer) ;;
+  /chromewebstore/item) ;;
+  /chromewebstore/permissions) ;;
+  /chromewebstore/privacy) ;;
+  /chromewebstore/reviews) ;;
+  /chromewebstore/search) ;;
+  /chromewebstore/similar) ;;
+  /chromewebstore/suggest) ;;
+  /github/org/*) ;;
+  /github/org/*/repos) ;;
+  /github/repo/*/*) ;;
+  /github/repo/*/*/contributors) ;;
+  /github/repo/*/*/forks) ;;
+  /github/repo/*/*/languages) ;;
+  /github/repo/*/*/releases) ;;
+  /github/search/repositories) ;;
+  /github/search/users) ;;
+  /github/trending) ;;
+  /github/trending/developers) ;;
+  /github/user/*) ;;
+  /github/user/*/events) ;;
+  /github/user/*/followers) ;;
+  /github/user/*/following) ;;
+  /github/user/*/pinned) ;;
+  /github/user/*/repos) ;;
+  *)
+    echo "path is not in the developer-oss-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

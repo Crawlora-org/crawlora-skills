@@ -33,6 +33,111 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the social-media-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the social-media-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /bilibili/anime-home) ;;
+  /bilibili/autocomplete) ;;
+  /bilibili/guochuang-home) ;;
+  /bilibili/must-watch) ;;
+  /bilibili/popular) ;;
+  /bilibili/ranking) ;;
+  /bilibili/vertical-home) ;;
+  /bilibili/weekly) ;;
+  /bluesky/author-feed) ;;
+  /bluesky/followers) ;;
+  /bluesky/follows) ;;
+  /bluesky/post-thread) ;;
+  /bluesky/profile) ;;
+  /bluesky/search-actors) ;;
+  /bluesky/trending-topics) ;;
+  /facebook/*) ;;
+  /facebook/marketplace/search) ;;
+  /instagram/post/*/*) ;;
+  /instagram/profile/*) ;;
+  /instagram/reels/*) ;;
+  /linkedin/company/*) ;;
+  /linkedin/product/*) ;;
+  /linkedin/showcase/*) ;;
+  /patreon/creator) ;;
+  /patreon/creator/tiers) ;;
+  /patreon/explore) ;;
+  /patreon/rss) ;;
+  /pinterest/board/*/*) ;;
+  /pinterest/categories) ;;
+  /pinterest/ideas/*) ;;
+  /pinterest/pin/*) ;;
+  /pinterest/search) ;;
+  /pinterest/user/*) ;;
+  /pinterest/user/*/boards) ;;
+  /pinterest/user/*/pins) ;;
+  /reddit/comments/*) ;;
+  /reddit/domain/*/posts) ;;
+  /reddit/leads) ;;
+  /reddit/post/*) ;;
+  /reddit/search) ;;
+  /reddit/subreddit/*/about) ;;
+  /reddit/subreddit/*/comments) ;;
+  /reddit/subreddit/*/posts) ;;
+  /reddit/subreddits/posts) ;;
+  /reddit/trends) ;;
+  /reddit/user/*/comments) ;;
+  /reddit/user/*/posts) ;;
+  /threads/post/*/*) ;;
+  /threads/post/*/*/replies) ;;
+  /threads/profile/*) ;;
+  /threads/profile/*/posts) ;;
+  /threads/search) ;;
+  /tiktok/category) ;;
+  /tiktok/comments) ;;
+  /tiktok/creative-center/hashtags) ;;
+  /tiktok/creative-center/videos) ;;
+  /tiktok/explore/*) ;;
+  /tiktok/hashtag/*) ;;
+  /tiktok/hashtags) ;;
+  /tiktok/popular-trend/country-industry-meta) ;;
+  /tiktok/post/*) ;;
+  /tiktok/posts) ;;
+  /tiktok/profile/*) ;;
+  /tiktok/search) ;;
+  /tiktok/search/hashtag) ;;
+  /tiktok/search/user) ;;
+  /tiktok/top-ads/analysis) ;;
+  /tiktok/top-ads/detail) ;;
+  /tiktok/top-ads/filters) ;;
+  /tiktok/top-ads/list) ;;
+  /tiktok/top-ads/location-info) ;;
+  /tiktok/top-ads/locations) ;;
+  /tiktok/top-ads/recommend) ;;
+  /tiktok/top-ads/safety) ;;
+  /tiktok/top-ads/spotlight) ;;
+  /tiktok/top-ads/suggestions) ;;
+  /tiktok/trending) ;;
+  /x/post/*) ;;
+  /x/profile/*) ;;
+  /x/profile/*/posts) ;;
+  *)
+    echo "path is not in the social-media-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

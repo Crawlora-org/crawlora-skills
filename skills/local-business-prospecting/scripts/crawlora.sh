@@ -33,6 +33,44 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the local-business-prospecting skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the local-business-prospecting skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /apple-maps/place) ;;
+  /apple-maps/search) ;;
+  /datasets/google-map-businesses/facets) ;;
+  /datasets/google-map-businesses/items/*) ;;
+  /datasets/google-map-businesses/nearby) ;;
+  /datasets/google-map-businesses/search) ;;
+  /extract) ;;
+  /google/map/place/*) ;;
+  /google/map/place/*/reviews) ;;
+  /google/map/search) ;;
+  /web/scrape) ;;
+  /yelp/business/*) ;;
+  /yelp/search) ;;
+  *)
+    echo "path is not in the local-business-prospecting skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

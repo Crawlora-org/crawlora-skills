@@ -33,6 +33,67 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the opensea-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the opensea-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /opensea/activity) ;;
+  /opensea/categories) ;;
+  /opensea/chains) ;;
+  /opensea/collection/*) ;;
+  /opensea/collection/*/activity) ;;
+  /opensea/collection/*/best-deals) ;;
+  /opensea/collection/*/chart) ;;
+  /opensea/collection/*/depth) ;;
+  /opensea/collection/*/holders) ;;
+  /opensea/collection/*/items) ;;
+  /opensea/collection/*/offers) ;;
+  /opensea/collection/*/rarest-items) ;;
+  /opensea/collection/*/search-items) ;;
+  /opensea/collection/*/social-proof) ;;
+  /opensea/collection/*/top-sales) ;;
+  /opensea/collection/*/trait-offers) ;;
+  /opensea/collection/*/traits) ;;
+  /opensea/collections) ;;
+  /opensea/drops) ;;
+  /opensea/item/*/*/*) ;;
+  /opensea/item/*/*/*/activity) ;;
+  /opensea/item/*/*/*/chart) ;;
+  /opensea/item/*/*/*/depth) ;;
+  /opensea/item/*/*/*/listings) ;;
+  /opensea/item/*/*/*/offers) ;;
+  /opensea/item/*/*/*/owners) ;;
+  /opensea/most-watched) ;;
+  /opensea/profile/*) ;;
+  /opensea/profile/*/activity) ;;
+  /opensea/profile/*/collections) ;;
+  /opensea/profile/*/created) ;;
+  /opensea/profile/*/items) ;;
+  /opensea/profile/*/search-items) ;;
+  /opensea/rankings) ;;
+  /opensea/search/collections) ;;
+  /opensea/top-movers) ;;
+  *)
+    echo "path is not in the opensea-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

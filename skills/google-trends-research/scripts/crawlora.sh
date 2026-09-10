@@ -33,6 +33,42 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the google-trends-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the google-trends-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /google/trends/categories) ;;
+  /google/trends/enums) ;;
+  /google/trends/explore) ;;
+  /google/trends/explore/interest-by-region) ;;
+  /google/trends/explore/interest-over-time) ;;
+  /google/trends/explore/related-topics) ;;
+  /google/trends/explore/rising-queries) ;;
+  /google/trends/explore/top-queries) ;;
+  /google/trends/locations) ;;
+  /google/trends/trending) ;;
+  /google/trends/trending/detail) ;;
+  *)
+    echo "path is not in the google-trends-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

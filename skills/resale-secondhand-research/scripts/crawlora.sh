@@ -33,6 +33,88 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the resale-secondhand-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the resale-secondhand-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /depop/brands) ;;
+  /depop/categories) ;;
+  /depop/item/*) ;;
+  /depop/item/*/similar) ;;
+  /depop/search) ;;
+  /depop/search-sellers) ;;
+  /depop/search/facets) ;;
+  /depop/shop/*) ;;
+  /depop/sizes) ;;
+  /depop/suggest) ;;
+  /etsy/listing/*) ;;
+  /etsy/listing/*/reviews) ;;
+  /etsy/search) ;;
+  /etsy/shop/*) ;;
+  /etsy/shop/*/listings) ;;
+  /etsy/shop/*/reviews) ;;
+  /etsy/shop/search) ;;
+  /goat/collection) ;;
+  /goat/countries) ;;
+  /goat/curated) ;;
+  /goat/listings/count) ;;
+  /goat/product/*) ;;
+  /goat/product/*/recommended) ;;
+  /goat/search) ;;
+  /goat/search/facets) ;;
+  /goat/searches/trending) ;;
+  /goat/suggest) ;;
+  /leboncoin/listing) ;;
+  /leboncoin/search) ;;
+  /mercari/autocomplete) ;;
+  /mercari/home) ;;
+  /mercari/item/*) ;;
+  /mercari/master) ;;
+  /mercari/search) ;;
+  /poshmark/brand/*) ;;
+  /poshmark/brands) ;;
+  /poshmark/categories) ;;
+  /poshmark/category/*) ;;
+  /poshmark/closet/*) ;;
+  /poshmark/listing/*) ;;
+  /poshmark/search) ;;
+  /poshmark/trend/*) ;;
+  /stockx/brands) ;;
+  /stockx/categories) ;;
+  /stockx/product/*) ;;
+  /stockx/releases) ;;
+  /stockx/search) ;;
+  /vinted/brand) ;;
+  /vinted/brands) ;;
+  /vinted/catalog) ;;
+  /vinted/categories) ;;
+  /vinted/category) ;;
+  /vinted/item) ;;
+  /vinted/member) ;;
+  /whatnot/browse) ;;
+  /whatnot/categories) ;;
+  /whatnot/live/*) ;;
+  *)
+    echo "path is not in the resale-secondhand-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

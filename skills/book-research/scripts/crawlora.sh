@@ -33,6 +33,63 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the book-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the book-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /apple-books/audiobook-series/*) ;;
+  /apple-books/audiobook/*) ;;
+  /apple-books/audiobook/*/reviews) ;;
+  /apple-books/audiobook/*/similar) ;;
+  /apple-books/audiobook/search) ;;
+  /apple-books/author/*) ;;
+  /apple-books/book/*) ;;
+  /apple-books/book/*/reviews) ;;
+  /apple-books/book/*/similar) ;;
+  /apple-books/charts) ;;
+  /apple-books/search) ;;
+  /apple-books/series/*) ;;
+  /audible/categories) ;;
+  /audible/category/*) ;;
+  /audible/charts) ;;
+  /audible/list/*) ;;
+  /audible/product/*) ;;
+  /audible/product/*/related) ;;
+  /audible/product/*/reviews) ;;
+  /audible/products) ;;
+  /audible/search) ;;
+  /audible/series/*) ;;
+  /goodreads/author/*) ;;
+  /goodreads/author/*/books) ;;
+  /goodreads/author/*/quotes) ;;
+  /goodreads/book/*) ;;
+  /goodreads/book/*/editions) ;;
+  /goodreads/book/*/reviews) ;;
+  /goodreads/genre/*) ;;
+  /goodreads/list/*) ;;
+  /goodreads/lists) ;;
+  /goodreads/search) ;;
+  *)
+    echo "path is not in the book-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

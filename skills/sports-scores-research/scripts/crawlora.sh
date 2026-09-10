@@ -33,6 +33,105 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the sports-scores-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the sports-scores-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /cricinfo/calendar) ;;
+  /cricinfo/commentary) ;;
+  /cricinfo/grounds) ;;
+  /cricinfo/live) ;;
+  /cricinfo/match) ;;
+  /cricinfo/news) ;;
+  /cricinfo/photos) ;;
+  /cricinfo/rankings) ;;
+  /cricinfo/records) ;;
+  /cricinfo/records/index) ;;
+  /cricinfo/rss) ;;
+  /cricinfo/scores) ;;
+  /cricinfo/series) ;;
+  /cricinfo/squads) ;;
+  /cricinfo/stats) ;;
+  /cricinfo/story) ;;
+  /cricinfo/team) ;;
+  /cricinfo/team/schedule) ;;
+  /cricinfo/teams) ;;
+  /cricinfo/venue) ;;
+  /cricinfo/venue/matches) ;;
+  /cricinfo/videos) ;;
+  /draftkings/sportsbook/event) ;;
+  /draftkings/sportsbook/event-context) ;;
+  /draftkings/sportsbook/event-markets) ;;
+  /draftkings/sportsbook/featured-leagues) ;;
+  /draftkings/sportsbook/futures) ;;
+  /draftkings/sportsbook/league-events) ;;
+  /draftkings/sportsbook/leagues) ;;
+  /draftkings/sportsbook/live) ;;
+  /draftkings/sportsbook/odds) ;;
+  /draftkings/sportsbook/quick-links) ;;
+  /draftkings/sportsbook/team) ;;
+  /draftkings/sportsbook/teams) ;;
+  /espn/athlete) ;;
+  /espn/game-summary) ;;
+  /espn/news) ;;
+  /espn/rankings) ;;
+  /espn/scoreboard) ;;
+  /espn/standings) ;;
+  /espn/team) ;;
+  /espn/team-roster) ;;
+  /espn/teams) ;;
+  /mlb/game) ;;
+  /mlb/game-boxscore) ;;
+  /mlb/game-play-by-play) ;;
+  /mlb/league-stats) ;;
+  /mlb/player) ;;
+  /mlb/player-stats) ;;
+  /mlb/schedule) ;;
+  /mlb/standings) ;;
+  /mlb/team-roster) ;;
+  /mlb/team-stats) ;;
+  /mlb/teams) ;;
+  /mlb/transactions) ;;
+  /sofascore/event) ;;
+  /sofascore/event-h2h) ;;
+  /sofascore/event-incidents) ;;
+  /sofascore/event-lineups) ;;
+  /sofascore/event-odds) ;;
+  /sofascore/event-statistics) ;;
+  /sofascore/live-events) ;;
+  /sofascore/player) ;;
+  /sofascore/round-events) ;;
+  /sofascore/search) ;;
+  /sofascore/standings) ;;
+  /sofascore/team) ;;
+  /sofascore/team-events) ;;
+  /sofascore/team-players) ;;
+  /sofascore/tournament-seasons) ;;
+  /strava/challenges) ;;
+  /strava/clubs/*) ;;
+  /strava/routes) ;;
+  /strava/routes/detail) ;;
+  *)
+    echo "path is not in the sports-scores-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

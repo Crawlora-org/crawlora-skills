@@ -8,6 +8,7 @@ import { spawnSync } from "node:child_process";
 
 const helper = fileURLToPath(new URL("../lib/crawlora.sh", import.meta.url));
 const publicHelper = fileURLToPath(new URL("../skills/crawlora/scripts/crawlora.sh", import.meta.url));
+const amazonHelper = fileURLToPath(new URL("../skills/amazon-research/scripts/crawlora.sh", import.meta.url));
 function request(args) {
   const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
   try {
@@ -66,7 +67,22 @@ test("rejects account monitor and usage-management paths", () => {
       env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" },
     });
     assert.equal(result.status, 2);
-    assert.match(result.stderr, /public-data umbrella/);
+    assert.match(result.stderr, /not in the crawlora skill catalog/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("scoped helpers reject unrelated route families", () => {
+  const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
+  try {
+    writeFileSync(join(dir, "curl"), '#!/bin/sh\nexit 99\n', { mode: 0o755 });
+    const result = spawnSync("/bin/bash", [amazonHelper, "/google/search"], {
+      encoding: "utf8",
+      env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" },
+    });
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, /not in the amazon-research skill catalog/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

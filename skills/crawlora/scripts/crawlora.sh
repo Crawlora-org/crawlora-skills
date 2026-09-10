@@ -33,21 +33,21 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
-# This skill is for public web-data extraction. Keep caller-account surfaces
-# out of the helper even if someone supplies an undocumented path directly.
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
 case "$method" in
   GET|POST) ;;
   *)
-    echo "only GET and POST are supported by the public-data umbrella skill" >&2
+    echo "only GET and POST are supported by the crawlora skill" >&2
     exit 2
     ;;
 esac
 
-# Reject path syntax that could smuggle a management route through a prefix
-# check, then allow only route families present in the generated public catalog.
+# Reject path syntax that could smuggle a route through a shell glob check.
 case "$path" in
   ""|*[?#%]*|*..*|*//* )
-    echo "invalid path for the public-data umbrella skill" >&2
+    echo "invalid path for the crawlora skill" >&2
     exit 2
     ;;
 esac
@@ -265,7 +265,7 @@ case "$path" in
   /zillow|/zillow/*) ;;
   /zomato|/zomato/*) ;;
   *)
-    echo "path is not in the public-data umbrella catalog" >&2
+    echo "path is not in the crawlora skill catalog" >&2
     exit 2
     ;;
 esac

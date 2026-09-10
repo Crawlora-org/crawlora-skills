@@ -35,7 +35,7 @@ matching Y") rather than one-off lookups.
 ## Setup (one-time)
 
 - Get a free Crawlora API key (2,000 credits/mo, no card) at [https://crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills).
-- `export CRAWLORA_API_KEY=sk_your_key_here`
+- Set `CRAWLORA_API_KEY` in the environment before running the helper.
 - All requests: `x-api-key: $CRAWLORA_API_KEY` against
   `https://api.crawlora.net/api/v1`. Missing/invalid key → `401`.
 

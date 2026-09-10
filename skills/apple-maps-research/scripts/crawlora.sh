@@ -33,6 +33,50 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the apple-maps-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the apple-maps-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /apple-maps/autocomplete) ;;
+  /apple-maps/categories) ;;
+  /apple-maps/category-search) ;;
+  /apple-maps/directions) ;;
+  /apple-maps/eta) ;;
+  /apple-maps/guides) ;;
+  /apple-maps/guides/cities) ;;
+  /apple-maps/guides/guide) ;;
+  /apple-maps/guides/lookup) ;;
+  /apple-maps/guides/nearby) ;;
+  /apple-maps/guides/publisher) ;;
+  /apple-maps/guides/publishers) ;;
+  /apple-maps/place) ;;
+  /apple-maps/place/photos) ;;
+  /apple-maps/places) ;;
+  /apple-maps/reverse-geocode) ;;
+  /apple-maps/search) ;;
+  /apple-maps/transit-departures) ;;
+  /apple-maps/venue/browse) ;;
+  *)
+    echo "path is not in the apple-maps-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

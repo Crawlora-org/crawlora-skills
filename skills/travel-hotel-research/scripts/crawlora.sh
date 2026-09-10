@@ -33,6 +33,102 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the travel-hotel-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the travel-hotel-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /accor/amenities) ;;
+  /accor/brands) ;;
+  /accor/catalog/hotels) ;;
+  /accor/destination/hotels) ;;
+  /accor/property) ;;
+  /accor/search) ;;
+  /accor/search/details) ;;
+  /accor/search/suggest) ;;
+  /agoda/activities/*) ;;
+  /agoda/activities/search) ;;
+  /agoda/flights/itinerary-amenities) ;;
+  /agoda/flights/search) ;;
+  /agoda/flights/search-locations) ;;
+  /agoda/homes/search) ;;
+  /agoda/hotels/*) ;;
+  /agoda/hotels/search) ;;
+  /airbnb/host/*) ;;
+  /airbnb/host/*/listings) ;;
+  /airbnb/host/*/reviews) ;;
+  /airbnb/room/*) ;;
+  /airbnb/room/*/calendar) ;;
+  /airbnb/room/*/reviews) ;;
+  /airbnb/search) ;;
+  /booking-attractions/detail) ;;
+  /booking-attractions/reviews) ;;
+  /booking-attractions/search) ;;
+  /booking-flights/autocomplete) ;;
+  /booking-flights/search) ;;
+  /booking/hotel-detail) ;;
+  /booking/reviews) ;;
+  /booking/search) ;;
+  /expedia/activities/search) ;;
+  /expedia/flights/search) ;;
+  /expedia/locations/search) ;;
+  /expedia/properties/detail) ;;
+  /expedia/properties/filters) ;;
+  /expedia/properties/reviews) ;;
+  /expedia/properties/search) ;;
+  /hotels/autocomplete) ;;
+  /hotels/offers) ;;
+  /hotels/property) ;;
+  /hotels/rates) ;;
+  /hotels/reviews) ;;
+  /hotels/reviews/archive) ;;
+  /hotels/search) ;;
+  /ticketmaster/attraction) ;;
+  /ticketmaster/attraction-events) ;;
+  /ticketmaster/attraction-related) ;;
+  /ticketmaster/attraction-reviews) ;;
+  /ticketmaster/discover-categories) ;;
+  /ticketmaster/discover-category-events) ;;
+  /ticketmaster/discover-cities) ;;
+  /ticketmaster/discover-city-events) ;;
+  /ticketmaster/event) ;;
+  /ticketmaster/search-events) ;;
+  /ticketmaster/suggest) ;;
+  /ticketmaster/trending-attractions) ;;
+  /ticketmaster/venue) ;;
+  /ticketmaster/venue-enhanced-details) ;;
+  /ticketmaster/venue-events) ;;
+  /ticketweb/event) ;;
+  /ticketweb/search) ;;
+  /ticketweb/venue) ;;
+  /tripadvisor/autocomplete) ;;
+  /tripadvisor/enums) ;;
+  /tripadvisor/hotels) ;;
+  /tripadvisor/place) ;;
+  /tripadvisor/reviews) ;;
+  /tripadvisor/search) ;;
+  /tripcom/hotels/*) ;;
+  /tripcom/hotels/search) ;;
+  *)
+    echo "path is not in the travel-hotel-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then

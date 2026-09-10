@@ -33,6 +33,76 @@ done
 path="${args[0]}"
 rest=("${args[@]:1}")
 
+# This skill's helper is limited to its documented Crawlora route set. Keep
+# caller-account surfaces and unrelated API routes out of the helper even if
+# someone supplies an undocumented path directly.
+case "$method" in
+  GET|POST) ;;
+  *)
+    echo "only GET and POST are supported by the yahoo-network-research skill" >&2
+    exit 2
+    ;;
+esac
+
+# Reject path syntax that could smuggle a route through a shell glob check.
+case "$path" in
+  ""|*[?#%]*|*..*|*//* )
+    echo "invalid path for the yahoo-network-research skill" >&2
+    exit 2
+    ;;
+esac
+case "$path" in
+  /yahoo-autos/article) ;;
+  /yahoo-autos/category) ;;
+  /yahoo-autos/home) ;;
+  /yahoo-entertainment/article) ;;
+  /yahoo-entertainment/category) ;;
+  /yahoo-entertainment/home) ;;
+  /yahoo-health/article) ;;
+  /yahoo-health/category) ;;
+  /yahoo-health/home) ;;
+  /yahoo-life/article) ;;
+  /yahoo-life/home) ;;
+  /yahoo-news/article) ;;
+  /yahoo-news/category) ;;
+  /yahoo-news/comments) ;;
+  /yahoo-news/comments/replies) ;;
+  /yahoo-news/home) ;;
+  /yahoo-news/suggest) ;;
+  /yahoo-shopping/article) ;;
+  /yahoo-shopping/category) ;;
+  /yahoo-shopping/home) ;;
+  /yahoo-shopping/shopping-list) ;;
+  /yahoo-shopping/shopping-lists) ;;
+  /yahoo-shopping/store) ;;
+  /yahoo-shopping/stores) ;;
+  /yahoo-sports/game) ;;
+  /yahoo-sports/golf-leaderboard) ;;
+  /yahoo-sports/golf-schedule) ;;
+  /yahoo-sports/mma-fight-card) ;;
+  /yahoo-sports/mma-schedule) ;;
+  /yahoo-sports/motorsports-race) ;;
+  /yahoo-sports/motorsports-schedule) ;;
+  /yahoo-sports/news) ;;
+  /yahoo-sports/olympics-medals) ;;
+  /yahoo-sports/player) ;;
+  /yahoo-sports/scoreboard) ;;
+  /yahoo-sports/standings) ;;
+  /yahoo-sports/team) ;;
+  /yahoo-sports/team-roster) ;;
+  /yahoo-sports/team-schedule) ;;
+  /yahoo-sports/tennis-rankings) ;;
+  /yahoo-sports/tennis-schedule) ;;
+  /yahoo-sports/tennis-scoreboard) ;;
+  /yahoo-tech/article) ;;
+  /yahoo-tech/category) ;;
+  /yahoo-tech/home) ;;
+  *)
+    echo "path is not in the yahoo-network-research skill catalog" >&2
+    exit 2
+    ;;
+esac
+
 auth=(-H "x-api-key: ${CRAWLORA_API_KEY}")
 
 if [ "$method" = "GET" ]; then
