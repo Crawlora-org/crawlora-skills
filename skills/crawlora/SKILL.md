@@ -35,8 +35,10 @@ Prefer a more specific Crawlora skill if one is installed (e.g.
 - Export it so the helper and any `curl` calls can read it:
 
   ```sh
-  export CRAWLORA_API_KEY=sk_your_key_here
+  export CRAWLORA_API_KEY
   ```
+
+  Set `CRAWLORA_API_KEY` to the key you received before running the helper.
 
 - All requests go to `https://api.crawlora.net/api/v1` with the header
   `x-api-key: $CRAWLORA_API_KEY`. A missing/invalid key returns `401`.
