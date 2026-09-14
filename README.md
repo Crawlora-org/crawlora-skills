@@ -70,6 +70,7 @@ self-contained and do not require the broader bundles to be installed.
 |---|---|---|
 | [`google-maps-research`](skills/google-maps-research) | Current place lookups and comparisons, review samples, and photos. | Google Maps (four live tools) |
 | [`local-business-prospecting`](skills/local-business-prospecting) | Deduplicated business shortlists with public contacts and qualification evidence. | Google Maps live + dataset, Apple Maps, Yelp, business websites |
+| [`local-competitive-landscape`](skills/local-competitive-landscape) | Matched-area comparisons of observed local business supply, categories, attributes, and review-sample themes. | Google Maps live + dataset, Apple Maps, Yelp |
 | [`influencer-discovery`](skills/influencer-discovery) | Campaign-fit creator shortlists with selected live profile/content checks. | TikTok, Instagram, YouTube live + datasets |
 | [`journalist-media-research`](skills/journalist-media-research) | Relevant media lists with verified coverage, beat-fit evidence, and public work contact channels. | Journalists dataset, Bing search/news, author and article pages |
 | [`tiktok-ad-research`](skills/tiktok-ad-research) | Matched Top Ads comparisons and evidence-backed creative hypotheses. | TikTok Creative Center Top Ads (ten tools) |
@@ -97,8 +98,8 @@ self-contained and do not require the broader bundles to be installed.
 | [`used-car-market-comparison`](skills/used-car-market-comparison) | Matched vehicle listings, deduplicated asking-price ranges, and qualified price outliers. | CarMax, Autotrader, Cars.com |
 | [`software-vendor-shortlisting`](skills/software-vendor-shortlisting) | Requirements-based vendor shortlists, pricing scenarios, and evidence-led demo questions. | Capterra, Product Hunt, Bing, official vendor websites |
 
-The repository contains **101 installable skills**. The Claude Code marketplace
-bundle includes **63 skills**; the narrower per-platform alternatives below remain
+The repository contains **102 installable skills**. The Claude Code marketplace
+bundle includes **64 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills

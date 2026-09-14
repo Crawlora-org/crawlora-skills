@@ -7,6 +7,11 @@
     "google_map_search", "google_map_place", "google_map_place_reviews",
     "apple_maps_search", "apple_maps_place", "yelp_search", "yelp_business", "web_scrape", "extract"
   ],
+  "local-competitive-landscape": [
+    "datasets_google_map_facets", "datasets_google_map_search", "datasets_google_map_item",
+    "google_map_search", "google_map_place", "google_map_place_reviews",
+    "apple_maps_search", "apple_maps_place", "yelp_search", "yelp_business"
+  ],
   "influencer-discovery": [
     "datasets_creators_search",
     "datasets_instagram_users_search", "datasets_instagram_users_facets", "datasets_instagram_users_item",
