@@ -1,12 +1,12 @@
 ---
 name: social-media-research
-description: Researches social-media profiles, posts, and engagement across Instagram, TikTok, Threads, Bluesky, X, Pinterest, LinkedIn, Facebook, and Reddit via the Crawlora API, returning clean JSON. Use when the user wants a public profile's stats, a post's content/engagement, a platform search, trending topics, or social listening/competitor research — instead of scraping each app.
+description: Researches social-media profiles, posts, and engagement across Instagram, TikTok, Threads, Bluesky, X, Pinterest, LinkedIn, Facebook, Reddit, Bilibili, and Patreon via the Crawlora API, returning clean JSON. Use when the user wants a public profile's stats, a post's content/engagement, a platform search, trending topics, or social listening/competitor research — instead of scraping each app.
 ---
 
 # Social media research
 
 Look up public profiles, posts, and engagement, run keyword/hashtag search,
-and track trending topics across nine social platforms — all as normalized
+and track trending topics across eleven social platforms — all as normalized
 JSON from the Crawlora API, no app scraping or unofficial client libraries.
 
 ## When to use this skill
@@ -41,7 +41,8 @@ Pick the platform, then the job:
    `/reddit/post/{id}` (+ `/reddit/comments/{id}`).
 4. **Search & discovery** — `/tiktok/search`, `/tiktok/search_hashtag`,
    `/bluesky/search-actors`, `/pinterest/search`, `/reddit/search`,
-   `/facebook/marketplace/search` (listings, not social posts).
+   `/facebook/marketplace/search` (listings, not social posts), plus Bilibili
+   and Patreon's public discovery endpoints listed in the reference.
 5. **Trending** — `/tiktok/trending`, `/tiktok/creative-center/hashtags`,
    `/bluesky/trending-topics`, `/reddit/trends`, `/reddit/subreddits/posts`
    (multi-subreddit hot feed).
@@ -70,8 +71,8 @@ Use `scripts/crawlora.sh` for all requests; it keeps the API key out of command-
 ## Endpoint reference
 
 See [`reference/endpoints.md`](reference/endpoints.md) for every Instagram,
-TikTok, Threads, Bluesky, X, Pinterest, LinkedIn, Facebook, and Reddit
-endpoint this skill uses.
+TikTok, Threads, Bluesky, X, Pinterest, LinkedIn, Facebook, Reddit, Bilibili,
+and Patreon endpoint this skill uses.
 
 ## Examples
 

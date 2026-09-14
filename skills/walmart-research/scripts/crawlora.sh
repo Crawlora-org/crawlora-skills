@@ -42,9 +42,9 @@ rest=("${args[@]:1}")
 # caller-account surfaces and unrelated API routes out of the helper even if
 # someone supplies an undocumented path directly.
 case "$method" in
-  GET|POST) ;;
+  GET) ;;
   *)
-    echo "only GET and POST are supported by the walmart-research skill" >&2
+    echo "only GET are supported by the walmart-research skill" >&2
     exit 2
     ;;
 esac
@@ -80,6 +80,19 @@ if [ "$route_allowed" = false ]; then
   echo "path is not in the walmart-research skill catalog" >&2
   exit 2
 fi
+
+
+
+# Walmart item ids are numeric path parameters in the public contract.
+case "$path" in
+  /walmart/product/*)
+    item_id="${path#/walmart/product/}"
+    item_id="${item_id%/reviews}"
+    case "$item_id" in
+      ""|*[!0-9]*) echo "Walmart item_id must be numeric" >&2; exit 2 ;;
+    esac
+    ;;
+esac
 
 
 

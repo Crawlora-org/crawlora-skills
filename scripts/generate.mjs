@@ -250,6 +250,36 @@ for (const t of all) {
 }
 for (const list of byGroup.values()) list.sort((a, b) => a.name.localeCompare(b.name));
 
+// A broad catalog group can contain routes owned by another dedicated skill.
+// Keep those routes out of the focused skill's generated reference and helper
+// instead of relying on the prose description to narrow the capability.
+const SKILL_ROUTE_EXCLUDES = {
+  "serp-keyword-research": [
+    /^\/google\/finance(?:\/|$)/,
+    /^\/google\/jobs$/,
+    /^\/google\/map(?:\/|$)/,
+  ],
+};
+
+const skillToolsFor = (skill) => {
+  const groups = SKILLS[skill] || [];
+  const excludes = SKILL_ROUTE_EXCLUDES[skill] || [];
+  return groups
+    .flatMap((group) => byGroup.get(group) || [])
+    .filter((tool) => !excludes.some((pattern) => pattern.test(String(tool._http?.path || ""))));
+};
+
+const catalogForTools = (skillTools) => {
+  const catalog = new Map();
+  for (const tool of skillTools) {
+    const group = groupsOf(tool);
+    if (!catalog.has(group)) catalog.set(group, []);
+    catalog.get(group).push(tool);
+  }
+  for (const list of catalog.values()) list.sort((a, b) => a.name.localeCompare(b.name));
+  return catalog;
+};
+
 function params(t) {
   const props = (t.inputSchema && t.inputSchema.properties) || {};
   const required = new Set((t.inputSchema && t.inputSchema.required) || []);
@@ -329,12 +359,15 @@ outputs.push([
 
 // Per-skill endpoint references.
 for (const [skill, groups] of Object.entries(SKILLS)) {
+  const selectedTools = skillToolsFor(skill);
+  const selectedCatalog = catalogForTools(selectedTools);
   outputs.push([
     `skills/${skill}/reference/endpoints.md`,
     renderGroups(
-      groups,
+      groups.filter((group) => selectedCatalog.has(group)),
       `${skill} — endpoint reference`,
-      `Endpoints this skill uses, grouped by platform. Call them via \`scripts/crawlora.sh\` (see SKILL.md).`
+      `Endpoints this skill uses, grouped by platform. Call them via \`scripts/crawlora.sh\` (see SKILL.md).`,
+      selectedCatalog,
     ),
   ]);
 }
@@ -397,14 +430,45 @@ const routeRegexes = (skillTools) => [...new Set(
   .sort()
   .map((regex) => `  ${shellSingleQuote(regex)}`)
   .join("\n");
-const helperGuard = ({ cases, regexes, label }) => `
+const routeMethodCases = (skillTools) => [...new Set(
+  skillTools.map((tool) => {
+    const method = String(tool._http?.method || "GET");
+    const path = String(tool._http?.path || "");
+    const casePath = path
+      .split(/(\{[^}]+\})/g)
+      .filter(Boolean)
+      .map((part) => /^\{[^}]+\}$/.test(part) ? "*" : escapeCasePattern(part))
+      .join("");
+    return `${method}:${casePath}`;
+  })
+)]
+  .sort()
+  .map((entry) => `  ${entry}`)
+  .join("|");
+const strictMethodSkills = new Set([
+  "walmart-research",
+  "wayfair-research",
+  "social-media-research",
+  "serp-keyword-research",
+  "restaurant-menu-benchmarking",
+  "pinterest-research",
+  "oldnavy-research",
+]);
+const numericProductIdSkills = new Set(["walmart-research"]);
+const quietCurlSkills = new Set(["restaurant-menu-benchmarking"]);
+const helperGuard = ({ cases, regexes, label, skillTools, strictMethods }) => {
+  const methods = [...new Set(skillTools.map((tool) => String(tool._http?.method || "GET")))].sort();
+  const methodPattern = methods.join("|");
+  const methodText = methods.join(" and ");
+  const methodCases = methods.length > 1 ? routeMethodCases(skillTools) : "";
+  return `
 # This skill's helper is limited to its documented Crawlora route set. Keep
 # caller-account surfaces and unrelated API routes out of the helper even if
 # someone supplies an undocumented path directly.
 case "$method" in
-  GET|POST) ;;
+  ${strictMethods ? methodPattern : "GET|POST"}) ;;
   *)
-    echo "only GET and POST are supported by the ${label} skill" >&2
+    echo "only ${strictMethods ? methodText : "GET and POST"} are supported by the ${label} skill" >&2
     exit 2
     ;;
 esac
@@ -440,6 +504,29 @@ if [ "$route_allowed" = false ]; then
   exit 2
 fi
 
+${strictMethods && methodCases ? `# Enforce the documented HTTP method for each route, not just the global method set.
+route_method_allowed=false
+case "$method:$path" in
+${methodCases}) route_method_allowed=true ;;
+esac
+if [ "$route_method_allowed" = false ]; then
+  echo "method is not allowed for this ${label} route" >&2
+  exit 2
+fi
+` : ""}
+
+${numericProductIdSkills.has(label) ? `# Walmart item ids are numeric path parameters in the public contract.
+case "$path" in
+  /walmart/product/*)
+    item_id="\${path#/walmart/product/}"
+    item_id="\${item_id%/reviews}"
+    case "$item_id" in
+      ""|*[!0-9]*) echo "Walmart item_id must be numeric" >&2; exit 2 ;;
+    esac
+    ;;
+esac
+` : ""}
+
 ${label === "website-monitoring" ? `# Monitor IDs are single path segments; do not allow a crafted nested path.
 case "$path" in
   /monitors/*)
@@ -450,6 +537,7 @@ esac
 ` : ""}
 
 `;
+};
 // Directories only. A plain readdirSync picks up macOS .DS_Store and any
 // other stray file, and the loop below then tries to mkdir inside it —
 // ENOTDIR, mid-run, after some reference files have already been
@@ -462,7 +550,7 @@ for (const s of skillDirs) {
   if (s === "crawlora") {
     skillTools = all.filter((tool) => !excludedUmbrellaGroups.has(tool._http.group));
   } else if (s in SKILLS) {
-    skillTools = SKILLS[s].flatMap((group) => byGroup.get(group) || []);
+    skillTools = skillToolsFor(s);
   } else if (s in focusedSkills) {
     const selected = selectTools(all, focusedSkills[s]);
     skillTools = [...selected.values()].flat();
@@ -471,10 +559,17 @@ for (const s of skillDirs) {
   }
   const cases = s === "crawlora" ? publicPathCases : routeCases(skillTools);
   const regexes = s === "crawlora" ? "" : routeRegexes(skillTools);
-  const skillHelper = helper.replace(
+  let skillHelper = helper.replace(
     '\n# Keep the API key out of the curl process command line.',
-    () => `${helperGuard({ cases, regexes, label: s })}# Keep the API key out of the curl process command line.`
+    () => `${helperGuard({
+      cases,
+      regexes,
+      label: s,
+      skillTools,
+      strictMethods: strictMethodSkills.has(s),
+    }).replace(/\n{5,}/g, "\n\n\n\n").replace(/\n{4}# Monitor IDs/, "\n\n# Monitor IDs")}# Keep the API key out of the curl process command line.`
   );
+  if (quietCurlSkills.has(s)) skillHelper = skillHelper.replaceAll("curl -fsS", "curl -q -fsS");
   outputs.push([`skills/${s}/scripts/crawlora.sh`, skillHelper]);
 }
 

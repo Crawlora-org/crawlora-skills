@@ -42,9 +42,9 @@ rest=("${args[@]:1}")
 # caller-account surfaces and unrelated API routes out of the helper even if
 # someone supplies an undocumented path directly.
 case "$method" in
-  GET|POST) ;;
+  GET) ;;
   *)
-    echo "only GET and POST are supported by the pinterest-research skill" >&2
+    echo "only GET are supported by the pinterest-research skill" >&2
     exit 2
     ;;
 esac

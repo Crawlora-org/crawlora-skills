@@ -77,17 +77,6 @@ case "$path" in
   /duckduckgo/search) route_allowed=true ;;
   /duckduckgo/shopping) route_allowed=true ;;
   /duckduckgo/video) route_allowed=true ;;
-  /google/finance/context) route_allowed=true ;;
-  /google/finance/markets/earnings) route_allowed=true ;;
-  /google/finance/markets/featured) route_allowed=true ;;
-  /google/finance/markets/headline) route_allowed=true ;;
-  /google/finance/markets/indices) route_allowed=true ;;
-  /google/finance/markets/movers) route_allowed=true ;;
-  /google/finance/markets/top) route_allowed=true ;;
-  /google/finance/markets/trending) route_allowed=true ;;
-  /google/finance/search) route_allowed=true ;;
-  /google/jobs) route_allowed=true ;;
-  /google/map/search) route_allowed=true ;;
   /google/news) route_allowed=true ;;
   /google/search) route_allowed=true ;;
   /google/suggest) route_allowed=true ;;
@@ -112,20 +101,7 @@ case "$path" in
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
-  '^/google/finance/analyst-articles/[^/]+$'
-  '^/google/finance/chart/[^/]+$'
-  '^/google/finance/classification/[^/]+$'
-  '^/google/finance/company/[^/]+$'
-  '^/google/finance/financials/[^/]+$'
-  '^/google/finance/markets/categories/[^/]+/news$'
-  '^/google/finance/markets/categories/[^/]+/stocks$'
-  '^/google/finance/news/[^/]+$'
-  '^/google/finance/quote/[^/]+$'
-  '^/google/finance/related/[^/]+$'
-  '^/google/finance/ticker/[^/]+$'
-  '^/google/map/place/[^/]+$'
-  '^/google/map/place/[^/]+/photos$'
-  '^/google/map/place/[^/]+/reviews$'
+
   )
   for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
     if [[ "$path" =~ $route_regex ]]; then
@@ -136,6 +112,16 @@ if [ "$route_allowed" = false ]; then
 fi
 if [ "$route_allowed" = false ]; then
   echo "path is not in the serp-keyword-research skill catalog" >&2
+  exit 2
+fi
+
+# Enforce the documented HTTP method for each route, not just the global method set.
+route_method_allowed=false
+case "$method:$path" in
+  GET:/bing/images|  GET:/bing/news|  GET:/bing/search|  GET:/bing/suggest|  GET:/bing/videos|  GET:/brave/images|  GET:/brave/news|  GET:/brave/search|  GET:/brave/suggest|  GET:/brave/videos|  GET:/duckduckgo/image|  GET:/duckduckgo/news|  GET:/duckduckgo/search|  GET:/duckduckgo/shopping|  GET:/duckduckgo/video|  GET:/google/news|  GET:/google/suggest|  GET:/google/trends/categories|  GET:/google/trends/enums|  GET:/google/trends/locations|  GET:/google/trends/trending|  GET:/google/videos|  GET:/yahoo-search/images|  GET:/yahoo-search/local|  GET:/yahoo-search/news|  GET:/yahoo-search/search|  GET:/yahoo-search/suggest|  GET:/yahoo-search/videos|  POST:/google/search|  POST:/google/trends/explore|  POST:/google/trends/explore/interest-by-region|  POST:/google/trends/explore/interest-over-time|  POST:/google/trends/explore/related-topics|  POST:/google/trends/explore/rising-queries|  POST:/google/trends/explore/top-queries|  POST:/google/trends/trending/detail) route_method_allowed=true ;;
+esac
+if [ "$route_method_allowed" = false ]; then
+  echo "method is not allowed for this serp-keyword-research route" >&2
   exit 2
 fi
 
