@@ -1,11 +1,11 @@
 ---
 name: resale-secondhand-research
-description: Researches secondhand, resale, and handmade marketplaces via the Crawlora API — Poshmark, Etsy, Vinted, StockX, Mercari, Depop, and Whatnot — returning clean JSON. Use when the user wants to find or compare listings, check a seller/shop, look up sneaker/streetwear resale prices, or research handmade/vintage goods.
+description: Researches secondhand, resale, and handmade marketplaces via the Crawlora API — Poshmark, Etsy, Vinted, StockX, Mercari, Depop, Whatnot, GOAT, and Leboncoin — returning clean JSON. Use when the user wants to find or compare listings, check a seller/shop, look up sneaker/streetwear resale prices, or research handmade/vintage goods.
 ---
 
 # Resale & secondhand marketplace research
 
-Search listings, sellers, and prices across seven C2C resale, streetwear,
+Search listings, sellers, and prices across nine C2C resale, streetwear,
 and handmade marketplaces as normalized JSON from the Crawlora API — no
 scraping app storefronts.
 
@@ -47,6 +47,12 @@ scraping app storefronts.
    for detail; `/depop/shop/{username}` for a seller's storefront.
 7. **Whatnot** — `/whatnot/browse` **requires `category`** to list live/
    upcoming shows; `/whatnot/live/{id}` for one livestream's detail.
+8. **GOAT** — `/goat/search` for sneaker, streetwear, and collectible products;
+   `/goat/product/{slug}` for pricing and product detail; `/goat/collection`,
+   `/goat/curated`, `/goat/suggest`, and `/goat/searches/trending` for catalog
+   discovery.
+9. **Leboncoin** — `/leboncoin/search` for public listing cards and
+   `/leboncoin/listing` for one public ad's detail.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
 
@@ -71,7 +77,8 @@ Use `scripts/crawlora.sh` for all requests; it keeps the API key out of command-
 ## Endpoint reference
 
 See [`reference/endpoints.md`](reference/endpoints.md) for every Poshmark,
-Etsy, Vinted, StockX, Mercari, Depop, and Whatnot endpoint this skill uses.
+Etsy, Vinted, StockX, Mercari, Depop, Whatnot, GOAT, and Leboncoin endpoint
+this skill uses.
 
 ## Examples
 
@@ -83,6 +90,10 @@ Etsy, Vinted, StockX, Mercari, Depop, and Whatnot endpoint this skill uses.
   before buying, to check listing count and activity.
 - **Handmade sourcing:** `/etsy/search` for a category, then
   `/etsy/shop/{id}/reviews` on top shops before ordering a custom piece.
+- **Sneaker/streetwear resale:** `/goat/search` to find products, then
+  `/goat/product/{slug}` for current per-size pricing and stock.
+- **French secondhand listings:** `/leboncoin/search` for a public location,
+  then `/leboncoin/listing` for a selected ad.
 
 ## Notes & limits
 
@@ -95,3 +106,5 @@ Etsy, Vinted, StockX, Mercari, Depop, and Whatnot endpoint this skill uses.
   endpoints — check `reference/endpoints.md` for accepted values before calling.
 - Vinted brand/category filters need numeric ids — resolve via
   `/vinted/brands`/`/vinted/categories` first if you only have a name.
+- GOAT and Leboncoin calls can also consume Crawlora credits; keep the
+  marketplace and route in the user's requested scope before calling them.
