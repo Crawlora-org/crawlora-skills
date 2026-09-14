@@ -11,6 +11,8 @@ const publicHelper = fileURLToPath(new URL("../skills/crawlora/scripts/crawlora.
 const amazonHelper = fileURLToPath(new URL("../skills/amazon-research/scripts/crawlora.sh", import.meta.url));
 const earningsHelper = fileURLToPath(new URL("../skills/earnings-event-research/scripts/crawlora.sh", import.meta.url));
 const googleTrendsHelper = fileURLToPath(new URL("../skills/google-trends-research/scripts/crawlora.sh", import.meta.url));
+const appStoreHelper = fileURLToPath(new URL("../skills/app-store-research/scripts/crawlora.sh", import.meta.url));
+const travelAccommodationHelper = fileURLToPath(new URL("../skills/travel-accommodation-research/scripts/crawlora.sh", import.meta.url));
 function request(args) {
   const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
   try {
@@ -150,6 +152,41 @@ test("static-only scoped helpers reject unknown routes", () => {
     });
     assert.equal(result.status, 2);
     assert.match(result.stderr, /not in the google-trends-research skill catalog/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("new GET-only skill helpers reject POST before curl", () => {
+  const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
+  try {
+    writeFileSync(join(dir, "curl"), "#!/bin/sh\nexit 99\n", { mode: 0o755 });
+    const result = spawnSync("/bin/bash", [appStoreHelper, "-X", "POST", "/appstore/search"], {
+      encoding: "utf8",
+      env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" },
+    });
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, /only GET/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("travel helper enforces the documented method per route", () => {
+  const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
+  try {
+    writeFileSync(join(dir, "curl"), "#!/bin/sh\nexit 99\n", { mode: 0o755 });
+    for (const args of [
+      ["-X", "POST", "/airbnb/search"],
+      ["/hotels/search"],
+    ]) {
+      const result = spawnSync("/bin/bash", [travelAccommodationHelper, ...args], {
+        encoding: "utf8",
+        env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" },
+      });
+      assert.equal(result.status, 2);
+      assert.match(result.stderr, /method is not allowed/);
+    }
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

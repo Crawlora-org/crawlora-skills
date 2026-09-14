@@ -29,13 +29,17 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, Shopify and DTC brands, BigCommerce, Boots, CVS, Lazada, Otto, SparkFun, Tokopedia, Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, Walgreens (stores only), IKEA, Chewy |
 | [`youtube-research`](skills/youtube-research) | Transcripts, comments, video/channel metadata, search — no `yt-dlp`. | YouTube |
 | [`app-review-mining`](skills/app-review-mining) | App details, reviews, ratings, rankings, similar apps (ASO). | App Store, Google Play |
+| [`app-store-research`](skills/app-store-research) | Cross-store app and extension discovery, ratings, reviews, permissions, privacy, and release history. | Apple App Store, Google Play, Chrome Web Store |
 | [`serp-keyword-research`](skills/serp-keyword-research) | SERP snapshots, autocomplete keyword ideas, Google Trends. | Google, Bing, Brave, DuckDuckGo, Yahoo, Google Trends |
 | [`finance-markets-research`](skills/finance-markets-research) | Stock quotes/financials, SEC filings & insider trades, congressional stock disclosures, crypto markets, VC/PE profiles. | Yahoo Finance, SEC EDGAR, Congress, CoinGecko, PitchBook |
+| [`crypto-market-research`](skills/crypto-market-research) | Coin discovery, market comparisons, global metrics, exchanges, categories, news, unlocks, and treasuries. | CoinGecko |
 | [`prediction-markets-research`](skills/prediction-markets-research) | Odds, order books, price history, and forecast questions. | Polymarket, Kalshi, Metaculus |
 | [`movie-tv-research`](skills/movie-tv-research) | Cast/crew, ratings/reviews, streaming availability, box-office numbers. | IMDb, TMDB, JustWatch, Letterboxd, Rotten Tomatoes, Metacritic, Box Office Mojo |
+| [`entertainment-discovery-research`](skills/entertainment-discovery-research) | Cross-source title discovery, score comparisons, reviews, similar titles, and streaming offers. | IMDb, TMDB, JustWatch, Rotten Tomatoes, Metacritic |
 | [`job-market-research`](skills/job-market-research) | Search postings, pull any company's ATS board directly, hiring signals, freelance gigs. | Indeed, Google/Amazon/Apple/Meta/Tesla Jobs, Tes, 15+ ATS platforms, Upwork, Fiverr |
 | [`social-media-research`](skills/social-media-research) | Public profiles, posts, engagement, search, and trending topics. | Instagram, TikTok, Threads, Bluesky, X, Pinterest, LinkedIn, Facebook, Reddit, Bilibili, Patreon |
 | [`travel-hotel-research`](skills/travel-hotel-research) | Hotel/flight/attraction search and reviews, short-term rentals, event tickets. | Booking.com, Expedia, Agoda, TripAdvisor, Trip.com, Airbnb, Accor, Hotels.com, Ticketmaster, TicketWeb |
+| [`travel-accommodation-research`](skills/travel-accommodation-research) | Cross-platform accommodation, host, property, flight, and activity research without booking actions. | Airbnb, Agoda, Hotels.com, Trip.com |
 | [`sports-scores-research`](skills/sports-scores-research) | Live scores, standings, rosters, player/team stats, boxscores, sportsbook odds, endurance routes. | ESPN, SofaScore, MLB, Strava, DraftKings Sportsbook, Cricinfo |
 | [`twitch-research`](skills/twitch-research) | Channel profile/live status, streams by game, clips, VODs, search, top games, team rosters, VOD chat replay. | Twitch |
 | [`music-podcast-research`](skills/music-podcast-research) | Tracks/albums/artists/playlists, podcast shows/episodes, record pressings, SoundCloud track/user stats. | Spotify, Spotify Podcasts, Apple Podcasts, Discogs, SoundCloud |
@@ -45,6 +49,7 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`developer-oss-research`](skills/developer-oss-research) | Repo/user/org profiles, trending, contributors; Chrome extension detail/reviews. | GitHub, Chrome Web Store |
 | [`restaurant-food-delivery-research`](skills/restaurant-food-delivery-research) | Restaurant reviews/reservations, delivery search and menus, grocery search. | Yelp, OpenTable, DoorDash, Uber Eats, Instacart, 7NOW, restaurant chains, grocery delivery, and international food delivery |
 | [`business-review-trust-research`](skills/business-review-trust-research) | Product launches, business reputation, verified startup revenue, software reviews, crowdfunding campaigns. | Product Hunt, TrustMRR, Trustpilot, Capterra, BBB, Kickstarter |
+| [`local-business-reputation-research`](skills/local-business-reputation-research) | Evidence-backed profiles, ratings, reviews, complaints, scam reports, menus, and photos. | Yelp, BBB, Trustpilot, OpenTable |
 | [`resale-secondhand-research`](skills/resale-secondhand-research) | C2C resale, streetwear/sneaker, and handmade marketplace search. | Poshmark, Etsy, Vinted, StockX, Mercari, Depop, Whatnot, GOAT, Leboncoin |
 | [`real-estate-autos-research`](skills/real-estate-autos-research) | Home search/estimates/market trends, used-car search and dealer/listing detail. | Zillow, Redfin, CarMax, Autotrader, Cars.com, Rightmove |
 | [`pet-services-research`](skills/pet-services-research) | Find public pet sitters and trainers and inspect provider profiles. | Rover |
@@ -98,8 +103,8 @@ self-contained and do not require the broader bundles to be installed.
 | [`used-car-market-comparison`](skills/used-car-market-comparison) | Matched vehicle listings, deduplicated asking-price ranges, and qualified price outliers. | CarMax, Autotrader, Cars.com |
 | [`software-vendor-shortlisting`](skills/software-vendor-shortlisting) | Requirements-based vendor shortlists, pricing scenarios, and evidence-led demo questions. | Capterra, Product Hunt, Bing, official vendor websites |
 
-The repository contains **102 installable skills**. The Claude Code marketplace
-bundle includes **64 skills**; the narrower per-platform alternatives below remain
+The repository contains **107 installable skills**. The Claude Code marketplace
+bundle includes **69 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
