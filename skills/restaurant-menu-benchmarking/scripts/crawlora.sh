@@ -56,23 +56,38 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /chipotle/menu) ;;
-  /chipotle/restaurant/menu) ;;
-  /chipotle/restaurants) ;;
-  /doordash/search) ;;
-  /doordash/store/*) ;;
-  /doordash/store/*/menu) ;;
-  /mcdonalds/categories) ;;
-  /mcdonalds/menu) ;;
-  /ubereats/search) ;;
-  /ubereats/store/*) ;;
-  /ubereats/store/*/menu) ;;
-  *)
-    echo "path is not in the restaurant-menu-benchmarking skill catalog" >&2
-    exit 2
-    ;;
+  /chipotle/menu) route_allowed=true ;;
+  /chipotle/restaurant/menu) route_allowed=true ;;
+  /chipotle/restaurants) route_allowed=true ;;
+  /doordash/search) route_allowed=true ;;
+  /mcdonalds/categories) route_allowed=true ;;
+  /mcdonalds/menu) route_allowed=true ;;
+  /ubereats/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/doordash/store/[^/]+$'
+  '^/doordash/store/[^/]+/menu$'
+  '^/ubereats/store/[^/]+$'
+  '^/ubereats/store/[^/]+/menu$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the restaurant-menu-benchmarking skill catalog" >&2
+  exit 2
+fi
 
 
 

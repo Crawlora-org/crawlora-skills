@@ -56,17 +56,32 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /datasets/housing-markets/facets) ;;
-  /datasets/housing-markets/items/*/*) ;;
-  /datasets/housing-markets/search) ;;
-  /redfin/region-trends) ;;
-  /redfin/search) ;;
-  *)
-    echo "path is not in the housing-market-research skill catalog" >&2
-    exit 2
-    ;;
+  /datasets/housing-markets/facets) route_allowed=true ;;
+  /datasets/housing-markets/search) route_allowed=true ;;
+  /redfin/region-trends) route_allowed=true ;;
+  /redfin/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/datasets/housing-markets/items/[^/]+/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the housing-market-research skill catalog" >&2
+  exit 2
+fi
 
 
 

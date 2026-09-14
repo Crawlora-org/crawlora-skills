@@ -56,74 +56,89 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /kalshi/event/*) ;;
-  /kalshi/event/*/history) ;;
-  /kalshi/event/*/metadata) ;;
-  /kalshi/events) ;;
-  /kalshi/events/multivariate) ;;
-  /kalshi/exchange/schedule) ;;
-  /kalshi/exchange/status) ;;
-  /kalshi/historical/cutoff) ;;
-  /kalshi/historical/market/*) ;;
-  /kalshi/historical/market/*/history) ;;
-  /kalshi/historical/markets) ;;
-  /kalshi/historical/trades) ;;
-  /kalshi/market/*) ;;
-  /kalshi/market/*/history) ;;
-  /kalshi/market/*/orderbook) ;;
-  /kalshi/markets) ;;
-  /kalshi/markets/history) ;;
-  /kalshi/markets/orderbooks) ;;
-  /kalshi/series) ;;
-  /kalshi/series/*) ;;
-  /kalshi/trades) ;;
-  /metaculus/category/*/questions) ;;
-  /metaculus/comments-feed) ;;
-  /metaculus/project/*/questions) ;;
-  /metaculus/question/*) ;;
-  /metaculus/question/*/forecast-history) ;;
-  /metaculus/question/*/forecasts) ;;
-  /metaculus/question/*/metadata) ;;
-  /metaculus/question/*/options) ;;
-  /metaculus/questions) ;;
-  /metaculus/top-comments) ;;
-  /metaculus/tournament/*/questions) ;;
-  /polymarket/activity/trades) ;;
-  /polymarket/clob/market/*) ;;
-  /polymarket/dashboards/macro) ;;
-  /polymarket/event/*) ;;
-  /polymarket/events) ;;
-  /polymarket/events/*/tags) ;;
-  /polymarket/events/similar) ;;
-  /polymarket/fee-types) ;;
-  /polymarket/homepage/feed) ;;
-  /polymarket/leaderboard) ;;
-  /polymarket/market/*) ;;
-  /polymarket/market/*/liquidity) ;;
-  /polymarket/market/*/tags) ;;
-  /polymarket/markets) ;;
-  /polymarket/predictions) ;;
-  /polymarket/rewards/market/*) ;;
-  /polymarket/rewards/markets) ;;
-  /polymarket/search) ;;
-  /polymarket/tag/*) ;;
-  /polymarket/tag/*/related-tags) ;;
-  /polymarket/tags) ;;
-  /polymarket/token/*/midpoint) ;;
-  /polymarket/token/*/orderbook) ;;
-  /polymarket/token/*/price) ;;
-  /polymarket/token/*/price-history) ;;
-  /polymarket/token/*/spread) ;;
-  /polymarket/tokens/midpoints) ;;
-  /polymarket/tokens/orderbooks) ;;
-  /polymarket/tokens/prices) ;;
-  /polymarket/tokens/spreads) ;;
-  *)
-    echo "path is not in the prediction-markets-research skill catalog" >&2
-    exit 2
-    ;;
+  /kalshi/events) route_allowed=true ;;
+  /kalshi/events/multivariate) route_allowed=true ;;
+  /kalshi/exchange/schedule) route_allowed=true ;;
+  /kalshi/exchange/status) route_allowed=true ;;
+  /kalshi/historical/cutoff) route_allowed=true ;;
+  /kalshi/historical/markets) route_allowed=true ;;
+  /kalshi/historical/trades) route_allowed=true ;;
+  /kalshi/markets) route_allowed=true ;;
+  /kalshi/markets/history) route_allowed=true ;;
+  /kalshi/markets/orderbooks) route_allowed=true ;;
+  /kalshi/series) route_allowed=true ;;
+  /kalshi/trades) route_allowed=true ;;
+  /metaculus/comments-feed) route_allowed=true ;;
+  /metaculus/questions) route_allowed=true ;;
+  /metaculus/top-comments) route_allowed=true ;;
+  /polymarket/activity/trades) route_allowed=true ;;
+  /polymarket/dashboards/macro) route_allowed=true ;;
+  /polymarket/events) route_allowed=true ;;
+  /polymarket/events/similar) route_allowed=true ;;
+  /polymarket/fee-types) route_allowed=true ;;
+  /polymarket/homepage/feed) route_allowed=true ;;
+  /polymarket/leaderboard) route_allowed=true ;;
+  /polymarket/markets) route_allowed=true ;;
+  /polymarket/predictions) route_allowed=true ;;
+  /polymarket/rewards/markets) route_allowed=true ;;
+  /polymarket/search) route_allowed=true ;;
+  /polymarket/tags) route_allowed=true ;;
+  /polymarket/tokens/midpoints) route_allowed=true ;;
+  /polymarket/tokens/orderbooks) route_allowed=true ;;
+  /polymarket/tokens/prices) route_allowed=true ;;
+  /polymarket/tokens/spreads) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/kalshi/event/[^/]+$'
+  '^/kalshi/event/[^/]+/history$'
+  '^/kalshi/event/[^/]+/metadata$'
+  '^/kalshi/historical/market/[^/]+$'
+  '^/kalshi/historical/market/[^/]+/history$'
+  '^/kalshi/market/[^/]+$'
+  '^/kalshi/market/[^/]+/history$'
+  '^/kalshi/market/[^/]+/orderbook$'
+  '^/kalshi/series/[^/]+$'
+  '^/metaculus/category/[^/]+/questions$'
+  '^/metaculus/project/[^/]+/questions$'
+  '^/metaculus/question/[^/]+$'
+  '^/metaculus/question/[^/]+/forecast-history$'
+  '^/metaculus/question/[^/]+/forecasts$'
+  '^/metaculus/question/[^/]+/metadata$'
+  '^/metaculus/question/[^/]+/options$'
+  '^/metaculus/tournament/[^/]+/questions$'
+  '^/polymarket/clob/market/[^/]+$'
+  '^/polymarket/event/[^/]+$'
+  '^/polymarket/events/[^/]+/tags$'
+  '^/polymarket/market/[^/]+$'
+  '^/polymarket/market/[^/]+/liquidity$'
+  '^/polymarket/market/[^/]+/tags$'
+  '^/polymarket/rewards/market/[^/]+$'
+  '^/polymarket/tag/[^/]+$'
+  '^/polymarket/tag/[^/]+/related-tags$'
+  '^/polymarket/token/[^/]+/midpoint$'
+  '^/polymarket/token/[^/]+/orderbook$'
+  '^/polymarket/token/[^/]+/price$'
+  '^/polymarket/token/[^/]+/price-history$'
+  '^/polymarket/token/[^/]+/spread$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the prediction-markets-research skill catalog" >&2
+  exit 2
+fi
 
 
 

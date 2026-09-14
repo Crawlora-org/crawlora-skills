@@ -56,31 +56,46 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /adidas/product/review-topics) ;;
-  /adidas/product/reviews) ;;
-  /adidas/search) ;;
-  /appstore/app) ;;
-  /appstore/reviews) ;;
-  /appstore/search) ;;
-  /capterra/product) ;;
-  /capterra/product/reviews) ;;
-  /capterra/search) ;;
-  /datasets/apps-reviews/search) ;;
-  /googleplay/app) ;;
-  /googleplay/reviews) ;;
-  /googleplay/search) ;;
-  /reddit/comments/*) ;;
-  /reddit/post/*) ;;
-  /reddit/search) ;;
-  /trustpilot/business-units/search) ;;
-  /trustpilot/business/*) ;;
-  /trustpilot/business/*/reviews) ;;
-  *)
-    echo "path is not in the customer-feedback-analysis skill catalog" >&2
-    exit 2
-    ;;
+  /adidas/product/review-topics) route_allowed=true ;;
+  /adidas/product/reviews) route_allowed=true ;;
+  /adidas/search) route_allowed=true ;;
+  /appstore/app) route_allowed=true ;;
+  /appstore/reviews) route_allowed=true ;;
+  /appstore/search) route_allowed=true ;;
+  /capterra/product) route_allowed=true ;;
+  /capterra/product/reviews) route_allowed=true ;;
+  /capterra/search) route_allowed=true ;;
+  /datasets/apps-reviews/search) route_allowed=true ;;
+  /googleplay/app) route_allowed=true ;;
+  /googleplay/reviews) route_allowed=true ;;
+  /googleplay/search) route_allowed=true ;;
+  /reddit/search) route_allowed=true ;;
+  /trustpilot/business-units/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/reddit/comments/[^/]+$'
+  '^/reddit/post/[^/]+$'
+  '^/trustpilot/business/[^/]+$'
+  '^/trustpilot/business/[^/]+/reviews$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the customer-feedback-analysis skill catalog" >&2
+  exit 2
+fi
 
 
 

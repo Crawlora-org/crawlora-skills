@@ -367,15 +367,37 @@ const publicPathPrefixes = [...new Set(
     .map((tool) => String(tool._http.path).split("/")[1])
     .filter(Boolean)
 )].sort();
+const escapeCasePattern = (value) => String(value).replace(/[\\*?\[\]]/g, "\\$&");
+const escapeExtendedRegex = (value) => String(value).replace(/[\\.^$|?*+()[\]{}]/g, "\\$&");
+const shellSingleQuote = (value) => `'${String(value).replaceAll("'", `'"'"'`)}'`;
 const publicPathCases = publicPathPrefixes
-  .map((prefix) => `  /${prefix}|/${prefix}/*) ;;`)
+  .map((prefix) => {
+    const literal = escapeCasePattern(prefix);
+    return `  /${literal}|/${literal}/*) route_allowed=true ;;`;
+  })
   .join("\n");
-const routePattern = (path) => String(path).replace(/\{[^}]+\}/g, "*");
-const routeCases = (skillTools) => [...new Set(skillTools.map((tool) => routePattern(tool._http.path)))]
+const routeCases = (skillTools) => [...new Set(
+  skillTools
+    .map((tool) => String(tool._http.path))
+    .filter((path) => !/\{[^}]+\}/.test(path))
+)]
   .sort()
-  .map((pattern) => `  ${pattern}) ;;`)
+  .map((path) => `  ${escapeCasePattern(path)}) route_allowed=true ;;`)
   .join("\n");
-const helperGuard = ({ cases, label }) => `
+const routeRegex = (path) => {
+  const parts = String(path).split(/(\{[^}]+\})/g).filter(Boolean);
+  return "^" + parts.map((part) => /^\{[^}]+\}$/.test(part) ? "[^/]+" : escapeExtendedRegex(part)).join("") + "$";
+};
+const routeRegexes = (skillTools) => [...new Set(
+  skillTools
+    .map((tool) => String(tool._http.path))
+    .filter((path) => /\{[^}]+\}/.test(path))
+    .map(routeRegex)
+)]
+  .sort()
+  .map((regex) => `  ${shellSingleQuote(regex)}`)
+  .join("\n");
+const helperGuard = ({ cases, regexes, label }) => `
 # This skill's helper is limited to its documented Crawlora route set. Keep
 # caller-account surfaces and unrelated API routes out of the helper even if
 # someone supplies an undocumented path directly.
@@ -394,13 +416,29 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
 ${cases}
-  *)
-    echo "path is not in the ${label} skill catalog" >&2
-    exit 2
-    ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+${regexes}
+  )
+  for route_regex in \${route_regexes[@]+"\${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the ${label} skill catalog" >&2
+  exit 2
+fi
 
 ${label === "website-monitoring" ? `# Monitor IDs are single path segments; do not allow a crafted nested path.
 case "$path" in
@@ -432,9 +470,10 @@ for (const s of skillDirs) {
     throw new Error(`No endpoint selection found for skill ${s}`);
   }
   const cases = s === "crawlora" ? publicPathCases : routeCases(skillTools);
+  const regexes = s === "crawlora" ? "" : routeRegexes(skillTools);
   const skillHelper = helper.replace(
     '\n# Keep the API key out of the curl process command line.',
-    `${helperGuard({ cases, label: s })}# Keep the API key out of the curl process command line.`
+    () => `${helperGuard({ cases, regexes, label: s })}# Keep the API key out of the curl process command line.`
   );
   outputs.push([`skills/${s}/scripts/crawlora.sh`, skillHelper]);
 }

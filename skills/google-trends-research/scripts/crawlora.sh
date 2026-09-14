@@ -56,23 +56,39 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /google/trends/categories) ;;
-  /google/trends/enums) ;;
-  /google/trends/explore) ;;
-  /google/trends/explore/interest-by-region) ;;
-  /google/trends/explore/interest-over-time) ;;
-  /google/trends/explore/related-topics) ;;
-  /google/trends/explore/rising-queries) ;;
-  /google/trends/explore/top-queries) ;;
-  /google/trends/locations) ;;
-  /google/trends/trending) ;;
-  /google/trends/trending/detail) ;;
-  *)
-    echo "path is not in the google-trends-research skill catalog" >&2
-    exit 2
-    ;;
+  /google/trends/categories) route_allowed=true ;;
+  /google/trends/enums) route_allowed=true ;;
+  /google/trends/explore) route_allowed=true ;;
+  /google/trends/explore/interest-by-region) route_allowed=true ;;
+  /google/trends/explore/interest-over-time) route_allowed=true ;;
+  /google/trends/explore/related-topics) route_allowed=true ;;
+  /google/trends/explore/rising-queries) route_allowed=true ;;
+  /google/trends/explore/top-queries) route_allowed=true ;;
+  /google/trends/locations) route_allowed=true ;;
+  /google/trends/trending) route_allowed=true ;;
+  /google/trends/trending/detail) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the google-trends-research skill catalog" >&2
+  exit 2
+fi
 
 
 

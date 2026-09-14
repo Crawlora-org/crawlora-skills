@@ -56,23 +56,38 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /ikea/category) ;;
-  /ikea/product) ;;
-  /ikea/search) ;;
-  /shopify/collections) ;;
-  /shopify/collections/*/products) ;;
-  /shopify/products) ;;
-  /shopify/products/*) ;;
-  /shopify/store) ;;
-  /target/categories) ;;
-  /target/category-products) ;;
-  /target/product) ;;
-  *)
-    echo "path is not in the retail-assortment-gap-analysis skill catalog" >&2
-    exit 2
-    ;;
+  /ikea/category) route_allowed=true ;;
+  /ikea/product) route_allowed=true ;;
+  /ikea/search) route_allowed=true ;;
+  /shopify/collections) route_allowed=true ;;
+  /shopify/products) route_allowed=true ;;
+  /shopify/store) route_allowed=true ;;
+  /target/categories) route_allowed=true ;;
+  /target/category-products) route_allowed=true ;;
+  /target/product) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/shopify/collections/[^/]+/products$'
+  '^/shopify/products/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the retail-assortment-gap-analysis skill catalog" >&2
+  exit 2
+fi
 
 
 

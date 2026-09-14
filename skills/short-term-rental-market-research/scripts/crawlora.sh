@@ -56,20 +56,35 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /airbnb/room/*) ;;
-  /airbnb/room/*/calendar) ;;
-  /airbnb/room/*/reviews) ;;
-  /airbnb/search) ;;
-  /datasets/airbnb-markets/facets) ;;
-  /datasets/airbnb-markets/items/*) ;;
-  /datasets/airbnb-markets/nearby) ;;
-  /datasets/airbnb-markets/search) ;;
-  *)
-    echo "path is not in the short-term-rental-market-research skill catalog" >&2
-    exit 2
-    ;;
+  /airbnb/search) route_allowed=true ;;
+  /datasets/airbnb-markets/facets) route_allowed=true ;;
+  /datasets/airbnb-markets/nearby) route_allowed=true ;;
+  /datasets/airbnb-markets/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/airbnb/room/[^/]+$'
+  '^/airbnb/room/[^/]+/calendar$'
+  '^/airbnb/room/[^/]+/reviews$'
+  '^/datasets/airbnb-markets/items/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the short-term-rental-market-research skill catalog" >&2
+  exit 2
+fi
 
 
 

@@ -56,24 +56,39 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /reddit/comments/*) ;;
-  /reddit/domain/*/posts) ;;
-  /reddit/leads) ;;
-  /reddit/post/*) ;;
-  /reddit/search) ;;
-  /reddit/subreddit/*/about) ;;
-  /reddit/subreddit/*/comments) ;;
-  /reddit/subreddit/*/posts) ;;
-  /reddit/subreddits/posts) ;;
-  /reddit/trends) ;;
-  /reddit/user/*/comments) ;;
-  /reddit/user/*/posts) ;;
-  *)
-    echo "path is not in the reddit-research skill catalog" >&2
-    exit 2
-    ;;
+  /reddit/leads) route_allowed=true ;;
+  /reddit/search) route_allowed=true ;;
+  /reddit/subreddits/posts) route_allowed=true ;;
+  /reddit/trends) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/reddit/comments/[^/]+$'
+  '^/reddit/domain/[^/]+/posts$'
+  '^/reddit/post/[^/]+$'
+  '^/reddit/subreddit/[^/]+/about$'
+  '^/reddit/subreddit/[^/]+/comments$'
+  '^/reddit/subreddit/[^/]+/posts$'
+  '^/reddit/user/[^/]+/comments$'
+  '^/reddit/user/[^/]+/posts$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the reddit-research skill catalog" >&2
+  exit 2
+fi
 
 
 

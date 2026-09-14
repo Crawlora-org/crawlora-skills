@@ -56,31 +56,46 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /chromewebstore/categories) ;;
-  /chromewebstore/category) ;;
-  /chromewebstore/charts) ;;
-  /chromewebstore/collection) ;;
-  /chromewebstore/developer) ;;
-  /chromewebstore/item) ;;
-  /chromewebstore/permissions) ;;
-  /chromewebstore/privacy) ;;
-  /chromewebstore/reviews) ;;
-  /chromewebstore/search) ;;
-  /chromewebstore/similar) ;;
-  /chromewebstore/suggest) ;;
-  /datasets/chrome-extensions/changes) ;;
-  /datasets/chrome-extensions/facets) ;;
-  /datasets/chrome-extensions/history/*) ;;
-  /datasets/chrome-extensions/items/*) ;;
-  /datasets/chrome-extensions/metrics) ;;
-  /datasets/chrome-extensions/search) ;;
-  /datasets/chrome-extensions/trending) ;;
-  *)
-    echo "path is not in the chrome-extension-research skill catalog" >&2
-    exit 2
-    ;;
+  /chromewebstore/categories) route_allowed=true ;;
+  /chromewebstore/category) route_allowed=true ;;
+  /chromewebstore/charts) route_allowed=true ;;
+  /chromewebstore/collection) route_allowed=true ;;
+  /chromewebstore/developer) route_allowed=true ;;
+  /chromewebstore/item) route_allowed=true ;;
+  /chromewebstore/permissions) route_allowed=true ;;
+  /chromewebstore/privacy) route_allowed=true ;;
+  /chromewebstore/reviews) route_allowed=true ;;
+  /chromewebstore/search) route_allowed=true ;;
+  /chromewebstore/similar) route_allowed=true ;;
+  /chromewebstore/suggest) route_allowed=true ;;
+  /datasets/chrome-extensions/changes) route_allowed=true ;;
+  /datasets/chrome-extensions/facets) route_allowed=true ;;
+  /datasets/chrome-extensions/metrics) route_allowed=true ;;
+  /datasets/chrome-extensions/search) route_allowed=true ;;
+  /datasets/chrome-extensions/trending) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/datasets/chrome-extensions/history/[^/]+$'
+  '^/datasets/chrome-extensions/items/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the chrome-extension-research skill catalog" >&2
+  exit 2
+fi
 
 
 

@@ -56,27 +56,42 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /anime/airing-schedule) ;;
-  /anime/character/*) ;;
-  /anime/character/search) ;;
-  /anime/rankings) ;;
-  /anime/search) ;;
-  /anime/title/*) ;;
-  /anime/title/*/characters) ;;
-  /anime/title/*/recommendations) ;;
-  /anime/title/*/staff) ;;
-  /manga/rankings) ;;
-  /manga/search) ;;
-  /manga/title/*) ;;
-  /manga/title/*/characters) ;;
-  /manga/title/*/recommendations) ;;
-  /manga/title/*/staff) ;;
-  *)
-    echo "path is not in the anime-manga-research skill catalog" >&2
-    exit 2
-    ;;
+  /anime/airing-schedule) route_allowed=true ;;
+  /anime/character/search) route_allowed=true ;;
+  /anime/rankings) route_allowed=true ;;
+  /anime/search) route_allowed=true ;;
+  /manga/rankings) route_allowed=true ;;
+  /manga/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/anime/character/[^/]+$'
+  '^/anime/title/[^/]+$'
+  '^/anime/title/[^/]+/characters$'
+  '^/anime/title/[^/]+/recommendations$'
+  '^/anime/title/[^/]+/staff$'
+  '^/manga/title/[^/]+$'
+  '^/manga/title/[^/]+/characters$'
+  '^/manga/title/[^/]+/recommendations$'
+  '^/manga/title/[^/]+/staff$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the anime-manga-research skill catalog" >&2
+  exit 2
+fi
 
 
 

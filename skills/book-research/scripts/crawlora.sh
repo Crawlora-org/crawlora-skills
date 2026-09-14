@@ -56,44 +56,59 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /apple-books/audiobook-series/*) ;;
-  /apple-books/audiobook/*) ;;
-  /apple-books/audiobook/*/reviews) ;;
-  /apple-books/audiobook/*/similar) ;;
-  /apple-books/audiobook/search) ;;
-  /apple-books/author/*) ;;
-  /apple-books/book/*) ;;
-  /apple-books/book/*/reviews) ;;
-  /apple-books/book/*/similar) ;;
-  /apple-books/charts) ;;
-  /apple-books/search) ;;
-  /apple-books/series/*) ;;
-  /audible/categories) ;;
-  /audible/category/*) ;;
-  /audible/charts) ;;
-  /audible/list/*) ;;
-  /audible/product/*) ;;
-  /audible/product/*/related) ;;
-  /audible/product/*/reviews) ;;
-  /audible/products) ;;
-  /audible/search) ;;
-  /audible/series/*) ;;
-  /goodreads/author/*) ;;
-  /goodreads/author/*/books) ;;
-  /goodreads/author/*/quotes) ;;
-  /goodreads/book/*) ;;
-  /goodreads/book/*/editions) ;;
-  /goodreads/book/*/reviews) ;;
-  /goodreads/genre/*) ;;
-  /goodreads/list/*) ;;
-  /goodreads/lists) ;;
-  /goodreads/search) ;;
-  *)
-    echo "path is not in the book-research skill catalog" >&2
-    exit 2
-    ;;
+  /apple-books/audiobook/search) route_allowed=true ;;
+  /apple-books/charts) route_allowed=true ;;
+  /apple-books/search) route_allowed=true ;;
+  /audible/categories) route_allowed=true ;;
+  /audible/charts) route_allowed=true ;;
+  /audible/products) route_allowed=true ;;
+  /audible/search) route_allowed=true ;;
+  /goodreads/lists) route_allowed=true ;;
+  /goodreads/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/apple-books/audiobook-series/[^/]+$'
+  '^/apple-books/audiobook/[^/]+$'
+  '^/apple-books/audiobook/[^/]+/reviews$'
+  '^/apple-books/audiobook/[^/]+/similar$'
+  '^/apple-books/author/[^/]+$'
+  '^/apple-books/book/[^/]+$'
+  '^/apple-books/book/[^/]+/reviews$'
+  '^/apple-books/book/[^/]+/similar$'
+  '^/apple-books/series/[^/]+$'
+  '^/audible/category/[^/]+$'
+  '^/audible/list/[^/]+$'
+  '^/audible/product/[^/]+$'
+  '^/audible/product/[^/]+/related$'
+  '^/audible/product/[^/]+/reviews$'
+  '^/audible/series/[^/]+$'
+  '^/goodreads/author/[^/]+$'
+  '^/goodreads/author/[^/]+/books$'
+  '^/goodreads/author/[^/]+/quotes$'
+  '^/goodreads/book/[^/]+$'
+  '^/goodreads/book/[^/]+/editions$'
+  '^/goodreads/book/[^/]+/reviews$'
+  '^/goodreads/genre/[^/]+$'
+  '^/goodreads/list/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the book-research skill catalog" >&2
+  exit 2
+fi
 
 
 

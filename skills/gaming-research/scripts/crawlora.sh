@@ -56,45 +56,60 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /playstation/browse) ;;
-  /playstation/category) ;;
-  /playstation/concept) ;;
-  /playstation/deals) ;;
-  /playstation/latest) ;;
-  /playstation/page) ;;
-  /playstation/product) ;;
-  /playstation/search) ;;
-  /roblox/badges) ;;
-  /roblox/game) ;;
-  /roblox/rankings) ;;
-  /roblox/search) ;;
-  /steam/achievements) ;;
-  /steam/app) ;;
-  /steam/category/*) ;;
-  /steam/charts/concurrent) ;;
-  /steam/charts/most-played) ;;
-  /steam/charts/top-releases) ;;
-  /steam/community-recommendations) ;;
-  /steam/featured) ;;
-  /steam/featured-categories) ;;
-  /steam/items) ;;
-  /steam/news) ;;
-  /steam/package) ;;
-  /steam/players) ;;
-  /steam/reviews) ;;
-  /steam/reviews/histogram) ;;
-  /steam/search) ;;
-  /steam/search/results) ;;
-  /steam/steamspy) ;;
-  /steam/tags) ;;
-  /steam/tags/list) ;;
-  /steam/top-sellers) ;;
-  *)
-    echo "path is not in the gaming-research skill catalog" >&2
-    exit 2
-    ;;
+  /playstation/browse) route_allowed=true ;;
+  /playstation/category) route_allowed=true ;;
+  /playstation/concept) route_allowed=true ;;
+  /playstation/deals) route_allowed=true ;;
+  /playstation/latest) route_allowed=true ;;
+  /playstation/page) route_allowed=true ;;
+  /playstation/product) route_allowed=true ;;
+  /playstation/search) route_allowed=true ;;
+  /roblox/badges) route_allowed=true ;;
+  /roblox/game) route_allowed=true ;;
+  /roblox/rankings) route_allowed=true ;;
+  /roblox/search) route_allowed=true ;;
+  /steam/achievements) route_allowed=true ;;
+  /steam/app) route_allowed=true ;;
+  /steam/charts/concurrent) route_allowed=true ;;
+  /steam/charts/most-played) route_allowed=true ;;
+  /steam/charts/top-releases) route_allowed=true ;;
+  /steam/community-recommendations) route_allowed=true ;;
+  /steam/featured) route_allowed=true ;;
+  /steam/featured-categories) route_allowed=true ;;
+  /steam/items) route_allowed=true ;;
+  /steam/news) route_allowed=true ;;
+  /steam/package) route_allowed=true ;;
+  /steam/players) route_allowed=true ;;
+  /steam/reviews) route_allowed=true ;;
+  /steam/reviews/histogram) route_allowed=true ;;
+  /steam/search) route_allowed=true ;;
+  /steam/search/results) route_allowed=true ;;
+  /steam/steamspy) route_allowed=true ;;
+  /steam/tags) route_allowed=true ;;
+  /steam/tags/list) route_allowed=true ;;
+  /steam/top-sellers) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/steam/category/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the gaming-research skill catalog" >&2
+  exit 2
+fi
 
 
 

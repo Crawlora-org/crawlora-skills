@@ -113,6 +113,18 @@
     "sec_institutional_holdings",
     "web_scrape"
   ],
+  "earnings-event-research": [
+    "yahoo_finance_search",
+    "yahoo_finance_calendar_results",
+    "yahoo_finance_ticker_calendar",
+    "yahoo_finance_ticker_earnings",
+    "yahoo_finance_ticker_earnings_dates",
+    "yahoo_finance_ticker_history",
+    "sec_company_search",
+    "sec_company_submissions",
+    "sec_filing_sections",
+    "sec_financials"
+  ],
   "supplier-sourcing-research": [
     "importyeti_search",
     "importyeti_company",

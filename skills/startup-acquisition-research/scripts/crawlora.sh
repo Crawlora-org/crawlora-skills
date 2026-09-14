@@ -56,25 +56,40 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /bing/search) ;;
-  /datasets/trustmrr/facets) ;;
-  /datasets/trustmrr/history/*) ;;
-  /datasets/trustmrr/items/*) ;;
-  /datasets/trustmrr/search) ;;
-  /trustmrr/acquire) ;;
-  /trustmrr/categories) ;;
-  /trustmrr/category/*) ;;
-  /trustmrr/leaderboard) ;;
-  /trustmrr/marketplace) ;;
-  /trustmrr/startup/*) ;;
-  /trustmrr/startups) ;;
-  /web/scrape) ;;
-  *)
-    echo "path is not in the startup-acquisition-research skill catalog" >&2
-    exit 2
-    ;;
+  /bing/search) route_allowed=true ;;
+  /datasets/trustmrr/facets) route_allowed=true ;;
+  /datasets/trustmrr/search) route_allowed=true ;;
+  /trustmrr/acquire) route_allowed=true ;;
+  /trustmrr/categories) route_allowed=true ;;
+  /trustmrr/leaderboard) route_allowed=true ;;
+  /trustmrr/marketplace) route_allowed=true ;;
+  /trustmrr/startups) route_allowed=true ;;
+  /web/scrape) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/datasets/trustmrr/history/[^/]+$'
+  '^/datasets/trustmrr/items/[^/]+$'
+  '^/trustmrr/category/[^/]+$'
+  '^/trustmrr/startup/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the startup-acquisition-research skill catalog" >&2
+  exit 2
+fi
 
 
 

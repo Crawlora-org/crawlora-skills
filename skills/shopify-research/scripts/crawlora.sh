@@ -56,171 +56,186 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /allbirds/collections) ;;
-  /allbirds/collections/*/products) ;;
-  /allbirds/pages) ;;
-  /allbirds/pages/*) ;;
-  /allbirds/products) ;;
-  /allbirds/products/*) ;;
-  /allbirds/products/*/recommendations) ;;
-  /allbirds/search/suggest) ;;
-  /allbirds/sitemap/urls) ;;
-  /allbirds/sitemaps) ;;
-  /allbirds/store) ;;
-  /brooklinen/collections) ;;
-  /brooklinen/collections/*/products) ;;
-  /brooklinen/pages) ;;
-  /brooklinen/pages/*) ;;
-  /brooklinen/products) ;;
-  /brooklinen/products/*) ;;
-  /brooklinen/products/*/recommendations) ;;
-  /brooklinen/search/suggest) ;;
-  /brooklinen/sitemap/urls) ;;
-  /brooklinen/sitemaps) ;;
-  /brooklinen/store) ;;
-  /colehaan/collections) ;;
-  /colehaan/collections/*/products) ;;
-  /colehaan/pages) ;;
-  /colehaan/pages/*) ;;
-  /colehaan/products) ;;
-  /colehaan/products/*) ;;
-  /colehaan/products/*/recommendations) ;;
-  /colehaan/search/suggest) ;;
-  /colehaan/sitemap/urls) ;;
-  /colehaan/sitemaps) ;;
-  /colehaan/store) ;;
-  /everlane/collections) ;;
-  /everlane/collections/*/products) ;;
-  /everlane/pages) ;;
-  /everlane/pages/*) ;;
-  /everlane/products) ;;
-  /everlane/products/*) ;;
-  /everlane/products/*/recommendations) ;;
-  /everlane/search/suggest) ;;
-  /everlane/sitemap/urls) ;;
-  /everlane/sitemaps) ;;
-  /everlane/store) ;;
-  /fashionnova/collections) ;;
-  /fashionnova/collections/*/products) ;;
-  /fashionnova/pages) ;;
-  /fashionnova/pages/*) ;;
-  /fashionnova/products) ;;
-  /fashionnova/products/*) ;;
-  /fashionnova/products/*/recommendations) ;;
-  /fashionnova/search/suggest) ;;
-  /fashionnova/sitemap/urls) ;;
-  /fashionnova/sitemaps) ;;
-  /fashionnova/store) ;;
-  /gymshark/collections) ;;
-  /gymshark/collections/*/products) ;;
-  /gymshark/pages) ;;
-  /gymshark/pages/*) ;;
-  /gymshark/products) ;;
-  /gymshark/products/*) ;;
-  /gymshark/products/*/recommendations) ;;
-  /gymshark/sitemap/urls) ;;
-  /gymshark/sitemaps) ;;
-  /gymshark/store) ;;
-  /jcrew/categories) ;;
-  /jcrew/category) ;;
-  /jcrew/product) ;;
-  /jcrew/product/reviews) ;;
-  /jcrew/search) ;;
-  /jcrew/size-chart) ;;
-  /jcrew/stores) ;;
-  /jcrew/suggest) ;;
-  /kyliecosmetics/collections) ;;
-  /kyliecosmetics/collections/*/products) ;;
-  /kyliecosmetics/pages) ;;
-  /kyliecosmetics/pages/*) ;;
-  /kyliecosmetics/products) ;;
-  /kyliecosmetics/products/*) ;;
-  /kyliecosmetics/products/*/recommendations) ;;
-  /kyliecosmetics/search/suggest) ;;
-  /kyliecosmetics/sitemap/urls) ;;
-  /kyliecosmetics/sitemaps) ;;
-  /kyliecosmetics/store) ;;
-  /ohpolly/collections) ;;
-  /ohpolly/collections/*/products) ;;
-  /ohpolly/pages) ;;
-  /ohpolly/pages/*) ;;
-  /ohpolly/products) ;;
-  /ohpolly/products/*) ;;
-  /ohpolly/products/*/recommendations) ;;
-  /ohpolly/search/suggest) ;;
-  /ohpolly/sitemap/urls) ;;
-  /ohpolly/sitemaps) ;;
-  /ohpolly/store) ;;
-  /quince/categories) ;;
-  /quince/navigation) ;;
-  /quince/product) ;;
-  /quince/product/faq) ;;
-  /quince/product/reviews) ;;
-  /quince/search) ;;
-  /quince/sitemap/urls) ;;
-  /quince/sitemaps) ;;
-  /quince/suggest) ;;
-  /rothys/collections) ;;
-  /rothys/collections/*/products) ;;
-  /rothys/pages) ;;
-  /rothys/pages/*) ;;
-  /rothys/products) ;;
-  /rothys/products/*) ;;
-  /rothys/products/*/recommendations) ;;
-  /rothys/search/suggest) ;;
-  /rothys/sitemap/urls) ;;
-  /rothys/sitemaps) ;;
-  /rothys/store) ;;
-  /shopify/collections) ;;
-  /shopify/collections/*/products) ;;
-  /shopify/pages) ;;
-  /shopify/pages/*) ;;
-  /shopify/products) ;;
-  /shopify/products/*) ;;
-  /shopify/products/*/recommendations) ;;
-  /shopify/search/suggest) ;;
-  /shopify/sitemap/urls) ;;
-  /shopify/sitemaps) ;;
-  /shopify/store) ;;
-  /skims/collections) ;;
-  /skims/collections/*/products) ;;
-  /skims/pages) ;;
-  /skims/pages/*) ;;
-  /skims/products) ;;
-  /skims/products/*) ;;
-  /skims/products/*/recommendations) ;;
-  /skims/search/suggest) ;;
-  /skims/sitemap/urls) ;;
-  /skims/sitemaps) ;;
-  /skims/store) ;;
-  /stevemadden/collections) ;;
-  /stevemadden/collections/*/products) ;;
-  /stevemadden/pages) ;;
-  /stevemadden/pages/*) ;;
-  /stevemadden/products) ;;
-  /stevemadden/products/*) ;;
-  /stevemadden/products/*/recommendations) ;;
-  /stevemadden/search/suggest) ;;
-  /stevemadden/sitemap/urls) ;;
-  /stevemadden/sitemaps) ;;
-  /stevemadden/store) ;;
-  /thebodyshop/collections) ;;
-  /thebodyshop/collections/*/products) ;;
-  /thebodyshop/pages) ;;
-  /thebodyshop/pages/*) ;;
-  /thebodyshop/products) ;;
-  /thebodyshop/products/*) ;;
-  /thebodyshop/products/*/recommendations) ;;
-  /thebodyshop/search/suggest) ;;
-  /thebodyshop/sitemap/urls) ;;
-  /thebodyshop/sitemaps) ;;
-  /thebodyshop/store) ;;
-  *)
-    echo "path is not in the shopify-research skill catalog" >&2
-    exit 2
-    ;;
+  /allbirds/collections) route_allowed=true ;;
+  /allbirds/pages) route_allowed=true ;;
+  /allbirds/products) route_allowed=true ;;
+  /allbirds/search/suggest) route_allowed=true ;;
+  /allbirds/sitemap/urls) route_allowed=true ;;
+  /allbirds/sitemaps) route_allowed=true ;;
+  /allbirds/store) route_allowed=true ;;
+  /brooklinen/collections) route_allowed=true ;;
+  /brooklinen/pages) route_allowed=true ;;
+  /brooklinen/products) route_allowed=true ;;
+  /brooklinen/search/suggest) route_allowed=true ;;
+  /brooklinen/sitemap/urls) route_allowed=true ;;
+  /brooklinen/sitemaps) route_allowed=true ;;
+  /brooklinen/store) route_allowed=true ;;
+  /colehaan/collections) route_allowed=true ;;
+  /colehaan/pages) route_allowed=true ;;
+  /colehaan/products) route_allowed=true ;;
+  /colehaan/search/suggest) route_allowed=true ;;
+  /colehaan/sitemap/urls) route_allowed=true ;;
+  /colehaan/sitemaps) route_allowed=true ;;
+  /colehaan/store) route_allowed=true ;;
+  /everlane/collections) route_allowed=true ;;
+  /everlane/pages) route_allowed=true ;;
+  /everlane/products) route_allowed=true ;;
+  /everlane/search/suggest) route_allowed=true ;;
+  /everlane/sitemap/urls) route_allowed=true ;;
+  /everlane/sitemaps) route_allowed=true ;;
+  /everlane/store) route_allowed=true ;;
+  /fashionnova/collections) route_allowed=true ;;
+  /fashionnova/pages) route_allowed=true ;;
+  /fashionnova/products) route_allowed=true ;;
+  /fashionnova/search/suggest) route_allowed=true ;;
+  /fashionnova/sitemap/urls) route_allowed=true ;;
+  /fashionnova/sitemaps) route_allowed=true ;;
+  /fashionnova/store) route_allowed=true ;;
+  /gymshark/collections) route_allowed=true ;;
+  /gymshark/pages) route_allowed=true ;;
+  /gymshark/products) route_allowed=true ;;
+  /gymshark/sitemap/urls) route_allowed=true ;;
+  /gymshark/sitemaps) route_allowed=true ;;
+  /gymshark/store) route_allowed=true ;;
+  /jcrew/categories) route_allowed=true ;;
+  /jcrew/category) route_allowed=true ;;
+  /jcrew/product) route_allowed=true ;;
+  /jcrew/product/reviews) route_allowed=true ;;
+  /jcrew/search) route_allowed=true ;;
+  /jcrew/size-chart) route_allowed=true ;;
+  /jcrew/stores) route_allowed=true ;;
+  /jcrew/suggest) route_allowed=true ;;
+  /kyliecosmetics/collections) route_allowed=true ;;
+  /kyliecosmetics/pages) route_allowed=true ;;
+  /kyliecosmetics/products) route_allowed=true ;;
+  /kyliecosmetics/search/suggest) route_allowed=true ;;
+  /kyliecosmetics/sitemap/urls) route_allowed=true ;;
+  /kyliecosmetics/sitemaps) route_allowed=true ;;
+  /kyliecosmetics/store) route_allowed=true ;;
+  /ohpolly/collections) route_allowed=true ;;
+  /ohpolly/pages) route_allowed=true ;;
+  /ohpolly/products) route_allowed=true ;;
+  /ohpolly/search/suggest) route_allowed=true ;;
+  /ohpolly/sitemap/urls) route_allowed=true ;;
+  /ohpolly/sitemaps) route_allowed=true ;;
+  /ohpolly/store) route_allowed=true ;;
+  /quince/categories) route_allowed=true ;;
+  /quince/navigation) route_allowed=true ;;
+  /quince/product) route_allowed=true ;;
+  /quince/product/faq) route_allowed=true ;;
+  /quince/product/reviews) route_allowed=true ;;
+  /quince/search) route_allowed=true ;;
+  /quince/sitemap/urls) route_allowed=true ;;
+  /quince/sitemaps) route_allowed=true ;;
+  /quince/suggest) route_allowed=true ;;
+  /rothys/collections) route_allowed=true ;;
+  /rothys/pages) route_allowed=true ;;
+  /rothys/products) route_allowed=true ;;
+  /rothys/search/suggest) route_allowed=true ;;
+  /rothys/sitemap/urls) route_allowed=true ;;
+  /rothys/sitemaps) route_allowed=true ;;
+  /rothys/store) route_allowed=true ;;
+  /shopify/collections) route_allowed=true ;;
+  /shopify/pages) route_allowed=true ;;
+  /shopify/products) route_allowed=true ;;
+  /shopify/search/suggest) route_allowed=true ;;
+  /shopify/sitemap/urls) route_allowed=true ;;
+  /shopify/sitemaps) route_allowed=true ;;
+  /shopify/store) route_allowed=true ;;
+  /skims/collections) route_allowed=true ;;
+  /skims/pages) route_allowed=true ;;
+  /skims/products) route_allowed=true ;;
+  /skims/search/suggest) route_allowed=true ;;
+  /skims/sitemap/urls) route_allowed=true ;;
+  /skims/sitemaps) route_allowed=true ;;
+  /skims/store) route_allowed=true ;;
+  /stevemadden/collections) route_allowed=true ;;
+  /stevemadden/pages) route_allowed=true ;;
+  /stevemadden/products) route_allowed=true ;;
+  /stevemadden/search/suggest) route_allowed=true ;;
+  /stevemadden/sitemap/urls) route_allowed=true ;;
+  /stevemadden/sitemaps) route_allowed=true ;;
+  /stevemadden/store) route_allowed=true ;;
+  /thebodyshop/collections) route_allowed=true ;;
+  /thebodyshop/pages) route_allowed=true ;;
+  /thebodyshop/products) route_allowed=true ;;
+  /thebodyshop/search/suggest) route_allowed=true ;;
+  /thebodyshop/sitemap/urls) route_allowed=true ;;
+  /thebodyshop/sitemaps) route_allowed=true ;;
+  /thebodyshop/store) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/allbirds/collections/[^/]+/products$'
+  '^/allbirds/pages/[^/]+$'
+  '^/allbirds/products/[^/]+$'
+  '^/allbirds/products/[^/]+/recommendations$'
+  '^/brooklinen/collections/[^/]+/products$'
+  '^/brooklinen/pages/[^/]+$'
+  '^/brooklinen/products/[^/]+$'
+  '^/brooklinen/products/[^/]+/recommendations$'
+  '^/colehaan/collections/[^/]+/products$'
+  '^/colehaan/pages/[^/]+$'
+  '^/colehaan/products/[^/]+$'
+  '^/colehaan/products/[^/]+/recommendations$'
+  '^/everlane/collections/[^/]+/products$'
+  '^/everlane/pages/[^/]+$'
+  '^/everlane/products/[^/]+$'
+  '^/everlane/products/[^/]+/recommendations$'
+  '^/fashionnova/collections/[^/]+/products$'
+  '^/fashionnova/pages/[^/]+$'
+  '^/fashionnova/products/[^/]+$'
+  '^/fashionnova/products/[^/]+/recommendations$'
+  '^/gymshark/collections/[^/]+/products$'
+  '^/gymshark/pages/[^/]+$'
+  '^/gymshark/products/[^/]+$'
+  '^/gymshark/products/[^/]+/recommendations$'
+  '^/kyliecosmetics/collections/[^/]+/products$'
+  '^/kyliecosmetics/pages/[^/]+$'
+  '^/kyliecosmetics/products/[^/]+$'
+  '^/kyliecosmetics/products/[^/]+/recommendations$'
+  '^/ohpolly/collections/[^/]+/products$'
+  '^/ohpolly/pages/[^/]+$'
+  '^/ohpolly/products/[^/]+$'
+  '^/ohpolly/products/[^/]+/recommendations$'
+  '^/rothys/collections/[^/]+/products$'
+  '^/rothys/pages/[^/]+$'
+  '^/rothys/products/[^/]+$'
+  '^/rothys/products/[^/]+/recommendations$'
+  '^/shopify/collections/[^/]+/products$'
+  '^/shopify/pages/[^/]+$'
+  '^/shopify/products/[^/]+$'
+  '^/shopify/products/[^/]+/recommendations$'
+  '^/skims/collections/[^/]+/products$'
+  '^/skims/pages/[^/]+$'
+  '^/skims/products/[^/]+$'
+  '^/skims/products/[^/]+/recommendations$'
+  '^/stevemadden/collections/[^/]+/products$'
+  '^/stevemadden/pages/[^/]+$'
+  '^/stevemadden/products/[^/]+$'
+  '^/stevemadden/products/[^/]+/recommendations$'
+  '^/thebodyshop/collections/[^/]+/products$'
+  '^/thebodyshop/pages/[^/]+$'
+  '^/thebodyshop/products/[^/]+$'
+  '^/thebodyshop/products/[^/]+/recommendations$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the shopify-research skill catalog" >&2
+  exit 2
+fi
 
 
 

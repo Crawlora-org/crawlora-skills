@@ -56,25 +56,40 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /apple-maps/place) ;;
-  /apple-maps/search) ;;
-  /datasets/google-map-businesses/facets) ;;
-  /datasets/google-map-businesses/items/*) ;;
-  /datasets/google-map-businesses/nearby) ;;
-  /datasets/google-map-businesses/search) ;;
-  /extract) ;;
-  /google/map/place/*) ;;
-  /google/map/place/*/reviews) ;;
-  /google/map/search) ;;
-  /web/scrape) ;;
-  /yelp/business/*) ;;
-  /yelp/search) ;;
-  *)
-    echo "path is not in the local-business-prospecting skill catalog" >&2
-    exit 2
-    ;;
+  /apple-maps/place) route_allowed=true ;;
+  /apple-maps/search) route_allowed=true ;;
+  /datasets/google-map-businesses/facets) route_allowed=true ;;
+  /datasets/google-map-businesses/nearby) route_allowed=true ;;
+  /datasets/google-map-businesses/search) route_allowed=true ;;
+  /extract) route_allowed=true ;;
+  /google/map/search) route_allowed=true ;;
+  /web/scrape) route_allowed=true ;;
+  /yelp/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/datasets/google-map-businesses/items/[^/]+$'
+  '^/google/map/place/[^/]+$'
+  '^/google/map/place/[^/]+/reviews$'
+  '^/yelp/business/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the local-business-prospecting skill catalog" >&2
+  exit 2
+fi
 
 
 

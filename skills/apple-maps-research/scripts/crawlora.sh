@@ -56,31 +56,47 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /apple-maps/autocomplete) ;;
-  /apple-maps/categories) ;;
-  /apple-maps/category-search) ;;
-  /apple-maps/directions) ;;
-  /apple-maps/eta) ;;
-  /apple-maps/guides) ;;
-  /apple-maps/guides/cities) ;;
-  /apple-maps/guides/guide) ;;
-  /apple-maps/guides/lookup) ;;
-  /apple-maps/guides/nearby) ;;
-  /apple-maps/guides/publisher) ;;
-  /apple-maps/guides/publishers) ;;
-  /apple-maps/place) ;;
-  /apple-maps/place/photos) ;;
-  /apple-maps/places) ;;
-  /apple-maps/reverse-geocode) ;;
-  /apple-maps/search) ;;
-  /apple-maps/transit-departures) ;;
-  /apple-maps/venue/browse) ;;
-  *)
-    echo "path is not in the apple-maps-research skill catalog" >&2
-    exit 2
-    ;;
+  /apple-maps/autocomplete) route_allowed=true ;;
+  /apple-maps/categories) route_allowed=true ;;
+  /apple-maps/category-search) route_allowed=true ;;
+  /apple-maps/directions) route_allowed=true ;;
+  /apple-maps/eta) route_allowed=true ;;
+  /apple-maps/guides) route_allowed=true ;;
+  /apple-maps/guides/cities) route_allowed=true ;;
+  /apple-maps/guides/guide) route_allowed=true ;;
+  /apple-maps/guides/lookup) route_allowed=true ;;
+  /apple-maps/guides/nearby) route_allowed=true ;;
+  /apple-maps/guides/publisher) route_allowed=true ;;
+  /apple-maps/guides/publishers) route_allowed=true ;;
+  /apple-maps/place) route_allowed=true ;;
+  /apple-maps/place/photos) route_allowed=true ;;
+  /apple-maps/places) route_allowed=true ;;
+  /apple-maps/reverse-geocode) route_allowed=true ;;
+  /apple-maps/search) route_allowed=true ;;
+  /apple-maps/transit-departures) route_allowed=true ;;
+  /apple-maps/venue/browse) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the apple-maps-research skill catalog" >&2
+  exit 2
+fi
 
 
 

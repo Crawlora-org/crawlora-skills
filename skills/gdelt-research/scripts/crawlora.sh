@@ -56,24 +56,40 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /gdelt/context) ;;
-  /gdelt/search) ;;
-  /gdelt/timeline) ;;
-  /gdelt/tonechart) ;;
-  /gdelt/tv-concept-entities) ;;
-  /gdelt/tv-search) ;;
-  /gdelt/tv-showchart) ;;
-  /gdelt/tv-stationchart) ;;
-  /gdelt/tv-stationdetails) ;;
-  /gdelt/tv-timeline) ;;
-  /gdelt/tv-visual-entities) ;;
-  /gdelt/tv-wordcloud) ;;
-  *)
-    echo "path is not in the gdelt-research skill catalog" >&2
-    exit 2
-    ;;
+  /gdelt/context) route_allowed=true ;;
+  /gdelt/search) route_allowed=true ;;
+  /gdelt/timeline) route_allowed=true ;;
+  /gdelt/tonechart) route_allowed=true ;;
+  /gdelt/tv-concept-entities) route_allowed=true ;;
+  /gdelt/tv-search) route_allowed=true ;;
+  /gdelt/tv-showchart) route_allowed=true ;;
+  /gdelt/tv-stationchart) route_allowed=true ;;
+  /gdelt/tv-stationdetails) route_allowed=true ;;
+  /gdelt/tv-timeline) route_allowed=true ;;
+  /gdelt/tv-visual-entities) route_allowed=true ;;
+  /gdelt/tv-wordcloud) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the gdelt-research skill catalog" >&2
+  exit 2
+fi
 
 
 

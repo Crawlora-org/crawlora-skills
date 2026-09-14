@@ -56,30 +56,45 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /datasets/sec-companies/facets) ;;
-  /datasets/sec-companies/financials/*) ;;
-  /datasets/sec-companies/insider/*) ;;
-  /datasets/sec-companies/items/*) ;;
-  /datasets/sec-companies/search) ;;
-  /datasets/sec-institutional-positions/facets) ;;
-  /datasets/sec-institutional-positions/search) ;;
-  /sec/company/intelligence) ;;
-  /sec/company/search) ;;
-  /sec/company/submissions) ;;
-  /sec/filing) ;;
-  /sec/filing/sections) ;;
-  /sec/financials) ;;
-  /sec/frames) ;;
-  /sec/full-text-search) ;;
-  /sec/insider) ;;
-  /sec/institutional-holdings) ;;
-  /web/scrape) ;;
-  *)
-    echo "path is not in the sec-filings-research skill catalog" >&2
-    exit 2
-    ;;
+  /datasets/sec-companies/facets) route_allowed=true ;;
+  /datasets/sec-companies/search) route_allowed=true ;;
+  /datasets/sec-institutional-positions/facets) route_allowed=true ;;
+  /datasets/sec-institutional-positions/search) route_allowed=true ;;
+  /sec/company/intelligence) route_allowed=true ;;
+  /sec/company/search) route_allowed=true ;;
+  /sec/company/submissions) route_allowed=true ;;
+  /sec/filing) route_allowed=true ;;
+  /sec/filing/sections) route_allowed=true ;;
+  /sec/financials) route_allowed=true ;;
+  /sec/frames) route_allowed=true ;;
+  /sec/full-text-search) route_allowed=true ;;
+  /sec/insider) route_allowed=true ;;
+  /sec/institutional-holdings) route_allowed=true ;;
+  /web/scrape) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/datasets/sec-companies/financials/[^/]+$'
+  '^/datasets/sec-companies/insider/[^/]+$'
+  '^/datasets/sec-companies/items/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the sec-filings-research skill catalog" >&2
+  exit 2
+fi
 
 
 

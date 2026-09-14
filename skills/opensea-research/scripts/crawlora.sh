@@ -56,48 +56,63 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /opensea/activity) ;;
-  /opensea/categories) ;;
-  /opensea/chains) ;;
-  /opensea/collection/*) ;;
-  /opensea/collection/*/activity) ;;
-  /opensea/collection/*/best-deals) ;;
-  /opensea/collection/*/chart) ;;
-  /opensea/collection/*/depth) ;;
-  /opensea/collection/*/holders) ;;
-  /opensea/collection/*/items) ;;
-  /opensea/collection/*/offers) ;;
-  /opensea/collection/*/rarest-items) ;;
-  /opensea/collection/*/search-items) ;;
-  /opensea/collection/*/social-proof) ;;
-  /opensea/collection/*/top-sales) ;;
-  /opensea/collection/*/trait-offers) ;;
-  /opensea/collection/*/traits) ;;
-  /opensea/collections) ;;
-  /opensea/drops) ;;
-  /opensea/item/*/*/*) ;;
-  /opensea/item/*/*/*/activity) ;;
-  /opensea/item/*/*/*/chart) ;;
-  /opensea/item/*/*/*/depth) ;;
-  /opensea/item/*/*/*/listings) ;;
-  /opensea/item/*/*/*/offers) ;;
-  /opensea/item/*/*/*/owners) ;;
-  /opensea/most-watched) ;;
-  /opensea/profile/*) ;;
-  /opensea/profile/*/activity) ;;
-  /opensea/profile/*/collections) ;;
-  /opensea/profile/*/created) ;;
-  /opensea/profile/*/items) ;;
-  /opensea/profile/*/search-items) ;;
-  /opensea/rankings) ;;
-  /opensea/search/collections) ;;
-  /opensea/top-movers) ;;
-  *)
-    echo "path is not in the opensea-research skill catalog" >&2
-    exit 2
-    ;;
+  /opensea/activity) route_allowed=true ;;
+  /opensea/categories) route_allowed=true ;;
+  /opensea/chains) route_allowed=true ;;
+  /opensea/collections) route_allowed=true ;;
+  /opensea/drops) route_allowed=true ;;
+  /opensea/most-watched) route_allowed=true ;;
+  /opensea/rankings) route_allowed=true ;;
+  /opensea/search/collections) route_allowed=true ;;
+  /opensea/top-movers) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/opensea/collection/[^/]+$'
+  '^/opensea/collection/[^/]+/activity$'
+  '^/opensea/collection/[^/]+/best-deals$'
+  '^/opensea/collection/[^/]+/chart$'
+  '^/opensea/collection/[^/]+/depth$'
+  '^/opensea/collection/[^/]+/holders$'
+  '^/opensea/collection/[^/]+/items$'
+  '^/opensea/collection/[^/]+/offers$'
+  '^/opensea/collection/[^/]+/rarest-items$'
+  '^/opensea/collection/[^/]+/search-items$'
+  '^/opensea/collection/[^/]+/social-proof$'
+  '^/opensea/collection/[^/]+/top-sales$'
+  '^/opensea/collection/[^/]+/trait-offers$'
+  '^/opensea/collection/[^/]+/traits$'
+  '^/opensea/item/[^/]+/[^/]+/[^/]+$'
+  '^/opensea/item/[^/]+/[^/]+/[^/]+/activity$'
+  '^/opensea/item/[^/]+/[^/]+/[^/]+/chart$'
+  '^/opensea/item/[^/]+/[^/]+/[^/]+/depth$'
+  '^/opensea/item/[^/]+/[^/]+/[^/]+/listings$'
+  '^/opensea/item/[^/]+/[^/]+/[^/]+/offers$'
+  '^/opensea/item/[^/]+/[^/]+/[^/]+/owners$'
+  '^/opensea/profile/[^/]+$'
+  '^/opensea/profile/[^/]+/activity$'
+  '^/opensea/profile/[^/]+/collections$'
+  '^/opensea/profile/[^/]+/created$'
+  '^/opensea/profile/[^/]+/items$'
+  '^/opensea/profile/[^/]+/search-items$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the opensea-research skill catalog" >&2
+  exit 2
+fi
 
 
 

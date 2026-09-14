@@ -56,26 +56,42 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /ticketmaster/attraction) ;;
-  /ticketmaster/attraction-events) ;;
-  /ticketmaster/discover-categories) ;;
-  /ticketmaster/discover-category-events) ;;
-  /ticketmaster/discover-cities) ;;
-  /ticketmaster/discover-city-events) ;;
-  /ticketmaster/event) ;;
-  /ticketmaster/search-events) ;;
-  /ticketmaster/suggest) ;;
-  /ticketmaster/venue) ;;
-  /ticketmaster/venue-events) ;;
-  /ticketweb/event) ;;
-  /ticketweb/search) ;;
-  /ticketweb/venue) ;;
-  *)
-    echo "path is not in the event-venue-research skill catalog" >&2
-    exit 2
-    ;;
+  /ticketmaster/attraction) route_allowed=true ;;
+  /ticketmaster/attraction-events) route_allowed=true ;;
+  /ticketmaster/discover-categories) route_allowed=true ;;
+  /ticketmaster/discover-category-events) route_allowed=true ;;
+  /ticketmaster/discover-cities) route_allowed=true ;;
+  /ticketmaster/discover-city-events) route_allowed=true ;;
+  /ticketmaster/event) route_allowed=true ;;
+  /ticketmaster/search-events) route_allowed=true ;;
+  /ticketmaster/suggest) route_allowed=true ;;
+  /ticketmaster/venue) route_allowed=true ;;
+  /ticketmaster/venue-events) route_allowed=true ;;
+  /ticketweb/event) route_allowed=true ;;
+  /ticketweb/search) route_allowed=true ;;
+  /ticketweb/venue) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the event-venue-research skill catalog" >&2
+  exit 2
+fi
 
 
 

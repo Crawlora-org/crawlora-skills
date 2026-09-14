@@ -56,31 +56,46 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /datasets/steam-charts/search) ;;
-  /datasets/steam-games/facets) ;;
-  /datasets/steam-games/items/*) ;;
-  /datasets/steam-games/search) ;;
-  /datasets/steam-news/search) ;;
-  /datasets/steam-playercounts/search) ;;
-  /datasets/steam-reviews/search) ;;
-  /steam/app) ;;
-  /steam/category/*) ;;
-  /steam/items) ;;
-  /steam/news) ;;
-  /steam/players) ;;
-  /steam/reviews) ;;
-  /steam/reviews/histogram) ;;
-  /steam/search) ;;
-  /steam/search/results) ;;
-  /steam/steamspy) ;;
-  /steam/tags) ;;
-  /steam/tags/list) ;;
-  *)
-    echo "path is not in the steam-market-opportunity-research skill catalog" >&2
-    exit 2
-    ;;
+  /datasets/steam-charts/search) route_allowed=true ;;
+  /datasets/steam-games/facets) route_allowed=true ;;
+  /datasets/steam-games/search) route_allowed=true ;;
+  /datasets/steam-news/search) route_allowed=true ;;
+  /datasets/steam-playercounts/search) route_allowed=true ;;
+  /datasets/steam-reviews/search) route_allowed=true ;;
+  /steam/app) route_allowed=true ;;
+  /steam/items) route_allowed=true ;;
+  /steam/news) route_allowed=true ;;
+  /steam/players) route_allowed=true ;;
+  /steam/reviews) route_allowed=true ;;
+  /steam/reviews/histogram) route_allowed=true ;;
+  /steam/search) route_allowed=true ;;
+  /steam/search/results) route_allowed=true ;;
+  /steam/steamspy) route_allowed=true ;;
+  /steam/tags) route_allowed=true ;;
+  /steam/tags/list) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/datasets/steam-games/items/[^/]+$'
+  '^/steam/category/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the steam-market-opportunity-research skill catalog" >&2
+  exit 2
+fi
 
 
 

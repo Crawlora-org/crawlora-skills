@@ -56,83 +56,98 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /accor/amenities) ;;
-  /accor/brands) ;;
-  /accor/catalog/hotels) ;;
-  /accor/destination/hotels) ;;
-  /accor/property) ;;
-  /accor/search) ;;
-  /accor/search/details) ;;
-  /accor/search/suggest) ;;
-  /agoda/activities/*) ;;
-  /agoda/activities/search) ;;
-  /agoda/flights/itinerary-amenities) ;;
-  /agoda/flights/search) ;;
-  /agoda/flights/search-locations) ;;
-  /agoda/homes/search) ;;
-  /agoda/hotels/*) ;;
-  /agoda/hotels/search) ;;
-  /airbnb/host/*) ;;
-  /airbnb/host/*/listings) ;;
-  /airbnb/host/*/reviews) ;;
-  /airbnb/room/*) ;;
-  /airbnb/room/*/calendar) ;;
-  /airbnb/room/*/reviews) ;;
-  /airbnb/search) ;;
-  /booking-attractions/detail) ;;
-  /booking-attractions/reviews) ;;
-  /booking-attractions/search) ;;
-  /booking-flights/autocomplete) ;;
-  /booking-flights/search) ;;
-  /booking/hotel-detail) ;;
-  /booking/reviews) ;;
-  /booking/search) ;;
-  /expedia/activities/search) ;;
-  /expedia/flights/search) ;;
-  /expedia/locations/search) ;;
-  /expedia/properties/detail) ;;
-  /expedia/properties/filters) ;;
-  /expedia/properties/reviews) ;;
-  /expedia/properties/search) ;;
-  /hotels/autocomplete) ;;
-  /hotels/offers) ;;
-  /hotels/property) ;;
-  /hotels/rates) ;;
-  /hotels/reviews) ;;
-  /hotels/reviews/archive) ;;
-  /hotels/search) ;;
-  /ticketmaster/attraction) ;;
-  /ticketmaster/attraction-events) ;;
-  /ticketmaster/attraction-related) ;;
-  /ticketmaster/attraction-reviews) ;;
-  /ticketmaster/discover-categories) ;;
-  /ticketmaster/discover-category-events) ;;
-  /ticketmaster/discover-cities) ;;
-  /ticketmaster/discover-city-events) ;;
-  /ticketmaster/event) ;;
-  /ticketmaster/search-events) ;;
-  /ticketmaster/suggest) ;;
-  /ticketmaster/trending-attractions) ;;
-  /ticketmaster/venue) ;;
-  /ticketmaster/venue-enhanced-details) ;;
-  /ticketmaster/venue-events) ;;
-  /ticketweb/event) ;;
-  /ticketweb/search) ;;
-  /ticketweb/venue) ;;
-  /tripadvisor/autocomplete) ;;
-  /tripadvisor/enums) ;;
-  /tripadvisor/hotels) ;;
-  /tripadvisor/place) ;;
-  /tripadvisor/reviews) ;;
-  /tripadvisor/search) ;;
-  /tripcom/hotels/*) ;;
-  /tripcom/hotels/search) ;;
-  *)
-    echo "path is not in the travel-hotel-research skill catalog" >&2
-    exit 2
-    ;;
+  /accor/amenities) route_allowed=true ;;
+  /accor/brands) route_allowed=true ;;
+  /accor/catalog/hotels) route_allowed=true ;;
+  /accor/destination/hotels) route_allowed=true ;;
+  /accor/property) route_allowed=true ;;
+  /accor/search) route_allowed=true ;;
+  /accor/search/details) route_allowed=true ;;
+  /accor/search/suggest) route_allowed=true ;;
+  /agoda/activities/search) route_allowed=true ;;
+  /agoda/flights/itinerary-amenities) route_allowed=true ;;
+  /agoda/flights/search) route_allowed=true ;;
+  /agoda/flights/search-locations) route_allowed=true ;;
+  /agoda/homes/search) route_allowed=true ;;
+  /agoda/hotels/search) route_allowed=true ;;
+  /airbnb/search) route_allowed=true ;;
+  /booking-attractions/detail) route_allowed=true ;;
+  /booking-attractions/reviews) route_allowed=true ;;
+  /booking-attractions/search) route_allowed=true ;;
+  /booking-flights/autocomplete) route_allowed=true ;;
+  /booking-flights/search) route_allowed=true ;;
+  /booking/hotel-detail) route_allowed=true ;;
+  /booking/reviews) route_allowed=true ;;
+  /booking/search) route_allowed=true ;;
+  /expedia/activities/search) route_allowed=true ;;
+  /expedia/flights/search) route_allowed=true ;;
+  /expedia/locations/search) route_allowed=true ;;
+  /expedia/properties/detail) route_allowed=true ;;
+  /expedia/properties/filters) route_allowed=true ;;
+  /expedia/properties/reviews) route_allowed=true ;;
+  /expedia/properties/search) route_allowed=true ;;
+  /hotels/autocomplete) route_allowed=true ;;
+  /hotels/offers) route_allowed=true ;;
+  /hotels/property) route_allowed=true ;;
+  /hotels/rates) route_allowed=true ;;
+  /hotels/reviews) route_allowed=true ;;
+  /hotels/reviews/archive) route_allowed=true ;;
+  /hotels/search) route_allowed=true ;;
+  /ticketmaster/attraction) route_allowed=true ;;
+  /ticketmaster/attraction-events) route_allowed=true ;;
+  /ticketmaster/attraction-related) route_allowed=true ;;
+  /ticketmaster/attraction-reviews) route_allowed=true ;;
+  /ticketmaster/discover-categories) route_allowed=true ;;
+  /ticketmaster/discover-category-events) route_allowed=true ;;
+  /ticketmaster/discover-cities) route_allowed=true ;;
+  /ticketmaster/discover-city-events) route_allowed=true ;;
+  /ticketmaster/event) route_allowed=true ;;
+  /ticketmaster/search-events) route_allowed=true ;;
+  /ticketmaster/suggest) route_allowed=true ;;
+  /ticketmaster/trending-attractions) route_allowed=true ;;
+  /ticketmaster/venue) route_allowed=true ;;
+  /ticketmaster/venue-enhanced-details) route_allowed=true ;;
+  /ticketmaster/venue-events) route_allowed=true ;;
+  /ticketweb/event) route_allowed=true ;;
+  /ticketweb/search) route_allowed=true ;;
+  /ticketweb/venue) route_allowed=true ;;
+  /tripadvisor/autocomplete) route_allowed=true ;;
+  /tripadvisor/enums) route_allowed=true ;;
+  /tripadvisor/hotels) route_allowed=true ;;
+  /tripadvisor/place) route_allowed=true ;;
+  /tripadvisor/reviews) route_allowed=true ;;
+  /tripadvisor/search) route_allowed=true ;;
+  /tripcom/hotels/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/agoda/activities/[^/]+$'
+  '^/agoda/hotels/[^/]+$'
+  '^/airbnb/host/[^/]+$'
+  '^/airbnb/host/[^/]+/listings$'
+  '^/airbnb/host/[^/]+/reviews$'
+  '^/airbnb/room/[^/]+$'
+  '^/airbnb/room/[^/]+/calendar$'
+  '^/airbnb/room/[^/]+/reviews$'
+  '^/tripcom/hotels/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the travel-hotel-research skill catalog" >&2
+  exit 2
+fi
 
 
 

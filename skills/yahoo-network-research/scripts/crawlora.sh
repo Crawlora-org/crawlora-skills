@@ -56,57 +56,73 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /yahoo-autos/article) ;;
-  /yahoo-autos/category) ;;
-  /yahoo-autos/home) ;;
-  /yahoo-entertainment/article) ;;
-  /yahoo-entertainment/category) ;;
-  /yahoo-entertainment/home) ;;
-  /yahoo-health/article) ;;
-  /yahoo-health/category) ;;
-  /yahoo-health/home) ;;
-  /yahoo-life/article) ;;
-  /yahoo-life/home) ;;
-  /yahoo-news/article) ;;
-  /yahoo-news/category) ;;
-  /yahoo-news/comments) ;;
-  /yahoo-news/comments/replies) ;;
-  /yahoo-news/home) ;;
-  /yahoo-news/suggest) ;;
-  /yahoo-shopping/article) ;;
-  /yahoo-shopping/category) ;;
-  /yahoo-shopping/home) ;;
-  /yahoo-shopping/shopping-list) ;;
-  /yahoo-shopping/shopping-lists) ;;
-  /yahoo-shopping/store) ;;
-  /yahoo-shopping/stores) ;;
-  /yahoo-sports/game) ;;
-  /yahoo-sports/golf-leaderboard) ;;
-  /yahoo-sports/golf-schedule) ;;
-  /yahoo-sports/mma-fight-card) ;;
-  /yahoo-sports/mma-schedule) ;;
-  /yahoo-sports/motorsports-race) ;;
-  /yahoo-sports/motorsports-schedule) ;;
-  /yahoo-sports/news) ;;
-  /yahoo-sports/olympics-medals) ;;
-  /yahoo-sports/player) ;;
-  /yahoo-sports/scoreboard) ;;
-  /yahoo-sports/standings) ;;
-  /yahoo-sports/team) ;;
-  /yahoo-sports/team-roster) ;;
-  /yahoo-sports/team-schedule) ;;
-  /yahoo-sports/tennis-rankings) ;;
-  /yahoo-sports/tennis-schedule) ;;
-  /yahoo-sports/tennis-scoreboard) ;;
-  /yahoo-tech/article) ;;
-  /yahoo-tech/category) ;;
-  /yahoo-tech/home) ;;
-  *)
-    echo "path is not in the yahoo-network-research skill catalog" >&2
-    exit 2
-    ;;
+  /yahoo-autos/article) route_allowed=true ;;
+  /yahoo-autos/category) route_allowed=true ;;
+  /yahoo-autos/home) route_allowed=true ;;
+  /yahoo-entertainment/article) route_allowed=true ;;
+  /yahoo-entertainment/category) route_allowed=true ;;
+  /yahoo-entertainment/home) route_allowed=true ;;
+  /yahoo-health/article) route_allowed=true ;;
+  /yahoo-health/category) route_allowed=true ;;
+  /yahoo-health/home) route_allowed=true ;;
+  /yahoo-life/article) route_allowed=true ;;
+  /yahoo-life/home) route_allowed=true ;;
+  /yahoo-news/article) route_allowed=true ;;
+  /yahoo-news/category) route_allowed=true ;;
+  /yahoo-news/comments) route_allowed=true ;;
+  /yahoo-news/comments/replies) route_allowed=true ;;
+  /yahoo-news/home) route_allowed=true ;;
+  /yahoo-news/suggest) route_allowed=true ;;
+  /yahoo-shopping/article) route_allowed=true ;;
+  /yahoo-shopping/category) route_allowed=true ;;
+  /yahoo-shopping/home) route_allowed=true ;;
+  /yahoo-shopping/shopping-list) route_allowed=true ;;
+  /yahoo-shopping/shopping-lists) route_allowed=true ;;
+  /yahoo-shopping/store) route_allowed=true ;;
+  /yahoo-shopping/stores) route_allowed=true ;;
+  /yahoo-sports/game) route_allowed=true ;;
+  /yahoo-sports/golf-leaderboard) route_allowed=true ;;
+  /yahoo-sports/golf-schedule) route_allowed=true ;;
+  /yahoo-sports/mma-fight-card) route_allowed=true ;;
+  /yahoo-sports/mma-schedule) route_allowed=true ;;
+  /yahoo-sports/motorsports-race) route_allowed=true ;;
+  /yahoo-sports/motorsports-schedule) route_allowed=true ;;
+  /yahoo-sports/news) route_allowed=true ;;
+  /yahoo-sports/olympics-medals) route_allowed=true ;;
+  /yahoo-sports/player) route_allowed=true ;;
+  /yahoo-sports/scoreboard) route_allowed=true ;;
+  /yahoo-sports/standings) route_allowed=true ;;
+  /yahoo-sports/team) route_allowed=true ;;
+  /yahoo-sports/team-roster) route_allowed=true ;;
+  /yahoo-sports/team-schedule) route_allowed=true ;;
+  /yahoo-sports/tennis-rankings) route_allowed=true ;;
+  /yahoo-sports/tennis-schedule) route_allowed=true ;;
+  /yahoo-sports/tennis-scoreboard) route_allowed=true ;;
+  /yahoo-tech/article) route_allowed=true ;;
+  /yahoo-tech/category) route_allowed=true ;;
+  /yahoo-tech/home) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the yahoo-network-research skill catalog" >&2
+  exit 2
+fi
 
 
 

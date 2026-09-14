@@ -56,111 +56,126 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /boxofficemojo/brand) ;;
-  /boxofficemojo/brands) ;;
-  /boxofficemojo/calendar) ;;
-  /boxofficemojo/calendar/changes) ;;
-  /boxofficemojo/calendar/date) ;;
-  /boxofficemojo/date/domestic) ;;
-  /boxofficemojo/franchise) ;;
-  /boxofficemojo/franchises) ;;
-  /boxofficemojo/genre) ;;
-  /boxofficemojo/genres) ;;
-  /boxofficemojo/lifetime-grosses) ;;
-  /boxofficemojo/release) ;;
-  /boxofficemojo/release-group) ;;
-  /boxofficemojo/showdown) ;;
-  /boxofficemojo/showdowns) ;;
-  /boxofficemojo/title) ;;
-  /boxofficemojo/weekend/domestic) ;;
-  /boxofficemojo/weekend/domestic/by-distributor) ;;
-  /boxofficemojo/weekend/domestic/estimates) ;;
-  /boxofficemojo/year/domestic) ;;
-  /boxofficemojo/year/worldwide) ;;
-  /imdb/charts) ;;
-  /imdb/name) ;;
-  /imdb/name/awards) ;;
-  /imdb/name/credits) ;;
-  /imdb/search) ;;
-  /imdb/search/title) ;;
-  /imdb/title) ;;
-  /imdb/title/awards) ;;
-  /imdb/title/company-credits) ;;
-  /imdb/title/credits) ;;
-  /imdb/title/episodes) ;;
-  /imdb/title/filming-locations) ;;
-  /imdb/title/goofs) ;;
-  /imdb/title/keywords) ;;
-  /imdb/title/parental-guide) ;;
-  /imdb/title/public-facts-analysis) ;;
-  /imdb/title/quotes) ;;
-  /imdb/title/ratings) ;;
-  /imdb/title/release-info) ;;
-  /imdb/title/reviews) ;;
-  /imdb/title/similar) ;;
-  /imdb/title/technical-specs) ;;
-  /imdb/title/trivia) ;;
-  /justwatch/age-certifications) ;;
-  /justwatch/discover) ;;
-  /justwatch/episode/by-id) ;;
-  /justwatch/episode/offers) ;;
-  /justwatch/genre/titles) ;;
-  /justwatch/genres) ;;
-  /justwatch/monetization/titles) ;;
-  /justwatch/new) ;;
-  /justwatch/popular) ;;
-  /justwatch/provider/titles) ;;
-  /justwatch/providers) ;;
-  /justwatch/search) ;;
-  /justwatch/season/by-id) ;;
-  /justwatch/season/episodes) ;;
-  /justwatch/show/seasons) ;;
-  /justwatch/title) ;;
-  /justwatch/title/analysis) ;;
-  /justwatch/title/by-id) ;;
-  /justwatch/title/media) ;;
-  /justwatch/title/offers) ;;
-  /justwatch/title/similar) ;;
-  /letterboxd/film/*) ;;
-  /letterboxd/film/*/rating-histogram) ;;
-  /letterboxd/film/*/reviews) ;;
-  /letterboxd/film/*/similar) ;;
-  /letterboxd/member/*) ;;
-  /letterboxd/person/*) ;;
-  /letterboxd/popular) ;;
-  /letterboxd/search) ;;
-  /metacritic/browse) ;;
-  /metacritic/game/*) ;;
-  /metacritic/game/*/critic-reviews) ;;
-  /metacritic/game/*/user-reviews) ;;
-  /metacritic/movie/*) ;;
-  /metacritic/movie/*/critic-reviews) ;;
-  /metacritic/movie/*/user-reviews) ;;
-  /metacritic/tv/*) ;;
-  /metacritic/tv/*/critic-reviews) ;;
-  /metacritic/tv/*/user-reviews) ;;
-  /rottentomatoes/browse/movies) ;;
-  /rottentomatoes/browse/tv) ;;
-  /rottentomatoes/episode) ;;
-  /rottentomatoes/movie) ;;
-  /rottentomatoes/movie/reviews) ;;
-  /rottentomatoes/person) ;;
-  /rottentomatoes/search) ;;
-  /rottentomatoes/season) ;;
-  /rottentomatoes/series) ;;
-  /tmdb/movie/*) ;;
-  /tmdb/movie/list) ;;
-  /tmdb/person/*) ;;
-  /tmdb/person/list) ;;
-  /tmdb/search) ;;
-  /tmdb/tv/*) ;;
-  /tmdb/tv/list) ;;
-  *)
-    echo "path is not in the movie-tv-research skill catalog" >&2
-    exit 2
-    ;;
+  /boxofficemojo/brand) route_allowed=true ;;
+  /boxofficemojo/brands) route_allowed=true ;;
+  /boxofficemojo/calendar) route_allowed=true ;;
+  /boxofficemojo/calendar/changes) route_allowed=true ;;
+  /boxofficemojo/calendar/date) route_allowed=true ;;
+  /boxofficemojo/date/domestic) route_allowed=true ;;
+  /boxofficemojo/franchise) route_allowed=true ;;
+  /boxofficemojo/franchises) route_allowed=true ;;
+  /boxofficemojo/genre) route_allowed=true ;;
+  /boxofficemojo/genres) route_allowed=true ;;
+  /boxofficemojo/lifetime-grosses) route_allowed=true ;;
+  /boxofficemojo/release) route_allowed=true ;;
+  /boxofficemojo/release-group) route_allowed=true ;;
+  /boxofficemojo/showdown) route_allowed=true ;;
+  /boxofficemojo/showdowns) route_allowed=true ;;
+  /boxofficemojo/title) route_allowed=true ;;
+  /boxofficemojo/weekend/domestic) route_allowed=true ;;
+  /boxofficemojo/weekend/domestic/by-distributor) route_allowed=true ;;
+  /boxofficemojo/weekend/domestic/estimates) route_allowed=true ;;
+  /boxofficemojo/year/domestic) route_allowed=true ;;
+  /boxofficemojo/year/worldwide) route_allowed=true ;;
+  /imdb/charts) route_allowed=true ;;
+  /imdb/name) route_allowed=true ;;
+  /imdb/name/awards) route_allowed=true ;;
+  /imdb/name/credits) route_allowed=true ;;
+  /imdb/search) route_allowed=true ;;
+  /imdb/search/title) route_allowed=true ;;
+  /imdb/title) route_allowed=true ;;
+  /imdb/title/awards) route_allowed=true ;;
+  /imdb/title/company-credits) route_allowed=true ;;
+  /imdb/title/credits) route_allowed=true ;;
+  /imdb/title/episodes) route_allowed=true ;;
+  /imdb/title/filming-locations) route_allowed=true ;;
+  /imdb/title/goofs) route_allowed=true ;;
+  /imdb/title/keywords) route_allowed=true ;;
+  /imdb/title/parental-guide) route_allowed=true ;;
+  /imdb/title/public-facts-analysis) route_allowed=true ;;
+  /imdb/title/quotes) route_allowed=true ;;
+  /imdb/title/ratings) route_allowed=true ;;
+  /imdb/title/release-info) route_allowed=true ;;
+  /imdb/title/reviews) route_allowed=true ;;
+  /imdb/title/similar) route_allowed=true ;;
+  /imdb/title/technical-specs) route_allowed=true ;;
+  /imdb/title/trivia) route_allowed=true ;;
+  /justwatch/age-certifications) route_allowed=true ;;
+  /justwatch/discover) route_allowed=true ;;
+  /justwatch/episode/by-id) route_allowed=true ;;
+  /justwatch/episode/offers) route_allowed=true ;;
+  /justwatch/genre/titles) route_allowed=true ;;
+  /justwatch/genres) route_allowed=true ;;
+  /justwatch/monetization/titles) route_allowed=true ;;
+  /justwatch/new) route_allowed=true ;;
+  /justwatch/popular) route_allowed=true ;;
+  /justwatch/provider/titles) route_allowed=true ;;
+  /justwatch/providers) route_allowed=true ;;
+  /justwatch/search) route_allowed=true ;;
+  /justwatch/season/by-id) route_allowed=true ;;
+  /justwatch/season/episodes) route_allowed=true ;;
+  /justwatch/show/seasons) route_allowed=true ;;
+  /justwatch/title) route_allowed=true ;;
+  /justwatch/title/analysis) route_allowed=true ;;
+  /justwatch/title/by-id) route_allowed=true ;;
+  /justwatch/title/media) route_allowed=true ;;
+  /justwatch/title/offers) route_allowed=true ;;
+  /justwatch/title/similar) route_allowed=true ;;
+  /letterboxd/popular) route_allowed=true ;;
+  /letterboxd/search) route_allowed=true ;;
+  /metacritic/browse) route_allowed=true ;;
+  /rottentomatoes/browse/movies) route_allowed=true ;;
+  /rottentomatoes/browse/tv) route_allowed=true ;;
+  /rottentomatoes/episode) route_allowed=true ;;
+  /rottentomatoes/movie) route_allowed=true ;;
+  /rottentomatoes/movie/reviews) route_allowed=true ;;
+  /rottentomatoes/person) route_allowed=true ;;
+  /rottentomatoes/search) route_allowed=true ;;
+  /rottentomatoes/season) route_allowed=true ;;
+  /rottentomatoes/series) route_allowed=true ;;
+  /tmdb/movie/list) route_allowed=true ;;
+  /tmdb/person/list) route_allowed=true ;;
+  /tmdb/search) route_allowed=true ;;
+  /tmdb/tv/list) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/letterboxd/film/[^/]+$'
+  '^/letterboxd/film/[^/]+/rating-histogram$'
+  '^/letterboxd/film/[^/]+/reviews$'
+  '^/letterboxd/film/[^/]+/similar$'
+  '^/letterboxd/member/[^/]+$'
+  '^/letterboxd/person/[^/]+$'
+  '^/metacritic/game/[^/]+$'
+  '^/metacritic/game/[^/]+/critic-reviews$'
+  '^/metacritic/game/[^/]+/user-reviews$'
+  '^/metacritic/movie/[^/]+$'
+  '^/metacritic/movie/[^/]+/critic-reviews$'
+  '^/metacritic/movie/[^/]+/user-reviews$'
+  '^/metacritic/tv/[^/]+$'
+  '^/metacritic/tv/[^/]+/critic-reviews$'
+  '^/metacritic/tv/[^/]+/user-reviews$'
+  '^/tmdb/movie/[^/]+$'
+  '^/tmdb/person/[^/]+$'
+  '^/tmdb/tv/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the movie-tv-research skill catalog" >&2
+  exit 2
+fi
 
 
 

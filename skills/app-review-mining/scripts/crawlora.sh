@@ -56,35 +56,50 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /appstore/app) ;;
-  /appstore/developer/*) ;;
-  /appstore/editorial) ;;
-  /appstore/editorial/category) ;;
-  /appstore/list) ;;
-  /appstore/privacy/*) ;;
-  /appstore/ratings) ;;
-  /appstore/reviews) ;;
-  /appstore/search) ;;
-  /appstore/similar) ;;
-  /appstore/suggest/*) ;;
-  /appstore/version-history/*) ;;
-  /googleplay/app) ;;
-  /googleplay/categories) ;;
-  /googleplay/datasafety) ;;
-  /googleplay/developer/*) ;;
-  /googleplay/list) ;;
-  /googleplay/permissions) ;;
-  /googleplay/ratings) ;;
-  /googleplay/reviews) ;;
-  /googleplay/search) ;;
-  /googleplay/similar) ;;
-  /googleplay/suggest/*) ;;
-  *)
-    echo "path is not in the app-review-mining skill catalog" >&2
-    exit 2
-    ;;
+  /appstore/app) route_allowed=true ;;
+  /appstore/editorial) route_allowed=true ;;
+  /appstore/editorial/category) route_allowed=true ;;
+  /appstore/list) route_allowed=true ;;
+  /appstore/ratings) route_allowed=true ;;
+  /appstore/reviews) route_allowed=true ;;
+  /appstore/search) route_allowed=true ;;
+  /appstore/similar) route_allowed=true ;;
+  /googleplay/app) route_allowed=true ;;
+  /googleplay/categories) route_allowed=true ;;
+  /googleplay/datasafety) route_allowed=true ;;
+  /googleplay/list) route_allowed=true ;;
+  /googleplay/permissions) route_allowed=true ;;
+  /googleplay/ratings) route_allowed=true ;;
+  /googleplay/reviews) route_allowed=true ;;
+  /googleplay/search) route_allowed=true ;;
+  /googleplay/similar) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/appstore/developer/[^/]+$'
+  '^/appstore/privacy/[^/]+$'
+  '^/appstore/suggest/[^/]+$'
+  '^/appstore/version-history/[^/]+$'
+  '^/googleplay/developer/[^/]+$'
+  '^/googleplay/suggest/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the app-review-mining skill catalog" >&2
+  exit 2
+fi
 
 
 

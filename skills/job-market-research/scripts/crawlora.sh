@@ -56,69 +56,84 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /amazon-jobs/job) ;;
-  /amazon-jobs/search) ;;
-  /apple-jobs/job) ;;
-  /apple-jobs/search) ;;
-  /fiverr/gig/*/*) ;;
-  /fiverr/search) ;;
-  /fiverr/seller/*) ;;
-  /google-jobs/job) ;;
-  /google-jobs/search) ;;
-  /indeed/job) ;;
-  /indeed/locations/suggest) ;;
-  /indeed/search) ;;
-  /jobs/ashby/board) ;;
-  /jobs/company-search) ;;
-  /jobs/eightfold/board) ;;
-  /jobs/eightfold/job) ;;
-  /jobs/gem/board) ;;
-  /jobs/greenhouse/board) ;;
-  /jobs/greenhouse/job) ;;
-  /jobs/hiring-signals) ;;
-  /jobs/icims/board) ;;
-  /jobs/icims/job) ;;
-  /jobs/lever/posting) ;;
-  /jobs/lever/postings) ;;
-  /jobs/oracle/board) ;;
-  /jobs/oracle/job) ;;
-  /jobs/personio/feed) ;;
-  /jobs/phenom/board) ;;
-  /jobs/phenom/job) ;;
-  /jobs/pinpoint/board) ;;
-  /jobs/recruitee/offer) ;;
-  /jobs/recruitee/offers) ;;
-  /jobs/rippling/board) ;;
-  /jobs/rippling/job) ;;
-  /jobs/smartrecruiters/posting) ;;
-  /jobs/smartrecruiters/postings) ;;
-  /jobs/teamtailor/jobs) ;;
-  /jobs/ukg/board) ;;
-  /jobs/workable/posting) ;;
-  /jobs/workable/postings) ;;
-  /jobs/workday/board) ;;
-  /jobs/workday/job) ;;
-  /meta-jobs/job) ;;
-  /meta-jobs/list) ;;
-  /meta-jobs/search) ;;
-  /tes/jobs/detail) ;;
-  /tes/jobs/employer) ;;
-  /tes/jobs/search) ;;
-  /tes/resources/detail) ;;
-  /tes/resources/search) ;;
-  /tes/resources/shop) ;;
-  /tes/schools/search) ;;
-  /tesla-jobs/job) ;;
-  /tesla-jobs/list) ;;
-  /upwork/freelancer/*) ;;
-  /upwork/job/*) ;;
-  /upwork/search) ;;
-  *)
-    echo "path is not in the job-market-research skill catalog" >&2
-    exit 2
-    ;;
+  /amazon-jobs/job) route_allowed=true ;;
+  /amazon-jobs/search) route_allowed=true ;;
+  /apple-jobs/job) route_allowed=true ;;
+  /apple-jobs/search) route_allowed=true ;;
+  /fiverr/search) route_allowed=true ;;
+  /google-jobs/job) route_allowed=true ;;
+  /google-jobs/search) route_allowed=true ;;
+  /indeed/job) route_allowed=true ;;
+  /indeed/locations/suggest) route_allowed=true ;;
+  /indeed/search) route_allowed=true ;;
+  /jobs/ashby/board) route_allowed=true ;;
+  /jobs/company-search) route_allowed=true ;;
+  /jobs/eightfold/board) route_allowed=true ;;
+  /jobs/eightfold/job) route_allowed=true ;;
+  /jobs/gem/board) route_allowed=true ;;
+  /jobs/greenhouse/board) route_allowed=true ;;
+  /jobs/greenhouse/job) route_allowed=true ;;
+  /jobs/hiring-signals) route_allowed=true ;;
+  /jobs/icims/board) route_allowed=true ;;
+  /jobs/icims/job) route_allowed=true ;;
+  /jobs/lever/posting) route_allowed=true ;;
+  /jobs/lever/postings) route_allowed=true ;;
+  /jobs/oracle/board) route_allowed=true ;;
+  /jobs/oracle/job) route_allowed=true ;;
+  /jobs/personio/feed) route_allowed=true ;;
+  /jobs/phenom/board) route_allowed=true ;;
+  /jobs/phenom/job) route_allowed=true ;;
+  /jobs/pinpoint/board) route_allowed=true ;;
+  /jobs/recruitee/offer) route_allowed=true ;;
+  /jobs/recruitee/offers) route_allowed=true ;;
+  /jobs/rippling/board) route_allowed=true ;;
+  /jobs/rippling/job) route_allowed=true ;;
+  /jobs/smartrecruiters/posting) route_allowed=true ;;
+  /jobs/smartrecruiters/postings) route_allowed=true ;;
+  /jobs/teamtailor/jobs) route_allowed=true ;;
+  /jobs/ukg/board) route_allowed=true ;;
+  /jobs/workable/posting) route_allowed=true ;;
+  /jobs/workable/postings) route_allowed=true ;;
+  /jobs/workday/board) route_allowed=true ;;
+  /jobs/workday/job) route_allowed=true ;;
+  /meta-jobs/job) route_allowed=true ;;
+  /meta-jobs/list) route_allowed=true ;;
+  /meta-jobs/search) route_allowed=true ;;
+  /tes/jobs/detail) route_allowed=true ;;
+  /tes/jobs/employer) route_allowed=true ;;
+  /tes/jobs/search) route_allowed=true ;;
+  /tes/resources/detail) route_allowed=true ;;
+  /tes/resources/search) route_allowed=true ;;
+  /tes/resources/shop) route_allowed=true ;;
+  /tes/schools/search) route_allowed=true ;;
+  /tesla-jobs/job) route_allowed=true ;;
+  /tesla-jobs/list) route_allowed=true ;;
+  /upwork/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/fiverr/gig/[^/]+/[^/]+$'
+  '^/fiverr/seller/[^/]+$'
+  '^/upwork/freelancer/[^/]+$'
+  '^/upwork/job/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the job-market-research skill catalog" >&2
+  exit 2
+fi
 
 
 

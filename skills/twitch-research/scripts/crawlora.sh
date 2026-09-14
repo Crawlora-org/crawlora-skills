@@ -56,21 +56,37 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /twitch/channel) ;;
-  /twitch/clips) ;;
-  /twitch/schedule) ;;
-  /twitch/search) ;;
-  /twitch/streams) ;;
-  /twitch/team) ;;
-  /twitch/top-games) ;;
-  /twitch/videos) ;;
-  /twitch/vod-comments) ;;
-  *)
-    echo "path is not in the twitch-research skill catalog" >&2
-    exit 2
-    ;;
+  /twitch/channel) route_allowed=true ;;
+  /twitch/clips) route_allowed=true ;;
+  /twitch/schedule) route_allowed=true ;;
+  /twitch/search) route_allowed=true ;;
+  /twitch/streams) route_allowed=true ;;
+  /twitch/team) route_allowed=true ;;
+  /twitch/top-games) route_allowed=true ;;
+  /twitch/videos) route_allowed=true ;;
+  /twitch/vod-comments) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the twitch-research skill catalog" >&2
+  exit 2
+fi
 
 
 

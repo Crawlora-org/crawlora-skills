@@ -56,28 +56,43 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /shop-app/analysis) ;;
-  /shop-app/categories) ;;
-  /shop-app/products/*) ;;
-  /shop-app/products/*/related) ;;
-  /shop-app/products/*/reviews) ;;
-  /shop-app/products/*/shop) ;;
-  /shop-app/products/*/variant) ;;
-  /shop-app/products/*/variants) ;;
-  /shop-app/search) ;;
-  /shop-app/shops/*) ;;
-  /shop-app/shops/*/collections/*/products) ;;
-  /shop-app/shops/*/locations) ;;
-  /shop-app/shops/*/products) ;;
-  /shop-app/shops/*/reviews) ;;
-  /shop-app/shops/*/typeahead) ;;
-  /shop-app/suggestions) ;;
-  *)
-    echo "path is not in the shop-app-research skill catalog" >&2
-    exit 2
-    ;;
+  /shop-app/analysis) route_allowed=true ;;
+  /shop-app/categories) route_allowed=true ;;
+  /shop-app/search) route_allowed=true ;;
+  /shop-app/suggestions) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/shop-app/products/[^/]+$'
+  '^/shop-app/products/[^/]+/related$'
+  '^/shop-app/products/[^/]+/reviews$'
+  '^/shop-app/products/[^/]+/shop$'
+  '^/shop-app/products/[^/]+/variant$'
+  '^/shop-app/products/[^/]+/variants$'
+  '^/shop-app/shops/[^/]+$'
+  '^/shop-app/shops/[^/]+/collections/[^/]+/products$'
+  '^/shop-app/shops/[^/]+/locations$'
+  '^/shop-app/shops/[^/]+/products$'
+  '^/shop-app/shops/[^/]+/reviews$'
+  '^/shop-app/shops/[^/]+/typeahead$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the shop-app-research skill catalog" >&2
+  exit 2
+fi
 
 
 

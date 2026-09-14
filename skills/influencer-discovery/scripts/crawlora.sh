@@ -56,30 +56,45 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /datasets/creators/search) ;;
-  /datasets/instagram-users/facets) ;;
-  /datasets/instagram-users/items/*) ;;
-  /datasets/instagram-users/search) ;;
-  /datasets/youtube-creators/facets) ;;
-  /datasets/youtube-creators/items/*) ;;
-  /datasets/youtube-creators/search) ;;
-  /instagram/post/*/*) ;;
-  /instagram/profile/*) ;;
-  /instagram/reels/*) ;;
-  /tiktok/post/*) ;;
-  /tiktok/posts) ;;
-  /tiktok/profile/*) ;;
-  /tiktok/search/user) ;;
-  /youtube/channel/*/videos) ;;
-  /youtube/profile/*) ;;
-  /youtube/search) ;;
-  /youtube/video/*) ;;
-  *)
-    echo "path is not in the influencer-discovery skill catalog" >&2
-    exit 2
-    ;;
+  /datasets/creators/search) route_allowed=true ;;
+  /datasets/instagram-users/facets) route_allowed=true ;;
+  /datasets/instagram-users/search) route_allowed=true ;;
+  /datasets/youtube-creators/facets) route_allowed=true ;;
+  /datasets/youtube-creators/search) route_allowed=true ;;
+  /tiktok/posts) route_allowed=true ;;
+  /tiktok/search/user) route_allowed=true ;;
+  /youtube/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/datasets/instagram-users/items/[^/]+$'
+  '^/datasets/youtube-creators/items/[^/]+$'
+  '^/instagram/post/[^/]+/[^/]+$'
+  '^/instagram/profile/[^/]+$'
+  '^/instagram/reels/[^/]+$'
+  '^/tiktok/post/[^/]+$'
+  '^/tiktok/profile/[^/]+$'
+  '^/youtube/channel/[^/]+/videos$'
+  '^/youtube/profile/[^/]+$'
+  '^/youtube/video/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the influencer-discovery skill catalog" >&2
+  exit 2
+fi
 
 
 

@@ -56,41 +56,56 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /chromewebstore/categories) ;;
-  /chromewebstore/category) ;;
-  /chromewebstore/charts) ;;
-  /chromewebstore/collection) ;;
-  /chromewebstore/developer) ;;
-  /chromewebstore/item) ;;
-  /chromewebstore/permissions) ;;
-  /chromewebstore/privacy) ;;
-  /chromewebstore/reviews) ;;
-  /chromewebstore/search) ;;
-  /chromewebstore/similar) ;;
-  /chromewebstore/suggest) ;;
-  /github/org/*) ;;
-  /github/org/*/repos) ;;
-  /github/repo/*/*) ;;
-  /github/repo/*/*/contributors) ;;
-  /github/repo/*/*/forks) ;;
-  /github/repo/*/*/languages) ;;
-  /github/repo/*/*/releases) ;;
-  /github/search/repositories) ;;
-  /github/search/users) ;;
-  /github/trending) ;;
-  /github/trending/developers) ;;
-  /github/user/*) ;;
-  /github/user/*/events) ;;
-  /github/user/*/followers) ;;
-  /github/user/*/following) ;;
-  /github/user/*/pinned) ;;
-  /github/user/*/repos) ;;
-  *)
-    echo "path is not in the developer-oss-research skill catalog" >&2
-    exit 2
-    ;;
+  /chromewebstore/categories) route_allowed=true ;;
+  /chromewebstore/category) route_allowed=true ;;
+  /chromewebstore/charts) route_allowed=true ;;
+  /chromewebstore/collection) route_allowed=true ;;
+  /chromewebstore/developer) route_allowed=true ;;
+  /chromewebstore/item) route_allowed=true ;;
+  /chromewebstore/permissions) route_allowed=true ;;
+  /chromewebstore/privacy) route_allowed=true ;;
+  /chromewebstore/reviews) route_allowed=true ;;
+  /chromewebstore/search) route_allowed=true ;;
+  /chromewebstore/similar) route_allowed=true ;;
+  /chromewebstore/suggest) route_allowed=true ;;
+  /github/search/repositories) route_allowed=true ;;
+  /github/search/users) route_allowed=true ;;
+  /github/trending) route_allowed=true ;;
+  /github/trending/developers) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/github/org/[^/]+$'
+  '^/github/org/[^/]+/repos$'
+  '^/github/repo/[^/]+/[^/]+$'
+  '^/github/repo/[^/]+/[^/]+/contributors$'
+  '^/github/repo/[^/]+/[^/]+/forks$'
+  '^/github/repo/[^/]+/[^/]+/languages$'
+  '^/github/repo/[^/]+/[^/]+/releases$'
+  '^/github/user/[^/]+$'
+  '^/github/user/[^/]+/events$'
+  '^/github/user/[^/]+/followers$'
+  '^/github/user/[^/]+/following$'
+  '^/github/user/[^/]+/pinned$'
+  '^/github/user/[^/]+/repos$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the developer-oss-research skill catalog" >&2
+  exit 2
+fi
 
 
 

@@ -56,29 +56,44 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /bing/search) ;;
-  /capterra/product) ;;
-  /capterra/product/reviews) ;;
-  /capterra/search) ;;
-  /datasets/jobs/companies) ;;
-  /datasets/jobs/search) ;;
-  /extract) ;;
-  /producthunt/product/*) ;;
-  /producthunt/product/*/alternatives) ;;
-  /producthunt/product/*/launches) ;;
-  /producthunt/search) ;;
-  /similarweb/search) ;;
-  /similarweb/web/*) ;;
-  /trustpilot/business-units/search) ;;
-  /trustpilot/business/*) ;;
-  /trustpilot/business/*/reviews) ;;
-  /web/scrape) ;;
-  *)
-    echo "path is not in the competitor-intelligence skill catalog" >&2
-    exit 2
-    ;;
+  /bing/search) route_allowed=true ;;
+  /capterra/product) route_allowed=true ;;
+  /capterra/product/reviews) route_allowed=true ;;
+  /capterra/search) route_allowed=true ;;
+  /datasets/jobs/companies) route_allowed=true ;;
+  /datasets/jobs/search) route_allowed=true ;;
+  /extract) route_allowed=true ;;
+  /producthunt/search) route_allowed=true ;;
+  /similarweb/search) route_allowed=true ;;
+  /trustpilot/business-units/search) route_allowed=true ;;
+  /web/scrape) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/producthunt/product/[^/]+$'
+  '^/producthunt/product/[^/]+/alternatives$'
+  '^/producthunt/product/[^/]+/launches$'
+  '^/similarweb/web/[^/]+$'
+  '^/trustpilot/business/[^/]+$'
+  '^/trustpilot/business/[^/]+/reviews$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the competitor-intelligence skill catalog" >&2
+  exit 2
+fi
 
 
 

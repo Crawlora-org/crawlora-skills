@@ -44,7 +44,7 @@ rest=("${args[@]:1}")
 case "$method" in
   GET|POST) ;;
   *)
-    echo "only GET and POST are supported by the bluesky-research skill" >&2
+    echo "only GET and POST are supported by the earnings-event-research skill" >&2
     exit 2
     ;;
 esac
@@ -52,7 +52,7 @@ esac
 # Reject path syntax that could smuggle a route through a shell glob check.
 case "$path" in
   ""|*[?#%]*|*..*|*//* )
-    echo "invalid path for the bluesky-research skill" >&2
+    echo "invalid path for the earnings-event-research skill" >&2
     exit 2
     ;;
 esac
@@ -62,17 +62,19 @@ esac
 # segment; unlike a case '*', [^/]+ cannot consume another slash.
 route_allowed=false
 case "$path" in
-  /bluesky/author-feed) route_allowed=true ;;
-  /bluesky/followers) route_allowed=true ;;
-  /bluesky/follows) route_allowed=true ;;
-  /bluesky/post-thread) route_allowed=true ;;
-  /bluesky/profile) route_allowed=true ;;
-  /bluesky/search-actors) route_allowed=true ;;
-  /bluesky/trending-topics) route_allowed=true ;;
+  /sec/company/search) route_allowed=true ;;
+  /sec/company/submissions) route_allowed=true ;;
+  /sec/filing/sections) route_allowed=true ;;
+  /sec/financials) route_allowed=true ;;
+  /yahoo-finance/search) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
-
+  '^/yahoo-finance/calendars/[^/]+$'
+  '^/yahoo-finance/ticker/[^/]+/calendar$'
+  '^/yahoo-finance/ticker/[^/]+/earnings$'
+  '^/yahoo-finance/ticker/[^/]+/earnings-dates$'
+  '^/yahoo-finance/ticker/[^/]+/history$'
   )
   for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
     if [[ "$path" =~ $route_regex ]]; then
@@ -82,7 +84,7 @@ if [ "$route_allowed" = false ]; then
   done
 fi
 if [ "$route_allowed" = false ]; then
-  echo "path is not in the bluesky-research skill catalog" >&2
+  echo "path is not in the earnings-event-research skill catalog" >&2
   exit 2
 fi
 

@@ -56,73 +56,88 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /bing/images) ;;
-  /bing/news) ;;
-  /bing/search) ;;
-  /bing/suggest) ;;
-  /bing/videos) ;;
-  /brave/images) ;;
-  /brave/news) ;;
-  /brave/search) ;;
-  /brave/suggest) ;;
-  /brave/videos) ;;
-  /duckduckgo/image) ;;
-  /duckduckgo/news) ;;
-  /duckduckgo/search) ;;
-  /duckduckgo/shopping) ;;
-  /duckduckgo/video) ;;
-  /google/finance/analyst-articles/*) ;;
-  /google/finance/chart/*) ;;
-  /google/finance/classification/*) ;;
-  /google/finance/company/*) ;;
-  /google/finance/context) ;;
-  /google/finance/financials/*) ;;
-  /google/finance/markets/categories/*/news) ;;
-  /google/finance/markets/categories/*/stocks) ;;
-  /google/finance/markets/earnings) ;;
-  /google/finance/markets/featured) ;;
-  /google/finance/markets/headline) ;;
-  /google/finance/markets/indices) ;;
-  /google/finance/markets/movers) ;;
-  /google/finance/markets/top) ;;
-  /google/finance/markets/trending) ;;
-  /google/finance/news/*) ;;
-  /google/finance/quote/*) ;;
-  /google/finance/related/*) ;;
-  /google/finance/search) ;;
-  /google/finance/ticker/*) ;;
-  /google/jobs) ;;
-  /google/map/place/*) ;;
-  /google/map/place/*/photos) ;;
-  /google/map/place/*/reviews) ;;
-  /google/map/search) ;;
-  /google/news) ;;
-  /google/search) ;;
-  /google/suggest) ;;
-  /google/trends/categories) ;;
-  /google/trends/enums) ;;
-  /google/trends/explore) ;;
-  /google/trends/explore/interest-by-region) ;;
-  /google/trends/explore/interest-over-time) ;;
-  /google/trends/explore/related-topics) ;;
-  /google/trends/explore/rising-queries) ;;
-  /google/trends/explore/top-queries) ;;
-  /google/trends/locations) ;;
-  /google/trends/trending) ;;
-  /google/trends/trending/detail) ;;
-  /google/videos) ;;
-  /yahoo-search/images) ;;
-  /yahoo-search/local) ;;
-  /yahoo-search/news) ;;
-  /yahoo-search/search) ;;
-  /yahoo-search/suggest) ;;
-  /yahoo-search/videos) ;;
-  *)
-    echo "path is not in the serp-keyword-research skill catalog" >&2
-    exit 2
-    ;;
+  /bing/images) route_allowed=true ;;
+  /bing/news) route_allowed=true ;;
+  /bing/search) route_allowed=true ;;
+  /bing/suggest) route_allowed=true ;;
+  /bing/videos) route_allowed=true ;;
+  /brave/images) route_allowed=true ;;
+  /brave/news) route_allowed=true ;;
+  /brave/search) route_allowed=true ;;
+  /brave/suggest) route_allowed=true ;;
+  /brave/videos) route_allowed=true ;;
+  /duckduckgo/image) route_allowed=true ;;
+  /duckduckgo/news) route_allowed=true ;;
+  /duckduckgo/search) route_allowed=true ;;
+  /duckduckgo/shopping) route_allowed=true ;;
+  /duckduckgo/video) route_allowed=true ;;
+  /google/finance/context) route_allowed=true ;;
+  /google/finance/markets/earnings) route_allowed=true ;;
+  /google/finance/markets/featured) route_allowed=true ;;
+  /google/finance/markets/headline) route_allowed=true ;;
+  /google/finance/markets/indices) route_allowed=true ;;
+  /google/finance/markets/movers) route_allowed=true ;;
+  /google/finance/markets/top) route_allowed=true ;;
+  /google/finance/markets/trending) route_allowed=true ;;
+  /google/finance/search) route_allowed=true ;;
+  /google/jobs) route_allowed=true ;;
+  /google/map/search) route_allowed=true ;;
+  /google/news) route_allowed=true ;;
+  /google/search) route_allowed=true ;;
+  /google/suggest) route_allowed=true ;;
+  /google/trends/categories) route_allowed=true ;;
+  /google/trends/enums) route_allowed=true ;;
+  /google/trends/explore) route_allowed=true ;;
+  /google/trends/explore/interest-by-region) route_allowed=true ;;
+  /google/trends/explore/interest-over-time) route_allowed=true ;;
+  /google/trends/explore/related-topics) route_allowed=true ;;
+  /google/trends/explore/rising-queries) route_allowed=true ;;
+  /google/trends/explore/top-queries) route_allowed=true ;;
+  /google/trends/locations) route_allowed=true ;;
+  /google/trends/trending) route_allowed=true ;;
+  /google/trends/trending/detail) route_allowed=true ;;
+  /google/videos) route_allowed=true ;;
+  /yahoo-search/images) route_allowed=true ;;
+  /yahoo-search/local) route_allowed=true ;;
+  /yahoo-search/news) route_allowed=true ;;
+  /yahoo-search/search) route_allowed=true ;;
+  /yahoo-search/suggest) route_allowed=true ;;
+  /yahoo-search/videos) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/google/finance/analyst-articles/[^/]+$'
+  '^/google/finance/chart/[^/]+$'
+  '^/google/finance/classification/[^/]+$'
+  '^/google/finance/company/[^/]+$'
+  '^/google/finance/financials/[^/]+$'
+  '^/google/finance/markets/categories/[^/]+/news$'
+  '^/google/finance/markets/categories/[^/]+/stocks$'
+  '^/google/finance/news/[^/]+$'
+  '^/google/finance/quote/[^/]+$'
+  '^/google/finance/related/[^/]+$'
+  '^/google/finance/ticker/[^/]+$'
+  '^/google/map/place/[^/]+$'
+  '^/google/map/place/[^/]+/photos$'
+  '^/google/map/place/[^/]+/reviews$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the serp-keyword-research skill catalog" >&2
+  exit 2
+fi
 
 
 

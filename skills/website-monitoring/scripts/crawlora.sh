@@ -56,15 +56,30 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /monitors) ;;
-  /monitors/*) ;;
-  /monitors/*/checks) ;;
-  *)
-    echo "path is not in the website-monitoring skill catalog" >&2
-    exit 2
-    ;;
+  /monitors) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/monitors/[^/]+$'
+  '^/monitors/[^/]+/checks$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the website-monitoring skill catalog" >&2
+  exit 2
+fi
 
 # Monitor IDs are single path segments; do not allow a crafted nested path.
 case "$path" in

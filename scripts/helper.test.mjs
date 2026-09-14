@@ -9,6 +9,8 @@ import { spawnSync } from "node:child_process";
 const helper = fileURLToPath(new URL("../lib/crawlora.sh", import.meta.url));
 const publicHelper = fileURLToPath(new URL("../skills/crawlora/scripts/crawlora.sh", import.meta.url));
 const amazonHelper = fileURLToPath(new URL("../skills/amazon-research/scripts/crawlora.sh", import.meta.url));
+const earningsHelper = fileURLToPath(new URL("../skills/earnings-event-research/scripts/crawlora.sh", import.meta.url));
+const googleTrendsHelper = fileURLToPath(new URL("../skills/google-trends-research/scripts/crawlora.sh", import.meta.url));
 function request(args) {
   const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
   try {
@@ -108,6 +110,46 @@ test("scoped helpers reject unrelated route families", () => {
     });
     assert.equal(result.status, 2);
     assert.match(result.stderr, /not in the amazon-research skill catalog/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("scoped helpers require each dynamic parameter to be one path segment", () => {
+  const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
+  try {
+    writeFileSync(join(dir, "curl"), '#!/bin/sh\nprintf "%s\\n" "$@"\n', { mode: 0o755 });
+    const env = { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" };
+
+    const valid = spawnSync("/bin/bash", [earningsHelper, "/yahoo-finance/ticker/AAPL/calendar"], {
+      encoding: "utf8",
+      env,
+    });
+    assert.equal(valid.status, 0, valid.stderr);
+    assert.match(valid.stdout, /\/yahoo-finance\/ticker\/AAPL\/calendar$/m);
+
+    const nested = spawnSync(
+      "/bin/bash",
+      [earningsHelper, "/yahoo-finance/ticker/AAPL/unexpected/calendar"],
+      { encoding: "utf8", env },
+    );
+    assert.equal(nested.status, 2);
+    assert.match(nested.stderr, /not in the earnings-event-research skill catalog/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("static-only scoped helpers reject unknown routes", () => {
+  const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
+  try {
+    writeFileSync(join(dir, "curl"), '#!/bin/sh\nexit 99\n', { mode: 0o755 });
+    const result = spawnSync("/bin/bash", [googleTrendsHelper, "/google/trends/not-documented"], {
+      encoding: "utf8",
+      env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" },
+    });
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, /not in the google-trends-research skill catalog/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

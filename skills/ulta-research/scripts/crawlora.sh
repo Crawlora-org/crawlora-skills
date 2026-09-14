@@ -56,20 +56,35 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /ulta/categories) ;;
-  /ulta/category) ;;
-  /ulta/product/*) ;;
-  /ulta/product/questions) ;;
-  /ulta/product/reviews) ;;
-  /ulta/search) ;;
-  /ulta/stores) ;;
-  /ulta/suggest) ;;
-  *)
-    echo "path is not in the ulta-research skill catalog" >&2
-    exit 2
-    ;;
+  /ulta/categories) route_allowed=true ;;
+  /ulta/category) route_allowed=true ;;
+  /ulta/product/questions) route_allowed=true ;;
+  /ulta/product/reviews) route_allowed=true ;;
+  /ulta/search) route_allowed=true ;;
+  /ulta/stores) route_allowed=true ;;
+  /ulta/suggest) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/ulta/product/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the ulta-research skill catalog" >&2
+  exit 2
+fi
 
 
 

@@ -56,20 +56,36 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /googlepatents/classification) ;;
-  /googlepatents/coverage) ;;
-  /googlepatents/detail) ;;
-  /googlepatents/recent) ;;
-  /googlepatents/search) ;;
-  /googlepatents/suggest) ;;
-  /usptoppubs/detail) ;;
-  /usptoppubs/search) ;;
-  *)
-    echo "path is not in the patents-research skill catalog" >&2
-    exit 2
-    ;;
+  /googlepatents/classification) route_allowed=true ;;
+  /googlepatents/coverage) route_allowed=true ;;
+  /googlepatents/detail) route_allowed=true ;;
+  /googlepatents/recent) route_allowed=true ;;
+  /googlepatents/search) route_allowed=true ;;
+  /googlepatents/suggest) route_allowed=true ;;
+  /usptoppubs/detail) route_allowed=true ;;
+  /usptoppubs/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the patents-research skill catalog" >&2
+  exit 2
+fi
 
 
 

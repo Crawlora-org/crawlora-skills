@@ -56,53 +56,68 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /bbb/business) ;;
-  /bbb/business/complaints) ;;
-  /bbb/business/more-info) ;;
-  /bbb/business/reviews) ;;
-  /bbb/category) ;;
-  /bbb/scamtracker/*) ;;
-  /bbb/scamtracker/search) ;;
-  /bbb/scamtracker/state-stats) ;;
-  /bbb/search) ;;
-  /capterra/product) ;;
-  /capterra/product/reviews) ;;
-  /capterra/search) ;;
-  /kickstarter/comments) ;;
-  /kickstarter/discover) ;;
-  /kickstarter/project) ;;
-  /kickstarter/updates) ;;
-  /producthunt/category/*) ;;
-  /producthunt/category/*/products) ;;
-  /producthunt/leaderboard) ;;
-  /producthunt/product/*) ;;
-  /producthunt/product/*/about) ;;
-  /producthunt/product/*/alternatives) ;;
-  /producthunt/product/*/customers) ;;
-  /producthunt/product/*/launches) ;;
-  /producthunt/product/*/makers) ;;
-  /producthunt/product/*/reviews) ;;
-  /producthunt/search) ;;
-  /trustmrr/acquire) ;;
-  /trustmrr/categories) ;;
-  /trustmrr/category/*) ;;
-  /trustmrr/leaderboard) ;;
-  /trustmrr/marketplace) ;;
-  /trustmrr/startup/*) ;;
-  /trustmrr/startups) ;;
-  /trustpilot/business-units/search) ;;
-  /trustpilot/business/*) ;;
-  /trustpilot/business/*/related) ;;
-  /trustpilot/business/*/reviews) ;;
-  /trustpilot/categories) ;;
-  /trustpilot/categories/search) ;;
-  /trustpilot/category/*) ;;
-  *)
-    echo "path is not in the business-review-trust-research skill catalog" >&2
-    exit 2
-    ;;
+  /bbb/business) route_allowed=true ;;
+  /bbb/business/complaints) route_allowed=true ;;
+  /bbb/business/more-info) route_allowed=true ;;
+  /bbb/business/reviews) route_allowed=true ;;
+  /bbb/category) route_allowed=true ;;
+  /bbb/scamtracker/search) route_allowed=true ;;
+  /bbb/scamtracker/state-stats) route_allowed=true ;;
+  /bbb/search) route_allowed=true ;;
+  /capterra/product) route_allowed=true ;;
+  /capterra/product/reviews) route_allowed=true ;;
+  /capterra/search) route_allowed=true ;;
+  /kickstarter/comments) route_allowed=true ;;
+  /kickstarter/discover) route_allowed=true ;;
+  /kickstarter/project) route_allowed=true ;;
+  /kickstarter/updates) route_allowed=true ;;
+  /producthunt/leaderboard) route_allowed=true ;;
+  /producthunt/search) route_allowed=true ;;
+  /trustmrr/acquire) route_allowed=true ;;
+  /trustmrr/categories) route_allowed=true ;;
+  /trustmrr/leaderboard) route_allowed=true ;;
+  /trustmrr/marketplace) route_allowed=true ;;
+  /trustmrr/startups) route_allowed=true ;;
+  /trustpilot/business-units/search) route_allowed=true ;;
+  /trustpilot/categories) route_allowed=true ;;
+  /trustpilot/categories/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/bbb/scamtracker/[^/]+$'
+  '^/producthunt/category/[^/]+$'
+  '^/producthunt/category/[^/]+/products$'
+  '^/producthunt/product/[^/]+$'
+  '^/producthunt/product/[^/]+/about$'
+  '^/producthunt/product/[^/]+/alternatives$'
+  '^/producthunt/product/[^/]+/customers$'
+  '^/producthunt/product/[^/]+/launches$'
+  '^/producthunt/product/[^/]+/makers$'
+  '^/producthunt/product/[^/]+/reviews$'
+  '^/trustmrr/category/[^/]+$'
+  '^/trustmrr/startup/[^/]+$'
+  '^/trustpilot/business/[^/]+$'
+  '^/trustpilot/business/[^/]+/related$'
+  '^/trustpilot/business/[^/]+/reviews$'
+  '^/trustpilot/category/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the business-review-trust-research skill catalog" >&2
+  exit 2
+fi
 
 
 

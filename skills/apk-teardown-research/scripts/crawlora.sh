@@ -56,16 +56,32 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /apk-teardown/compare-ownership) ;;
-  /apk-teardown/diff) ;;
-  /apk-teardown/jobs) ;;
-  /apk-teardown/timeline) ;;
-  *)
-    echo "path is not in the apk-teardown-research skill catalog" >&2
-    exit 2
-    ;;
+  /apk-teardown/compare-ownership) route_allowed=true ;;
+  /apk-teardown/diff) route_allowed=true ;;
+  /apk-teardown/jobs) route_allowed=true ;;
+  /apk-teardown/timeline) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the apk-teardown-research skill catalog" >&2
+  exit 2
+fi
 
 
 

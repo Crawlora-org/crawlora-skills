@@ -56,23 +56,38 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /tiktok/category) ;;
-  /tiktok/creative-center/hashtags) ;;
-  /tiktok/creative-center/videos) ;;
-  /tiktok/explore/*) ;;
-  /tiktok/hashtag/*) ;;
-  /tiktok/hashtags) ;;
-  /tiktok/popular-trend/country-industry-meta) ;;
-  /tiktok/post/*) ;;
-  /tiktok/search) ;;
-  /tiktok/search/hashtag) ;;
-  /tiktok/trending) ;;
-  *)
-    echo "path is not in the tiktok-trend-research skill catalog" >&2
-    exit 2
-    ;;
+  /tiktok/category) route_allowed=true ;;
+  /tiktok/creative-center/hashtags) route_allowed=true ;;
+  /tiktok/creative-center/videos) route_allowed=true ;;
+  /tiktok/hashtags) route_allowed=true ;;
+  /tiktok/popular-trend/country-industry-meta) route_allowed=true ;;
+  /tiktok/search) route_allowed=true ;;
+  /tiktok/search/hashtag) route_allowed=true ;;
+  /tiktok/trending) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/tiktok/explore/[^/]+$'
+  '^/tiktok/hashtag/[^/]+$'
+  '^/tiktok/post/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the tiktok-trend-research skill catalog" >&2
+  exit 2
+fi
 
 
 

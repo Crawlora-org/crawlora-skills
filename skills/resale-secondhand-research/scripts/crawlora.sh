@@ -56,69 +56,84 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /depop/brands) ;;
-  /depop/categories) ;;
-  /depop/item/*) ;;
-  /depop/item/*/similar) ;;
-  /depop/search) ;;
-  /depop/search-sellers) ;;
-  /depop/search/facets) ;;
-  /depop/shop/*) ;;
-  /depop/sizes) ;;
-  /depop/suggest) ;;
-  /etsy/listing/*) ;;
-  /etsy/listing/*/reviews) ;;
-  /etsy/search) ;;
-  /etsy/shop/*) ;;
-  /etsy/shop/*/listings) ;;
-  /etsy/shop/*/reviews) ;;
-  /etsy/shop/search) ;;
-  /goat/collection) ;;
-  /goat/countries) ;;
-  /goat/curated) ;;
-  /goat/listings/count) ;;
-  /goat/product/*) ;;
-  /goat/product/*/recommended) ;;
-  /goat/search) ;;
-  /goat/search/facets) ;;
-  /goat/searches/trending) ;;
-  /goat/suggest) ;;
-  /leboncoin/listing) ;;
-  /leboncoin/search) ;;
-  /mercari/autocomplete) ;;
-  /mercari/home) ;;
-  /mercari/item/*) ;;
-  /mercari/master) ;;
-  /mercari/search) ;;
-  /poshmark/brand/*) ;;
-  /poshmark/brands) ;;
-  /poshmark/categories) ;;
-  /poshmark/category/*) ;;
-  /poshmark/closet/*) ;;
-  /poshmark/listing/*) ;;
-  /poshmark/search) ;;
-  /poshmark/trend/*) ;;
-  /stockx/brands) ;;
-  /stockx/categories) ;;
-  /stockx/product/*) ;;
-  /stockx/releases) ;;
-  /stockx/search) ;;
-  /vinted/brand) ;;
-  /vinted/brands) ;;
-  /vinted/catalog) ;;
-  /vinted/categories) ;;
-  /vinted/category) ;;
-  /vinted/item) ;;
-  /vinted/member) ;;
-  /whatnot/browse) ;;
-  /whatnot/categories) ;;
-  /whatnot/live/*) ;;
-  *)
-    echo "path is not in the resale-secondhand-research skill catalog" >&2
-    exit 2
-    ;;
+  /depop/brands) route_allowed=true ;;
+  /depop/categories) route_allowed=true ;;
+  /depop/search) route_allowed=true ;;
+  /depop/search-sellers) route_allowed=true ;;
+  /depop/search/facets) route_allowed=true ;;
+  /depop/sizes) route_allowed=true ;;
+  /depop/suggest) route_allowed=true ;;
+  /etsy/search) route_allowed=true ;;
+  /etsy/shop/search) route_allowed=true ;;
+  /goat/collection) route_allowed=true ;;
+  /goat/countries) route_allowed=true ;;
+  /goat/curated) route_allowed=true ;;
+  /goat/listings/count) route_allowed=true ;;
+  /goat/search) route_allowed=true ;;
+  /goat/search/facets) route_allowed=true ;;
+  /goat/searches/trending) route_allowed=true ;;
+  /goat/suggest) route_allowed=true ;;
+  /leboncoin/listing) route_allowed=true ;;
+  /leboncoin/search) route_allowed=true ;;
+  /mercari/autocomplete) route_allowed=true ;;
+  /mercari/home) route_allowed=true ;;
+  /mercari/master) route_allowed=true ;;
+  /mercari/search) route_allowed=true ;;
+  /poshmark/brands) route_allowed=true ;;
+  /poshmark/categories) route_allowed=true ;;
+  /poshmark/search) route_allowed=true ;;
+  /stockx/brands) route_allowed=true ;;
+  /stockx/categories) route_allowed=true ;;
+  /stockx/releases) route_allowed=true ;;
+  /stockx/search) route_allowed=true ;;
+  /vinted/brand) route_allowed=true ;;
+  /vinted/brands) route_allowed=true ;;
+  /vinted/catalog) route_allowed=true ;;
+  /vinted/categories) route_allowed=true ;;
+  /vinted/category) route_allowed=true ;;
+  /vinted/item) route_allowed=true ;;
+  /vinted/member) route_allowed=true ;;
+  /whatnot/browse) route_allowed=true ;;
+  /whatnot/categories) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/depop/item/[^/]+$'
+  '^/depop/item/[^/]+/similar$'
+  '^/depop/shop/[^/]+$'
+  '^/etsy/listing/[^/]+$'
+  '^/etsy/listing/[^/]+/reviews$'
+  '^/etsy/shop/[^/]+$'
+  '^/etsy/shop/[^/]+/listings$'
+  '^/etsy/shop/[^/]+/reviews$'
+  '^/goat/product/[^/]+$'
+  '^/goat/product/[^/]+/recommended$'
+  '^/mercari/item/[^/]+$'
+  '^/poshmark/brand/[^/]+$'
+  '^/poshmark/category/[^/]+$'
+  '^/poshmark/closet/[^/]+$'
+  '^/poshmark/listing/[^/]+$'
+  '^/poshmark/trend/[^/]+$'
+  '^/stockx/product/[^/]+$'
+  '^/whatnot/live/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the resale-secondhand-research skill catalog" >&2
+  exit 2
+fi
 
 
 

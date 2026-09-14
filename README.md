@@ -80,6 +80,7 @@ self-contained and do not require the broader bundles to be installed.
 | [`customer-feedback-analysis`](skills/customer-feedback-analysis) | Sample-aware review themes, counts, excerpts, and product improvement hypotheses. | App Store, Google Play, Trustpilot, Capterra, Adidas, Reddit, stored app reviews |
 | [`google-trends-research`](skills/google-trends-research) | Comparable search-interest series, regional interest, related queries, and trending topics. | Google Trends (eleven tools) |
 | [`sec-filings-research`](skills/sec-filings-research) | Filing briefs and financial comparisons with document provenance, reporting periods, and units. | SEC EDGAR live tools, stored SEC company and institutional position datasets |
+| [`earnings-event-research`](skills/earnings-event-research) | Dated earnings previews and recaps with estimate, reported-result, filing, comparable-period, and daily-price evidence. | Yahoo Finance earnings and daily history, SEC filings and financials |
 | [`supplier-sourcing-research`](skills/supplier-sourcing-research) | Supplier shortlists with observed trade relationships, product evidence, and qualification gaps. | ImportYeti, search, public business websites |
 | [`podcast-guest-research`](skills/podcast-guest-research) | Relevant show shortlists, recent-episode evidence, and tailored guest pitch angles. | Apple Podcasts dataset, Apple/Spotify shows and episodes, show websites |
 | [`startup-acquisition-research`](skills/startup-acquisition-research) | Acquisition candidate screening with dated metrics, price comparisons, and diligence questions. | TrustMRR live tools, stored records and daily history, product websites |
@@ -96,8 +97,8 @@ self-contained and do not require the broader bundles to be installed.
 | [`used-car-market-comparison`](skills/used-car-market-comparison) | Matched vehicle listings, deduplicated asking-price ranges, and qualified price outliers. | CarMax, Autotrader, Cars.com |
 | [`software-vendor-shortlisting`](skills/software-vendor-shortlisting) | Requirements-based vendor shortlists, pricing scenarios, and evidence-led demo questions. | Capterra, Product Hunt, Bing, official vendor websites |
 
-The repository contains **100 installable skills**. The Claude Code marketplace
-bundle includes **62 skills**; the narrower per-platform alternatives below remain
+The repository contains **101 installable skills**. The Claude Code marketplace
+bundle includes **63 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills

@@ -56,31 +56,46 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /appstore/app) ;;
-  /appstore/list) ;;
-  /appstore/reviews) ;;
-  /appstore/search) ;;
-  /appstore/similar) ;;
-  /appstore/version-history/*) ;;
-  /datasets/apps-charts/search) ;;
-  /datasets/apps-reviews/search) ;;
-  /datasets/apps/search) ;;
-  /google/trends/categories) ;;
-  /google/trends/enums) ;;
-  /google/trends/explore/interest-over-time) ;;
-  /google/trends/locations) ;;
-  /googleplay/app) ;;
-  /googleplay/categories) ;;
-  /googleplay/list) ;;
-  /googleplay/reviews) ;;
-  /googleplay/search) ;;
-  /googleplay/similar) ;;
-  *)
-    echo "path is not in the app-market-opportunity-research skill catalog" >&2
-    exit 2
-    ;;
+  /appstore/app) route_allowed=true ;;
+  /appstore/list) route_allowed=true ;;
+  /appstore/reviews) route_allowed=true ;;
+  /appstore/search) route_allowed=true ;;
+  /appstore/similar) route_allowed=true ;;
+  /datasets/apps-charts/search) route_allowed=true ;;
+  /datasets/apps-reviews/search) route_allowed=true ;;
+  /datasets/apps/search) route_allowed=true ;;
+  /google/trends/categories) route_allowed=true ;;
+  /google/trends/enums) route_allowed=true ;;
+  /google/trends/explore/interest-over-time) route_allowed=true ;;
+  /google/trends/locations) route_allowed=true ;;
+  /googleplay/app) route_allowed=true ;;
+  /googleplay/categories) route_allowed=true ;;
+  /googleplay/list) route_allowed=true ;;
+  /googleplay/reviews) route_allowed=true ;;
+  /googleplay/search) route_allowed=true ;;
+  /googleplay/similar) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/appstore/version-history/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the app-market-opportunity-research skill catalog" >&2
+  exit 2
+fi
 
 
 

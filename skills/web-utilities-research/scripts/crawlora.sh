@@ -56,31 +56,46 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /brand/retrieve) ;;
-  /extract) ;;
-  /geocoding/lookup) ;;
-  /geocoding/reverse) ;;
-  /geocoding/search) ;;
-  /importyeti/company) ;;
-  /importyeti/search) ;;
-  /numbeo/cost-of-living/city/*) ;;
-  /numbeo/cost-of-living/country) ;;
-  /numbeo/cost-of-living/rankings) ;;
-  /numbeo/cost-of-living/rankings-by-country) ;;
-  /numbeo/indices/city/*) ;;
-  /numbeo/indices/country) ;;
-  /numbeo/indices/rankings) ;;
-  /numbeo/indices/rankings-by-country) ;;
-  /similarweb/search) ;;
-  /similarweb/web/*) ;;
-  /web/scrape) ;;
-  /web/techstack) ;;
-  *)
-    echo "path is not in the web-utilities-research skill catalog" >&2
-    exit 2
-    ;;
+  /brand/retrieve) route_allowed=true ;;
+  /extract) route_allowed=true ;;
+  /geocoding/lookup) route_allowed=true ;;
+  /geocoding/reverse) route_allowed=true ;;
+  /geocoding/search) route_allowed=true ;;
+  /importyeti/company) route_allowed=true ;;
+  /importyeti/search) route_allowed=true ;;
+  /numbeo/cost-of-living/country) route_allowed=true ;;
+  /numbeo/cost-of-living/rankings) route_allowed=true ;;
+  /numbeo/cost-of-living/rankings-by-country) route_allowed=true ;;
+  /numbeo/indices/country) route_allowed=true ;;
+  /numbeo/indices/rankings) route_allowed=true ;;
+  /numbeo/indices/rankings-by-country) route_allowed=true ;;
+  /similarweb/search) route_allowed=true ;;
+  /web/scrape) route_allowed=true ;;
+  /web/techstack) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/numbeo/cost-of-living/city/[^/]+$'
+  '^/numbeo/indices/city/[^/]+$'
+  '^/similarweb/web/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the web-utilities-research skill catalog" >&2
+  exit 2
+fi
 
 
 

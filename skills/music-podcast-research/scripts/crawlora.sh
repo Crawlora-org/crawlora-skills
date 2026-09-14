@@ -56,70 +56,85 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /apple-podcasts/charts) ;;
-  /apple-podcasts/charts/rankings) ;;
-  /apple-podcasts/episodes/search) ;;
-  /apple-podcasts/new) ;;
-  /apple-podcasts/search) ;;
-  /apple-podcasts/show/*) ;;
-  /apple-podcasts/show/*/episodes) ;;
-  /apple-podcasts/show/*/related) ;;
-  /discogs/artist/*) ;;
-  /discogs/artist/*/releases) ;;
-  /discogs/label/*) ;;
-  /discogs/label/*/releases) ;;
-  /discogs/master/*) ;;
-  /discogs/release/*) ;;
-  /discogs/search) ;;
-  /soundcloud/playlist) ;;
-  /soundcloud/profile) ;;
-  /soundcloud/search) ;;
-  /soundcloud/track) ;;
-  /soundcloud/user-tracks) ;;
-  /spotify-podcasts/categories) ;;
-  /spotify-podcasts/charts) ;;
-  /spotify-podcasts/episode) ;;
-  /spotify-podcasts/home) ;;
-  /spotify-podcasts/search) ;;
-  /spotify-podcasts/show) ;;
-  /spotify-podcasts/show/episodes) ;;
-  /spotify-podcasts/show/recommendations) ;;
-  /spotify/album) ;;
-  /spotify/album/tracks) ;;
-  /spotify/albums/search) ;;
-  /spotify/artist) ;;
-  /spotify/artist/albums) ;;
-  /spotify/artist/playlists) ;;
-  /spotify/artist/related) ;;
-  /spotify/artists/search) ;;
-  /spotify/audiobook) ;;
-  /spotify/audiobook/chapters) ;;
-  /spotify/audiobooks/search) ;;
-  /spotify/chapter) ;;
-  /spotify/episodes/search) ;;
-  /spotify/featured-charts-by-country) ;;
-  /spotify/genre) ;;
-  /spotify/home) ;;
-  /spotify/playlist) ;;
-  /spotify/playlists/search) ;;
-  /spotify/popular-by-country) ;;
-  /spotify/profile) ;;
-  /spotify/profile/followers) ;;
-  /spotify/profile/playlists) ;;
-  /spotify/profiles/search) ;;
-  /spotify/search) ;;
-  /spotify/section) ;;
-  /spotify/shows/search) ;;
-  /spotify/track) ;;
-  /spotify/track/recommended) ;;
-  /spotify/track/similar-albums) ;;
-  /spotify/tracks/search) ;;
-  *)
-    echo "path is not in the music-podcast-research skill catalog" >&2
-    exit 2
-    ;;
+  /apple-podcasts/charts) route_allowed=true ;;
+  /apple-podcasts/charts/rankings) route_allowed=true ;;
+  /apple-podcasts/episodes/search) route_allowed=true ;;
+  /apple-podcasts/new) route_allowed=true ;;
+  /apple-podcasts/search) route_allowed=true ;;
+  /discogs/search) route_allowed=true ;;
+  /soundcloud/playlist) route_allowed=true ;;
+  /soundcloud/profile) route_allowed=true ;;
+  /soundcloud/search) route_allowed=true ;;
+  /soundcloud/track) route_allowed=true ;;
+  /soundcloud/user-tracks) route_allowed=true ;;
+  /spotify-podcasts/categories) route_allowed=true ;;
+  /spotify-podcasts/charts) route_allowed=true ;;
+  /spotify-podcasts/episode) route_allowed=true ;;
+  /spotify-podcasts/home) route_allowed=true ;;
+  /spotify-podcasts/search) route_allowed=true ;;
+  /spotify-podcasts/show) route_allowed=true ;;
+  /spotify-podcasts/show/episodes) route_allowed=true ;;
+  /spotify-podcasts/show/recommendations) route_allowed=true ;;
+  /spotify/album) route_allowed=true ;;
+  /spotify/album/tracks) route_allowed=true ;;
+  /spotify/albums/search) route_allowed=true ;;
+  /spotify/artist) route_allowed=true ;;
+  /spotify/artist/albums) route_allowed=true ;;
+  /spotify/artist/playlists) route_allowed=true ;;
+  /spotify/artist/related) route_allowed=true ;;
+  /spotify/artists/search) route_allowed=true ;;
+  /spotify/audiobook) route_allowed=true ;;
+  /spotify/audiobook/chapters) route_allowed=true ;;
+  /spotify/audiobooks/search) route_allowed=true ;;
+  /spotify/chapter) route_allowed=true ;;
+  /spotify/episodes/search) route_allowed=true ;;
+  /spotify/featured-charts-by-country) route_allowed=true ;;
+  /spotify/genre) route_allowed=true ;;
+  /spotify/home) route_allowed=true ;;
+  /spotify/playlist) route_allowed=true ;;
+  /spotify/playlists/search) route_allowed=true ;;
+  /spotify/popular-by-country) route_allowed=true ;;
+  /spotify/profile) route_allowed=true ;;
+  /spotify/profile/followers) route_allowed=true ;;
+  /spotify/profile/playlists) route_allowed=true ;;
+  /spotify/profiles/search) route_allowed=true ;;
+  /spotify/search) route_allowed=true ;;
+  /spotify/section) route_allowed=true ;;
+  /spotify/shows/search) route_allowed=true ;;
+  /spotify/track) route_allowed=true ;;
+  /spotify/track/recommended) route_allowed=true ;;
+  /spotify/track/similar-albums) route_allowed=true ;;
+  /spotify/tracks/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/apple-podcasts/show/[^/]+$'
+  '^/apple-podcasts/show/[^/]+/episodes$'
+  '^/apple-podcasts/show/[^/]+/related$'
+  '^/discogs/artist/[^/]+$'
+  '^/discogs/artist/[^/]+/releases$'
+  '^/discogs/label/[^/]+$'
+  '^/discogs/label/[^/]+/releases$'
+  '^/discogs/master/[^/]+$'
+  '^/discogs/release/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the music-podcast-research skill catalog" >&2
+  exit 2
+fi
 
 
 

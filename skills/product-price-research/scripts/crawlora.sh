@@ -56,235 +56,250 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /adidas/product) ;;
-  /adidas/product/review-topics) ;;
-  /adidas/product/reviews) ;;
-  /adidas/search) ;;
-  /adidas/store) ;;
-  /adidas/stores) ;;
-  /adidas/suggest) ;;
-  /amazon/product/*) ;;
-  /amazon/search) ;;
-  /amazon/suggest/*) ;;
-  /bestbuy/brands) ;;
-  /bestbuy/categories) ;;
-  /bestbuy/categories/trending) ;;
-  /bestbuy/category) ;;
-  /bestbuy/category/subcategories) ;;
-  /bestbuy/product) ;;
-  /bestbuy/product/questions) ;;
-  /bestbuy/product/related) ;;
-  /bestbuy/product/reviews) ;;
-  /bestbuy/search) ;;
-  /bestbuy/stores) ;;
-  /bigcommerce/category) ;;
-  /bigcommerce/product) ;;
-  /bigcommerce/search) ;;
-  /boots/search) ;;
-  /boots/suggest) ;;
-  /chewy/brands) ;;
-  /chewy/categories) ;;
-  /chewy/category) ;;
-  /chewy/facets) ;;
-  /chewy/gtin-lookup) ;;
-  /chewy/inventory) ;;
-  /chewy/item-attributes) ;;
-  /chewy/product) ;;
-  /chewy/product-questions) ;;
-  /chewy/product-reviews) ;;
-  /chewy/products) ;;
-  /chewy/search) ;;
-  /chewy/suggest) ;;
-  /chewy/variants) ;;
-  /costco/categories) ;;
-  /costco/product/*) ;;
-  /costco/product/*/availability) ;;
-  /costco/product/*/reviews) ;;
-  /costco/search) ;;
-  /costco/warehouses) ;;
-  /cvs/brands) ;;
-  /cvs/categories) ;;
-  /cvs/category) ;;
-  /cvs/product-ingredients/*) ;;
-  /cvs/product/*) ;;
-  /cvs/search) ;;
-  /cvs/store-locator) ;;
-  /ebay/item/*) ;;
-  /ebay/live/streams) ;;
-  /ebay/live/streams/*) ;;
-  /ebay/live/streams/*/items) ;;
-  /ebay/live/streams/batch) ;;
-  /ebay/search) ;;
-  /ebay/seller/*) ;;
-  /ebay/seller/*/about) ;;
-  /ebay/seller/*/feedback) ;;
-  /ebay/seller/*/shop) ;;
-  /hm/categories) ;;
-  /hm/listing) ;;
-  /hm/product/*) ;;
-  /hm/product/*/related) ;;
-  /hm/search) ;;
-  /hm/search/suggestions) ;;
-  /hm/stores) ;;
-  /homedepot/categories) ;;
-  /homedepot/category) ;;
-  /homedepot/product/*) ;;
-  /homedepot/product/*/questions) ;;
-  /homedepot/search) ;;
-  /homedepot/suggest) ;;
-  /ikea/availability) ;;
-  /ikea/category) ;;
-  /ikea/product) ;;
-  /ikea/reviews) ;;
-  /ikea/search) ;;
-  /ikea/store) ;;
-  /ikea/stores) ;;
-  /ikea/suggest) ;;
-  /kohls/category) ;;
-  /kohls/product/reviews) ;;
-  /kohls/stores) ;;
-  /kohls/suggest) ;;
-  /lazada/categories) ;;
-  /lazada/category-products) ;;
-  /lazada/home) ;;
-  /lazada/product) ;;
-  /lazada/search) ;;
-  /lululemon/categories) ;;
-  /lululemon/category) ;;
-  /lululemon/outfit) ;;
-  /lululemon/product/*) ;;
-  /lululemon/stores) ;;
-  /macys/product/*) ;;
-  /macys/product/reviews) ;;
-  /macys/suggest) ;;
-  /nike/categories) ;;
-  /nike/product) ;;
-  /nike/product/availability) ;;
-  /nike/product/details) ;;
-  /nike/product/recommendations) ;;
-  /nike/product/reviews) ;;
-  /nike/search) ;;
-  /nike/stores) ;;
-  /nike/suggest) ;;
-  /oldnavy/categories) ;;
-  /oldnavy/category) ;;
-  /oldnavy/product) ;;
-  /oldnavy/product/availability) ;;
-  /oldnavy/product/reviews) ;;
-  /oldnavy/search) ;;
-  /oldnavy/stores) ;;
-  /otto/categories) ;;
-  /otto/product) ;;
-  /otto/search) ;;
-  /samsclub/category) ;;
-  /samsclub/content/*) ;;
-  /samsclub/departments) ;;
-  /samsclub/product/*) ;;
-  /samsclub/product/*/related) ;;
-  /sephora/category) ;;
-  /sephora/product) ;;
-  /sephora/product/questions) ;;
-  /sephora/product/reviews) ;;
-  /sephora/search) ;;
-  /sephora/stores) ;;
-  /sephora/suggest) ;;
-  /shein/category/filters) ;;
-  /shein/category/goods) ;;
-  /shein/category/nav) ;;
-  /shein/products/aggregation-filters) ;;
-  /shein/products/detail) ;;
-  /shein/products/search) ;;
-  /shein/search/autocomplete) ;;
-  /shein/search/keywords) ;;
-  /shop-app/analysis) ;;
-  /shop-app/categories) ;;
-  /shop-app/products/*) ;;
-  /shop-app/products/*/related) ;;
-  /shop-app/products/*/reviews) ;;
-  /shop-app/products/*/shop) ;;
-  /shop-app/products/*/variant) ;;
-  /shop-app/products/*/variants) ;;
-  /shop-app/search) ;;
-  /shop-app/shops/*) ;;
-  /shop-app/shops/*/collections/*/products) ;;
-  /shop-app/shops/*/locations) ;;
-  /shop-app/shops/*/products) ;;
-  /shop-app/shops/*/reviews) ;;
-  /shop-app/shops/*/typeahead) ;;
-  /shop-app/suggestions) ;;
-  /shopify/collections) ;;
-  /shopify/collections/*/products) ;;
-  /shopify/pages) ;;
-  /shopify/pages/*) ;;
-  /shopify/products) ;;
-  /shopify/products/*) ;;
-  /shopify/products/*/recommendations) ;;
-  /shopify/search/suggest) ;;
-  /shopify/sitemap/urls) ;;
-  /shopify/sitemaps) ;;
-  /shopify/store) ;;
-  /sparkfun/categories) ;;
-  /sparkfun/category) ;;
-  /sparkfun/product) ;;
-  /sparkfun/search) ;;
-  /target/categories) ;;
-  /target/category-products) ;;
-  /target/filter-options) ;;
-  /target/product) ;;
-  /target/questions) ;;
-  /target/reviews) ;;
-  /target/search) ;;
-  /tokopedia/autocomplete) ;;
-  /tokopedia/category) ;;
-  /tokopedia/home) ;;
-  /tokopedia/home/tabs) ;;
-  /tokopedia/product) ;;
-  /tokopedia/product/review-filters) ;;
-  /tokopedia/search) ;;
-  /tokopedia/search/filters) ;;
-  /ulta/categories) ;;
-  /ulta/category) ;;
-  /ulta/product/*) ;;
-  /ulta/product/questions) ;;
-  /ulta/product/reviews) ;;
-  /ulta/search) ;;
-  /ulta/stores) ;;
-  /ulta/suggest) ;;
-  /walgreens/stores) ;;
-  /walmart/product/*) ;;
-  /walmart/product/*/reviews) ;;
-  /walmart/search) ;;
-  /wayfair/categories) ;;
-  /wayfair/category) ;;
-  /wayfair/product/*) ;;
-  /wish/categories) ;;
-  /wish/product/*) ;;
-  /wish/product/*/related) ;;
-  /wish/product/*/reviews) ;;
-  /wish/search) ;;
-  /wish/suggest) ;;
-  /zalando/category) ;;
-  /zalando/markets) ;;
-  /zalando/product) ;;
-  /zalando/search) ;;
-  /zalando/suggest) ;;
-  /zappos/brand) ;;
-  /zappos/brands) ;;
-  /zappos/product/*) ;;
-  /zappos/search) ;;
-  /zappos/suggest) ;;
-  /zara/categories) ;;
-  /zara/category/*/products) ;;
-  /zara/product/*) ;;
-  /zara/search) ;;
-  /zara/stores) ;;
-  /zara/suggest) ;;
-  *)
-    echo "path is not in the product-price-research skill catalog" >&2
-    exit 2
-    ;;
+  /adidas/product) route_allowed=true ;;
+  /adidas/product/review-topics) route_allowed=true ;;
+  /adidas/product/reviews) route_allowed=true ;;
+  /adidas/search) route_allowed=true ;;
+  /adidas/store) route_allowed=true ;;
+  /adidas/stores) route_allowed=true ;;
+  /adidas/suggest) route_allowed=true ;;
+  /amazon/search) route_allowed=true ;;
+  /bestbuy/brands) route_allowed=true ;;
+  /bestbuy/categories) route_allowed=true ;;
+  /bestbuy/categories/trending) route_allowed=true ;;
+  /bestbuy/category) route_allowed=true ;;
+  /bestbuy/category/subcategories) route_allowed=true ;;
+  /bestbuy/product) route_allowed=true ;;
+  /bestbuy/product/questions) route_allowed=true ;;
+  /bestbuy/product/related) route_allowed=true ;;
+  /bestbuy/product/reviews) route_allowed=true ;;
+  /bestbuy/search) route_allowed=true ;;
+  /bestbuy/stores) route_allowed=true ;;
+  /bigcommerce/category) route_allowed=true ;;
+  /bigcommerce/product) route_allowed=true ;;
+  /bigcommerce/search) route_allowed=true ;;
+  /boots/search) route_allowed=true ;;
+  /boots/suggest) route_allowed=true ;;
+  /chewy/brands) route_allowed=true ;;
+  /chewy/categories) route_allowed=true ;;
+  /chewy/category) route_allowed=true ;;
+  /chewy/facets) route_allowed=true ;;
+  /chewy/gtin-lookup) route_allowed=true ;;
+  /chewy/inventory) route_allowed=true ;;
+  /chewy/item-attributes) route_allowed=true ;;
+  /chewy/product) route_allowed=true ;;
+  /chewy/product-questions) route_allowed=true ;;
+  /chewy/product-reviews) route_allowed=true ;;
+  /chewy/products) route_allowed=true ;;
+  /chewy/search) route_allowed=true ;;
+  /chewy/suggest) route_allowed=true ;;
+  /chewy/variants) route_allowed=true ;;
+  /costco/categories) route_allowed=true ;;
+  /costco/search) route_allowed=true ;;
+  /costco/warehouses) route_allowed=true ;;
+  /cvs/brands) route_allowed=true ;;
+  /cvs/categories) route_allowed=true ;;
+  /cvs/category) route_allowed=true ;;
+  /cvs/search) route_allowed=true ;;
+  /cvs/store-locator) route_allowed=true ;;
+  /ebay/live/streams) route_allowed=true ;;
+  /ebay/live/streams/batch) route_allowed=true ;;
+  /ebay/search) route_allowed=true ;;
+  /hm/categories) route_allowed=true ;;
+  /hm/listing) route_allowed=true ;;
+  /hm/search) route_allowed=true ;;
+  /hm/search/suggestions) route_allowed=true ;;
+  /hm/stores) route_allowed=true ;;
+  /homedepot/categories) route_allowed=true ;;
+  /homedepot/category) route_allowed=true ;;
+  /homedepot/search) route_allowed=true ;;
+  /homedepot/suggest) route_allowed=true ;;
+  /ikea/availability) route_allowed=true ;;
+  /ikea/category) route_allowed=true ;;
+  /ikea/product) route_allowed=true ;;
+  /ikea/reviews) route_allowed=true ;;
+  /ikea/search) route_allowed=true ;;
+  /ikea/store) route_allowed=true ;;
+  /ikea/stores) route_allowed=true ;;
+  /ikea/suggest) route_allowed=true ;;
+  /kohls/category) route_allowed=true ;;
+  /kohls/product/reviews) route_allowed=true ;;
+  /kohls/stores) route_allowed=true ;;
+  /kohls/suggest) route_allowed=true ;;
+  /lazada/categories) route_allowed=true ;;
+  /lazada/category-products) route_allowed=true ;;
+  /lazada/home) route_allowed=true ;;
+  /lazada/product) route_allowed=true ;;
+  /lazada/search) route_allowed=true ;;
+  /lululemon/categories) route_allowed=true ;;
+  /lululemon/category) route_allowed=true ;;
+  /lululemon/outfit) route_allowed=true ;;
+  /lululemon/stores) route_allowed=true ;;
+  /macys/product/reviews) route_allowed=true ;;
+  /macys/suggest) route_allowed=true ;;
+  /nike/categories) route_allowed=true ;;
+  /nike/product) route_allowed=true ;;
+  /nike/product/availability) route_allowed=true ;;
+  /nike/product/details) route_allowed=true ;;
+  /nike/product/recommendations) route_allowed=true ;;
+  /nike/product/reviews) route_allowed=true ;;
+  /nike/search) route_allowed=true ;;
+  /nike/stores) route_allowed=true ;;
+  /nike/suggest) route_allowed=true ;;
+  /oldnavy/categories) route_allowed=true ;;
+  /oldnavy/category) route_allowed=true ;;
+  /oldnavy/product) route_allowed=true ;;
+  /oldnavy/product/availability) route_allowed=true ;;
+  /oldnavy/product/reviews) route_allowed=true ;;
+  /oldnavy/search) route_allowed=true ;;
+  /oldnavy/stores) route_allowed=true ;;
+  /otto/categories) route_allowed=true ;;
+  /otto/product) route_allowed=true ;;
+  /otto/search) route_allowed=true ;;
+  /samsclub/category) route_allowed=true ;;
+  /samsclub/departments) route_allowed=true ;;
+  /sephora/category) route_allowed=true ;;
+  /sephora/product) route_allowed=true ;;
+  /sephora/product/questions) route_allowed=true ;;
+  /sephora/product/reviews) route_allowed=true ;;
+  /sephora/search) route_allowed=true ;;
+  /sephora/stores) route_allowed=true ;;
+  /sephora/suggest) route_allowed=true ;;
+  /shein/category/filters) route_allowed=true ;;
+  /shein/category/goods) route_allowed=true ;;
+  /shein/category/nav) route_allowed=true ;;
+  /shein/products/aggregation-filters) route_allowed=true ;;
+  /shein/products/detail) route_allowed=true ;;
+  /shein/products/search) route_allowed=true ;;
+  /shein/search/autocomplete) route_allowed=true ;;
+  /shein/search/keywords) route_allowed=true ;;
+  /shop-app/analysis) route_allowed=true ;;
+  /shop-app/categories) route_allowed=true ;;
+  /shop-app/search) route_allowed=true ;;
+  /shop-app/suggestions) route_allowed=true ;;
+  /shopify/collections) route_allowed=true ;;
+  /shopify/pages) route_allowed=true ;;
+  /shopify/products) route_allowed=true ;;
+  /shopify/search/suggest) route_allowed=true ;;
+  /shopify/sitemap/urls) route_allowed=true ;;
+  /shopify/sitemaps) route_allowed=true ;;
+  /shopify/store) route_allowed=true ;;
+  /sparkfun/categories) route_allowed=true ;;
+  /sparkfun/category) route_allowed=true ;;
+  /sparkfun/product) route_allowed=true ;;
+  /sparkfun/search) route_allowed=true ;;
+  /target/categories) route_allowed=true ;;
+  /target/category-products) route_allowed=true ;;
+  /target/filter-options) route_allowed=true ;;
+  /target/product) route_allowed=true ;;
+  /target/questions) route_allowed=true ;;
+  /target/reviews) route_allowed=true ;;
+  /target/search) route_allowed=true ;;
+  /tokopedia/autocomplete) route_allowed=true ;;
+  /tokopedia/category) route_allowed=true ;;
+  /tokopedia/home) route_allowed=true ;;
+  /tokopedia/home/tabs) route_allowed=true ;;
+  /tokopedia/product) route_allowed=true ;;
+  /tokopedia/product/review-filters) route_allowed=true ;;
+  /tokopedia/search) route_allowed=true ;;
+  /tokopedia/search/filters) route_allowed=true ;;
+  /ulta/categories) route_allowed=true ;;
+  /ulta/category) route_allowed=true ;;
+  /ulta/product/questions) route_allowed=true ;;
+  /ulta/product/reviews) route_allowed=true ;;
+  /ulta/search) route_allowed=true ;;
+  /ulta/stores) route_allowed=true ;;
+  /ulta/suggest) route_allowed=true ;;
+  /walgreens/stores) route_allowed=true ;;
+  /walmart/search) route_allowed=true ;;
+  /wayfair/categories) route_allowed=true ;;
+  /wayfair/category) route_allowed=true ;;
+  /wish/categories) route_allowed=true ;;
+  /wish/search) route_allowed=true ;;
+  /wish/suggest) route_allowed=true ;;
+  /zalando/category) route_allowed=true ;;
+  /zalando/markets) route_allowed=true ;;
+  /zalando/product) route_allowed=true ;;
+  /zalando/search) route_allowed=true ;;
+  /zalando/suggest) route_allowed=true ;;
+  /zappos/brand) route_allowed=true ;;
+  /zappos/brands) route_allowed=true ;;
+  /zappos/search) route_allowed=true ;;
+  /zappos/suggest) route_allowed=true ;;
+  /zara/categories) route_allowed=true ;;
+  /zara/search) route_allowed=true ;;
+  /zara/stores) route_allowed=true ;;
+  /zara/suggest) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/amazon/product/[^/]+$'
+  '^/amazon/suggest/[^/]+$'
+  '^/costco/product/[^/]+$'
+  '^/costco/product/[^/]+/availability$'
+  '^/costco/product/[^/]+/reviews$'
+  '^/cvs/product-ingredients/[^/]+$'
+  '^/cvs/product/[^/]+$'
+  '^/ebay/item/[^/]+$'
+  '^/ebay/live/streams/[^/]+$'
+  '^/ebay/live/streams/[^/]+/items$'
+  '^/ebay/seller/[^/]+$'
+  '^/ebay/seller/[^/]+/about$'
+  '^/ebay/seller/[^/]+/feedback$'
+  '^/ebay/seller/[^/]+/shop$'
+  '^/hm/product/[^/]+$'
+  '^/hm/product/[^/]+/related$'
+  '^/homedepot/product/[^/]+$'
+  '^/homedepot/product/[^/]+/questions$'
+  '^/lululemon/product/[^/]+$'
+  '^/macys/product/[^/]+$'
+  '^/samsclub/content/[^/]+$'
+  '^/samsclub/product/[^/]+$'
+  '^/samsclub/product/[^/]+/related$'
+  '^/shop-app/products/[^/]+$'
+  '^/shop-app/products/[^/]+/related$'
+  '^/shop-app/products/[^/]+/reviews$'
+  '^/shop-app/products/[^/]+/shop$'
+  '^/shop-app/products/[^/]+/variant$'
+  '^/shop-app/products/[^/]+/variants$'
+  '^/shop-app/shops/[^/]+$'
+  '^/shop-app/shops/[^/]+/collections/[^/]+/products$'
+  '^/shop-app/shops/[^/]+/locations$'
+  '^/shop-app/shops/[^/]+/products$'
+  '^/shop-app/shops/[^/]+/reviews$'
+  '^/shop-app/shops/[^/]+/typeahead$'
+  '^/shopify/collections/[^/]+/products$'
+  '^/shopify/pages/[^/]+$'
+  '^/shopify/products/[^/]+$'
+  '^/shopify/products/[^/]+/recommendations$'
+  '^/ulta/product/[^/]+$'
+  '^/walmart/product/[^/]+$'
+  '^/walmart/product/[^/]+/reviews$'
+  '^/wayfair/product/[^/]+$'
+  '^/wish/product/[^/]+$'
+  '^/wish/product/[^/]+/related$'
+  '^/wish/product/[^/]+/reviews$'
+  '^/zappos/product/[^/]+$'
+  '^/zara/category/[^/]+/products$'
+  '^/zara/product/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the product-price-research skill catalog" >&2
+  exit 2
+fi
 
 
 

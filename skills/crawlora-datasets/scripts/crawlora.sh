@@ -56,138 +56,153 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /datasets) ;;
-  /datasets/airbnb-markets/facets) ;;
-  /datasets/airbnb-markets/items/*) ;;
-  /datasets/airbnb-markets/nearby) ;;
-  /datasets/airbnb-markets/search) ;;
-  /datasets/apple-podcasts-shows/facets) ;;
-  /datasets/apple-podcasts-shows/items/*) ;;
-  /datasets/apple-podcasts-shows/search) ;;
-  /datasets/apps-charts/search) ;;
-  /datasets/apps-reviews/search) ;;
-  /datasets/apps/search) ;;
-  /datasets/bbb-businesses/facets) ;;
-  /datasets/bbb-businesses/items/*) ;;
-  /datasets/bbb-businesses/search) ;;
-  /datasets/boxofficemojo/facets) ;;
-  /datasets/boxofficemojo/items/*) ;;
-  /datasets/boxofficemojo/search) ;;
-  /datasets/chrome-extensions/changes) ;;
-  /datasets/chrome-extensions/facets) ;;
-  /datasets/chrome-extensions/history/*) ;;
-  /datasets/chrome-extensions/items/*) ;;
-  /datasets/chrome-extensions/metrics) ;;
-  /datasets/chrome-extensions/search) ;;
-  /datasets/chrome-extensions/trending) ;;
-  /datasets/creators/search) ;;
-  /datasets/facebook-pages/facets) ;;
-  /datasets/facebook-pages/items/*) ;;
-  /datasets/facebook-pages/search) ;;
-  /datasets/github-users/facets) ;;
-  /datasets/github-users/items/*) ;;
-  /datasets/github-users/nearby) ;;
-  /datasets/github-users/search) ;;
-  /datasets/goodreads-authors/facets) ;;
-  /datasets/goodreads-authors/items/*) ;;
-  /datasets/goodreads-authors/search) ;;
-  /datasets/goodreads-books/facets) ;;
-  /datasets/goodreads-books/items/*) ;;
-  /datasets/goodreads-books/search) ;;
-  /datasets/google-map-businesses/facets) ;;
-  /datasets/google-map-businesses/items/*) ;;
-  /datasets/google-map-businesses/nearby) ;;
-  /datasets/google-map-businesses/search) ;;
-  /datasets/housing-markets/facets) ;;
-  /datasets/housing-markets/items/*/*) ;;
-  /datasets/housing-markets/search) ;;
-  /datasets/instagram-users/facets) ;;
-  /datasets/instagram-users/items/*) ;;
-  /datasets/instagram-users/search) ;;
-  /datasets/jobs/companies) ;;
-  /datasets/jobs/companies/*) ;;
-  /datasets/jobs/facets) ;;
-  /datasets/jobs/items/*) ;;
-  /datasets/jobs/nearby) ;;
-  /datasets/jobs/search) ;;
-  /datasets/journalists/facets) ;;
-  /datasets/journalists/items/*/*) ;;
-  /datasets/journalists/search) ;;
-  /datasets/numbeo-cities/facets) ;;
-  /datasets/numbeo-cities/items/*) ;;
-  /datasets/numbeo-cities/search) ;;
-  /datasets/numbeo-countries/items/*) ;;
-  /datasets/numbeo-countries/search) ;;
-  /datasets/pitchbook-advisors/facets) ;;
-  /datasets/pitchbook-advisors/items/*) ;;
-  /datasets/pitchbook-advisors/search) ;;
-  /datasets/pitchbook-companies/facets) ;;
-  /datasets/pitchbook-companies/items/*) ;;
-  /datasets/pitchbook-companies/search) ;;
-  /datasets/pitchbook-funds/facets) ;;
-  /datasets/pitchbook-funds/items/*) ;;
-  /datasets/pitchbook-funds/search) ;;
-  /datasets/pitchbook-investors/facets) ;;
-  /datasets/pitchbook-investors/items/*) ;;
-  /datasets/pitchbook-investors/search) ;;
-  /datasets/pitchbook-limited-partners/facets) ;;
-  /datasets/pitchbook-limited-partners/items/*) ;;
-  /datasets/pitchbook-limited-partners/search) ;;
-  /datasets/playstation-games/facets) ;;
-  /datasets/playstation-games/items/*) ;;
-  /datasets/playstation-games/search) ;;
-  /datasets/producthunt-makers/facets) ;;
-  /datasets/producthunt-makers/items/*) ;;
-  /datasets/producthunt-makers/search) ;;
-  /datasets/producthunt-products/facets) ;;
-  /datasets/producthunt-products/items/*) ;;
-  /datasets/producthunt-products/search) ;;
-  /datasets/producthunt-trends/facets) ;;
-  /datasets/producthunt-trends/search) ;;
-  /datasets/reddit-trending/search) ;;
-  /datasets/sec-companies/facets) ;;
-  /datasets/sec-companies/financials/*) ;;
-  /datasets/sec-companies/insider/*) ;;
-  /datasets/sec-companies/items/*) ;;
-  /datasets/sec-companies/search) ;;
-  /datasets/sec-institutional-positions/facets) ;;
-  /datasets/sec-institutional-positions/search) ;;
-  /datasets/starbucks-stores/facets) ;;
-  /datasets/starbucks-stores/items/*) ;;
-  /datasets/starbucks-stores/nearby) ;;
-  /datasets/starbucks-stores/search) ;;
-  /datasets/steam-achievements/search) ;;
-  /datasets/steam-charts/search) ;;
-  /datasets/steam-games/facets) ;;
-  /datasets/steam-games/items/*) ;;
-  /datasets/steam-games/search) ;;
-  /datasets/steam-news/search) ;;
-  /datasets/steam-playercounts/search) ;;
-  /datasets/steam-prices/search) ;;
-  /datasets/steam-reviews/search) ;;
-  /datasets/techstack/facets) ;;
-  /datasets/techstack/items/*) ;;
-  /datasets/techstack/search) ;;
-  /datasets/trustmrr/facets) ;;
-  /datasets/trustmrr/history/*) ;;
-  /datasets/trustmrr/items/*) ;;
-  /datasets/trustmrr/search) ;;
-  /datasets/vehicle-listings/facets) ;;
-  /datasets/vehicle-listings/items/*) ;;
-  /datasets/vehicle-listings/price-history/*) ;;
-  /datasets/vehicle-listings/search) ;;
-  /datasets/x-users/facets) ;;
-  /datasets/x-users/items/*) ;;
-  /datasets/x-users/search) ;;
-  /datasets/youtube-creators/facets) ;;
-  /datasets/youtube-creators/items/*) ;;
-  /datasets/youtube-creators/search) ;;
-  *)
-    echo "path is not in the crawlora-datasets skill catalog" >&2
-    exit 2
-    ;;
+  /datasets) route_allowed=true ;;
+  /datasets/airbnb-markets/facets) route_allowed=true ;;
+  /datasets/airbnb-markets/nearby) route_allowed=true ;;
+  /datasets/airbnb-markets/search) route_allowed=true ;;
+  /datasets/apple-podcasts-shows/facets) route_allowed=true ;;
+  /datasets/apple-podcasts-shows/search) route_allowed=true ;;
+  /datasets/apps-charts/search) route_allowed=true ;;
+  /datasets/apps-reviews/search) route_allowed=true ;;
+  /datasets/apps/search) route_allowed=true ;;
+  /datasets/bbb-businesses/facets) route_allowed=true ;;
+  /datasets/bbb-businesses/search) route_allowed=true ;;
+  /datasets/boxofficemojo/facets) route_allowed=true ;;
+  /datasets/boxofficemojo/search) route_allowed=true ;;
+  /datasets/chrome-extensions/changes) route_allowed=true ;;
+  /datasets/chrome-extensions/facets) route_allowed=true ;;
+  /datasets/chrome-extensions/metrics) route_allowed=true ;;
+  /datasets/chrome-extensions/search) route_allowed=true ;;
+  /datasets/chrome-extensions/trending) route_allowed=true ;;
+  /datasets/creators/search) route_allowed=true ;;
+  /datasets/facebook-pages/facets) route_allowed=true ;;
+  /datasets/facebook-pages/search) route_allowed=true ;;
+  /datasets/github-users/facets) route_allowed=true ;;
+  /datasets/github-users/nearby) route_allowed=true ;;
+  /datasets/github-users/search) route_allowed=true ;;
+  /datasets/goodreads-authors/facets) route_allowed=true ;;
+  /datasets/goodreads-authors/search) route_allowed=true ;;
+  /datasets/goodreads-books/facets) route_allowed=true ;;
+  /datasets/goodreads-books/search) route_allowed=true ;;
+  /datasets/google-map-businesses/facets) route_allowed=true ;;
+  /datasets/google-map-businesses/nearby) route_allowed=true ;;
+  /datasets/google-map-businesses/search) route_allowed=true ;;
+  /datasets/housing-markets/facets) route_allowed=true ;;
+  /datasets/housing-markets/search) route_allowed=true ;;
+  /datasets/instagram-users/facets) route_allowed=true ;;
+  /datasets/instagram-users/search) route_allowed=true ;;
+  /datasets/jobs/companies) route_allowed=true ;;
+  /datasets/jobs/facets) route_allowed=true ;;
+  /datasets/jobs/nearby) route_allowed=true ;;
+  /datasets/jobs/search) route_allowed=true ;;
+  /datasets/journalists/facets) route_allowed=true ;;
+  /datasets/journalists/search) route_allowed=true ;;
+  /datasets/numbeo-cities/facets) route_allowed=true ;;
+  /datasets/numbeo-cities/search) route_allowed=true ;;
+  /datasets/numbeo-countries/search) route_allowed=true ;;
+  /datasets/pitchbook-advisors/facets) route_allowed=true ;;
+  /datasets/pitchbook-advisors/search) route_allowed=true ;;
+  /datasets/pitchbook-companies/facets) route_allowed=true ;;
+  /datasets/pitchbook-companies/search) route_allowed=true ;;
+  /datasets/pitchbook-funds/facets) route_allowed=true ;;
+  /datasets/pitchbook-funds/search) route_allowed=true ;;
+  /datasets/pitchbook-investors/facets) route_allowed=true ;;
+  /datasets/pitchbook-investors/search) route_allowed=true ;;
+  /datasets/pitchbook-limited-partners/facets) route_allowed=true ;;
+  /datasets/pitchbook-limited-partners/search) route_allowed=true ;;
+  /datasets/playstation-games/facets) route_allowed=true ;;
+  /datasets/playstation-games/search) route_allowed=true ;;
+  /datasets/producthunt-makers/facets) route_allowed=true ;;
+  /datasets/producthunt-makers/search) route_allowed=true ;;
+  /datasets/producthunt-products/facets) route_allowed=true ;;
+  /datasets/producthunt-products/search) route_allowed=true ;;
+  /datasets/producthunt-trends/facets) route_allowed=true ;;
+  /datasets/producthunt-trends/search) route_allowed=true ;;
+  /datasets/reddit-trending/search) route_allowed=true ;;
+  /datasets/sec-companies/facets) route_allowed=true ;;
+  /datasets/sec-companies/search) route_allowed=true ;;
+  /datasets/sec-institutional-positions/facets) route_allowed=true ;;
+  /datasets/sec-institutional-positions/search) route_allowed=true ;;
+  /datasets/starbucks-stores/facets) route_allowed=true ;;
+  /datasets/starbucks-stores/nearby) route_allowed=true ;;
+  /datasets/starbucks-stores/search) route_allowed=true ;;
+  /datasets/steam-achievements/search) route_allowed=true ;;
+  /datasets/steam-charts/search) route_allowed=true ;;
+  /datasets/steam-games/facets) route_allowed=true ;;
+  /datasets/steam-games/search) route_allowed=true ;;
+  /datasets/steam-news/search) route_allowed=true ;;
+  /datasets/steam-playercounts/search) route_allowed=true ;;
+  /datasets/steam-prices/search) route_allowed=true ;;
+  /datasets/steam-reviews/search) route_allowed=true ;;
+  /datasets/techstack/facets) route_allowed=true ;;
+  /datasets/techstack/search) route_allowed=true ;;
+  /datasets/trustmrr/facets) route_allowed=true ;;
+  /datasets/trustmrr/search) route_allowed=true ;;
+  /datasets/vehicle-listings/facets) route_allowed=true ;;
+  /datasets/vehicle-listings/search) route_allowed=true ;;
+  /datasets/x-users/facets) route_allowed=true ;;
+  /datasets/x-users/search) route_allowed=true ;;
+  /datasets/youtube-creators/facets) route_allowed=true ;;
+  /datasets/youtube-creators/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/datasets/airbnb-markets/items/[^/]+$'
+  '^/datasets/apple-podcasts-shows/items/[^/]+$'
+  '^/datasets/bbb-businesses/items/[^/]+$'
+  '^/datasets/boxofficemojo/items/[^/]+$'
+  '^/datasets/chrome-extensions/history/[^/]+$'
+  '^/datasets/chrome-extensions/items/[^/]+$'
+  '^/datasets/facebook-pages/items/[^/]+$'
+  '^/datasets/github-users/items/[^/]+$'
+  '^/datasets/goodreads-authors/items/[^/]+$'
+  '^/datasets/goodreads-books/items/[^/]+$'
+  '^/datasets/google-map-businesses/items/[^/]+$'
+  '^/datasets/housing-markets/items/[^/]+/[^/]+$'
+  '^/datasets/instagram-users/items/[^/]+$'
+  '^/datasets/jobs/companies/[^/]+$'
+  '^/datasets/jobs/items/[^/]+$'
+  '^/datasets/journalists/items/[^/]+/[^/]+$'
+  '^/datasets/numbeo-cities/items/[^/]+$'
+  '^/datasets/numbeo-countries/items/[^/]+$'
+  '^/datasets/pitchbook-advisors/items/[^/]+$'
+  '^/datasets/pitchbook-companies/items/[^/]+$'
+  '^/datasets/pitchbook-funds/items/[^/]+$'
+  '^/datasets/pitchbook-investors/items/[^/]+$'
+  '^/datasets/pitchbook-limited-partners/items/[^/]+$'
+  '^/datasets/playstation-games/items/[^/]+$'
+  '^/datasets/producthunt-makers/items/[^/]+$'
+  '^/datasets/producthunt-products/items/[^/]+$'
+  '^/datasets/sec-companies/financials/[^/]+$'
+  '^/datasets/sec-companies/insider/[^/]+$'
+  '^/datasets/sec-companies/items/[^/]+$'
+  '^/datasets/starbucks-stores/items/[^/]+$'
+  '^/datasets/steam-games/items/[^/]+$'
+  '^/datasets/techstack/items/[^/]+$'
+  '^/datasets/trustmrr/history/[^/]+$'
+  '^/datasets/trustmrr/items/[^/]+$'
+  '^/datasets/vehicle-listings/items/[^/]+$'
+  '^/datasets/vehicle-listings/price-history/[^/]+$'
+  '^/datasets/x-users/items/[^/]+$'
+  '^/datasets/youtube-creators/items/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the crawlora-datasets skill catalog" >&2
+  exit 2
+fi
 
 
 

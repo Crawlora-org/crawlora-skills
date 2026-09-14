@@ -56,92 +56,107 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /bilibili/anime-home) ;;
-  /bilibili/autocomplete) ;;
-  /bilibili/guochuang-home) ;;
-  /bilibili/must-watch) ;;
-  /bilibili/popular) ;;
-  /bilibili/ranking) ;;
-  /bilibili/vertical-home) ;;
-  /bilibili/weekly) ;;
-  /bluesky/author-feed) ;;
-  /bluesky/followers) ;;
-  /bluesky/follows) ;;
-  /bluesky/post-thread) ;;
-  /bluesky/profile) ;;
-  /bluesky/search-actors) ;;
-  /bluesky/trending-topics) ;;
-  /facebook/*) ;;
-  /facebook/marketplace/search) ;;
-  /instagram/post/*/*) ;;
-  /instagram/profile/*) ;;
-  /instagram/reels/*) ;;
-  /linkedin/company/*) ;;
-  /linkedin/product/*) ;;
-  /linkedin/showcase/*) ;;
-  /patreon/creator) ;;
-  /patreon/creator/tiers) ;;
-  /patreon/explore) ;;
-  /patreon/rss) ;;
-  /pinterest/board/*/*) ;;
-  /pinterest/categories) ;;
-  /pinterest/ideas/*) ;;
-  /pinterest/pin/*) ;;
-  /pinterest/search) ;;
-  /pinterest/user/*) ;;
-  /pinterest/user/*/boards) ;;
-  /pinterest/user/*/pins) ;;
-  /reddit/comments/*) ;;
-  /reddit/domain/*/posts) ;;
-  /reddit/leads) ;;
-  /reddit/post/*) ;;
-  /reddit/search) ;;
-  /reddit/subreddit/*/about) ;;
-  /reddit/subreddit/*/comments) ;;
-  /reddit/subreddit/*/posts) ;;
-  /reddit/subreddits/posts) ;;
-  /reddit/trends) ;;
-  /reddit/user/*/comments) ;;
-  /reddit/user/*/posts) ;;
-  /threads/post/*/*) ;;
-  /threads/post/*/*/replies) ;;
-  /threads/profile/*) ;;
-  /threads/profile/*/posts) ;;
-  /threads/search) ;;
-  /tiktok/category) ;;
-  /tiktok/comments) ;;
-  /tiktok/creative-center/hashtags) ;;
-  /tiktok/creative-center/videos) ;;
-  /tiktok/explore/*) ;;
-  /tiktok/hashtag/*) ;;
-  /tiktok/hashtags) ;;
-  /tiktok/popular-trend/country-industry-meta) ;;
-  /tiktok/post/*) ;;
-  /tiktok/posts) ;;
-  /tiktok/profile/*) ;;
-  /tiktok/search) ;;
-  /tiktok/search/hashtag) ;;
-  /tiktok/search/user) ;;
-  /tiktok/top-ads/analysis) ;;
-  /tiktok/top-ads/detail) ;;
-  /tiktok/top-ads/filters) ;;
-  /tiktok/top-ads/list) ;;
-  /tiktok/top-ads/location-info) ;;
-  /tiktok/top-ads/locations) ;;
-  /tiktok/top-ads/recommend) ;;
-  /tiktok/top-ads/safety) ;;
-  /tiktok/top-ads/spotlight) ;;
-  /tiktok/top-ads/suggestions) ;;
-  /tiktok/trending) ;;
-  /x/post/*) ;;
-  /x/profile/*) ;;
-  /x/profile/*/posts) ;;
-  *)
-    echo "path is not in the social-media-research skill catalog" >&2
-    exit 2
-    ;;
+  /bilibili/anime-home) route_allowed=true ;;
+  /bilibili/autocomplete) route_allowed=true ;;
+  /bilibili/guochuang-home) route_allowed=true ;;
+  /bilibili/must-watch) route_allowed=true ;;
+  /bilibili/popular) route_allowed=true ;;
+  /bilibili/ranking) route_allowed=true ;;
+  /bilibili/vertical-home) route_allowed=true ;;
+  /bilibili/weekly) route_allowed=true ;;
+  /bluesky/author-feed) route_allowed=true ;;
+  /bluesky/followers) route_allowed=true ;;
+  /bluesky/follows) route_allowed=true ;;
+  /bluesky/post-thread) route_allowed=true ;;
+  /bluesky/profile) route_allowed=true ;;
+  /bluesky/search-actors) route_allowed=true ;;
+  /bluesky/trending-topics) route_allowed=true ;;
+  /facebook/marketplace/search) route_allowed=true ;;
+  /patreon/creator) route_allowed=true ;;
+  /patreon/creator/tiers) route_allowed=true ;;
+  /patreon/explore) route_allowed=true ;;
+  /patreon/rss) route_allowed=true ;;
+  /pinterest/categories) route_allowed=true ;;
+  /pinterest/search) route_allowed=true ;;
+  /reddit/leads) route_allowed=true ;;
+  /reddit/search) route_allowed=true ;;
+  /reddit/subreddits/posts) route_allowed=true ;;
+  /reddit/trends) route_allowed=true ;;
+  /threads/search) route_allowed=true ;;
+  /tiktok/category) route_allowed=true ;;
+  /tiktok/comments) route_allowed=true ;;
+  /tiktok/creative-center/hashtags) route_allowed=true ;;
+  /tiktok/creative-center/videos) route_allowed=true ;;
+  /tiktok/hashtags) route_allowed=true ;;
+  /tiktok/popular-trend/country-industry-meta) route_allowed=true ;;
+  /tiktok/posts) route_allowed=true ;;
+  /tiktok/search) route_allowed=true ;;
+  /tiktok/search/hashtag) route_allowed=true ;;
+  /tiktok/search/user) route_allowed=true ;;
+  /tiktok/top-ads/analysis) route_allowed=true ;;
+  /tiktok/top-ads/detail) route_allowed=true ;;
+  /tiktok/top-ads/filters) route_allowed=true ;;
+  /tiktok/top-ads/list) route_allowed=true ;;
+  /tiktok/top-ads/location-info) route_allowed=true ;;
+  /tiktok/top-ads/locations) route_allowed=true ;;
+  /tiktok/top-ads/recommend) route_allowed=true ;;
+  /tiktok/top-ads/safety) route_allowed=true ;;
+  /tiktok/top-ads/spotlight) route_allowed=true ;;
+  /tiktok/top-ads/suggestions) route_allowed=true ;;
+  /tiktok/trending) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/facebook/[^/]+$'
+  '^/instagram/post/[^/]+/[^/]+$'
+  '^/instagram/profile/[^/]+$'
+  '^/instagram/reels/[^/]+$'
+  '^/linkedin/company/[^/]+$'
+  '^/linkedin/product/[^/]+$'
+  '^/linkedin/showcase/[^/]+$'
+  '^/pinterest/board/[^/]+/[^/]+$'
+  '^/pinterest/ideas/[^/]+$'
+  '^/pinterest/pin/[^/]+$'
+  '^/pinterest/user/[^/]+$'
+  '^/pinterest/user/[^/]+/boards$'
+  '^/pinterest/user/[^/]+/pins$'
+  '^/reddit/comments/[^/]+$'
+  '^/reddit/domain/[^/]+/posts$'
+  '^/reddit/post/[^/]+$'
+  '^/reddit/subreddit/[^/]+/about$'
+  '^/reddit/subreddit/[^/]+/comments$'
+  '^/reddit/subreddit/[^/]+/posts$'
+  '^/reddit/user/[^/]+/comments$'
+  '^/reddit/user/[^/]+/posts$'
+  '^/threads/post/[^/]+/[^/]+$'
+  '^/threads/post/[^/]+/[^/]+/replies$'
+  '^/threads/profile/[^/]+$'
+  '^/threads/profile/[^/]+/posts$'
+  '^/tiktok/explore/[^/]+$'
+  '^/tiktok/hashtag/[^/]+$'
+  '^/tiktok/post/[^/]+$'
+  '^/tiktok/profile/[^/]+$'
+  '^/x/post/[^/]+$'
+  '^/x/profile/[^/]+$'
+  '^/x/profile/[^/]+/posts$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the social-media-research skill catalog" >&2
+  exit 2
+fi
 
 
 

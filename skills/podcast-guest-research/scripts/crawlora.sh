@@ -56,26 +56,41 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /apple-podcasts/episodes/search) ;;
-  /apple-podcasts/search) ;;
-  /apple-podcasts/show/*) ;;
-  /apple-podcasts/show/*/episodes) ;;
-  /apple-podcasts/show/*/related) ;;
-  /bing/search) ;;
-  /datasets/apple-podcasts-shows/facets) ;;
-  /datasets/apple-podcasts-shows/items/*) ;;
-  /datasets/apple-podcasts-shows/search) ;;
-  /spotify-podcasts/episode) ;;
-  /spotify-podcasts/search) ;;
-  /spotify-podcasts/show) ;;
-  /spotify-podcasts/show/episodes) ;;
-  /web/scrape) ;;
-  *)
-    echo "path is not in the podcast-guest-research skill catalog" >&2
-    exit 2
-    ;;
+  /apple-podcasts/episodes/search) route_allowed=true ;;
+  /apple-podcasts/search) route_allowed=true ;;
+  /bing/search) route_allowed=true ;;
+  /datasets/apple-podcasts-shows/facets) route_allowed=true ;;
+  /datasets/apple-podcasts-shows/search) route_allowed=true ;;
+  /spotify-podcasts/episode) route_allowed=true ;;
+  /spotify-podcasts/search) route_allowed=true ;;
+  /spotify-podcasts/show) route_allowed=true ;;
+  /spotify-podcasts/show/episodes) route_allowed=true ;;
+  /web/scrape) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/apple-podcasts/show/[^/]+$'
+  '^/apple-podcasts/show/[^/]+/episodes$'
+  '^/apple-podcasts/show/[^/]+/related$'
+  '^/datasets/apple-podcasts-shows/items/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the podcast-guest-research skill catalog" >&2
+  exit 2
+fi
 
 
 

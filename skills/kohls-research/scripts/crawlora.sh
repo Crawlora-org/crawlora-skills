@@ -56,16 +56,32 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /kohls/category) ;;
-  /kohls/product/reviews) ;;
-  /kohls/stores) ;;
-  /kohls/suggest) ;;
-  *)
-    echo "path is not in the kohls-research skill catalog" >&2
-    exit 2
-    ;;
+  /kohls/category) route_allowed=true ;;
+  /kohls/product/reviews) route_allowed=true ;;
+  /kohls/stores) route_allowed=true ;;
+  /kohls/suggest) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the kohls-research skill catalog" >&2
+  exit 2
+fi
 
 
 

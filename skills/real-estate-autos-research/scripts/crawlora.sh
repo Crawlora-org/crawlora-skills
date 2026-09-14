@@ -56,40 +56,55 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /autotrader/dealer/*) ;;
-  /autotrader/search) ;;
-  /autotrader/vehicle/*) ;;
-  /carmax/search) ;;
-  /carmax/search/suggestions) ;;
-  /carmax/shop-by-brand) ;;
-  /carmax/store/*) ;;
-  /carmax/stores) ;;
-  /carmax/vehicle/*) ;;
-  /carmax/vehicle/*/recommendations) ;;
-  /carsdotcom/search) ;;
-  /carsdotcom/vehicle/*) ;;
-  /redfin/estimate) ;;
-  /redfin/property) ;;
-  /redfin/region-trends) ;;
-  /redfin/search) ;;
-  /redfin/similar) ;;
-  /rightmove/agents) ;;
-  /rightmove/agents/*) ;;
-  /rightmove/autocomplete) ;;
-  /rightmove/commercial/search) ;;
-  /rightmove/new-homes/search) ;;
-  /rightmove/properties/*) ;;
-  /rightmove/search) ;;
-  /rightmove/student/search) ;;
-  /zillow/autocomplete) ;;
-  /zillow/property/*) ;;
-  /zillow/search) ;;
-  *)
-    echo "path is not in the real-estate-autos-research skill catalog" >&2
-    exit 2
-    ;;
+  /autotrader/search) route_allowed=true ;;
+  /carmax/search) route_allowed=true ;;
+  /carmax/search/suggestions) route_allowed=true ;;
+  /carmax/shop-by-brand) route_allowed=true ;;
+  /carmax/stores) route_allowed=true ;;
+  /carsdotcom/search) route_allowed=true ;;
+  /redfin/estimate) route_allowed=true ;;
+  /redfin/property) route_allowed=true ;;
+  /redfin/region-trends) route_allowed=true ;;
+  /redfin/search) route_allowed=true ;;
+  /redfin/similar) route_allowed=true ;;
+  /rightmove/agents) route_allowed=true ;;
+  /rightmove/autocomplete) route_allowed=true ;;
+  /rightmove/commercial/search) route_allowed=true ;;
+  /rightmove/new-homes/search) route_allowed=true ;;
+  /rightmove/search) route_allowed=true ;;
+  /rightmove/student/search) route_allowed=true ;;
+  /zillow/autocomplete) route_allowed=true ;;
+  /zillow/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/autotrader/dealer/[^/]+$'
+  '^/autotrader/vehicle/[^/]+$'
+  '^/carmax/store/[^/]+$'
+  '^/carmax/vehicle/[^/]+$'
+  '^/carmax/vehicle/[^/]+/recommendations$'
+  '^/carsdotcom/vehicle/[^/]+$'
+  '^/rightmove/agents/[^/]+$'
+  '^/rightmove/properties/[^/]+$'
+  '^/zillow/property/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the real-estate-autos-research skill catalog" >&2
+  exit 2
+fi
 
 
 

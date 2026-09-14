@@ -56,89 +56,104 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /coingecko/categories) ;;
-  /coingecko/category/*/coins) ;;
-  /coingecko/chains) ;;
-  /coingecko/chains/*) ;;
-  /coingecko/coin/*) ;;
-  /coingecko/coin/*/analysis) ;;
-  /coingecko/exchange/*) ;;
-  /coingecko/exchanges) ;;
-  /coingecko/gainers-losers) ;;
-  /coingecko/global) ;;
-  /coingecko/global/charts) ;;
-  /coingecko/learn/articles) ;;
-  /coingecko/markets) ;;
-  /coingecko/new-coins) ;;
-  /coingecko/news) ;;
-  /coingecko/nft/category/*) ;;
-  /coingecko/nfts) ;;
-  /coingecko/search) ;;
-  /coingecko/token-unlocks) ;;
-  /coingecko/treasuries) ;;
-  /coingecko/trending) ;;
-  /congress/report) ;;
-  /congress/stock-disclosures) ;;
-  /pitchbook/advisor) ;;
-  /pitchbook/company) ;;
-  /pitchbook/fund) ;;
-  /pitchbook/investor) ;;
-  /pitchbook/limited-partner) ;;
-  /sec/company/intelligence) ;;
-  /sec/company/search) ;;
-  /sec/company/submissions) ;;
-  /sec/filing) ;;
-  /sec/filing/sections) ;;
-  /sec/financials) ;;
-  /sec/frames) ;;
-  /sec/full-text-search) ;;
-  /sec/insider) ;;
-  /sec/institutional-holdings) ;;
-  /yahoo-finance/calendars) ;;
-  /yahoo-finance/calendars/*) ;;
-  /yahoo-finance/download) ;;
-  /yahoo-finance/industries) ;;
-  /yahoo-finance/industries/*) ;;
-  /yahoo-finance/lookup) ;;
-  /yahoo-finance/market/*/status) ;;
-  /yahoo-finance/market/*/summary) ;;
-  /yahoo-finance/screener) ;;
-  /yahoo-finance/screener/*) ;;
-  /yahoo-finance/screeners) ;;
-  /yahoo-finance/search) ;;
-  /yahoo-finance/sectors) ;;
-  /yahoo-finance/sectors/*) ;;
-  /yahoo-finance/ticker/*/actions) ;;
-  /yahoo-finance/ticker/*/analysts) ;;
-  /yahoo-finance/ticker/*/calendar) ;;
-  /yahoo-finance/ticker/*/capital-gains) ;;
-  /yahoo-finance/ticker/*/dividends) ;;
-  /yahoo-finance/ticker/*/earnings) ;;
-  /yahoo-finance/ticker/*/earnings-dates) ;;
-  /yahoo-finance/ticker/*/financials) ;;
-  /yahoo-finance/ticker/*/funds) ;;
-  /yahoo-finance/ticker/*/history) ;;
-  /yahoo-finance/ticker/*/history-metadata) ;;
-  /yahoo-finance/ticker/*/holders) ;;
-  /yahoo-finance/ticker/*/info) ;;
-  /yahoo-finance/ticker/*/isin) ;;
-  /yahoo-finance/ticker/*/news) ;;
-  /yahoo-finance/ticker/*/options) ;;
-  /yahoo-finance/ticker/*/options/*) ;;
-  /yahoo-finance/ticker/*/quote) ;;
-  /yahoo-finance/ticker/*/sec-filings) ;;
-  /yahoo-finance/ticker/*/shares) ;;
-  /yahoo-finance/ticker/*/shares-full) ;;
-  /yahoo-finance/ticker/*/splits) ;;
-  /yahoo-finance/ticker/*/sustainability) ;;
-  /yahoo-finance/ticker/*/valuation) ;;
-  /yahoo-finance/trending/*) ;;
-  *)
-    echo "path is not in the finance-markets-research skill catalog" >&2
-    exit 2
-    ;;
+  /coingecko/categories) route_allowed=true ;;
+  /coingecko/chains) route_allowed=true ;;
+  /coingecko/exchanges) route_allowed=true ;;
+  /coingecko/gainers-losers) route_allowed=true ;;
+  /coingecko/global) route_allowed=true ;;
+  /coingecko/global/charts) route_allowed=true ;;
+  /coingecko/learn/articles) route_allowed=true ;;
+  /coingecko/markets) route_allowed=true ;;
+  /coingecko/new-coins) route_allowed=true ;;
+  /coingecko/news) route_allowed=true ;;
+  /coingecko/nfts) route_allowed=true ;;
+  /coingecko/search) route_allowed=true ;;
+  /coingecko/token-unlocks) route_allowed=true ;;
+  /coingecko/treasuries) route_allowed=true ;;
+  /coingecko/trending) route_allowed=true ;;
+  /congress/report) route_allowed=true ;;
+  /congress/stock-disclosures) route_allowed=true ;;
+  /pitchbook/advisor) route_allowed=true ;;
+  /pitchbook/company) route_allowed=true ;;
+  /pitchbook/fund) route_allowed=true ;;
+  /pitchbook/investor) route_allowed=true ;;
+  /pitchbook/limited-partner) route_allowed=true ;;
+  /sec/company/intelligence) route_allowed=true ;;
+  /sec/company/search) route_allowed=true ;;
+  /sec/company/submissions) route_allowed=true ;;
+  /sec/filing) route_allowed=true ;;
+  /sec/filing/sections) route_allowed=true ;;
+  /sec/financials) route_allowed=true ;;
+  /sec/frames) route_allowed=true ;;
+  /sec/full-text-search) route_allowed=true ;;
+  /sec/insider) route_allowed=true ;;
+  /sec/institutional-holdings) route_allowed=true ;;
+  /yahoo-finance/calendars) route_allowed=true ;;
+  /yahoo-finance/download) route_allowed=true ;;
+  /yahoo-finance/industries) route_allowed=true ;;
+  /yahoo-finance/lookup) route_allowed=true ;;
+  /yahoo-finance/screener) route_allowed=true ;;
+  /yahoo-finance/screeners) route_allowed=true ;;
+  /yahoo-finance/search) route_allowed=true ;;
+  /yahoo-finance/sectors) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/coingecko/category/[^/]+/coins$'
+  '^/coingecko/chains/[^/]+$'
+  '^/coingecko/coin/[^/]+$'
+  '^/coingecko/coin/[^/]+/analysis$'
+  '^/coingecko/exchange/[^/]+$'
+  '^/coingecko/nft/category/[^/]+$'
+  '^/yahoo-finance/calendars/[^/]+$'
+  '^/yahoo-finance/industries/[^/]+$'
+  '^/yahoo-finance/market/[^/]+/status$'
+  '^/yahoo-finance/market/[^/]+/summary$'
+  '^/yahoo-finance/screener/[^/]+$'
+  '^/yahoo-finance/sectors/[^/]+$'
+  '^/yahoo-finance/ticker/[^/]+/actions$'
+  '^/yahoo-finance/ticker/[^/]+/analysts$'
+  '^/yahoo-finance/ticker/[^/]+/calendar$'
+  '^/yahoo-finance/ticker/[^/]+/capital-gains$'
+  '^/yahoo-finance/ticker/[^/]+/dividends$'
+  '^/yahoo-finance/ticker/[^/]+/earnings$'
+  '^/yahoo-finance/ticker/[^/]+/earnings-dates$'
+  '^/yahoo-finance/ticker/[^/]+/financials$'
+  '^/yahoo-finance/ticker/[^/]+/funds$'
+  '^/yahoo-finance/ticker/[^/]+/history$'
+  '^/yahoo-finance/ticker/[^/]+/history-metadata$'
+  '^/yahoo-finance/ticker/[^/]+/holders$'
+  '^/yahoo-finance/ticker/[^/]+/info$'
+  '^/yahoo-finance/ticker/[^/]+/isin$'
+  '^/yahoo-finance/ticker/[^/]+/news$'
+  '^/yahoo-finance/ticker/[^/]+/options$'
+  '^/yahoo-finance/ticker/[^/]+/options/[^/]+$'
+  '^/yahoo-finance/ticker/[^/]+/quote$'
+  '^/yahoo-finance/ticker/[^/]+/sec-filings$'
+  '^/yahoo-finance/ticker/[^/]+/shares$'
+  '^/yahoo-finance/ticker/[^/]+/shares-full$'
+  '^/yahoo-finance/ticker/[^/]+/splits$'
+  '^/yahoo-finance/ticker/[^/]+/sustainability$'
+  '^/yahoo-finance/ticker/[^/]+/valuation$'
+  '^/yahoo-finance/trending/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the finance-markets-research skill catalog" >&2
+  exit 2
+fi
 
 
 

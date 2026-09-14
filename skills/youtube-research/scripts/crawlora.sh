@@ -56,25 +56,40 @@ case "$path" in
     exit 2
     ;;
 esac
+
+# Static routes use escaped case patterns. Parameterized routes use anchored
+# extended regular expressions so every {param} is exactly one non-empty path
+# segment; unlike a case '*', [^/]+ cannot consume another slash.
+route_allowed=false
 case "$path" in
-  /youtube/captions/*) ;;
-  /youtube/channel/*/playlists) ;;
-  /youtube/channel/*/search) ;;
-  /youtube/channel/*/shorts) ;;
-  /youtube/channel/*/videos) ;;
-  /youtube/comments/*) ;;
-  /youtube/playlist/*) ;;
-  /youtube/profile/*) ;;
-  /youtube/search) ;;
-  /youtube/tag/*) ;;
-  /youtube/transcript/*) ;;
-  /youtube/transcript/*/languages) ;;
-  /youtube/video/*) ;;
-  *)
-    echo "path is not in the youtube-research skill catalog" >&2
-    exit 2
-    ;;
+  /youtube/search) route_allowed=true ;;
 esac
+if [ "$route_allowed" = false ]; then
+  route_regexes=(
+  '^/youtube/captions/[^/]+$'
+  '^/youtube/channel/[^/]+/playlists$'
+  '^/youtube/channel/[^/]+/search$'
+  '^/youtube/channel/[^/]+/shorts$'
+  '^/youtube/channel/[^/]+/videos$'
+  '^/youtube/comments/[^/]+$'
+  '^/youtube/playlist/[^/]+$'
+  '^/youtube/profile/[^/]+$'
+  '^/youtube/tag/[^/]+$'
+  '^/youtube/transcript/[^/]+$'
+  '^/youtube/transcript/[^/]+/languages$'
+  '^/youtube/video/[^/]+$'
+  )
+  for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
+    if [[ "$path" =~ $route_regex ]]; then
+      route_allowed=true
+      break
+    fi
+  done
+fi
+if [ "$route_allowed" = false ]; then
+  echo "path is not in the youtube-research skill catalog" >&2
+  exit 2
+fi
 
 
 
