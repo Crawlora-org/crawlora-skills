@@ -244,6 +244,10 @@ const SKILLS = {
   "entertainment-discovery-research": ["IMDb", "JustWatch", "TMDB", "Rotten Tomatoes", "Metacritic"],
   "crypto-market-research": ["CoinGecko"],
   "local-business-reputation-research": ["Yelp", "BBB", "Trustpilot", "OpenTable"],
+  "sports-betting-research": ["DraftKings Sportsbook", "ESPN", "SofaScore"],
+  "news-briefing-research": ["GDELT", "BBC", "CNN", "Guardian", "Yahoo News"],
+  "startup-launch-research": ["ProductHunt", "TrustMRR", "Kickstarter"],
+  "podcast-discovery-research": ["ApplePodcasts", "SpotifyPodcasts"],
 };
 
 const groupsOf = (t) => (t._http && t._http.group) || "Other";
@@ -463,6 +467,10 @@ const strictMethodSkills = new Set([
   "entertainment-discovery-research",
   "crypto-market-research",
   "local-business-reputation-research",
+  "sports-betting-research",
+  "news-briefing-research",
+  "startup-launch-research",
+  "podcast-discovery-research",
 ]);
 const numericProductIdSkills = new Set(["walmart-research"]);
 const quietCurlSkills = new Set([
@@ -472,6 +480,10 @@ const quietCurlSkills = new Set([
   "entertainment-discovery-research",
   "crypto-market-research",
   "local-business-reputation-research",
+  "sports-betting-research",
+  "news-briefing-research",
+  "startup-launch-research",
+  "podcast-discovery-research",
 ]);
 const helperGuard = ({ cases, regexes, label, skillTools, strictMethods }) => {
   const methods = [...new Set(skillTools.map((tool) => String(tool._http?.method || "GET")))].sort();

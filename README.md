@@ -30,16 +30,20 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`youtube-research`](skills/youtube-research) | Transcripts, comments, video/channel metadata, search — no `yt-dlp`. | YouTube |
 | [`app-review-mining`](skills/app-review-mining) | App details, reviews, ratings, rankings, similar apps (ASO). | App Store, Google Play |
 | [`app-store-research`](skills/app-store-research) | Cross-store app and extension discovery, ratings, reviews, permissions, privacy, and release history. | Apple App Store, Google Play, Chrome Web Store |
+| [`sports-betting-research`](skills/sports-betting-research) | Time-stamped public sportsbook odds with schedule and game-status context. | DraftKings Sportsbook, ESPN, SofaScore |
 | [`serp-keyword-research`](skills/serp-keyword-research) | SERP snapshots, autocomplete keyword ideas, Google Trends. | Google, Bing, Brave, DuckDuckGo, Yahoo, Google Trends |
 | [`finance-markets-research`](skills/finance-markets-research) | Stock quotes/financials, SEC filings & insider trades, congressional stock disclosures, crypto markets, VC/PE profiles. | Yahoo Finance, SEC EDGAR, Congress, CoinGecko, PitchBook |
 | [`crypto-market-research`](skills/crypto-market-research) | Coin discovery, market comparisons, global metrics, exchanges, categories, news, unlocks, and treasuries. | CoinGecko |
+| [`news-briefing-research`](skills/news-briefing-research) | Source-aware recent-news briefings, publisher comparisons, and coverage timelines. | GDELT, BBC, CNN, The Guardian, Yahoo News |
 | [`prediction-markets-research`](skills/prediction-markets-research) | Odds, order books, price history, and forecast questions. | Polymarket, Kalshi, Metaculus |
 | [`movie-tv-research`](skills/movie-tv-research) | Cast/crew, ratings/reviews, streaming availability, box-office numbers. | IMDb, TMDB, JustWatch, Letterboxd, Rotten Tomatoes, Metacritic, Box Office Mojo |
 | [`entertainment-discovery-research`](skills/entertainment-discovery-research) | Cross-source title discovery, score comparisons, reviews, similar titles, and streaming offers. | IMDb, TMDB, JustWatch, Rotten Tomatoes, Metacritic |
+| [`startup-launch-research`](skills/startup-launch-research) | Public launch, verified-revenue, and crowdfunding campaign screening. | Product Hunt, TrustMRR, Kickstarter |
 | [`job-market-research`](skills/job-market-research) | Search postings, pull any company's ATS board directly, hiring signals, freelance gigs. | Indeed, Google/Amazon/Apple/Meta/Tesla Jobs, Tes, 15+ ATS platforms, Upwork, Fiverr |
 | [`social-media-research`](skills/social-media-research) | Public profiles, posts, engagement, search, and trending topics. | Instagram, TikTok, Threads, Bluesky, X, Pinterest, LinkedIn, Facebook, Reddit, Bilibili, Patreon |
 | [`travel-hotel-research`](skills/travel-hotel-research) | Hotel/flight/attraction search and reviews, short-term rentals, event tickets. | Booking.com, Expedia, Agoda, TripAdvisor, Trip.com, Airbnb, Accor, Hotels.com, Ticketmaster, TicketWeb |
 | [`travel-accommodation-research`](skills/travel-accommodation-research) | Cross-platform accommodation, host, property, flight, and activity research without booking actions. | Airbnb, Agoda, Hotels.com, Trip.com |
+| [`podcast-discovery-research`](skills/podcast-discovery-research) | Podcast show, episode, chart, ranking, and related-program discovery. | Apple Podcasts, Spotify Podcasts |
 | [`sports-scores-research`](skills/sports-scores-research) | Live scores, standings, rosters, player/team stats, boxscores, sportsbook odds, endurance routes. | ESPN, SofaScore, MLB, Strava, DraftKings Sportsbook, Cricinfo |
 | [`twitch-research`](skills/twitch-research) | Channel profile/live status, streams by game, clips, VODs, search, top games, team rosters, VOD chat replay. | Twitch |
 | [`music-podcast-research`](skills/music-podcast-research) | Tracks/albums/artists/playlists, podcast shows/episodes, record pressings, SoundCloud track/user stats. | Spotify, Spotify Podcasts, Apple Podcasts, Discogs, SoundCloud |
@@ -103,8 +107,8 @@ self-contained and do not require the broader bundles to be installed.
 | [`used-car-market-comparison`](skills/used-car-market-comparison) | Matched vehicle listings, deduplicated asking-price ranges, and qualified price outliers. | CarMax, Autotrader, Cars.com |
 | [`software-vendor-shortlisting`](skills/software-vendor-shortlisting) | Requirements-based vendor shortlists, pricing scenarios, and evidence-led demo questions. | Capterra, Product Hunt, Bing, official vendor websites |
 
-The repository contains **107 installable skills**. The Claude Code marketplace
-bundle includes **69 skills**; the narrower per-platform alternatives below remain
+The repository contains **111 installable skills**. The Claude Code marketplace
+bundle includes **73 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
