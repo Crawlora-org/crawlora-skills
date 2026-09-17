@@ -28,8 +28,12 @@ body=""
 args=()
 while [ $# -gt 0 ]; do
   case "$1" in
-    -X) method="$2"; shift 2 ;;
-    -d) body="$2"; shift 2 ;;
+    -X)
+      [ $# -ge 2 ] || { echo "-X requires an HTTP method" >&2; exit 2; }
+      method="$2"; shift 2 ;;
+    -d)
+      [ $# -ge 2 ] || { echo "-d requires a request body" >&2; exit 2; }
+      body="$2"; shift 2 ;;
     *)  args+=("$1"); shift ;;
   esac
 done
@@ -104,9 +108,38 @@ fi
 
 # Enforce the documented HTTP method for each route, not just the global method set.
 route_method_allowed=false
-case "$method:$path" in
-  GET:/agoda/activities/*|  GET:/agoda/activities/search|  GET:/agoda/flights/search|  GET:/agoda/flights/search-locations|  GET:/agoda/homes/search|  GET:/agoda/hotels/*|  GET:/agoda/hotels/search|  GET:/airbnb/host/*|  GET:/airbnb/host/*/listings|  GET:/airbnb/host/*/reviews|  GET:/airbnb/room/*|  GET:/airbnb/room/*/calendar|  GET:/airbnb/room/*/reviews|  GET:/airbnb/search|  GET:/hotels/autocomplete|  GET:/tripcom/hotels/*|  GET:/tripcom/hotels/search|  POST:/agoda/flights/itinerary-amenities|  POST:/hotels/offers|  POST:/hotels/property|  POST:/hotels/rates|  POST:/hotels/reviews|  POST:/hotels/reviews/archive|  POST:/hotels/search) route_method_allowed=true ;;
-esac
+route_method_regexes=(
+  '^GET:/agoda/activities/[^/]+$'
+  '^GET:/agoda/activities/search$'
+  '^GET:/agoda/flights/search$'
+  '^GET:/agoda/flights/search-locations$'
+  '^GET:/agoda/homes/search$'
+  '^GET:/agoda/hotels/[^/]+$'
+  '^GET:/agoda/hotels/search$'
+  '^GET:/airbnb/host/[^/]+$'
+  '^GET:/airbnb/host/[^/]+/listings$'
+  '^GET:/airbnb/host/[^/]+/reviews$'
+  '^GET:/airbnb/room/[^/]+$'
+  '^GET:/airbnb/room/[^/]+/calendar$'
+  '^GET:/airbnb/room/[^/]+/reviews$'
+  '^GET:/airbnb/search$'
+  '^GET:/hotels/autocomplete$'
+  '^GET:/tripcom/hotels/[^/]+$'
+  '^GET:/tripcom/hotels/search$'
+  '^POST:/agoda/flights/itinerary-amenities$'
+  '^POST:/hotels/offers$'
+  '^POST:/hotels/property$'
+  '^POST:/hotels/rates$'
+  '^POST:/hotels/reviews$'
+  '^POST:/hotels/reviews/archive$'
+  '^POST:/hotels/search$'
+)
+for route_method_regex in ${route_method_regexes[@]+"${route_method_regexes[@]}"}; do
+  if [[ "$method:$path" =~ $route_method_regex ]]; then
+    route_method_allowed=true
+    break
+  fi
+done
 if [ "$route_method_allowed" = false ]; then
   echo "method is not allowed for this travel-accommodation-research route" >&2
   exit 2
@@ -116,6 +149,7 @@ fi
 
 # Keep the API key out of the curl process command line. A private temporary
 # config supplies the header and is removed automatically on exit.
+umask 077
 curl_config="$(mktemp "${TMPDIR:-/tmp}/crawlora-curl.XXXXXX")"
 chmod 600 "$curl_config"
 trap 'rm -f "$curl_config"' EXIT
@@ -135,6 +169,8 @@ if [ "$method" = "GET" ]; then
     esac
     qs+=(--data-urlencode "$kv")
   done
+  # -q must be the first curl option: ignore any user ~/.curlrc so inherited
+  # config cannot redirect the request, add uploads, or alter credential use.
   curl -q -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
 else
   [ -n "$body" ] || body="${rest[0]:-}"

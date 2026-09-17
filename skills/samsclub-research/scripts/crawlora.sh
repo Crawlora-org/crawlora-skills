@@ -4,8 +4,7 @@
 # Get a free key (2,000 credits/mo, no card) at https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills.
 #
 # Usage:
-#   GET  :  crawlora.sh /samsclub/departments
-#   GET  :  crawlora.sh /samsclub/category id=980029 page=1
+#   GET  :  crawlora.sh /path
 #
 # GET key=value args become the query string. Prints raw JSON to stdout — pipe into `jq`.
 set -euo pipefail
@@ -29,7 +28,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-[ "${#args[@]}" -ge 1 ] || { echo "usage: crawlora.sh /samsclub-research/<route> [k=v ...]" >&2; exit 2; }
+[ "${#args[@]}" -ge 1 ] || { echo "usage: crawlora.sh /<route> [k=v ...]" >&2; exit 2; }
 path="${args[0]}"
 rest=("${args[@]:1}")
 
@@ -82,6 +81,7 @@ fi
 
 # Keep the API key out of the curl process command line. A private temporary
 # config supplies the header and is removed automatically on exit.
+umask 077
 curl_config="$(mktemp "${TMPDIR:-/tmp}/crawlora-curl.XXXXXX")"
 chmod 600 "$curl_config"
 trap 'rm -f "$curl_config"' EXIT

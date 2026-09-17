@@ -28,8 +28,12 @@ body=""
 args=()
 while [ $# -gt 0 ]; do
   case "$1" in
-    -X) method="$2"; shift 2 ;;
-    -d) body="$2"; shift 2 ;;
+    -X)
+      [ $# -ge 2 ] || { echo "-X requires an HTTP method" >&2; exit 2; }
+      method="$2"; shift 2 ;;
+    -d)
+      [ $# -ge 2 ] || { echo "-d requires a request body" >&2; exit 2; }
+      body="$2"; shift 2 ;;
     *)  args+=("$1"); shift ;;
   esac
 done
@@ -301,10 +305,249 @@ if [ "$route_allowed" = false ]; then
   exit 2
 fi
 
+# Enforce the documented HTTP method for each route, not just the global method set.
+route_method_allowed=false
+route_method_regexes=(
+  '^GET:/adidas/product$'
+  '^GET:/adidas/product/review-topics$'
+  '^GET:/adidas/product/reviews$'
+  '^GET:/adidas/search$'
+  '^GET:/adidas/store$'
+  '^GET:/adidas/stores$'
+  '^GET:/adidas/suggest$'
+  '^GET:/amazon/product/[^/]+$'
+  '^GET:/amazon/search$'
+  '^GET:/amazon/suggest/[^/]+$'
+  '^GET:/bestbuy/brands$'
+  '^GET:/bestbuy/categories$'
+  '^GET:/bestbuy/categories/trending$'
+  '^GET:/bestbuy/category$'
+  '^GET:/bestbuy/category/subcategories$'
+  '^GET:/bestbuy/product$'
+  '^GET:/bestbuy/product/questions$'
+  '^GET:/bestbuy/product/related$'
+  '^GET:/bestbuy/product/reviews$'
+  '^GET:/bestbuy/search$'
+  '^GET:/bestbuy/stores$'
+  '^GET:/bigcommerce/category$'
+  '^GET:/bigcommerce/product$'
+  '^GET:/bigcommerce/search$'
+  '^GET:/boots/search$'
+  '^GET:/boots/suggest$'
+  '^GET:/chewy/brands$'
+  '^GET:/chewy/categories$'
+  '^GET:/chewy/category$'
+  '^GET:/chewy/facets$'
+  '^GET:/chewy/gtin-lookup$'
+  '^GET:/chewy/inventory$'
+  '^GET:/chewy/item-attributes$'
+  '^GET:/chewy/product$'
+  '^GET:/chewy/product-questions$'
+  '^GET:/chewy/product-reviews$'
+  '^GET:/chewy/products$'
+  '^GET:/chewy/search$'
+  '^GET:/chewy/suggest$'
+  '^GET:/chewy/variants$'
+  '^GET:/costco/categories$'
+  '^GET:/costco/product/[^/]+$'
+  '^GET:/costco/product/[^/]+/availability$'
+  '^GET:/costco/product/[^/]+/reviews$'
+  '^GET:/costco/search$'
+  '^GET:/costco/warehouses$'
+  '^GET:/cvs/brands$'
+  '^GET:/cvs/categories$'
+  '^GET:/cvs/category$'
+  '^GET:/cvs/product-ingredients/[^/]+$'
+  '^GET:/cvs/product/[^/]+$'
+  '^GET:/cvs/search$'
+  '^GET:/cvs/store-locator$'
+  '^GET:/ebay/item/[^/]+$'
+  '^GET:/ebay/live/streams$'
+  '^GET:/ebay/live/streams/[^/]+$'
+  '^GET:/ebay/live/streams/[^/]+/items$'
+  '^GET:/ebay/live/streams/batch$'
+  '^GET:/ebay/seller/[^/]+$'
+  '^GET:/ebay/seller/[^/]+/about$'
+  '^GET:/ebay/seller/[^/]+/feedback$'
+  '^GET:/ebay/seller/[^/]+/shop$'
+  '^GET:/hm/categories$'
+  '^GET:/hm/listing$'
+  '^GET:/hm/product/[^/]+$'
+  '^GET:/hm/product/[^/]+/related$'
+  '^GET:/hm/search$'
+  '^GET:/hm/search/suggestions$'
+  '^GET:/hm/stores$'
+  '^GET:/homedepot/categories$'
+  '^GET:/homedepot/category$'
+  '^GET:/homedepot/product/[^/]+$'
+  '^GET:/homedepot/product/[^/]+/questions$'
+  '^GET:/homedepot/search$'
+  '^GET:/homedepot/suggest$'
+  '^GET:/ikea/availability$'
+  '^GET:/ikea/category$'
+  '^GET:/ikea/product$'
+  '^GET:/ikea/reviews$'
+  '^GET:/ikea/search$'
+  '^GET:/ikea/store$'
+  '^GET:/ikea/stores$'
+  '^GET:/ikea/suggest$'
+  '^GET:/kohls/category$'
+  '^GET:/kohls/product/reviews$'
+  '^GET:/kohls/stores$'
+  '^GET:/kohls/suggest$'
+  '^GET:/lazada/categories$'
+  '^GET:/lazada/category-products$'
+  '^GET:/lazada/home$'
+  '^GET:/lazada/product$'
+  '^GET:/lazada/search$'
+  '^GET:/lululemon/categories$'
+  '^GET:/lululemon/category$'
+  '^GET:/lululemon/outfit$'
+  '^GET:/lululemon/product/[^/]+$'
+  '^GET:/lululemon/stores$'
+  '^GET:/macys/product/[^/]+$'
+  '^GET:/macys/product/reviews$'
+  '^GET:/macys/suggest$'
+  '^GET:/nike/categories$'
+  '^GET:/nike/product$'
+  '^GET:/nike/product/availability$'
+  '^GET:/nike/product/details$'
+  '^GET:/nike/product/recommendations$'
+  '^GET:/nike/product/reviews$'
+  '^GET:/nike/search$'
+  '^GET:/nike/stores$'
+  '^GET:/nike/suggest$'
+  '^GET:/oldnavy/categories$'
+  '^GET:/oldnavy/category$'
+  '^GET:/oldnavy/product$'
+  '^GET:/oldnavy/product/availability$'
+  '^GET:/oldnavy/product/reviews$'
+  '^GET:/oldnavy/search$'
+  '^GET:/oldnavy/stores$'
+  '^GET:/otto/categories$'
+  '^GET:/otto/product$'
+  '^GET:/otto/search$'
+  '^GET:/samsclub/category$'
+  '^GET:/samsclub/content/[^/]+$'
+  '^GET:/samsclub/departments$'
+  '^GET:/samsclub/product/[^/]+$'
+  '^GET:/samsclub/product/[^/]+/related$'
+  '^GET:/sephora/category$'
+  '^GET:/sephora/product$'
+  '^GET:/sephora/product/questions$'
+  '^GET:/sephora/product/reviews$'
+  '^GET:/sephora/search$'
+  '^GET:/sephora/stores$'
+  '^GET:/sephora/suggest$'
+  '^GET:/shein/category/filters$'
+  '^GET:/shein/category/goods$'
+  '^GET:/shein/category/nav$'
+  '^GET:/shein/products/detail$'
+  '^GET:/shop-app/analysis$'
+  '^GET:/shop-app/categories$'
+  '^GET:/shop-app/products/[^/]+$'
+  '^GET:/shop-app/products/[^/]+/related$'
+  '^GET:/shop-app/products/[^/]+/reviews$'
+  '^GET:/shop-app/products/[^/]+/shop$'
+  '^GET:/shop-app/products/[^/]+/variant$'
+  '^GET:/shop-app/products/[^/]+/variants$'
+  '^GET:/shop-app/search$'
+  '^GET:/shop-app/shops/[^/]+$'
+  '^GET:/shop-app/shops/[^/]+/collections/[^/]+/products$'
+  '^GET:/shop-app/shops/[^/]+/locations$'
+  '^GET:/shop-app/shops/[^/]+/products$'
+  '^GET:/shop-app/shops/[^/]+/reviews$'
+  '^GET:/shop-app/shops/[^/]+/typeahead$'
+  '^GET:/shop-app/suggestions$'
+  '^GET:/shopify/collections$'
+  '^GET:/shopify/collections/[^/]+/products$'
+  '^GET:/shopify/pages$'
+  '^GET:/shopify/pages/[^/]+$'
+  '^GET:/shopify/products$'
+  '^GET:/shopify/products/[^/]+$'
+  '^GET:/shopify/products/[^/]+/recommendations$'
+  '^GET:/shopify/search/suggest$'
+  '^GET:/shopify/sitemap/urls$'
+  '^GET:/shopify/sitemaps$'
+  '^GET:/shopify/store$'
+  '^GET:/sparkfun/categories$'
+  '^GET:/sparkfun/category$'
+  '^GET:/sparkfun/product$'
+  '^GET:/sparkfun/search$'
+  '^GET:/target/categories$'
+  '^GET:/target/category-products$'
+  '^GET:/target/filter-options$'
+  '^GET:/target/product$'
+  '^GET:/target/questions$'
+  '^GET:/target/reviews$'
+  '^GET:/target/search$'
+  '^GET:/tokopedia/autocomplete$'
+  '^GET:/tokopedia/category$'
+  '^GET:/tokopedia/home$'
+  '^GET:/tokopedia/home/tabs$'
+  '^GET:/tokopedia/product$'
+  '^GET:/tokopedia/product/review-filters$'
+  '^GET:/tokopedia/search$'
+  '^GET:/tokopedia/search/filters$'
+  '^GET:/ulta/categories$'
+  '^GET:/ulta/category$'
+  '^GET:/ulta/product/[^/]+$'
+  '^GET:/ulta/product/questions$'
+  '^GET:/ulta/product/reviews$'
+  '^GET:/ulta/search$'
+  '^GET:/ulta/stores$'
+  '^GET:/ulta/suggest$'
+  '^GET:/walgreens/stores$'
+  '^GET:/walmart/product/[^/]+$'
+  '^GET:/walmart/product/[^/]+/reviews$'
+  '^GET:/walmart/search$'
+  '^GET:/wayfair/categories$'
+  '^GET:/wayfair/category$'
+  '^GET:/wayfair/product/[^/]+$'
+  '^GET:/wish/categories$'
+  '^GET:/wish/product/[^/]+$'
+  '^GET:/wish/product/[^/]+/related$'
+  '^GET:/wish/product/[^/]+/reviews$'
+  '^GET:/wish/search$'
+  '^GET:/wish/suggest$'
+  '^GET:/zalando/category$'
+  '^GET:/zalando/markets$'
+  '^GET:/zalando/product$'
+  '^GET:/zalando/search$'
+  '^GET:/zalando/suggest$'
+  '^GET:/zappos/brand$'
+  '^GET:/zappos/brands$'
+  '^GET:/zappos/product/[^/]+$'
+  '^GET:/zappos/search$'
+  '^GET:/zappos/suggest$'
+  '^GET:/zara/categories$'
+  '^GET:/zara/category/[^/]+/products$'
+  '^GET:/zara/product/[^/]+$'
+  '^GET:/zara/search$'
+  '^GET:/zara/stores$'
+  '^GET:/zara/suggest$'
+  '^POST:/ebay/search$'
+  '^POST:/shein/products/aggregation-filters$'
+  '^POST:/shein/products/search$'
+  '^POST:/shein/search/autocomplete$'
+  '^POST:/shein/search/keywords$'
+)
+for route_method_regex in ${route_method_regexes[@]+"${route_method_regexes[@]}"}; do
+  if [[ "$method:$path" =~ $route_method_regex ]]; then
+    route_method_allowed=true
+    break
+  fi
+done
+if [ "$route_method_allowed" = false ]; then
+  echo "method is not allowed for this product-price-research route" >&2
+  exit 2
+fi
+
 
 
 # Keep the API key out of the curl process command line. A private temporary
 # config supplies the header and is removed automatically on exit.
+umask 077
 curl_config="$(mktemp "${TMPDIR:-/tmp}/crawlora-curl.XXXXXX")"
 chmod 600 "$curl_config"
 trap 'rm -f "$curl_config"' EXIT
@@ -324,12 +567,14 @@ if [ "$method" = "GET" ]; then
     esac
     qs+=(--data-urlencode "$kv")
   done
-  curl -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
+  # -q must be the first curl option: ignore any user ~/.curlrc so inherited
+  # config cannot redirect the request, add uploads, or alter credential use.
+  curl -q -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
 else
   [ -n "$body" ] || body="${rest[0]:-}"
   [ -n "$body" ] || body='{}'
   # Stream the body on stdin so curl never interprets a user value as its
   # @file shorthand (and cannot read local files supplied in a request body).
-  printf '%s' "$body" | curl -fsS -X "$method" "${auth[@]}" \
+  printf '%s' "$body" | curl -q -fsS -X "$method" "${auth[@]}" \
     -H "Content-Type: application/json" --data-binary @- "${base}${path}"
 fi

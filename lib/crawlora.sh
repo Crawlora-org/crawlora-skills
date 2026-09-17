@@ -28,8 +28,12 @@ body=""
 args=()
 while [ $# -gt 0 ]; do
   case "$1" in
-    -X) method="$2"; shift 2 ;;
-    -d) body="$2"; shift 2 ;;
+    -X)
+      [ $# -ge 2 ] || { echo "-X requires an HTTP method" >&2; exit 2; }
+      method="$2"; shift 2 ;;
+    -d)
+      [ $# -ge 2 ] || { echo "-d requires a request body" >&2; exit 2; }
+      body="$2"; shift 2 ;;
     *)  args+=("$1"); shift ;;
   esac
 done
@@ -40,6 +44,7 @@ rest=("${args[@]:1}")
 
 # Keep the API key out of the curl process command line. A private temporary
 # config supplies the header and is removed automatically on exit.
+umask 077
 curl_config="$(mktemp "${TMPDIR:-/tmp}/crawlora-curl.XXXXXX")"
 chmod 600 "$curl_config"
 trap 'rm -f "$curl_config"' EXIT
@@ -59,12 +64,14 @@ if [ "$method" = "GET" ]; then
     esac
     qs+=(--data-urlencode "$kv")
   done
-  curl -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
+  # -q must be the first curl option: ignore any user ~/.curlrc so inherited
+  # config cannot redirect the request, add uploads, or alter credential use.
+  curl -q -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
 else
   [ -n "$body" ] || body="${rest[0]:-}"
   [ -n "$body" ] || body='{}'
   # Stream the body on stdin so curl never interprets a user value as its
   # @file shorthand (and cannot read local files supplied in a request body).
-  printf '%s' "$body" | curl -fsS -X "$method" "${auth[@]}" \
+  printf '%s' "$body" | curl -q -fsS -X "$method" "${auth[@]}" \
     -H "Content-Type: application/json" --data-binary @- "${base}${path}"
 fi

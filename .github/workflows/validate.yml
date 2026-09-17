@@ -24,5 +24,7 @@ jobs:
         run: bash -n lib/crawlora.sh
       - name: Helper regression tests
         run: node --test scripts/helper.test.mjs
+      - name: Generated helper security invariants
+        run: node --test scripts/security.test.mjs
       - name: Focused endpoint selection
         run: node --test scripts/select-tools.test.mjs

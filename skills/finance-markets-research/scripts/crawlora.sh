@@ -28,8 +28,12 @@ body=""
 args=()
 while [ $# -gt 0 ]; do
   case "$1" in
-    -X) method="$2"; shift 2 ;;
-    -d) body="$2"; shift 2 ;;
+    -X)
+      [ $# -ge 2 ] || { echo "-X requires an HTTP method" >&2; exit 2; }
+      method="$2"; shift 2 ;;
+    -d)
+      [ $# -ge 2 ] || { echo "-d requires a request body" >&2; exit 2; }
+      body="$2"; shift 2 ;;
     *)  args+=("$1"); shift ;;
   esac
 done
@@ -155,10 +159,103 @@ if [ "$route_allowed" = false ]; then
   exit 2
 fi
 
+# Enforce the documented HTTP method for each route, not just the global method set.
+route_method_allowed=false
+route_method_regexes=(
+  '^GET:/coingecko/categories$'
+  '^GET:/coingecko/category/[^/]+/coins$'
+  '^GET:/coingecko/chains$'
+  '^GET:/coingecko/chains/[^/]+$'
+  '^GET:/coingecko/coin/[^/]+$'
+  '^GET:/coingecko/coin/[^/]+/analysis$'
+  '^GET:/coingecko/exchange/[^/]+$'
+  '^GET:/coingecko/exchanges$'
+  '^GET:/coingecko/gainers-losers$'
+  '^GET:/coingecko/global$'
+  '^GET:/coingecko/global/charts$'
+  '^GET:/coingecko/learn/articles$'
+  '^GET:/coingecko/markets$'
+  '^GET:/coingecko/new-coins$'
+  '^GET:/coingecko/news$'
+  '^GET:/coingecko/nft/category/[^/]+$'
+  '^GET:/coingecko/nfts$'
+  '^GET:/coingecko/search$'
+  '^GET:/coingecko/token-unlocks$'
+  '^GET:/coingecko/treasuries$'
+  '^GET:/coingecko/trending$'
+  '^GET:/congress/report$'
+  '^GET:/congress/stock-disclosures$'
+  '^GET:/pitchbook/advisor$'
+  '^GET:/pitchbook/company$'
+  '^GET:/pitchbook/fund$'
+  '^GET:/pitchbook/investor$'
+  '^GET:/pitchbook/limited-partner$'
+  '^GET:/sec/company/intelligence$'
+  '^GET:/sec/company/search$'
+  '^GET:/sec/company/submissions$'
+  '^GET:/sec/filing$'
+  '^GET:/sec/filing/sections$'
+  '^GET:/sec/financials$'
+  '^GET:/sec/frames$'
+  '^GET:/sec/full-text-search$'
+  '^GET:/sec/insider$'
+  '^GET:/sec/institutional-holdings$'
+  '^GET:/yahoo-finance/calendars$'
+  '^GET:/yahoo-finance/calendars/[^/]+$'
+  '^GET:/yahoo-finance/industries$'
+  '^GET:/yahoo-finance/industries/[^/]+$'
+  '^GET:/yahoo-finance/lookup$'
+  '^GET:/yahoo-finance/market/[^/]+/status$'
+  '^GET:/yahoo-finance/market/[^/]+/summary$'
+  '^GET:/yahoo-finance/screener/[^/]+$'
+  '^GET:/yahoo-finance/screeners$'
+  '^GET:/yahoo-finance/search$'
+  '^GET:/yahoo-finance/sectors$'
+  '^GET:/yahoo-finance/sectors/[^/]+$'
+  '^GET:/yahoo-finance/ticker/[^/]+/actions$'
+  '^GET:/yahoo-finance/ticker/[^/]+/analysts$'
+  '^GET:/yahoo-finance/ticker/[^/]+/calendar$'
+  '^GET:/yahoo-finance/ticker/[^/]+/capital-gains$'
+  '^GET:/yahoo-finance/ticker/[^/]+/dividends$'
+  '^GET:/yahoo-finance/ticker/[^/]+/earnings$'
+  '^GET:/yahoo-finance/ticker/[^/]+/earnings-dates$'
+  '^GET:/yahoo-finance/ticker/[^/]+/financials$'
+  '^GET:/yahoo-finance/ticker/[^/]+/funds$'
+  '^GET:/yahoo-finance/ticker/[^/]+/history$'
+  '^GET:/yahoo-finance/ticker/[^/]+/history-metadata$'
+  '^GET:/yahoo-finance/ticker/[^/]+/holders$'
+  '^GET:/yahoo-finance/ticker/[^/]+/info$'
+  '^GET:/yahoo-finance/ticker/[^/]+/isin$'
+  '^GET:/yahoo-finance/ticker/[^/]+/news$'
+  '^GET:/yahoo-finance/ticker/[^/]+/options$'
+  '^GET:/yahoo-finance/ticker/[^/]+/options/[^/]+$'
+  '^GET:/yahoo-finance/ticker/[^/]+/quote$'
+  '^GET:/yahoo-finance/ticker/[^/]+/sec-filings$'
+  '^GET:/yahoo-finance/ticker/[^/]+/shares$'
+  '^GET:/yahoo-finance/ticker/[^/]+/shares-full$'
+  '^GET:/yahoo-finance/ticker/[^/]+/splits$'
+  '^GET:/yahoo-finance/ticker/[^/]+/sustainability$'
+  '^GET:/yahoo-finance/ticker/[^/]+/valuation$'
+  '^GET:/yahoo-finance/trending/[^/]+$'
+  '^POST:/yahoo-finance/download$'
+  '^POST:/yahoo-finance/screener$'
+)
+for route_method_regex in ${route_method_regexes[@]+"${route_method_regexes[@]}"}; do
+  if [[ "$method:$path" =~ $route_method_regex ]]; then
+    route_method_allowed=true
+    break
+  fi
+done
+if [ "$route_method_allowed" = false ]; then
+  echo "method is not allowed for this finance-markets-research route" >&2
+  exit 2
+fi
+
 
 
 # Keep the API key out of the curl process command line. A private temporary
 # config supplies the header and is removed automatically on exit.
+umask 077
 curl_config="$(mktemp "${TMPDIR:-/tmp}/crawlora-curl.XXXXXX")"
 chmod 600 "$curl_config"
 trap 'rm -f "$curl_config"' EXIT
@@ -178,12 +275,14 @@ if [ "$method" = "GET" ]; then
     esac
     qs+=(--data-urlencode "$kv")
   done
-  curl -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
+  # -q must be the first curl option: ignore any user ~/.curlrc so inherited
+  # config cannot redirect the request, add uploads, or alter credential use.
+  curl -q -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
 else
   [ -n "$body" ] || body="${rest[0]:-}"
   [ -n "$body" ] || body='{}'
   # Stream the body on stdin so curl never interprets a user value as its
   # @file shorthand (and cannot read local files supplied in a request body).
-  printf '%s' "$body" | curl -fsS -X "$method" "${auth[@]}" \
+  printf '%s' "$body" | curl -q -fsS -X "$method" "${auth[@]}" \
     -H "Content-Type: application/json" --data-binary @- "${base}${path}"
 fi
