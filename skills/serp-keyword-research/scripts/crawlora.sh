@@ -28,8 +28,12 @@ body=""
 args=()
 while [ $# -gt 0 ]; do
   case "$1" in
-    -X) method="$2"; shift 2 ;;
-    -d) body="$2"; shift 2 ;;
+    -X)
+      [ $# -ge 2 ] || { echo "-X requires an HTTP method" >&2; exit 2; }
+      method="$2"; shift 2 ;;
+    -d)
+      [ $# -ge 2 ] || { echo "-d requires a request body" >&2; exit 2; }
+      body="$2"; shift 2 ;;
     *)  args+=("$1"); shift ;;
   esac
 done
@@ -117,9 +121,50 @@ fi
 
 # Enforce the documented HTTP method for each route, not just the global method set.
 route_method_allowed=false
-case "$method:$path" in
-  GET:/bing/images|  GET:/bing/news|  GET:/bing/search|  GET:/bing/suggest|  GET:/bing/videos|  GET:/brave/images|  GET:/brave/news|  GET:/brave/search|  GET:/brave/suggest|  GET:/brave/videos|  GET:/duckduckgo/image|  GET:/duckduckgo/news|  GET:/duckduckgo/search|  GET:/duckduckgo/shopping|  GET:/duckduckgo/video|  GET:/google/news|  GET:/google/suggest|  GET:/google/trends/categories|  GET:/google/trends/enums|  GET:/google/trends/locations|  GET:/google/trends/trending|  GET:/google/videos|  GET:/yahoo-search/images|  GET:/yahoo-search/local|  GET:/yahoo-search/news|  GET:/yahoo-search/search|  GET:/yahoo-search/suggest|  GET:/yahoo-search/videos|  POST:/google/search|  POST:/google/trends/explore|  POST:/google/trends/explore/interest-by-region|  POST:/google/trends/explore/interest-over-time|  POST:/google/trends/explore/related-topics|  POST:/google/trends/explore/rising-queries|  POST:/google/trends/explore/top-queries|  POST:/google/trends/trending/detail) route_method_allowed=true ;;
-esac
+route_method_regexes=(
+  '^GET:/bing/images$'
+  '^GET:/bing/news$'
+  '^GET:/bing/search$'
+  '^GET:/bing/suggest$'
+  '^GET:/bing/videos$'
+  '^GET:/brave/images$'
+  '^GET:/brave/news$'
+  '^GET:/brave/search$'
+  '^GET:/brave/suggest$'
+  '^GET:/brave/videos$'
+  '^GET:/duckduckgo/image$'
+  '^GET:/duckduckgo/news$'
+  '^GET:/duckduckgo/search$'
+  '^GET:/duckduckgo/shopping$'
+  '^GET:/duckduckgo/video$'
+  '^GET:/google/news$'
+  '^GET:/google/suggest$'
+  '^GET:/google/trends/categories$'
+  '^GET:/google/trends/enums$'
+  '^GET:/google/trends/locations$'
+  '^GET:/google/trends/trending$'
+  '^GET:/google/videos$'
+  '^GET:/yahoo-search/images$'
+  '^GET:/yahoo-search/local$'
+  '^GET:/yahoo-search/news$'
+  '^GET:/yahoo-search/search$'
+  '^GET:/yahoo-search/suggest$'
+  '^GET:/yahoo-search/videos$'
+  '^POST:/google/search$'
+  '^POST:/google/trends/explore$'
+  '^POST:/google/trends/explore/interest-by-region$'
+  '^POST:/google/trends/explore/interest-over-time$'
+  '^POST:/google/trends/explore/related-topics$'
+  '^POST:/google/trends/explore/rising-queries$'
+  '^POST:/google/trends/explore/top-queries$'
+  '^POST:/google/trends/trending/detail$'
+)
+for route_method_regex in ${route_method_regexes[@]+"${route_method_regexes[@]}"}; do
+  if [[ "$method:$path" =~ $route_method_regex ]]; then
+    route_method_allowed=true
+    break
+  fi
+done
 if [ "$route_method_allowed" = false ]; then
   echo "method is not allowed for this serp-keyword-research route" >&2
   exit 2
@@ -129,6 +174,7 @@ fi
 
 # Keep the API key out of the curl process command line. A private temporary
 # config supplies the header and is removed automatically on exit.
+umask 077
 curl_config="$(mktemp "${TMPDIR:-/tmp}/crawlora-curl.XXXXXX")"
 chmod 600 "$curl_config"
 trap 'rm -f "$curl_config"' EXIT
@@ -148,6 +194,8 @@ if [ "$method" = "GET" ]; then
     esac
     qs+=(--data-urlencode "$kv")
   done
+  # -q must be the first curl option: ignore any user ~/.curlrc so inherited
+  # config cannot redirect the request, add uploads, or alter credential use.
   curl -q -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
 else
   [ -n "$body" ] || body="${rest[0]:-}"

@@ -423,71 +423,30 @@ const routeRegexes = (skillTools) => [...new Set(
   .sort()
   .map((regex) => `  ${shellSingleQuote(regex)}`)
   .join("\n");
-const routeMethodCases = (skillTools) => [...new Set(
+const routeMethodRegexes = (skillTools) => [...new Set(
   skillTools.map((tool) => {
     const method = String(tool._http?.method || "GET");
     const path = String(tool._http?.path || "");
-    const casePath = path
-      .split(/(\{[^}]+\})/g)
-      .filter(Boolean)
-      .map((part) => /^\{[^}]+\}$/.test(part) ? "*" : escapeCasePattern(part))
-      .join("");
-    return `${method}:${casePath}`;
+    return `^${escapeExtendedRegex(method)}:${routeRegex(path).slice(1)}`;
   })
 )]
   .sort()
-  .map((entry) => `  ${entry}`)
-  .join("|");
-const strictMethodSkills = new Set([
-  "crawlora",
-  "walmart-research",
-  "wayfair-research",
-  "social-media-research",
-  "serp-keyword-research",
-  "restaurant-menu-benchmarking",
-  "pinterest-research",
-  "oldnavy-research",
-  "app-store-research",
-  "travel-accommodation-research",
-  "entertainment-discovery-research",
-  "crypto-market-research",
-  "local-business-reputation-research",
-  "sports-betting-research",
-  "news-briefing-research",
-  "startup-launch-research",
-  "podcast-discovery-research",
-  "samsclub-research",
-]);
+  .map((regex) => `  ${shellSingleQuote(regex)}`)
+  .join("\n");
 const numericProductIdSkills = new Set(["walmart-research"]);
-const quietCurlSkills = new Set([
-  "crawlora",
-  "serp-keyword-research",
-  "samsclub-research",
-  "restaurant-menu-benchmarking",
-  "app-store-research",
-  "travel-accommodation-research",
-  "entertainment-discovery-research",
-  "crypto-market-research",
-  "local-business-reputation-research",
-  "sports-betting-research",
-  "news-briefing-research",
-  "startup-launch-research",
-  "podcast-discovery-research",
-]);
-const getOnlySkills = new Set(["samsclub-research"]);
-const helperGuard = ({ cases, regexes, label, skillTools, strictMethods }) => {
+const helperGuard = ({ cases, regexes, label, skillTools }) => {
   const methods = [...new Set(skillTools.map((tool) => String(tool._http?.method || "GET")))].sort();
   const methodPattern = methods.join("|");
   const methodText = methods.join(" and ");
-  const methodCases = methods.length > 1 ? routeMethodCases(skillTools) : "";
+  const methodRegexes = methods.length > 1 ? routeMethodRegexes(skillTools) : "";
   return `
 # This skill's helper is limited to its documented Crawlora route set. Keep
 # caller-account surfaces and unrelated API routes out of the helper even if
 # someone supplies an undocumented path directly.
 case "$method" in
-  ${strictMethods ? methodPattern : "GET|POST"}) ;;
+  ${methodPattern}) ;;
   *)
-    echo "only ${strictMethods ? methodText : "GET and POST"} are supported by the ${label} skill" >&2
+    echo "only ${methodText} are supported by the ${label} skill" >&2
     exit 2
     ;;
 esac
@@ -523,11 +482,17 @@ if [ "$route_allowed" = false ]; then
   exit 2
 fi
 
-${strictMethods && methodCases ? `# Enforce the documented HTTP method for each route, not just the global method set.
+${methodRegexes ? `# Enforce the documented HTTP method for each route, not just the global method set.
 route_method_allowed=false
-case "$method:$path" in
-${methodCases}) route_method_allowed=true ;;
-esac
+route_method_regexes=(
+${methodRegexes}
+)
+for route_method_regex in \${route_method_regexes[@]+"\${route_method_regexes[@]}"}; do
+  if [[ "$method:$path" =~ $route_method_regex ]]; then
+    route_method_allowed=true
+    break
+  fi
+done
 if [ "$route_method_allowed" = false ]; then
   echo "method is not allowed for this ${label} route" >&2
   exit 2
@@ -581,6 +546,7 @@ for (const s of skillDirs) {
   // user's authenticated API key.
   const cases = routeCases(skillTools);
   const regexes = routeRegexes(skillTools);
+  const methods = new Set(skillTools.map((tool) => String(tool._http?.method || "GET")));
   let skillHelper = helper.replace(
     '\n# Keep the API key out of the curl process command line.',
     () => `${helperGuard({
@@ -588,10 +554,9 @@ for (const s of skillDirs) {
       regexes,
       label: s,
       skillTools,
-      strictMethods: strictMethodSkills.has(s),
     }).replace(/\n{5,}/g, "\n\n\n\n").replace(/\n{4}# Monitor IDs/, "\n\n# Monitor IDs")}# Keep the API key out of the curl process command line.`
   );
-  if (getOnlySkills.has(s)) {
+  if (methods.size === 1 && methods.has("GET")) {
     // GET-only skills must not retain the generic helper's body-forwarding
     // branch: static scanners and users should see only the capability that
     // the skill actually documents.
@@ -599,15 +564,14 @@ for (const s of skillDirs) {
       /# Usage:[\s\S]*?# \(or pass it with -d '<json>'\)\. Prints raw JSON to stdout — pipe into `jq`\./,
       [
         "# Usage:",
-        "#   GET  :  crawlora.sh /samsclub/departments",
-        "#   GET  :  crawlora.sh /samsclub/category id=980029 page=1",
+        "#   GET  :  crawlora.sh /path",
         "#",
         "# GET key=value args become the query string. Prints raw JSON to stdout — pipe into `jq`.",
       ].join("\n"),
     );
     skillHelper = skillHelper.replace(
       "usage: crawlora.sh [-X METHOD] /path [k=v ... | json-body]",
-      `usage: crawlora.sh /${s}/<route> [k=v ...]`,
+      `usage: crawlora.sh /<route> [k=v ...]`,
     );
     skillHelper = skillHelper.replace(
       /method="GET"\nbody=""\nargs=\(\)\nwhile \[ \$# -gt 0 \]; do[\s\S]*?done(?=\n\n\[ "\$\{#args\[@\]\}" -ge 1)/,
@@ -639,7 +603,28 @@ for (const s of skillDirs) {
       ].join("\n"),
     );
   }
-  if (quietCurlSkills.has(s)) skillHelper = skillHelper.replaceAll("curl -fsS", "curl -q -fsS");
+  const generatedMethods = [...methods].sort();
+  if (!skillHelper.includes("documented Crawlora route set")) {
+    throw new Error(`${s}: generated helper is missing its route allowlist`);
+  }
+  if (!skillHelper.includes('base="https://api.crawlora.net/api/v1"')) {
+    throw new Error(`${s}: generated helper must use the fixed Crawlora API base`);
+  }
+  if (!skillHelper.includes("curl -q -fsS")) {
+    throw new Error(`${s}: every credential-bearing curl invocation must disable inherited curl config`);
+  }
+  if (/\bcurl -fsS\b/.test(skillHelper)) {
+    throw new Error(`${s}: generated helper contains a curl invocation without -q`);
+  }
+  if (/^\s+\/[^\n]*\*\) route_allowed=true/m.test(skillHelper)) {
+    throw new Error(`${s}: generated route allowlist contains a broad path wildcard`);
+  }
+  if (generatedMethods.length > 1 && !skillHelper.includes("route_method_allowed=false")) {
+    throw new Error(`${s}: mixed-method helper is missing route-specific method enforcement`);
+  }
+  if (generatedMethods.length === 1 && generatedMethods[0] === "GET" && /--data-binary|body=""/.test(skillHelper)) {
+    throw new Error(`${s}: GET-only helper must not expose a request-body capability`);
+  }
   outputs.push([`skills/${s}/scripts/crawlora.sh`, skillHelper]);
 }
 

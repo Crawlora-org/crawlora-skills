@@ -33,14 +33,39 @@ function request(args) {
 
 test("GET detail without query parameters works with the system Bash", () => {
   const args = request(["/google/map/place/example"]);
-  assert.deepEqual(args.slice(0, 3), ["-fsS", "-G", "--config"]);
-  assert.match(args[3], /crawlora-curl/);
+  assert.deepEqual(args.slice(0, 4), ["-q", "-fsS", "-G", "--config"]);
+  assert.match(args[4], /crawlora-curl/);
   assert.equal(args.at(-1), "https://api.crawlora.net/api/v1/google/map/place/example");
+});
+
+test("generic helper disables inherited curl configuration", () => {
+  const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
+  try {
+    writeFileSync(join(dir, "curl"), '#!/bin/sh\ncase " $* " in *" -q "*) exit 0 ;; *) exit 99 ;; esac\n', { mode: 0o755 });
+    const result = spawnSync("/bin/bash", [helper, "/google/search", "q=coffee"], {
+      encoding: "utf8",
+      env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" },
+    });
+    assert.equal(result.status, 0, result.stderr);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("generic helper fails closed when -X or -d is missing its value", () => {
+  for (const args of [["-X"], ["-d"]]) {
+    const result = spawnSync("/bin/bash", [helper, ...args], {
+      encoding: "utf8",
+      env: { ...process.env, CRAWLORA_API_KEY: "test-key" },
+    });
+    assert.equal(result.status, 2, `${args}: ${result.stderr}`);
+    assert.match(result.stderr, /requires an HTTP method|requires a request body/);
+  }
 });
 
 test("GET preserves spaces and repeated query keys as separate curl arguments", () => {
   const args = request(["/search", "q=coffee & tea", "category=one", "category=two"]);
-  assert.deepEqual(args.slice(4), [
+  assert.deepEqual(args.slice(5), [
     "--data-urlencode", "q=coffee & tea", "--data-urlencode", "category=one",
     "--data-urlencode", "category=two", "https://api.crawlora.net/api/v1/search",
   ]);
