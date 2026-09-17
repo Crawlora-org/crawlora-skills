@@ -147,3 +147,10 @@ test("GET-only helpers reject POST and mixed-method helpers reject a route's wro
     }
   });
 });
+
+test("ClawHub sync invokes the intended CLI and fails closed on old Node", () => {
+  const sync = readFileSync(join(ROOT, "scripts/sync-directories.sh"), "utf8");
+  assert.match(sync, /node_major=.*process\.versions\.node/);
+  assert.match(sync, /CLAWHUB=\(npx --yes --package=clawhub@latest clawhub\)/);
+  assert.doesNotMatch(sync, /npx -y clawhub@latest skill publish/);
+});
