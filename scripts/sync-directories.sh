@@ -8,6 +8,10 @@
 # collide with this repository's source folders. --copy avoids source symlinks.
 set -eu
 
+node_major="$(node -p 'process.versions.node.split(".")[0]')"
+[[ "$node_major" -ge 22 ]] || { echo "ClawHub sync requires Node.js 22+ (found $(node -v))." >&2; exit 1; }
+CLAWHUB=(npx --yes --package=clawhub@latest clawhub)
+
 mode="${1:-all}"
 case "$mode" in all|skills-sh|clawhub) ;; *) echo "Usage: $0 [all|skills-sh|clawhub]" >&2; exit 2 ;; esac
 REPO_URL="github.com/Crawlora-org/crawlora-skills"
@@ -71,7 +75,7 @@ for name in "${(@ok)CATS}"; do
   echo "ClawHub: $name"
   # Categories force a new release even when bytes match. Compare first without
   # catalog metadata, then attach categories and GitHub provenance on changes.
-  if ! npx -y clawhub@latest skill publish "$REPO_ROOT/skills/$name"       --owner crawlora-org --dry-run --json > "$SCRATCH/plan.json"; then
+  if ! "${CLAWHUB[@]}" skill publish "$REPO_ROOT/skills/$name"       --owner crawlora-org --dry-run --json > "$SCRATCH/plan.json"; then
     failed=1
     continue
   fi
@@ -80,7 +84,7 @@ for name in "${(@ok)CATS}"; do
     echo "Identical content already stored (possibly pending); verify public visibility without republishing."
     continue
   fi
-  if ! npx -y clawhub@latest skill publish "$REPO_ROOT/skills/$name"       --owner crawlora-org --categories "${CATS[$name]}"       --source-repo Crawlora-org/crawlora-skills --source-commit "$SOURCE_COMMIT"       --source-ref main --source-path "skills/$name"       --changelog "Sync skill instructions, references, and helper from GitHub $SOURCE_COMMIT"       --json > "$SCRATCH/result.json"; then
+  if ! "${CLAWHUB[@]}" skill publish "$REPO_ROOT/skills/$name"       --owner crawlora-org --categories "${CATS[$name]}"       --source-repo Crawlora-org/crawlora-skills --source-commit "$SOURCE_COMMIT"       --source-ref main --source-path "skills/$name"       --changelog "Sync skill instructions, references, and helper from GitHub $SOURCE_COMMIT"       --json > "$SCRATCH/result.json"; then
     failed=1
     continue
   fi
