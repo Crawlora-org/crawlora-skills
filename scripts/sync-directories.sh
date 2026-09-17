@@ -10,7 +10,11 @@ set -eu
 
 node_major="$(node -p 'process.versions.node.split(".")[0]')"
 [[ "$node_major" -ge 22 ]] || { echo "ClawHub sync requires Node.js 22+ (found $(node -v))." >&2; exit 1; }
-CLAWHUB=(npx --yes --package=clawhub@latest clawhub)
+if [[ -n "${CLAWHUB_BIN:-}" ]]; then
+  CLAWHUB=("$CLAWHUB_BIN")
+else
+  CLAWHUB=(npx --yes --package=clawhub@latest clawhub)
+fi
 
 mode="${1:-all}"
 case "$mode" in all|skills-sh|clawhub) ;; *) echo "Usage: $0 [all|skills-sh|clawhub]" >&2; exit 2 ;; esac
