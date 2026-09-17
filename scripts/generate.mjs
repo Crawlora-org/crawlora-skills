@@ -399,25 +399,9 @@ for (const [skill, names] of Object.entries(focusedSkills)) {
 
 // Sync the bundled helper into every skill folder.
 const helper = readFileSync(join(ROOT, "lib/crawlora.sh"), "utf8");
-// The umbrella skill intentionally exposes only public-data workflows. Keep
-// account usage, monitor-management, generic scraping, APK-analysis, and
-// dataset paths out of that helper while leaving them available to dedicated
-// skills.
-const publicPathPrefixes = [...new Set(
-  all
-    .filter((tool) => !excludedUmbrellaGroups.has(tool._http.group))
-    .map((tool) => String(tool._http.path).split("/")[1])
-    .filter(Boolean)
-)].sort();
 const escapeCasePattern = (value) => String(value).replace(/[\\*?\[\]]/g, "\\$&");
 const escapeExtendedRegex = (value) => String(value).replace(/[\\.^$|?*+()[\]{}]/g, "\\$&");
 const shellSingleQuote = (value) => `'${String(value).replaceAll("'", `'"'"'`)}'`;
-const publicPathCases = publicPathPrefixes
-  .map((prefix) => {
-    const literal = escapeCasePattern(prefix);
-    return `  /${literal}|/${literal}/*) route_allowed=true ;;`;
-  })
-  .join("\n");
 const routeCases = (skillTools) => [...new Set(
   skillTools
     .map((tool) => String(tool._http.path))
@@ -455,6 +439,7 @@ const routeMethodCases = (skillTools) => [...new Set(
   .map((entry) => `  ${entry}`)
   .join("|");
 const strictMethodSkills = new Set([
+  "crawlora",
   "walmart-research",
   "wayfair-research",
   "social-media-research",
@@ -471,9 +456,13 @@ const strictMethodSkills = new Set([
   "news-briefing-research",
   "startup-launch-research",
   "podcast-discovery-research",
+  "samsclub-research",
 ]);
 const numericProductIdSkills = new Set(["walmart-research"]);
 const quietCurlSkills = new Set([
+  "crawlora",
+  "serp-keyword-research",
+  "samsclub-research",
   "restaurant-menu-benchmarking",
   "app-store-research",
   "travel-accommodation-research",
@@ -485,6 +474,7 @@ const quietCurlSkills = new Set([
   "startup-launch-research",
   "podcast-discovery-research",
 ]);
+const getOnlySkills = new Set(["samsclub-research"]);
 const helperGuard = ({ cases, regexes, label, skillTools, strictMethods }) => {
   const methods = [...new Set(skillTools.map((tool) => String(tool._http?.method || "GET")))].sort();
   const methodPattern = methods.join("|");
@@ -586,8 +576,11 @@ for (const s of skillDirs) {
   } else {
     throw new Error(`No endpoint selection found for skill ${s}`);
   }
-  const cases = s === "crawlora" ? publicPathCases : routeCases(skillTools);
-  const regexes = s === "crawlora" ? "" : routeRegexes(skillTools);
+  // Exact route templates are important for the umbrella skill too. A
+  // platform-prefix wildcard would let undocumented endpoints receive the
+  // user's authenticated API key.
+  const cases = routeCases(skillTools);
+  const regexes = routeRegexes(skillTools);
   let skillHelper = helper.replace(
     '\n# Keep the API key out of the curl process command line.',
     () => `${helperGuard({
@@ -598,6 +591,54 @@ for (const s of skillDirs) {
       strictMethods: strictMethodSkills.has(s),
     }).replace(/\n{5,}/g, "\n\n\n\n").replace(/\n{4}# Monitor IDs/, "\n\n# Monitor IDs")}# Keep the API key out of the curl process command line.`
   );
+  if (getOnlySkills.has(s)) {
+    // GET-only skills must not retain the generic helper's body-forwarding
+    // branch: static scanners and users should see only the capability that
+    // the skill actually documents.
+    skillHelper = skillHelper.replace(
+      /# Usage:[\s\S]*?# \(or pass it with -d '<json>'\)\. Prints raw JSON to stdout — pipe into `jq`\./,
+      [
+        "# Usage:",
+        "#   GET  :  crawlora.sh /samsclub/departments",
+        "#   GET  :  crawlora.sh /samsclub/category id=980029 page=1",
+        "#",
+        "# GET key=value args become the query string. Prints raw JSON to stdout — pipe into `jq`.",
+      ].join("\n"),
+    );
+    skillHelper = skillHelper.replace(
+      "usage: crawlora.sh [-X METHOD] /path [k=v ... | json-body]",
+      `usage: crawlora.sh /${s}/<route> [k=v ...]`,
+    );
+    skillHelper = skillHelper.replace(
+      /method="GET"\nbody=""\nargs=\(\)\nwhile \[ \$# -gt 0 \]; do[\s\S]*?done(?=\n\n\[ "\$\{#args\[@\]\}" -ge 1)/,
+      [
+        'method="GET"',
+        "args=()",
+        'while [ $# -gt 0 ]; do',
+        '  case "$1" in',
+        `    -X|-d) echo "only GET are supported by the ${s} skill" >&2; exit 2 ;;`,
+        '    *) args+=("$1"); shift ;;',
+        "  esac",
+        "done",
+      ].join("\n"),
+    );
+    skillHelper = skillHelper.replace(
+      /if \[ "\$method" = "GET" \]; then[\s\S]*?\nfi\n$/,
+      [
+        "# GET-only skill: no request body or alternate method is accepted.",
+        "# -G + --data-urlencode URL-encodes each value (so spaces etc. are safe).",
+        "qs=()",
+        'for kv in ${rest[@]+"${rest[@]}"}; do',
+        '  [ -n "$kv" ] || continue',
+        '  case "$kv" in',
+        '    *@*) echo "@ is not allowed in query arguments" >&2; exit 2 ;;',
+        "  esac",
+        '  qs+=(--data-urlencode "$kv")',
+        "done",
+        'curl -q -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"',
+      ].join("\n"),
+    );
+  }
   if (quietCurlSkills.has(s)) skillHelper = skillHelper.replaceAll("curl -fsS", "curl -q -fsS");
   outputs.push([`skills/${s}/scripts/crawlora.sh`, skillHelper]);
 }
