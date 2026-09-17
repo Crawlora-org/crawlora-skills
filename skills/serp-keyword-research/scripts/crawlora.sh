@@ -148,12 +148,12 @@ if [ "$method" = "GET" ]; then
     esac
     qs+=(--data-urlencode "$kv")
   done
-  curl -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
+  curl -q -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
 else
   [ -n "$body" ] || body="${rest[0]:-}"
   [ -n "$body" ] || body='{}'
   # Stream the body on stdin so curl never interprets a user value as its
   # @file shorthand (and cannot read local files supplied in a request body).
-  printf '%s' "$body" | curl -fsS -X "$method" "${auth[@]}" \
+  printf '%s' "$body" | curl -q -fsS -X "$method" "${auth[@]}" \
     -H "Content-Type: application/json" --data-binary @- "${base}${path}"
 fi

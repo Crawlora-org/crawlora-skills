@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,6 +8,8 @@ import { spawnSync } from "node:child_process";
 
 const helper = fileURLToPath(new URL("../lib/crawlora.sh", import.meta.url));
 const publicHelper = fileURLToPath(new URL("../skills/crawlora/scripts/crawlora.sh", import.meta.url));
+const serpHelper = fileURLToPath(new URL("../skills/serp-keyword-research/scripts/crawlora.sh", import.meta.url));
+const samsclubHelper = fileURLToPath(new URL("../skills/samsclub-research/scripts/crawlora.sh", import.meta.url));
 const amazonHelper = fileURLToPath(new URL("../skills/amazon-research/scripts/crawlora.sh", import.meta.url));
 const earningsHelper = fileURLToPath(new URL("../skills/earnings-event-research/scripts/crawlora.sh", import.meta.url));
 const googleTrendsHelper = fileURLToPath(new URL("../skills/google-trends-research/scripts/crawlora.sh", import.meta.url));
@@ -137,6 +139,59 @@ test("scoped helpers require each dynamic parameter to be one path segment", () 
     );
     assert.equal(nested.status, 2);
     assert.match(nested.stderr, /not in the earnings-event-research skill catalog/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("umbrella helper uses exact route templates instead of platform wildcards", () => {
+  const source = readFileSync(publicHelper, "utf8");
+  assert.doesNotMatch(source, /\/amazon\|\/amazon\/\*\)/);
+  assert.match(source, /\/amazon\/search\) route_allowed=true/);
+  assert.match(source, /'\^\/amazon\/product\/\[\^\/\]\+\$'/);
+
+  const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
+  try {
+    writeFileSync(join(dir, "curl"), "#!/bin/sh\nexit 99\n", { mode: 0o755 });
+    const result = spawnSync("/bin/bash", [publicHelper, "/amazon/undocumented"], {
+      encoding: "utf8",
+      env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" },
+    });
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, /not in the crawlora skill catalog/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("SERP helper disables inherited curl configuration", () => {
+  const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
+  try {
+    writeFileSync(join(dir, "curl"), '#!/bin/sh\ncase " $* " in *" -q "*) exit 0 ;; *) exit 99 ;; esac\n', { mode: 0o755 });
+    const result = spawnSync("/bin/bash", [serpHelper, "/google/suggest", "q=coffee"], {
+      encoding: "utf8",
+      env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" },
+    });
+    assert.equal(result.status, 0, result.stderr);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("Sam's Club helper is GET-only and never forwards request bodies", () => {
+  const source = readFileSync(samsclubHelper, "utf8");
+  assert.doesNotMatch(source, /--data-binary/);
+  assert.doesNotMatch(source, /body=/);
+
+  const dir = mkdtempSync(join(tmpdir(), "crawlora-helper-"));
+  try {
+    writeFileSync(join(dir, "curl"), "#!/bin/sh\nexit 99\n", { mode: 0o755 });
+    const result = spawnSync("/bin/bash", [samsclubHelper, "-X", "POST", "/samsclub/departments", "{}"], {
+      encoding: "utf8",
+      env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, CRAWLORA_API_KEY: "test-key" },
+    });
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, /only GET are supported/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
