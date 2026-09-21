@@ -69,6 +69,9 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`courtlistener-research`](skills/courtlistener-research) | Search public US opinions and browse courts and judicial-person records for initial legal research. | CourtListener |
 | [`apk-teardown-research`](skills/apk-teardown-research) | Analyze authorized Android packages for permissions, SDKs, libraries, signing, release history, and ownership signals. | AppInsights |
 | [`collectibles-market-research`](skills/collectibles-market-research) | Trading-card and sports-collectible identity, PSA reference data, listings, auctions, sold items, and market trends. | PSA, COMC, Fanatics Collect, Fanatics Live, ALT, Goldin, Pristine Auction |
+| [`luxury-resale-research`](skills/luxury-resale-research) | Compare luxury-fashion, handbag, sneaker, streetwear, and watch resale evidence with condition and seller context. | 1stDibs, The RealReal, Fashionphile, Rebag, Vestiaire, Grailed, Chrono24, Farfetch, Gucci, Hermès, Prada, and more |
+| [`live-events-ticketing-research`](skills/live-events-ticketing-research) | Timestamped public event discovery and resale-price snapshots; never purchasing or guaranteeing inventory. | SeatGeek, StubHub |
+| [`dining-demand-research`](skills/dining-demand-research) | Compare restaurant discovery and time-specific availability snapshots without booking a table. | Resy, OpenTable |
 
 ### Focused research and prospecting workflows
 
@@ -108,8 +111,8 @@ self-contained and do not require the broader bundles to be installed.
 | [`used-car-market-comparison`](skills/used-car-market-comparison) | Matched vehicle listings, deduplicated asking-price ranges, and qualified price outliers. | CarMax, Autotrader, Cars.com |
 | [`software-vendor-shortlisting`](skills/software-vendor-shortlisting) | Requirements-based vendor shortlists, pricing scenarios, and evidence-led demo questions. | Capterra, Product Hunt, Bing, official vendor websites |
 
-The repository contains **112 installable skills**. The Claude Code marketplace
-bundle includes **74 skills**; the narrower per-platform alternatives below remain
+The repository contains **115 installable skills**. The Claude Code marketplace
+bundle includes **77 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills

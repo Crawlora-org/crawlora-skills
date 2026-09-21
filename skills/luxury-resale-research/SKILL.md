@@ -115,22 +115,22 @@ streetwear marketplace for a luxury-listing comparable without saying so.
   `subcategory`, `condition`, `colours`, `sizes`, `gender`, `is_kids`,
   `on_sale`, `price_min`, `price_max`, `sort`, `after`); discover with
   `depop_brands`, `depop_categories`, `depop_sizes`, and
-  `depop_search_facets` (`query`). Detail/shop: `depop_item/{slug}`,
-  `depop_item/{slug}/similar` (`after`, `limit`, up to 150),
-  `depop_search_sellers` (`query`), and `depop_shop/{username}` with the
+  `depop_search_facets` (`query`). Detail/shop: `/depop/item/{slug}`,
+  `/depop/item/{slug}/similar` (`after`, `limit`, up to 150),
+  `depop_search_sellers` (`query`), and `/depop/shop/{username}` with the
   compatible filters. Suggestions: `depop_suggest` (`query`).
 - **Poshmark:** use `poshmark_brands` and `poshmark_categories` for discovery;
   active browse/search is `poshmark_search` (`query`, `department`, `max_id`),
-  `poshmark_brand/{name}` (`max_id`), or `poshmark_category/{path}` (`max_id`).
-  Details are `poshmark_listing/{id}`; seller context is
-  `poshmark_closet/{username}` (`max_id`). Reuse `next_max_id` exactly.
+  `/poshmark/brand/{name}` (`max_id`), or `/poshmark/category/{path}`
+  (`max_id`). Details are `/poshmark/listing/{id}`; seller context is
+  `/poshmark/closet/{username}` (`max_id`). Reuse `next_max_id` exactly.
 - **GOAT and StockX:** use product detail for market context, not a confirmed
   sale comp unless the response explicitly provides a last-sale field.
   `goat_search` supports `query`, facets, `page`, and `limit`; discover with
   `goat_search_facets`, `goat_countries`, and `goat_curated`; detail is
-  `goat_product/{slug}` (`country_code`). `stockx_search` supports `category`,
+  `/goat/product/{slug}` (`country_code`). `stockx_search` supports `category`,
   `query`, facet filters, `page`, and `limit`; discover `stockx_categories` and
-  `stockx_brands`; detail is `stockx_product/{slug}`. `stockx_releases`
+  `stockx_brands`; detail is `/stockx/product/{slug}`. `stockx_releases`
   (`from`, `page`, `limit`) is a release calendar, not resale history.
 
 ## Reporting shape
