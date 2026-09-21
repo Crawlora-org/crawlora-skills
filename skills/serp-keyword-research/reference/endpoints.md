@@ -13,14 +13,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_news`
 
 - **HTTP:** `GET /google/news`
-- **What:** Search Google News. Returns normalized Google News vertical results (title, source, link, age) parsed from the public Google News results page. Locale defaults to country=us and lang=en. Returns 503 when Google serves a challenge page or unusable HTML.
-- **Params:** `count` (integer, optional) — Results per page; defaults to 10, clamped to 1..50; `country` (string, optional) — Two-letter country code; defaults to us; `lang` (string, optional) — Google UI language; defaults to en; `page` (integer, optional) — 1-based page number; defaults to 1; `q` (string, **required**) — Search query
+- **What:** Search Google News. Returns current Google News search results using anonymous HTTP requests with fresh proxy profiles, without browser rendering. Pages slice the finite result snapshot; they do not traverse the Google Search index. Results include title, source, publisher article URL, age, and thumbnail when available. Valid no-results searches and exhausted pages return an empty array. Locale defaults to country=us and lang=en. Returns 503 for blocked or malformed upstream responses.
+- **Params:** `count` (integer, optional) — Results per page; defaults to 10, clamped to 1..50; `country` (string, optional) — Two-letter country code; defaults to us; `lang` (string, optional) — Google UI language; defaults to en; `page` (integer, optional) — 1-based page within the current finite result snapshot; defaults to 1; `q` (string, **required**) — Search query
 
-### `google_search`
+### `google_news_search`
 
-- **HTTP:** `POST /google/search`
-- **What:** Google search API. Returns normalized Google web search results. Results are fetched through proxied browser renderers that race several concurrent renders per request and return the first clean result, with stale-cache fallback when available. The endpoint returns 503 when Google serves a challenge page or unusable HTML. Rate limit is enforced at 1 request per second, and if the limit is exceeded a 429 status code is returned with rate limit headers.
-- **Params:** `searchOption` (object, **required**) — Search options
+- **HTTP:** `POST /google/news`
+- **What:** Search Google News with JSON. Restored JSON compatibility endpoint. Returns current Google News articles using anonymous HTTP requests with fresh proxy profiles, without browser rendering. Pages slice the finite current result snapshot. Uses the legacy result array and field names; no-results searches and exhausted pages return an empty result array.
+- **Params:** `searchOption` (object, **required**) — Search options; keyword, language and country are required. limit defaults to 10 and is clamped to 10..100; page defaults to 1.
 - **REST body:** Send the value of the MCP argument `searchOption` directly as the JSON body; do not wrap it in a `searchOption` property.
 
 ### `google_suggest`
@@ -125,7 +125,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bing_search`
 
 - **HTTP:** `GET /bing/search`
-- **What:** Search Bing web results. Returns normalized Bing web search results for a query string, including organic results, optional context panel data, related queries, people-also-ask questions, news modules, video modules, and page-based pagination. Empty optional blocks are omitted from the JSON response. Locale defaults to country=us and lang=en-us. Results are fetched with a Chrome-impersonated request client and return 503 on a genuine transport failure or challenge page. Bing occasionally serves a well-formed page whose results share no significant term with the query; when every hedged attempt hits this, the response is still returned as 200 with data.low_confidence set to true (and the X-Low-Confidence header) instead of being withheld, so callers get Bing's real answer plus an honest signal to double-check it rather than nothing. Queries that use the site: operator (for example site:gov.hu) are not supported: Bing serves a bot-verification challenge for them, so they are rejected with 400 before any request is made. Use the Google search endpoint (/api/v1/google/search) for domain-restricted searches.
+- **What:** Search Bing web results. Returns normalized Bing web search results for a query string, including organic results, optional context panel data, related queries, people-also-ask questions, news modules, video modules, and page-based pagination. Empty optional blocks are omitted from the JSON response. Locale defaults to country=us and lang=en-us. Results are fetched with a Chrome-impersonated request client and return 503 on a genuine transport failure or challenge page. Bing occasionally serves a well-formed page whose results share no significant term with the query; when every hedged attempt hits this, the response is still returned as 200 with data.low_confidence set to true (and the X-Low-Confidence header) instead of being withheld, so callers get Bing's real answer plus an honest signal to double-check it rather than nothing. Queries that use the site: operator (for example site:gov.hu) are not supported: Bing serves a bot-verification challenge for them, so they are rejected with 400 before any request is made. Use the DuckDuckGo (/api/v1/duckduckgo/search), Brave (/api/v1/brave/search), or Yahoo (/api/v1/yahoo-search/search) search endpoints for domain-restricted searches instead.
 - **Params:** `count` (integer, optional) — Results per page; defaults to 10, clamped to 1..50; `country` (string, optional) — Two-letter country code; defaults to us; `lang` (string, optional) — Bing UI language; defaults to en-us; `page` (integer, optional) — 1-based page number; defaults to 1; `q` (string, **required**) — Search query
 
 ### `bing_suggest`

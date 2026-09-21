@@ -23,7 +23,7 @@ method="GET"
 args=()
 while [ $# -gt 0 ]; do
   case "$1" in
-    -X|-d) echo "only GET are supported by the job-market-research skill" >&2; exit 2 ;;
+    -X|-d) echo "only GET are supported by the collectibles-market-research skill" >&2; exit 2 ;;
     *) args+=("$1"); shift ;;
   esac
 done
@@ -38,7 +38,7 @@ rest=("${args[@]:1}")
 case "$method" in
   GET) ;;
   *)
-    echo "only GET are supported by the job-market-research skill" >&2
+    echo "only GET are supported by the collectibles-market-research skill" >&2
     exit 2
     ;;
 esac
@@ -46,7 +46,7 @@ esac
 # Reject path syntax that could smuggle a route through a shell glob check.
 case "$path" in
   ""|*[?#%]*|*..*|*//* )
-    echo "invalid path for the job-market-research skill" >&2
+    echo "invalid path for the collectibles-market-research skill" >&2
     exit 2
     ;;
 esac
@@ -56,68 +56,63 @@ esac
 # segment; unlike a case '*', [^/]+ cannot consume another slash.
 route_allowed=false
 case "$path" in
-  /amazon-jobs/categories) route_allowed=true ;;
-  /amazon-jobs/job) route_allowed=true ;;
-  /amazon-jobs/search) route_allowed=true ;;
-  /apple-jobs/job) route_allowed=true ;;
-  /apple-jobs/locations) route_allowed=true ;;
-  /apple-jobs/search) route_allowed=true ;;
-  /fiverr/search) route_allowed=true ;;
-  /google-jobs/job) route_allowed=true ;;
-  /google-jobs/search) route_allowed=true ;;
-  /indeed/job) route_allowed=true ;;
-  /indeed/locations/suggest) route_allowed=true ;;
-  /indeed/search) route_allowed=true ;;
-  /jobs/ashby/board) route_allowed=true ;;
-  /jobs/company-search) route_allowed=true ;;
-  /jobs/eightfold/board) route_allowed=true ;;
-  /jobs/eightfold/job) route_allowed=true ;;
-  /jobs/gem/board) route_allowed=true ;;
-  /jobs/greenhouse/board) route_allowed=true ;;
-  /jobs/greenhouse/job) route_allowed=true ;;
-  /jobs/hiring-signals) route_allowed=true ;;
-  /jobs/icims/board) route_allowed=true ;;
-  /jobs/icims/job) route_allowed=true ;;
-  /jobs/lever/posting) route_allowed=true ;;
-  /jobs/lever/postings) route_allowed=true ;;
-  /jobs/oracle/board) route_allowed=true ;;
-  /jobs/oracle/job) route_allowed=true ;;
-  /jobs/personio/feed) route_allowed=true ;;
-  /jobs/phenom/board) route_allowed=true ;;
-  /jobs/phenom/job) route_allowed=true ;;
-  /jobs/pinpoint/board) route_allowed=true ;;
-  /jobs/recruitee/offer) route_allowed=true ;;
-  /jobs/recruitee/offers) route_allowed=true ;;
-  /jobs/rippling/board) route_allowed=true ;;
-  /jobs/rippling/job) route_allowed=true ;;
-  /jobs/smartrecruiters/posting) route_allowed=true ;;
-  /jobs/smartrecruiters/postings) route_allowed=true ;;
-  /jobs/teamtailor/jobs) route_allowed=true ;;
-  /jobs/ukg/board) route_allowed=true ;;
-  /jobs/workable/posting) route_allowed=true ;;
-  /jobs/workable/postings) route_allowed=true ;;
-  /jobs/workday/board) route_allowed=true ;;
-  /jobs/workday/job) route_allowed=true ;;
-  /meta-jobs/job) route_allowed=true ;;
-  /meta-jobs/list) route_allowed=true ;;
-  /meta-jobs/search) route_allowed=true ;;
-  /tes/jobs/detail) route_allowed=true ;;
-  /tes/jobs/employer) route_allowed=true ;;
-  /tes/jobs/search) route_allowed=true ;;
-  /tes/resources/detail) route_allowed=true ;;
-  /tes/resources/search) route_allowed=true ;;
-  /tes/resources/shop) route_allowed=true ;;
-  /tes/schools/search) route_allowed=true ;;
-  /tesla-jobs/job) route_allowed=true ;;
-  /tesla-jobs/list) route_allowed=true ;;
-  /upwork/search) route_allowed=true ;;
+  /alt/asset) route_allowed=true ;;
+  /alt/auctions) route_allowed=true ;;
+  /alt/card-search) route_allowed=true ;;
+  /alt/categories) route_allowed=true ;;
+  /alt/listing) route_allowed=true ;;
+  /alt/market-trends) route_allowed=true ;;
+  /alt/search) route_allowed=true ;;
+  /alt/sold-listings) route_allowed=true ;;
+  /alt/top-movers) route_allowed=true ;;
+  /comc/categories) route_allowed=true ;;
+  /comc/listing) route_allowed=true ;;
+  /comc/search) route_allowed=true ;;
+  /fanaticscollect/auctions) route_allowed=true ;;
+  /fanaticscollect/categories) route_allowed=true ;;
+  /fanaticscollect/instant-rips/categories) route_allowed=true ;;
+  /fanaticscollect/search) route_allowed=true ;;
+  /fanaticscollect/sold-items) route_allowed=true ;;
+  /fanaticscollect/trending-searches) route_allowed=true ;;
+  /fanaticslive/browse) route_allowed=true ;;
+  /fanaticslive/leagues) route_allowed=true ;;
+  /fanaticslive/shops) route_allowed=true ;;
+  /goldin/auctions) route_allowed=true ;;
+  /goldin/categories) route_allowed=true ;;
+  /goldin/listing) route_allowed=true ;;
+  /goldin/search) route_allowed=true ;;
+  /goldin/suggest) route_allowed=true ;;
+  /pristine-auction/categories) route_allowed=true ;;
+  /pristine-auction/search) route_allowed=true ;;
+  /psa/autographfacts/categories) route_allowed=true ;;
+  /psa/autographfacts/gallery) route_allowed=true ;;
+  /psa/autographfacts/subject) route_allowed=true ;;
+  /psa/autographfacts/subjects) route_allowed=true ;;
+  /psa/cardfacts/categories) route_allowed=true ;;
+  /psa/cardfacts/checklist) route_allowed=true ;;
+  /psa/cardfacts/sets) route_allowed=true ;;
+  /psa/cert-lookup) route_allowed=true ;;
+  /psa/price-guide/categories) route_allowed=true ;;
+  /psa/price-guide/search) route_allowed=true ;;
+  /psa/price-guide/set) route_allowed=true ;;
+  /psa/probatfacts/categories) route_allowed=true ;;
+  /psa/probatfacts/gallery) route_allowed=true ;;
+  /psa/probatfacts/subject) route_allowed=true ;;
+  /psa/probatfacts/subjects) route_allowed=true ;;
+  /psa/ticketfacts/categories) route_allowed=true ;;
+  /psa/ticketfacts/gallery) route_allowed=true ;;
+  /psa/ticketfacts/subject) route_allowed=true ;;
+  /psa/ticketfacts/subjects) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
-  '^/fiverr/gig/[^/]+/[^/]+$'
-  '^/fiverr/seller/[^/]+$'
-  '^/upwork/freelancer/[^/]+$'
-  '^/upwork/job/[^/]+$'
+  '^/fanaticscollect/listing/[^/]+$'
+  '^/fanaticslive/channel/[^/]+$'
+  '^/fanaticslive/shop/[^/]+$'
+  '^/fanaticslive/shop/[^/]+/shows$'
+  '^/fanaticslive/show/[^/]+$'
+  '^/fanaticslive/show/[^/]+/instant-rips$'
+  '^/pristine-auction/lot/[^/]+$'
   )
   for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
     if [[ "$path" =~ $route_regex ]]; then
@@ -127,7 +122,7 @@ if [ "$route_allowed" = false ]; then
   done
 fi
 if [ "$route_allowed" = false ]; then
-  echo "path is not in the job-market-research skill catalog" >&2
+  echo "path is not in the collectibles-market-research skill catalog" >&2
   exit 2
 fi
 

@@ -146,6 +146,7 @@ case "$path" in
   /foodpanda/restaurant/menu) route_allowed=true ;;
   /foodpanda/restaurant/reviews) route_allowed=true ;;
   /foodpanda/search) route_allowed=true ;;
+  /foodpanda/search/cuisines) route_allowed=true ;;
   /grubhub/availability) route_allowed=true ;;
   /grubhub/offers) route_allowed=true ;;
   /grubhub/restaurant) route_allowed=true ;;
@@ -167,6 +168,7 @@ case "$path" in
   /justeat/restaurant) route_allowed=true ;;
   /justeat/restaurant/menu) route_allowed=true ;;
   /justeat/search) route_allowed=true ;;
+  /justeat/search/filters) route_allowed=true ;;
   /kfc/delivery-estimate) route_allowed=true ;;
   /kfc/menu) route_allowed=true ;;
   /kfc/nearby) route_allowed=true ;;
@@ -174,6 +176,7 @@ case "$path" in
   /kfc/promotions) route_allowed=true ;;
   /kfc/store) route_allowed=true ;;
   /kfc/stores) route_allowed=true ;;
+  /kroger/categories) route_allowed=true ;;
   /kroger/category) route_allowed=true ;;
   /kroger/coupons) route_allowed=true ;;
   /kroger/product) route_allowed=true ;;
@@ -325,6 +328,7 @@ case "$path" in
   /zaxbys/menu) route_allowed=true ;;
   /zaxbys/nearby) route_allowed=true ;;
   /zaxbys/store) route_allowed=true ;;
+  /zomato/cities) route_allowed=true ;;
   /zomato/collection) route_allowed=true ;;
   /zomato/collections) route_allowed=true ;;
   /zomato/restaurant) route_allowed=true ;;
@@ -452,6 +456,7 @@ route_method_regexes=(
   '^GET:/foodpanda/restaurant/menu$'
   '^GET:/foodpanda/restaurant/reviews$'
   '^GET:/foodpanda/search$'
+  '^GET:/foodpanda/search/cuisines$'
   '^GET:/grubhub/availability$'
   '^GET:/grubhub/offers$'
   '^GET:/grubhub/restaurant$'
@@ -473,6 +478,7 @@ route_method_regexes=(
   '^GET:/justeat/restaurant$'
   '^GET:/justeat/restaurant/menu$'
   '^GET:/justeat/search$'
+  '^GET:/justeat/search/filters$'
   '^GET:/kfc/delivery-estimate$'
   '^GET:/kfc/menu$'
   '^GET:/kfc/nearby$'
@@ -480,6 +486,7 @@ route_method_regexes=(
   '^GET:/kfc/promotions$'
   '^GET:/kfc/store$'
   '^GET:/kfc/stores$'
+  '^GET:/kroger/categories$'
   '^GET:/kroger/category$'
   '^GET:/kroger/coupons$'
   '^GET:/kroger/product$'
@@ -641,6 +648,7 @@ route_method_regexes=(
   '^GET:/zaxbys/menu$'
   '^GET:/zaxbys/nearby$'
   '^GET:/zaxbys/store$'
+  '^GET:/zomato/cities$'
   '^GET:/zomato/collection$'
   '^GET:/zomato/collections$'
   '^GET:/zomato/restaurant$'

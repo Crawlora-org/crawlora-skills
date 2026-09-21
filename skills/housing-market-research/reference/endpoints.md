@@ -34,10 +34,10 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /redfin/region-trends`
 - **What:** Get Redfin region market trends. Returns Redfin's aggregate market trends for a region (median list/sale price, sale-to-list, offers, days on market, inventory, year-over-year). Faithful pass-through of Redfin's public aggregate-trends resource.
-- **Params:** `region_id` (integer, **required**) — Redfin region id from autocomplete; `region_type` (integer, optional) — Redfin region type from autocomplete (defaults to 6, city)
+- **Params:** `region_id` (integer, **required**) — Redfin region id for a neighborhood, ZIP code, county, or city; `region_type` (integer, optional) — Redfin region type (defaults to 6, city)
 
 ### `redfin_search`
 
 - **HTTP:** `GET /redfin/search`
 - **What:** Search Redfin listings. Returns normalized Redfin public listing search results from Redfin's credential-free region CSV endpoint. Pass region_id/region_type from autocomplete to skip location resolution.
-- **Params:** `location` (string, optional) — Display location; resolved via autocomplete when region_id is omitted; `max_price` (integer, optional) — Maximum price filter; `min_baths` (number, optional) — Minimum bathrooms filter; `min_beds` (integer, optional) — Minimum bedrooms filter; `min_price` (integer, optional) — Minimum price filter; `page` (integer, optional) — 1-based page; `region_id` (integer, optional) — Redfin region id from autocomplete; `region_type` (integer, optional) — Redfin region type from autocomplete (defaults to 6, city); `status` (string, optional) — Listing status: for_sale or sold
+- **Params:** `location` (string, optional) — Display location; resolved via autocomplete when region_id is omitted; `max_price` (integer, optional) — Maximum price filter; `min_baths` (number, optional) — Minimum bathrooms filter; `min_beds` (integer, optional) — Minimum bedrooms filter; `min_price` (integer, optional) — Minimum price filter; `page` (integer, optional) — 1-based page; `region_id` (integer, optional) — Redfin region id; skips location resolution when provided; `region_type` (integer, optional) — Redfin region type, used with region_id (defaults to 6, city); `status` (string, optional) — Listing status: for_sale or sold

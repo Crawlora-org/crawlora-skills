@@ -6,14 +6,20 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**5 endpoints across 1 platform group(s).**
+**6 endpoints across 1 platform group(s).**
 
-## Zalando (5)
+## Zalando (6)
+
+### `zalando_categories`
+
+- **HTTP:** `GET /zalando/categories`
+- **What:** List a Zalando market's top-level category navigation. Returns a Zalando country storefront's live top-level category navigation, department by department, scraped directly from that department's own storefront nav tab bar. This is the discovery source for zalando-category's category parameter — category slugs are market-specific (each storefront uses its own local-language slug), so there is no fixed value space to hardcode; this endpoint asks the upstream live instead. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains. department optionally restricts the response to one of women, men, or kids; omitting it returns all three. Scope note: only the top-level nav tabs (e.g. Clothing, Shoes, Sports) are returned, not each tab's own hover-revealed mega-menu of sub-categories — that panel is not present in the page's initial HTML and cannot be reached without executing JavaScript, which this endpoint's transport does not do.
+- **Params:** `department` (string, optional) — Restrict to one Zalando shopping department. Omit to return all three.; `market` (string, **required**) — Zalando country storefront
 
 ### `zalando_category`
 
 - **HTTP:** `GET /zalando/category`
-- **What:** Browse a Zalando category or brand. Browses a Zalando category or brand listing by URL slug (e.g. shoes, womens-dresses, on-running) and returns the same normalized result cards as zalando-search, plus the category's upstream total_count. Category slugs are market-specific (each storefront uses its own local-language slug, e.g. "shoes" on de/gb, "chaussures" on fr, "scarpe" on it) — take them from that market's own site navigation or a product's url field. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains.
+- **What:** Browse a Zalando category or brand. Browses a Zalando category or brand listing by URL slug (e.g. shoes, womens-dresses, on-running) and returns the same normalized result cards as zalando-search, plus the category's upstream total_count. Category slugs are market-specific (each storefront uses its own local-language slug, e.g. "shoes" on de/gb, "chaussures" on fr, "scarpe" on it) — use zalando-categories to discover a market's live top-level slugs, or take one from a product's url field. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains.
 - **Params:** `category` (string, **required**) — Zalando category or brand URL slug, in the target market's own language; `market` (string, **required**) — Zalando country storefront
 
 ### `zalando_markets`

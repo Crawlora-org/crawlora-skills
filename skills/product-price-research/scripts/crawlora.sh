@@ -73,6 +73,8 @@ case "$path" in
   /adidas/store) route_allowed=true ;;
   /adidas/stores) route_allowed=true ;;
   /adidas/suggest) route_allowed=true ;;
+  /amazon/charts) route_allowed=true ;;
+  /amazon/charts/categories) route_allowed=true ;;
   /amazon/search) route_allowed=true ;;
   /bestbuy/brands) route_allowed=true ;;
   /bestbuy/categories) route_allowed=true ;;
@@ -125,6 +127,7 @@ case "$path" in
   /homedepot/search) route_allowed=true ;;
   /homedepot/suggest) route_allowed=true ;;
   /ikea/availability) route_allowed=true ;;
+  /ikea/categories) route_allowed=true ;;
   /ikea/category) route_allowed=true ;;
   /ikea/product) route_allowed=true ;;
   /ikea/reviews) route_allowed=true ;;
@@ -168,6 +171,8 @@ case "$path" in
   /otto/search) route_allowed=true ;;
   /samsclub/category) route_allowed=true ;;
   /samsclub/departments) route_allowed=true ;;
+  /sephora/brands) route_allowed=true ;;
+  /sephora/categories) route_allowed=true ;;
   /sephora/category) route_allowed=true ;;
   /sephora/product) route_allowed=true ;;
   /sephora/product/questions) route_allowed=true ;;
@@ -205,6 +210,7 @@ case "$path" in
   /target/questions) route_allowed=true ;;
   /target/reviews) route_allowed=true ;;
   /target/search) route_allowed=true ;;
+  /target/stores) route_allowed=true ;;
   /tokopedia/autocomplete) route_allowed=true ;;
   /tokopedia/category) route_allowed=true ;;
   /tokopedia/home) route_allowed=true ;;
@@ -227,6 +233,7 @@ case "$path" in
   /wish/categories) route_allowed=true ;;
   /wish/search) route_allowed=true ;;
   /wish/suggest) route_allowed=true ;;
+  /zalando/categories) route_allowed=true ;;
   /zalando/category) route_allowed=true ;;
   /zalando/markets) route_allowed=true ;;
   /zalando/product) route_allowed=true ;;
@@ -315,6 +322,8 @@ route_method_regexes=(
   '^GET:/adidas/store$'
   '^GET:/adidas/stores$'
   '^GET:/adidas/suggest$'
+  '^GET:/amazon/charts$'
+  '^GET:/amazon/charts/categories$'
   '^GET:/amazon/product/[^/]+$'
   '^GET:/amazon/search$'
   '^GET:/amazon/suggest/[^/]+$'
@@ -384,6 +393,7 @@ route_method_regexes=(
   '^GET:/homedepot/search$'
   '^GET:/homedepot/suggest$'
   '^GET:/ikea/availability$'
+  '^GET:/ikea/categories$'
   '^GET:/ikea/category$'
   '^GET:/ikea/product$'
   '^GET:/ikea/reviews$'
@@ -432,6 +442,8 @@ route_method_regexes=(
   '^GET:/samsclub/departments$'
   '^GET:/samsclub/product/[^/]+$'
   '^GET:/samsclub/product/[^/]+/related$'
+  '^GET:/sephora/brands$'
+  '^GET:/sephora/categories$'
   '^GET:/sephora/category$'
   '^GET:/sephora/product$'
   '^GET:/sephora/product/questions$'
@@ -481,6 +493,7 @@ route_method_regexes=(
   '^GET:/target/questions$'
   '^GET:/target/reviews$'
   '^GET:/target/search$'
+  '^GET:/target/stores$'
   '^GET:/tokopedia/autocomplete$'
   '^GET:/tokopedia/category$'
   '^GET:/tokopedia/home$'
@@ -510,6 +523,7 @@ route_method_regexes=(
   '^GET:/wish/product/[^/]+/reviews$'
   '^GET:/wish/search$'
   '^GET:/wish/suggest$'
+  '^GET:/zalando/categories$'
   '^GET:/zalando/category$'
   '^GET:/zalando/markets$'
   '^GET:/zalando/product$'

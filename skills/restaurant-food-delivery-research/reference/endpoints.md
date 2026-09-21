@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**281 endpoints across 40 platform group(s).**
+**285 endpoints across 40 platform group(s).**
 
 ## DoorDash (12)
 
@@ -668,7 +668,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get one Five Guys restaurant by its locator path. Returns one Five Guys restaurant's full published profile by its locator slug -- address, phone, weekly in-store hours, separate delivery hours, coordinate, Google Place id, restaurant-amenity labels, and order/delivery/menu URLs. Get a path from GET /fiveguys/search or /fiveguys/nearby's `locations[].path`, or from GET /fiveguys/directory's `children[].path` where `is_location` is true. It also returns three detail-only extras that search and nearby results do not carry: `description` (this restaurant's own blurb, templated but genuinely per-location), `photos` (its published gallery images, omitted for the many locations that publish none), and `breadcrumbs` (the directory trail above it, each entry's `path` feeding straight back into GET /fiveguys/directory). Two fields available on search and nearby results are not published on this surface and are omitted here: `price_range` and `pickup_and_delivery_services`. A `profile` block, populated best-effort from a second Yext key, adds further per-restaurant detail no other field in this family carries: `google_attributes` (structured amenity flags, richer than `services`), `review_page_url`/`review_invite_url`, `featured_message`/`featured_message_url`, `google_cid`/`facebook_store_id`, `routable_latitude`/`routable_longitude` (a driving destination, distinct from the display coordinate), `payment_options`, `meals_served`, `services`, `permanently_closed`, `directory_listing_url`, `franchisee_group` (the operator of this specific restaurant -- a corporate code or a franchisee's own company name), `facebook_vanity_url` (this location's own Facebook handle), and `faq` (this restaurant's own generated question set, distinct from the national corpus GET /fiveguys/faq serves). Passing a state or city path returns 404 -- use GET /fiveguys/directory for those.
 - **Params:** `id` (string, optional) — The restaurant's entity id, e.g. \; `path` (string, optional) — The restaurant's locator slug, e.g. \
 
-## Foodpanda (4)
+## Foodpanda (5)
 
 ### `foodpanda_restaurant`
 
@@ -691,8 +691,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `foodpanda_search`
 
 - **HTTP:** `GET /foodpanda/search`
-- **What:** Search foodpanda restaurants near a location. Returns restaurants delivering to a latitude/longitude in a foodpanda market, optionally filtered by a numeric cuisine id (from a prior response's cuisines[].id). Each restaurant carries its code (the value the restaurant and menu endpoints take), name, address, coordinates, budget tier, rating, cuisines, minimum order amount and delivery fee, delivery/pickup availability, and a hero image. A location with no coverage returns an empty list rather than an error.
-- **Params:** `cuisine_id` (integer, optional) — Numeric cuisine id to filter by, from a restaurant's cuisines[].id; `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Restaurants to return, clamped to 50 (default 20); `longitude` (number, **required**) — Search center longitude; `market` (string, optional) — Delivery Hero market. Defaults to sg.; `offset` (integer, optional) — Result offset for pagination (default 0)
+- **What:** Search foodpanda restaurants near a location. Returns restaurants delivering to a latitude/longitude in a foodpanda market, optionally filtered by a numeric cuisine id (call foodpanda_search_cuisines for the live, location-scoped set of valid ids). Each restaurant carries its code (the value the restaurant and menu endpoints take), name, address, coordinates, budget tier, rating, cuisines, minimum order amount and delivery fee, delivery/pickup availability, and a hero image. A location with no coverage returns an empty list rather than an error.
+- **Params:** `cuisine_id` (integer, optional) — Numeric cuisine id to filter by. Cuisine ids are location- and market-scoped, not a fixed global enum -- call foodpanda_search_cuisines with the same market/latitude/longitude to get the valid id set for this location; `latitude` (number, **required**) — Search center latitude; `limit` (integer, optional) — Restaurants to return, clamped to 50 (default 20); `longitude` (number, **required**) — Search center longitude; `market` (string, optional) — Delivery Hero market. Defaults to sg.; `offset` (integer, optional) — Result offset for pagination (default 0)
+
+### `foodpanda_search_cuisines`
+
+- **HTTP:** `GET /foodpanda/search/cuisines`
+- **What:** Get foodpanda's live cuisine filter catalog for a location. Returns foodpanda's own live cuisine catalog for a latitude/longitude in a foodpanda market -- the exact facet list (with real, live restaurant counts) the site's own search page cuisine filter sidebar is populated from. Every entry's id is a valid value for /foodpanda/search's cuisine_id parameter. Cuisine ids are location- and market-scoped, not a fixed global enum: the same coordinate in a different neighborhood, or a different market, can return a different id/count set entirely, so call this endpoint with the same market/latitude/longitude you intend to search rather than reusing ids captured elsewhere.
+- **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `market` (string, optional) — Delivery Hero market. Defaults to sg.
 
 ## Grubhub (7)
 
@@ -770,7 +776,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get one Jimmy John's store's detail. Returns one Jimmy John's store: name, postal address, phone, coordinates, cuisine description and the published week of opening hours. Store paths come from GET /jimmy-johns/sitemap. Note Jimmy John's main site is behind a bot challenge that serves a page with HTTP 200, so this family reads the separate locator subdomain instead. For menu data, see GET /jimmy-johns/nearby and GET /jimmy-johns/menu, which read a separate ordering API.
 - **Params:** `path` (string, **required**) — Store path from a /jimmy-johns/sitemap entry
 
-## Just Eat (3)
+## Just Eat (4)
 
 ### `justeat_restaurant`
 
@@ -788,7 +794,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /justeat/search`
 - **What:** Search Just Eat restaurants near a UK postcode. Returns Just Eat's full restaurant listing for a UK postcode -- every restaurant the site's own area page carries, ordered as Just Eat's default "best match" sort presents them (or by sort_by, if set), not a curated subset. Each restaurant carries its unique_name (the value the restaurant and menu endpoints take), name, image, rating, delivery time window, and open-now status. A postcode with no coverage returns an empty list rather than an error.
-- **Params:** `filter` (array, optional) — Repeatable. Just Eat's own area-page filter slugs (e.g. open_now, or a cuisine tile's slug), passed through as-is and OR'd together. Also reaches non-restaurant categories -- groceries, alcohol, pharmacy, electronics, and more -- via the same mechanism, e.g. filter=groceries. See the endpoint markdown for the confirmed slug list. An unrecognized slug narrows to a smaller or empty result rather than erroring.; `limit` (integer, optional) — Restaurants to return, clamped to 100 (default 20); `postcode` (string, **required**) — UK postcode to search near; `sort_by` (string, optional) — Result order, matching the area page's own Sort by control. Default best_match.
+- **Params:** `filter` (array, optional) — Repeatable. Just Eat's own area-page filter slugs (e.g. open_now, or a cuisine tile's slug), passed through as-is and OR'd together. Also reaches non-restaurant categories -- groceries, alcohol, pharmacy, electronics, and more -- via the same mechanism, e.g. filter=groceries. The valid slug set is specific to the postcode you are searching -- call /justeat/search/filters with the same postcode for the current, complete, location-scoped list with live result counts. An unrecognized slug narrows to a smaller or empty result rather than erroring.; `limit` (integer, optional) — Restaurants to return, clamped to 100 (default 20); `postcode` (string, **required**) — UK postcode to search near; `sort_by` (string, optional) — Result order, matching the area page's own Sort by control. Default best_match.
+
+### `justeat_search_filters`
+
+- **HTTP:** `GET /justeat/search/filters`
+- **What:** Get Just Eat's live filter slug catalog for a UK postcode. Returns the exact filter slugs Just Eat's own area page currently offers for a UK postcode -- star-rating thresholds, boolean toggles (open_now, new, free_delivery, halal, vegan, ...), cuisine tiles (pizza, chinese, italian, ...), and non-restaurant top-nav verticals (groceries, alcohol, pharmacy, electronics, flowers, gifts, and more) alike -- each with the live count of restaurants it currently narrows this postcode's listing to. Every filter value is the literal string /justeat/search's repeatable filter parameter accepts. The slug set is genuinely postcode-dependent: a rural postcode's own area page offers fewer cuisine tiles than central London's, because Just Eat's own frontend never advertises a filter with zero local coverage -- call this endpoint again for a different postcode rather than assume one location's slug set applies everywhere.
+- **Params:** `postcode` (string, **required**) — UK postcode to look up
 
 ## KFC (7)
 
@@ -834,13 +846,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search KFC restaurants by city, state, postal code, name, franchise code, or store number. Returns KFC restaurants matching a city/state/postal code/name/franchise code/store number filter. At least one filter is required -- an unfiltered call would enumerate every US restaurant in one response, which this endpoint intentionally does not expose. Each restaurant carries its store number (the value /kfc/menu and /kfc/promotions take), full address with coordinates, phone, whether it currently accepts online orders, and its timezone. appear_in_store_results (default true) excludes internal/test records KFC's own storefront does not surface in customer-facing search -- confirmed live that a raw filter can otherwise return non-orderable administrative entries alongside real restaurants.
 - **Params:** `appear_in_store_results` (boolean, optional) — Restrict to restaurants shown in customer-facing search, excluding internal/test entries (default true); `city` (string, optional) — Restaurant city; `franchise_code` (string, optional) — Exact franchise/operator code; `max_results` (integer, optional) — Maximum restaurants to return, 1-50 (default 20); `name` (string, optional) — Restaurant name, partial match; `postal_code` (string, optional) — Restaurant postal code; `sort` (string, optional) — Sort order; `state` (string, optional) — Restaurant state, two-letter code; `store_number` (string, optional) — Exact store number
 
-## Kroger (9)
+## Kroger (10)
+
+### `kroger_categories`
+
+- **HTTP:** `GET /kroger/categories`
+- **What:** Get Kroger's product-browse category taxonomy. Returns Kroger's full product-browse category taxonomy: every slug/category_id pair kroger-search and kroger-category accept, each with its department and full breadcrumb. This is how to discover valid slug/category_id values -- previously the only way was to already have one from a search response's facet group. Sourced from Kroger's own site navigation menu; covers every category a shopper can browse to from Kroger's site menu (321 at time of writing across 7 departments). Takes no parameters.
+- **Params:** _none_
 
 ### `kroger_category`
 
 - **HTTP:** `GET /kroger/category`
-- **What:** Browse a Kroger category. Browses a Kroger product category and returns normalized product cards plus facet groups, in the same shape as kroger-search. slug and category_id together identify the category (e.g. "pet" and "27" for kroger.com/pl/pet/27). Served from Kroger's own search JSON API using category_id as a taxonomy filter, with real upstream pagination; it falls back to parsing the rendered category page if that path is unavailable, and the source field reports which path answered. Facet filters and sort apply to the JSON path only: when any of them is set, a JSON-path failure returns an error rather than silently falling back to unfiltered results.
-- **Params:** `brands` (string, optional) — Comma-separated brand names to filter by, taken verbatim from a previous response's facets; `category_id` (string, **required**) — Category numeric taxonomy id; `flavor` (string, optional) — Comma-separated flavor facet values; `more_options` (string, optional) — Comma-separated more-options facet values; `nutrition` (string, optional) — Comma-separated nutrition/dietary facet values; `page` (integer, optional) — One-based result page; `price_max` (number, optional) — Upper bound of the price filter; required to filter on price; `price_min` (number, optional) — Lower bound of the price filter; defaults to 0; `savings` (string, optional) — Comma-separated savings facet values; `scent` (string, optional) — Comma-separated scent facet values; `slug` (string, **required**) — Category URL slug segment; `sort` (string, optional) — Result order. One of: relevance, name_asc, popularity_desc
+- **What:** Browse a Kroger category. Browses a Kroger product category and returns normalized product cards plus facet groups, in the same shape as kroger-search. slug and category_id together identify the category (e.g. "pet" and "27" for kroger.com/pl/pet/27) -- call kroger-categories to discover every valid slug/category_id pair. Served from Kroger's own search JSON API using category_id as a taxonomy filter, with real upstream pagination; it falls back to parsing the rendered category page if that path is unavailable, and the source field reports which path answered. Facet filters and sort apply to the JSON path only: when any of them is set, a JSON-path failure returns an error rather than silently falling back to unfiltered results.
+- **Params:** `brands` (string, optional) — Comma-separated brand names to filter by, taken verbatim from a previous response's facets; `category_id` (string, **required**) — Category numeric taxonomy id. Obtain valid slug/category_id pairs from kroger-categories; `flavor` (string, optional) — Comma-separated flavor facet values; `more_options` (string, optional) — Comma-separated more-options facet values; `nutrition` (string, optional) — Comma-separated nutrition/dietary facet values; `page` (integer, optional) — One-based result page; `price_max` (number, optional) — Upper bound of the price filter; required to filter on price; `price_min` (number, optional) — Lower bound of the price filter; defaults to 0; `savings` (string, optional) — Comma-separated savings facet values; `scent` (string, optional) — Comma-separated scent facet values; `slug` (string, **required**) — Category URL slug segment. Obtain valid slug/category_id pairs from kroger-categories; `sort` (string, optional) — Result order. One of: relevance, name_asc, popularity_desc
 
 ### `kroger_coupons`
 
@@ -1661,7 +1679,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Wolt's live search category catalog for a location. Returns the current, location-scoped catalog of every value /wolt/search's category parameter accepts, each with a live restaurant count when Wolt's own homepage currently features that category as one of its curated tiles -- the same data Wolt's own search page's cuisine tiles are populated from.
 - **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude
 
-## Zomato (5)
+## Zomato (6)
+
+### `zomato_cities`
+
+- **HTTP:** `GET /zomato/cities`
+- **What:** List Zomato's curated directory of major cities. Returns Zomato's own curated directory of major Indian cities -- the discovery source for the city value used by zomato-search, zomato-restaurant, zomato-restaurant-menu, zomato-collections, and zomato-collection. This is Zomato's own "popular locations" directory, not an exhaustive list of every city Zomato serves -- some smaller markets resolve to a real Zomato city page without appearing here. A city slug from a caller's own prior knowledge (a restaurant URL's first path segment) can still be valid even if this endpoint does not return it. Credential-free.
+- **Params:** `q` (string, optional) — Case-insensitive substring match against a city's name or slug. Omit to list every city in the directory.
 
 ### `zomato_collection`
 

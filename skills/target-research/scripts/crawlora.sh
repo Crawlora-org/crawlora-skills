@@ -63,6 +63,7 @@ case "$path" in
   /target/questions) route_allowed=true ;;
   /target/reviews) route_allowed=true ;;
   /target/search) route_allowed=true ;;
+  /target/stores) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(

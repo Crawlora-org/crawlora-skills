@@ -56,6 +56,7 @@ esac
 # segment; unlike a case '*', [^/]+ cannot consume another slash.
 route_allowed=false
 case "$path" in
+  /amazon-jobs/categories) route_allowed=true ;;
   /amazon-jobs/job) route_allowed=true ;;
   /amazon-jobs/search) route_allowed=true ;;
 esac

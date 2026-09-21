@@ -57,18 +57,24 @@ esac
 route_allowed=false
 case "$path" in
   /imdb/charts) route_allowed=true ;;
+  /imdb/image-types) route_allowed=true ;;
   /imdb/name) route_allowed=true ;;
   /imdb/name/awards) route_allowed=true ;;
   /imdb/name/credits) route_allowed=true ;;
+  /imdb/name/images) route_allowed=true ;;
+  /imdb/name/videos) route_allowed=true ;;
   /imdb/search) route_allowed=true ;;
   /imdb/search/title) route_allowed=true ;;
   /imdb/title) route_allowed=true ;;
   /imdb/title/awards) route_allowed=true ;;
+  /imdb/title/box-office) route_allowed=true ;;
   /imdb/title/company-credits) route_allowed=true ;;
+  /imdb/title/connections) route_allowed=true ;;
   /imdb/title/credits) route_allowed=true ;;
   /imdb/title/episodes) route_allowed=true ;;
   /imdb/title/filming-locations) route_allowed=true ;;
   /imdb/title/goofs) route_allowed=true ;;
+  /imdb/title/images) route_allowed=true ;;
   /imdb/title/keywords) route_allowed=true ;;
   /imdb/title/parental-guide) route_allowed=true ;;
   /imdb/title/public-facts-analysis) route_allowed=true ;;
@@ -79,6 +85,7 @@ case "$path" in
   /imdb/title/similar) route_allowed=true ;;
   /imdb/title/technical-specs) route_allowed=true ;;
   /imdb/title/trivia) route_allowed=true ;;
+  /imdb/title/videos) route_allowed=true ;;
   /justwatch/age-certifications) route_allowed=true ;;
   /justwatch/discover) route_allowed=true ;;
   /justwatch/episode/by-id) route_allowed=true ;;
@@ -110,6 +117,7 @@ case "$path" in
   /rottentomatoes/search) route_allowed=true ;;
   /rottentomatoes/season) route_allowed=true ;;
   /rottentomatoes/series) route_allowed=true ;;
+  /tmdb/genres) route_allowed=true ;;
   /tmdb/movie/list) route_allowed=true ;;
   /tmdb/person/list) route_allowed=true ;;
   /tmdb/search) route_allowed=true ;;
@@ -126,6 +134,7 @@ if [ "$route_allowed" = false ]; then
   '^/metacritic/tv/[^/]+$'
   '^/metacritic/tv/[^/]+/critic-reviews$'
   '^/metacritic/tv/[^/]+/user-reviews$'
+  '^/tmdb/collection/[^/]+$'
   '^/tmdb/movie/[^/]+$'
   '^/tmdb/person/[^/]+$'
   '^/tmdb/tv/[^/]+$'

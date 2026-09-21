@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**32 endpoints across 3 platform group(s).**
+**33 endpoints across 3 platform group(s).**
 
 ## Goodreads (10)
 
@@ -144,7 +144,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve an Apple Books series and its full book list. Returns series metadata and the full ordered list of books in the series from Apple Books' public catalog page.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Apple Books numeric series ID; `lang` (string, optional) — Result language tag
 
-## Audible (10)
+## Audible (11)
+
+### `audible_author_charts`
+
+- **HTTP:** `GET /audible/charts/authors`
+- **What:** Get Audible's top-author chart. Returns one page of Audible's public ranked author chart. This is a people-shaped HTML surface and exposes only rank, author identity, image metadata when available, and a canonical author URI; author detail remains outside the credential-free public surface.
+- **Params:** `page` (integer, optional) — 1-based result page, default 1
 
 ### `audible_categories`
 

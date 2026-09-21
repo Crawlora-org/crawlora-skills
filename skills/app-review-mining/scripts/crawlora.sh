@@ -57,6 +57,7 @@ esac
 route_allowed=false
 case "$path" in
   /appstore/app) route_allowed=true ;;
+  /appstore/categories) route_allowed=true ;;
   /appstore/editorial) route_allowed=true ;;
   /appstore/editorial/category) route_allowed=true ;;
   /appstore/list) route_allowed=true ;;

@@ -67,11 +67,17 @@ case "$path" in
   /bluesky/author-feed) route_allowed=true ;;
   /bluesky/followers) route_allowed=true ;;
   /bluesky/follows) route_allowed=true ;;
+  /bluesky/post-likes) route_allowed=true ;;
+  /bluesky/post-quotes) route_allowed=true ;;
+  /bluesky/post-reposted-by) route_allowed=true ;;
   /bluesky/post-thread) route_allowed=true ;;
+  /bluesky/posts) route_allowed=true ;;
   /bluesky/profile) route_allowed=true ;;
   /bluesky/search-actors) route_allowed=true ;;
   /bluesky/trending-topics) route_allowed=true ;;
   /facebook/marketplace/search) route_allowed=true ;;
+  /linkedin/product/categories) route_allowed=true ;;
+  /linkedin/products/search) route_allowed=true ;;
   /patreon/creator) route_allowed=true ;;
   /patreon/creator/tiers) route_allowed=true ;;
   /patreon/explore) route_allowed=true ;;

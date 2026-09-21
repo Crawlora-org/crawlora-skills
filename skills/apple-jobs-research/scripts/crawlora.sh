@@ -57,6 +57,7 @@ esac
 route_allowed=false
 case "$path" in
   /apple-jobs/job) route_allowed=true ;;
+  /apple-jobs/locations) route_allowed=true ;;
   /apple-jobs/search) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then

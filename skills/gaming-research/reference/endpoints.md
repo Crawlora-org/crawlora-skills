@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**33 endpoints across 3 platform group(s).**
+**35 endpoints across 3 platform group(s).**
 
 ## Steam (21)
 
@@ -136,55 +136,67 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Steam's weekly top-sellers chart for a country. Returns the store's weekly top-sellers chart for a country, each rank carrying the full store item (name, price, weighted community tags, review summary, platforms). cc selects the country whose sales ranking and currency are returned. Credential-free public Steam store top-sellers API.
 - **Params:** `cc` (string, optional) — Country code (ISO) whose weekly sales ranking is returned; `l` (string, optional) — Steam store language name
 
-## PlayStation (8)
+## PlayStation (10)
 
 ### `playstation_browse`
 
 - **HTTP:** `GET /playstation/browse`
-- **What:** Browse the PlayStation Store all-games grid. Returns a page of the PlayStation Store "all games" grid with per-item price, platforms, and media, plus the available filter facets (price, genre, platform, subscription, content type, etc.) with value counts. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **What:** Browse the PlayStation Store all-games grid. Returns a page of the PlayStation Store "all games" grid with per-item price, platforms, and media, plus the available filter facets (price, genre, platform, subscription, content type, etc.) with value counts. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number
 
 ### `playstation_category`
 
 - **HTTP:** `GET /playstation/category`
-- **What:** Browse a PlayStation Store category grid. Returns a page of a specific PlayStation Store category grid (by category UUID) with per-item price, platforms, and media, plus the available filter facets with value counts. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **What:** Browse a PlayStation Store category grid. Returns a page of a specific PlayStation Store category grid (by category UUID) with per-item price, platforms, and media, plus the available filter facets with value counts. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `id` (string, **required**) — Category UUID; `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number
 
 ### `playstation_concept`
 
 - **HTTP:** `GET /playstation/concept`
-- **What:** Get PlayStation Store details for a concept (game hub). Returns normalized store metadata for a PlayStation concept: title, publisher, release date, platforms, genres, description, content rating, aggregate star rating, the default product's purchase price, media, and the full lists of purchasable editions and add-ons. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **What:** Get PlayStation Store details for a concept (game hub). Returns normalized store metadata for a PlayStation concept: title, publisher, release date, platforms, genres, description, content rating, aggregate star rating, the default product's purchase price, media, and the full lists of purchasable editions and add-ons. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `id` (string, **required**) — Numeric PlayStation concept id; `l` (string, optional) — Language code
+
+### `playstation_concept_reviews`
+
+- **HTTP:** `GET /playstation/concept/reviews`
+- **What:** Get PlayStation concept reviews. Returns one page of written PlayStation Store reviews for a concept (game hub), each with its title, body, rating, helpful count, spoiler flag, the edition the reviewer owned, and reviewer identity (online id, PS Plus subscriber status, verified-purchase status, avatar). Also includes the concept's aggregate star rating (including its rating distribution). page/page_size page through the full review list (total_count reports the true upstream review count, has_next_page whether a later page has more), sort controls ordering, and rating optionally filters to one star value. Reviews are region-scoped: cc selects the store region whose reviews are returned (and the price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
+- **Params:** `cc` (string, optional) — Store country code (ISO); `id` (string, **required**) — Numeric PlayStation concept id; `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Reviews per page; `rating` (integer, optional) — Filter to one star rating (1-5); `sort` (string, optional) — Sort order
 
 ### `playstation_deals`
 
 - **HTTP:** `GET /playstation/deals`
-- **What:** Get PlayStation Store deals shelves. Returns the PlayStation Store deals landing page as a list of merchandising shelves (sections), each with its titles and per-item price, plus a flattened, de-duplicated item list across all shelves. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **What:** Get PlayStation Store deals shelves. Returns the PlayStation Store deals landing page as a list of merchandising shelves (sections), each with its titles and per-item price, plus a flattened, de-duplicated item list across all shelves. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code
 
 ### `playstation_latest`
 
 - **HTTP:** `GET /playstation/latest`
-- **What:** Get PlayStation Store latest-release shelves. Returns the PlayStation Store latest-releases landing page as a list of merchandising shelves (sections), each with its titles and per-item price, plus a flattened, de-duplicated item list across all shelves. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **What:** Get PlayStation Store latest-release shelves. Returns the PlayStation Store latest-releases landing page as a list of merchandising shelves (sections), each with its titles and per-item price, plus a flattened, de-duplicated item list across all shelves. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code
 
 ### `playstation_page`
 
 - **HTTP:** `GET /playstation/page`
-- **What:** Get a PlayStation Store merchandising page by alias. Reads any PlayStation Store merchandising page by alias (e.g. collections, subscriptions, or a promotional alias) and returns its shelves (sections) plus the curated collection links found on the page. Each collection link carries a category_id (UUID) you can pass to /playstation/category to fetch that collection's full, paginated title grid — the credential-free way to browse themed/curated selections. Known aliases: collections, subscriptions, deals, latest. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **What:** Get a PlayStation Store merchandising page by alias. Reads any PlayStation Store merchandising page by alias (e.g. collections, subscriptions, or a promotional alias) and returns its shelves (sections) plus the curated collection links found on the page. Each collection link carries a category_id (UUID) you can pass to /playstation/category to fetch that collection's full, paginated title grid — the credential-free way to browse themed/curated selections. Known aliases: collections, subscriptions, deals, latest. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
 - **Params:** `alias` (string, **required**) — Merchandising page alias; `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code
 
 ### `playstation_product`
 
 - **HTTP:** `GET /playstation/product`
-- **What:** Get PlayStation Store details for a single product. Returns normalized store metadata for a single PlayStation product/edition: title, np title id, parent concept id, product type and store classification, edition name, publisher, release date, platforms, genres, spoken/screen languages, content rating, aggregate star rating, purchase price, and media. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **What:** Get PlayStation Store details for a single product. Returns normalized store metadata for a single PlayStation product/edition: title, np title id, parent concept id, product type and store classification, edition name, publisher, release date, platforms, genres, spoken/screen languages, content rating, aggregate star rating, purchase price, and media. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `id` (string, **required**) — PlayStation product id; `l` (string, optional) — Language code
 
 ### `playstation_search`
 
 - **HTTP:** `GET /playstation/search`
-- **What:** Search the PlayStation Store. Returns a page of PlayStation Store search results (concepts and products) for a term, with pagination and per-item price, platforms, classification, and media. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency) and l the text language. Credential-free public PlayStation Store data.
+- **What:** Search the PlayStation Store. Returns a page of PlayStation Store search results (concepts and products) for a term, with pagination and per-item price, platforms, classification, and media. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page (max 48); `term` (string, **required**) — Search term
+
+### `playstation_suggest`
+
+- **HTTP:** `GET /playstation/suggest`
+- **What:** Get PlayStation Store search suggestions for a term. Returns typeahead-style PlayStation Store search suggestions for a partial or full term: id, name, classification, platforms, publisher, release date, price, a representative image, and a direct store URL per match. Matching is upstream-ordered and loose (it may include titles that only loosely relate to the term), not a ranked exact-substring search. limit caps how many suggestions are returned (max 20; the upstream API does not honor a higher value). cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
+- **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `limit` (integer, optional) — Maximum number of suggestions to return (max 20); `term` (string, **required**) — Search term (partial or full)
 
 ## Roblox (4)
 

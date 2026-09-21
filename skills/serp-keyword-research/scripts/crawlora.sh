@@ -82,7 +82,6 @@ case "$path" in
   /duckduckgo/shopping) route_allowed=true ;;
   /duckduckgo/video) route_allowed=true ;;
   /google/news) route_allowed=true ;;
-  /google/search) route_allowed=true ;;
   /google/suggest) route_allowed=true ;;
   /google/trends/categories) route_allowed=true ;;
   /google/trends/enums) route_allowed=true ;;
@@ -150,7 +149,7 @@ route_method_regexes=(
   '^GET:/yahoo-search/search$'
   '^GET:/yahoo-search/suggest$'
   '^GET:/yahoo-search/videos$'
-  '^POST:/google/search$'
+  '^POST:/google/news$'
   '^POST:/google/trends/explore$'
   '^POST:/google/trends/explore/interest-by-region$'
   '^POST:/google/trends/explore/interest-over-time$'

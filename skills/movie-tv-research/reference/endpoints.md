@@ -6,15 +6,21 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**99 endpoints across 7 platform group(s).**
+**108 endpoints across 7 platform group(s).**
 
-## IMDb (23)
+## IMDb (30)
 
 ### `imdb_charts`
 
 - **HTTP:** `GET /imdb/charts`
 - **What:** IMDb title charts. Returns normalized rows from public IMDb title charts. Chart values: `top_rated_movies`, `top_rated_tv_shows`, `most_popular_movies`, `most_popular_tv_shows`, `top_rated_english_movies`, `lowest_rated_movies`.
 - **Params:** `chart` (string, optional) — IMDb chart; `limit` (integer, optional) — Rows to return, default 25, max 250
+
+### `imdb_image_types`
+
+- **HTTP:** `GET /imdb/image-types`
+- **What:** IMDb image types. Lists every value the `type` parameter of the IMDb image endpoints accepts: `behind_the_scenes`, `event`, `poster`, `product`, `production_art`, `publicity`, `still_frame`, `unknown`. Each row carries a display label and a short description.
+- **Params:** _none_
 
 ### `imdb_name`
 
@@ -33,6 +39,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /imdb/name/credits`
 - **What:** IMDb name credits. Returns normalized public IMDb filmography sections for a person. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb name id; `url` (string, optional) — Absolute https://www.imdb.com/name/<id>/ URL
+
+### `imdb_name_images`
+
+- **HTTP:** `GET /imdb/name/images`
+- **What:** IMDb name images. Returns image metadata from a person's media index, including the original image URL, dimensions, caption and credited people. Filter by image type with `type`, which accepts a single value or a comma-separated list of: `behind_the_scenes`, `event`, `poster`, `product`, `production_art`, `publicity`, `still_frame`, `unknown`. Omit `type` to return every type. Limit defaults to 50 and clamps to 1000. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — IMDb name id; `limit` (integer, optional) — Rows to return, default 50, max 1000; `type` (string, optional) — Image type filter, single value or comma-separated list; `url` (string, optional) — Absolute https://www.imdb.com/name/<id>/ URL
+
+### `imdb_name_videos`
+
+- **HTTP:** `GET /imdb/name/videos`
+- **What:** IMDb name video metadata. Returns public person video metadata and thumbnail URLs only; playback URLs and media manifests are never returned. IMDb caps the upstream slice at 100 and provides no usable continuation cursor, so `total` can exceed returned rows and `has_more` reports that condition. Limit defaults to 50 and clamps to 100. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — IMDb name id; `limit` (integer, optional) — Rows to return, default 50, max 100; `url` (string, optional) — Absolute https://www.imdb.com/name/<id>/ URL
 
 ### `imdb_search`
 
@@ -58,11 +76,23 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** IMDb title awards. Returns normalized public IMDb award rows for a title. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
+### `imdb_title_box_office`
+
+- **HTTP:** `GET /imdb/title/box-office`
+- **What:** IMDb title box office summary. Returns a title's public box-office summary: lifetime gross by market (domestic, international, worldwide), the domestic opening weekend, and the production budget. IMDb reports each figure independently, so a real title with no box office data (most TV series, many non-theatrical titles) returns `has_box_office: false` with every figure omitted rather than an error. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
+
 ### `imdb_title_company_credits`
 
 - **HTTP:** `GET /imdb/title/company-credits`
 - **What:** IMDb title company credits. Returns normalized public IMDb company-credit sections for a title. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
+
+### `imdb_title_connections`
+
+- **HTTP:** `GET /imdb/title/connections`
+- **What:** IMDb title connections. Returns a bounded slice of a title's public connections: other titles it references or is referenced by, such as remakes, spin-offs, "featured in" clips, and "edited into" compilations. `category` is upstream-supplied free text, not a closed enum. IMDb's connections list can run to hundreds or thousands of rows, so `total` can exceed the returned rows and `has_more` reports that condition. Limit defaults to 50 and clamps to 250. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — IMDb title id; `limit` (integer, optional) — Rows to return, default 50, max 250; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_credits`
 
@@ -87,6 +117,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /imdb/title/goofs`
 - **What:** IMDb title goofs. Returns normalized public IMDb goof rows for a title. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
+
+### `imdb_title_images`
+
+- **HTTP:** `GET /imdb/title/images`
+- **What:** IMDb title images. Returns image metadata from a title's media index, including the original image URL, dimensions, caption and credited people. Filter by image type with `type`, which accepts a single value or a comma-separated list of: `behind_the_scenes`, `event`, `poster`, `product`, `production_art`, `publicity`, `still_frame`, `unknown`. Omit `type` to return every type. Limit defaults to 50 and clamps to 1000. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — IMDb title id; `limit` (integer, optional) — Rows to return, default 50, max 1000; `type` (string, optional) — Image type filter, single value or comma-separated list; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_keywords`
 
@@ -148,7 +184,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** IMDb title trivia. Returns normalized public IMDb trivia rows for a title. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
-## TMDB (7)
+### `imdb_title_videos`
+
+- **HTTP:** `GET /imdb/title/videos`
+- **What:** IMDb title video metadata. Returns public title video metadata and thumbnail URLs only; playback URLs and media manifests are never returned. IMDb server-truncates this connection and exposes no usable continuation cursor, so `total` can exceed returned rows and `has_more` reports that condition. Limit defaults to 50 and clamps to 100. Pass exactly one of `id` or `url`.
+- **Params:** `id` (string, optional) — IMDb title id; `limit` (integer, optional) — Rows to return, default 50, max 100; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
+
+## TMDB (9)
+
+### `tmdb_collection`
+
+- **HTTP:** `GET /tmdb/collection/{id}`
+- **What:** Get a TMDB collection. Returns a normalized TMDB collection (franchise grouping), including its overview and server-rendered member movies. Credential-free public TMDB data.
+- **Params:** `id` (string, **required**) — TMDB collection id or id-slug
+
+### `tmdb_genres`
+
+- **HTTP:** `GET /tmdb/genres`
+- **What:** List TMDB browse genres. Returns every genre ID advertised by TMDB's public movie and TV browse pages. Use movie values only with movie list filters and TV values only with TV list filters. Credential-free public TMDB data.
+- **Params:** _none_
 
 ### `tmdb_movie`
 
@@ -160,7 +214,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /tmdb/movie/list`
 - **What:** Get a TMDB movie chart. Returns a TMDB movie chart (popular, top rated, now playing, or upcoming). Credential-free public TMDB data.
-- **Params:** `category` (string, optional) — Movie chart, default popular; `date_from` (string, optional) — Release date lower bound (YYYY-MM-DD); `date_to` (string, optional) — Release date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max movies, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TMDB genre ids
+- **Params:** `category` (string, optional) — Movie chart, default popular; `date_from` (string, optional) — Release date lower bound (YYYY-MM-DD); `date_to` (string, optional) — Release date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max movies, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated movie genre ids: 28,12,16,35,80,99,18,10751,14,36,27,10402,9648,10749,878,10770,53,10752,37
 
 ### `tmdb_person`
 
@@ -177,7 +231,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tmdb_search`
 
 - **HTTP:** `GET /tmdb/search`
-- **What:** Search TMDB. Searches TMDB movies, TV shows, and people. An unscoped query interleaves results across all three types rather than returning whichever type happens to rank first upstream. Credential-free public TMDB data.
+- **What:** Search TMDB. Searches TMDB movies, TV shows, people, and collections. An unscoped query interleaves results across all four types rather than returning whichever type happens to rank first upstream. Credential-free public TMDB data.
 - **Params:** `limit` (integer, optional) — Max results, default 10, max 20; `page` (integer, optional) — 1-based results page, default 1; `query` (string, **required**) — Search query; `type` (string, optional) — Optional result type filter
 
 ### `tmdb_tv`
@@ -190,7 +244,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /tmdb/tv/list`
 - **What:** Get a TMDB TV chart. Returns a TMDB TV chart (popular, top rated, airing today, or on the air). Credential-free public TMDB data.
-- **Params:** `category` (string, optional) — TV chart, default popular; `date_from` (string, optional) — First-air date lower bound (YYYY-MM-DD); `date_to` (string, optional) — First-air date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max shows, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TMDB genre ids
+- **Params:** `category` (string, optional) — TV chart, default popular; `date_from` (string, optional) — First-air date lower bound (YYYY-MM-DD); `date_to` (string, optional) — First-air date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max shows, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TV genre ids: 10759,16,35,80,99,18,10751,10762,9648,10763,10764,10765,10766,10767,10768,37
 
 ## JustWatch (21)
 
@@ -246,7 +300,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /justwatch/popular`
 - **What:** Get popular JustWatch titles. Returns popular movies and shows from the public JustWatch website GraphQL endpoint. Type accepts only `all`, `movie`, or `show`; limit defaults to 20 and clamps to 50.
-- **Params:** `country` (string, optional) — Two-letter country code; `language` (string, optional) — Two-letter language code; `limit` (integer, optional) — Maximum results, defaults to 20 and clamps to 50; `type` (string, optional) — Title type: all, movie, show
+- **Params:** `country` (string, optional) — Two-letter country code; `cursor` (string, optional) — Opaque next_cursor from the prior response; omit for the first page; `language` (string, optional) — Two-letter language code; `limit` (integer, optional) — Maximum results, defaults to 20 and clamps to 50; `type` (string, optional) — Title type: all, movie, show
 
 ### `justwatch_provider_titles`
 

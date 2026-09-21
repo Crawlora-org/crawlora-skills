@@ -59,11 +59,13 @@ case "$path" in
   /playstation/browse) route_allowed=true ;;
   /playstation/category) route_allowed=true ;;
   /playstation/concept) route_allowed=true ;;
+  /playstation/concept/reviews) route_allowed=true ;;
   /playstation/deals) route_allowed=true ;;
   /playstation/latest) route_allowed=true ;;
   /playstation/page) route_allowed=true ;;
   /playstation/product) route_allowed=true ;;
   /playstation/search) route_allowed=true ;;
+  /playstation/suggest) route_allowed=true ;;
   /roblox/badges) route_allowed=true ;;
   /roblox/game) route_allowed=true ;;
   /roblox/rankings) route_allowed=true ;;

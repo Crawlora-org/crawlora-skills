@@ -105,7 +105,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bbc_search`
 
 - **HTTP:** `GET /bbc/search`
-- **What:** Search public BBC pages. Returns a bounded page of public BBC search-result metadata. Media entries link only to their BBC landing pages; streams, downloads, and transcripts are not returned.
+- **What:** Search public BBC pages. Returns a bounded page of public BBC search-result metadata: title, URL, standfirst summary, display date, and a type of article, video, audio, live, topic, or page. Topic items are BBC topic hub pages rather than articles and carry no published_at. Media entries link only to their BBC landing pages; streams, downloads, and transcripts are not returned.
 - **Params:** `page` (integer, optional) — Results page, defaults to 1; `q` (string, **required**) — Search query, up to 120 characters
 
 ## CNN (3)
@@ -145,8 +145,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `guardian_topic`
 
 - **HTTP:** `GET /guardian/topic`
-- **What:** Get Guardian topic archive. Returns a paginated public Guardian topic or category archive. topic is a Guardian tag or section slug and page defaults to 1.
-- **Params:** `page` (integer, optional) — 1-based archive page, defaults to 1; `topic` (string, **required**) — Guardian tag or section slug
+- **What:** Get Guardian topic archive. Returns the stories on a public Guardian tag archive (20 per page, newest first, with total pages and results) or section front (a single curated page, is_front true). topic is a Guardian tag or section slug and page defaults to 1. resolved_topic reports the path actually served, which differs for edition-scoped fronts.
+- **Params:** `page` (integer, optional) — 1-based archive page, 1 to 100, defaults to 1; `topic` (string, **required**) — Guardian tag or section slug
 
 ## Yahoo News (6)
 
