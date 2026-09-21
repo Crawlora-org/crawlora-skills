@@ -105,7 +105,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `expedia_properties_search`
 
 - **HTTP:** `POST /expedia/properties/search`
-- **What:** Search Expedia Stays properties. Returns normalized Expedia Stays (hotel) search results for a free-text destination and date range.
+- **What:** Search Expedia Stays properties. Returns normalized Expedia Stays (hotel) search results for a free-text destination and date range. Promotional banners and sponsored ad slots are dropped, so every returned property has an id and name.
 - **Params:** `option` (object, **required**) — Property search payload
 - **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 

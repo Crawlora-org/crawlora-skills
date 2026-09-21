@@ -61,6 +61,7 @@ case "$path" in
   /apple-books/search) route_allowed=true ;;
   /audible/categories) route_allowed=true ;;
   /audible/charts) route_allowed=true ;;
+  /audible/charts/authors) route_allowed=true ;;
   /audible/products) route_allowed=true ;;
   /audible/search) route_allowed=true ;;
   /goodreads/lists) route_allowed=true ;;

@@ -6,15 +6,21 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**23 endpoints across 2 platform group(s).**
+**24 endpoints across 2 platform group(s).**
 
-## AppStore (12)
+## AppStore (13)
 
 ### `appstore_app`
 
 - **HTTP:** `GET /appstore/app`
 - **What:** Retrieve full App Store app details. Returns normalized app metadata from the App Store lookup API. Provide either `id` (numeric track ID) or `app_id` (bundle ID). `id`/`app_id` can identify an iPhone, iPad, or Mac App Store listing.
 - **Params:** `app_id` (string, optional) — App Store bundle ID; `country` (string, optional) — Two-letter storefront country code; `id` (string, optional) — App Store numeric track ID (digits only); `lang` (string, optional) — Result language tag; `platforms` (boolean, optional) — Include the full device-platform compatibility list (adds one extra upstream fetch); `ratings` (boolean, optional) — Include ratings histogram
+
+### `appstore_categories`
+
+- **HTTP:** `GET /appstore/categories`
+- **What:** Retrieve App Store chart categories and collections. Returns every category ID and chart collection accepted by `/appstore/list`, including Games and Magazines & Newspapers subgenres with their parent ID. Collections carry their device platform (`phone`, `pad`, `mac`), chart type (`top_free`, `top_paid`, `top_grossing`, `top`, `new`), and whether the feed currently returns entries.
+- **Params:** _none_
 
 ### `appstore_developer`
 

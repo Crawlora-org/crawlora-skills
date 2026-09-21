@@ -6,9 +6,9 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**7 endpoints across 1 platform group(s).**
+**11 endpoints across 1 platform group(s).**
 
-## Bluesky (7)
+## Bluesky (11)
 
 ### `bluesky_author_feed`
 
@@ -28,11 +28,35 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Accounts a Bluesky account follows. Returns a page of the accounts a Bluesky account follows. Public data, sourced from the AT Protocol's public, credential-free AppView API.
 - **Params:** `actor` (string, **required**) — A handle (e.g. bsky.app) or DID; `cursor` (string, optional) — Pagination cursor from a previous response's cursor field; `limit` (integer, optional) — Page size, 1-100
 
+### `bluesky_post_likes`
+
+- **HTTP:** `GET /bluesky/post-likes`
+- **What:** List actors who liked a Bluesky post. Returns public actors who liked a post, with an optional cursor for pagination.
+- **Params:** `cursor` (string, optional) — Pagination cursor; `limit` (integer, optional) — Page size, 1-100; `uri` (string, **required**) — The post's at:// URI
+
+### `bluesky_post_quotes`
+
+- **HTTP:** `GET /bluesky/post-quotes`
+- **What:** List quotes of a Bluesky post. Returns public posts that quote the specified post, with an optional cursor for pagination.
+- **Params:** `cursor` (string, optional) — Pagination cursor; `limit` (integer, optional) — Page size, 1-100; `uri` (string, **required**) — The quoted post's at:// URI
+
+### `bluesky_post_reposted_by`
+
+- **HTTP:** `GET /bluesky/post-reposted-by`
+- **What:** List actors who reposted a Bluesky post. Returns public actors who reposted a post, with an optional cursor for pagination.
+- **Params:** `cursor` (string, optional) — Pagination cursor; `limit` (integer, optional) — Page size, 1-100; `uri` (string, **required**) — The post's at:// URI
+
 ### `bluesky_post_thread`
 
 - **HTTP:** `GET /bluesky/post-thread`
 - **What:** A Bluesky post and its reply tree. Returns a Bluesky post along with its nested replies (and, when the post is itself a reply, its parent chain), up to `depth` levels deep. Public data, sourced from the AT Protocol's public, credential-free AppView API.
 - **Params:** `depth` (integer, optional) — Reply-tree depth, 1-10; `uri` (string, **required**) — The post's at:// URI, e.g. from an author-feed or search-actors result's post uri field
+
+### `bluesky_posts`
+
+- **HTTP:** `GET /bluesky/posts`
+- **What:** Look up Bluesky posts in a batch. Returns public Bluesky posts for 1-25 at:// post URIs. Missing, deleted, or blocked posts are omitted when the public AppView omits them.
+- **Params:** `uris` (array, **required**) — One or more at:// post URIs (1-25); repeat the parameter for multiple URIs
 
 ### `bluesky_profile`
 

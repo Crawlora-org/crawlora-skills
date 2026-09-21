@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**57 endpoints across 10 platform group(s).**
+**59 endpoints across 10 platform group(s).**
 
 ## Indeed (3)
 
@@ -42,7 +42,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Google Jobs search. Searches Google's public careers site (careers.google.com) via its server-rendered search page's embedded job data. Each result includes the description, responsibilities, and qualifications inline. Page size is fixed by Google at 20 results.
 - **Params:** `location` (string, optional) — Location filter (free text); `page` (integer, optional) — Page number, 1-based; `q` (string, **required**) — Search query
 
-## Amazon Jobs (2)
+## Amazon Jobs (3)
+
+### `amazon_jobs_categories`
+
+- **HTTP:** `GET /amazon-jobs/categories`
+- **What:** Amazon Jobs category discovery. Lists every value amazon-jobs/search's `category` parameter accepts, each with its current live job count. Live-queries amazon.jobs's own search category facet rather than a static list, so counts and coverage stay current.
+- **Params:** _none_
 
 ### `amazon_jobs_job`
 
@@ -53,10 +59,10 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `amazon_jobs_search`
 
 - **HTTP:** `GET /amazon-jobs/search`
-- **What:** Amazon Jobs search. Searches Amazon's public careers site (amazon.jobs) via its credential-free search JSON. Each result includes the full description and qualifications inline. `sort` accepts `relevant` (default, upstream relevance ranking) or `recent` (newest posted first). Either `q` or `category` (or both) must be given -- `category` filters by Amazon's own job-category taxonomy and works with no text query at all.
-- **Params:** `category` (string, optional) — Amazon's own job-category taxonomy slug. Either q or category is required; `country` (string, optional) — ISO 3166-1 alpha-3 country code filter; `limit` (integer, optional) — Results per page, max 100 (default 20); `page` (integer, optional) — Page number, 1-based; `q` (string, optional) — Search query. Either q or category is required; `sort` (string, optional) — Sort order
+- **What:** Amazon Jobs search. Searches Amazon's public careers site (amazon.jobs) via its credential-free search JSON. Each result includes the full description and qualifications inline. `sort` accepts `relevant` (default, upstream relevance ranking) or `recent` (newest posted first). Either `q` or `category` (or both) must be given -- `category` filters by Amazon's own job-category taxonomy and works with no text query at all. See `amazon-jobs-categories` for the full, live-verified list of accepted `category` values.
+- **Params:** `category` (string, optional) — Amazon's own job-category taxonomy slug, case-insensitive. Either q or category is required; `country` (string, optional) — ISO 3166-1 alpha-3 country code filter; `limit` (integer, optional) — Results per page, max 100 (default 20); `page` (integer, optional) — Page number, 1-based; `q` (string, optional) — Search query. Either q or category is required; `sort` (string, optional) — Sort order
 
-## Apple Jobs (2)
+## Apple Jobs (3)
 
 ### `apple_jobs_job`
 
@@ -64,11 +70,17 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Apple Jobs single posting. Returns one Apple Careers posting by its job id (the `id` field returned by search, e.g. `200674676-0836` for a specific requisition or `PIPE-200314122` for an evergreen/pipeline retail role). Parsed from jobs.apple.com's server-rendered job detail page.
 - **Params:** `id` (string, **required**) — Apple job id
 
+### `apple_jobs_locations`
+
+- **HTTP:** `GET /apple-jobs/locations`
+- **What:** Apple Jobs location discovery. Discovery endpoint for apple-jobs-search's `location` parameter, whose accepted values are a closed set Apple itself defines (its own `<slug>-<CODE>` location ids -- free-text location names are rejected by the search backend). Apple exposes no bulk "list everything" API for this; its only source is its own location-filter typeahead, a fuzzy search capped at 10 results per call covering four granularities (country, state/province, metro area, city) with no empty-input listing mode. With no `q`, this returns the full country-level value space (206 values, live-verified) as a static list -- the granularity apple-jobs-search's own examples use and nearly every caller needs, with no live upstream call required. With `q` supplied, this instead live-proxies Apple's own typeahead so callers can discover state/metro/city-level values for finer filtering; results at those deeper levels may include more than one candidate and are ranked by Apple's own relevance, not alphabetically.
+- **Params:** `q` (string, optional) — Optional free-text location search. Omit to get the full country-level list; supply to live-search state/metro/city-level values too (e.g. a city name).
+
 ### `apple_jobs_search`
 
 - **HTTP:** `GET /apple-jobs/search`
 - **What:** Apple Jobs search. Searches Apple's public careers site (jobs.apple.com) via its server-rendered search page's embedded job data. Page size is fixed by Apple at 20 results. Search results carry identity/location/team metadata only — call the job endpoint for the full description and qualifications.
-- **Params:** `location` (string, optional) — Location filter in Apple's own slug format, e.g. united-states-USA or singapore-SGP; `page` (integer, optional) — Page number, 1-based; `q` (string, **required**) — Search query
+- **Params:** `location` (string, optional) — Location filter in Apple's own slug format, e.g. united-states-USA or singapore-SGP. Free-text location names are not accepted -- call apple-jobs-locations to discover valid values.; `page` (integer, optional) — Page number, 1-based; `q` (string, **required**) — Search query
 
 ## Meta Jobs (3)
 
@@ -355,17 +367,17 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fiverr_gig`
 
 - **HTTP:** `GET /fiverr/gig/{username}/{slug}`
-- **What:** Get Fiverr gig detail. Returns a normalized Fiverr gig detail page: title, description, category, pricing packages (basic/standard/premium tiers with price and delivery time), rating, review count, orders in queue, tags, gallery images, and a seller summary (level, rating, response time, languages). Public data sourced from Fiverr's own server-rendered gig pages via a real browser-rendering backend.
+- **What:** Get Fiverr gig detail. Returns a normalized Fiverr gig detail page: title, description, category, pricing packages (basic/standard/premium tiers with price and delivery time), rating, review count, orders in queue, tags, gallery images, and a seller summary (level, rating, response time, languages). Public data sourced from Fiverr's own server-rendered gig pages via a real browser-rendering backend. Seller level uses the same values on the search, seller and gig endpoints: level_one_seller, level_two_seller, top_rated_seller, or new_seller.
 - **Params:** `slug` (string, **required**) — Fiverr gig URL slug, the trailing path segment after the username in a gig URL; `username` (string, **required**) — Fiverr seller username, e.g. from a search result's seller_username field
 
 ### `fiverr_search`
 
 - **HTTP:** `GET /fiverr/search`
-- **What:** Search Fiverr gigs. Searches Fiverr's public gig listings by free-text keyword, returning normalized gig summaries (title, seller username, seller level, rating, review count, starting price, category, thumbnail image). Public data sourced from Fiverr's own server-rendered search pages via a real browser-rendering backend.
+- **What:** Search Fiverr gigs. Searches Fiverr's public gig listings by free-text keyword, returning normalized gig summaries (title, seller username, seller level, rating, review count, starting price, category, thumbnail image). Public data sourced from Fiverr's own server-rendered search pages via a real browser-rendering backend. Seller level uses the same values on the search, seller and gig endpoints: level_one_seller, level_two_seller, top_rated_seller, or new_seller.
 - **Params:** `page` (integer, optional) — 1-based result page. Defaults to 1.; `q` (string, **required**) — Free-text gig search keyword
 
 ### `fiverr_seller`
 
 - **HTTP:** `GET /fiverr/seller/{username}`
-- **What:** Get Fiverr seller profile. Returns a normalized Fiverr seller profile: display name, one-liner title, description, country, seller level, verification status, hourly rate, spoken languages, join date, and the seller's gig ids. Public data sourced from Fiverr's own server-rendered seller profile pages via a real browser-rendering backend.
+- **What:** Get Fiverr seller profile. Returns a normalized Fiverr seller profile: display name, one-liner title, description, country, seller level, verification status, hourly rate, spoken languages, join date, and the seller's gig ids. Public data sourced from Fiverr's own server-rendered seller profile pages via a real browser-rendering backend. Seller level uses the same values on the search, seller and gig endpoints: level_one_seller, level_two_seller, top_rated_seller, or new_seller.
 - **Params:** `username` (string, **required**) — Fiverr seller username, e.g. from a search result's seller_username field

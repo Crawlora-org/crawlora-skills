@@ -66,6 +66,10 @@ esac
 # segment; unlike a case '*', [^/]+ cannot consume another slash.
 route_allowed=false
 case "$path" in
+  /1stdibs/categories) route_allowed=true ;;
+  /1stdibs/designers) route_allowed=true ;;
+  /1stdibs/product) route_allowed=true ;;
+  /1stdibs/search) route_allowed=true ;;
   /7now/catalog) route_allowed=true ;;
   /7now/categories) route_allowed=true ;;
   /7now/category) route_allowed=true ;;
@@ -101,6 +105,10 @@ case "$path" in
   /agoda/homes/search) route_allowed=true ;;
   /agoda/hotels/search) route_allowed=true ;;
   /airbnb/search) route_allowed=true ;;
+  /aljazeera/article) route_allowed=true ;;
+  /aljazeera/categories) route_allowed=true ;;
+  /aljazeera/headlines) route_allowed=true ;;
+  /aljazeera/topic) route_allowed=true ;;
   /allbirds/collections) route_allowed=true ;;
   /allbirds/pages) route_allowed=true ;;
   /allbirds/products) route_allowed=true ;;
@@ -108,8 +116,20 @@ case "$path" in
   /allbirds/sitemap/urls) route_allowed=true ;;
   /allbirds/sitemaps) route_allowed=true ;;
   /allbirds/store) route_allowed=true ;;
+  /alt/asset) route_allowed=true ;;
+  /alt/auctions) route_allowed=true ;;
+  /alt/card-search) route_allowed=true ;;
+  /alt/categories) route_allowed=true ;;
+  /alt/listing) route_allowed=true ;;
+  /alt/market-trends) route_allowed=true ;;
+  /alt/search) route_allowed=true ;;
+  /alt/sold-listings) route_allowed=true ;;
+  /alt/top-movers) route_allowed=true ;;
+  /amazon-jobs/categories) route_allowed=true ;;
   /amazon-jobs/job) route_allowed=true ;;
   /amazon-jobs/search) route_allowed=true ;;
+  /amazon/charts) route_allowed=true ;;
+  /amazon/charts/categories) route_allowed=true ;;
   /amazon/search) route_allowed=true ;;
   /anime/airing-schedule) route_allowed=true ;;
   /anime/character/search) route_allowed=true ;;
@@ -119,6 +139,7 @@ case "$path" in
   /apple-books/charts) route_allowed=true ;;
   /apple-books/search) route_allowed=true ;;
   /apple-jobs/job) route_allowed=true ;;
+  /apple-jobs/locations) route_allowed=true ;;
   /apple-jobs/search) route_allowed=true ;;
   /apple-maps/autocomplete) route_allowed=true ;;
   /apple-maps/categories) route_allowed=true ;;
@@ -145,6 +166,7 @@ case "$path" in
   /apple-podcasts/new) route_allowed=true ;;
   /apple-podcasts/search) route_allowed=true ;;
   /appstore/app) route_allowed=true ;;
+  /appstore/categories) route_allowed=true ;;
   /appstore/editorial) route_allowed=true ;;
   /appstore/editorial/category) route_allowed=true ;;
   /appstore/list) route_allowed=true ;;
@@ -159,9 +181,20 @@ case "$path" in
   /arbys/menu) route_allowed=true ;;
   /audible/categories) route_allowed=true ;;
   /audible/charts) route_allowed=true ;;
+  /audible/charts/authors) route_allowed=true ;;
   /audible/products) route_allowed=true ;;
   /audible/search) route_allowed=true ;;
   /autotrader/search) route_allowed=true ;;
+  /axios/article) route_allowed=true ;;
+  /axios/categories) route_allowed=true ;;
+  /axios/headlines) route_allowed=true ;;
+  /balenciaga/categories) route_allowed=true ;;
+  /balenciaga/category) route_allowed=true ;;
+  /balenciaga/product) route_allowed=true ;;
+  /balenciaga/product/variants) route_allowed=true ;;
+  /balenciaga/search) route_allowed=true ;;
+  /balenciaga/store-countries) route_allowed=true ;;
+  /balenciaga/stores) route_allowed=true ;;
   /bbb/business) route_allowed=true ;;
   /bbb/business/complaints) route_allowed=true ;;
   /bbb/business/more-info) route_allowed=true ;;
@@ -201,10 +234,16 @@ case "$path" in
   /bing/search) route_allowed=true ;;
   /bing/suggest) route_allowed=true ;;
   /bing/videos) route_allowed=true ;;
+  /bloomberg/article) route_allowed=true ;;
+  /bloomberg/news) route_allowed=true ;;
   /bluesky/author-feed) route_allowed=true ;;
   /bluesky/followers) route_allowed=true ;;
   /bluesky/follows) route_allowed=true ;;
+  /bluesky/post-likes) route_allowed=true ;;
+  /bluesky/post-quotes) route_allowed=true ;;
+  /bluesky/post-reposted-by) route_allowed=true ;;
   /bluesky/post-thread) route_allowed=true ;;
+  /bluesky/posts) route_allowed=true ;;
   /bluesky/profile) route_allowed=true ;;
   /bluesky/search-actors) route_allowed=true ;;
   /bluesky/trending-topics) route_allowed=true ;;
@@ -254,6 +293,12 @@ case "$path" in
   /brooklinen/sitemap/urls) route_allowed=true ;;
   /brooklinen/sitemaps) route_allowed=true ;;
   /brooklinen/store) route_allowed=true ;;
+  /burberry/categories) route_allowed=true ;;
+  /burberry/category) route_allowed=true ;;
+  /burberry/product) route_allowed=true ;;
+  /burberry/related) route_allowed=true ;;
+  /burberry/search) route_allowed=true ;;
+  /burberry/suggest) route_allowed=true ;;
   /burgerking/availability) route_allowed=true ;;
   /burgerking/locations) route_allowed=true ;;
   /burgerking/menu) route_allowed=true ;;
@@ -308,6 +353,14 @@ case "$path" in
   /chromewebstore/search) route_allowed=true ;;
   /chromewebstore/similar) route_allowed=true ;;
   /chromewebstore/suggest) route_allowed=true ;;
+  /chrono24/autocomplete) route_allowed=true ;;
+  /chrono24/brands) route_allowed=true ;;
+  /chrono24/dealer) route_allowed=true ;;
+  /chrono24/dealer/reviews) route_allowed=true ;;
+  /chrono24/facets) route_allowed=true ;;
+  /chrono24/listing) route_allowed=true ;;
+  /chrono24/models) route_allowed=true ;;
+  /chrono24/search) route_allowed=true ;;
   /cnn/article) route_allowed=true ;;
   /cnn/headlines) route_allowed=true ;;
   /cnn/live-story) route_allowed=true ;;
@@ -333,6 +386,9 @@ case "$path" in
   /colehaan/sitemap/urls) route_allowed=true ;;
   /colehaan/sitemaps) route_allowed=true ;;
   /colehaan/store) route_allowed=true ;;
+  /comc/categories) route_allowed=true ;;
+  /comc/listing) route_allowed=true ;;
+  /comc/search) route_allowed=true ;;
   /congress/report) route_allowed=true ;;
   /congress/stock-disclosures) route_allowed=true ;;
   /costco/categories) route_allowed=true ;;
@@ -450,6 +506,23 @@ case "$path" in
   /expedia/properties/reviews) route_allowed=true ;;
   /expedia/properties/search) route_allowed=true ;;
   /facebook/marketplace/search) route_allowed=true ;;
+  /fanatics/categories) route_allowed=true ;;
+  /fanatics/category) route_allowed=true ;;
+  /fanatics/product) route_allowed=true ;;
+  /fanatics/search) route_allowed=true ;;
+  /fanaticscollect/auctions) route_allowed=true ;;
+  /fanaticscollect/categories) route_allowed=true ;;
+  /fanaticscollect/instant-rips/categories) route_allowed=true ;;
+  /fanaticscollect/search) route_allowed=true ;;
+  /fanaticscollect/sold-items) route_allowed=true ;;
+  /fanaticscollect/trending-searches) route_allowed=true ;;
+  /fanaticslive/browse) route_allowed=true ;;
+  /fanaticslive/leagues) route_allowed=true ;;
+  /fanaticslive/shops) route_allowed=true ;;
+  /farfetch/categories) route_allowed=true ;;
+  /farfetch/designers) route_allowed=true ;;
+  /farfetch/product) route_allowed=true ;;
+  /farfetch/search) route_allowed=true ;;
   /fashionnova/collections) route_allowed=true ;;
   /fashionnova/pages) route_allowed=true ;;
   /fashionnova/products) route_allowed=true ;;
@@ -457,6 +530,14 @@ case "$path" in
   /fashionnova/sitemap/urls) route_allowed=true ;;
   /fashionnova/sitemaps) route_allowed=true ;;
   /fashionnova/store) route_allowed=true ;;
+  /fashionphile/collections) route_allowed=true ;;
+  /fashionphile/pages) route_allowed=true ;;
+  /fashionphile/products) route_allowed=true ;;
+  /fashionphile/search) route_allowed=true ;;
+  /fashionphile/search/suggest) route_allowed=true ;;
+  /fashionphile/sitemap/urls) route_allowed=true ;;
+  /fashionphile/sitemaps) route_allowed=true ;;
+  /fashionphile/store) route_allowed=true ;;
   /fiveguys/directory) route_allowed=true ;;
   /fiveguys/faq) route_allowed=true ;;
   /fiveguys/faq-categories) route_allowed=true ;;
@@ -472,6 +553,23 @@ case "$path" in
   /foodpanda/restaurant/menu) route_allowed=true ;;
   /foodpanda/restaurant/reviews) route_allowed=true ;;
   /foodpanda/search) route_allowed=true ;;
+  /foodpanda/search/cuisines) route_allowed=true ;;
+  /foreignaffairs/article) route_allowed=true ;;
+  /foreignaffairs/headlines) route_allowed=true ;;
+  /foreignaffairs/topic) route_allowed=true ;;
+  /foreignaffairs/topics) route_allowed=true ;;
+  /foreignpolicy/article) route_allowed=true ;;
+  /foreignpolicy/headlines) route_allowed=true ;;
+  /foreignpolicy/live) route_allowed=true ;;
+  /foreignpolicy/live-detail) route_allowed=true ;;
+  /foreignpolicy/project) route_allowed=true ;;
+  /foreignpolicy/projects) route_allowed=true ;;
+  /foreignpolicy/topic) route_allowed=true ;;
+  /ft/article) route_allowed=true ;;
+  /ft/categories) route_allowed=true ;;
+  /ft/headlines) route_allowed=true ;;
+  /ft/news) route_allowed=true ;;
+  /ft/search) route_allowed=true ;;
   /gdelt/context) route_allowed=true ;;
   /gdelt/search) route_allowed=true ;;
   /gdelt/timeline) route_allowed=true ;;
@@ -499,6 +597,11 @@ case "$path" in
   /goat/search/facets) route_allowed=true ;;
   /goat/searches/trending) route_allowed=true ;;
   /goat/suggest) route_allowed=true ;;
+  /goldin/auctions) route_allowed=true ;;
+  /goldin/categories) route_allowed=true ;;
+  /goldin/listing) route_allowed=true ;;
+  /goldin/search) route_allowed=true ;;
+  /goldin/suggest) route_allowed=true ;;
   /goodreads/lists) route_allowed=true ;;
   /goodreads/search) route_allowed=true ;;
   /google-jobs/job) route_allowed=true ;;
@@ -515,7 +618,6 @@ case "$path" in
   /google/jobs) route_allowed=true ;;
   /google/map/search) route_allowed=true ;;
   /google/news) route_allowed=true ;;
-  /google/search) route_allowed=true ;;
   /google/suggest) route_allowed=true ;;
   /google/trends/categories) route_allowed=true ;;
   /google/trends/enums) route_allowed=true ;;
@@ -544,6 +646,17 @@ case "$path" in
   /googleplay/reviews) route_allowed=true ;;
   /googleplay/search) route_allowed=true ;;
   /googleplay/similar) route_allowed=true ;;
+  /grailed/categories) route_allowed=true ;;
+  /grailed/collection) route_allowed=true ;;
+  /grailed/collections) route_allowed=true ;;
+  /grailed/designers) route_allowed=true ;;
+  /grailed/listing) route_allowed=true ;;
+  /grailed/search) route_allowed=true ;;
+  /grailed/seller) route_allowed=true ;;
+  /grailed/seller-reviews) route_allowed=true ;;
+  /grailed/similar-listings) route_allowed=true ;;
+  /grailed/sold-listings) route_allowed=true ;;
+  /grailed/suggest) route_allowed=true ;;
   /grubhub/availability) route_allowed=true ;;
   /grubhub/offers) route_allowed=true ;;
   /grubhub/restaurant) route_allowed=true ;;
@@ -554,12 +667,33 @@ case "$path" in
   /guardian/article) route_allowed=true ;;
   /guardian/headlines) route_allowed=true ;;
   /guardian/topic) route_allowed=true ;;
+  /gucci/categories) route_allowed=true ;;
+  /gucci/category) route_allowed=true ;;
+  /gucci/product) route_allowed=true ;;
+  /gucci/recommendations) route_allowed=true ;;
+  /gucci/search) route_allowed=true ;;
+  /gucci/size-guide) route_allowed=true ;;
+  /gucci/store) route_allowed=true ;;
+  /gucci/stores) route_allowed=true ;;
+  /gucci/suggest) route_allowed=true ;;
   /gymshark/collections) route_allowed=true ;;
   /gymshark/pages) route_allowed=true ;;
   /gymshark/products) route_allowed=true ;;
   /gymshark/sitemap/urls) route_allowed=true ;;
   /gymshark/sitemaps) route_allowed=true ;;
   /gymshark/store) route_allowed=true ;;
+  /hbr/article) route_allowed=true ;;
+  /hbr/categories) route_allowed=true ;;
+  /hbr/headlines) route_allowed=true ;;
+  /hbr/topic) route_allowed=true ;;
+  /hermes/categories) route_allowed=true ;;
+  /hermes/category) route_allowed=true ;;
+  /hermes/product) route_allowed=true ;;
+  /hermes/product/recommendations) route_allowed=true ;;
+  /hermes/products) route_allowed=true ;;
+  /hermes/search) route_allowed=true ;;
+  /hermes/stores) route_allowed=true ;;
+  /hermes/suggest) route_allowed=true ;;
   /hm/categories) route_allowed=true ;;
   /hm/listing) route_allowed=true ;;
   /hm/search) route_allowed=true ;;
@@ -577,6 +711,7 @@ case "$path" in
   /hotels/reviews/archive) route_allowed=true ;;
   /hotels/search) route_allowed=true ;;
   /ikea/availability) route_allowed=true ;;
+  /ikea/categories) route_allowed=true ;;
   /ikea/category) route_allowed=true ;;
   /ikea/product) route_allowed=true ;;
   /ikea/reviews) route_allowed=true ;;
@@ -585,18 +720,24 @@ case "$path" in
   /ikea/stores) route_allowed=true ;;
   /ikea/suggest) route_allowed=true ;;
   /imdb/charts) route_allowed=true ;;
+  /imdb/image-types) route_allowed=true ;;
   /imdb/name) route_allowed=true ;;
   /imdb/name/awards) route_allowed=true ;;
   /imdb/name/credits) route_allowed=true ;;
+  /imdb/name/images) route_allowed=true ;;
+  /imdb/name/videos) route_allowed=true ;;
   /imdb/search) route_allowed=true ;;
   /imdb/search/title) route_allowed=true ;;
   /imdb/title) route_allowed=true ;;
   /imdb/title/awards) route_allowed=true ;;
+  /imdb/title/box-office) route_allowed=true ;;
   /imdb/title/company-credits) route_allowed=true ;;
+  /imdb/title/connections) route_allowed=true ;;
   /imdb/title/credits) route_allowed=true ;;
   /imdb/title/episodes) route_allowed=true ;;
   /imdb/title/filming-locations) route_allowed=true ;;
   /imdb/title/goofs) route_allowed=true ;;
+  /imdb/title/images) route_allowed=true ;;
   /imdb/title/keywords) route_allowed=true ;;
   /imdb/title/parental-guide) route_allowed=true ;;
   /imdb/title/public-facts-analysis) route_allowed=true ;;
@@ -607,6 +748,7 @@ case "$path" in
   /imdb/title/similar) route_allowed=true ;;
   /imdb/title/technical-specs) route_allowed=true ;;
   /imdb/title/trivia) route_allowed=true ;;
+  /imdb/title/videos) route_allowed=true ;;
   /importyeti/company) route_allowed=true ;;
   /importyeti/search) route_allowed=true ;;
   /indeed/job) route_allowed=true ;;
@@ -664,6 +806,7 @@ case "$path" in
   /justeat/restaurant) route_allowed=true ;;
   /justeat/restaurant/menu) route_allowed=true ;;
   /justeat/search) route_allowed=true ;;
+  /justeat/search/filters) route_allowed=true ;;
   /justwatch/age-certifications) route_allowed=true ;;
   /justwatch/discover) route_allowed=true ;;
   /justwatch/episode/by-id) route_allowed=true ;;
@@ -712,6 +855,7 @@ case "$path" in
   /kohls/product/reviews) route_allowed=true ;;
   /kohls/stores) route_allowed=true ;;
   /kohls/suggest) route_allowed=true ;;
+  /kroger/categories) route_allowed=true ;;
   /kroger/category) route_allowed=true ;;
   /kroger/coupons) route_allowed=true ;;
   /kroger/product) route_allowed=true ;;
@@ -728,6 +872,9 @@ case "$path" in
   /kyliecosmetics/sitemap/urls) route_allowed=true ;;
   /kyliecosmetics/sitemaps) route_allowed=true ;;
   /kyliecosmetics/store) route_allowed=true ;;
+  /latimes/article) route_allowed=true ;;
+  /latimes/headlines) route_allowed=true ;;
+  /latimes/sections) route_allowed=true ;;
   /lazada/categories) route_allowed=true ;;
   /lazada/category-products) route_allowed=true ;;
   /lazada/home) route_allowed=true ;;
@@ -737,6 +884,8 @@ case "$path" in
   /leboncoin/search) route_allowed=true ;;
   /letterboxd/popular) route_allowed=true ;;
   /letterboxd/search) route_allowed=true ;;
+  /linkedin/product/categories) route_allowed=true ;;
+  /linkedin/products/search) route_allowed=true ;;
   /lululemon/categories) route_allowed=true ;;
   /lululemon/category) route_allowed=true ;;
   /lululemon/outfit) route_allowed=true ;;
@@ -774,6 +923,16 @@ case "$path" in
   /mlb/team-stats) route_allowed=true ;;
   /mlb/teams) route_allowed=true ;;
   /mlb/transactions) route_allowed=true ;;
+  /modaoperandi/categories) route_allowed=true ;;
+  /modaoperandi/designers) route_allowed=true ;;
+  /modaoperandi/product) route_allowed=true ;;
+  /modaoperandi/search) route_allowed=true ;;
+  /moncler/categories) route_allowed=true ;;
+  /moncler/category) route_allowed=true ;;
+  /moncler/product) route_allowed=true ;;
+  /moncler/search) route_allowed=true ;;
+  /moncler/stores) route_allowed=true ;;
+  /moncler/suggest) route_allowed=true ;;
   /nike/categories) route_allowed=true ;;
   /nike/product) route_allowed=true ;;
   /nike/product/availability) route_allowed=true ;;
@@ -783,12 +942,19 @@ case "$path" in
   /nike/search) route_allowed=true ;;
   /nike/stores) route_allowed=true ;;
   /nike/suggest) route_allowed=true ;;
+  /npr/article) route_allowed=true ;;
+  /npr/categories) route_allowed=true ;;
+  /npr/headlines) route_allowed=true ;;
+  /npr/topic) route_allowed=true ;;
   /numbeo/cost-of-living/country) route_allowed=true ;;
   /numbeo/cost-of-living/rankings) route_allowed=true ;;
   /numbeo/cost-of-living/rankings-by-country) route_allowed=true ;;
   /numbeo/indices/country) route_allowed=true ;;
   /numbeo/indices/rankings) route_allowed=true ;;
   /numbeo/indices/rankings-by-country) route_allowed=true ;;
+  /nyt/article) route_allowed=true ;;
+  /nyt/headlines) route_allowed=true ;;
+  /nyt/sections) route_allowed=true ;;
   /ohpolly/collections) route_allowed=true ;;
   /ohpolly/pages) route_allowed=true ;;
   /ohpolly/products) route_allowed=true ;;
@@ -881,11 +1047,17 @@ case "$path" in
   /playstation/browse) route_allowed=true ;;
   /playstation/category) route_allowed=true ;;
   /playstation/concept) route_allowed=true ;;
+  /playstation/concept/reviews) route_allowed=true ;;
   /playstation/deals) route_allowed=true ;;
   /playstation/latest) route_allowed=true ;;
   /playstation/page) route_allowed=true ;;
   /playstation/product) route_allowed=true ;;
   /playstation/search) route_allowed=true ;;
+  /playstation/suggest) route_allowed=true ;;
+  /politico/article) route_allowed=true ;;
+  /politico/categories) route_allowed=true ;;
+  /politico/headlines) route_allowed=true ;;
+  /politico/topic) route_allowed=true ;;
   /polymarket/activity/trades) route_allowed=true ;;
   /polymarket/dashboards/macro) route_allowed=true ;;
   /polymarket/events) route_allowed=true ;;
@@ -913,8 +1085,51 @@ case "$path" in
   /poshmark/brands) route_allowed=true ;;
   /poshmark/categories) route_allowed=true ;;
   /poshmark/search) route_allowed=true ;;
+  /prada/categories) route_allowed=true ;;
+  /prada/category) route_allowed=true ;;
+  /prada/product) route_allowed=true ;;
+  /prada/search) route_allowed=true ;;
+  /prada/stores) route_allowed=true ;;
+  /prada/suggest) route_allowed=true ;;
+  /pristine-auction/categories) route_allowed=true ;;
+  /pristine-auction/search) route_allowed=true ;;
+  /pristine-marketplace/collections) route_allowed=true ;;
+  /pristine-marketplace/pages) route_allowed=true ;;
+  /pristine-marketplace/products) route_allowed=true ;;
+  /pristine-marketplace/reviews) route_allowed=true ;;
+  /pristine-marketplace/search) route_allowed=true ;;
+  /pristine-marketplace/search/suggest) route_allowed=true ;;
+  /pristine-marketplace/sitemap/urls) route_allowed=true ;;
+  /pristine-marketplace/sitemaps) route_allowed=true ;;
+  /pristine-marketplace/store) route_allowed=true ;;
   /producthunt/leaderboard) route_allowed=true ;;
   /producthunt/search) route_allowed=true ;;
+  /psa/autographfacts/categories) route_allowed=true ;;
+  /psa/autographfacts/gallery) route_allowed=true ;;
+  /psa/autographfacts/subject) route_allowed=true ;;
+  /psa/autographfacts/subjects) route_allowed=true ;;
+  /psa/cardfacts/categories) route_allowed=true ;;
+  /psa/cardfacts/checklist) route_allowed=true ;;
+  /psa/cardfacts/sets) route_allowed=true ;;
+  /psa/cert-lookup) route_allowed=true ;;
+  /psa/price-guide/categories) route_allowed=true ;;
+  /psa/price-guide/search) route_allowed=true ;;
+  /psa/price-guide/set) route_allowed=true ;;
+  /psa/probatfacts/categories) route_allowed=true ;;
+  /psa/probatfacts/gallery) route_allowed=true ;;
+  /psa/probatfacts/subject) route_allowed=true ;;
+  /psa/probatfacts/subjects) route_allowed=true ;;
+  /psa/ticketfacts/categories) route_allowed=true ;;
+  /psa/ticketfacts/gallery) route_allowed=true ;;
+  /psa/ticketfacts/subject) route_allowed=true ;;
+  /psa/ticketfacts/subjects) route_allowed=true ;;
+  /psastore/collections) route_allowed=true ;;
+  /psastore/pages) route_allowed=true ;;
+  /psastore/products) route_allowed=true ;;
+  /psastore/search/suggest) route_allowed=true ;;
+  /psastore/sitemap/urls) route_allowed=true ;;
+  /psastore/sitemaps) route_allowed=true ;;
+  /psastore/store) route_allowed=true ;;
   /quince/categories) route_allowed=true ;;
   /quince/navigation) route_allowed=true ;;
   /quince/product) route_allowed=true ;;
@@ -930,6 +1145,14 @@ case "$path" in
   /raisingcanes/promotion) route_allowed=true ;;
   /raisingcanes/promotions) route_allowed=true ;;
   /raisingcanes/store) route_allowed=true ;;
+  /rebag/collections) route_allowed=true ;;
+  /rebag/pages) route_allowed=true ;;
+  /rebag/products) route_allowed=true ;;
+  /rebag/search) route_allowed=true ;;
+  /rebag/search/suggest) route_allowed=true ;;
+  /rebag/sitemap/urls) route_allowed=true ;;
+  /rebag/sitemaps) route_allowed=true ;;
+  /rebag/store) route_allowed=true ;;
   /reddit/leads) route_allowed=true ;;
   /reddit/search) route_allowed=true ;;
   /reddit/subreddits/posts) route_allowed=true ;;
@@ -939,6 +1162,18 @@ case "$path" in
   /redfin/region-trends) route_allowed=true ;;
   /redfin/search) route_allowed=true ;;
   /redfin/similar) route_allowed=true ;;
+  /resy/availability) route_allowed=true ;;
+  /resy/cuisines) route_allowed=true ;;
+  /resy/event) route_allowed=true ;;
+  /resy/events) route_allowed=true ;;
+  /resy/locations) route_allowed=true ;;
+  /resy/restaurant) route_allowed=true ;;
+  /resy/search) route_allowed=true ;;
+  /reuters/article) route_allowed=true ;;
+  /reuters/articles) route_allowed=true ;;
+  /reuters/news) route_allowed=true ;;
+  /reuters/section) route_allowed=true ;;
+  /reuters/sections) route_allowed=true ;;
   /rightmove/agents) route_allowed=true ;;
   /rightmove/autocomplete) route_allowed=true ;;
   /rightmove/commercial/search) route_allowed=true ;;
@@ -969,6 +1204,17 @@ case "$path" in
   /rover/trainer-search) route_allowed=true ;;
   /samsclub/category) route_allowed=true ;;
   /samsclub/departments) route_allowed=true ;;
+  /seatgeek/categories) route_allowed=true ;;
+  /seatgeek/cities) route_allowed=true ;;
+  /seatgeek/event) route_allowed=true ;;
+  /seatgeek/events-by-category) route_allowed=true ;;
+  /seatgeek/events-near) route_allowed=true ;;
+  /seatgeek/performer) route_allowed=true ;;
+  /seatgeek/performer-events) route_allowed=true ;;
+  /seatgeek/search) route_allowed=true ;;
+  /seatgeek/trending) route_allowed=true ;;
+  /seatgeek/venue) route_allowed=true ;;
+  /seatgeek/venue-events) route_allowed=true ;;
   /sec/company/intelligence) route_allowed=true ;;
   /sec/company/search) route_allowed=true ;;
   /sec/company/submissions) route_allowed=true ;;
@@ -979,6 +1225,8 @@ case "$path" in
   /sec/full-text-search) route_allowed=true ;;
   /sec/insider) route_allowed=true ;;
   /sec/institutional-holdings) route_allowed=true ;;
+  /sephora/brands) route_allowed=true ;;
+  /sephora/categories) route_allowed=true ;;
   /sephora/category) route_allowed=true ;;
   /sephora/product) route_allowed=true ;;
   /sephora/product/questions) route_allowed=true ;;
@@ -1017,6 +1265,17 @@ case "$path" in
   /skims/sitemap/urls) route_allowed=true ;;
   /skims/sitemaps) route_allowed=true ;;
   /skims/store) route_allowed=true ;;
+  /slickdeals/categories) route_allowed=true ;;
+  /slickdeals/category) route_allowed=true ;;
+  /slickdeals/comments) route_allowed=true ;;
+  /slickdeals/deal) route_allowed=true ;;
+  /slickdeals/deal-types) route_allowed=true ;;
+  /slickdeals/forums) route_allowed=true ;;
+  /slickdeals/frontpage) route_allowed=true ;;
+  /slickdeals/primary-categories) route_allowed=true ;;
+  /slickdeals/primary-category) route_allowed=true ;;
+  /slickdeals/search) route_allowed=true ;;
+  /slickdeals/search/advanced) route_allowed=true ;;
   /sofascore/event) route_allowed=true ;;
   /sofascore/event-h2h) route_allowed=true ;;
   /sofascore/event-incidents) route_allowed=true ;;
@@ -1128,6 +1387,32 @@ case "$path" in
   /strava/challenges) route_allowed=true ;;
   /strava/routes) route_allowed=true ;;
   /strava/routes/detail) route_allowed=true ;;
+  /stubhub/categories) route_allowed=true ;;
+  /stubhub/category-events) route_allowed=true ;;
+  /stubhub/explore) route_allowed=true ;;
+  /stubhub/performer-events) route_allowed=true ;;
+  /stubhub/trending) route_allowed=true ;;
+  /stubhub/trending-events) route_allowed=true ;;
+  /stubhub/venue-events) route_allowed=true ;;
+  /substack/categories) route_allowed=true ;;
+  /substack/category) route_allowed=true ;;
+  /substack/explore) route_allowed=true ;;
+  /substack/leaderboard) route_allowed=true ;;
+  /substack/note) route_allowed=true ;;
+  /substack/note/replies) route_allowed=true ;;
+  /substack/note/restacks) route_allowed=true ;;
+  /substack/notes) route_allowed=true ;;
+  /substack/notes/tabs) route_allowed=true ;;
+  /substack/post) route_allowed=true ;;
+  /substack/publication) route_allowed=true ;;
+  /substack/publication/contributors) route_allowed=true ;;
+  /substack/publication/posts) route_allowed=true ;;
+  /substack/publication/recommendations) route_allowed=true ;;
+  /substack/search) route_allowed=true ;;
+  /substack/user) route_allowed=true ;;
+  /substack/user/activity) route_allowed=true ;;
+  /substack/user/connections) route_allowed=true ;;
+  /substack/user/search) route_allowed=true ;;
   /subway/available-times) route_allowed=true ;;
   /subway/combos) route_allowed=true ;;
   /subway/menu) route_allowed=true ;;
@@ -1153,6 +1438,7 @@ case "$path" in
   /target/questions) route_allowed=true ;;
   /target/reviews) route_allowed=true ;;
   /target/search) route_allowed=true ;;
+  /target/stores) route_allowed=true ;;
   /tes/jobs/detail) route_allowed=true ;;
   /tes/jobs/employer) route_allowed=true ;;
   /tes/jobs/search) route_allowed=true ;;
@@ -1169,6 +1455,17 @@ case "$path" in
   /thebodyshop/sitemap/urls) route_allowed=true ;;
   /thebodyshop/sitemaps) route_allowed=true ;;
   /thebodyshop/store) route_allowed=true ;;
+  /therealreal/autocomplete) route_allowed=true ;;
+  /therealreal/categories) route_allowed=true ;;
+  /therealreal/category) route_allowed=true ;;
+  /therealreal/collection) route_allowed=true ;;
+  /therealreal/collections) route_allowed=true ;;
+  /therealreal/conditions) route_allowed=true ;;
+  /therealreal/designer) route_allowed=true ;;
+  /therealreal/designers) route_allowed=true ;;
+  /therealreal/listing) route_allowed=true ;;
+  /therealreal/search) route_allowed=true ;;
+  /therealreal/similar) route_allowed=true ;;
   /threads/search) route_allowed=true ;;
   /ticketmaster/attraction) route_allowed=true ;;
   /ticketmaster/attraction-events) route_allowed=true ;;
@@ -1188,6 +1485,14 @@ case "$path" in
   /ticketweb/event) route_allowed=true ;;
   /ticketweb/search) route_allowed=true ;;
   /ticketweb/venue) route_allowed=true ;;
+  /tiffany/categories) route_allowed=true ;;
+  /tiffany/category) route_allowed=true ;;
+  /tiffany/content-search) route_allowed=true ;;
+  /tiffany/filters) route_allowed=true ;;
+  /tiffany/product) route_allowed=true ;;
+  /tiffany/search) route_allowed=true ;;
+  /tiffany/stores) route_allowed=true ;;
+  /tiffany/suggest) route_allowed=true ;;
   /tiktok/category) route_allowed=true ;;
   /tiktok/comments) route_allowed=true ;;
   /tiktok/creative-center/hashtags) route_allowed=true ;;
@@ -1209,6 +1514,7 @@ case "$path" in
   /tiktok/top-ads/spotlight) route_allowed=true ;;
   /tiktok/top-ads/suggestions) route_allowed=true ;;
   /tiktok/trending) route_allowed=true ;;
+  /tmdb/genres) route_allowed=true ;;
   /tmdb/movie/list) route_allowed=true ;;
   /tmdb/person/list) route_allowed=true ;;
   /tmdb/search) route_allowed=true ;;
@@ -1257,6 +1563,14 @@ case "$path" in
   /upwork/search) route_allowed=true ;;
   /usptoppubs/detail) route_allowed=true ;;
   /usptoppubs/search) route_allowed=true ;;
+  /vestiaire/brands) route_allowed=true ;;
+  /vestiaire/categories) route_allowed=true ;;
+  /vestiaire/conditions) route_allowed=true ;;
+  /vestiaire/product) route_allowed=true ;;
+  /vestiaire/search) route_allowed=true ;;
+  /vestiaire/search-sellers) route_allowed=true ;;
+  /vestiaire/seller) route_allowed=true ;;
+  /vestiaire/suggest) route_allowed=true ;;
   /vinted/brand) route_allowed=true ;;
   /vinted/brands) route_allowed=true ;;
   /vinted/catalog) route_allowed=true ;;
@@ -1266,6 +1580,9 @@ case "$path" in
   /vinted/member) route_allowed=true ;;
   /walgreens/stores) route_allowed=true ;;
   /walmart/search) route_allowed=true ;;
+  /wapo/article) route_allowed=true ;;
+  /wapo/headlines) route_allowed=true ;;
+  /wapo/sections) route_allowed=true ;;
   /wayfair/categories) route_allowed=true ;;
   /wayfair/category) route_allowed=true ;;
   /wendys/categories) route_allowed=true ;;
@@ -1360,7 +1677,12 @@ case "$path" in
   /yahoo-tech/home) route_allowed=true ;;
   /yelp/geocode) route_allowed=true ;;
   /yelp/search) route_allowed=true ;;
+  /yoox/categories) route_allowed=true ;;
+  /yoox/designers) route_allowed=true ;;
+  /yoox/product) route_allowed=true ;;
+  /yoox/search) route_allowed=true ;;
   /youtube/search) route_allowed=true ;;
+  /zalando/categories) route_allowed=true ;;
   /zalando/category) route_allowed=true ;;
   /zalando/markets) route_allowed=true ;;
   /zalando/product) route_allowed=true ;;
@@ -1379,6 +1701,7 @@ case "$path" in
   /zaxbys/store) route_allowed=true ;;
   /zillow/autocomplete) route_allowed=true ;;
   /zillow/search) route_allowed=true ;;
+  /zomato/cities) route_allowed=true ;;
   /zomato/collection) route_allowed=true ;;
   /zomato/collections) route_allowed=true ;;
   /zomato/restaurant) route_allowed=true ;;
@@ -1489,10 +1812,20 @@ if [ "$route_allowed" = false ]; then
   '^/everlane/products/[^/]+$'
   '^/everlane/products/[^/]+/recommendations$'
   '^/facebook/[^/]+$'
+  '^/fanaticscollect/listing/[^/]+$'
+  '^/fanaticslive/channel/[^/]+$'
+  '^/fanaticslive/shop/[^/]+$'
+  '^/fanaticslive/shop/[^/]+/shows$'
+  '^/fanaticslive/show/[^/]+$'
+  '^/fanaticslive/show/[^/]+/instant-rips$'
   '^/fashionnova/collections/[^/]+/products$'
   '^/fashionnova/pages/[^/]+$'
   '^/fashionnova/products/[^/]+$'
   '^/fashionnova/products/[^/]+/recommendations$'
+  '^/fashionphile/collections/[^/]+/products$'
+  '^/fashionphile/pages/[^/]+$'
+  '^/fashionphile/products/[^/]+$'
+  '^/fashionphile/products/[^/]+/recommendations$'
   '^/fiverr/gig/[^/]+/[^/]+$'
   '^/fiverr/seller/[^/]+$'
   '^/github/org/[^/]+$'
@@ -1649,6 +1982,11 @@ if [ "$route_allowed" = false ]; then
   '^/poshmark/closet/[^/]+$'
   '^/poshmark/listing/[^/]+$'
   '^/poshmark/trend/[^/]+$'
+  '^/pristine-auction/lot/[^/]+$'
+  '^/pristine-marketplace/collections/[^/]+/products$'
+  '^/pristine-marketplace/pages/[^/]+$'
+  '^/pristine-marketplace/products/[^/]+$'
+  '^/pristine-marketplace/products/[^/]+/recommendations$'
   '^/producthunt/category/[^/]+$'
   '^/producthunt/category/[^/]+/products$'
   '^/producthunt/product/[^/]+$'
@@ -1658,6 +1996,14 @@ if [ "$route_allowed" = false ]; then
   '^/producthunt/product/[^/]+/launches$'
   '^/producthunt/product/[^/]+/makers$'
   '^/producthunt/product/[^/]+/reviews$'
+  '^/psastore/collections/[^/]+/products$'
+  '^/psastore/pages/[^/]+$'
+  '^/psastore/products/[^/]+$'
+  '^/psastore/products/[^/]+/recommendations$'
+  '^/rebag/collections/[^/]+/products$'
+  '^/rebag/pages/[^/]+$'
+  '^/rebag/products/[^/]+$'
+  '^/rebag/products/[^/]+/recommendations$'
   '^/reddit/comments/[^/]+$'
   '^/reddit/domain/[^/]+/posts$'
   '^/reddit/post/[^/]+$'
@@ -1719,6 +2065,7 @@ if [ "$route_allowed" = false ]; then
   '^/tiktok/hashtag/[^/]+$'
   '^/tiktok/post/[^/]+$'
   '^/tiktok/profile/[^/]+$'
+  '^/tmdb/collection/[^/]+$'
   '^/tmdb/movie/[^/]+$'
   '^/tmdb/person/[^/]+$'
   '^/tmdb/tv/[^/]+$'
@@ -1814,6 +2161,10 @@ fi
 # Enforce the documented HTTP method for each route, not just the global method set.
 route_method_allowed=false
 route_method_regexes=(
+  '^GET:/1stdibs/categories$'
+  '^GET:/1stdibs/designers$'
+  '^GET:/1stdibs/product$'
+  '^GET:/1stdibs/search$'
   '^GET:/7now/catalog$'
   '^GET:/7now/categories$'
   '^GET:/7now/category$'
@@ -1856,6 +2207,10 @@ route_method_regexes=(
   '^GET:/airbnb/room/[^/]+/calendar$'
   '^GET:/airbnb/room/[^/]+/reviews$'
   '^GET:/airbnb/search$'
+  '^GET:/aljazeera/article$'
+  '^GET:/aljazeera/categories$'
+  '^GET:/aljazeera/headlines$'
+  '^GET:/aljazeera/topic$'
   '^GET:/allbirds/collections$'
   '^GET:/allbirds/collections/[^/]+/products$'
   '^GET:/allbirds/pages$'
@@ -1867,8 +2222,20 @@ route_method_regexes=(
   '^GET:/allbirds/sitemap/urls$'
   '^GET:/allbirds/sitemaps$'
   '^GET:/allbirds/store$'
+  '^GET:/alt/asset$'
+  '^GET:/alt/auctions$'
+  '^GET:/alt/card-search$'
+  '^GET:/alt/categories$'
+  '^GET:/alt/listing$'
+  '^GET:/alt/market-trends$'
+  '^GET:/alt/search$'
+  '^GET:/alt/sold-listings$'
+  '^GET:/alt/top-movers$'
+  '^GET:/amazon-jobs/categories$'
   '^GET:/amazon-jobs/job$'
   '^GET:/amazon-jobs/search$'
+  '^GET:/amazon/charts$'
+  '^GET:/amazon/charts/categories$'
   '^GET:/amazon/product/[^/]+$'
   '^GET:/amazon/search$'
   '^GET:/amazon/suggest/[^/]+$'
@@ -1894,6 +2261,7 @@ route_method_regexes=(
   '^GET:/apple-books/search$'
   '^GET:/apple-books/series/[^/]+$'
   '^GET:/apple-jobs/job$'
+  '^GET:/apple-jobs/locations$'
   '^GET:/apple-jobs/search$'
   '^GET:/apple-maps/autocomplete$'
   '^GET:/apple-maps/categories$'
@@ -1923,6 +2291,7 @@ route_method_regexes=(
   '^GET:/apple-podcasts/show/[^/]+/episodes$'
   '^GET:/apple-podcasts/show/[^/]+/related$'
   '^GET:/appstore/app$'
+  '^GET:/appstore/categories$'
   '^GET:/appstore/developer/[^/]+$'
   '^GET:/appstore/editorial$'
   '^GET:/appstore/editorial/category$'
@@ -1942,6 +2311,7 @@ route_method_regexes=(
   '^GET:/audible/categories$'
   '^GET:/audible/category/[^/]+$'
   '^GET:/audible/charts$'
+  '^GET:/audible/charts/authors$'
   '^GET:/audible/list/[^/]+$'
   '^GET:/audible/product/[^/]+$'
   '^GET:/audible/product/[^/]+/related$'
@@ -1952,6 +2322,16 @@ route_method_regexes=(
   '^GET:/autotrader/dealer/[^/]+$'
   '^GET:/autotrader/search$'
   '^GET:/autotrader/vehicle/[^/]+$'
+  '^GET:/axios/article$'
+  '^GET:/axios/categories$'
+  '^GET:/axios/headlines$'
+  '^GET:/balenciaga/categories$'
+  '^GET:/balenciaga/category$'
+  '^GET:/balenciaga/product$'
+  '^GET:/balenciaga/product/variants$'
+  '^GET:/balenciaga/search$'
+  '^GET:/balenciaga/store-countries$'
+  '^GET:/balenciaga/stores$'
   '^GET:/bbb/business$'
   '^GET:/bbb/business/complaints$'
   '^GET:/bbb/business/more-info$'
@@ -1992,10 +2372,16 @@ route_method_regexes=(
   '^GET:/bing/search$'
   '^GET:/bing/suggest$'
   '^GET:/bing/videos$'
+  '^GET:/bloomberg/article$'
+  '^GET:/bloomberg/news$'
   '^GET:/bluesky/author-feed$'
   '^GET:/bluesky/followers$'
   '^GET:/bluesky/follows$'
+  '^GET:/bluesky/post-likes$'
+  '^GET:/bluesky/post-quotes$'
+  '^GET:/bluesky/post-reposted-by$'
   '^GET:/bluesky/post-thread$'
+  '^GET:/bluesky/posts$'
   '^GET:/bluesky/profile$'
   '^GET:/bluesky/search-actors$'
   '^GET:/bluesky/trending-topics$'
@@ -2052,6 +2438,12 @@ route_method_regexes=(
   '^GET:/brooklinen/sitemap/urls$'
   '^GET:/brooklinen/sitemaps$'
   '^GET:/brooklinen/store$'
+  '^GET:/burberry/categories$'
+  '^GET:/burberry/category$'
+  '^GET:/burberry/product$'
+  '^GET:/burberry/related$'
+  '^GET:/burberry/search$'
+  '^GET:/burberry/suggest$'
   '^GET:/burgerking/availability$'
   '^GET:/burgerking/locations$'
   '^GET:/burgerking/menu$'
@@ -2110,6 +2502,14 @@ route_method_regexes=(
   '^GET:/chromewebstore/search$'
   '^GET:/chromewebstore/similar$'
   '^GET:/chromewebstore/suggest$'
+  '^GET:/chrono24/autocomplete$'
+  '^GET:/chrono24/brands$'
+  '^GET:/chrono24/dealer$'
+  '^GET:/chrono24/dealer/reviews$'
+  '^GET:/chrono24/facets$'
+  '^GET:/chrono24/listing$'
+  '^GET:/chrono24/models$'
+  '^GET:/chrono24/search$'
   '^GET:/cnn/article$'
   '^GET:/cnn/headlines$'
   '^GET:/cnn/live-story$'
@@ -2145,6 +2545,9 @@ route_method_regexes=(
   '^GET:/colehaan/sitemap/urls$'
   '^GET:/colehaan/sitemaps$'
   '^GET:/colehaan/store$'
+  '^GET:/comc/categories$'
+  '^GET:/comc/listing$'
+  '^GET:/comc/search$'
   '^GET:/congress/report$'
   '^GET:/congress/stock-disclosures$'
   '^GET:/costco/categories$'
@@ -2291,6 +2694,29 @@ route_method_regexes=(
   '^GET:/everlane/store$'
   '^GET:/facebook/[^/]+$'
   '^GET:/facebook/marketplace/search$'
+  '^GET:/fanatics/categories$'
+  '^GET:/fanatics/category$'
+  '^GET:/fanatics/product$'
+  '^GET:/fanatics/search$'
+  '^GET:/fanaticscollect/auctions$'
+  '^GET:/fanaticscollect/categories$'
+  '^GET:/fanaticscollect/instant-rips/categories$'
+  '^GET:/fanaticscollect/listing/[^/]+$'
+  '^GET:/fanaticscollect/search$'
+  '^GET:/fanaticscollect/sold-items$'
+  '^GET:/fanaticscollect/trending-searches$'
+  '^GET:/fanaticslive/browse$'
+  '^GET:/fanaticslive/channel/[^/]+$'
+  '^GET:/fanaticslive/leagues$'
+  '^GET:/fanaticslive/shop/[^/]+$'
+  '^GET:/fanaticslive/shop/[^/]+/shows$'
+  '^GET:/fanaticslive/shops$'
+  '^GET:/fanaticslive/show/[^/]+$'
+  '^GET:/fanaticslive/show/[^/]+/instant-rips$'
+  '^GET:/farfetch/categories$'
+  '^GET:/farfetch/designers$'
+  '^GET:/farfetch/product$'
+  '^GET:/farfetch/search$'
   '^GET:/fashionnova/collections$'
   '^GET:/fashionnova/collections/[^/]+/products$'
   '^GET:/fashionnova/pages$'
@@ -2302,6 +2728,18 @@ route_method_regexes=(
   '^GET:/fashionnova/sitemap/urls$'
   '^GET:/fashionnova/sitemaps$'
   '^GET:/fashionnova/store$'
+  '^GET:/fashionphile/collections$'
+  '^GET:/fashionphile/collections/[^/]+/products$'
+  '^GET:/fashionphile/pages$'
+  '^GET:/fashionphile/pages/[^/]+$'
+  '^GET:/fashionphile/products$'
+  '^GET:/fashionphile/products/[^/]+$'
+  '^GET:/fashionphile/products/[^/]+/recommendations$'
+  '^GET:/fashionphile/search$'
+  '^GET:/fashionphile/search/suggest$'
+  '^GET:/fashionphile/sitemap/urls$'
+  '^GET:/fashionphile/sitemaps$'
+  '^GET:/fashionphile/store$'
   '^GET:/fiveguys/directory$'
   '^GET:/fiveguys/faq$'
   '^GET:/fiveguys/faq-categories$'
@@ -2319,6 +2757,23 @@ route_method_regexes=(
   '^GET:/foodpanda/restaurant/menu$'
   '^GET:/foodpanda/restaurant/reviews$'
   '^GET:/foodpanda/search$'
+  '^GET:/foodpanda/search/cuisines$'
+  '^GET:/foreignaffairs/article$'
+  '^GET:/foreignaffairs/headlines$'
+  '^GET:/foreignaffairs/topic$'
+  '^GET:/foreignaffairs/topics$'
+  '^GET:/foreignpolicy/article$'
+  '^GET:/foreignpolicy/headlines$'
+  '^GET:/foreignpolicy/live$'
+  '^GET:/foreignpolicy/live-detail$'
+  '^GET:/foreignpolicy/project$'
+  '^GET:/foreignpolicy/projects$'
+  '^GET:/foreignpolicy/topic$'
+  '^GET:/ft/article$'
+  '^GET:/ft/categories$'
+  '^GET:/ft/headlines$'
+  '^GET:/ft/news$'
+  '^GET:/ft/search$'
   '^GET:/gdelt/context$'
   '^GET:/gdelt/search$'
   '^GET:/gdelt/timeline$'
@@ -2361,6 +2816,11 @@ route_method_regexes=(
   '^GET:/goat/search/facets$'
   '^GET:/goat/searches/trending$'
   '^GET:/goat/suggest$'
+  '^GET:/goldin/auctions$'
+  '^GET:/goldin/categories$'
+  '^GET:/goldin/listing$'
+  '^GET:/goldin/search$'
+  '^GET:/goldin/suggest$'
   '^GET:/goodreads/author/[^/]+$'
   '^GET:/goodreads/author/[^/]+/books$'
   '^GET:/goodreads/author/[^/]+/quotes$'
@@ -2420,6 +2880,17 @@ route_method_regexes=(
   '^GET:/googleplay/search$'
   '^GET:/googleplay/similar$'
   '^GET:/googleplay/suggest/[^/]+$'
+  '^GET:/grailed/categories$'
+  '^GET:/grailed/collection$'
+  '^GET:/grailed/collections$'
+  '^GET:/grailed/designers$'
+  '^GET:/grailed/listing$'
+  '^GET:/grailed/search$'
+  '^GET:/grailed/seller$'
+  '^GET:/grailed/seller-reviews$'
+  '^GET:/grailed/similar-listings$'
+  '^GET:/grailed/sold-listings$'
+  '^GET:/grailed/suggest$'
   '^GET:/grubhub/availability$'
   '^GET:/grubhub/offers$'
   '^GET:/grubhub/restaurant$'
@@ -2430,6 +2901,15 @@ route_method_regexes=(
   '^GET:/guardian/article$'
   '^GET:/guardian/headlines$'
   '^GET:/guardian/topic$'
+  '^GET:/gucci/categories$'
+  '^GET:/gucci/category$'
+  '^GET:/gucci/product$'
+  '^GET:/gucci/recommendations$'
+  '^GET:/gucci/search$'
+  '^GET:/gucci/size-guide$'
+  '^GET:/gucci/store$'
+  '^GET:/gucci/stores$'
+  '^GET:/gucci/suggest$'
   '^GET:/gymshark/collections$'
   '^GET:/gymshark/collections/[^/]+/products$'
   '^GET:/gymshark/pages$'
@@ -2440,6 +2920,18 @@ route_method_regexes=(
   '^GET:/gymshark/sitemap/urls$'
   '^GET:/gymshark/sitemaps$'
   '^GET:/gymshark/store$'
+  '^GET:/hbr/article$'
+  '^GET:/hbr/categories$'
+  '^GET:/hbr/headlines$'
+  '^GET:/hbr/topic$'
+  '^GET:/hermes/categories$'
+  '^GET:/hermes/category$'
+  '^GET:/hermes/product$'
+  '^GET:/hermes/product/recommendations$'
+  '^GET:/hermes/products$'
+  '^GET:/hermes/search$'
+  '^GET:/hermes/stores$'
+  '^GET:/hermes/suggest$'
   '^GET:/hm/categories$'
   '^GET:/hm/listing$'
   '^GET:/hm/product/[^/]+$'
@@ -2455,6 +2947,7 @@ route_method_regexes=(
   '^GET:/homedepot/suggest$'
   '^GET:/hotels/autocomplete$'
   '^GET:/ikea/availability$'
+  '^GET:/ikea/categories$'
   '^GET:/ikea/category$'
   '^GET:/ikea/product$'
   '^GET:/ikea/reviews$'
@@ -2463,18 +2956,24 @@ route_method_regexes=(
   '^GET:/ikea/stores$'
   '^GET:/ikea/suggest$'
   '^GET:/imdb/charts$'
+  '^GET:/imdb/image-types$'
   '^GET:/imdb/name$'
   '^GET:/imdb/name/awards$'
   '^GET:/imdb/name/credits$'
+  '^GET:/imdb/name/images$'
+  '^GET:/imdb/name/videos$'
   '^GET:/imdb/search$'
   '^GET:/imdb/search/title$'
   '^GET:/imdb/title$'
   '^GET:/imdb/title/awards$'
+  '^GET:/imdb/title/box-office$'
   '^GET:/imdb/title/company-credits$'
+  '^GET:/imdb/title/connections$'
   '^GET:/imdb/title/credits$'
   '^GET:/imdb/title/episodes$'
   '^GET:/imdb/title/filming-locations$'
   '^GET:/imdb/title/goofs$'
+  '^GET:/imdb/title/images$'
   '^GET:/imdb/title/keywords$'
   '^GET:/imdb/title/parental-guide$'
   '^GET:/imdb/title/public-facts-analysis$'
@@ -2485,6 +2984,7 @@ route_method_regexes=(
   '^GET:/imdb/title/similar$'
   '^GET:/imdb/title/technical-specs$'
   '^GET:/imdb/title/trivia$'
+  '^GET:/imdb/title/videos$'
   '^GET:/importyeti/company$'
   '^GET:/importyeti/search$'
   '^GET:/indeed/job$'
@@ -2545,6 +3045,7 @@ route_method_regexes=(
   '^GET:/justeat/restaurant$'
   '^GET:/justeat/restaurant/menu$'
   '^GET:/justeat/search$'
+  '^GET:/justeat/search/filters$'
   '^GET:/justwatch/age-certifications$'
   '^GET:/justwatch/discover$'
   '^GET:/justwatch/episode/by-id$'
@@ -2602,6 +3103,7 @@ route_method_regexes=(
   '^GET:/kohls/product/reviews$'
   '^GET:/kohls/stores$'
   '^GET:/kohls/suggest$'
+  '^GET:/kroger/categories$'
   '^GET:/kroger/category$'
   '^GET:/kroger/coupons$'
   '^GET:/kroger/product$'
@@ -2622,6 +3124,9 @@ route_method_regexes=(
   '^GET:/kyliecosmetics/sitemap/urls$'
   '^GET:/kyliecosmetics/sitemaps$'
   '^GET:/kyliecosmetics/store$'
+  '^GET:/latimes/article$'
+  '^GET:/latimes/headlines$'
+  '^GET:/latimes/sections$'
   '^GET:/lazada/categories$'
   '^GET:/lazada/category-products$'
   '^GET:/lazada/home$'
@@ -2639,6 +3144,8 @@ route_method_regexes=(
   '^GET:/letterboxd/search$'
   '^GET:/linkedin/company/[^/]+$'
   '^GET:/linkedin/product/[^/]+$'
+  '^GET:/linkedin/product/categories$'
+  '^GET:/linkedin/products/search$'
   '^GET:/linkedin/showcase/[^/]+$'
   '^GET:/lululemon/categories$'
   '^GET:/lululemon/category$'
@@ -2701,6 +3208,16 @@ route_method_regexes=(
   '^GET:/mlb/team-stats$'
   '^GET:/mlb/teams$'
   '^GET:/mlb/transactions$'
+  '^GET:/modaoperandi/categories$'
+  '^GET:/modaoperandi/designers$'
+  '^GET:/modaoperandi/product$'
+  '^GET:/modaoperandi/search$'
+  '^GET:/moncler/categories$'
+  '^GET:/moncler/category$'
+  '^GET:/moncler/product$'
+  '^GET:/moncler/search$'
+  '^GET:/moncler/stores$'
+  '^GET:/moncler/suggest$'
   '^GET:/nike/categories$'
   '^GET:/nike/product$'
   '^GET:/nike/product/availability$'
@@ -2710,6 +3227,10 @@ route_method_regexes=(
   '^GET:/nike/search$'
   '^GET:/nike/stores$'
   '^GET:/nike/suggest$'
+  '^GET:/npr/article$'
+  '^GET:/npr/categories$'
+  '^GET:/npr/headlines$'
+  '^GET:/npr/topic$'
   '^GET:/numbeo/cost-of-living/city/[^/]+$'
   '^GET:/numbeo/cost-of-living/country$'
   '^GET:/numbeo/cost-of-living/rankings$'
@@ -2718,6 +3239,9 @@ route_method_regexes=(
   '^GET:/numbeo/indices/country$'
   '^GET:/numbeo/indices/rankings$'
   '^GET:/numbeo/indices/rankings-by-country$'
+  '^GET:/nyt/article$'
+  '^GET:/nyt/headlines$'
+  '^GET:/nyt/sections$'
   '^GET:/ohpolly/collections$'
   '^GET:/ohpolly/collections/[^/]+/products$'
   '^GET:/ohpolly/pages$'
@@ -2847,11 +3371,17 @@ route_method_regexes=(
   '^GET:/playstation/browse$'
   '^GET:/playstation/category$'
   '^GET:/playstation/concept$'
+  '^GET:/playstation/concept/reviews$'
   '^GET:/playstation/deals$'
   '^GET:/playstation/latest$'
   '^GET:/playstation/page$'
   '^GET:/playstation/product$'
   '^GET:/playstation/search$'
+  '^GET:/playstation/suggest$'
+  '^GET:/politico/article$'
+  '^GET:/politico/categories$'
+  '^GET:/politico/headlines$'
+  '^GET:/politico/topic$'
   '^GET:/polymarket/activity/trades$'
   '^GET:/polymarket/clob/market/[^/]+$'
   '^GET:/polymarket/dashboards/macro$'
@@ -2894,6 +3424,28 @@ route_method_regexes=(
   '^GET:/poshmark/listing/[^/]+$'
   '^GET:/poshmark/search$'
   '^GET:/poshmark/trend/[^/]+$'
+  '^GET:/prada/categories$'
+  '^GET:/prada/category$'
+  '^GET:/prada/product$'
+  '^GET:/prada/search$'
+  '^GET:/prada/stores$'
+  '^GET:/prada/suggest$'
+  '^GET:/pristine-auction/categories$'
+  '^GET:/pristine-auction/lot/[^/]+$'
+  '^GET:/pristine-auction/search$'
+  '^GET:/pristine-marketplace/collections$'
+  '^GET:/pristine-marketplace/collections/[^/]+/products$'
+  '^GET:/pristine-marketplace/pages$'
+  '^GET:/pristine-marketplace/pages/[^/]+$'
+  '^GET:/pristine-marketplace/products$'
+  '^GET:/pristine-marketplace/products/[^/]+$'
+  '^GET:/pristine-marketplace/products/[^/]+/recommendations$'
+  '^GET:/pristine-marketplace/reviews$'
+  '^GET:/pristine-marketplace/search$'
+  '^GET:/pristine-marketplace/search/suggest$'
+  '^GET:/pristine-marketplace/sitemap/urls$'
+  '^GET:/pristine-marketplace/sitemaps$'
+  '^GET:/pristine-marketplace/store$'
   '^GET:/producthunt/category/[^/]+$'
   '^GET:/producthunt/category/[^/]+/products$'
   '^GET:/producthunt/leaderboard$'
@@ -2905,6 +3457,36 @@ route_method_regexes=(
   '^GET:/producthunt/product/[^/]+/makers$'
   '^GET:/producthunt/product/[^/]+/reviews$'
   '^GET:/producthunt/search$'
+  '^GET:/psa/autographfacts/categories$'
+  '^GET:/psa/autographfacts/gallery$'
+  '^GET:/psa/autographfacts/subject$'
+  '^GET:/psa/autographfacts/subjects$'
+  '^GET:/psa/cardfacts/categories$'
+  '^GET:/psa/cardfacts/checklist$'
+  '^GET:/psa/cardfacts/sets$'
+  '^GET:/psa/cert-lookup$'
+  '^GET:/psa/price-guide/categories$'
+  '^GET:/psa/price-guide/search$'
+  '^GET:/psa/price-guide/set$'
+  '^GET:/psa/probatfacts/categories$'
+  '^GET:/psa/probatfacts/gallery$'
+  '^GET:/psa/probatfacts/subject$'
+  '^GET:/psa/probatfacts/subjects$'
+  '^GET:/psa/ticketfacts/categories$'
+  '^GET:/psa/ticketfacts/gallery$'
+  '^GET:/psa/ticketfacts/subject$'
+  '^GET:/psa/ticketfacts/subjects$'
+  '^GET:/psastore/collections$'
+  '^GET:/psastore/collections/[^/]+/products$'
+  '^GET:/psastore/pages$'
+  '^GET:/psastore/pages/[^/]+$'
+  '^GET:/psastore/products$'
+  '^GET:/psastore/products/[^/]+$'
+  '^GET:/psastore/products/[^/]+/recommendations$'
+  '^GET:/psastore/search/suggest$'
+  '^GET:/psastore/sitemap/urls$'
+  '^GET:/psastore/sitemaps$'
+  '^GET:/psastore/store$'
   '^GET:/quince/categories$'
   '^GET:/quince/navigation$'
   '^GET:/quince/product$'
@@ -2920,6 +3502,18 @@ route_method_regexes=(
   '^GET:/raisingcanes/promotion$'
   '^GET:/raisingcanes/promotions$'
   '^GET:/raisingcanes/store$'
+  '^GET:/rebag/collections$'
+  '^GET:/rebag/collections/[^/]+/products$'
+  '^GET:/rebag/pages$'
+  '^GET:/rebag/pages/[^/]+$'
+  '^GET:/rebag/products$'
+  '^GET:/rebag/products/[^/]+$'
+  '^GET:/rebag/products/[^/]+/recommendations$'
+  '^GET:/rebag/search$'
+  '^GET:/rebag/search/suggest$'
+  '^GET:/rebag/sitemap/urls$'
+  '^GET:/rebag/sitemaps$'
+  '^GET:/rebag/store$'
   '^GET:/reddit/comments/[^/]+$'
   '^GET:/reddit/domain/[^/]+/posts$'
   '^GET:/reddit/leads$'
@@ -2937,6 +3531,18 @@ route_method_regexes=(
   '^GET:/redfin/region-trends$'
   '^GET:/redfin/search$'
   '^GET:/redfin/similar$'
+  '^GET:/resy/availability$'
+  '^GET:/resy/cuisines$'
+  '^GET:/resy/event$'
+  '^GET:/resy/events$'
+  '^GET:/resy/locations$'
+  '^GET:/resy/restaurant$'
+  '^GET:/resy/search$'
+  '^GET:/reuters/article$'
+  '^GET:/reuters/articles$'
+  '^GET:/reuters/news$'
+  '^GET:/reuters/section$'
+  '^GET:/reuters/sections$'
   '^GET:/rightmove/agents$'
   '^GET:/rightmove/agents/[^/]+$'
   '^GET:/rightmove/autocomplete$'
@@ -2978,6 +3584,17 @@ route_method_regexes=(
   '^GET:/samsclub/departments$'
   '^GET:/samsclub/product/[^/]+$'
   '^GET:/samsclub/product/[^/]+/related$'
+  '^GET:/seatgeek/categories$'
+  '^GET:/seatgeek/cities$'
+  '^GET:/seatgeek/event$'
+  '^GET:/seatgeek/events-by-category$'
+  '^GET:/seatgeek/events-near$'
+  '^GET:/seatgeek/performer$'
+  '^GET:/seatgeek/performer-events$'
+  '^GET:/seatgeek/search$'
+  '^GET:/seatgeek/trending$'
+  '^GET:/seatgeek/venue$'
+  '^GET:/seatgeek/venue-events$'
   '^GET:/sec/company/intelligence$'
   '^GET:/sec/company/search$'
   '^GET:/sec/company/submissions$'
@@ -2988,6 +3605,8 @@ route_method_regexes=(
   '^GET:/sec/full-text-search$'
   '^GET:/sec/insider$'
   '^GET:/sec/institutional-holdings$'
+  '^GET:/sephora/brands$'
+  '^GET:/sephora/categories$'
   '^GET:/sephora/category$'
   '^GET:/sephora/product$'
   '^GET:/sephora/product/questions$'
@@ -3043,6 +3662,17 @@ route_method_regexes=(
   '^GET:/skims/sitemap/urls$'
   '^GET:/skims/sitemaps$'
   '^GET:/skims/store$'
+  '^GET:/slickdeals/categories$'
+  '^GET:/slickdeals/category$'
+  '^GET:/slickdeals/comments$'
+  '^GET:/slickdeals/deal$'
+  '^GET:/slickdeals/deal-types$'
+  '^GET:/slickdeals/forums$'
+  '^GET:/slickdeals/frontpage$'
+  '^GET:/slickdeals/primary-categories$'
+  '^GET:/slickdeals/primary-category$'
+  '^GET:/slickdeals/search$'
+  '^GET:/slickdeals/search/advanced$'
   '^GET:/sofascore/event$'
   '^GET:/sofascore/event-h2h$'
   '^GET:/sofascore/event-incidents$'
@@ -3162,6 +3792,32 @@ route_method_regexes=(
   '^GET:/strava/clubs/[^/]+$'
   '^GET:/strava/routes$'
   '^GET:/strava/routes/detail$'
+  '^GET:/stubhub/categories$'
+  '^GET:/stubhub/category-events$'
+  '^GET:/stubhub/explore$'
+  '^GET:/stubhub/performer-events$'
+  '^GET:/stubhub/trending$'
+  '^GET:/stubhub/trending-events$'
+  '^GET:/stubhub/venue-events$'
+  '^GET:/substack/categories$'
+  '^GET:/substack/category$'
+  '^GET:/substack/explore$'
+  '^GET:/substack/leaderboard$'
+  '^GET:/substack/note$'
+  '^GET:/substack/note/replies$'
+  '^GET:/substack/note/restacks$'
+  '^GET:/substack/notes$'
+  '^GET:/substack/notes/tabs$'
+  '^GET:/substack/post$'
+  '^GET:/substack/publication$'
+  '^GET:/substack/publication/contributors$'
+  '^GET:/substack/publication/posts$'
+  '^GET:/substack/publication/recommendations$'
+  '^GET:/substack/search$'
+  '^GET:/substack/user$'
+  '^GET:/substack/user/activity$'
+  '^GET:/substack/user/connections$'
+  '^GET:/substack/user/search$'
   '^GET:/subway/available-times$'
   '^GET:/subway/combos$'
   '^GET:/subway/menu$'
@@ -3187,6 +3843,7 @@ route_method_regexes=(
   '^GET:/target/questions$'
   '^GET:/target/reviews$'
   '^GET:/target/search$'
+  '^GET:/target/stores$'
   '^GET:/tes/jobs/detail$'
   '^GET:/tes/jobs/employer$'
   '^GET:/tes/jobs/search$'
@@ -3207,6 +3864,17 @@ route_method_regexes=(
   '^GET:/thebodyshop/sitemap/urls$'
   '^GET:/thebodyshop/sitemaps$'
   '^GET:/thebodyshop/store$'
+  '^GET:/therealreal/autocomplete$'
+  '^GET:/therealreal/categories$'
+  '^GET:/therealreal/category$'
+  '^GET:/therealreal/collection$'
+  '^GET:/therealreal/collections$'
+  '^GET:/therealreal/conditions$'
+  '^GET:/therealreal/designer$'
+  '^GET:/therealreal/designers$'
+  '^GET:/therealreal/listing$'
+  '^GET:/therealreal/search$'
+  '^GET:/therealreal/similar$'
   '^GET:/threads/post/[^/]+/[^/]+$'
   '^GET:/threads/post/[^/]+/[^/]+/replies$'
   '^GET:/threads/profile/[^/]+$'
@@ -3230,6 +3898,14 @@ route_method_regexes=(
   '^GET:/ticketweb/event$'
   '^GET:/ticketweb/search$'
   '^GET:/ticketweb/venue$'
+  '^GET:/tiffany/categories$'
+  '^GET:/tiffany/category$'
+  '^GET:/tiffany/content-search$'
+  '^GET:/tiffany/filters$'
+  '^GET:/tiffany/product$'
+  '^GET:/tiffany/search$'
+  '^GET:/tiffany/stores$'
+  '^GET:/tiffany/suggest$'
   '^GET:/tiktok/category$'
   '^GET:/tiktok/comments$'
   '^GET:/tiktok/creative-center/hashtags$'
@@ -3255,6 +3931,8 @@ route_method_regexes=(
   '^GET:/tiktok/top-ads/spotlight$'
   '^GET:/tiktok/top-ads/suggestions$'
   '^GET:/tiktok/trending$'
+  '^GET:/tmdb/collection/[^/]+$'
+  '^GET:/tmdb/genres$'
   '^GET:/tmdb/movie/[^/]+$'
   '^GET:/tmdb/movie/list$'
   '^GET:/tmdb/person/[^/]+$'
@@ -3319,6 +3997,14 @@ route_method_regexes=(
   '^GET:/upwork/search$'
   '^GET:/usptoppubs/detail$'
   '^GET:/usptoppubs/search$'
+  '^GET:/vestiaire/brands$'
+  '^GET:/vestiaire/categories$'
+  '^GET:/vestiaire/conditions$'
+  '^GET:/vestiaire/product$'
+  '^GET:/vestiaire/search$'
+  '^GET:/vestiaire/search-sellers$'
+  '^GET:/vestiaire/seller$'
+  '^GET:/vestiaire/suggest$'
   '^GET:/vinted/brand$'
   '^GET:/vinted/brands$'
   '^GET:/vinted/catalog$'
@@ -3330,6 +4016,9 @@ route_method_regexes=(
   '^GET:/walmart/product/[^/]+$'
   '^GET:/walmart/product/[^/]+/reviews$'
   '^GET:/walmart/search$'
+  '^GET:/wapo/article$'
+  '^GET:/wapo/headlines$'
+  '^GET:/wapo/sections$'
   '^GET:/wayfair/categories$'
   '^GET:/wayfair/category$'
   '^GET:/wayfair/product/[^/]+$'
@@ -3467,6 +4156,10 @@ route_method_regexes=(
   '^GET:/yelp/business/[^/]+/reviews/search$'
   '^GET:/yelp/geocode$'
   '^GET:/yelp/search$'
+  '^GET:/yoox/categories$'
+  '^GET:/yoox/designers$'
+  '^GET:/yoox/product$'
+  '^GET:/yoox/search$'
   '^GET:/youtube/captions/[^/]+$'
   '^GET:/youtube/channel/[^/]+/playlists$'
   '^GET:/youtube/channel/[^/]+/search$'
@@ -3480,6 +4173,7 @@ route_method_regexes=(
   '^GET:/youtube/transcript/[^/]+$'
   '^GET:/youtube/transcript/[^/]+/languages$'
   '^GET:/youtube/video/[^/]+$'
+  '^GET:/zalando/categories$'
   '^GET:/zalando/category$'
   '^GET:/zalando/markets$'
   '^GET:/zalando/product$'
@@ -3502,6 +4196,7 @@ route_method_regexes=(
   '^GET:/zillow/autocomplete$'
   '^GET:/zillow/property/[^/]+$'
   '^GET:/zillow/search$'
+  '^GET:/zomato/cities$'
   '^GET:/zomato/collection$'
   '^GET:/zomato/collections$'
   '^GET:/zomato/restaurant$'
@@ -3518,7 +4213,7 @@ route_method_regexes=(
   '^POST:/expedia/properties/search$'
   '^POST:/google/jobs$'
   '^POST:/google/map/search$'
-  '^POST:/google/search$'
+  '^POST:/google/news$'
   '^POST:/google/trends/explore$'
   '^POST:/google/trends/explore/interest-by-region$'
   '^POST:/google/trends/explore/interest-over-time$'

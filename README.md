@@ -24,7 +24,7 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 
 | Skill | What it does | Platforms |
 |---|---|---|
-| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured public data from **1,729** Crawlora MCP tools; teaches auth, credits, and the public-data catalog. | 210 public-data platform groups |
+| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured public data from **2,077** Crawlora MCP tools; teaches auth, credits, and the public-data catalog. | 255 public-data platform groups |
 | [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (126 tools) |
 | [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, Shopify and DTC brands, BigCommerce, Boots, CVS, Lazada, Otto, SparkFun, Tokopedia, Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, Walgreens (stores only), IKEA, Chewy |
 | [`youtube-research`](skills/youtube-research) | Transcripts, comments, video/channel metadata, search — no `yt-dlp`. | YouTube |
@@ -63,11 +63,12 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`patents-research`](skills/patents-research) | Full-text patent search (keyword/inventor/assignee), bibliographic detail, claims/citations/family, CPC classification lookup. | Google Patents, USPTO Patent Public Search |
 | [`gdelt-research`](skills/gdelt-research) | Global news search, coverage/sentiment timelines, sentence-level co-occurrence search; US TV transcripts/captions/on-screen-text/visual-label search. | GDELT, GDELT Television 2.0 AI |
 | [`apple-maps-research`](skills/apple-maps-research) | Search places, categories, guides, routes, transit, reverse geocoding, photos, and travel times. | Apple Maps |
-| [`news-media-research`](skills/news-media-research) | Search headlines, articles, live-story updates, and topic archives from major public news outlets. | BBC, CNN, The Guardian |
+| [`news-media-research`](skills/news-media-research) | Search publisher-native headlines, articles, live coverage, and section/topic archives. | Al Jazeera, Axios, BBC, Bloomberg, CNN, FT, Foreign Affairs, Foreign Policy, Guardian, HBR, LA Times, NPR, NYT, Politico, Reuters, Washington Post |
 | [`opensea-research`](skills/opensea-research) | Research NFT collections, items, traits, listings, offers, sales activity, chains, and creators. | OpenSea |
 | [`auction-research`](skills/auction-research) | Search auction calendars and lots, compare estimates and realized prices, and inspect sale details. | Bonhams |
 | [`courtlistener-research`](skills/courtlistener-research) | Search public US opinions and browse courts and judicial-person records for initial legal research. | CourtListener |
 | [`apk-teardown-research`](skills/apk-teardown-research) | Analyze authorized Android packages for permissions, SDKs, libraries, signing, release history, and ownership signals. | AppInsights |
+| [`collectibles-market-research`](skills/collectibles-market-research) | Trading-card and sports-collectible identity, PSA reference data, listings, auctions, sold items, and market trends. | PSA, COMC, Fanatics Collect, Fanatics Live, ALT, Goldin, Pristine Auction |
 
 ### Focused research and prospecting workflows
 
@@ -107,8 +108,8 @@ self-contained and do not require the broader bundles to be installed.
 | [`used-car-market-comparison`](skills/used-car-market-comparison) | Matched vehicle listings, deduplicated asking-price ranges, and qualified price outliers. | CarMax, Autotrader, Cars.com |
 | [`software-vendor-shortlisting`](skills/software-vendor-shortlisting) | Requirements-based vendor shortlists, pricing scenarios, and evidence-led demo questions. | Capterra, Product Hunt, Bing, official vendor websites |
 
-The repository contains **111 installable skills**. The Claude Code marketplace
-bundle includes **73 skills**; the narrower per-platform alternatives below remain
+The repository contains **112 installable skills**. The Claude Code marketplace
+bundle includes **74 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills

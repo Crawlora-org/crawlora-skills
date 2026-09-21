@@ -70,13 +70,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /redfin/region-trends`
 - **What:** Get Redfin region market trends. Returns Redfin's aggregate market trends for a region (median list/sale price, sale-to-list, offers, days on market, inventory, year-over-year). Faithful pass-through of Redfin's public aggregate-trends resource.
-- **Params:** `region_id` (integer, **required**) — Redfin region id from autocomplete; `region_type` (integer, optional) — Redfin region type from autocomplete (defaults to 6, city)
+- **Params:** `region_id` (integer, **required**) — Redfin region id for a neighborhood, ZIP code, county, or city; `region_type` (integer, optional) — Redfin region type (defaults to 6, city)
 
 ### `redfin_search`
 
 - **HTTP:** `GET /redfin/search`
 - **What:** Search Redfin listings. Returns normalized Redfin public listing search results from Redfin's credential-free region CSV endpoint. Pass region_id/region_type from autocomplete to skip location resolution.
-- **Params:** `location` (string, optional) — Display location; resolved via autocomplete when region_id is omitted; `max_price` (integer, optional) — Maximum price filter; `min_baths` (number, optional) — Minimum bathrooms filter; `min_beds` (integer, optional) — Minimum bedrooms filter; `min_price` (integer, optional) — Minimum price filter; `page` (integer, optional) — 1-based page; `region_id` (integer, optional) — Redfin region id from autocomplete; `region_type` (integer, optional) — Redfin region type from autocomplete (defaults to 6, city); `status` (string, optional) — Listing status: for_sale or sold
+- **Params:** `location` (string, optional) — Display location; resolved via autocomplete when region_id is omitted; `max_price` (integer, optional) — Maximum price filter; `min_baths` (number, optional) — Minimum bathrooms filter; `min_beds` (integer, optional) — Minimum bedrooms filter; `min_price` (integer, optional) — Minimum price filter; `page` (integer, optional) — 1-based page; `region_id` (integer, optional) — Redfin region id; skips location resolution when provided; `region_type` (integer, optional) — Redfin region type, used with region_id (defaults to 6, city); `status` (string, optional) — Listing status: for_sale or sold
 
 ### `redfin_similar`
 
@@ -162,13 +162,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /rightmove/commercial/search`
 - **What:** Search Rightmove commercial property. Search Rightmove's commercial property listings for sale or to let, with price, floor-area (sq ft), and commercial-property-type filters. For to-let listings the price amount follows the listing's own frequency (monthly or yearly).
-- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_price` (integer, optional) — Maximum price in whole GBP units, not pence; `max_size` (integer, optional) — Maximum floor area in square feet; `min_price` (integer, optional) — Minimum price in whole GBP units, not pence; `min_size` (integer, optional) — Minimum floor area in square feet; `page` (integer, optional) — Result page (default 1); `property_type` (string, optional) — Commercial property type filter (e.g. office, retail, industrial, warehouse, land, hotel, leisure); `status` (string, optional) — Listing status (default buy)
+- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_price` (integer, optional) — Maximum price in whole GBP units, not pence; `max_size` (integer, optional) — Maximum floor area in square feet; `min_price` (integer, optional) — Minimum price in whole GBP units, not pence; `min_size` (integer, optional) — Minimum floor area in square feet; `page` (integer, optional) — Result page (default 1); `property_type` (string, optional) — Commercial property type filter. Accepts one or more comma-separated values.; `status` (string, optional) — Listing status (default buy)
 
 ### `rightmove_new_homes_search`
 
 - **HTTP:** `GET /rightmove/new-homes/search`
 - **What:** Search Rightmove new homes for sale. Search Rightmove's new-homes-for-sale listings for a location, with price, bedroom, bathroom, and property-type filters. Results are individual new-build homes and plots (with development flags), not development-level cards.
-- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_bathrooms` (number, optional) — Maximum bathrooms; `max_bedrooms` (integer, optional) — Maximum bedrooms; `max_price` (integer, optional) — Maximum price in whole GBP units, not pence; `min_bathrooms` (number, optional) — Minimum bathrooms; `min_bedrooms` (integer, optional) — Minimum bedrooms; `min_price` (integer, optional) — Minimum price in whole GBP units, not pence; `page` (integer, optional) — Result page (default 1); `property_type` (string, optional) — Property type filter (e.g. detached, flat, apartment, semi-detached, terrace, bungalow)
+- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_bathrooms` (number, optional) — Maximum bathrooms; `max_bedrooms` (integer, optional) — Maximum bedrooms; `max_price` (integer, optional) — Maximum price in whole GBP units, not pence; `min_bathrooms` (number, optional) — Minimum bathrooms; `min_bedrooms` (integer, optional) — Minimum bedrooms; `min_price` (integer, optional) — Minimum price in whole GBP units, not pence; `page` (integer, optional) — Result page (default 1); `property_type` (string, optional) — Property type filter. Accepts one or more comma-separated values.
 
 ### `rightmove_property`
 
@@ -180,7 +180,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /rightmove/search`
 - **What:** Search Rightmove properties. Search for properties on Rightmove with filters for location, price, bedrooms, etc.
-- **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_bathrooms` (number, optional) — Maximum bathrooms; `max_bedrooms` (integer, optional) — Maximum bedrooms; `max_price` (integer, optional) — Maximum price in whole GBP units, not pence; `min_bathrooms` (number, optional) — Minimum bathrooms; `min_bedrooms` (integer, optional) — Minimum bedrooms; `min_price` (integer, optional) — Minimum price in whole GBP units, not pence; `page` (integer, optional) — Result page (default 1); `property_type` (string, optional) — Property type filter; `status` (string, optional) — Listing status (default for_sale)
+- **Params:** `dont_show` (string, optional) — Exclude listings with these attributes. Accepts one or more comma-separated values.; `location` (string, **required**) — Rightmove location identifier from autocomplete; `max_bathrooms` (number, optional) — Maximum bathrooms; `max_bedrooms` (integer, optional) — Maximum bedrooms; `max_price` (integer, optional) — Maximum price in whole GBP units, not pence; `min_bathrooms` (number, optional) — Minimum bathrooms; `min_bedrooms` (integer, optional) — Minimum bedrooms; `min_price` (integer, optional) — Minimum price in whole GBP units, not pence; `must_have` (string, optional) — Require listings to have these attributes. Accepts one or more comma-separated values.; `page` (integer, optional) — Result page (default 1); `property_type` (string, optional) — Property type filter. Accepts one or more comma-separated values. private-halls (Student Halls) mainly returns results for status=to_let.; `radius` (number, optional) — Search radius in miles around location, default 0 (this area only); `sort` (string, optional) — Result sort order, default newest_listed; `status` (string, optional) — Listing status (default for_sale); `tenure_types` (string, optional) — Tenure filter. Accepts one or more comma-separated values.
 
 ### `rightmove_student_search`
 

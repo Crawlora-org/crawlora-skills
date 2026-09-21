@@ -6,9 +6,21 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**223 endpoints across 35 platform group(s).**
+**230 endpoints across 35 platform group(s).**
 
-## Amazon (3)
+## Amazon (5)
+
+### `amazon_charts`
+
+- **HTTP:** `GET /amazon/charts`
+- **What:** Amazon product charts. Returns one page of a ranked Amazon chart (Best Sellers, New Releases, or Most Wished For) for a department or department subcategory on `amazon.com`. Discover valid department/node values with amazon-charts-categories.
+- **Params:** `chart` (string, **required**) — Chart type; `department` (string, **required**) — Amazon department slug; `node` (string, optional) — Numeric browse node id; `page` (integer, optional) — 1-based page number
+
+### `amazon_charts_categories`
+
+- **HTTP:** `GET /amazon/charts/categories`
+- **What:** Amazon chart categories. Returns the department and subcategory values amazon-charts accepts for a given chart. Omit department to list a chart's top-level departments; pass a department (and optionally a node) to get that category's own name plus its immediate child categories.
+- **Params:** `chart` (string, **required**) — Chart type; `department` (string, optional) — Amazon department slug; `node` (string, optional) — Numeric browse node id (requires department)
 
 ### `amazon_product`
 
@@ -96,8 +108,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `shopify_collection_products`
 
 - **HTTP:** `GET /shopify/collections/{handle}/products`
-- **What:** List Shopify collection products. Returns normalized products from a public Shopify collection `/products.json` endpoint. `sortBy` and dynamic facet-filter query params (e.g. `fit`, `canonicalColour`) only take effect for headless storefronts served via the embedded-SSR-JSON fallback transport (`transport_mode: "ssr_embedded"`) and return an invalid-param error if supplied against a classic-transport store, since Shopify's classic public catalog JSON has no server-side sort or filter support.
-- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `sortBy` (string, optional) — SSR-fallback transport only (transport_mode ssr_embedded). Allowed values: sortLTH, sortHTL, newest. Omit for the storefront's default relevancy order. Rejected as an invalid param for classic-transport stores.; `url` (string, **required**) — Shopify storefront URL
+- **What:** List Shopify collection products. Returns normalized products from a public Shopify collection `/products.json` endpoint. `sortBy` and dynamic facet-filter query params (e.g. `fit`, `canonicalColour`) only take effect for headless storefronts served via the embedded-SSR-JSON fallback transport (`transport_mode: "ssr_embedded"`) and return an invalid-param error if supplied against a classic-transport store, since Shopify's classic public catalog JSON has no server-side sort or filter support. `sort_by`, `min_price`, `max_price`, `product_type`, `in_stock_only`, and `option_`-prefixed params (e.g. `option_size=Small,Medium`) drive a separate, independent mechanism -- Shopify's own native Storefront Filtering collection-page feature (`transport_mode: "storefront_filtered"`) -- which works for both classic- and SSR-fallback-transport stores; supplying any of these takes precedence over sortBy/dynamic facet filters.
+- **Params:** `handle` (string, **required**) — Collection handle; `in_stock_only` (boolean, optional) — Storefront-filtering transport. true restricts to currently in-stock items only.; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `max_price` (number, optional) — Storefront-filtering transport. Maximum price (inclusive), in the storefront's display currency's major unit.; `min_price` (number, optional) — Storefront-filtering transport. Minimum price (inclusive), in the storefront's display currency's major unit.; `option_size` (string, optional) — Storefront-filtering transport. Example dynamic variant-option filter: comma-separated exact display values for the storefront's own size option (e.g. option_size=Small,Medium). Any variant option name is accepted the same way (option_color, ...) -- see facets in an unfiltered response for the live option names/values per store.; `page` (integer, optional) — 1-based page, defaults to 1; `product_type` (string, optional) — Storefront-filtering transport, comma-separated. Exact product-type display strings from the storefront's own Product Type facet -- see facets.product_type in an unfiltered response for the live value set.; `sortBy` (string, optional) — SSR-fallback transport only (transport_mode ssr_embedded). Allowed values: sortLTH, sortHTL, newest. Omit for the storefront's default relevancy order. Rejected as an invalid param for classic-transport stores.; `sort_by` (string, optional) — Storefront-filtering transport. Allowed values: manual, best-selling, title-ascending, title-descending, price-ascending, price-descending, created-ascending, created-descending. Omit for the collection's own default order.; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_collections`
 
@@ -132,8 +144,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `shopify_products`
 
 - **HTTP:** `GET /shopify/products`
-- **What:** List Shopify products. Returns normalized products from a public Shopify `/products.json` endpoint. Valid empty result pages return `200` with an empty products array. `sortBy` and dynamic facet-filter query params (e.g. `fit`, `canonicalColour`) only take effect for headless storefronts served via the embedded-SSR-JSON fallback transport (`transport_mode: "ssr_embedded"`) and return an invalid-param error if supplied against a classic-transport store, since Shopify's classic public catalog JSON has no server-side sort or filter support.
-- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `sortBy` (string, optional) — SSR-fallback transport only (transport_mode ssr_embedded). Allowed values: sortLTH, sortHTL, newest. Omit for the storefront's default relevancy order. Rejected as an invalid param for classic-transport stores.; `url` (string, **required**) — Shopify storefront URL
+- **What:** List Shopify products. Returns normalized products from a public Shopify `/products.json` endpoint. Valid empty result pages return `200` with an empty products array. `sortBy` and dynamic facet-filter query params (e.g. `fit`, `canonicalColour`) only take effect for headless storefronts served via the embedded-SSR-JSON fallback transport (`transport_mode: "ssr_embedded"`) and return an invalid-param error if supplied against a classic-transport store, since Shopify's classic public catalog JSON has no server-side sort or filter support. `sort_by`, `min_price`, `max_price`, `product_type`, `in_stock_only`, and `option_`-prefixed params (e.g. `option_size=Small,Medium`) drive a separate, independent mechanism -- Shopify's own native Storefront Filtering collection-page feature (`transport_mode: "storefront_filtered"`) -- which works for both classic- and SSR-fallback-transport stores; supplying any of these takes precedence over sortBy/dynamic facet filters.
+- **Params:** `in_stock_only` (boolean, optional) — Storefront-filtering transport. true restricts to currently in-stock items only.; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `max_price` (number, optional) — Storefront-filtering transport. Maximum price (inclusive), in the storefront's display currency's major unit.; `min_price` (number, optional) — Storefront-filtering transport. Minimum price (inclusive), in the storefront's display currency's major unit.; `option_size` (string, optional) — Storefront-filtering transport. Example dynamic variant-option filter: comma-separated exact display values for the storefront's own size option (e.g. option_size=Small,Medium). Any variant option name is accepted the same way (option_color, ...) -- see facets in an unfiltered response for the live option names/values per store.; `page` (integer, optional) — 1-based page, defaults to 1; `product_type` (string, optional) — Storefront-filtering transport, comma-separated. Exact product-type display strings from the storefront's own Product Type facet -- see facets.product_type in an unfiltered response for the live value set.; `sortBy` (string, optional) — SSR-fallback transport only (transport_mode ssr_embedded). Allowed values: sortLTH, sortHTL, newest. Omit for the storefront's default relevancy order. Rejected as an invalid param for classic-transport stores.; `sort_by` (string, optional) — Storefront-filtering transport. Allowed values: manual, best-selling, title-ascending, title-descending, price-ascending, price-descending, created-ascending, created-descending. Omit for the collection's own default order.; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_search_suggest`
 
@@ -257,7 +269,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Suggest Shop.app searches. Returns Shop.app autocomplete suggestions. Limit defaults to 10 and supports up to 20.
 - **Params:** `limit` (integer, optional) — Maximum suggestions, defaults to 10 and supports up to 20; `query` (string, **required**) — Search query
 
-## Target (7)
+## Target (8)
 
 ### `target_categories`
 
@@ -301,6 +313,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Target products. Searches Target products and returns normalized products plus every filter group and option available for the current result set. Pass option ids back through filter_ids as a comma-separated list. A zero total with an empty products list is a valid no-results response. The sort enum accepts `relevance`, `featured`, `price-low`, `price-high`, `rating`, `bestselling`, and `newest`.
 - **Params:** `filter_ids` (string, optional) — Comma-separated Target filter option ids; `page` (integer, optional) — One-based page (1-50); `q` (string, **required**) — Product search query; `sort` (string, optional) — Result order; `store_id` (integer, optional) — Target store id used for pricing
 
+### `target_stores`
+
+- **HTTP:** `GET /target/stores`
+- **What:** Find Target stores near a location. Returns Target's physical stores near a ZIP code, a free-text "city, state", or a "latitude,longitude" pair, including each store's store_id, status, distance, phone, address, service list, time zone, and two weeks of daily opening hours. Use the returned store_id values with the store_id parameter on target-search, target-category-products, target-filter-options, and target-product.
+- **Params:** `limit` (integer, optional) — Maximum stores to return (1-20); `place` (string, **required**) — ZIP code, city/state, or latitude,longitude; `within` (integer, optional) — Search radius in miles (1-5000)
+
 ## Costco (6)
 
 ### `costco_categories`
@@ -339,12 +357,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Find nearby Costco warehouses. Returns Costco warehouses near a latitude/longitude, sorted by distance: name, address, and distance for each. Public data sourced from Costco's own warehouse locator backend.
 - **Params:** `latitude` (number, **required**) — Latitude; `longitude` (number, **required**) — Longitude
 
-## Zalando (5)
+## Zalando (6)
+
+### `zalando_categories`
+
+- **HTTP:** `GET /zalando/categories`
+- **What:** List a Zalando market's top-level category navigation. Returns a Zalando country storefront's live top-level category navigation, department by department, scraped directly from that department's own storefront nav tab bar. This is the discovery source for zalando-category's category parameter — category slugs are market-specific (each storefront uses its own local-language slug), so there is no fixed value space to hardcode; this endpoint asks the upstream live instead. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains. department optionally restricts the response to one of women, men, or kids; omitting it returns all three. Scope note: only the top-level nav tabs (e.g. Clothing, Shoes, Sports) are returned, not each tab's own hover-revealed mega-menu of sub-categories — that panel is not present in the page's initial HTML and cannot be reached without executing JavaScript, which this endpoint's transport does not do.
+- **Params:** `department` (string, optional) — Restrict to one Zalando shopping department. Omit to return all three.; `market` (string, **required**) — Zalando country storefront
 
 ### `zalando_category`
 
 - **HTTP:** `GET /zalando/category`
-- **What:** Browse a Zalando category or brand. Browses a Zalando category or brand listing by URL slug (e.g. shoes, womens-dresses, on-running) and returns the same normalized result cards as zalando-search, plus the category's upstream total_count. Category slugs are market-specific (each storefront uses its own local-language slug, e.g. "shoes" on de/gb, "chaussures" on fr, "scarpe" on it) — take them from that market's own site navigation or a product's url field. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains.
+- **What:** Browse a Zalando category or brand. Browses a Zalando category or brand listing by URL slug (e.g. shoes, womens-dresses, on-running) and returns the same normalized result cards as zalando-search, plus the category's upstream total_count. Category slugs are market-specific (each storefront uses its own local-language slug, e.g. "shoes" on de/gb, "chaussures" on fr, "scarpe" on it) — use zalando-categories to discover a market's live top-level slugs, or take one from a product's url field. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains.
 - **Params:** `category` (string, **required**) — Zalando category or brand URL slug, in the target market's own language; `market` (string, **required**) — Zalando country storefront
 
 ### `zalando_markets`
@@ -973,7 +997,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Home Depot search suggestions. Returns Home Depot's own search-box typeahead suggestions for a partial query, in the site's own ranking order. term is the partial search text, e.g. "drill". Each suggestion's term is directly usable as GET /homedepot/search's q parameter. A term that matches nothing returns an empty suggestion list rather than an error.
 - **Params:** `term` (string, **required**) — Partial search text, e.g. \
 
-## Sephora (7)
+## Sephora (9)
+
+### `sephora_brands`
+
+- **HTTP:** `GET /sephora/brands`
+- **What:** Sephora brand directory. Returns Sephora's full brand directory (373 brands at time of writing), sourced from the site's own A-Z brand list page. Each brand's `name` is the exact string GET /sephora/search and GET /sephora/category's repeatable `brand` filter parameter expect.
+- **Params:** _none_
+
+### `sephora_categories`
+
+- **HTTP:** `GET /sephora/categories`
+- **What:** Sephora storefront categories. Returns Sephora's own live storefront category navigation (department, group, name, and slug for each), sourced from the site's own "Shop" mega-nav. Each entry's slug is directly usable as GET /sephora/category's own `slug` query parameter.
+- **Params:** `department` (string, optional) — Filter to one storefront department
 
 ### `sephora_category`
 
@@ -1029,7 +1065,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /shein/category/goods`
 - **What:** SHEIN category product listing. Returns SHEIN's product listing for a category, with the same normalized product-card fields as product search.
-- **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page; `sort` (string, optional) — SHEIN sort code
+- **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page; `sort` (string, optional) — SHEIN sort code: a non-negative integer. `0` is the default (recommended). Other codes are accepted and forwarded as-is; the full code-to-meaning mapping has not been live-verified yet (see the endpoint markdown), so callers relying on a specific ordering should confirm behavior empirically.
 
 ### `shein_category_nav`
 
@@ -1053,7 +1089,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `POST /shein/products/search`
 - **What:** SHEIN product search. Returns SHEIN's product search results for a free-text keyword, with normalized name/price/rating/image fields per card.
-- **Params:** `keyword` (string, **required**) — Free-text search query; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page; `sort` (string, optional) — SHEIN sort code
+- **Params:** `keyword` (string, **required**) — Free-text search query; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page; `sort` (string, optional) — SHEIN sort code: a non-negative integer. `0` is the default (recommended). Other codes are accepted and forwarded as-is; the full code-to-meaning mapping has not been live-verified yet (see the endpoint markdown), so callers relying on a specific ordering should confirm behavior empirically.
 
 ### `shein_search_autocomplete`
 
@@ -1075,7 +1111,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Find nearby Walgreens stores. Returns Walgreens stores near a latitude/longitude or a zip code, nearest first: name, address, phone, hours, and in-store services (pharmacy, clinic, photo, and more) for each. Public data sourced from Walgreens' own store locator.
 - **Params:** `latitude` (number, optional) — Latitude; provide with longitude, or provide zip instead; `longitude` (number, optional) — Longitude; provide with latitude, or provide zip instead; `zip` (string, optional) — US ZIP code; used when latitude/longitude are omitted
 
-## IKEA (8)
+## IKEA (9)
 
 ### `ikea_availability`
 
@@ -1083,10 +1119,16 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get an IKEA item's real-time stock availability. Returns one IKEA item's real-time home-delivery and click-and-collect stock signal for the requested country. item_no is IKEA's own item number.
 - **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `item_no` (string, **required**) — IKEA item number
 
+### `ikea_categories`
+
+- **HTTP:** `GET /ikea/categories`
+- **What:** Discover IKEA category keys. Returns a page of IKEA's full category taxonomy, sourced from IKEA's own site navigation data: every top-level department and nested subcategory, with the key each one uses as ikea_category's own category input. key is IKEA's own category key (numeric, e.g. 20649, or a short alphanumeric department code, e.g. st001). parent_key is the immediate parent category's own key (empty for a top-level department); level is depth in the taxonomy tree, starting at 1. q optionally filters by a case-insensitive substring of name.
+- **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Result count per page (1-1000); `q` (string, optional) — Case-insensitive substring filter on category name
+
 ### `ikea_category`
 
 - **HTTP:** `GET /ikea/category`
-- **What:** Browse an IKEA category. Returns one page of an IKEA category's product listing, with real offset/size pagination and sort. category is IKEA's own category key (e.g. 20649), taken from a category URL's trailing -{key}/ segment or a product's own category_path field.
+- **What:** Browse an IKEA category. Returns one page of an IKEA category's product listing, with real offset/size pagination and sort. category is IKEA's own category key (e.g. 20649), taken from a category URL's trailing -{key}/ segment, a product's own category_path field, or GET /ikea/categories, which discovers every valid category value.
 - **Params:** `category` (string, **required**) — IKEA category key; `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code; `offset` (integer, optional) — Zero-based result offset; `size` (integer, optional) — Result count (1-100); `sort` (string, optional) — Result order
 
 ### `ikea_product`
