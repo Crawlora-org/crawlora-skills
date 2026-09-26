@@ -1,6 +1,7 @@
 ---
 name: luxury-resale-research
 description: Research luxury-fashion and watch resale listings, sold evidence, condition, and seller signals across specialist marketplaces. Use for sourcing or evidence comparison, not buying or appraisal.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Luxury resale research
@@ -11,6 +12,17 @@ asks, sold comparables where the source exposes them, listing-level condition,
 or seller/dealer context across luxury resale sources. It complements the broad
 `resale-secondhand-research` skill; use this one when specialist luxury sources
 or a disciplined evidence comparison matters.
+
+## Tool scope and data flow
+
+The optional shell helper is the only command this skill asks to run. It makes
+GET requests only to the documented, allowlisted Crawlora routes. When invoked,
+it reads `CRAWLORA_API_KEY` and sends it as an `x-api-key` header over HTTPS to
+`api.crawlora.net`; it does not send the key to marketplace sites. It briefly
+writes a mode-600 curl config under `TMPDIR` and removes it when the command
+exits. It does not inspect other environment variables, enumerate files, install
+software, or run with elevated privileges. Run it only when you want to make a
+Crawlora API request; successful requests can consume credits.
 
 Do not place orders, make offers, authenticate an item, estimate an appraisal,
 claim a purchase total, or imply that a platform's condition label proves

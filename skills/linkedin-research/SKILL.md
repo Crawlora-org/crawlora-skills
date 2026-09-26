@@ -1,6 +1,7 @@
 ---
 name: linkedin-research
 description: Looks up LinkedIn company, product, and showcase pages by ID via the Crawlora API, returning clean JSON. Use when the user wants a company's LinkedIn profile info, a product page, or a showcase page — instead of scraping LinkedIn directly. Covers company/product/showcase pages only, not personal LinkedIn profiles.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # LinkedIn company research
@@ -8,6 +9,17 @@ description: Looks up LinkedIn company, product, and showcase pages by ID via th
 Look up LinkedIn company, product, and showcase page info by ID — all as
 normalized JSON from the Crawlora API, no browser automation or LinkedIn
 login required.
+
+## Tool scope and data flow
+
+The optional shell helper is the only command this skill asks to run. It makes
+GET requests only to the three documented, allowlisted Crawlora routes. When
+invoked, it reads `CRAWLORA_API_KEY` and sends it as an `x-api-key` header over
+HTTPS to `api.crawlora.net`; it does not send the key to LinkedIn. It briefly
+writes a mode-600 curl config under `TMPDIR` and removes it when the command
+exits. It does not inspect other environment variables, enumerate files, install
+software, or run with elevated privileges. Run it only when you want to make a
+Crawlora API request; successful requests can consume credits.
 
 ## When to use this skill
 
@@ -40,13 +52,13 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 
 ```sh
 # Company info:
-scripts/crawlora.sh /linkedin/company/1035 | jq '.'
+scripts/crawlora.sh /linkedin/company/1035
 
 # Product info:
-scripts/crawlora.sh /linkedin/product/urn:li:organizationProduct:123456 | jq '.'
+scripts/crawlora.sh /linkedin/product/urn:li:organizationProduct:123456
 
 # Showcase page info:
-scripts/crawlora.sh /linkedin/showcase/1234567 | jq '.'
+scripts/crawlora.sh /linkedin/showcase/1234567
 ```
 
 Use `scripts/crawlora.sh` for all requests; it keeps the API key out of command-line arguments.
