@@ -32,7 +32,7 @@ pending=0
 
 if [[ "$mode" == all || "$mode" == skills-sh ]]; then
   echo "skills.sh: install the public repository in disposable scratch space"
-    if ! npx --yes --package=skills@latest skills add "$REPO_URL" --all --copy --agent codex -y; then
+    if ! npx --yes --package=skills@latest skills add "$REPO_URL" --skill '*' --copy --agent codex -y; then
     echo "skills.sh install failed; directory indexing is not verified." >&2
     failed=1
   fi
