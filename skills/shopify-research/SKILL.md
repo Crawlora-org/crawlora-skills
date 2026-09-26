@@ -1,6 +1,7 @@
 ---
 name: shopify-research
 description: Researches independent Shopify-powered storefronts — products, collections, pages, sitemaps, search suggestions, and product recommendations — using the Crawlora API, returning clean JSON for any store by domain, plus 14 pre-wired DTC brand storefronts (Allbirds, Brooklinen, Cole Haan, Everlane, Fashion Nova, Gymshark, J.Crew, Kylie Cosmetics, Oh Polly, Quince, Rothy's, SKIMS, Steve Madden, The Body Shop). Use when the user asks to audit a Shopify store's catalog, crawl its sitemap, look up a product or collection, or pull search/recommendation data — instead of scraping the store's pages directly.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Shopify store research
@@ -13,6 +14,18 @@ against any Shopify store by domain (not Shop.app; see the separate
 pre-wired, no-`url`-needed endpoints: Allbirds, Brooklinen, Cole Haan,
 Everlane, Fashion Nova, Gymshark, J.Crew, Kylie Cosmetics, Oh Polly, Quince,
 Rothy's, SKIMS, Steve Madden, and The Body Shop.
+
+## Tool scope and data flow
+
+The optional shell helper is the only command this skill asks to run. It makes
+GET requests only to the documented, allowlisted Crawlora routes. When invoked,
+it reads `CRAWLORA_API_KEY` and sends it as an `x-api-key` header over HTTPS to
+`api.crawlora.net`; it does not send the key to the Shopify storefront. It
+briefly writes a mode-600 curl config under `TMPDIR` and removes it when the
+command exits. It does not inspect other environment variables, enumerate files,
+install software, or run with elevated privileges. Storefront URLs are passed as
+ordinary query values; the helper's destination host is fixed. Run it only when
+you want to make a Crawlora API request; successful requests can consume credits.
 
 ## When to use this skill
 
@@ -66,14 +79,14 @@ Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/en
 
 ```sh
 # Resolve store metadata:
-scripts/crawlora.sh /shopify/store url="https://example.myshopify.com" | jq '.'
+scripts/crawlora.sh /shopify/store url="https://example.myshopify.com"
 
 # List products / collections (paginated):
-scripts/crawlora.sh /shopify/products url="https://example.myshopify.com" limit=100 page=1 | jq '.'
-scripts/crawlora.sh /shopify/collections url="https://example.myshopify.com" | jq '.'
+scripts/crawlora.sh /shopify/products url="https://example.myshopify.com" limit=100 page=1
+scripts/crawlora.sh /shopify/collections url="https://example.myshopify.com"
 
 # Crawl the sitemap for every product URL:
-scripts/crawlora.sh /shopify/sitemap/urls url="https://example.myshopify.com" type=products limit=250 | jq '.'
+scripts/crawlora.sh /shopify/sitemap/urls url="https://example.myshopify.com" type=products limit=250
 ```
 
 Use `scripts/crawlora.sh` for all requests; it keeps the API key out of command-line arguments.

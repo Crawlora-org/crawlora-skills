@@ -155,3 +155,21 @@ test("ClawHub sync invokes the intended CLI and fails closed on old Node", () =>
   assert.match(sync, /CLAWHUB=\(npx --yes --package=clawhub@latest clawhub\)/);
   assert.doesNotMatch(sync, /npx -y clawhub@latest skill publish/);
 });
+
+test("flagged marketplace skills declare their helper scope and explain data flow", () => {
+  for (const name of ["luxury-resale-research", "shopify-research", "linkedin-research"]) {
+    const skill = readFileSync(join(SKILLS_DIR, name, "SKILL.md"), "utf8");
+    const normalized = skill.replace(/\s+/g, " ");
+    const frontmatter = skill.match(/^---\n([\s\S]*?)\n---/);
+    assert.ok(frontmatter, `${name}: frontmatter exists`);
+    assert.match(
+      frontmatter[1],
+      /^allowed-tools: Bash\(scripts\/crawlora\.sh:\*\)$/m,
+      `${name}: declares the constrained helper command`,
+    );
+    assert.doesNotMatch(frontmatter[1], /Bash\(\*\)/, `${name}: no unrestricted shell grant`);
+    assert.match(normalized, /reads `CRAWLORA_API_KEY` and sends it as an `x-api-key` header over HTTPS to `api\.crawlora\.net`/);
+    assert.match(normalized, /mode-600 curl config under `TMPDIR` and removes it when the command exits/);
+    assert.match(normalized, /does not inspect other environment variables, enumerate files, install software, or run with elevated privileges/);
+  }
+});
