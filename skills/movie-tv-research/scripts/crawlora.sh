@@ -131,8 +131,11 @@ case "$path" in
   /letterboxd/popular) route_allowed=true ;;
   /letterboxd/search) route_allowed=true ;;
   /metacritic/browse) route_allowed=true ;;
+  /rottentomatoes/browse/filters) route_allowed=true ;;
   /rottentomatoes/browse/movies) route_allowed=true ;;
   /rottentomatoes/browse/tv) route_allowed=true ;;
+  /rottentomatoes/critics/authors) route_allowed=true ;;
+  /rottentomatoes/editorial/search) route_allowed=true ;;
   /rottentomatoes/episode) route_allowed=true ;;
   /rottentomatoes/movie) route_allowed=true ;;
   /rottentomatoes/movie/reviews) route_allowed=true ;;
@@ -140,6 +143,8 @@ case "$path" in
   /rottentomatoes/search) route_allowed=true ;;
   /rottentomatoes/season) route_allowed=true ;;
   /rottentomatoes/series) route_allowed=true ;;
+  /rottentomatoes/sitemap/urls) route_allowed=true ;;
+  /rottentomatoes/sitemaps) route_allowed=true ;;
   /tmdb/genres) route_allowed=true ;;
   /tmdb/movie/list) route_allowed=true ;;
   /tmdb/person/list) route_allowed=true ;;

@@ -1812,8 +1812,11 @@ case "$path" in
   /rothys/sitemap/urls) route_allowed=true ;;
   /rothys/sitemaps) route_allowed=true ;;
   /rothys/store) route_allowed=true ;;
+  /rottentomatoes/browse/filters) route_allowed=true ;;
   /rottentomatoes/browse/movies) route_allowed=true ;;
   /rottentomatoes/browse/tv) route_allowed=true ;;
+  /rottentomatoes/critics/authors) route_allowed=true ;;
+  /rottentomatoes/editorial/search) route_allowed=true ;;
   /rottentomatoes/episode) route_allowed=true ;;
   /rottentomatoes/movie) route_allowed=true ;;
   /rottentomatoes/movie/reviews) route_allowed=true ;;
@@ -1821,6 +1824,8 @@ case "$path" in
   /rottentomatoes/search) route_allowed=true ;;
   /rottentomatoes/season) route_allowed=true ;;
   /rottentomatoes/series) route_allowed=true ;;
+  /rottentomatoes/sitemap/urls) route_allowed=true ;;
+  /rottentomatoes/sitemaps) route_allowed=true ;;
   /rover/search) route_allowed=true ;;
   /rover/trainer-search) route_allowed=true ;;
   /rte/article) route_allowed=true ;;
@@ -5060,8 +5065,11 @@ route_method_regexes=(
   '^GET:/rothys/sitemap/urls$'
   '^GET:/rothys/sitemaps$'
   '^GET:/rothys/store$'
+  '^GET:/rottentomatoes/browse/filters$'
   '^GET:/rottentomatoes/browse/movies$'
   '^GET:/rottentomatoes/browse/tv$'
+  '^GET:/rottentomatoes/critics/authors$'
+  '^GET:/rottentomatoes/editorial/search$'
   '^GET:/rottentomatoes/episode$'
   '^GET:/rottentomatoes/movie$'
   '^GET:/rottentomatoes/movie/reviews$'
@@ -5069,6 +5077,8 @@ route_method_regexes=(
   '^GET:/rottentomatoes/search$'
   '^GET:/rottentomatoes/season$'
   '^GET:/rottentomatoes/series$'
+  '^GET:/rottentomatoes/sitemap/urls$'
+  '^GET:/rottentomatoes/sitemaps$'
   '^GET:/rover/search$'
   '^GET:/rover/sitter/[^/]+$'
   '^GET:/rover/trainer-search$'

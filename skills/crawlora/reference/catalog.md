@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**2950 endpoints across 415 platform group(s).**
+**2955 endpoints across 415 platform group(s).**
 
 ## 1stDibs (4)
 
@@ -12901,19 +12901,37 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Rothy's store metadata. Returns normalized storefront metadata for Rothy's (https://www.rothys.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
 - **Params:** _none_
 
-## Rotten Tomatoes (9)
+## Rotten Tomatoes (14)
+
+### `rottentomatoes_browse_filters`
+
+- **HTTP:** `GET /rottentomatoes/browse/filters`
+- **What:** Rotten Tomatoes browse filter discovery. Returns every filter and accepted value exposed by the selected live Rotten Tomatoes browse page. Call this before building filtered movie or TV browse requests; values differ by list and update with the site's menus.
+- **Params:** `list` (string, optional) — Browse list: movies_in_theaters, movies_at_home, movies_coming_soon, tv_series_browse
 
 ### `rottentomatoes_browse_movies`
 
 - **HTTP:** `GET /rottentomatoes/browse/movies`
-- **What:** Rotten Tomatoes movie discovery rows. Returns normalized movie rows from Rotten Tomatoes public browse pages using credential-free JSON-LD ItemList data. Supported `list` values are `movies_in_theaters`, `movies_at_home`, and `movies_coming_soon`. Supported `sort` values are `popular`, `newest`, and `top_box_office`; `top_box_office` is only valid with `movies_in_theaters`.
-- **Params:** `limit` (integer, optional) — Rows to return, default 10, max 20; `list` (string, optional) — Movie browse list: movies_in_theaters, movies_at_home, movies_coming_soon; `sort` (string, optional) — Sort: popular, newest, top_box_office
+- **What:** Rotten Tomatoes movie discovery rows. Returns normalized movie rows from Rotten Tomatoes' public browse JSON route. Use `/rottentomatoes/browse/filters` to discover current values for each list. Filters accept comma-separated values; pagination uses the opaque `after` cursor from the previous response.
+- **Params:** `affiliates` (string, optional) — Comma-separated streaming/service values from browse/filters; `after` (string, optional) — Opaque next-page cursor returned in data.page_info.end_cursor; `audience` (string, optional) — Comma-separated Popcornmeter values from browse/filters; `critics` (string, optional) — Comma-separated Tomatometer values from browse/filters; `genres` (string, optional) — Comma-separated genre values from browse/filters; `limit` (integer, optional) — Rows to return, default 10, max 30; `list` (string, optional) — Movie browse list: movies_in_theaters, movies_at_home, movies_coming_soon; `ratings` (string, optional) — Comma-separated content ratings from browse/filters; `sort` (string, optional) — Sort value from the selected list's browse/filters response
 
 ### `rottentomatoes_browse_tv`
 
 - **HTTP:** `GET /rottentomatoes/browse/tv`
-- **What:** Rotten Tomatoes TV discovery rows. Returns normalized TV series rows from Rotten Tomatoes public browse pages using credential-free JSON-LD ItemList data. Supported `list` value is `tv_series_browse`. Supported `sort` values are `popular` and `newest`.
-- **Params:** `limit` (integer, optional) — Rows to return, default 10, max 20; `list` (string, optional) — TV browse list: tv_series_browse; `sort` (string, optional) — Sort: popular, newest
+- **What:** Rotten Tomatoes TV discovery rows. Returns normalized TV series rows from Rotten Tomatoes' public browse JSON route. Use `/rottentomatoes/browse/filters?list=tv_series_browse` to discover current filters; pagination uses the opaque `after` cursor from the previous response.
+- **Params:** `affiliates` (string, optional) — Comma-separated streaming/service values from browse/filters; `after` (string, optional) — Opaque next-page cursor returned in data.page_info.end_cursor; `audience` (string, optional) — Comma-separated Popcornmeter values from browse/filters; `critics` (string, optional) — Comma-separated Tomatometer values from browse/filters; `genres` (string, optional) — Comma-separated genre values from browse/filters; `limit` (integer, optional) — Rows to return, default 10, max 30; `list` (string, optional) — TV browse list: tv_series_browse; `ratings` (string, optional) — Comma-separated content ratings from browse/filters; `sort` (string, optional) — Sort value from browse/filters
+
+### `rottentomatoes_critics_authors`
+
+- **HTTP:** `GET /rottentomatoes/critics/authors`
+- **What:** Rotten Tomatoes critic directory. Returns current or inactive critics from Rotten Tomatoes' public author directory. Browse one letter or search by name; use `next_cursor` as `after` or `previous_cursor` as `before`, as indicated by the corresponding page flag. The letter values come from the live directory controls.
+- **Params:** `after` (string, optional) — Opaque cursor from data.next_cursor; `before` (string, optional) — Opaque cursor from data.previous_cursor; cannot be combined with after; `inactive` (boolean, optional) — Include the site's inactive critics list; `letter` (string, optional) — Directory letter. Omit when using search; default a.; `limit` (integer, optional) — Rows per page, default 100, range 1 to 100; `search` (string, optional) — Search critics by name; cannot be combined with letter
+
+### `rottentomatoes_editorial_search`
+
+- **HTTP:** `GET /rottentomatoes/editorial/search`
+- **What:** Rotten Tomatoes editorial search. Searches public Rotten Tomatoes editorial content, including articles and guides. Results come from its anonymous WordPress REST search endpoint and include content subtype plus total-page metadata.
+- **Params:** `limit` (integer, optional) — Rows per page, default 10, range 1 to 100; `page` (integer, optional) — One-based result page from 1 to 10000; default 1; `query` (string, **required**) — Editorial search text; maximum 200 bytes
 
 ### `rottentomatoes_episode`
 
@@ -12956,6 +12974,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /rottentomatoes/series`
 - **What:** Rotten Tomatoes series detail. Returns normalized Rotten Tomatoes TV series metadata and scorecard data from a credential-free public series page. Pass exactly one of `path` or `url`.
 - **Params:** `path` (string, optional) — Rotten Tomatoes series path; `url` (string, optional) — Absolute https://www.rottentomatoes.com series URL
+
+### `rottentomatoes_sitemap_urls`
+
+- **HTTP:** `GET /rottentomatoes/sitemap/urls`
+- **What:** Rotten Tomatoes sitemap URL page. Returns a page of URLs from one child sitemap. Discover valid `name` values with `rottentomatoes-sitemaps`; use offset/limit to page through the complete sitemap.
+- **Params:** `limit` (integer, optional) — URLs to return, default 100, max 500; `name` (string, **required**) — Sitemap name returned by /rottentomatoes/sitemaps; `offset` (integer, optional) — Zero-based offset, default 0
+
+### `rottentomatoes_sitemaps`
+
+- **HTTP:** `GET /rottentomatoes/sitemaps`
+- **What:** Rotten Tomatoes sitemap discovery. Returns the live sitemap index and every named child sitemap, including movie, TV series, season, episode, person, critic, publication, browse-list, and static route inventories.
+- **Params:** _none_
 
 ## Rover (4)
 
