@@ -155,6 +155,8 @@ test("ClawHub sync invokes the intended CLI and fails closed on old Node", () =>
   assert.match(sync, /CLAWHUB=\(npx --yes --package=clawhub@latest clawhub\)/);
   assert.doesNotMatch(sync, /npx -y clawhub@latest skill publish/);
   assert.match(sync, /npx --yes --package=skills@latest skills add/);
+  assert.match(sync, /--skill '\*' --copy --agent codex -y/);
+  assert.doesNotMatch(sync, /skills add .*--all/);
   assert.doesNotMatch(sync, /npx -y skills add/);
 });
 
