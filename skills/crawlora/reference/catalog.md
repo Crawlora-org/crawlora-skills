@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**2949 endpoints across 415 platform group(s).**
+**2950 endpoints across 415 platform group(s).**
 
 ## 1stDibs (4)
 
@@ -5792,7 +5792,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gdelt_tv_timeline`
 
 - **HTTP:** `GET /gdelt/tv-timeline`
-- **What:** Airtime volume over time for US television news coverage. Return how much airtime a query's matching US television.
+- **What:** Airtime volume over time for US television news coverage. Returns the amount of US television news airtime matching the supplied query over time, using GDELT Television 2.0 AI timeline-volume data. A station is required. Supports the same caption, transcript, concept, and visual match operators as gdelt-tv-search; coverage and processing-delay caveats are documented there.
 - **Params:** `caption` (array, optional) — Search human-provided closed captioning (GDELT's cap: operator). Repeatable; multiple values are OR'd together.; `concept` (array, optional) — Search Google Knowledge Graph concepts extracted from captioning, by MID code (GDELT's capnlp: operator). Repeatable; multiple values are OR'd together.; `exclude_caption` (array, optional) — Exclude clips whose closed captioning matches this value (GDELT's -cap: operator). Repeatable; every value must be absent.; `exclude_concept` (array, optional) — Exclude clips whose extracted concepts match this MID code (GDELT's -capnlp: operator). Repeatable; every value must be absent.; `exclude_onscreen_text` (array, optional) — Exclude clips whose OCR'd onscreen text matches this value (GDELT's -ocr: operator). Repeatable; every value must be absent.; `exclude_transcript` (array, optional) — Exclude clips whose speech-to-text transcript matches this value (GDELT's -asr: operator). Repeatable; every value must be absent.; `exclude_visual` (array, optional) — Exclude clips whose visual labels match this value (GDELT's -visual: operator). Repeatable; every value must be absent.; `from` (string, optional) — Start of an absolute time window. Accepts YYYY-MM-DD, RFC3339, or GDELT's raw YYYYMMDDHHMMSS. Cannot be combined with timespan.; `onscreen_text` (array, optional) — Search OCR'd onscreen text/chyrons (GDELT's ocr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `show` (string, optional) — Limit to an exact show name.; `station` (string, **required**) — Station to search.; `timespan` (string, optional) — Relative time window ending now, e.g. 1h, 7d, 3m, 1y. Cannot be combined with from/to. Omit both for GDELT's full archive (auto-resolution, back to July 6, 2010).; `to` (string, optional) — End of an absolute time window. Same formats as from.; `transcript` (array, optional) — Search machine-generated speech-to-text transcripts (GDELT's asr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `visual` (array, optional) — Search visual object/activity labels from computer vision (GDELT's visual: operator). Repeatable; multiple values are OR'd together.
 
 ### `gdelt_tv_visual_entities`
@@ -6238,7 +6238,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_finance_context`
 
 - **HTTP:** `GET /google/finance/context`
-- **What:** Google Finance context search. Returns normalized Google Finance context search results.
+- **What:** Find Google Finance instruments by query. Searches Google Finance for instruments matching a company name or ticker query and returns normalized results with ticker, exchange, name, price, currency, and change data. Use a returned ticker with quote, company, chart, or news endpoints.
 - **Params:** `q` (string, **required**) — Search query
 
 ### `google_finance_financials`
@@ -8825,7 +8825,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Liverpool Echo sections. Returns the public Liverpool Echo editorial section inventory used by liverpoolecho-headlines.
 - **Params:** _none_
 
-## LiveScore (13)
+## LiveScore (14)
 
 ### `livescore_competition`
 
@@ -8872,7 +8872,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `livescore_news_feed`
 
 - **HTTP:** `GET /livescore/news-feed`
-- **What:** LiveScore global RSS news feed. Returns latest public news item metadata from LiveScore's global RSS feed. The source feed may include multiple sports and has no verified category filter.
+- **What:** LiveScore global RSS news feed. Returns latest public news items from LiveScore's global RSS feed. The source feed may include multiple sports and has no verified category filter. Set include_content=true to include each RSS item's full content:encoded body.
+- **Params:** `include_content` (boolean, optional) — Include full RSS article content when available
+
+### `livescore_news_publishers`
+
+- **HTTP:** `GET /livescore/news-publishers`
+- **What:** LiveScore news publisher directory. Returns the current public publisher directory linked from LiveScore News, including publisher names, logos, websites, contact links, and telephone numbers.
 - **Params:** _none_
 
 ### `livescore_player`

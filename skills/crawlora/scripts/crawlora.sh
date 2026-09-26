@@ -1298,6 +1298,7 @@ case "$path" in
   /livescore/news-article) route_allowed=true ;;
   /livescore/news-categories) route_allowed=true ;;
   /livescore/news-feed) route_allowed=true ;;
+  /livescore/news-publishers) route_allowed=true ;;
   /livescore/player) route_allowed=true ;;
   /livescore/scores) route_allowed=true ;;
   /livescore/scores-toc) route_allowed=true ;;
@@ -4431,6 +4432,7 @@ route_method_regexes=(
   '^GET:/livescore/news-article$'
   '^GET:/livescore/news-categories$'
   '^GET:/livescore/news-feed$'
+  '^GET:/livescore/news-publishers$'
   '^GET:/livescore/player$'
   '^GET:/livescore/scores$'
   '^GET:/livescore/scores-toc$'
