@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**45 endpoints across 8 platform group(s).**
+**46 endpoints across 8 platform group(s).**
 
 ## Yahoo Autos (3)
 
@@ -82,7 +82,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Yahoo Life homepage story stream. Returns Yahoo Life's homepage editorial story feed: title, destination URL, and thumbnail image for each story. Sourced from Yahoo Life's own server-rendered homepage.
 - **Params:** _none_
 
-## Yahoo News (6)
+## Yahoo News (7)
 
 ### `yahoo_news_article`
 
@@ -113,6 +113,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /yahoo-news/home`
 - **What:** Yahoo News homepage story stream. Returns Yahoo News's homepage "need to know" story stream: title, destination URL, summary, source, publish time, comment count, and thumbnail images for each story. Sourced from Yahoo News's own server-rendered homepage.
 - **Params:** _none_
+
+### `yahoo_news_related`
+
+- **HTTP:** `GET /yahoo-news/related`
+- **What:** Yahoo News related articles. Returns a page of articles Yahoo recommends alongside a given article -- the "you may also like" strip at the bottom of an article page -- with cursor-based pagination. Sourced from Yahoo's own recommendation gateway.
+- **Params:** `content_id` (string, **required**) — Article id (the id field returned by home/category/article); `count` (integer, optional) — Number of related articles to return, default 10, clamped to 1..50; `cursor` (string, optional) — Pagination cursor from a previous response's next_cursor
 
 ### `yahoo_news_suggest`
 

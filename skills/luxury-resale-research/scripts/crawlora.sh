@@ -127,6 +127,7 @@ case "$path" in
   /gucci/size-guide) route_allowed=true ;;
   /gucci/store) route_allowed=true ;;
   /gucci/stores) route_allowed=true ;;
+  /gucci/stores/search) route_allowed=true ;;
   /gucci/suggest) route_allowed=true ;;
   /hermes/categories) route_allowed=true ;;
   /hermes/category) route_allowed=true ;;

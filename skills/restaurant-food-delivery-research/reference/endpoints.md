@@ -826,12 +826,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /kfc/promotion`
 - **What:** Look up one KFC promotion by its redemption code or serialized code. Returns one promotion by its redemption code (the code a customer types in at checkout) or its serialized code (a unique per-print QR/serial code, e.g. from a printed coupon, that resolves to a shared redemption code and its promotion). Exactly one of code or serialized_code is required. A serialized-code lookup additionally returns that code's own usage metadata (redemption_code, times_used, code_status, group_status, effective_date, expiration_date) alongside the promotion. An unknown or expired code returns a 404 rather than a null success payload.
-- **Params:** `code` (string, optional) — The redemption code as a customer would type it in at checkout. Exactly one of code or serialized_code is required; `serialized_code` (string, optional) — A unique per-print serialized/QR code that resolves to a shared redemption code. Exactly one of code or serialized_code is required
+- **Params:** `code` (string, optional) — The redemption code as a customer would type it in at checkout. Use a value returned by kfc-promotions when available. Exactly one of code or serialized_code is required; `serialized_code` (string, optional) — A unique per-print serialized/QR code that resolves to a shared redemption code. Exactly one of code or serialized_code is required
 
 ### `kfc_promotions`
 
 - **HTTP:** `GET /kfc/promotions`
-- **What:** Get one KFC restaurant's current public promotions. Returns one restaurant's current public promotions -- current deals and offers KFC's storefront marks as public, with each promotion's id, internal and display name, description, and whether it applies automatically or requires a redemption code. A store with no active public promotions returns an empty list rather than an error.
+- **What:** Get one KFC restaurant's current public promotions. Returns one restaurant's current public promotions -- current deals and offers KFC's storefront marks as public, with each promotion's id, internal and display name, description, whether it applies automatically, and active redemption codes when KFC exposes them. The returned codes can be passed to kfc-promotion. A store with no active public promotions returns an empty list rather than an error.
 - **Params:** `store_number` (string, **required**) — KFC's alphanumeric store number, from /kfc/stores or /kfc/nearby
 
 ### `kfc_store`

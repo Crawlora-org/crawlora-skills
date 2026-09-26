@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**28 endpoints across 5 platform group(s).**
+**32 endpoints across 5 platform group(s).**
 
 ## GDELT (12)
 
@@ -82,13 +82,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Word cloud for US television news coverage. Return a frequency-ranked word/label cloud for one match.
 - **Params:** `caption` (array, optional) — Search human-provided closed captioning (GDELT's cap: operator). Repeatable; multiple values are OR'd together.; `channel` (string, **required**) — Required. Which match channel to build a word cloud from.; `concept` (array, optional) — Search Google Knowledge Graph concepts extracted from captioning, by MID code (GDELT's capnlp: operator). Repeatable; multiple values are OR'd together.; `day_of_week` (string, optional) — Limit to a day of week, 0 (Sunday) through 7 (Saturday), PST.; `exclude_caption` (array, optional) — Exclude clips whose closed captioning matches this value (GDELT's -cap: operator). Repeatable; every value must be absent.; `exclude_concept` (array, optional) — Exclude clips whose extracted concepts match this MID code (GDELT's -capnlp: operator). Repeatable; every value must be absent.; `exclude_onscreen_text` (array, optional) — Exclude clips whose OCR'd onscreen text matches this value (GDELT's -ocr: operator). Repeatable; every value must be absent.; `exclude_transcript` (array, optional) — Exclude clips whose speech-to-text transcript matches this value (GDELT's -asr: operator). Repeatable; every value must be absent.; `exclude_visual` (array, optional) — Exclude clips whose visual labels match this value (GDELT's -visual: operator). Repeatable; every value must be absent.; `from` (string, optional) — Start of an absolute time window. Accepts YYYY-MM-DD, RFC3339, or GDELT's raw YYYYMMDDHHMMSS. Cannot be combined with timespan.; `onscreen_text` (array, optional) — Search OCR'd onscreen text/chyrons (GDELT's ocr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `show` (string, optional) — Limit to an exact show name.; `station` (string, **required**) — Required. Station to search.; `timespan` (string, optional) — Relative time window ending now, e.g. 1h, 7d, 3m, 1y. Cannot be combined with from/to. GDELT's TV archive starts July 6, 2010.; `to` (string, optional) — End of an absolute time window. Same formats as from.; `transcript` (array, optional) — Search machine-generated speech-to-text transcripts (GDELT's asr: operator). Repeatable; multiple values are OR'd together. Short phrases only (GDELT caps each at 5 words).; `visual` (array, optional) — Search visual object/activity labels from computer vision (GDELT's visual: operator). Repeatable; multiple values are OR'd together.
 
-## BBC (4)
+## BBC (5)
 
 ### `bbc_article`
 
 - **HTTP:** `GET /bbc/article`
 - **What:** Get BBC News article content. Returns a BBC News article's public metadata and body paragraphs from a canonical article URL. Live pages are not supported.
 - **Params:** `url` (string, **required**) — Canonical BBC News article URL
+
+### `bbc_author`
+
+- **HTTP:** `GET /bbc/author`
+- **What:** Get a BBC News correspondent's profile. Returns a BBC News correspondent's public profile: name, short bio, and their recent articles.
+- **Params:** `url` (string, **required**) — Canonical BBC News correspondent URL
 
 ### `bbc_headlines`
 
@@ -108,13 +114,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search public BBC pages. Returns a bounded page of public BBC search-result metadata: title, URL, standfirst summary, display date, and a type of article, video, audio, live, topic, or page. Topic items are BBC topic hub pages rather than articles and carry no published_at. Media entries link only to their BBC landing pages; streams, downloads, and transcripts are not returned.
 - **Params:** `page` (integer, optional) — Results page, defaults to 1; `q` (string, **required**) — Search query, up to 120 characters
 
-## CNN (3)
+## CNN (4)
 
 ### `cnn_article`
 
 - **HTTP:** `GET /cnn/article`
 - **What:** CNN article content. Returns a CNN article's headline, description, author, publication and update times, section, image, and body paragraphs. Provide a canonical cnn.com article URL.
 - **Params:** `url` (string, **required**) — Canonical cnn.com article URL
+
+### `cnn_author`
+
+- **HTTP:** `GET /cnn/author`
+- **What:** CNN profile page. Returns one CNN profile's byline metadata (name and title), bio paragraphs, social accounts, and recent articles/videos. Provide either a profile slug or a canonical cnn.com/profiles/<slug> URL.
+- **Params:** `slug` (string, optional) — CNN profile slug, e.g. jake-tapper-profile (a slug without the -profile suffix is tried with it first, then as-is); `url` (string, optional) — Canonical cnn.com/profiles/<slug> URL, as an alternative to slug
 
 ### `cnn_headlines`
 
@@ -128,13 +140,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** CNN live story updates. Returns a CNN live story's title, description, update time, and chronological post updates. Provide a canonical cnn.com live-news URL.
 - **Params:** `url` (string, **required**) — Canonical cnn.com live-news URL
 
-## Guardian (3)
+## Guardian (4)
 
 ### `guardian_article`
 
 - **HTTP:** `GET /guardian/article`
 - **What:** Get Guardian article content. Returns a Guardian article's public metadata and body paragraphs from a canonical article URL. Live-blog timelines are not supported.
 - **Params:** `url` (string, **required**) — Canonical www.theguardian.com article URL
+
+### `guardian_author`
+
+- **HTTP:** `GET /guardian/author`
+- **What:** Get Guardian contributor profile. Returns one Guardian contributor's public profile: name, bio, Twitter handle, byline image, and one page of their recent articles. Provide either the contributor's profile slug or the full profile page URL.
+- **Params:** `page` (integer, optional) — 1-based article-history page, 1 to 100, defaults to 1; `slug` (string, optional) — Guardian contributor profile slug, e.g. hannah-devlin; `url` (string, optional) — Canonical https://www.theguardian.com/profile/<slug> page URL, as an alternative to slug
 
 ### `guardian_headlines`
 
@@ -148,7 +166,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Guardian topic archive. Returns the stories on a public Guardian tag archive (20 per page, newest first, with total pages and results) or section front (a single curated page, is_front true). topic is a Guardian tag or section slug and page defaults to 1. resolved_topic reports the path actually served, which differs for edition-scoped fronts.
 - **Params:** `page` (integer, optional) — 1-based archive page, 1 to 100, defaults to 1; `topic` (string, **required**) — Guardian tag or section slug
 
-## Yahoo News (6)
+## Yahoo News (7)
 
 ### `yahoo_news_article`
 
@@ -179,6 +197,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /yahoo-news/home`
 - **What:** Yahoo News homepage story stream. Returns Yahoo News's homepage "need to know" story stream: title, destination URL, summary, source, publish time, comment count, and thumbnail images for each story. Sourced from Yahoo News's own server-rendered homepage.
 - **Params:** _none_
+
+### `yahoo_news_related`
+
+- **HTTP:** `GET /yahoo-news/related`
+- **What:** Yahoo News related articles. Returns a page of articles Yahoo recommends alongside a given article -- the "you may also like" strip at the bottom of an article page -- with cursor-based pagination. Sourced from Yahoo's own recommendation gateway.
+- **Params:** `content_id` (string, **required**) — Article id (the id field returned by home/category/article); `count` (integer, optional) — Number of related articles to return, default 10, clamped to 1..50; `cursor` (string, optional) — Pagination cursor from a previous response's next_cursor
 
 ### `yahoo_news_suggest`
 

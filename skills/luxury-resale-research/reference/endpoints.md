@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**161 endpoints across 21 platform group(s).**
+**162 endpoints across 21 platform group(s).**
 
 ## 1stDibs (4)
 
@@ -334,7 +334,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Grailed search-box typeahead suggestions. Returns Grailed's own search-box typeahead suggestions for a partial query -- a flat list of suggested search phrases with a popularity score and live active-listing match count, no listing data. Pass a suggestion straight through to grailed-search/grailed-sold-listings' own q parameter. A query with no genuine matches returns a well-formed empty result rather than an error.
 - **Params:** `q` (string, **required**) — Partial search query
 
-## Gucci (9)
+## Gucci (10)
 
 ### `gucci_categories`
 
@@ -377,6 +377,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /gucci/store`
 - **What:** Get a Gucci store's detail. Returns one Gucci store's full detail: name, phone, address, opening hours, and photos. slug comes from gucci-stores' own slug field.
 - **Params:** `slug` (string, **required**) — Store slug, from gucci-stores' own slug field
+
+### `gucci_store_search`
+
+- **HTTP:** `GET /gucci/stores/search`
+- **What:** Search Gucci stores in a map viewport. Searches Gucci's public store-map GeoJSON feed for locations inside the requested viewport. market selects the storefront locale and localized labels; it does not filter results by country. The supported, live-verified market values are ca (English), fr (French), jp (Japanese), uk (English), and us (English). Coordinates and viewport bounds determine the returned stores. The Gucci site's text field geocodes in the browser and its name parameter does not filter this feed, so callers must provide bounds and a center (geocode a place before calling). Dateline-crossing bounds are not supported.
+- **Params:** `east` (number, **required**) — Viewport eastern longitude; `latitude` (number, **required**) — Viewport center latitude; `longitude` (number, **required**) — Viewport center longitude; `market` (string, **required**) — Gucci storefront locale; controls localization only, not geographic filtering; `north` (number, **required**) — Viewport northern latitude; `south` (number, **required**) — Viewport southern latitude; `west` (number, **required**) — Viewport western longitude
 
 ### `gucci_stores`
 
@@ -801,8 +807,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `yoox_product`
 
 - **HTTP:** `GET /yoox/product`
-- **What:** Get a YOOX product. Returns the public product detail identified by a YOOX product URL.
-- **Params:** `url` (string, **required**) — YOOX product URL
+- **What:** Get a YOOX product. Returns the public product detail identified by a YOOX item id. The legacy product URL form remains accepted.
+- **Params:** `id` (string, optional) — YOOX item id, for example 17734181OO; `url` (string, optional) — Legacy YOOX product URL
 
 ### `yoox_search`
 

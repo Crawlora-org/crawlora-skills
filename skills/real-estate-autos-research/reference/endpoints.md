@@ -149,7 +149,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rightmove_agents`
 
 - **HTTP:** `GET /rightmove/agents`
-- **What:** List Rightmove estate agents for a location. Lists estate-agent branches from Rightmove's estate-agents directory for a location, with branch display name, brand, address, telephones, sales/lettings flags, logo, and a link to the branch profile. 20 agents per page.
+- **What:** List Rightmove estate agents for a location. Lists estate-agent branches from Rightmove's estate-agents directory for a location, with branch display name, brand, address, telephones, sales/lettings flags, logo, and a link to the branch profile. Pagination follows Rightmove's current directory pages, whose result counts can vary.
 - **Params:** `location` (string, **required**) — Rightmove location identifier from autocomplete (numeric location id required); `page` (integer, optional) — Result page (default 1)
 
 ### `rightmove_autocomplete`

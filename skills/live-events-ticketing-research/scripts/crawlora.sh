@@ -67,10 +67,14 @@ case "$path" in
   /seatgeek/trending) route_allowed=true ;;
   /seatgeek/venue) route_allowed=true ;;
   /seatgeek/venue-events) route_allowed=true ;;
+  /stubhub/carousel) route_allowed=true ;;
   /stubhub/categories) route_allowed=true ;;
   /stubhub/category-events) route_allowed=true ;;
   /stubhub/explore) route_allowed=true ;;
+  /stubhub/navigation-categories) route_allowed=true ;;
   /stubhub/performer-events) route_allowed=true ;;
+  /stubhub/search) route_allowed=true ;;
+  /stubhub/suggested-searches) route_allowed=true ;;
   /stubhub/trending) route_allowed=true ;;
   /stubhub/trending-events) route_allowed=true ;;
   /stubhub/venue-events) route_allowed=true ;;

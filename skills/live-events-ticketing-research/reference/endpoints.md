@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**18 endpoints across 2 platform group(s).**
+**22 endpoints across 2 platform group(s).**
 
 ## SeatGeek (11)
 
@@ -76,12 +76,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get a SeatGeek venue's event schedule. Returns one page of a SeatGeek venue's upcoming event schedule, soonest first. venue_id is SeatGeek's own numeric venue id, obtained from a search or event result (e.g. 1 for UNIQLO Field at Dodger Stadium).
 - **Params:** `page` (integer, optional) — 1-based page number; `per_page` (integer, optional) — Results per page, 1-50; `venue_id` (integer, **required**) — SeatGeek's own numeric venue id
 
-## StubHub (7)
+## StubHub (11)
+
+### `stubhub_carousel`
+
+- **HTTP:** `GET /stubhub/carousel`
+- **What:** List StubHub performer discovery carousels. Returns the anonymous performer-page alternative, recently viewed, maybe-interested, and trending-event carousel sections. Obtain performer_slug and performer_id from a real StubHub performer URL or another StubHub result. The upstream request uses browser impersonation and requires no cookies or CSRF state.
+- **Params:** `category_id` (integer, **required**) — StubHub category id; `lat` (number, **required**) — Latitude; `lon` (number, **required**) — Longitude; `max` (integer, optional) — Maximum items per carousel section; defaults to 10; `performer_id` (integer, **required**) — StubHub performer numeric id; `performer_slug` (string, **required**) — StubHub performer URL slug; `top_level_category_id` (integer, **required**) — Top-level category: 1 (Theater), 2 (Sports), or 3 (Concerts)
 
 ### `stubhub_categories`
 
 - **HTTP:** `GET /stubhub/categories`
-- **What:** List StubHub's own category and subcategory taxonomy. Lists StubHub's top-level verticals (Concerts, Sports, Theater) and their subcategories/leagues (NFL, NBA, ...), each with the lowest currently-listed ticket price for that category within the date range at the given location. Use this to discover valid category ids and names before browsing a specific one.
+- **What:** List StubHub's location-scoped category prices. Lists categories with currently-listed minimum ticket prices for a location and date range. This is a changing location/date-scoped feed, not the complete navigation taxonomy; use stubhub-navigation-categories for the full Theater, Sports, and Concerts tree.
 - **Params:** `from` (string, optional) — Start of the date range: RFC3339 or a bare date (e.g. 2026-09-15). Defaults to now.; `lat` (number, **required**) — Latitude, -90 to 90; `lon` (number, **required**) — Longitude, -180 to 180; `to` (string, optional) — End of the date range, same accepted formats as from. Defaults to 14 days after from.
 
 ### `stubhub_category_events`
@@ -96,11 +102,29 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Discover StubHub events near a location. Discovers events near a location within a date range, optionally bounded by ticket price and by category. A zero count with an empty events list is a valid no-results response.
 - **Params:** `category_id` (integer, optional) — Filter to one category/subcategory id. stubhub-categories discovers ids with a currently-listed event nearby, but only a small subset -- known-good ids: NBA 6453, MLB 6456, NFL 5084, NHL 4871, MLS 5062, Tennis 1012, Golf 1009 (Sports); Pop/Rock 260542, Alternative Music 1059, Classical 1014, R&B 1027, Rap and Hip-Hop Music 1026 (Concerts); Comedy 1015, Musicals 1017, Plays 358959, Family 2294 (Theater); Festival Tickets 1023 (works alone, no top_level_category_id needed); `from` (string, optional) — Start of the date range: RFC3339 or a bare date (e.g. 2026-09-15). Defaults to now.; `lat` (number, **required**) — Latitude, -90 to 90; `lon` (number, **required**) — Longitude, -180 to 180; `price_max` (integer, optional) — Maximum ticket price filter; `price_min` (integer, optional) — Minimum ticket price filter; `to` (string, optional) — End of the date range, same accepted formats as from. Defaults to 14 days after from.; `top_level_category_id` (integer, optional) — Filter to one top-level vertical
 
+### `stubhub_navigation_categories`
+
+- **HTTP:** `GET /stubhub/navigation-categories`
+- **What:** List StubHub's complete top-level navigation tree. Lists the nested navigation taxonomy for one StubHub top-level category. The upstream accepts exactly category_id 1 (Theater), 2 (Sports), or 3 (Concerts). Use the returned ids and URLs to discover category and subcategory pages.
+- **Params:** `category_id` (integer, **required**) — Top-level category: 1=Theater, 2=Sports, 3=Concerts
+
 ### `stubhub_performer_events`
 
 - **HTTP:** `GET /stubhub/performer-events`
 - **What:** List a StubHub performer or team's upcoming events. Lists a performer or team's own upcoming schedule (event name, date, venue, starting price) scraped from their StubHub page. Obtain a real performer_slug+performer_id pair from stubhub-trending's url field (e.g. https://www.stubhub.com/kansas-city-chiefs-tickets/performer/6063 -- slug "kansas-city-chiefs-tickets", id 6063). A zero count with an empty events list is a valid no-upcoming-events response.
 - **Params:** `performer_id` (integer, **required**) — The performer's numeric id; `performer_slug` (string, **required**) — The performer's URL slug, e.g. kansas-city-chiefs-tickets
+
+### `stubhub_search`
+
+- **HTTP:** `GET /stubhub/search`
+- **What:** Search StubHub for performers, events, and groupings. Searches StubHub's anonymous grouped-search endpoint. Results are returned in StubHub's own performer/grouping/event result groups; the upstream request uses multipart form data and requires no cookies or CSRF token.
+- **Params:** `query` (string, **required**) — Search query
+
+### `stubhub_suggested_searches`
+
+- **HTTP:** `GET /stubhub/suggested-searches`
+- **What:** List StubHub's current search suggestions. Returns StubHub's short, changing list of performers, groupings, and categories currently suggested by its search UI. The upstream endpoint is a cookie-free GET with no query parameters.
+- **Params:** _none_
 
 ### `stubhub_trending`
 

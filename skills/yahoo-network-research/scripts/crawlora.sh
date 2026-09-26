@@ -72,6 +72,7 @@ case "$path" in
   /yahoo-news/comments) route_allowed=true ;;
   /yahoo-news/comments/replies) route_allowed=true ;;
   /yahoo-news/home) route_allowed=true ;;
+  /yahoo-news/related) route_allowed=true ;;
   /yahoo-news/suggest) route_allowed=true ;;
   /yahoo-shopping/article) route_allowed=true ;;
   /yahoo-shopping/category) route_allowed=true ;;

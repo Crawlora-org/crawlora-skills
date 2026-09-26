@@ -971,7 +971,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /homedepot/category`
 - **What:** Browse a Home Depot category or brand page. Returns one page of a Home Depot category or brand browse page's product grid: normalized products with title, image, model, current/original price, and rating/review count, plus the category's total result count and the refinement facets the page offers. path is the segment of a /b/ URL after "/b/", e.g. "Tools-Power-Tools-Drills-Impact-Drivers/N-5yc1vZc29x"; a full https://www.homedepot.com/b/... URL or a "/b/..." path is also accepted. sort selects the result ordering and is one of best_match, top_sellers, top_rated, price_low_to_high, price_high_to_low, most_popular, delivery_date; omit it to keep the site's default ordering. page is a 1-indexed page number (default 1, maximum 42), 24 products per page. Each returned facet's path is directly usable as this endpoint's own path parameter to drill down. An unrecognized or blocked path returns an upstream error rather than an empty result.
-- **Params:** `page` (integer, optional) — 1-indexed page number, default 1, maximum 42 (24 products per page); `path` (string, **required**) — Home Depot category/brand browse path, e.g. \; `sort` (string, optional) — Result ordering. One of: best_match, top_sellers, top_rated, price_low_to_high, price_high_to_low, most_popular, delivery_date. Omit for the site's default ordering
+- **Params:** `page` (integer, optional) — 1-indexed page number, default 1, maximum 42 (12 products per page); `path` (string, **required**) — Home Depot category/brand browse path, e.g. \; `sort` (string, optional) — Result ordering. One of: best_match, top_sellers, top_rated, price_low_to_high, price_high_to_low, most_popular, delivery_date. Omit for the site's default ordering
 
 ### `homedepot_product`
 
@@ -988,7 +988,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `homedepot_search`
 
 - **HTTP:** `GET /homedepot/search`
-- **What:** Home Depot keyword search. Returns one page (up to 24 products) of a Home Depot keyword search's product listing: normalized products with title, image, model, current/original price, and rating/review count, plus the search's total result count. q is free-text search keywords, e.g. "impact driver". page is a 1-indexed page number (default 1). An unrecognized/blocked query returns an upstream error rather than an empty result.
+- **What:** Home Depot keyword search. Returns one page (up to 12 products) of a Home Depot keyword search's product listing: normalized products with title, image, model, current/original price, and rating/review count, plus the search's total result count. q is free-text search keywords, e.g. "impact driver". page is a 1-indexed page number (default 1). An unrecognized/blocked query returns an upstream error rather than an empty result.
 - **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `q` (string, **required**) — Free-text search keywords, e.g. \
 
 ### `homedepot_suggest`

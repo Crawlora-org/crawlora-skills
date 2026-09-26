@@ -57,10 +57,12 @@ esac
 route_allowed=false
 case "$path" in
   /bbc/article) route_allowed=true ;;
+  /bbc/author) route_allowed=true ;;
   /bbc/headlines) route_allowed=true ;;
   /bbc/live) route_allowed=true ;;
   /bbc/search) route_allowed=true ;;
   /cnn/article) route_allowed=true ;;
+  /cnn/author) route_allowed=true ;;
   /cnn/headlines) route_allowed=true ;;
   /cnn/live-story) route_allowed=true ;;
   /gdelt/context) route_allowed=true ;;
@@ -76,6 +78,7 @@ case "$path" in
   /gdelt/tv-visual-entities) route_allowed=true ;;
   /gdelt/tv-wordcloud) route_allowed=true ;;
   /guardian/article) route_allowed=true ;;
+  /guardian/author) route_allowed=true ;;
   /guardian/headlines) route_allowed=true ;;
   /guardian/topic) route_allowed=true ;;
   /yahoo-news/article) route_allowed=true ;;
@@ -83,6 +86,7 @@ case "$path" in
   /yahoo-news/comments) route_allowed=true ;;
   /yahoo-news/comments/replies) route_allowed=true ;;
   /yahoo-news/home) route_allowed=true ;;
+  /yahoo-news/related) route_allowed=true ;;
   /yahoo-news/suggest) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then
