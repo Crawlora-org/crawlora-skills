@@ -1,6 +1,6 @@
 ---
 name: linkedin-research
-description: Looks up LinkedIn company, product, and showcase pages by ID via the Crawlora API, returning clean JSON. Use when the user wants a company's LinkedIn profile info, a product page, or a showcase page — instead of scraping LinkedIn directly. Covers company/product/showcase pages only, not personal LinkedIn profiles.
+description: Researches public LinkedIn company, product, and showcase pages via the Crawlora API. Look up known IDs or discover and search the public product directory by keyword or category. Does not access personal profiles or private content.
 allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
@@ -13,8 +13,12 @@ login required.
 ## Tool scope and data flow
 
 The optional shell helper is the only command this skill asks to run. It makes
-GET requests only to the three documented, allowlisted Crawlora routes. When
-invoked, it reads `CRAWLORA_API_KEY` and sends it as an `x-api-key` header over
+GET requests only to the five documented, allowlisted Crawlora routes. These
+include company, product, and showcase lookups by ID, product-category
+discovery, and public product-directory search by keyword or category. The
+discovery and search routes can access a broader slice of public LinkedIn
+product catalog data than an ID-only lookup. When invoked, the helper reads
+`CRAWLORA_API_KEY` and sends it as an `x-api-key` header over
 HTTPS to `api.crawlora.net`; it does not send the key to LinkedIn. It briefly
 writes a mode-600 curl config under `TMPDIR` and removes it when the command
 exits. It does not inspect other environment variables, enumerate files, install
@@ -25,6 +29,8 @@ Crawlora API request; successful requests can consume credits.
 
 - "What's <company>'s LinkedIn company info (industry, size, description)?"
 - "Pull the LinkedIn product page for <product ID>."
+- "Find public LinkedIn products matching <keyword>."
+- "List LinkedIn product categories or search categories for <term>."
 - "Get details on this LinkedIn showcase page."
 - Competitor company profiling or firmographic research using LinkedIn IDs.
 - Enriching a company record with its LinkedIn company/product/showcase data.
@@ -37,7 +43,8 @@ Crawlora API request; successful requests can consume credits.
 
 ## How it works
 
-Pick the page type, then call it by ID:
+Use a known ID for a page lookup, or search the public product directory when
+you need to discover products or categories:
 
 1. **Company** — `/linkedin/company/{id}` — detailed company info (industry,
    size, description, and related fields) by LinkedIn Company ID.
@@ -45,6 +52,10 @@ Pick the page type, then call it by ID:
    Product ID.
 3. **Showcase page** — `/linkedin/showcase/{id}` — detailed info about a
    LinkedIn showcase page by ID.
+4. **Product categories** — `/linkedin/product/categories` — list categories,
+   or find matching categories with a keyword.
+5. **Product directory search** — `/linkedin/products/search` — find public
+   products using a keyword, category, and result offset.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
 
@@ -66,8 +77,8 @@ Use `scripts/crawlora.sh` for all requests; it keeps the API key out of command-
 
 ## Endpoint reference
 
-See [`reference/endpoints.md`](reference/endpoints.md) for the full LinkedIn
-company/product/showcase endpoint list this skill uses.
+See [`reference/endpoints.md`](reference/endpoints.md) for the complete
+LinkedIn endpoint list and parameters this skill uses.
 
 ## Examples
 
@@ -77,6 +88,8 @@ company/product/showcase endpoint list this skill uses.
   positions a specific product line on LinkedIn.
 - **Showcase-page check:** `/linkedin/showcase/{id}` to see how a company
   segments a sub-brand or business unit on its LinkedIn showcase page.
+- **Product discovery:** `/linkedin/products/search` to discover public
+  products matching a keyword or category before looking up a product ID.
 
 ## Notes & limits
 
@@ -85,9 +98,7 @@ company/product/showcase endpoint list this skill uses.
 - **Public data only** — public company/product/showcase pages; no login, no
   private content. Respect LinkedIn's terms.
 - **Security:** key lives in `CRAWLORA_API_KEY` only — never hardcode, query-param, or commit it.
-- **Scope: companies/products, not personal profiles.** This skill covers
-  LinkedIn company, product, and showcase pages by ID only — there is no
-  personal-profile lookup endpoint; don't imply one exists.
-- All three endpoints take a LinkedIn ID as a path parameter — no search or
-  discovery endpoint is available to find that ID, so it must come from the
-  page URL or an upstream source.
+- **Scope: public company/product/showcase data, not personal profiles.** The
+  skill includes product category discovery and keyword/category product
+  directory search as well as page lookups by ID. It has no personal-profile
+  lookup endpoint and does not access private content.

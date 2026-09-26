@@ -176,4 +176,10 @@ test("flagged marketplace skills declare their helper scope and explain data flo
     assert.match(normalized, /mode-600 curl config under `TMPDIR` and removes it when the command exits/);
     assert.match(normalized, /does not inspect other environment variables, enumerate files, install software, or run with elevated privileges/);
   }
+  const linkedin = readFileSync(join(SKILLS_DIR, "linkedin-research", "SKILL.md"), "utf8");
+  const normalizedLinkedin = linkedin.replace(/\s+/g, " ");
+  assert.match(normalizedLinkedin, /five documented, allowlisted Crawlora routes/);
+  assert.match(normalizedLinkedin, /product-category discovery/);
+  assert.match(normalizedLinkedin, /public product-directory search by keyword or category/);
+  assert.doesNotMatch(normalizedLinkedin, /no search or discovery endpoint is available/);
 });
