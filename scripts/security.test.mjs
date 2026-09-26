@@ -154,6 +154,8 @@ test("ClawHub sync invokes the intended CLI and fails closed on old Node", () =>
   assert.match(sync, /CLAWHUB_BIN/);
   assert.match(sync, /CLAWHUB=\(npx --yes --package=clawhub@latest clawhub\)/);
   assert.doesNotMatch(sync, /npx -y clawhub@latest skill publish/);
+  assert.match(sync, /npx --yes --package=skills@latest skills add/);
+  assert.doesNotMatch(sync, /npx -y skills add/);
 });
 
 test("flagged marketplace skills declare their helper scope and explain data flow", () => {
