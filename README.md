@@ -84,7 +84,7 @@ self-contained and do not require the broader bundles to be installed.
 | [`google-maps-research`](skills/google-maps-research) | Current place lookups and comparisons, review samples, and photos. | Google Maps (four live tools) |
 | [`local-business-prospecting`](skills/local-business-prospecting) | Deduplicated business shortlists with public contacts and qualification evidence. | Google Maps live + dataset, Apple Maps, Yelp, business websites |
 | [`local-competitive-landscape`](skills/local-competitive-landscape) | Matched-area comparisons of observed local business supply, categories, attributes, and review-sample themes. | Google Maps live + dataset, Apple Maps, Yelp |
-| [`influencer-discovery`](skills/influencer-discovery) | Campaign-fit creator shortlists with selected live profile/content checks. | TikTok, Instagram, YouTube live + datasets |
+| [`influencer-discovery`](skills/influencer-discovery) | Campaign-fit creator shortlists with selected live profile/content checks, now including newsletter writers and publications. | TikTok, Instagram, YouTube live + datasets; Substack public discovery |
 | [`journalist-media-research`](skills/journalist-media-research) | Relevant media lists with verified coverage, beat-fit evidence, and public work contact channels. | Journalists dataset, Bing search/news, author and article pages |
 | [`tiktok-ad-research`](skills/tiktok-ad-research) | Matched Top Ads comparisons and evidence-backed creative hypotheses. | TikTok Creative Center Top Ads (ten tools) |
 | [`tiktok-trend-research`](skills/tiktok-trend-research) | Country-, period-, and surface-aware TikTok trend briefs. | TikTok feeds, Creative Center, hashtags, Explore |

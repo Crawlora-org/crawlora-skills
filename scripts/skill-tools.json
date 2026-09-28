@@ -18,7 +18,10 @@
     "datasets_youtube_creators_search", "datasets_youtube_creators_facets", "datasets_youtube_creators_item",
     "tiktok_search_user", "tiktok_profile", "tiktok_posts", "tiktok_post",
     "instagram_profile", "instagram_reels", "instagram_post",
-    "youtube_search", "youtube_profile", "youtube_channel_videos", "youtube_video"
+    "youtube_search", "youtube_profile", "youtube_channel_videos", "youtube_video",
+    "substack_categories", "substack_leaderboard", "substack_search",
+    "substack_publication", "substack_publication_posts", "substack_publication_recommendations",
+    "substack_post", "substack_user_search", "substack_user", "substack_user_activity"
   ],
   "journalist-media-research": [
     "datasets_journalists_search", "datasets_journalists_facets", "datasets_journalists_item",

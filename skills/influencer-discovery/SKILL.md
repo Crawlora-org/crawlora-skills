@@ -1,13 +1,14 @@
 ---
 name: influencer-discovery
-description: Find and shortlist TikTok, Instagram, and YouTube creators for a campaign using Crawlora's creator datasets and live profile/content endpoints. Use for creator sourcing, comparing campaign fit, and producing an evidence-backed influencer shortlist.
+description: Find and shortlist TikTok, Instagram, YouTube, and Substack creators for a campaign using Crawlora's creator datasets and live profile/content endpoints. Use for creator sourcing, newsletter discovery, comparing campaign fit, and producing an evidence-backed shortlist.
 ---
 
 # Influencer discovery
 
 Translate a campaign brief into a creator shortlist, then refresh the candidates
-that merit a closer look. Distinguish creator location and content signals from
-audience demographics, which these endpoints do not establish.
+that merit a closer look. This includes newsletter writers and publications on
+Substack. Distinguish creator location and content signals from audience
+demographics, which these endpoints do not establish.
 
 ## Setup and requests
 
@@ -49,6 +50,26 @@ platform-specific filters and ID shapes.
    each platform by stable ID. Link identities across platforms only when public
    profile links or other direct evidence establish the relationship.
 
+### Substack writers and publications
+
+1. Discover relevant topics with `/substack/categories`, then search publication
+   and post text with `/substack/search`; use `/substack/leaderboard` only as a
+   category- and retrieval-time-specific discovery surface, not a universal
+   ranking. Search public writers separately with `/substack/user/search`.
+2. Resolve a candidate through `/substack/user` and `/substack/publication`.
+   Sample recent posts with `/substack/publication/posts` and inspect a small,
+   dated set with `/substack/post`. Use `/substack/publication/recommendations`
+   as evidence of the publication's public recommendation network, not proof
+   of a commercial partnership.
+3. Record the publication and writer IDs, URLs, post dates, retrieval time, and
+   any declared campaign-fit evidence. Link a writer to a TikTok, Instagram, or
+   YouTube identity only when public profile links establish the match.
+
+Substack exposes incomplete and rounded audience signals. A hidden total is
+unknown, not zero; `paid_rough` and `paid_tier` are coarse buckets, not counts.
+Follower counts describe followers, not email subscribers. Public prices and
+plan descriptions are listed offers, not evidence of paid conversion or revenue.
+
 ```sh
 scripts/crawlora.sh /datasets/creators/search \
   q=fitness min_followers=50000 page_size=10
@@ -56,6 +77,8 @@ scripts/crawlora.sh /datasets/instagram-users/search \
   q=fitness min_followers=50000 max_followers=500000 page_size=10
 scripts/crawlora.sh /datasets/youtube-creators/search \
   q=fitness min_followers=50000 max_followers=500000 page_size=10
+scripts/crawlora.sh /substack/search query="climate technology" page=1 | jq '.'
+scripts/crawlora.sh /substack/user/search query="climate technology" page=1 | jq '.'
 ```
 
 ## Metrics and output
@@ -73,9 +96,10 @@ scripts/crawlora.sh /datasets/youtube-creators/search \
   does not reveal an address. Do not guess hidden contact information.
 
 Return the requested shortlist/table/CSV with platform, handle/channel ID,
-profile URL, topic-fit evidence, follower count, refresh time/status, sampled
-content URLs, metric definitions, and fit rationale. Mark unverified geography
-or audience assumptions explicitly. Sending messages requires a separate user request.
+profile URL, topic-fit evidence, platform-defined public audience signals,
+refresh time/status, sampled content URLs, metric definitions, and fit rationale.
+Mark hidden or unverified geography and audience signals explicitly. Sending
+messages requires a separate user request.
 
 Use a bounded number of discovery pages and profile refreshes. On `429`, back
 off; retry a transient `5xx` once. Stop on `401`/`403` and inspect application
