@@ -61,6 +61,16 @@ case "$path" in
   /datasets/instagram-users/search) route_allowed=true ;;
   /datasets/youtube-creators/facets) route_allowed=true ;;
   /datasets/youtube-creators/search) route_allowed=true ;;
+  /substack/categories) route_allowed=true ;;
+  /substack/leaderboard) route_allowed=true ;;
+  /substack/post) route_allowed=true ;;
+  /substack/publication) route_allowed=true ;;
+  /substack/publication/posts) route_allowed=true ;;
+  /substack/publication/recommendations) route_allowed=true ;;
+  /substack/search) route_allowed=true ;;
+  /substack/user) route_allowed=true ;;
+  /substack/user/activity) route_allowed=true ;;
+  /substack/user/search) route_allowed=true ;;
   /tiktok/posts) route_allowed=true ;;
   /tiktok/search/user) route_allowed=true ;;
   /youtube/search) route_allowed=true ;;
