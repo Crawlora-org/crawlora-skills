@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**57 endpoints across 9 platform group(s).**
+**58 endpoints across 9 platform group(s).**
 
 ## Poshmark (8)
 
@@ -272,7 +272,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Depop search-box autocomplete. Returns Depop's own search-box autocomplete suggestions for a partial query, including the category a suggestion maps to when relevant. Public data sourced from Depop's own search-suggestions API.
 - **Params:** `query` (string, **required**) — Partial search query to autocomplete
 
-## Whatnot (3)
+## Whatnot (4)
 
 ### `whatnot_browse`
 
@@ -291,6 +291,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /whatnot/live/{id}`
 - **What:** Get a Whatnot live show's current shop feed. Returns a Whatnot live show's current shop feed: every product, auction, and giveaway listing currently visible in the show, each with its seller's rating. Public data sourced from Whatnot's own GraphQL API.
 - **Params:** `id` (string, **required**) — Whatnot live show id, e.g. from a browse result's id field
+
+### `whatnot_seller`
+
+- **HTTP:** `GET /whatnot/seller/{username}`
+- **What:** Get a Whatnot seller profile and shows. Returns public seller profile details and one page of the seller's livestreams. Use next_cursor as cursor to continue while has_more is true. The endpoint does not include shop products.
+- **Params:** `cursor` (string, optional) — Opaque cursor from a prior response's next_cursor; `username` (string, **required**) — Whatnot seller username
 
 ## GOAT (10)
 

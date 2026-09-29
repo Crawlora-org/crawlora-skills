@@ -116,6 +116,7 @@ if [ "$route_allowed" = false ]; then
   '^/poshmark/trend/[^/]+$'
   '^/stockx/product/[^/]+$'
   '^/whatnot/live/[^/]+$'
+  '^/whatnot/seller/[^/]+$'
   )
   for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
     if [[ "$path" =~ $route_regex ]]; then

@@ -135,7 +135,13 @@ case "$path" in
   /rottentomatoes/browse/movies) route_allowed=true ;;
   /rottentomatoes/browse/tv) route_allowed=true ;;
   /rottentomatoes/critics/authors) route_allowed=true ;;
+  /rottentomatoes/editorial/content) route_allowed=true ;;
+  /rottentomatoes/editorial/detail) route_allowed=true ;;
   /rottentomatoes/editorial/search) route_allowed=true ;;
+  /rottentomatoes/editorial/section) route_allowed=true ;;
+  /rottentomatoes/editorial/taxonomies) route_allowed=true ;;
+  /rottentomatoes/editorial/terms) route_allowed=true ;;
+  /rottentomatoes/editorial/types) route_allowed=true ;;
   /rottentomatoes/episode) route_allowed=true ;;
   /rottentomatoes/movie) route_allowed=true ;;
   /rottentomatoes/movie/reviews) route_allowed=true ;;

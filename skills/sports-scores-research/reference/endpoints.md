@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**74 endpoints across 6 platform group(s).**
+**82 endpoints across 6 platform group(s).**
 
 ## ESPN (9)
 
@@ -156,7 +156,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** SofaScore competition seasons. Returns the season list for a competition from SofaScore's credential-free public JSON. Use a returned season id with the standings and round-events endpoints.
 - **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id
 
-## MLB (12)
+## MLB (20)
+
+### `mlb_discovery`
+
+- **HTTP:** `GET /mlb/discovery`
+- **What:** Discover MLB sections and Stats API values. Returns MLB.com's live navigation tree, including hidden nodes labeled with visibility, and the MLB-only value sets for leagues, divisions, game types, roster types, standings types, stat groups, supported stat types, leader categories, MLB Pipeline prospect filters, league-stats hitter positions and player pools, and the observed Baseball Savant leaderboard categories and filters including Expected Statistics and Outs Above Average. Use these values to discover sections and supported filters before calling MLB endpoints.
+- **Params:** _none_
+
+### `mlb_editorial_feed`
+
+- **HTTP:** `GET /mlb/editorial-feed`
+- **What:** Get an MLB.com editorial feed. Returns a paginated first-party MLB.com news, video, or selection feed. Slugs are dynamic and not a complete closed topic catalog; discover current topic suggestions with mlb-search and sections with mlb-discovery. Feed items retain upstream Article, ShortContent, VSMContent, or Video fields.
+- **Params:** `language` (string, optional) — Feed locale; `limit` (integer, optional) — Items per page (1-100); `skip` (integer, optional) — Number of items to skip (0-100000); `slug` (string, **required**) — MLB feed or selection slug, such as mlb-news-list or sel-vvc-mlb-stories
 
 ### `mlb_game`
 
@@ -176,11 +188,17 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get MLB game play-by-play. Returns every at-bat and pitch/event record for an MLB game.
 - **Params:** `id` (string, **required**) — Numeric MLB game id
 
+### `mlb_league_leaders`
+
+- **HTTP:** `GET /mlb/league-leaders`
+- **What:** Get MLB league leaders. Returns ranked MLB leader entries for one or more validated categories. Use mlb-discovery for all accepted categories, groups, and game type codes.
+- **Params:** `categories` (string, **required**) — Comma-separated MLB leader category names; values are listed in mlb-discovery; `game_type` (string, optional) — MLB game type; `group` (string, optional) — Stat group; `league_id` (string, optional) — MLB league id; `limit` (integer, optional) — Leaders per category (1-100); `season` (integer, optional) — Four-digit season; defaults to current year
+
 ### `mlb_league_stats`
 
 - **HTTP:** `GET /mlb/league-stats`
-- **What:** Get ranked MLB league statistics. Returns ranked MLB season stat splits across both leagues. The group enum accepts `hitting`, `pitching`, and `fielding`.
-- **Params:** `group` (string, **required**) — Stat group; `limit` (integer, optional) — Results to return (1-100); `season` (integer, optional) — Four-digit season; defaults to current year
+- **What:** Get ranked MLB league statistics. Returns ranked MLB season stat splits across both leagues. The group enum accepts every value returned by mlb_discovery.
+- **Params:** `end_date` (string, optional) — End date for byDateRange stat types; requires start_date; `game_type` (string, optional) — MLB game type; `group` (string, **required**) — Stat group; `league_id` (string, optional) — MLB league id; `limit` (integer, optional) — Results to return (1-100); `offset` (integer, optional) — Zero-based result offset (0-10000); `opponent_player_id` (string, optional) — Required by vsPlayer stat types; `opponent_team_id` (string, optional) — Required by vsTeam stat types; `player_pool` (string, optional) — Qualified-player pool; `position` (string, optional) — Hitter position; use only with group=hitting; `season` (integer, optional) — Four-digit season; defaults to current year; `start_date` (string, optional) — Start date for byDateRange stat types; requires end_date; `stat_type` (string, optional) — Stats API stat type; defaults to season; `team_id` (string, optional) — Optional MLB team id; discover current team ids with mlb_teams
 
 ### `mlb_player`
 
@@ -191,32 +209,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `mlb_player_stats`
 
 - **HTTP:** `GET /mlb/player-stats`
-- **What:** Get MLB player season statistics. Returns one player's MLB season statistics. The group enum accepts `hitting`, `pitching`, and `fielding`.
-- **Params:** `group` (string, **required**) — Stat group; `id` (string, **required**) — Numeric MLB player id; `season` (integer, optional) — Four-digit season; defaults to current year
+- **What:** Get MLB player season statistics. Returns one player's MLB season statistics. The group enum accepts every value returned by mlb_discovery.
+- **Params:** `end_date` (string, optional) — End date for byDateRange stat types; requires start_date; `game_type` (string, optional) — MLB game type; `group` (string, **required**) — Stat group; `id` (string, **required**) — Numeric MLB player id; `opponent_player_id` (string, optional) — Required by vsPlayer stat types; `opponent_team_id` (string, optional) — Required by vsTeam stat types; `season` (integer, optional) — Four-digit season; defaults to current year; `start_date` (string, optional) — Start date for byDateRange stat types; requires end_date; `stat_type` (string, optional) — Stats API stat type; defaults to season
+
+### `mlb_prospect_stats`
+
+- **HTTP:** `GET /mlb/prospect-stats`
+- **What:** Get MLB Pipeline prospect statistics and rankings. Returns MLB Pipeline prospect stats from the anonymous first-party prospect tables. Supports the Top 100, all-prospect, or one-team list; batter/pitcher views; validated date periods and minimum thresholds; and local name/position filters. Use mlb_discovery for date periods, minimum thresholds, and positions. Team ids come from mlb_teams.
+- **Params:** `date_range` (string, optional) — Prospect table period; `limit` (integer, optional) — Rows to return (1-100); `list_type` (string, optional) — Prospect pool; `min_pa` (integer, optional) — Minimum PA threshold; `offset` (integer, optional) — Zero-based row offset; `player_type` (string, optional) — Player table; `position` (string, optional) — Position filter; `q` (string, optional) — Case-insensitive player-name substring; `team_id` (string, optional) — Optional MLB team id; selects that team's prospect list and overrides list_type
 
 ### `mlb_schedule`
 
 - **HTTP:** `GET /mlb/schedule`
 - **What:** Get the MLB schedule and scores. Returns MLB games, teams, scores, status, probable pitchers, venue, and series information for one date or date range, optionally filtered to a team.
-- **Params:** `date` (string, optional) — Single date in YYYY-MM-DD format; `end_date` (string, optional) — Range end in YYYY-MM-DD format; `start_date` (string, optional) — Range start in YYYY-MM-DD format; `team_id` (string, optional) — Numeric MLB team id
+- **Params:** `date` (string, optional) — Single date in YYYY-MM-DD format; `end_date` (string, optional) — Range end in YYYY-MM-DD format; `game_type` (string, optional) — Game type; `start_date` (string, optional) — Range start in YYYY-MM-DD format; `team_id` (string, optional) — Numeric MLB team id
+
+### `mlb_search`
+
+- **HTTP:** `GET /mlb/search`
+- **What:** Search MLB players, teams, and content topics. Returns the same anonymous MLB typeahead categories used by MLB.com: player suggestions, team suggestions, content topics, and search terms. Queries need at least three characters.
+- **Params:** `q` (string, **required**) — Search text; 3-100 characters
 
 ### `mlb_standings`
 
 - **HTTP:** `GET /mlb/standings`
-- **What:** Get MLB standings. Returns American League and National League standings grouped by division. The type enum accepts `regularSeason`, `wildCard`, and `springTraining`.
-- **Params:** `season` (integer, optional) — Four-digit season; defaults to current year; `type` (string, optional) — Standings type
+- **What:** Get MLB standings. Returns American League and National League standings using any supported standings type returned by mlb_discovery.
+- **Params:** `date` (string, optional) — Snapshot date in YYYY-MM-DD format; returns standings as of that date; `season` (integer, optional) — Four-digit season; defaults to current year; `type` (string, optional) — Standings type
+
+### `mlb_statcast`
+
+- **HTTP:** `GET /mlb/statcast-leaders`
+- **What:** Get Baseball Savant Statcast leaderboard data. Returns the standard anonymous Baseball Savant Statcast leaderboard for batters, pitchers, teams, or pitcher teams. Supports the page's season, team, batter position, minimum batted-ball event, and sortable metric filters, plus local pagination. Use mlb_discovery for exact filter sets. Other Baseball Savant leaderboard pages are listed there but are not represented by this route.
+- **Params:** `limit` (integer, optional) — Rows per page (1-500); `min_bbe` (string, optional) — Minimum batted-ball event threshold; `offset` (integer, optional) — Zero-based row offset; `position` (string, optional) — Batter position; `sort` (string, optional) — Sort field; `sort_dir` (string, optional) — Sort direction; `team_id` (string, optional) — Optional MLB team id from mlb_teams; `type` (string, optional) — Leaderboard row type; `year` (integer, optional) — Season; current season back 11 seasons
+
+### `mlb_statcast_expected`
+
+- **HTTP:** `GET /mlb/statcast-expected`
+- **What:** Get Baseball Savant Expected Statistics. Returns the separate Expected Statistics leaderboard with batter, pitcher, and team views; season, team, batter-position, BIP/PA qualifier and threshold filters; local metric sorting; and pagination. League-average values are returned separately.
+- **Params:** `filter_type` (string, optional) — Minimum qualifier type; `limit` (integer, optional) — Rows per page (1-500); `minimum` (string, optional) — Minimum BIP/PA threshold; `offset` (integer, optional) — Zero-based row offset; `position` (string, optional) — Batter position; only supported for type=batter; `sort` (string, optional) — Sort field; `sort_dir` (string, optional) — Sort direction; `team_id` (string, optional) — Optional MLB team id from mlb_teams; `type` (string, optional) — Leaderboard view; `year` (integer, optional) — Season from 2015 through the current season
+
+### `mlb_statcast_oaa`
+
+- **HTTP:** `GET /mlb/statcast-oaa`
+- **What:** Get Baseball Savant Outs Above Average. Returns the separate Outs Above Average leaderboard for fielders, fielding teams, batters, batting teams, or pitchers. Supports season range, split years, team, monthly range, attempts, position, detailed fielder roles, local sorting, and pagination.
+- **Params:** `end_year` (integer, optional) — End season from 2016 through the current season; `limit` (integer, optional) — Rows per page (1-500); `minimum` (string, optional) — Minimum attempts; `offset` (integer, optional) — Zero-based row offset; `position` (string, optional) — Position filter; `range` (string, optional) — Time range; `roles` (string, optional) — Comma-separated detailed fielder role ids. Values: 32,30,31,77,71,70,72,78,43,42,40,41,46,87,81,82,89,64,62,60,61,98,91,90,92,99,51,50,52; `sort` (string, optional) — Sort field; `sort_dir` (string, optional) — Sort direction; `split` (string, optional) — Return one row per season in a year range; `start_year` (integer, optional) — Start season from 2016 through the current season; `team_id` (string, optional) — Optional MLB team id from mlb_teams; `type` (string, optional) — Leaderboard view
 
 ### `mlb_team_roster`
 
 - **HTTP:** `GET /mlb/team-roster`
-- **What:** Get an MLB team roster. Returns a team's players, jersey numbers, positions, and roster status. The roster_type enum accepts `active`, `40Man`, and `fullSeason`.
+- **What:** Get an MLB team roster. Returns a team's players, jersey numbers, positions, and roster status. The roster_type parameter accepts every value in the live MLB value set returned by mlb_discovery.
 - **Params:** `roster_type` (string, optional) — Roster type; `season` (integer, optional) — Four-digit season; defaults to current year; `team_id` (string, **required**) — Numeric MLB team id
 
 ### `mlb_team_stats`
 
 - **HTTP:** `GET /mlb/team-stats`
-- **What:** Get MLB team season statistics. Returns one team's season statistics. Group accepts `hitting`, `pitching`, and `fielding`.
-- **Params:** `group` (string, **required**) — Statistics group; `season` (integer, optional) — Four-digit season; `team_id` (string, **required**) — Numeric MLB team id
+- **What:** Get MLB team season statistics. Returns one team's season statistics. Group accepts every value returned by mlb_discovery.
+- **Params:** `end_date` (string, optional) — End date for byDateRange stat types; requires start_date; `game_type` (string, optional) — MLB game type; `group` (string, **required**) — Statistics group; `opponent_player_id` (string, optional) — Required by vsPlayer stat types; `opponent_team_id` (string, optional) — Required by vsTeam stat types; `season` (integer, optional) — Four-digit season; `start_date` (string, optional) — Start date for byDateRange stat types; requires end_date; `stat_type` (string, optional) — Stats API stat type; defaults to season; `team_id` (string, **required**) — Numeric MLB team id
 
 ### `mlb_teams`
 

@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**113 endpoints across 7 platform group(s).**
+**119 endpoints across 7 platform group(s).**
 
 ## IMDb (30)
 
@@ -424,7 +424,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Letterboxd. Searches Letterboxd films, people, lists, and tags. Credential-free public Letterboxd data.
 - **Params:** `limit` (integer, optional) — Max results, default 10, max 50; `q` (string, **required**) — Search query; `type` (string, optional) — Optional result type filter
 
-## Rotten Tomatoes (14)
+## Rotten Tomatoes (20)
 
 ### `rottentomatoes_browse_filters`
 
@@ -450,11 +450,47 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Rotten Tomatoes critic directory. Returns current or inactive critics from Rotten Tomatoes' public author directory. Browse one letter or search by name; use `next_cursor` as `after` or `previous_cursor` as `before`, as indicated by the corresponding page flag. The letter values come from the live directory controls.
 - **Params:** `after` (string, optional) — Opaque cursor from data.next_cursor; `before` (string, optional) — Opaque cursor from data.previous_cursor; cannot be combined with after; `inactive` (boolean, optional) — Include the site's inactive critics list; `letter` (string, optional) — Directory letter. Omit when using search; default a.; `limit` (integer, optional) — Rows per page, default 100, range 1 to 100; `search` (string, optional) — Search critics by name; cannot be combined with letter
 
+### `rottentomatoes_editorial_content`
+
+- **HTTP:** `GET /rottentomatoes/editorial/content`
+- **What:** Rotten Tomatoes editorial content listing. Lists paginated editorial records from the selected public content type. The pages collection lists public editorial section and campaign indexes. Use the editorial types endpoint to discover accepted type values.
+- **Params:** `include_children` (boolean, optional) — For categories only, include child categories; default false; `limit` (integer, optional) — Rows per page, default 20, range 1 to 100; `operator` (string, optional) — Whether any or all selected terms must match; default OR; `page` (integer, optional) — One-based result page from 1 to 10000; default 1; `query` (string, optional) — Optional text filter; maximum 200 bytes; `taxonomy` (string, optional) — Optional editorial taxonomy; discover type support from /rottentomatoes/editorial/taxonomies; `term_ids` (string, optional) — Comma-separated positive term IDs; required with taxonomy; `type` (string, **required**) — Editorial content type
+
+### `rottentomatoes_editorial_detail`
+
+- **HTTP:** `GET /rottentomatoes/editorial/detail`
+- **What:** Rotten Tomatoes editorial article detail. Returns the public body, paragraphs, headings, links, images, and video embeds from an Editorial article, gallery, guide, on-the-go article, or preview. Discover paths from editorial content collections. The response body_html preserves public Gutenberg/ranked-list markup.
+- **Params:** `path` (string, **required**) — Discovered Editorial content path
+
 ### `rottentomatoes_editorial_search`
 
 - **HTTP:** `GET /rottentomatoes/editorial/search`
 - **What:** Rotten Tomatoes editorial search. Searches public Rotten Tomatoes editorial content, including articles and guides. Results come from its anonymous WordPress REST search endpoint and include content subtype plus total-page metadata.
 - **Params:** `limit` (integer, optional) — Rows per page, default 10, range 1 to 100; `page` (integer, optional) — One-based result page from 1 to 10000; default 1; `query` (string, **required**) — Editorial search text; maximum 200 bytes
+
+### `rottentomatoes_editorial_section`
+
+- **HTTP:** `GET /rottentomatoes/editorial/section`
+- **What:** Rotten Tomatoes editorial section archive. Returns the rendered article cards for a discovered editorial page, RT hub, or hub subpage. Discover paths through editorial content types `pages`, `rt-hub`, and `hub-subpage`. Static pages use `articles_page` pagination upstream; hubs use `/page/{n}/`.
+- **Params:** `page` (integer, optional) — One-based page, default 1; `path` (string, **required**) — Discovered editorial section path
+
+### `rottentomatoes_editorial_taxonomies`
+
+- **HTTP:** `GET /rottentomatoes/editorial/taxonomies`
+- **What:** Rotten Tomatoes editorial taxonomy discovery. Returns the complete set of public editorial term vocabularies accepted by the term discovery endpoint, with the content types each taxonomy filters.
+- **Params:** _none_
+
+### `rottentomatoes_editorial_terms`
+
+- **HTTP:** `GET /rottentomatoes/editorial/terms`
+- **What:** Rotten Tomatoes editorial taxonomy terms. Pages public terms from one discovered editorial taxonomy. All taxonomy values are listed by `/rottentomatoes/editorial/taxonomies`; `parent` is accepted only for `categories`, while `offset` is supported by all other taxonomies.
+- **Params:** `exclude` (string, optional) — Comma-separated positive term IDs to exclude; `hide_empty` (boolean, optional) — When true, omit terms with no assigned content; `include` (string, optional) — Comma-separated positive term IDs to include; `limit` (integer, optional) — Terms per page, default 20, range 1 to 100; `offset` (integer, optional) — Zero-based offset; accepted except for categories; `order` (string, optional) — Term sort direction; `orderby` (string, optional) — Term sort key; `page` (integer, optional) — One-based page, default 1; `parent` (integer, optional) — Category parent ID; accepted only for categories; `post` (integer, optional) — Filter to terms assigned to this content record; `search` (string, optional) — Optional term search; maximum 200 bytes; `slug` (string, optional) — Optional term slug or comma-separated slugs; `taxonomy` (string, **required**) — Editorial taxonomy value
+
+### `rottentomatoes_editorial_types`
+
+- **HTTP:** `GET /rottentomatoes/editorial/types`
+- **What:** Rotten Tomatoes editorial content types. Returns the complete live-verified set of editorial type values accepted by the editorial content endpoint.
+- **Params:** _none_
 
 ### `rottentomatoes_episode`
 

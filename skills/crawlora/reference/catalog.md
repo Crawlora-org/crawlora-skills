@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**2955 endpoints across 415 platform group(s).**
+**3065 endpoints across 433 platform group(s).**
 
 ## 1stDibs (4)
 
@@ -462,6 +462,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /aljazeera/topic`
 - **What:** Get Al Jazeera section headlines. Returns the newest public Al Jazeera stories from one section archive page. topic is a section slug; use aljazeera-categories for the current value space.
 - **Params:** `topic` (string, **required**) — Al Jazeera section slug
+
+## AL.com (3)
+
+### `alcom_headlines`
+
+- **HTTP:** `GET /alcom/headlines`
+- **What:** Get AL.com section headlines. Returns current headlines from one of AL.com's public Arc RSS section feeds. Summaries are brief publisher teasers, not full article text.
+- **Params:** `section` (string, **required**) — AL.com editorial section
+
+### `alcom_news`
+
+- **HTTP:** `GET /alcom/news`
+- **What:** Get AL.com top stories. Returns current AL.com News stories from its public Arc RSS feed. Feed summaries are brief publisher teasers, not full article text.
+- **Params:** _none_
+
+### `alcom_sections`
+
+- **HTTP:** `GET /alcom/sections`
+- **What:** Get AL.com editorial sections. Returns the three top-level editorial sections exposed in AL.com's site navigation and accepted by the headlines endpoint.
+- **Params:** _none_
 
 ## Allbirds (11)
 
@@ -1897,6 +1917,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Boots UK search-box suggestions. Returns Boots UK's own public typeahead phrases for a partial product query. The suggestions are search terms only; pass one to boots-search's q parameter for product cards and live facets.
 - **Params:** `q` (string, **required**) — Partial product query
 
+## Boston Globe (1)
+
+### `bostonglobe_news`
+
+- **HTTP:** `GET /bostonglobe/news`
+- **What:** Get Boston Globe top stories. Returns recent Boston Globe story metadata and RSS summaries from its public Arc feed. The feed also carries content:encoded article prose, which this endpoint intentionally omits. Article bodies, sections, headlines-by-section, and author profiles are not exposed because the public contracts are not fully verified and some stories require a subscription.
+- **Params:** _none_
+
 ## Box Office Mojo (21)
 
 ### `boxofficemojo_brand`
@@ -2840,6 +2868,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /chrono24/search`
 - **What:** Search Chrono24 watch listings. Searches Chrono24's luxury-watch marketplace by free-text keyword, or browses one brand's (optionally narrowed to one model's) current listings, returning normalized result cards: title, price with currency, seller type, seller country, promotional badge, image, and the listing URL to pass to chrono24-listing. At least one of query or brand is required. Optional advanced-search filters (condition, used_or_new, case_material, dial_color, bracelet_material, movement_type, gender, watch_type, stock_info) narrow results further; each filter's accepted values are discoverable from chrono24-facets and echoed back in the response's filters field.
 - **Params:** `bracelet_material` (string, optional) — Advanced-search filter, values from chrono24-facets group=braceletMaterial; `brand` (string, optional) — Brand slug from chrono24-brands. At least one of query or brand is required; `case_material` (string, optional) — Advanced-search filter, values from chrono24-facets group=caseMaterial; `condition` (string, optional) — Advanced-search filter, values from chrono24-facets group=condition; `dial_color` (string, optional) — Advanced-search filter, values from chrono24-facets group=dialColor; `gender` (string, optional) — Advanced-search filter, values from chrono24-facets group=gender; `model` (string, optional) — Model slug from chrono24-models (requires brand); `movement_type` (string, optional) — Advanced-search filter, values from chrono24-facets group=movementType; `page` (integer, optional) — One-based result page; `page_size` (integer, optional) — Results per page. Chrono24's own UI offers 30, 60 or 120; defaults to Chrono24's own default; `query` (string, optional) — Free-text keyword search, e.g. \; `sort` (string, optional) — Result order. One of: relevance, price_asc, price_desc, newest, popularity; `stock_info` (string, optional) — Advanced-search filter, values from chrono24-facets group=stockInfo; `used_or_new` (string, optional) — Advanced-search filter, values from chrono24-facets group=usedOrNew; `watch_type` (string, optional) — Advanced-search filter, values from chrono24-facets group=watchType
+
+## Cleveland.com (1)
+
+### `clevelandcom_news`
+
+- **HTTP:** `GET /clevelandcom/news`
+- **What:** Get Cleveland.com top stories. Returns Cleveland.com's 50-item public top-stories RSS feed. Summaries and encoded content are publisher teasers; this endpoint does not claim to return full article text. Editorial section inventory and article pages could not be reliably verified due to upstream DataDome blocking.
+- **Params:** _none_
 
 ## CNA (5)
 
@@ -5431,13 +5467,37 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Fortune sections. Returns the public Fortune editorial section inventory.
 - **Params:** _none_
 
-## FotMob (16)
+## FotMob (31)
+
+### `fotmob_audio_matches`
+
+- **HTTP:** `GET /fotmob/audio-matches`
+- **What:** FotMob matches with audio commentary. Returns FotMob's current match-to-audio-language availability index. Match ids are open-ended and can be passed to /fotmob/match. The list is independent of a selected match date and may include matches outside the current fixtures feed.
+- **Params:** _none_
+
+### `fotmob_fifa_ranking_periods`
+
+- **HTTP:** `GET /fotmob/fifa-ranking-periods`
+- **What:** FotMob FIFA ranking period directory. Returns every ranking period currently offered by FotMob for the selected gender. Use a returned periodId with /fotmob/fifa-rankings.
+- **Params:** `gender` (string, **required**) — Ranking gender
+
+### `fotmob_fifa_rankings`
+
+- **HTTP:** `GET /fotmob/fifa-rankings`
+- **What:** FotMob FIFA national-team rankings. Returns ranked national-team points and rank changes for one period. Discover valid periodId values for the selected gender from /fotmob/fifa-ranking-periods.
+- **Params:** `gender` (string, **required**) — Ranking gender; `period_id` (string, **required**) — Period id returned for this gender by /fotmob/fifa-ranking-periods
+
+### `fotmob_latest_news`
+
+- **HTTP:** `GET /fotmob/latest-news`
+- **What:** FotMob latest football news. Returns the global English latest-news feed. Items are article previews; the upstream response contains up to 20 items per offset. Use start_index increments of 20 to page without overlap.
+- **Params:** `start_index` (integer, optional) — Zero-based news offset; defaults to 0
 
 ### `fotmob_league`
 
 - **HTTP:** `GET /fotmob/league`
-- **What:** FotMob league details and sections. Returns FotMob's public league page payload, including available tabs, overview, table, fixtures, statistics, transfers, and seasons where supplied by the league.
-- **Params:** `league_id` (integer, **required**) — Numeric FotMob league id from /fotmob/leagues
+- **What:** FotMob league details and sections. Returns FotMob's public league page payload, including available tabs, overview, table, fixtures, statistics, transfers, and seasons where supplied by the league. Discover valid season values with /fotmob/seasons. shotmap=true includes the optional, larger overview shot-map payload.
+- **Params:** `league_id` (integer, **required**) — Numeric FotMob league id from /fotmob/leagues; `season` (string, optional) — Optional season value from /fotmob/seasons for this league; `shotmap` (boolean, optional) — Include the optional overview shot map; increases response size
 
 ### `fotmob_leagues`
 
@@ -5445,11 +5505,29 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** FotMob competition directory. Returns FotMob's full public league directory grouped into popular, international, and country collections. Use league ids with other FotMob endpoints.
 - **Params:** _none_
 
+### `fotmob_lineup_builder_players`
+
+- **HTTP:** `GET /fotmob/lineup-builder-players`
+- **What:** FotMob lineup builder player metadata. Returns public metadata for 1 to 11 selected lineup players. Player ids are open-ended and can be discovered through /fotmob/search or /fotmob/lineup-builder-team. Unknown ids without complete public metadata return 404.
+- **Params:** `player_ids` (string, **required**) — Comma-separated list of 1 to 11 numeric FotMob player ids
+
+### `fotmob_lineup_builder_team`
+
+- **HTTP:** `GET /fotmob/lineup-builder-team`
+- **What:** FotMob lineup builder team data. Returns the public lineup builder's prefilled formation, starting lineup, and squad for a team id. Discover open-ended team ids with /fotmob/search. Some teams legitimately have no squad list.
+- **Params:** `team_id` (string, **required**) — Numeric FotMob team id discoverable through /fotmob/search
+
 ### `fotmob_match`
 
 - **HTTP:** `GET /fotmob/match`
 - **What:** FotMob match details. Returns FotMob's public match-details payload, including available facts, events, statistics, lineups, shot map, momentum, table and head-to-head sections. The data field preserves the upstream JSON shape; individual sections may be absent for a match.
 - **Params:** `id` (string, **required**) — Numeric FotMob match id
+
+### `fotmob_match_media`
+
+- **HTTP:** `GET /fotmob/match-media`
+- **What:** FotMob match videos and media metadata. Returns the public highlight-video and media metadata for one match. The request uses FotMob's English United States variant; unavailable media is represented by null source fields.
+- **Params:** `id` (string, **required**) — Numeric FotMob match id, discoverable from /fotmob/matches or /fotmob/search
 
 ### `fotmob_matches`
 
@@ -5462,6 +5540,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /fotmob/news`
 - **What:** FotMob league news. Returns a page of FotMob news items for one league. League ids are discoverable from /fotmob/leagues; start_index is a zero-based offset.
 - **Params:** `league_id` (string, **required**) — Numeric FotMob league id; `start_index` (integer, optional) — Zero-based news offset; defaults to 0
+
+### `fotmob_news_article`
+
+- **HTTP:** `GET /fotmob/news-article`
+- **What:** FotMob full top-news article. Returns the full article body for a FotMob-authored top-news story. Pass the complete id-and-slug value from the public /topnews/<id> URL. News previews from external publishers remain external and are not fetched.
+- **Params:** `id` (string, **required**) — Complete FotMob top-news article id and slug from the public article URL
 
 ### `fotmob_player`
 
@@ -5493,6 +5577,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search FotMob entities. Returns public search suggestions for FotMob leagues, teams, players, and matches. term must contain 1 to 50 characters. Suggestions preserve the upstream JSON shape.
 - **Params:** `term` (string, **required**) — Search phrase, 1 to 50 characters
 
+### `fotmob_seasons`
+
+- **HTTP:** `GET /fotmob/seasons`
+- **What:** FotMob league season discovery. Returns the complete list of season values accepted by the FotMob league endpoint for one competition.
+- **Params:** `league_id` (integer, **required**) — Numeric FotMob league id from /fotmob/leagues
+
 ### `fotmob_stats`
 
 - **HTTP:** `GET /fotmob/stats`
@@ -5514,8 +5604,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fotmob_team`
 
 - **HTTP:** `GET /fotmob/team`
-- **What:** FotMob team details. Returns public team data and the sections currently available for that team, such as overview, table, fixtures, squad, stats, transfers, and history. Team ids can be found with /fotmob/search. The upstream section set varies by team.
+- **What:** FotMob team details. Returns public team data and the sections currently available for that team, such as overview, table, fixtures, squad, stats, transfers, and history. Team ids can be found with /fotmob/search. The upstream section set varies by team. For older fixtures, pass fixtures.previousFixturesUrl to /fotmob/team-fixtures.
 - **Params:** `id` (string, **required**) — Numeric FotMob team id
+
+### `fotmob_team_fixtures`
+
+- **HTTP:** `GET /fotmob/team-fixtures`
+- **What:** FotMob paginated team fixtures. Returns one page of older team matches. Start with the fixtures.previousFixturesUrl cursor from /fotmob/team, then pass each response's previous value as cursor until it is empty or null. Team ids are open-ended numeric ids discoverable through /fotmob/search.
+- **Params:** `cursor` (string, **required**) — Opaque cursor copied from fixtures.previousFixturesUrl in /fotmob/team or previous in the preceding response; `team_id` (string, **required**) — Numeric FotMob team id
 
 ### `fotmob_team_news`
 
@@ -5528,6 +5624,36 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /fotmob/transfers`
 - **What:** FotMob transfer center. Returns confirmed transfers, rumours, or popular transfers with the public transfer-center filters. Fee values are in EUR. Use fotmob/leagues and fotmob/search to discover league and team ids. The upstream returns 50 rows per page and caps its hit count at 10,000.
 - **Params:** `direction` (string, optional) — Transfer direction; applied when league_ids or team_ids is supplied; `exclude_extensions` (boolean, optional) — Exclude contract-extension records; `last` (string, optional) — Time window; `league_ids` (string, optional) — Comma-separated numeric FotMob league ids, up to 50; discover with /fotmob/leagues; `likely_only` (boolean, optional) — Return only likely rumours; mode must be rumours; `max_fee` (integer, optional) — Maximum transfer fee in EUR; `min_fee` (integer, optional) — Minimum transfer fee in EUR; `mode` (string, optional) — Feed mode; `order_by` (string, optional) — Sort column; `page` (integer, optional) — One-based result page; 50 rows per page; `team_ids` (string, optional) — Comma-separated numeric FotMob team ids, up to 50; discover with /fotmob/search
+
+### `fotmob_trending_news`
+
+- **HTTP:** `GET /fotmob/trending-news`
+- **What:** FotMob trending football news. Returns the five-story Trending shelf shown on FotMob's public News page. Items are curated previews and may overlap the global latest-news feed; the upstream list is dynamic. No locale or country parameter is exposed because the complete accepted value space is not pinned.
+- **Params:** _none_
+
+### `fotmob_trending_searches`
+
+- **HTTP:** `GET /fotmob/trending-searches`
+- **What:** FotMob trending search suggestions. Returns FotMob's current grouped trending suggestions for all entities, players, teams, and leagues. The feed is dynamic and may vary by the upstream's inferred region; no region or category parameter is exposed.
+- **Params:** _none_
+
+### `fotmob_tv_guide`
+
+- **HTTP:** `GET /fotmob/tv-guide`
+- **What:** FotMob football TV guide. Returns the public seven-day football broadcast schedule for a country, with local schedule times. Discover all accepted country codes from /fotmob/tv-guide-countries. Timezone defaults to UTC.
+- **Params:** `country` (string, **required**) — Market code from /fotmob/tv-guide-countries; `timezone` (string, optional) — IANA timezone for local times
+
+### `fotmob_tv_guide_channels`
+
+- **HTTP:** `GET /fotmob/tv-guide-channels`
+- **What:** FotMob TV guide channels. Discovers channels attached to matches in the selected country's current seven-day public TV guide window. Use the country directory to discover the complete country code set.
+- **Params:** `country` (string, **required**) — Market code from /fotmob/tv-guide-countries
+
+### `fotmob_tv_guide_countries`
+
+- **HTTP:** `GET /fotmob/tv-guide-countries`
+- **What:** FotMob TV guide country directory. Lists all country codes exposed by FotMob's public football TV guide country selector.
+- **Params:** _none_
 
 ## Fox News (6)
 
@@ -5567,6 +5693,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Fox News RSS sections. Returns the exact live-verified Fox News article RSS section slugs accepted by foxnews-headlines. The video-only RSS feed is intentionally excluded.
 - **Params:** _none_
 
+## FOX Sports (4)
+
+### `foxsports_article`
+
+- **HTTP:** `GET /foxsports/article`
+- **What:** Get FOX Sports article content. Returns public FOX Sports article metadata and body paragraphs from a canonical foxsports.com/stories/<section>/<slug> URL. Public body content stops at the article body container.
+- **Params:** `url` (string, **required**) — Canonical FOX Sports story URL
+
+### `foxsports_headlines`
+
+- **HTTP:** `GET /foxsports/headlines`
+- **What:** Get FOX Sports section headlines. Returns current headlines from one public FOX Sports editorial RSS feed.
+- **Params:** `section` (string, **required**) — FOX Sports section slug
+
+### `foxsports_news`
+
+- **HTTP:** `GET /foxsports/news`
+- **What:** Get FOX Sports top stories. Returns current FOX Sports top stories from the official public All Headlines RSS feed.
+- **Params:** _none_
+
+### `foxsports_sections`
+
+- **HTTP:** `GET /foxsports/sections`
+- **What:** Get FOX Sports news sections. Returns the live-verified public editorial RSS feed inventory used by foxsports-headlines.
+- **Params:** _none_
+
 ## France 24 (5)
 
 ### `france24_article`
@@ -5597,6 +5749,20 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /france24/sections`
 - **What:** Get France 24 sections. Returns the complete public France 24 English-edition section inventory (regions, topics, and other public hubs) accepted by /france24/headlines.
+- **Params:** _none_
+
+## Free Malaysia Today (2)
+
+### `freemalaysiatoday_news`
+
+- **HTTP:** `GET /freemalaysiatoday/news`
+- **What:** Get the latest Free Malaysia Today stories. Returns Free Malaysia Today's current public top-stories RSS feed: each story's title, canonical URL, summary, author, publication time, and lead image.
+- **Params:** _none_
+
+### `freemalaysiatoday_sections`
+
+- **HTTP:** `GET /freemalaysiatoday/sections`
+- **What:** List Free Malaysia Today sections. Lists every live-verified primary editorial navigation section, with its slug, display name, and landing-page URL. This is the live-verified primary editorial navigation taxonomy; media, promotional, and duplicate commercial destinations are excluded.
 - **Params:** _none_
 
 ## FT (6)
@@ -5826,6 +5992,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /geocoding/search`
 - **What:** Search Nominatim places. Returns typed Nominatim JSONv2 forward geocoding results. Use either q or structured fields, not both.
 - **Params:** `accept_language` (string, optional) — Preferred result language, forwarded to Nominatim; `addressdetails` (boolean, optional) — Include address details, defaults to true; `city` (string, optional) — Structured city; `country` (string, optional) — Structured country; `countrycodes` (string, optional) — Comma-separated ISO 3166-1 alpha-2 country filters; `county` (string, optional) — Structured county; `extratags` (boolean, optional) — Include OSM extra tags; `limit` (integer, optional) — Maximum results, defaults to 10 and clamps to 20; `namedetails` (boolean, optional) — Include multilingual name details; `postalcode` (string, optional) — Structured postal code; `q` (string, optional) — Free-text search query; `state` (string, optional) — Structured state; `street` (string, optional) — Structured street or house number
+
+## GhanaWeb (9)
+
+### `ghanaweb_archive`
+
+- **HTTP:** `GET /ghanaweb/archive`
+- **What:** List GhanaWeb archive article URLs. Returns paginated canonical article URLs from one month sitemap. Discover accepted month values from ghanaweb-archive-months; the service only fetches child sitemap URLs derived from that official index.
+- **Params:** `limit` (integer, optional) — Items per page, 1–100 (default 50); `month` (string, **required**) — A YYYYMM value returned by ghanaweb-archive-months; `page` (integer, optional) — Page number (default 1)
+
+### `ghanaweb_archive_months`
+
+- **HTTP:** `GET /ghanaweb/archive/months`
+- **What:** Discover GhanaWeb archive months. Returns every YYYYMM month currently advertised by GhanaWeb's official article-sitemap index. Use one of these values with ghanaweb-archive.
+- **Params:** _none_
+
+### `ghanaweb_article`
+
+- **HTTP:** `GET /ghanaweb/article`
+- **What:** Get GhanaWeb article content. Returns public article metadata and readable body paragraphs. GhanaWeb's JSON-LD identifies the publisher rather than person authors, so authors are omitted.
+- **Params:** `url` (string, **required**) — Canonical GhanaWeb article URL ending in its numeric story ID
+
+### `ghanaweb_headlines`
+
+- **HTTP:** `GET /ghanaweb/headlines`
+- **What:** Get GhanaWeb section headlines. Returns article cards from a verified GhanaWeb section page.
+- **Params:** `section` (string, **required**) — Section slug from ghanaweb-sections
+
+### `ghanaweb_news`
+
+- **HTTP:** `GET /ghanaweb/news`
+- **What:** Get GhanaWeb latest stories. Returns GhanaWeb's current public stories from its Google News sitemap, including canonical URL, headline, and publication time.
+- **Params:** _none_
+
+### `ghanaweb_sections`
+
+- **HTTP:** `GET /ghanaweb/sections`
+- **What:** Get GhanaWeb article sections. Returns the complete verified article-bearing section set accepted by ghanaweb-headlines. Static, media, and non-article destinations are excluded.
+- **Params:** _none_
+
+### `ghanaweb_video`
+
+- **HTTP:** `GET /ghanaweb/video`
+- **What:** Get GhanaWeb TV video metadata. Returns public GhanaWeb TV metadata and the page's YouTube embed URL. The media itself is not retrieved.
+- **Params:** `id` (string, **required**) — Numeric GhanaWeb TV video ID
+
+### `ghanaweb_video_sections`
+
+- **HTTP:** `GET /ghanaweb/video-sections`
+- **What:** Get GhanaWeb TV video sections. Returns the complete four-value video category set accepted by ghanaweb-videos.
+- **Params:** _none_
+
+### `ghanaweb_videos`
+
+- **HTTP:** `GET /ghanaweb/videos`
+- **What:** List GhanaWeb TV videos. Returns current public video cards for one GhanaWeb TV category, including metadata and a canonical detail URL. This endpoint does not retrieve video media.
+- **Params:** `section` (string, **required**) — Video category from ghanaweb-video-sections
 
 ## GitHub (17)
 
@@ -7179,6 +7401,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **Params:** `request` (object, **required**) — Search request
 - **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
+## How-To Geek (1)
+
+### `howtogeek_news`
+
+- **HTTP:** `GET /howtogeek/news`
+- **What:** Get How-To Geek top stories. Returns current stories from How-To Geek's public RSS feed. Summaries are publisher teasers, not full article text. This feed-only route does not claim a complete section taxonomy or retrieve article bodies.
+- **Params:** _none_
+
 ## HuffPost (5)
 
 ### `huffpost_article`
@@ -7846,6 +8076,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /jcrew/suggest`
 - **What:** Get J.Crew or J.Crew Factory search-box suggestions. Returns the storefront's own search-box suggestions (typeahead) for a partial query -- a flat list of suggested search phrases, each with its own live total result count on the search index. Select the storefront with site (default jcrew). Not product data.
 - **Params:** `query` (string, **required**) — Partial search query; `site` (string, optional) — Storefront to search
+
+## Jerusalem Post (6)
+
+### `jerusalempost_article`
+
+- **HTTP:** `GET /jerusalempost/article`
+- **What:** Get Jerusalem Post article content. Returns public Jerusalem Post article metadata and free body paragraphs. If isAccessibleForFree is false, paywalled is true and body paragraphs are omitted; paid article text is not represented by feed snippets.
+- **Params:** `url` (string, **required**) — Canonical Jerusalem Post article URL
+
+### `jerusalempost_author`
+
+- **HTTP:** `GET /jerusalempost/author`
+- **What:** Get Jerusalem Post author profile. Returns a public author or blogger profile and article cards from its first-party profile page.
+- **Params:** `url` (string, **required**) — Canonical Jerusalem Post /author/<slug> or /blogger/<slug> profile URL
+
+### `jerusalempost_authors`
+
+- **HTTP:** `GET /jerusalempost/authors`
+- **What:** List Jerusalem Post author profiles. Returns the current author and blogger profile URLs discovered from the site's public Experts sitemap. This dynamic roster is intentionally exposed as a discovery endpoint.
+- **Params:** _none_
+
+### `jerusalempost_headlines`
+
+- **HTTP:** `GET /jerusalempost/headlines`
+- **What:** Get Jerusalem Post section headlines. Returns fresh non-premium stories from one public Jerusalem Post RSS section. Premium feed snippets are omitted.
+- **Params:** `section` (string, **required**) — Jerusalem Post section slug
+
+### `jerusalempost_news`
+
+- **HTTP:** `GET /jerusalempost/news`
+- **What:** Get Jerusalem Post top stories. Returns fresh non-premium Jerusalem Post stories from its public front-page RSS feed. Premium feed snippets are omitted.
+- **Params:** _none_
+
+### `jerusalempost_sections`
+
+- **HTTP:** `GET /jerusalempost/sections`
+- **What:** Get Jerusalem Post section inventory. Returns the live-verified public RSS sections accepted by jerusalempost-headlines.
+- **Params:** _none_
 
 ## JimmyJohns (5)
 
@@ -8825,13 +9093,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Liverpool Echo sections. Returns the public Liverpool Echo editorial section inventory used by liverpoolecho-headlines.
 - **Params:** _none_
 
-## LiveScore (14)
+## LiveScore (16)
 
 ### `livescore_competition`
 
 - **HTTP:** `GET /livescore/competition`
-- **What:** LiveScore competition page and section data. Returns the public page data for a competition route or one of its visible sections. Competition ids and tabs vary by sport; use paths linked from LiveScore's public navigation. This is a route lookup, not a complete competition directory.
+- **What:** LiveScore competition page and section data. Returns public competition or stage page data and its visible sections. Competition ids and tabs vary by sport; discover English sitemap-listed paths, including cricket stage pages, with /livescore/competitions.
 - **Params:** `path` (string, **required**) — Three to five lowercase path segments following /en/, such as football/england/premier-league or football/england/premier-league/standings
+
+### `livescore_competitions`
+
+- **HTTP:** `GET /livescore/competitions`
+- **What:** LiveScore competition page directory. Returns English competition pages listed in LiveScore's public competition sitemaps plus competition-shaped pages listed in the English cricket sport sitemap. The sitemap index has dedicated competition sitemaps for soccer, hockey, basketball, and tennis; cricket discovery remains partial and dynamic.
+- **Params:** _none_
 
 ### `livescore_live_scores`
 
@@ -8898,6 +9172,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /livescore/scores-toc`
 - **What:** LiveScore score date table of contents. Returns the event, player, section, and competition identifiers indexed by a sport and date. These IDs are date-specific and can help callers enumerate score-page sections.
 - **Params:** `date` (string, **required**) — Calendar date in YYYYMMDD format; `sport` (string, **required**) — LiveScore sport id; `timezone_offset` (integer, optional) — UTC offset in hours from -12 through 14; defaults to 0
+
+### `livescore_search`
+
+- **HTTP:** `GET /livescore/search`
+- **What:** Search LiveScore teams, competitions, and regions. Searches the public LiveScore index for a free-text term, or browse its current team, competition-stage, and region-category sections with an empty query. Results are dynamic, limited per section, and are not a complete historical competition directory. Use /livescore/sports to discover all supported sport tokens.
+- **Params:** `limit` (integer, optional) — Optional results per section (1 to 100). Defaults to 10 for a text query or 50 when query is empty.; `query` (string, optional) — Optional free-text team, competition, or region term (up to 100 characters). Omit or leave empty to browse current results.; `sport` (string, **required**) — LiveScore sport token
 
 ### `livescore_sports`
 
@@ -9225,6 +9505,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Mediaite sections. Returns the public Mediaite category taxonomy accepted by the headlines endpoint.
 - **Params:** _none_
 
+## Medical News Today (5)
+
+### `medicalnewstoday_article`
+
+- **HTTP:** `GET /medicalnewstoday/article`
+- **What:** Get a Medical News Today article. Returns public article metadata and body paragraphs. No login or paywall is bypassed. URLs under the robots-disallowed /articles/mnt-* path are rejected.
+- **Params:** `url` (string, **required**) — Canonical Medical News Today article URL
+
+### `medicalnewstoday_author`
+
+- **HTTP:** `GET /medicalnewstoday/author`
+- **What:** Get a Medical News Today author profile. Returns an author's public profile and recent articles. Supply either the author slug or profile URL.
+- **Params:** `slug` (string, optional) — Author slug including numeric id, e.g. peter-brown-1595; `url` (string, optional) — Public author profile URL
+
+### `medicalnewstoday_headlines`
+
+- **HTTP:** `GET /medicalnewstoday/headlines`
+- **What:** Get Medical News Today section headlines. Returns dated article cards from the dedicated Health News stream.
+- **Params:** `section` (string, **required**) — Medical News Today newsroom section
+
+### `medicalnewstoday_news`
+
+- **HTTP:** `GET /medicalnewstoday/news`
+- **What:** Get Medical News Today latest health news. Returns current stories from the site's dedicated Health News listing.
+- **Params:** _none_
+
+### `medicalnewstoday_sections`
+
+- **HTTP:** `GET /medicalnewstoday/sections`
+- **What:** Get Medical News Today newsroom sections. Returns the exact public editorial news-section value accepted by medicalnewstoday-headlines. Health Topics and Health Hubs are educational resources, not newsroom sections.
+- **Params:** _none_
+
 ## Mercari (5)
 
 ### `mercari_autocomplete`
@@ -9525,6 +9837,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Microsoft Store search suggestions for a prefix. Returns typeahead-style Microsoft Store search suggestions for a partial search term: plain-text completions plus a short list of matching products (id, title, icon, department, and store URL). Credential-free public Microsoft Store data, read directly from the store's own autocomplete API.
 - **Params:** `country` (string, optional) — Store country/region code (ISO-2); `locale` (string, optional) — Display locale (BCP-47); `prefix` (string, **required**) — Partial search term to autocomplete
 
+## Minnesota Star Tribune (1)
+
+### `startribune_news`
+
+- **HTTP:** `GET /startribune/news`
+- **What:** Get Minnesota Star Tribune top stories. Returns the public Star Tribune RSS feed with current story titles and canonical URLs; publisher summaries and publication dates are included when supplied by the feed. Optional bylines and images are returned only when present. Summaries are publisher teasers, not full article text. This feed-only route does not claim a complete section taxonomy or retrieve article bodies; use attribution when republishing feed content.
+- **Params:** _none_
+
 ## Mint (5)
 
 ### `livemint_article`
@@ -9621,7 +9941,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get an MIT Sloan Management Review topic archive. Returns article cards from one public Sloan Review topic page. Use sloanreview-categories for the complete accepted slug set; this includes the primary navigation topics and the site's child topic pages.
 - **Params:** `topic` (string, **required**) — Sloan Review topic slug returned by sloanreview-categories
 
-## MLB (12)
+## MLB (20)
+
+### `mlb_discovery`
+
+- **HTTP:** `GET /mlb/discovery`
+- **What:** Discover MLB sections and Stats API values. Returns MLB.com's live navigation tree, including hidden nodes labeled with visibility, and the MLB-only value sets for leagues, divisions, game types, roster types, standings types, stat groups, supported stat types, leader categories, MLB Pipeline prospect filters, league-stats hitter positions and player pools, and the observed Baseball Savant leaderboard categories and filters including Expected Statistics and Outs Above Average. Use these values to discover sections and supported filters before calling MLB endpoints.
+- **Params:** _none_
+
+### `mlb_editorial_feed`
+
+- **HTTP:** `GET /mlb/editorial-feed`
+- **What:** Get an MLB.com editorial feed. Returns a paginated first-party MLB.com news, video, or selection feed. Slugs are dynamic and not a complete closed topic catalog; discover current topic suggestions with mlb-search and sections with mlb-discovery. Feed items retain upstream Article, ShortContent, VSMContent, or Video fields.
+- **Params:** `language` (string, optional) — Feed locale; `limit` (integer, optional) — Items per page (1-100); `skip` (integer, optional) — Number of items to skip (0-100000); `slug` (string, **required**) — MLB feed or selection slug, such as mlb-news-list or sel-vvc-mlb-stories
 
 ### `mlb_game`
 
@@ -9641,11 +9973,17 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get MLB game play-by-play. Returns every at-bat and pitch/event record for an MLB game.
 - **Params:** `id` (string, **required**) — Numeric MLB game id
 
+### `mlb_league_leaders`
+
+- **HTTP:** `GET /mlb/league-leaders`
+- **What:** Get MLB league leaders. Returns ranked MLB leader entries for one or more validated categories. Use mlb-discovery for all accepted categories, groups, and game type codes.
+- **Params:** `categories` (string, **required**) — Comma-separated MLB leader category names; values are listed in mlb-discovery; `game_type` (string, optional) — MLB game type; `group` (string, optional) — Stat group; `league_id` (string, optional) — MLB league id; `limit` (integer, optional) — Leaders per category (1-100); `season` (integer, optional) — Four-digit season; defaults to current year
+
 ### `mlb_league_stats`
 
 - **HTTP:** `GET /mlb/league-stats`
-- **What:** Get ranked MLB league statistics. Returns ranked MLB season stat splits across both leagues. The group enum accepts `hitting`, `pitching`, and `fielding`.
-- **Params:** `group` (string, **required**) — Stat group; `limit` (integer, optional) — Results to return (1-100); `season` (integer, optional) — Four-digit season; defaults to current year
+- **What:** Get ranked MLB league statistics. Returns ranked MLB season stat splits across both leagues. The group enum accepts every value returned by mlb_discovery.
+- **Params:** `end_date` (string, optional) — End date for byDateRange stat types; requires start_date; `game_type` (string, optional) — MLB game type; `group` (string, **required**) — Stat group; `league_id` (string, optional) — MLB league id; `limit` (integer, optional) — Results to return (1-100); `offset` (integer, optional) — Zero-based result offset (0-10000); `opponent_player_id` (string, optional) — Required by vsPlayer stat types; `opponent_team_id` (string, optional) — Required by vsTeam stat types; `player_pool` (string, optional) — Qualified-player pool; `position` (string, optional) — Hitter position; use only with group=hitting; `season` (integer, optional) — Four-digit season; defaults to current year; `start_date` (string, optional) — Start date for byDateRange stat types; requires end_date; `stat_type` (string, optional) — Stats API stat type; defaults to season; `team_id` (string, optional) — Optional MLB team id; discover current team ids with mlb_teams
 
 ### `mlb_player`
 
@@ -9656,32 +9994,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `mlb_player_stats`
 
 - **HTTP:** `GET /mlb/player-stats`
-- **What:** Get MLB player season statistics. Returns one player's MLB season statistics. The group enum accepts `hitting`, `pitching`, and `fielding`.
-- **Params:** `group` (string, **required**) — Stat group; `id` (string, **required**) — Numeric MLB player id; `season` (integer, optional) — Four-digit season; defaults to current year
+- **What:** Get MLB player season statistics. Returns one player's MLB season statistics. The group enum accepts every value returned by mlb_discovery.
+- **Params:** `end_date` (string, optional) — End date for byDateRange stat types; requires start_date; `game_type` (string, optional) — MLB game type; `group` (string, **required**) — Stat group; `id` (string, **required**) — Numeric MLB player id; `opponent_player_id` (string, optional) — Required by vsPlayer stat types; `opponent_team_id` (string, optional) — Required by vsTeam stat types; `season` (integer, optional) — Four-digit season; defaults to current year; `start_date` (string, optional) — Start date for byDateRange stat types; requires end_date; `stat_type` (string, optional) — Stats API stat type; defaults to season
+
+### `mlb_prospect_stats`
+
+- **HTTP:** `GET /mlb/prospect-stats`
+- **What:** Get MLB Pipeline prospect statistics and rankings. Returns MLB Pipeline prospect stats from the anonymous first-party prospect tables. Supports the Top 100, all-prospect, or one-team list; batter/pitcher views; validated date periods and minimum thresholds; and local name/position filters. Use mlb_discovery for date periods, minimum thresholds, and positions. Team ids come from mlb_teams.
+- **Params:** `date_range` (string, optional) — Prospect table period; `limit` (integer, optional) — Rows to return (1-100); `list_type` (string, optional) — Prospect pool; `min_pa` (integer, optional) — Minimum PA threshold; `offset` (integer, optional) — Zero-based row offset; `player_type` (string, optional) — Player table; `position` (string, optional) — Position filter; `q` (string, optional) — Case-insensitive player-name substring; `team_id` (string, optional) — Optional MLB team id; selects that team's prospect list and overrides list_type
 
 ### `mlb_schedule`
 
 - **HTTP:** `GET /mlb/schedule`
 - **What:** Get the MLB schedule and scores. Returns MLB games, teams, scores, status, probable pitchers, venue, and series information for one date or date range, optionally filtered to a team.
-- **Params:** `date` (string, optional) — Single date in YYYY-MM-DD format; `end_date` (string, optional) — Range end in YYYY-MM-DD format; `start_date` (string, optional) — Range start in YYYY-MM-DD format; `team_id` (string, optional) — Numeric MLB team id
+- **Params:** `date` (string, optional) — Single date in YYYY-MM-DD format; `end_date` (string, optional) — Range end in YYYY-MM-DD format; `game_type` (string, optional) — Game type; `start_date` (string, optional) — Range start in YYYY-MM-DD format; `team_id` (string, optional) — Numeric MLB team id
+
+### `mlb_search`
+
+- **HTTP:** `GET /mlb/search`
+- **What:** Search MLB players, teams, and content topics. Returns the same anonymous MLB typeahead categories used by MLB.com: player suggestions, team suggestions, content topics, and search terms. Queries need at least three characters.
+- **Params:** `q` (string, **required**) — Search text; 3-100 characters
 
 ### `mlb_standings`
 
 - **HTTP:** `GET /mlb/standings`
-- **What:** Get MLB standings. Returns American League and National League standings grouped by division. The type enum accepts `regularSeason`, `wildCard`, and `springTraining`.
-- **Params:** `season` (integer, optional) — Four-digit season; defaults to current year; `type` (string, optional) — Standings type
+- **What:** Get MLB standings. Returns American League and National League standings using any supported standings type returned by mlb_discovery.
+- **Params:** `date` (string, optional) — Snapshot date in YYYY-MM-DD format; returns standings as of that date; `season` (integer, optional) — Four-digit season; defaults to current year; `type` (string, optional) — Standings type
+
+### `mlb_statcast`
+
+- **HTTP:** `GET /mlb/statcast-leaders`
+- **What:** Get Baseball Savant Statcast leaderboard data. Returns the standard anonymous Baseball Savant Statcast leaderboard for batters, pitchers, teams, or pitcher teams. Supports the page's season, team, batter position, minimum batted-ball event, and sortable metric filters, plus local pagination. Use mlb_discovery for exact filter sets. Other Baseball Savant leaderboard pages are listed there but are not represented by this route.
+- **Params:** `limit` (integer, optional) — Rows per page (1-500); `min_bbe` (string, optional) — Minimum batted-ball event threshold; `offset` (integer, optional) — Zero-based row offset; `position` (string, optional) — Batter position; `sort` (string, optional) — Sort field; `sort_dir` (string, optional) — Sort direction; `team_id` (string, optional) — Optional MLB team id from mlb_teams; `type` (string, optional) — Leaderboard row type; `year` (integer, optional) — Season; current season back 11 seasons
+
+### `mlb_statcast_expected`
+
+- **HTTP:** `GET /mlb/statcast-expected`
+- **What:** Get Baseball Savant Expected Statistics. Returns the separate Expected Statistics leaderboard with batter, pitcher, and team views; season, team, batter-position, BIP/PA qualifier and threshold filters; local metric sorting; and pagination. League-average values are returned separately.
+- **Params:** `filter_type` (string, optional) — Minimum qualifier type; `limit` (integer, optional) — Rows per page (1-500); `minimum` (string, optional) — Minimum BIP/PA threshold; `offset` (integer, optional) — Zero-based row offset; `position` (string, optional) — Batter position; only supported for type=batter; `sort` (string, optional) — Sort field; `sort_dir` (string, optional) — Sort direction; `team_id` (string, optional) — Optional MLB team id from mlb_teams; `type` (string, optional) — Leaderboard view; `year` (integer, optional) — Season from 2015 through the current season
+
+### `mlb_statcast_oaa`
+
+- **HTTP:** `GET /mlb/statcast-oaa`
+- **What:** Get Baseball Savant Outs Above Average. Returns the separate Outs Above Average leaderboard for fielders, fielding teams, batters, batting teams, or pitchers. Supports season range, split years, team, monthly range, attempts, position, detailed fielder roles, local sorting, and pagination.
+- **Params:** `end_year` (integer, optional) — End season from 2016 through the current season; `limit` (integer, optional) — Rows per page (1-500); `minimum` (string, optional) — Minimum attempts; `offset` (integer, optional) — Zero-based row offset; `position` (string, optional) — Position filter; `range` (string, optional) — Time range; `roles` (string, optional) — Comma-separated detailed fielder role ids. Values: 32,30,31,77,71,70,72,78,43,42,40,41,46,87,81,82,89,64,62,60,61,98,91,90,92,99,51,50,52; `sort` (string, optional) — Sort field; `sort_dir` (string, optional) — Sort direction; `split` (string, optional) — Return one row per season in a year range; `start_year` (integer, optional) — Start season from 2016 through the current season; `team_id` (string, optional) — Optional MLB team id from mlb_teams; `type` (string, optional) — Leaderboard view
 
 ### `mlb_team_roster`
 
 - **HTTP:** `GET /mlb/team-roster`
-- **What:** Get an MLB team roster. Returns a team's players, jersey numbers, positions, and roster status. The roster_type enum accepts `active`, `40Man`, and `fullSeason`.
+- **What:** Get an MLB team roster. Returns a team's players, jersey numbers, positions, and roster status. The roster_type parameter accepts every value in the live MLB value set returned by mlb_discovery.
 - **Params:** `roster_type` (string, optional) — Roster type; `season` (integer, optional) — Four-digit season; defaults to current year; `team_id` (string, **required**) — Numeric MLB team id
 
 ### `mlb_team_stats`
 
 - **HTTP:** `GET /mlb/team-stats`
-- **What:** Get MLB team season statistics. Returns one team's season statistics. Group accepts `hitting`, `pitching`, and `fielding`.
-- **Params:** `group` (string, **required**) — Statistics group; `season` (integer, optional) — Four-digit season; `team_id` (string, **required**) — Numeric MLB team id
+- **What:** Get MLB team season statistics. Returns one team's season statistics. Group accepts every value returned by mlb_discovery.
+- **Params:** `end_date` (string, optional) — End date for byDateRange stat types; requires start_date; `game_type` (string, optional) — MLB game type; `group` (string, **required**) — Statistics group; `opponent_player_id` (string, optional) — Required by vsPlayer stat types; `opponent_team_id` (string, optional) — Required by vsTeam stat types; `season` (integer, optional) — Four-digit season; `start_date` (string, optional) — Start date for byDateRange stat types; requires end_date; `stat_type` (string, optional) — Stats API stat type; defaults to season; `team_id` (string, **required**) — Numeric MLB team id
 
 ### `mlb_teams`
 
@@ -9694,6 +10062,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /mlb/transactions`
 - **What:** List MLB transactions. Lists signings, trades, options, assignments, injured-list moves, and other MLB transactions for a date range.
 - **Params:** `end_date` (string, **required**) — Range end in YYYY-MM-DD format; `player_id` (string, optional) — Numeric MLB player id; `start_date` (string, **required**) — Range start in YYYY-MM-DD format; `team_id` (string, optional) — Numeric MLB team id
+
+## MLive (1)
+
+### `mlive_news`
+
+- **HTTP:** `GET /mlive/news`
+- **What:** Get MLive top stories. Returns current MLive top stories from its anonymous Arc RSS feed, including title, canonical URL, brief summary, author, publication time, and image where available. Article pages are currently blocked by DataDome; category endpoints are deferred because the full accepted section set could not be verified.
+- **Params:** _none_
 
 ## Moda Operandi (4)
 
@@ -9887,7 +10263,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get NBC News RSS sections. Returns the exact live-verified public RSS section slugs accepted by nbc-headlines.
 - **Params:** _none_
 
-## NDTV (5)
+## NDTV (6)
 
 ### `ndtv_article`
 
@@ -9912,6 +10288,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /ndtv/news`
 - **What:** Get NDTV latest stories. Returns the stories NDTV published in roughly the last two days, newest first, from its public news sitemap: title, canonical URL, publication time, keywords, and lead image.
 - **Params:** _none_
+
+### `ndtv_search`
+
+- **HTTP:** `GET /ndtv/search`
+- **What:** Search NDTV news stories. Returns one page of NDTV's public news topic results (15 story cards per page). Unknown topics return 404. The result page supports no sort or filter parameters.
+- **Params:** `page` (integer, optional) — 1-based result page; `query` (string, **required**) — Search terms
 
 ### `ndtv_sections`
 
@@ -10256,6 +10638,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /nike/suggest`
 - **What:** Get Nike search-box suggestions. Returns Nike's own search-box suggestions (typeahead) for a partial query, the same "Top Suggestions" list shown while typing into Nike's search box: a flat list of suggested search phrases, no product data.
 - **Params:** `query` (string, **required**) — Partial search query
+
+## NJ.com (1)
+
+### `njcom_news`
+
+- **HTTP:** `GET /njcom/news`
+- **What:** Get NJ.com top stories. Returns current NJ.com top stories from its anonymous Arc RSS feed, including title, canonical URL, short feed summary, author, publication time, and image where available. Category discovery and section headlines are deferred because the complete accepted feed taxonomy could not be verified; article and author routes remain unverified behind the site's DataDome challenge.
+- **Params:** _none_
 
 ## NPR (5)
 
@@ -11769,6 +12159,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List Popeyes Rewards' points-redemption catalog. Returns a page of Popeyes Rewards' points-redemption catalog -- menu items and combos a member can redeem directly for a fixed number of loyalty points (e.g. "600 points for Cheese Bites"), distinct from /popeyes/offers (priced deals), /popeyes/quests (challenges) and /popeyes/promotions (bonus-points campaigns). This is public CMS content, not a signed-in member's own points balance or redemption history. points is the loyalty points cost to redeem; other per-account/per-order redemption restrictions Popeyes may publish on a reward are not exposed by this endpoint.
 - **Params:** `limit` (integer, optional) — Maximum rewards to return, 1-100 (default 20); `market` (string, optional) — Restaurant market: US (default) or CA; `offset` (integer, optional) — Number of rewards to skip, for paging (default 0)
 
+## Popular Mechanics (1)
+
+### `popularmechanics_news`
+
+- **HTTP:** `GET /popularmechanics/news`
+- **What:** Get Popular Mechanics top stories. Returns current stories from Popular Mechanics' public all-stories RSS feed. Summaries are publisher teasers, not full article text. This feed-only route does not claim a complete section taxonomy or retrieve article bodies.
+- **Params:** _none_
+
 ## Poshmark (8)
 
 ### `poshmark_brand`
@@ -12901,7 +13299,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Rothy's store metadata. Returns normalized storefront metadata for Rothy's (https://www.rothys.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
 - **Params:** _none_
 
-## Rotten Tomatoes (14)
+## Rotten Tomatoes (20)
 
 ### `rottentomatoes_browse_filters`
 
@@ -12927,11 +13325,47 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Rotten Tomatoes critic directory. Returns current or inactive critics from Rotten Tomatoes' public author directory. Browse one letter or search by name; use `next_cursor` as `after` or `previous_cursor` as `before`, as indicated by the corresponding page flag. The letter values come from the live directory controls.
 - **Params:** `after` (string, optional) — Opaque cursor from data.next_cursor; `before` (string, optional) — Opaque cursor from data.previous_cursor; cannot be combined with after; `inactive` (boolean, optional) — Include the site's inactive critics list; `letter` (string, optional) — Directory letter. Omit when using search; default a.; `limit` (integer, optional) — Rows per page, default 100, range 1 to 100; `search` (string, optional) — Search critics by name; cannot be combined with letter
 
+### `rottentomatoes_editorial_content`
+
+- **HTTP:** `GET /rottentomatoes/editorial/content`
+- **What:** Rotten Tomatoes editorial content listing. Lists paginated editorial records from the selected public content type. The pages collection lists public editorial section and campaign indexes. Use the editorial types endpoint to discover accepted type values.
+- **Params:** `include_children` (boolean, optional) — For categories only, include child categories; default false; `limit` (integer, optional) — Rows per page, default 20, range 1 to 100; `operator` (string, optional) — Whether any or all selected terms must match; default OR; `page` (integer, optional) — One-based result page from 1 to 10000; default 1; `query` (string, optional) — Optional text filter; maximum 200 bytes; `taxonomy` (string, optional) — Optional editorial taxonomy; discover type support from /rottentomatoes/editorial/taxonomies; `term_ids` (string, optional) — Comma-separated positive term IDs; required with taxonomy; `type` (string, **required**) — Editorial content type
+
+### `rottentomatoes_editorial_detail`
+
+- **HTTP:** `GET /rottentomatoes/editorial/detail`
+- **What:** Rotten Tomatoes editorial article detail. Returns the public body, paragraphs, headings, links, images, and video embeds from an Editorial article, gallery, guide, on-the-go article, or preview. Discover paths from editorial content collections. The response body_html preserves public Gutenberg/ranked-list markup.
+- **Params:** `path` (string, **required**) — Discovered Editorial content path
+
 ### `rottentomatoes_editorial_search`
 
 - **HTTP:** `GET /rottentomatoes/editorial/search`
 - **What:** Rotten Tomatoes editorial search. Searches public Rotten Tomatoes editorial content, including articles and guides. Results come from its anonymous WordPress REST search endpoint and include content subtype plus total-page metadata.
 - **Params:** `limit` (integer, optional) — Rows per page, default 10, range 1 to 100; `page` (integer, optional) — One-based result page from 1 to 10000; default 1; `query` (string, **required**) — Editorial search text; maximum 200 bytes
+
+### `rottentomatoes_editorial_section`
+
+- **HTTP:** `GET /rottentomatoes/editorial/section`
+- **What:** Rotten Tomatoes editorial section archive. Returns the rendered article cards for a discovered editorial page, RT hub, or hub subpage. Discover paths through editorial content types `pages`, `rt-hub`, and `hub-subpage`. Static pages use `articles_page` pagination upstream; hubs use `/page/{n}/`.
+- **Params:** `page` (integer, optional) — One-based page, default 1; `path` (string, **required**) — Discovered editorial section path
+
+### `rottentomatoes_editorial_taxonomies`
+
+- **HTTP:** `GET /rottentomatoes/editorial/taxonomies`
+- **What:** Rotten Tomatoes editorial taxonomy discovery. Returns the complete set of public editorial term vocabularies accepted by the term discovery endpoint, with the content types each taxonomy filters.
+- **Params:** _none_
+
+### `rottentomatoes_editorial_terms`
+
+- **HTTP:** `GET /rottentomatoes/editorial/terms`
+- **What:** Rotten Tomatoes editorial taxonomy terms. Pages public terms from one discovered editorial taxonomy. All taxonomy values are listed by `/rottentomatoes/editorial/taxonomies`; `parent` is accepted only for `categories`, while `offset` is supported by all other taxonomies.
+- **Params:** `exclude` (string, optional) — Comma-separated positive term IDs to exclude; `hide_empty` (boolean, optional) — When true, omit terms with no assigned content; `include` (string, optional) — Comma-separated positive term IDs to include; `limit` (integer, optional) — Terms per page, default 20, range 1 to 100; `offset` (integer, optional) — Zero-based offset; accepted except for categories; `order` (string, optional) — Term sort direction; `orderby` (string, optional) — Term sort key; `page` (integer, optional) — One-based page, default 1; `parent` (integer, optional) — Category parent ID; accepted only for categories; `post` (integer, optional) — Filter to terms assigned to this content record; `search` (string, optional) — Optional term search; maximum 200 bytes; `slug` (string, optional) — Optional term slug or comma-separated slugs; `taxonomy` (string, **required**) — Editorial taxonomy value
+
+### `rottentomatoes_editorial_types`
+
+- **HTTP:** `GET /rottentomatoes/editorial/types`
+- **What:** Rotten Tomatoes editorial content types. Returns the complete live-verified set of editorial type values accepted by the editorial content endpoint.
+- **Params:** _none_
 
 ### `rottentomatoes_episode`
 
@@ -13108,6 +13542,70 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /samsclub/product/{id}/related`
 - **What:** Get a Sam's Club product's related items. Returns the related-item carousels shown on a Sam's Club product page, each a named shelf (e.g. "Members also considered", "Items you may like") of normalized products with pricing, rating, and image. id is the numeric product id from a Sam's Club product page's /ip/ URL. This upstream source does not distinguish an unrecognized id from a known one -- an unrecognized id still returns generic fallback shelves rather than an error.
 - **Params:** `id` (string, **required**) — Numeric Sam's Club product id, from a product page's /ip/{slug}/{id} URL
+
+## SBS News (5)
+
+### `sbsnews_article`
+
+- **HTTP:** `GET /sbsnews/article`
+- **What:** Get SBS News article content. Returns public SBS News article metadata and body paragraphs from a canonical article URL, including standard, Insight, and Dateline stories.
+- **Params:** `url` (string, **required**) — Canonical SBS News article URL
+
+### `sbsnews_author`
+
+- **HTTP:** `GET /sbsnews/author`
+- **What:** Get an SBS News author profile. Returns a public SBS News byline collection with author name, profile image, biography, pagination state, and recent articles.
+- **Params:** `page` (integer, optional) — 1-based author archive page number; `url` (string, **required**) — Canonical SBS News author collection URL
+
+### `sbsnews_headlines`
+
+- **HTTP:** `GET /sbsnews/headlines`
+- **What:** Get SBS News section headlines. Returns current SBS News headlines for a supported navigation or featured topic section.
+- **Params:** `section` (string, **required**) — Section slug from sbsnews-sections
+
+### `sbsnews_news`
+
+- **HTTP:** `GET /sbsnews/news`
+- **What:** Get SBS News top stories. Returns current SBS News Top Stories from its public RSS feed.
+- **Params:** _none_
+
+### `sbsnews_sections`
+
+- **HTTP:** `GET /sbsnews/sections`
+- **What:** Get SBS News sections. Returns the SBS News navigation and featured public topic/collection pages accepted by sbsnews-headlines.
+- **Params:** _none_
+
+## ScienceAlert (5)
+
+### `sciencealert_article`
+
+- **HTTP:** `GET /sciencealert/article`
+- **What:** Get ScienceAlert article content. Returns public article metadata and body paragraphs from a canonical ScienceAlert article URL.
+- **Params:** `url` (string, **required**) — Canonical ScienceAlert article URL
+
+### `sciencealert_author`
+
+- **HTTP:** `GET /sciencealert/author`
+- **What:** Get a ScienceAlert author profile. Returns a journalist's public profile, biography, social links, and one page of recent articles.
+- **Params:** `url` (string, **required**) — Canonical ScienceAlert author listing URL, e.g. /michelle-starr/page/0
+
+### `sciencealert_headlines`
+
+- **HTTP:** `GET /sciencealert/headlines`
+- **What:** Get ScienceAlert section headlines. Returns headlines from one public ScienceAlert section.
+- **Params:** `section` (string, **required**) — Section slug
+
+### `sciencealert_news`
+
+- **HTTP:** `GET /sciencealert/news`
+- **What:** Get ScienceAlert top stories. Returns fresh ScienceAlert top stories from its public RSS feed.
+- **Params:** _none_
+
+### `sciencealert_sections`
+
+- **HTTP:** `GET /sciencealert/sections`
+- **What:** Get ScienceAlert sections. Returns the complete public top-level ScienceAlert taxonomy used by headlines.
+- **Params:** _none_
 
 ## SCMP (4)
 
@@ -13785,6 +14283,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get the Sky News videos hub. Returns recent videos from the public Sky News videos hub.
 - **Params:** _none_
 
+## Sky Sports (5)
+
+### `skysports_article`
+
+- **HTTP:** `GET /skysports/article`
+- **What:** Get a Sky Sports article. Returns public Sky Sports article metadata and body paragraphs from a canonical article URL.
+- **Params:** `url` (string, **required**) — Canonical Sky Sports article URL
+
+### `skysports_author`
+
+- **HTTP:** `GET /skysports/author`
+- **What:** Get a Sky Sports author profile. Returns public author metadata, biography, and recent articles from a canonical author URL.
+- **Params:** `url` (string, **required**) — Canonical Sky Sports author URL
+
+### `skysports_headlines`
+
+- **HTTP:** `GET /skysports/headlines`
+- **What:** Get Sky Sports section headlines. Returns current headlines from one live Sky Sports section page.
+- **Params:** `section` (string, **required**) — Sky Sports section slug
+
+### `skysports_news`
+
+- **HTTP:** `GET /skysports/news`
+- **What:** Get Sky Sports top stories. Returns the latest Sky Sports top stories from its public RSS feed.
+- **Params:** _none_
+
+### `skysports_sections`
+
+- **HTTP:** `GET /skysports/sections`
+- **What:** Get Sky Sports sections. Returns the 22 currently reachable sections in the live Sky Sports sports navigation.
+- **Params:** _none_
+
 ## Slate (3)
 
 ### `slate_article`
@@ -14160,6 +14690,134 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sportingnews/sections`
 - **What:** Get Sporting News sections. Returns the public Sporting News US sport, league and topic feeds accepted by the headlines endpoint.
 - **Params:** _none_
+
+## Sportskeeda (21)
+
+### `sportskeeda_article`
+
+- **HTTP:** `GET /sportskeeda/article`
+- **What:** Get a Sportskeeda article. Returns public article metadata and body paragraphs for a Sportskeeda article slug. Discovered slugs may contain case-preserving percent-encoded characters. A canonical Sportskeeda URL remains accepted for existing clients. Provide exactly one of slug or url; use /sportskeeda/sections and /sportskeeda/sitemaps for topic discovery.
+- **Params:** `slug` (string, optional) — Sportskeeda article path without host; preferred over url; `url` (string, optional) — Canonical Sportskeeda article URL; alternative to slug
+
+### `sportskeeda_author`
+
+- **HTTP:** `GET /sportskeeda/author`
+- **What:** Get a Sportskeeda author profile. Returns one public Sportskeeda author's name and recent article links from the canonical author profile.
+- **Params:** `slug` (string, optional) — Sportskeeda author slug, e.g. sripad; `url` (string, optional) — Canonical Sportskeeda /author/<slug> URL; alternative to slug
+
+### `sportskeeda_depth_chart`
+
+- **HTTP:** `GET /sportskeeda/depth-chart`
+- **What:** Get the NFL depth chart for all teams. Returns every team and listed position/player from the live NFL depth chart. Players and team detail pages include slugs when Sportskeeda links them.
+- **Params:** `slug` (string, **required**) — Must be nfl/depth-chart
+
+### `sportskeeda_feed`
+
+- **HTTP:** `GET /sportskeeda/feed`
+- **What:** Get articles from a Sportskeeda section or topic. Fetches the public article cards for a Sportskeeda section, event, team-news, or player-news slug. Page pagination is accepted only when the source advertises it.
+- **Params:** `page` (integer, optional) — Source page, for feeds with pagination; defaults to 1; `slug` (string, **required**) — Sportskeeda path without host, such as wwe, go/epl, or player/jannik-sinner/news
+
+### `sportskeeda_football_data`
+
+- **HTTP:** `GET /sportskeeda/football-data`
+- **What:** Get football fixtures and standings. Returns first-party football widget fixtures and standings. Event and optional matchday must be offered by football-options. Omit matchday for the widget's selected round. Scores and standings reflect upstream data, which may be stale.
+- **Params:** `event` (string, **required**) — Tournament slug from football-options; current selector: featured, epl, uefa-champions-league, uefa-nations-league, la-liga, ligue-1, mls, bundesliga; `matchday` (string, optional) — Round slug from football-options for the selected event
+
+### `sportskeeda_football_options`
+
+- **HTTP:** `GET /sportskeeda/football-options`
+- **What:** Discover football tournaments and matchdays. Lists the live football widget's tournament selector. With event, follows the full previous/next matchday chain and returns every currently offered round slug. The discovered values feed sportskeeda-football-data.
+- **Params:** `event` (string, optional) — Live tournament slug; current selector: featured, epl, uefa-champions-league, uefa-nations-league, la-liga, ligue-1, mls, bundesliga. Omit to list tournaments only
+
+### `sportskeeda_news`
+
+- **HTTP:** `GET /sportskeeda/news`
+- **What:** Get Sportskeeda's latest news. Returns the current public Sportskeeda news sitemap entries. Use /sportskeeda/sections to discover all navigation groups and sports landing pages, and /sportskeeda/taxonomy-search to search categories, events, teams, players, wiki pages, and wiki tags.
+- **Params:** _none_
+
+### `sportskeeda_page_data`
+
+- **HTTP:** `GET /sportskeeda/page-data`
+- **What:** Get Sportskeeda structured sports tables. Returns server-rendered team, player, roster, leaderboard, ranking, depth, and playoff tables. Season and type are accepted only if offered by the selected page; discover their values with page-options. The trade value chart uses its public JSON asset and has a separate endpoint. A page with no structured tables returns an upstream error.
+- **Params:** `season` (integer, optional) — Season year offered by this page's page-options filter; `slug` (string, **required**) — Sportskeeda path without host; `type` (string, optional) — Season phase offered by this page's page-options filter; leaderboard pages offer pre, regular, post
+
+### `sportskeeda_page_options`
+
+- **HTTP:** `GET /sportskeeda/page-options`
+- **What:** Discover Sportskeeda page menus and filters. Returns the page's live contextual menus, team and ranking links, tabs, schedule views, and every currently offered select-filter value. Leaderboard category and metric values carry their destination slugs.
+- **Params:** `slug` (string, **required**) — Sportskeeda path without host
+
+### `sportskeeda_player_stats`
+
+- **HTTP:** `GET /sportskeeda/player-stats`
+- **What:** Get NFL or NBA player season stats across event phases. Reads the anonymous season-stats JSON embedded in an NFL or NBA player stats page. Without event_type, returns all event phases offered by that page's selector. NBA source data may contain extra internal phases that the page does not offer; these are excluded. Discover the current event_type values with sportskeeda-page-options for the same slug.
+- **Params:** `event_type` (string, optional) — Event phase offered by this player's stats-event-type-dropdown; NFL offers 0,1,2,3 and NBA offers 0,1,2; `slug` (string, **required**) — NFL or NBA player stats path without host
+
+### `sportskeeda_profile`
+
+- **HTTP:** `GET /sportskeeda/profile`
+- **What:** Get a Sportskeeda player or team profile. Returns facts and available news cards from a public player or team profile path, including sport-specific slugs.
+- **Params:** `slug` (string, **required**) — Sportskeeda player or team profile path without host
+
+### `sportskeeda_schedule`
+
+- **HTTP:** `GET /sportskeeda/schedule`
+- **What:** Get Sportskeeda fixtures and results. Parses public cricket and football match cards or sport-specific schedule tables. A genuine no-matches widget returns status no_matches.
+- **Params:** `slug` (string, **required**) — Sportskeeda schedule path without host
+
+### `sportskeeda_sections`
+
+- **HTTP:** `GET /sportskeeda/sections`
+- **What:** Discover Sportskeeda sections and topics. Returns the live parent/child navigation tree, including external destinations marked explicitly, plus every public sports landing URL from Sportskeeda's sports sitemap.
+- **Params:** _none_
+
+### `sportskeeda_sitemap_items`
+
+- **HTTP:** `GET /sportskeeda/sitemap-items`
+- **What:** Page through a Sportskeeda sitemap. Returns canonical URLs and host-free path slugs from one sitemap discovered by /sportskeeda/sitemaps. Returned path slugs preserve case and percent-encode unusual characters. A sitemap_url remains accepted for existing callers. Provide exactly one; the source is checked against the live index and robots sitemap list on each call.
+- **Params:** `limit` (integer, optional) — Page size from 1 to 500; defaults to 100; `offset` (integer, optional) — Zero-based item offset; `sitemap_url` (string, optional) — Exact sitemap URL; alternative to slug; `slug` (string, optional) — Sitemap slug returned by /sportskeeda/sitemaps; preferred
+
+### `sportskeeda_sitemaps`
+
+- **HTTP:** `GET /sportskeeda/sitemaps`
+- **What:** Discover Sportskeeda sitemap sources. Returns current public sitemaps from Sportskeeda's sitemap index and robots.txt. Pass a returned slug to /sportskeeda/sitemap-items to page through its complete URL set.
+- **Params:** _none_
+
+### `sportskeeda_standings`
+
+- **HTTP:** `GET /sportskeeda/standings`
+- **What:** Get Sportskeeda standings or rankings. Parses current standings tables. College basketball supports a live-discovered season value; its unpopulated current season returns status no_data.
+- **Params:** `season` (integer, optional) — College basketball season starting year; live values from standings-options; `slug` (string, **required**) — Sportskeeda standings or rankings path without host
+
+### `sportskeeda_standings_options`
+
+- **HTTP:** `GET /sportskeeda/standings-options`
+- **What:** Discover Sportskeeda college standings seasons and conferences. Returns all live-offered college basketball season years and the conference slugs for the selected season.
+- **Params:** `season` (integer, optional) — A live-offered starting year; selects its conference list; `slug` (string, **required**) — College basketball standings slug
+
+### `sportskeeda_taxonomy_search`
+
+- **HTTP:** `GET /sportskeeda/taxonomy-search`
+- **What:** Search Sportskeeda categories and entities. Calls Sportskeeda's anonymous frontend taxonomy search across categories, events, teams, players, wiki pages, and wiki tags. The upstream UI always searches all six types; the q phrase is sanitized and capped at 100 characters just like the site.
+- **Params:** `q` (string, **required**) — Search phrase; punctuation is replaced with spaces and the result is capped at 100 characters
+
+### `sportskeeda_trade_values`
+
+- **HTTP:** `GET /sportskeeda/trade-values`
+- **What:** Get NFL redraft or dynasty trade values. Reads the same anonymous JSON asset as the public chart. Returns source update time, ranks, values, and linked player slugs. The All position includes all source rows, including positions not displayed as chart sections. Discover current chart and filter choices with page-options.
+- **Params:** `limit` (integer, optional) — Page size from 1 to 500; `offset` (integer, optional) — Zero-based player offset; `position` (string, optional) — Displayed position section; defaults to All; `scoring` (string, optional) — Scoring system; defaults to ppr; `slug` (string, **required**) — Chart path without host; `superflex` (boolean, optional) — Use superflex chart; defaults to false
+
+### `sportskeeda_video`
+
+- **HTTP:** `GET /sportskeeda/video`
+- **What:** Get Sportskeeda video metadata. Returns the public video player's ID, title, poster, and stream URL for a video page slug.
+- **Params:** `slug` (string, **required**) — Individual Sportskeeda video page path without host
+
+### `sportskeeda_videos`
+
+- **HTTP:** `GET /sportskeeda/videos`
+- **What:** List Sportskeeda videos and channels. Lists public video cards from the main video library or a sport/event video listing.
+- **Params:** `slug` (string, optional) — Video listing path without host; defaults to videos
 
 ## Spotify (30)
 
@@ -15498,6 +16156,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /indianexpress/sections`
 - **What:** Get The Indian Express RSS sections. Returns the public The Indian Express RSS section inventory used by the headlines endpoint.
+- **Params:** _none_
+
+## The Motley Fool (5)
+
+### `motleyfool_article`
+
+- **HTTP:** `GET /motleyfool/article`
+- **What:** Get a Motley Fool article. Returns public metadata and body paragraphs from a canonical Fool investing article URL.
+- **Params:** `url` (string, **required**) — Canonical The Motley Fool investing article URL
+
+### `motleyfool_author`
+
+- **HTTP:** `GET /motleyfool/author`
+- **What:** Get a Motley Fool author profile. Returns a public Fool author's name, biography, image, and recent articles from a canonical author URL.
+- **Params:** `url` (string, **required**) — Canonical The Motley Fool author URL
+
+### `motleyfool_headlines`
+
+- **HTTP:** `GET /motleyfool/headlines`
+- **What:** Get The Motley Fool section headlines. Returns article headlines from one live-verified public Fool investing-news section.
+- **Params:** `section` (string, **required**) — The Motley Fool section slug
+
+### `motleyfool_news`
+
+- **HTTP:** `GET /motleyfool/news`
+- **What:** Get The Motley Fool top investing stories. Returns recent public investing stories from The Motley Fool's news sitemap.
+- **Params:** _none_
+
+### `motleyfool_sections`
+
+- **HTTP:** `GET /motleyfool/sections`
+- **What:** List The Motley Fool news sections. Returns the complete article-bearing Stock Market News section set accepted by motleyfool_headlines.
 - **Params:** _none_
 
 ## The New Yorker (5)
@@ -17396,7 +18086,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get one Whataburger store's detail. Returns one Whataburger store: postal address, coordinates, phone, published week of opening hours, the restaurant services (curbside, delivery) Whataburger lists for it, and a per-channel hours breakdown (dine-in, drive-thru, curbside, delivery) where the channel's hours genuinely differ from the store's top-level hours. Store paths come from GET /whataburger/sitemap -- a store's canonical, curbside and delivery page paths all describe the same physical restaurant and return the same address; the response's own path field always reports the canonical page. Passing a state or city directory path returns a 404 rather than a hollow record. Note Whataburger's ordering/menu site returns no usable response for automated requests, so there is no credential-free menu source and this family is a locator only.
 - **Params:** `path` (string, **required**) — Store path from a /whataburger/sitemap entry
 
-## Whatnot (3)
+## Whatnot (4)
 
 ### `whatnot_browse`
 
@@ -17415,6 +18105,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /whatnot/live/{id}`
 - **What:** Get a Whatnot live show's current shop feed. Returns a Whatnot live show's current shop feed: every product, auction, and giveaway listing currently visible in the show, each with its seller's rating. Public data sourced from Whatnot's own GraphQL API.
 - **Params:** `id` (string, **required**) — Whatnot live show id, e.g. from a browse result's id field
+
+### `whatnot_seller`
+
+- **HTTP:** `GET /whatnot/seller/{username}`
+- **What:** Get a Whatnot seller profile and shows. Returns public seller profile details and one page of the seller's livestreams. Use next_cursor as cursor to continue while has_more is true. The endpoint does not include shop products.
+- **Params:** `cursor` (string, optional) — Opaque cursor from a prior response's next_cursor; `username` (string, **required**) — Whatnot seller username
 
 ## Wingstop (6)
 

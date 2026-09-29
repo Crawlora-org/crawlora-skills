@@ -115,6 +115,9 @@ case "$path" in
   /agoda/homes/search) route_allowed=true ;;
   /agoda/hotels/search) route_allowed=true ;;
   /airbnb/search) route_allowed=true ;;
+  /alcom/headlines) route_allowed=true ;;
+  /alcom/news) route_allowed=true ;;
+  /alcom/sections) route_allowed=true ;;
   /aljazeera/article) route_allowed=true ;;
   /aljazeera/author) route_allowed=true ;;
   /aljazeera/categories) route_allowed=true ;;
@@ -309,6 +312,7 @@ case "$path" in
   /booking/search) route_allowed=true ;;
   /boots/search) route_allowed=true ;;
   /boots/suggest) route_allowed=true ;;
+  /bostonglobe/news) route_allowed=true ;;
   /boxofficemojo/brand) route_allowed=true ;;
   /boxofficemojo/brands) route_allowed=true ;;
   /boxofficemojo/calendar) route_allowed=true ;;
@@ -451,6 +455,7 @@ case "$path" in
   /chrono24/listing) route_allowed=true ;;
   /chrono24/models) route_allowed=true ;;
   /chrono24/search) route_allowed=true ;;
+  /clevelandcom/news) route_allowed=true ;;
   /cna/article) route_allowed=true ;;
   /cna/author) route_allowed=true ;;
   /cna/headlines) route_allowed=true ;;
@@ -799,33 +804,54 @@ case "$path" in
   /fortune/ranking/lists) route_allowed=true ;;
   /fortune/ranking/years) route_allowed=true ;;
   /fortune/sections) route_allowed=true ;;
+  /fotmob/audio-matches) route_allowed=true ;;
+  /fotmob/fifa-ranking-periods) route_allowed=true ;;
+  /fotmob/fifa-rankings) route_allowed=true ;;
+  /fotmob/latest-news) route_allowed=true ;;
   /fotmob/league) route_allowed=true ;;
   /fotmob/leagues) route_allowed=true ;;
+  /fotmob/lineup-builder-players) route_allowed=true ;;
+  /fotmob/lineup-builder-team) route_allowed=true ;;
   /fotmob/match) route_allowed=true ;;
+  /fotmob/match-media) route_allowed=true ;;
   /fotmob/matches) route_allowed=true ;;
   /fotmob/news) route_allowed=true ;;
+  /fotmob/news-article) route_allowed=true ;;
   /fotmob/player) route_allowed=true ;;
   /fotmob/player-match-stats) route_allowed=true ;;
   /fotmob/player-matches) route_allowed=true ;;
   /fotmob/player-stats) route_allowed=true ;;
   /fotmob/search) route_allowed=true ;;
+  /fotmob/seasons) route_allowed=true ;;
   /fotmob/stats) route_allowed=true ;;
   /fotmob/stats-categories) route_allowed=true ;;
   /fotmob/table) route_allowed=true ;;
   /fotmob/team) route_allowed=true ;;
+  /fotmob/team-fixtures) route_allowed=true ;;
   /fotmob/team-news) route_allowed=true ;;
   /fotmob/transfers) route_allowed=true ;;
+  /fotmob/trending-news) route_allowed=true ;;
+  /fotmob/trending-searches) route_allowed=true ;;
+  /fotmob/tv-guide) route_allowed=true ;;
+  /fotmob/tv-guide-channels) route_allowed=true ;;
+  /fotmob/tv-guide-countries) route_allowed=true ;;
   /foxnews/article) route_allowed=true ;;
   /foxnews/author) route_allowed=true ;;
   /foxnews/headlines) route_allowed=true ;;
   /foxnews/news) route_allowed=true ;;
   /foxnews/search) route_allowed=true ;;
   /foxnews/sections) route_allowed=true ;;
+  /foxsports/article) route_allowed=true ;;
+  /foxsports/headlines) route_allowed=true ;;
+  /foxsports/news) route_allowed=true ;;
+  /foxsports/sections) route_allowed=true ;;
   /france24/article) route_allowed=true ;;
   /france24/author) route_allowed=true ;;
   /france24/headlines) route_allowed=true ;;
   /france24/news) route_allowed=true ;;
   /france24/sections) route_allowed=true ;;
+  /freemalaysiatoday/news) route_allowed=true ;;
+  /freemalaysiatoday/sections) route_allowed=true ;;
   /ft/article) route_allowed=true ;;
   /ft/author) route_allowed=true ;;
   /ft/categories) route_allowed=true ;;
@@ -862,6 +888,15 @@ case "$path" in
   /geocoding/lookup) route_allowed=true ;;
   /geocoding/reverse) route_allowed=true ;;
   /geocoding/search) route_allowed=true ;;
+  /ghanaweb/archive) route_allowed=true ;;
+  /ghanaweb/archive/months) route_allowed=true ;;
+  /ghanaweb/article) route_allowed=true ;;
+  /ghanaweb/headlines) route_allowed=true ;;
+  /ghanaweb/news) route_allowed=true ;;
+  /ghanaweb/sections) route_allowed=true ;;
+  /ghanaweb/video) route_allowed=true ;;
+  /ghanaweb/video-sections) route_allowed=true ;;
+  /ghanaweb/videos) route_allowed=true ;;
   /github/search/repositories) route_allowed=true ;;
   /github/search/users) route_allowed=true ;;
   /github/trending) route_allowed=true ;;
@@ -1028,6 +1063,7 @@ case "$path" in
   /hotels/reviews) route_allowed=true ;;
   /hotels/reviews/archive) route_allowed=true ;;
   /hotels/search) route_allowed=true ;;
+  /howtogeek/news) route_allowed=true ;;
   /huffpost/article) route_allowed=true ;;
   /huffpost/author) route_allowed=true ;;
   /huffpost/headlines) route_allowed=true ;;
@@ -1146,6 +1182,12 @@ case "$path" in
   /jcrew/size-chart) route_allowed=true ;;
   /jcrew/stores) route_allowed=true ;;
   /jcrew/suggest) route_allowed=true ;;
+  /jerusalempost/article) route_allowed=true ;;
+  /jerusalempost/author) route_allowed=true ;;
+  /jerusalempost/authors) route_allowed=true ;;
+  /jerusalempost/headlines) route_allowed=true ;;
+  /jerusalempost/news) route_allowed=true ;;
+  /jerusalempost/sections) route_allowed=true ;;
   /jimmy-johns/menu) route_allowed=true ;;
   /jimmy-johns/modifiers) route_allowed=true ;;
   /jimmy-johns/nearby) route_allowed=true ;;
@@ -1291,6 +1333,7 @@ case "$path" in
   /livescience/news) route_allowed=true ;;
   /livescience/sections) route_allowed=true ;;
   /livescore/competition) route_allowed=true ;;
+  /livescore/competitions) route_allowed=true ;;
   /livescore/live-scores) route_allowed=true ;;
   /livescore/match) route_allowed=true ;;
   /livescore/match-stats) route_allowed=true ;;
@@ -1302,6 +1345,7 @@ case "$path" in
   /livescore/player) route_allowed=true ;;
   /livescore/scores) route_allowed=true ;;
   /livescore/scores-toc) route_allowed=true ;;
+  /livescore/search) route_allowed=true ;;
   /livescore/sports) route_allowed=true ;;
   /livescore/team) route_allowed=true ;;
   /lululemon/categories) route_allowed=true ;;
@@ -1338,6 +1382,11 @@ case "$path" in
   /mediaite/headlines) route_allowed=true ;;
   /mediaite/news) route_allowed=true ;;
   /mediaite/sections) route_allowed=true ;;
+  /medicalnewstoday/article) route_allowed=true ;;
+  /medicalnewstoday/author) route_allowed=true ;;
+  /medicalnewstoday/headlines) route_allowed=true ;;
+  /medicalnewstoday/news) route_allowed=true ;;
+  /medicalnewstoday/sections) route_allowed=true ;;
   /men/article) route_allowed=true ;;
   /men/author) route_allowed=true ;;
   /men/headlines) route_allowed=true ;;
@@ -1378,18 +1427,27 @@ case "$path" in
   /mirror/headlines) route_allowed=true ;;
   /mirror/news) route_allowed=true ;;
   /mirror/sections) route_allowed=true ;;
+  /mlb/discovery) route_allowed=true ;;
+  /mlb/editorial-feed) route_allowed=true ;;
   /mlb/game) route_allowed=true ;;
   /mlb/game-boxscore) route_allowed=true ;;
   /mlb/game-play-by-play) route_allowed=true ;;
+  /mlb/league-leaders) route_allowed=true ;;
   /mlb/league-stats) route_allowed=true ;;
   /mlb/player) route_allowed=true ;;
   /mlb/player-stats) route_allowed=true ;;
+  /mlb/prospect-stats) route_allowed=true ;;
   /mlb/schedule) route_allowed=true ;;
+  /mlb/search) route_allowed=true ;;
   /mlb/standings) route_allowed=true ;;
+  /mlb/statcast-expected) route_allowed=true ;;
+  /mlb/statcast-leaders) route_allowed=true ;;
+  /mlb/statcast-oaa) route_allowed=true ;;
   /mlb/team-roster) route_allowed=true ;;
   /mlb/team-stats) route_allowed=true ;;
   /mlb/teams) route_allowed=true ;;
   /mlb/transactions) route_allowed=true ;;
+  /mlive/news) route_allowed=true ;;
   /modaoperandi/categories) route_allowed=true ;;
   /modaoperandi/designers) route_allowed=true ;;
   /modaoperandi/product) route_allowed=true ;;
@@ -1405,6 +1463,11 @@ case "$path" in
   /moneycontrol/headlines) route_allowed=true ;;
   /moneycontrol/news) route_allowed=true ;;
   /moneycontrol/sections) route_allowed=true ;;
+  /motleyfool/article) route_allowed=true ;;
+  /motleyfool/author) route_allowed=true ;;
+  /motleyfool/headlines) route_allowed=true ;;
+  /motleyfool/news) route_allowed=true ;;
+  /motleyfool/sections) route_allowed=true ;;
   /nationafrica/article) route_allowed=true ;;
   /nationafrica/author) route_allowed=true ;;
   /nationafrica/headlines) route_allowed=true ;;
@@ -1424,6 +1487,7 @@ case "$path" in
   /ndtv/author) route_allowed=true ;;
   /ndtv/headlines) route_allowed=true ;;
   /ndtv/news) route_allowed=true ;;
+  /ndtv/search) route_allowed=true ;;
   /ndtv/sections) route_allowed=true ;;
   /news18/article) route_allowed=true ;;
   /news18/author) route_allowed=true ;;
@@ -1468,6 +1532,7 @@ case "$path" in
   /ninetofivemac/headlines) route_allowed=true ;;
   /ninetofivemac/news) route_allowed=true ;;
   /ninetofivemac/sections) route_allowed=true ;;
+  /njcom/news) route_allowed=true ;;
   /npr/article) route_allowed=true ;;
   /npr/author) route_allowed=true ;;
   /npr/categories) route_allowed=true ;;
@@ -1672,6 +1737,7 @@ case "$path" in
   /popeyes/promotions) route_allowed=true ;;
   /popeyes/quests) route_allowed=true ;;
   /popeyes/rewards) route_allowed=true ;;
+  /popularmechanics/news) route_allowed=true ;;
   /poshmark/brands) route_allowed=true ;;
   /poshmark/categories) route_allowed=true ;;
   /poshmark/search) route_allowed=true ;;
@@ -1816,7 +1882,13 @@ case "$path" in
   /rottentomatoes/browse/movies) route_allowed=true ;;
   /rottentomatoes/browse/tv) route_allowed=true ;;
   /rottentomatoes/critics/authors) route_allowed=true ;;
+  /rottentomatoes/editorial/content) route_allowed=true ;;
+  /rottentomatoes/editorial/detail) route_allowed=true ;;
   /rottentomatoes/editorial/search) route_allowed=true ;;
+  /rottentomatoes/editorial/section) route_allowed=true ;;
+  /rottentomatoes/editorial/taxonomies) route_allowed=true ;;
+  /rottentomatoes/editorial/terms) route_allowed=true ;;
+  /rottentomatoes/editorial/types) route_allowed=true ;;
   /rottentomatoes/episode) route_allowed=true ;;
   /rottentomatoes/movie) route_allowed=true ;;
   /rottentomatoes/movie/reviews) route_allowed=true ;;
@@ -1840,6 +1912,16 @@ case "$path" in
   /salon/sections) route_allowed=true ;;
   /samsclub/category) route_allowed=true ;;
   /samsclub/departments) route_allowed=true ;;
+  /sbsnews/article) route_allowed=true ;;
+  /sbsnews/author) route_allowed=true ;;
+  /sbsnews/headlines) route_allowed=true ;;
+  /sbsnews/news) route_allowed=true ;;
+  /sbsnews/sections) route_allowed=true ;;
+  /sciencealert/article) route_allowed=true ;;
+  /sciencealert/author) route_allowed=true ;;
+  /sciencealert/headlines) route_allowed=true ;;
+  /sciencealert/news) route_allowed=true ;;
+  /sciencealert/sections) route_allowed=true ;;
   /scmp/article) route_allowed=true ;;
   /scmp/author) route_allowed=true ;;
   /scmp/headlines) route_allowed=true ;;
@@ -1932,6 +2014,11 @@ case "$path" in
   /skynews/sections) route_allowed=true ;;
   /skynews/video) route_allowed=true ;;
   /skynews/videos) route_allowed=true ;;
+  /skysports/article) route_allowed=true ;;
+  /skysports/author) route_allowed=true ;;
+  /skysports/headlines) route_allowed=true ;;
+  /skysports/news) route_allowed=true ;;
+  /skysports/sections) route_allowed=true ;;
   /slate/article) route_allowed=true ;;
   /slate/categories) route_allowed=true ;;
   /slate/headlines) route_allowed=true ;;
@@ -2002,6 +2089,27 @@ case "$path" in
   /sportingnews/headlines) route_allowed=true ;;
   /sportingnews/news) route_allowed=true ;;
   /sportingnews/sections) route_allowed=true ;;
+  /sportskeeda/article) route_allowed=true ;;
+  /sportskeeda/author) route_allowed=true ;;
+  /sportskeeda/depth-chart) route_allowed=true ;;
+  /sportskeeda/feed) route_allowed=true ;;
+  /sportskeeda/football-data) route_allowed=true ;;
+  /sportskeeda/football-options) route_allowed=true ;;
+  /sportskeeda/news) route_allowed=true ;;
+  /sportskeeda/page-data) route_allowed=true ;;
+  /sportskeeda/page-options) route_allowed=true ;;
+  /sportskeeda/player-stats) route_allowed=true ;;
+  /sportskeeda/profile) route_allowed=true ;;
+  /sportskeeda/schedule) route_allowed=true ;;
+  /sportskeeda/sections) route_allowed=true ;;
+  /sportskeeda/sitemap-items) route_allowed=true ;;
+  /sportskeeda/sitemaps) route_allowed=true ;;
+  /sportskeeda/standings) route_allowed=true ;;
+  /sportskeeda/standings-options) route_allowed=true ;;
+  /sportskeeda/taxonomy-search) route_allowed=true ;;
+  /sportskeeda/trade-values) route_allowed=true ;;
+  /sportskeeda/video) route_allowed=true ;;
+  /sportskeeda/videos) route_allowed=true ;;
   /spotify-podcasts/categories) route_allowed=true ;;
   /spotify-podcasts/charts) route_allowed=true ;;
   /spotify-podcasts/episode) route_allowed=true ;;
@@ -2048,6 +2156,7 @@ case "$path" in
   /starbucks/menu) route_allowed=true ;;
   /starbucks/nearest-store) route_allowed=true ;;
   /starbucks/stores) route_allowed=true ;;
+  /startribune/news) route_allowed=true ;;
   /steam/achievements) route_allowed=true ;;
   /steam/app) route_allowed=true ;;
   /steam/charts/concurrent) route_allowed=true ;;
@@ -2964,6 +3073,7 @@ if [ "$route_allowed" = false ]; then
   '^/walmart/product/[^/]+/reviews$'
   '^/wayfair/product/[^/]+$'
   '^/whatnot/live/[^/]+$'
+  '^/whatnot/seller/[^/]+$'
   '^/wish/product/[^/]+$'
   '^/wish/product/[^/]+/related$'
   '^/wish/product/[^/]+/reviews$'
@@ -3095,6 +3205,9 @@ route_method_regexes=(
   '^GET:/airbnb/room/[^/]+/calendar$'
   '^GET:/airbnb/room/[^/]+/reviews$'
   '^GET:/airbnb/search$'
+  '^GET:/alcom/headlines$'
+  '^GET:/alcom/news$'
+  '^GET:/alcom/sections$'
   '^GET:/aljazeera/article$'
   '^GET:/aljazeera/author$'
   '^GET:/aljazeera/categories$'
@@ -3328,6 +3441,7 @@ route_method_regexes=(
   '^GET:/booking/search$'
   '^GET:/boots/search$'
   '^GET:/boots/suggest$'
+  '^GET:/bostonglobe/news$'
   '^GET:/boxofficemojo/brand$'
   '^GET:/boxofficemojo/brands$'
   '^GET:/boxofficemojo/calendar$'
@@ -3478,6 +3592,7 @@ route_method_regexes=(
   '^GET:/chrono24/listing$'
   '^GET:/chrono24/models$'
   '^GET:/chrono24/search$'
+  '^GET:/clevelandcom/news$'
   '^GET:/cna/article$'
   '^GET:/cna/author$'
   '^GET:/cna/headlines$'
@@ -3881,33 +3996,54 @@ route_method_regexes=(
   '^GET:/fortune/ranking/lists$'
   '^GET:/fortune/ranking/years$'
   '^GET:/fortune/sections$'
+  '^GET:/fotmob/audio-matches$'
+  '^GET:/fotmob/fifa-ranking-periods$'
+  '^GET:/fotmob/fifa-rankings$'
+  '^GET:/fotmob/latest-news$'
   '^GET:/fotmob/league$'
   '^GET:/fotmob/leagues$'
+  '^GET:/fotmob/lineup-builder-players$'
+  '^GET:/fotmob/lineup-builder-team$'
   '^GET:/fotmob/match$'
+  '^GET:/fotmob/match-media$'
   '^GET:/fotmob/matches$'
   '^GET:/fotmob/news$'
+  '^GET:/fotmob/news-article$'
   '^GET:/fotmob/player$'
   '^GET:/fotmob/player-match-stats$'
   '^GET:/fotmob/player-matches$'
   '^GET:/fotmob/player-stats$'
   '^GET:/fotmob/search$'
+  '^GET:/fotmob/seasons$'
   '^GET:/fotmob/stats$'
   '^GET:/fotmob/stats-categories$'
   '^GET:/fotmob/table$'
   '^GET:/fotmob/team$'
+  '^GET:/fotmob/team-fixtures$'
   '^GET:/fotmob/team-news$'
   '^GET:/fotmob/transfers$'
+  '^GET:/fotmob/trending-news$'
+  '^GET:/fotmob/trending-searches$'
+  '^GET:/fotmob/tv-guide$'
+  '^GET:/fotmob/tv-guide-channels$'
+  '^GET:/fotmob/tv-guide-countries$'
   '^GET:/foxnews/article$'
   '^GET:/foxnews/author$'
   '^GET:/foxnews/headlines$'
   '^GET:/foxnews/news$'
   '^GET:/foxnews/search$'
   '^GET:/foxnews/sections$'
+  '^GET:/foxsports/article$'
+  '^GET:/foxsports/headlines$'
+  '^GET:/foxsports/news$'
+  '^GET:/foxsports/sections$'
   '^GET:/france24/article$'
   '^GET:/france24/author$'
   '^GET:/france24/headlines$'
   '^GET:/france24/news$'
   '^GET:/france24/sections$'
+  '^GET:/freemalaysiatoday/news$'
+  '^GET:/freemalaysiatoday/sections$'
   '^GET:/ft/article$'
   '^GET:/ft/author$'
   '^GET:/ft/categories$'
@@ -3944,6 +4080,15 @@ route_method_regexes=(
   '^GET:/geocoding/lookup$'
   '^GET:/geocoding/reverse$'
   '^GET:/geocoding/search$'
+  '^GET:/ghanaweb/archive$'
+  '^GET:/ghanaweb/archive/months$'
+  '^GET:/ghanaweb/article$'
+  '^GET:/ghanaweb/headlines$'
+  '^GET:/ghanaweb/news$'
+  '^GET:/ghanaweb/sections$'
+  '^GET:/ghanaweb/video$'
+  '^GET:/ghanaweb/video-sections$'
+  '^GET:/ghanaweb/videos$'
   '^GET:/github/org/[^/]+$'
   '^GET:/github/org/[^/]+/repos$'
   '^GET:/github/repo/[^/]+/[^/]+$'
@@ -4142,6 +4287,7 @@ route_method_regexes=(
   '^GET:/homedepot/search$'
   '^GET:/homedepot/suggest$'
   '^GET:/hotels/autocomplete$'
+  '^GET:/howtogeek/news$'
   '^GET:/huffpost/article$'
   '^GET:/huffpost/author$'
   '^GET:/huffpost/headlines$'
@@ -4263,6 +4409,12 @@ route_method_regexes=(
   '^GET:/jcrew/size-chart$'
   '^GET:/jcrew/stores$'
   '^GET:/jcrew/suggest$'
+  '^GET:/jerusalempost/article$'
+  '^GET:/jerusalempost/author$'
+  '^GET:/jerusalempost/authors$'
+  '^GET:/jerusalempost/headlines$'
+  '^GET:/jerusalempost/news$'
+  '^GET:/jerusalempost/sections$'
   '^GET:/jimmy-johns/menu$'
   '^GET:/jimmy-johns/modifiers$'
   '^GET:/jimmy-johns/nearby$'
@@ -4430,6 +4582,7 @@ route_method_regexes=(
   '^GET:/livescience/news$'
   '^GET:/livescience/sections$'
   '^GET:/livescore/competition$'
+  '^GET:/livescore/competitions$'
   '^GET:/livescore/live-scores$'
   '^GET:/livescore/match$'
   '^GET:/livescore/match-stats$'
@@ -4441,6 +4594,7 @@ route_method_regexes=(
   '^GET:/livescore/player$'
   '^GET:/livescore/scores$'
   '^GET:/livescore/scores-toc$'
+  '^GET:/livescore/search$'
   '^GET:/livescore/sports$'
   '^GET:/livescore/team$'
   '^GET:/lululemon/categories$'
@@ -4483,6 +4637,11 @@ route_method_regexes=(
   '^GET:/mediaite/headlines$'
   '^GET:/mediaite/news$'
   '^GET:/mediaite/sections$'
+  '^GET:/medicalnewstoday/article$'
+  '^GET:/medicalnewstoday/author$'
+  '^GET:/medicalnewstoday/headlines$'
+  '^GET:/medicalnewstoday/news$'
+  '^GET:/medicalnewstoday/sections$'
   '^GET:/men/article$'
   '^GET:/men/author$'
   '^GET:/men/headlines$'
@@ -4541,18 +4700,27 @@ route_method_regexes=(
   '^GET:/mirror/headlines$'
   '^GET:/mirror/news$'
   '^GET:/mirror/sections$'
+  '^GET:/mlb/discovery$'
+  '^GET:/mlb/editorial-feed$'
   '^GET:/mlb/game$'
   '^GET:/mlb/game-boxscore$'
   '^GET:/mlb/game-play-by-play$'
+  '^GET:/mlb/league-leaders$'
   '^GET:/mlb/league-stats$'
   '^GET:/mlb/player$'
   '^GET:/mlb/player-stats$'
+  '^GET:/mlb/prospect-stats$'
   '^GET:/mlb/schedule$'
+  '^GET:/mlb/search$'
   '^GET:/mlb/standings$'
+  '^GET:/mlb/statcast-expected$'
+  '^GET:/mlb/statcast-leaders$'
+  '^GET:/mlb/statcast-oaa$'
   '^GET:/mlb/team-roster$'
   '^GET:/mlb/team-stats$'
   '^GET:/mlb/teams$'
   '^GET:/mlb/transactions$'
+  '^GET:/mlive/news$'
   '^GET:/modaoperandi/categories$'
   '^GET:/modaoperandi/designers$'
   '^GET:/modaoperandi/product$'
@@ -4568,6 +4736,11 @@ route_method_regexes=(
   '^GET:/moneycontrol/headlines$'
   '^GET:/moneycontrol/news$'
   '^GET:/moneycontrol/sections$'
+  '^GET:/motleyfool/article$'
+  '^GET:/motleyfool/author$'
+  '^GET:/motleyfool/headlines$'
+  '^GET:/motleyfool/news$'
+  '^GET:/motleyfool/sections$'
   '^GET:/nationafrica/article$'
   '^GET:/nationafrica/author$'
   '^GET:/nationafrica/headlines$'
@@ -4587,6 +4760,7 @@ route_method_regexes=(
   '^GET:/ndtv/author$'
   '^GET:/ndtv/headlines$'
   '^GET:/ndtv/news$'
+  '^GET:/ndtv/search$'
   '^GET:/ndtv/sections$'
   '^GET:/news18/article$'
   '^GET:/news18/author$'
@@ -4631,6 +4805,7 @@ route_method_regexes=(
   '^GET:/ninetofivemac/headlines$'
   '^GET:/ninetofivemac/news$'
   '^GET:/ninetofivemac/sections$'
+  '^GET:/njcom/news$'
   '^GET:/npr/article$'
   '^GET:/npr/author$'
   '^GET:/npr/categories$'
@@ -4884,6 +5059,7 @@ route_method_regexes=(
   '^GET:/popeyes/promotions$'
   '^GET:/popeyes/quests$'
   '^GET:/popeyes/rewards$'
+  '^GET:/popularmechanics/news$'
   '^GET:/poshmark/brand/[^/]+$'
   '^GET:/poshmark/brands$'
   '^GET:/poshmark/categories$'
@@ -5069,7 +5245,13 @@ route_method_regexes=(
   '^GET:/rottentomatoes/browse/movies$'
   '^GET:/rottentomatoes/browse/tv$'
   '^GET:/rottentomatoes/critics/authors$'
+  '^GET:/rottentomatoes/editorial/content$'
+  '^GET:/rottentomatoes/editorial/detail$'
   '^GET:/rottentomatoes/editorial/search$'
+  '^GET:/rottentomatoes/editorial/section$'
+  '^GET:/rottentomatoes/editorial/taxonomies$'
+  '^GET:/rottentomatoes/editorial/terms$'
+  '^GET:/rottentomatoes/editorial/types$'
   '^GET:/rottentomatoes/episode$'
   '^GET:/rottentomatoes/movie$'
   '^GET:/rottentomatoes/movie/reviews$'
@@ -5098,6 +5280,16 @@ route_method_regexes=(
   '^GET:/samsclub/departments$'
   '^GET:/samsclub/product/[^/]+$'
   '^GET:/samsclub/product/[^/]+/related$'
+  '^GET:/sbsnews/article$'
+  '^GET:/sbsnews/author$'
+  '^GET:/sbsnews/headlines$'
+  '^GET:/sbsnews/news$'
+  '^GET:/sbsnews/sections$'
+  '^GET:/sciencealert/article$'
+  '^GET:/sciencealert/author$'
+  '^GET:/sciencealert/headlines$'
+  '^GET:/sciencealert/news$'
+  '^GET:/sciencealert/sections$'
   '^GET:/scmp/article$'
   '^GET:/scmp/author$'
   '^GET:/scmp/headlines$'
@@ -5207,6 +5399,11 @@ route_method_regexes=(
   '^GET:/skynews/sections$'
   '^GET:/skynews/video$'
   '^GET:/skynews/videos$'
+  '^GET:/skysports/article$'
+  '^GET:/skysports/author$'
+  '^GET:/skysports/headlines$'
+  '^GET:/skysports/news$'
+  '^GET:/skysports/sections$'
   '^GET:/slate/article$'
   '^GET:/slate/categories$'
   '^GET:/slate/headlines$'
@@ -5277,6 +5474,27 @@ route_method_regexes=(
   '^GET:/sportingnews/headlines$'
   '^GET:/sportingnews/news$'
   '^GET:/sportingnews/sections$'
+  '^GET:/sportskeeda/article$'
+  '^GET:/sportskeeda/author$'
+  '^GET:/sportskeeda/depth-chart$'
+  '^GET:/sportskeeda/feed$'
+  '^GET:/sportskeeda/football-data$'
+  '^GET:/sportskeeda/football-options$'
+  '^GET:/sportskeeda/news$'
+  '^GET:/sportskeeda/page-data$'
+  '^GET:/sportskeeda/page-options$'
+  '^GET:/sportskeeda/player-stats$'
+  '^GET:/sportskeeda/profile$'
+  '^GET:/sportskeeda/schedule$'
+  '^GET:/sportskeeda/sections$'
+  '^GET:/sportskeeda/sitemap-items$'
+  '^GET:/sportskeeda/sitemaps$'
+  '^GET:/sportskeeda/standings$'
+  '^GET:/sportskeeda/standings-options$'
+  '^GET:/sportskeeda/taxonomy-search$'
+  '^GET:/sportskeeda/trade-values$'
+  '^GET:/sportskeeda/video$'
+  '^GET:/sportskeeda/videos$'
   '^GET:/spotify-podcasts/categories$'
   '^GET:/spotify-podcasts/charts$'
   '^GET:/spotify-podcasts/episode$'
@@ -5324,6 +5542,7 @@ route_method_regexes=(
   '^GET:/starbucks/nearest-store$'
   '^GET:/starbucks/product/[^/]+/[^/]+$'
   '^GET:/starbucks/stores$'
+  '^GET:/startribune/news$'
   '^GET:/steam/achievements$'
   '^GET:/steam/app$'
   '^GET:/steam/category/[^/]+$'
@@ -5770,6 +5989,7 @@ route_method_regexes=(
   '^GET:/whatnot/browse$'
   '^GET:/whatnot/categories$'
   '^GET:/whatnot/live/[^/]+$'
+  '^GET:/whatnot/seller/[^/]+$'
   '^GET:/wingstop/delivery-store$'
   '^GET:/wingstop/directory$'
   '^GET:/wingstop/flavors$'
