@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**3065 endpoints across 433 platform group(s).**
+**3315 endpoints across 459 platform group(s).**
 
 ## 1stDibs (4)
 
@@ -145,6 +145,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /7now/suggest`
 - **What:** Get 7NOW search-term suggestions. Returns search-term completions for a partial query, e.g. "chi" -> "chips ahoy", "chips", "chicken". No store is required. q must be at least 3 characters -- shorter values return a typed invalid-param error, matching upstream's own enforced minimum. vertical selects which search index to complete against, and the indexes are materially different rather than variations on one list: for "chi", `convenience` answers "chips ahoy, chips, chicken wings" while `restaurant` answers "chipotle, chinese food, chili". `global` is a sparse cross-vertical index -- many prefixes legitimately return no suggestions there.
 - **Params:** `q` (string, **required**) — Partial search term, at least 3 characters.; `vertical` (string, optional) — Which search index to complete against. One of: convenience, restaurant, global. Defaults to convenience.
+
+## 9to5Google (5)
+
+### `ninetofivegoogle_article`
+
+- **HTTP:** `GET /ninetofivegoogle/article`
+- **What:** Get a 9to5Google article. Returns public 9to5Google article metadata and readable body paragraphs from a canonical dated article URL. Audio-first podcast archive slugs are excluded from the sections list; podcast episodes that appear in the main feed can still be read when their page exposes metadata and paragraphs.
+- **Params:** `url` (string, **required**) — Canonical 9to5Google article URL
+
+### `ninetofivegoogle_author`
+
+- **HTTP:** `GET /ninetofivegoogle/author`
+- **What:** Get a 9to5Google author profile. Returns a 9to5Google author's name, avatar, biography, social links, and recent articles from a canonical author URL.
+- **Params:** `url` (string, **required**) — Canonical 9to5Google author URL
+
+### `ninetofivegoogle_headlines`
+
+- **HTTP:** `GET /ninetofivegoogle/headlines`
+- **What:** Get 9to5Google section headlines. Returns current headlines from one public guide or editorial archive RSS feed.
+- **Params:** `section` (string, **required**) — Slug returned by ninetofivegoogle_sections
+
+### `ninetofivegoogle_news`
+
+- **HTTP:** `GET /ninetofivegoogle/news`
+- **What:** Get 9to5Google top stories. Returns recent 9to5Google story metadata and short summaries from its public RSS feed.
+- **Params:** _none_
+
+### `ninetofivegoogle_sections`
+
+- **HTTP:** `GET /ninetofivegoogle/sections`
+- **What:** Discover 9to5Google sections. Returns the 58 topic guides linked by the current first-party Guides directory and five separately navigable editorial feeds. Use each slug with the headlines endpoint.
+- **Params:** _none_
 
 ## 9to5Mac (5)
 
@@ -483,6 +515,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get AL.com editorial sections. Returns the three top-level editorial sections exposed in AL.com's site navigation and accepted by the headlines endpoint.
 - **Params:** _none_
 
+## AliExpress (3)
+
+### `aliexpress_reviews`
+
+- **HTTP:** `GET /aliexpress/reviews`
+- **What:** Get AliExpress product reviews. Returns one page of public reviews and rating statistics for a numeric AliExpress product id. AliExpress currently returns up to 20 review records per page.
+- **Params:** `page` (integer, optional) — 1-indexed review page (1-50), defaults to 1; `product_id` (string, **required**) — Numeric AliExpress product id
+
+### `aliexpress_search`
+
+- **HTTP:** `GET /aliexpress/search`
+- **What:** Search AliExpress products. Returns one page (up to 60 products) of public keyword search results with product ids, titles, links, images, prices, ratings, sold text, discount, SKU id, ship-from country, and store name when AliExpress lists them. Results can be sorted and filtered by price, free shipping, the Choice program, and product attributes; list the attribute values for a keyword with the search-filters endpoint. The search uses the anonymous US English/USD locale. Product-detail pages are currently unavailable through the supported HTTP profiles.
+- **Params:** `attr` (string, optional) — Attribute filter <attributeId>-<valueId>, from the search-filters endpoint for the same q; comma-separate up to 5 values, one per attribute group; `choice` (boolean, optional) — Only products in AliExpress's Choice program; `free_shipping` (boolean, optional) — Only free-shipping products; `max_price` (number, optional) — Maximum price in USD (0-1000000), not below min_price; `min_price` (number, optional) — Minimum price in USD (0-1000000); `page` (integer, optional) — 1-indexed result page (1-200), defaults to 1; `q` (string, **required**) — Free-text search keywords; `sort` (string, optional) — Sort order. Allowed values: best_match (default), orders, price_asc, price_desc
+
+### `aliexpress_search_filters`
+
+- **HTTP:** `GET /aliexpress/search-filters`
+- **What:** List AliExpress search filters. Returns every sort value and boolean filter the search endpoint accepts, plus the product-attribute filters (brand, color, style, and so on) AliExpress offers for the keyword, as ready-to-use attr values. Attribute filters differ per keyword, so call this with the same q as the search.
+- **Params:** `q` (string, **required**) — Free-text search keywords
+
 ## Allbirds (11)
 
 ### `allbirds_collection_products`
@@ -683,6 +735,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /androidauthority/sections`
 - **What:** Get Android Authority sections. Returns the public Android Authority section inventory accepted by the headlines endpoint.
+- **Params:** _none_
+
+## Android Police (5)
+
+### `androidpolice_article`
+
+- **HTTP:** `GET /androidpolice/article`
+- **What:** Get Android Police article content. Returns public Android Police article metadata and readable body paragraphs from a canonical article URL.
+- **Params:** `url` (string, **required**) — Canonical Android Police article URL
+
+### `androidpolice_author`
+
+- **HTTP:** `GET /androidpolice/author`
+- **What:** Get an Android Police author profile. Returns a public author's byline metadata, biography, social links, and recent articles from a canonical author URL. Only the first page is covered because author pagination is disallowed by robots.txt.
+- **Params:** `url` (string, **required**) — Canonical Android Police author URL
+
+### `androidpolice_headlines`
+
+- **HTTP:** `GET /androidpolice/headlines`
+- **What:** Get Android Police section headlines. Returns recent headlines from one of the 18 live-verified primary navigation RSS feeds.
+- **Params:** `section` (string, **required**) — Android Police section slug
+
+### `androidpolice_news`
+
+- **HTTP:** `GET /androidpolice/news`
+- **What:** Get Android Police top stories. Returns current Android Police top stories from its public RSS feed.
+- **Params:** _none_
+
+### `androidpolice_sections`
+
+- **HTTP:** `GET /androidpolice/sections`
+- **What:** Get Android Police sections. Returns the complete live-verified Android Police primary navigation feed inventory.
 - **Params:** _none_
 
 ## Anime (9)
@@ -1039,7 +1123,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve Apple Podcasts "You Might Also Like" related shows. Returns the "You Might Also Like" rail for a single show, sourced from the modern podcasts.apple.com show page's listener-cohort recommendation data.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Apple Podcasts show ID; `limit` (integer, optional) — Number of related shows to return, default 20, max 50
 
-## AppStore (13)
+## AppStore (15)
 
 ### `appstore_app`
 
@@ -1052,6 +1136,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /appstore/categories`
 - **What:** Retrieve App Store chart categories and collections. Returns every category ID and chart collection accepted by `/appstore/list`, including Games and Magazines & Newspapers subgenres with their parent ID. Collections carry their device platform (`phone`, `pad`, `mac`), chart type (`top_free`, `top_paid`, `top_grossing`, `top`, `new`), and whether the feed currently returns entries.
 - **Params:** _none_
+
+### `appstore_collection`
+
+- **HTTP:** `GET /appstore/collection`
+- **What:** Retrieve apps in one App Store collection. Returns app items embedded in an Apple room or EDS collection page. Discover IDs with `appstore_collections`. `platform` enum: `iphone`, `ipad`, `mac`, `vision`, `watch`, `tv`. `collection_id` must be a numeric room ID or `eds.UUID` ID returned by the discovery endpoint.
+- **Params:** `collection_id` (string, **required**) — Room ID or EDS UUID collection ID from appstore_collections; `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Result language tag; `platform` (string, **required**) — Apple device catalog
+
+### `appstore_collections`
+
+- **HTTP:** `GET /appstore/collections`
+- **What:** Discover App Store editorial collections. Returns the room and EDS collection links embedded in Apple's browse page for one device. `platform` enum: `iphone`, `ipad`, `mac`, `vision`, `watch`, `tv`. Pass a returned `id` and the same platform to `appstore_collection` to retrieve the collection's apps.
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Result language tag; `platform` (string, **required**) — Apple device catalog
 
 ### `appstore_developer`
 
@@ -1448,6 +1544,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /bbc/search`
 - **What:** Search public BBC pages. Returns a bounded page of public BBC search-result metadata: title, URL, standfirst summary, display date, and a type of article, video, audio, live, topic, or page. Topic items are BBC topic hub pages rather than articles and carry no published_at. Media entries link only to their BBC landing pages; streams, downloads, and transcripts are not returned.
 - **Params:** `page` (integer, optional) — Results page, defaults to 1; `q` (string, **required**) — Search query, up to 120 characters
+
+## Benzinga (5)
+
+### `benzinga_article`
+
+- **HTTP:** `GET /benzinga/article`
+- **What:** Get a Benzinga article. Returns metadata and anonymous body paragraphs from a canonical dated Benzinga editorial article URL.
+- **Params:** `url` (string, **required**) — Canonical dated Benzinga editorial article URL
+
+### `benzinga_headlines`
+
+- **HTTP:** `GET /benzinga/headlines`
+- **What:** Get Benzinga section headlines. Returns public story cards from one verified Benzinga news section; section must come from benzinga_sections.
+- **Params:** `section` (string, **required**) — Benzinga editorial section slug
+
+### `benzinga_news`
+
+- **HTTP:** `GET /benzinga/news`
+- **What:** Get Benzinga top stories. Returns current Benzinga stories and teaser summaries from its public RSS feed.
+- **Params:** _none_
+
+### `benzinga_search`
+
+- **HTTP:** `GET /benzinga/search`
+- **What:** Search Benzinga article suggestions. Returns up to five public news-article suggestions from Benzinga's anonymous search typeahead. Ticker-only suggestions are omitted; this is not a paginated archive search.
+- **Params:** `q` (string, **required**) — Search text (2 to 100 characters)
+
+### `benzinga_sections`
+
+- **HTTP:** `GET /benzinga/sections`
+- **What:** List Benzinga news sections. Returns the four menu-verified Benzinga editorial sections accepted by benzinga_headlines.
+- **Params:** _none_
 
 ## Best Buy (11)
 
@@ -2123,6 +2251,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /breitbart/sections`
 - **What:** Get Breitbart sections. Returns the live-verified public Breitbart editorial section inventory used by the headlines endpoint.
+- **Params:** _none_
+
+## Brisbane Times (5)
+
+### `brisbanetimes_article`
+
+- **HTTP:** `GET /brisbanetimes/article`
+- **What:** Get Brisbane Times article content. Returns one Brisbane Times article's metadata and the exact body paragraphs served by one anonymous page request, with the publisher's is_accessible_for_free, paywalled, and is_truncated flags. No paywall is bypassed or hidden content fetched.
+- **Params:** `url` (string, **required**) — Canonical Brisbane Times article URL
+
+### `brisbanetimes_author`
+
+- **HTTP:** `GET /brisbanetimes/author`
+- **What:** Get a Brisbane Times journalist profile. Returns one public Brisbane Times `/by/<name>-<id>` profile with its name, biography, headshot, contact links, and recent story cards.
+- **Params:** `url` (string, **required**) — Canonical Brisbane Times journalist URL
+
+### `brisbanetimes_headlines`
+
+- **HTTP:** `GET /brisbanetimes/headlines`
+- **What:** Get Brisbane Times section or topic headlines. Returns current story cards from one observed Brisbane Times server-rendered section or populated topic page. `section` must be one of the exact slugs from `/brisbanetimes/sections`; unsupported and unresolved linkless paths are rejected before an upstream request. Off-brand story links on Traveller are omitted.
+- **Params:** `section` (string, **required**) — Section or topic slug from /brisbanetimes/sections
+
+### `brisbanetimes_news`
+
+- **HTTP:** `GET /brisbanetimes/news`
+- **What:** Get Brisbane Times top stories. Returns Brisbane Times's current public Latest News RSS feed: story title, canonical URL, summary, author, publication time, and lead image.
+- **Params:** _none_
+
+### `brisbanetimes_sections`
+
+- **HTTP:** `GET /brisbanetimes/sections`
+- **What:** Get Brisbane Times editorial sections. Lists the 104 accepted Brisbane Times editorial surfaces (95 article-bearing section pages and nine populated topic hubs), each with its exact path slug, menu label, and requested Brisbane Times URL. Three linkless surfaces with no explicit empty-state marker are excluded.
 - **Params:** _none_
 
 ## Brooklinen (11)
@@ -3599,6 +3759,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Daily Express sections. Returns the live public Daily Express RSS section inventory.
 - **Params:** _none_
 
+## Daily Kos (4)
+
+### `dailykos_article`
+
+- **HTTP:** `GET /dailykos/article`
+- **What:** Get a Daily Kos staff article. Returns metadata and text paragraphs from a canonical staff-authored Daily Kos /news/ story. Community stories and photographer-owned images are not included.
+- **Params:** `url` (string, **required**) — Canonical Daily Kos staff /news/ article URL
+
+### `dailykos_headlines`
+
+- **HTTP:** `GET /dailykos/headlines`
+- **What:** Get Daily Kos category headlines. Returns current stories from one verified Daily Kos category feed. Use dailykos-sections to discover the complete accepted category set.
+- **Params:** `section` (string, **required**) — Daily Kos category slug
+
+### `dailykos_news`
+
+- **HTTP:** `GET /dailykos/news`
+- **What:** Get Daily Kos top stories. Returns current staff-authored Daily Kos stories from its public RSS feed.
+- **Params:** _none_
+
+### `dailykos_sections`
+
+- **HTTP:** `GET /dailykos/sections`
+- **What:** List Daily Kos categories. Returns the 24 live-verified public WordPress categories accepted by dailykos-headlines.
+- **Params:** _none_
+
 ## Daily Mail (5)
 
 ### `dailymail_article`
@@ -3629,6 +3815,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /dailymail/sections`
 - **What:** Get Daily Mail RSS sections. Returns the live-verified public Daily Mail RSS section inventory.
+- **Params:** _none_
+
+## Daily Maverick (4)
+
+### `dailymaverick_article`
+
+- **HTTP:** `GET /dailymaverick/article`
+- **What:** Get a Daily Maverick article. Extracts the public article metadata and body paragraphs Daily Maverick serves to an anonymous visitor. The paywalled flag is set only when the page exposes the publisher's access-control marker.
+- **Params:** `url` (string, **required**) — Canonical Daily Maverick article or opinionista URL
+
+### `dailymaverick_headlines`
+
+- **HTTP:** `GET /dailymaverick/headlines`
+- **What:** Get headlines from one Daily Maverick section. Returns up to 21 current article cards from the public category JSON endpoint. Use dailymaverick-sections to discover valid slugs.
+- **Params:** `section` (string, **required**) — Daily Maverick category slug
+
+### `dailymaverick_news`
+
+- **HTTP:** `GET /dailymaverick/news`
+- **What:** Get current Daily Maverick stories. Returns current article and opinionista links from Daily Maverick's public news sitemap.
+- **Params:** _none_
+
+### `dailymaverick_sections`
+
+- **HTTP:** `GET /dailymaverick/sections`
+- **What:** List Daily Maverick sections. Lists all 51 live-verified article-bearing categories accepted by dailymaverick-headlines.
 - **Params:** _none_
 
 ## Daily Record (5)
@@ -6431,6 +6643,128 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Goodreads books. Searches Goodreads books by title/author. Credential-free public Goodreads data via the autocomplete endpoint (book results only).
 - **Params:** `limit` (integer, optional) — Max results, default 10, max 50; `q` (string, **required**) — Search query
 
+## GoodRx (20)
+
+### `goodrx_answer`
+
+- **HTTP:** `GET /goodrx/answer`
+- **What:** Get a GoodRx health question and answer. Returns one GoodRx health question with its short answer, supporting paragraphs, the source article, the drug it is about, more questions about that drug, related articles, and related medications. Use a slug from /goodrx/answers.
+- **Params:** `slug` (string, **required**) — Question slug from /goodrx/answers
+
+### `goodrx_answers`
+
+- **HTTP:** `GET /goodrx/answers`
+- **What:** List GoodRx health questions. Returns GoodRx's medication and health questions: the index's top questions and every question with its slug, grouped by drug where GoodRx's index groups it (questions GoodRx lists only in its sitemap carry just their slug). Use a slug with /goodrx/answer.
+- **Params:** _none_
+
+### `goodrx_brands`
+
+- **HTTP:** `GET /goodrx/brands`
+- **What:** List GoodRx featured brand-name drugs. Returns the brand-name medications GoodRx features on its brand-name drugs page, with price-page slugs.
+- **Params:** _none_
+
+### `goodrx_class`
+
+- **HTTP:** `GET /goodrx/class`
+- **What:** List drugs in a GoodRx drug class. Returns the drugs GoodRx lists for one drug class, with each drug's lowest displayed price and summary. Use a slug from /goodrx/classes.
+- **Params:** `slug` (string, **required**) — Class slug from /goodrx/classes
+
+### `goodrx_classes`
+
+- **HTTP:** `GET /goodrx/classes`
+- **What:** List GoodRx drug classes. Returns every drug class in GoodRx's class directory with slugs for /goodrx/class.
+- **Params:** _none_
+
+### `goodrx_comparison`
+
+- **HTTP:** `GET /goodrx/comparison`
+- **What:** Get a GoodRx drug comparison. Returns a GoodRx head-to-head drug comparison's key takeaways and the two drugs compared, with their price-page and information slugs. Use a slug from /goodrx/comparisons or /goodrx/drug-info alternatives.
+- **Params:** `slug` (string, **required**) — Comparison slug
+
+### `goodrx_comparisons`
+
+- **HTTP:** `GET /goodrx/comparisons`
+- **What:** List GoodRx drug comparisons. Returns GoodRx's head-to-head drug comparisons grouped by health topic, with slugs for /goodrx/comparison.
+- **Params:** _none_
+
+### `goodrx_condition`
+
+- **HTTP:** `GET /goodrx/condition`
+- **What:** Get a GoodRx health condition overview. Returns a health condition's GoodRx overview article as titled sections (definition, types, causes, symptoms, diagnosis, medications, treatments, prevention, references), with the condition's alternate name, authors, publish and modified dates, the medications-list URL, and related articles. Use a slug from /goodrx/conditions.
+- **Params:** `slug` (string, **required**) — Condition slug from /goodrx/conditions
+
+### `goodrx_condition_drugs`
+
+- **HTTP:** `GET /goodrx/condition-drugs`
+- **What:** List GoodRx medications for a condition. Returns the medications GoodRx lists for one health condition, with each drug's lowest displayed price and summary. Use a slug from /goodrx/conditions whose has_medications is true.
+- **Params:** `slug` (string, **required**) — Condition slug from /goodrx/conditions
+
+### `goodrx_conditions`
+
+- **HTTP:** `GET /goodrx/conditions`
+- **What:** List GoodRx health conditions. Returns every health condition in GoodRx's conditions directory, with slugs and whether GoodRx publishes a medications list for /goodrx/condition-drugs.
+- **Params:** _none_
+
+### `goodrx_drug_guide`
+
+- **HTTP:** `GET /goodrx/drug-guide`
+- **What:** Get a GoodRx drug guide. Returns one dedicated GoodRx drug guide. side-effects: common and less common side effects with reported frequencies, serious and reported side effects, and the label source. dosage: coupon price per dosage and quantity for each dosage form, and typical dosing. interactions: interacting drugs grouped by severity (not_recommended, usually_not_recommended, increased_risk), with GoodRx slugs where linked. Includes reviewer, last-reviewed date, and related guides. Use pairs from /goodrx/drug-guides; a drug without that guide returns 404. Requests use US egress because GoodRx is US-only.
+- **Params:** `slug` (string, **required**) — Drug slug from /goodrx/drug-guides; `topic` (string, **required**) — Guide topic
+
+### `goodrx_drug_guides`
+
+- **HTTP:** `GET /goodrx/drug-guides`
+- **What:** List GoodRx drug guides. Returns GoodRx's dedicated drug guide pages (side effects, dosage, and interactions) as drug slug and topic pairs with last-modified dates, optionally filtered by topic and by the first character of the drug slug. Use the pairs with /goodrx/drug-guide.
+- **Params:** `letter` (string, optional) — First character of the drug slug: a-z or 0-9; `topic` (string, optional) — Guide topic
+
+### `goodrx_drug_info`
+
+- **HTTP:** `GET /goodrx/drug-info`
+- **What:** Get GoodRx drug information. Returns a drug's GoodRx information page as titled sections (uses, side effects, pros and cons, pharmacist tips, risks and warnings, dosage, interactions, contraindications, alternatives, pill images, references, and common questions), plus authors, publish and review dates, FAQs, and comparison links to alternatives. With audience=pets it returns the drug's cat and dog page (veterinary uses, side effects, and dosing) for drugs listed by /goodrx/pet-medications; other drugs return 404. Requests use US egress because GoodRx is US-only.
+- **Params:** `audience` (string, optional) — people for the general page, pets for the cat and dog page; `slug` (string, **required**) — Drug slug from /goodrx/drugs (or /goodrx/pet-medications for audience=pets)
+
+### `goodrx_drug_options`
+
+- **HTTP:** `GET /goodrx/drug-options`
+- **What:** List a GoodRx drug's prescription options. Returns every brand and generic label, dosage form, strength, and quantity GoodRx prices for one drug, with GoodRx's default prescription. Use these values for /goodrx/drug-prices.
+- **Params:** `slug` (string, **required**) — Drug slug from /goodrx/drugs
+
+### `goodrx_drug_prices`
+
+- **HTTP:** `GET /goodrx/drug-prices`
+- **What:** Get GoodRx drug prices by pharmacy. Returns GoodRx coupon, membership, and mail-order prices by pharmacy for one drug and prescription (brand/generic label, form, dosage, quantity), plus the drug summary, the priced configuration, the location prices were computed for, and every available label/form/dosage/quantity. Omit label/form/dosage/quantity for GoodRx's default prescription; values must come from /goodrx/drug-options. Pass latitude and longitude (optionally zip_code and state) to price at a US location; otherwise prices reflect a US location chosen by GoodRx. Requests use US egress because GoodRx is US-only.
+- **Params:** `dosage` (string, optional) — Dosage slug from /goodrx/drug-options; `form` (string, optional) — Form slug from /goodrx/drug-options; `label` (string, optional) — Brand or generic label slug from /goodrx/drug-options; `latitude` (number, optional) — Latitude of a US location to price at (requires longitude); `longitude` (number, optional) — Longitude of a US location to price at (requires latitude); `quantity` (integer, optional) — Quantity (1-999999); /goodrx/drug-options lists GoodRx's standard quantities; `slug` (string, **required**) — Drug slug from /goodrx/drugs, /goodrx/class, or /goodrx/condition-drugs; `state` (string, optional) — Two-letter state code of that location; `zip_code` (string, optional) — Five-digit ZIP code of that location
+
+### `goodrx_drugs`
+
+- **HTTP:** `GET /goodrx/drugs`
+- **What:** List GoodRx drugs by letter. Returns every drug in one letter of GoodRx's A-Z drug directory, with the price-page slug and drug-information URL.
+- **Params:** `letter` (string, **required**) — Directory letter
+
+### `goodrx_health_article`
+
+- **HTTP:** `GET /goodrx/health-article`
+- **What:** Get a GoodRx Health article. Returns one GoodRx Health article: headline, description, authors, medical reviewers, published and modified dates, category tag, key takeaways, the body as headed sections of paragraphs and lists, FAQs, references, and related medications. Requests use US egress because GoodRx is US-only.
+- **Params:** `path` (string, **required**) — Article path from /goodrx/health-articles (or a www.goodrx.com article URL)
+
+### `goodrx_health_articles`
+
+- **HTTP:** `GET /goodrx/health-articles`
+- **What:** List GoodRx Health articles. Returns one page of GoodRx Health articles in a section, optionally one topic, most recently modified first: each article's path, section, topic, URL, and last-modified date, with total and total pages. Use a path with /goodrx/health-article.
+- **Params:** `page` (integer, optional) — Page number, starting at 1; `page_size` (integer, optional) — Articles per page (1-200); `section` (string, **required**) — Article section; `topic` (string, optional) — Topic slug from /goodrx/health-topics
+
+### `goodrx_health_topics`
+
+- **HTTP:** `GET /goodrx/health-topics`
+- **What:** List GoodRx Health article topics. Returns every GoodRx Health article topic as section and topic pairs with article counts and last-modified dates, optionally for one section. Sections: conditions, health-topic, well-being, pet-health, insurance, classes, drugs, healthcare-access, corporate, hcp (clinician resources), and drug (articles about one drug; the topic is the drug slug). Use the pairs with /goodrx/health-articles.
+- **Params:** `section` (string, optional) — Article section
+
+### `goodrx_pet_medications`
+
+- **HTTP:** `GET /goodrx/pet-medications`
+- **What:** List GoodRx pet medications. Returns the drugs that have a GoodRx cat and dog information page, with slugs for /goodrx/drug-info with audience=pets.
+- **Params:** _none_
+
 ## Google (40)
 
 ### `google_finance_analyst_articles`
@@ -6903,6 +7237,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Grailed search-box typeahead suggestions. Returns Grailed's own search-box typeahead suggestions for a partial query -- a flat list of suggested search phrases with a popularity score and live active-listing match count, no listing data. Pass a suggestion straight through to grailed-search/grailed-sold-listings' own q parameter. A query with no genuine matches returns a well-formed empty result rather than an error.
 - **Params:** `q` (string, **required**) — Partial search query
 
+## Greystar (9)
+
+### `greystar_article`
+
+- **HTTP:** `GET /greystar/articles/{section}/{slug}`
+- **What:** Get a Greystar renter guide or blog post. Retrieves one Greystar renter guide or blog post: title, description, category, publish date (blog posts), lead image, and the body as ordered heading, paragraph, and list blocks. Get section and slug values from /greystar/articles.
+- **Params:** `section` (string, **required**) — Content section; `slug` (string, **required**) — Article slug from /greystar/articles
+
+### `greystar_articles`
+
+- **HTTP:** `GET /greystar/articles`
+- **What:** List Greystar renter guides and blog posts. Lists Greystar's renter guides (applying and leasing, general guides, moving) and blog posts from its public sitemap, newest first. Entries carry the section, slug, URL and last-modified date; fetch /greystar/articles/{section}/{slug} for the title and body.
+- **Params:** `page` (integer, optional) — 1-based page; `per_page` (integer, optional) — Entries per page, 1-100; `query` (string, optional) — Text matched against the slug; `section` (string, optional) — Content section
+
+### `greystar_location`
+
+- **HTTP:** `GET /greystar/location`
+- **What:** Get a Greystar rental hub page. Retrieves one Greystar state, city, or neighborhood rental hub: title, description, editorial guide text as ordered blocks, child locations with summaries, communities listed on the page (id, name, address, and price text when shown), and FAQs. State, city, and neighborhood slugs must come from /greystar/locations; unknown values return 400.
+- **Params:** `city` (string, optional) — City slug from /greystar/locations; `neighborhood` (string, optional) — Neighborhood slug from /greystar/locations; requires city; `state` (string, **required**) — State slug from /greystar/locations, e.g. tx
+
+### `greystar_locations`
+
+- **HTTP:** `GET /greystar/locations`
+- **What:** List Greystar rental hub locations. Lists Greystar's state, city, and neighborhood rental hub pages (the site's own location tree) with slugs and URLs. Use the slugs with /greystar/location for a hub's editorial content, child locations, listed communities, and FAQs.
+- **Params:** `city` (string, optional) — City slug from this list; requires state; `level` (string, optional) — Hub level; `page` (integer, optional) — 1-based page; `per_page` (integer, optional) — Entries per page, 1-200; `state` (string, optional) — State slug from this list, e.g. tx
+
+### `greystar_markets`
+
+- **HTTP:** `GET /greystar/markets`
+- **What:** List Greystar markets, neighborhoods, cities, and states. Returns every value accepted by the /greystar/search market_area, neighborhood, city, state, and country_code filters, each with the number of communities currently published. Derived from the full live community list, so it is the complete value space.
+- **Params:** _none_
+
+### `greystar_newsroom`
+
+- **HTTP:** `GET /greystar/newsroom`
+- **What:** List Greystar newsroom releases. Lists Greystar corporate newsroom releases and news articles from its public sitemap, newest first, with slug, URL and last-modified date. Fetch /greystar/newsroom/{slug} for the title, date, and body.
+- **Params:** `page` (integer, optional) — 1-based page; `per_page` (integer, optional) — Entries per page, 1-100; `query` (string, optional) — Text matched against the slug
+
+### `greystar_newsroom_article`
+
+- **HTTP:** `GET /greystar/newsroom/{slug}`
+- **What:** Get a Greystar newsroom release. Retrieves one Greystar newsroom release: title, type (for example Press Release), publish date, lead image, and body paragraphs. Older news stubs carry only a title and date, so the body can be empty. Get slugs from /greystar/newsroom.
+- **Params:** `slug` (string, **required**) — Newsroom slug from /greystar/newsroom
+
+### `greystar_property`
+
+- **HTTP:** `GET /greystar/properties/{id}`
+- **What:** Get a Greystar apartment community. Retrieves a public Greystar community profile by its numeric property id: location, description, amenities, office hours, walk scores, tours, floor plans, published fees, and currently available units with starting prices and available dates. Get ids from /greystar/search.
+- **Params:** `id` (string, **required**) — Numeric Greystar property id, e.g. 10124
+
+### `greystar_search`
+
+- **HTTP:** `GET /greystar/search`
+- **What:** Search Greystar apartment communities. Lists Greystar communities published on greystar.com, optionally filtered by market area, neighborhood, city, state, country, starting rent, or free text. Filter values must come from /greystar/markets; an unknown value returns 400. Starting prices reflect each community's published minimum and are null when none is published. Results come from a snapshot refreshed every few minutes.
+- **Params:** `city` (string, optional) — Exact city from /greystar/markets; `country_code` (string, optional) — ISO country code from /greystar/markets, e.g. US; `market_area` (string, optional) — Exact market area from /greystar/markets, e.g. Greater Austin; `max_price` (number, optional) — Maximum starting monthly rent; excludes communities with no published price; `min_price` (number, optional) — Minimum starting monthly rent; excludes communities with no published price; `neighborhood` (string, optional) — Exact neighborhood from /greystar/markets; `page` (integer, optional) — 1-based page; `per_page` (integer, optional) — Results per page, 1-100; `query` (string, optional) — Free-text match on name, address, city, neighborhood, market area, or postal code (max 160 characters); `sort` (string, optional) — Result order; `state` (string, optional) — State or region abbreviation from /greystar/markets, e.g. TX
+
 ## Grubhub (7)
 
 ### `grubhub_availability`
@@ -7199,6 +7589,104 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Harvard Business Review topic archive. Returns the newest public Harvard Business Review articles on one topic archive page. topic is a "<group>/<slug>" value -- see hbr-categories for the full known value space.
 - **Params:** `topic` (string, **required**) — Harvard Business Review topic slug
 
+## Healthgrades (16)
+
+### `healthgrades_autocomplete`
+
+- **HTTP:** `GET /healthgrades/autocomplete`
+- **What:** Get Healthgrades search suggestions. Returns dynamic provider, specialty, condition, procedure, and other suggestions for a free-text query. Group categories vary with the query and are returned as data, not accepted as a closed enum.
+- **Params:** `term` (string, **required**) — Free-text provider, specialty, condition, or procedure query
+
+### `healthgrades_facilities_filters`
+
+- **HTTP:** `GET /healthgrades/facilities/filters`
+- **What:** List Healthgrades facility search filters. Returns the sorts and filters for a Healthgrades facility search: distance values and, for hospitals, every specialty rating and award value accepted by /healthgrades/facilities/search.
+- **Params:** `query` (string, optional) — Optional facility name or keyword; `type` (string, **required**) — Facility type; `where` (string, **required**) — City and state, or ZIP code
+
+### `healthgrades_facilities_search`
+
+- **HTTP:** `GET /healthgrades/facilities/search`
+- **What:** Search Healthgrades hospitals, pharmacies, group practices, and urgent care. Returns one page of Healthgrades facility search results near a location for one facility type (hospital, pharmacy, group practice, or urgent care), with name, address, phone, distance, profile URL, affiliated provider and rating counts, hospital awards, and the filters available for the search. Requests use US egress because Healthgrades restricts content by region.
+- **Params:** `award` (string, optional) — Hospital award value from /healthgrades/facilities/filters (type=hospital only); `distance` (string, optional) — Search radius in miles; `page` (integer, optional) — Result page (1-500, 20 results per page); `query` (string, optional) — Optional facility name or keyword; `rating` (string, optional) — Hospital specialty-rating value from /healthgrades/facilities/filters (type=hospital only); `sort` (string, optional) — Result order; patientsatisfaction is hospital-only and group_practice supports only distance; `type` (string, **required**) — Facility type; `where` (string, **required**) — City and state, or ZIP code
+
+### `healthgrades_facility`
+
+- **HTTP:** `GET /healthgrades/facility`
+- **What:** Get a Healthgrades pharmacy, urgent care, or group practice profile. Returns one Healthgrades pharmacy, urgent care center, or group practice profile; the type (pharmacy, urgent_care, or group_practice) is inferred from the URL. Pharmacies: opening hours, services (for example compounding, immunizations, Medicare), and nearby pharmacies. Urgent care centers: opening hours and aggregated visitor answers to amenity questions. Group practices: specialties, providers with specialty and rating, medical services offered, language services, office locations with phones and coordinates, FAQs, and nearby offices. All types include name, address, and phone. Patient-authored reviews are not returned. Requests use US egress because Healthgrades restricts content by region.
+- **Params:** `url` (string, **required**) — Healthgrades pharmacy, urgent care, or group practice profile URL from /healthgrades/facilities/search
+
+### `healthgrades_health_article`
+
+- **HTTP:** `GET /healthgrades/health-article`
+- **What:** Get a Healthgrades Health A-Z article. Returns one Healthgrades Health A-Z or drug article: headline, description, authors, medical reviewers, published and modified dates, image, the conditions the article is tagged with, and the article body as headed sections of paragraphs and lists. Works for standard, chaptered, and slideshow articles. Requests use US egress because Healthgrades restricts content by region.
+- **Params:** `url` (string, **required**) — Article URL from /healthgrades/health-articles
+
+### `healthgrades_health_articles`
+
+- **HTTP:** `GET /healthgrades/health-articles`
+- **What:** List Healthgrades Health A-Z articles in a topic. Returns one page of a Healthgrades Health A-Z topic's articles (slug, URL, and last-modified date), most recently modified first, with total and total pages. Use topic=drugs for drug articles. Use an article URL with /healthgrades/health-article.
+- **Params:** `page` (integer, optional) — Page number, starting at 1; `page_size` (integer, optional) — Articles per page (1-200); `topic` (string, **required**) — Topic slug from /healthgrades/health-topics
+
+### `healthgrades_health_topics`
+
+- **HTTP:** `GET /healthgrades/health-topics`
+- **What:** List Healthgrades Health A-Z topics. Returns every topic of Healthgrades' Health A-Z library (conditions, body systems, treatments, and wellness topics) with its article count, last-modified date, and topic hub URL where one exists, plus the drugs topic for Healthgrades' drug articles. Use a slug with /healthgrades/health-articles.
+- **Params:** _none_
+
+### `healthgrades_hospital`
+
+- **HTTP:** `GET /healthgrades/hospital`
+- **What:** Get a Healthgrades hospital profile. Returns one Healthgrades hospital profile: hospital-wide and specialty awards with years, clinical outcome ratings by service line (procedure or condition, measure, outcome rating, and 1-5 stars), patient-experience measures with national comparisons, address, and phone. Patient-authored reviews are not returned. Requests use US egress because Healthgrades restricts content by region.
+- **Params:** `url` (string, **required**) — Healthgrades hospital profile URL from /healthgrades/facilities/search
+
+### `healthgrades_hospital_award_filters`
+
+- **HTTP:** `GET /healthgrades/hospital-awards/filters`
+- **What:** List Healthgrades hospital award filters. Returns the filter values Healthgrades offers for one hospital award list: list sizes, specialty codes, Ob-Gyn award types, award years, states with recipients, and (with a state) cities with recipient counts, plus the sort options. Each group's param names the /healthgrades/hospital-awards parameter that accepts its values.
+- **Params:** `award` (string, **required**) — Award list; `state` (string, optional) — State slug, to list its cities; `year` (string, optional) — Award year
+
+### `healthgrades_hospital_awards`
+
+- **HTTP:** `GET /healthgrades/hospital-awards`
+- **What:** List Healthgrades hospital award recipients. Returns one page (20 hospitals) of a Healthgrades hospital quality award list: America's Best Hospitals (top 50, 100, or 250), Specialty Excellence (by specialty, top 50 or 100), Patient Safety Excellence, Outstanding Patient Experience, Ob-Gyn Care, or Specialty State Rankings. Filter by year, state, city, specialty, and Ob-Gyn award type; sort by name or, with latitude and longitude, by distance. Each hospital includes its profile URL (for /healthgrades/hospital), address, coordinates, phone, and every award it holds with years. Read accepted filter values from /healthgrades/hospital-awards/filters. Requests use US egress because Healthgrades restricts content by region.
+- **Params:** `award` (string, **required**) — Award list; `city` (string, optional) — City slug from the filters for the state (requires state); `latitude` (number, optional) — Latitude for distance sorting; `list` (string, optional) — America's Best Hospitals list size (award=americas-best-hospitals); `list_category` (string, optional) — Specialty Excellence list size (award=specialty-excellence-americas-best-care); `longitude` (number, optional) — Longitude for distance sorting; `ob_gyn_type` (string, optional) — Ob-Gyn award (award=ob-gyn-care-excellence-awards): GYS gynecologic surgery, LAB labor and delivery, OBG obstetrics and gynecology; `page` (integer, optional) — Page number (20 hospitals per page); `sort` (string, optional) — Result order; distance requires latitude and longitude; `specialty` (string, optional) — Specialty code (award=specialty-excellence-americas-best-care or state-rankings); `state` (string, optional) — State slug from the filters; `year` (string, optional) — Award year from the filters (defaults to the latest)
+
+### `healthgrades_locations`
+
+- **HTTP:** `GET /healthgrades/locations`
+- **What:** Get Healthgrades location suggestions. Returns location autocomplete suggestions for a city, state, ZIP code, or other free-text location. Private upstream metadata and coordinates are omitted.
+- **Params:** `term` (string, **required**) — City, state, or ZIP code
+
+### `healthgrades_physician`
+
+- **HTTP:** `GET /healthgrades/physician`
+- **What:** Get a Healthgrades physician profile. Returns public professional profile fields and practice locations for one Healthgrades physician. Patient-authored review text is not returned. Requests use US egress because Healthgrades restricts some content by region.
+- **Params:** `url` (string, **required**) — Canonical Healthgrades physician profile URL
+
+### `healthgrades_physicians_filters`
+
+- **HTTP:** `GET /healthgrades/physicians/filters`
+- **What:** List Healthgrades physician search filters. Returns every filter available for a Healthgrades provider search at a location, with accepted values, labels, and result counts: insurers (with plan IDs), gender, distance, age, availability, language, patient rating, clinical focus, affiliated hospitals, practicing specialties, and affirming care. Insurer, language, clinical focus, hospital, and specialty values depend on the query and location. Each group's param names the /healthgrades/physicians/search parameter that accepts its values.
+- **Params:** `query` (string, **required**) — Specialty, condition, procedure, or provider name; `where` (string, optional) — City and state, or ZIP code
+
+### `healthgrades_physicians_search`
+
+- **HTTP:** `GET /healthgrades/physicians/search`
+- **What:** Search Healthgrades physicians. Returns one page of Healthgrades provider search results for a specialty, condition, procedure, or provider name near a location, with each provider's NPI, specialty, office, aggregate patient rating, accepted insurers, and profile URL, plus the filters available for the search. Closed-set filters accept the listed values; insurance, insurance_plan, language, clinical_focus, affiliated_hospital, and specialty accept values returned in the filters for the same query/where. List filters take comma-separated values. Requests use US egress because Healthgrades restricts content by region. Patient review text is not returned.
+- **Params:** `affiliated_hospital` (string, optional) — Comma-separated hospital codes from the affiliated_hospital filter; `affirming_care` (boolean, optional) — Only providers marked LGBTQ+ affirming; `age` (string, optional) — Comma-separated provider age bands; `availability` (string, optional) — Comma-separated availability filters; `clinical_focus` (string, optional) — Comma-separated clinical focus codes from the clinical_focus filter; `distance` (string, optional) — Search radius in miles; `gender` (string, optional) — Provider gender; `insurance` (string, optional) — Comma-separated insurer codes from the insurance filter; `insurance_plan` (string, optional) — Comma-separated plan IDs from an insurer's plans (requires insurance); `language` (string, optional) — Comma-separated language codes from the language filter; `page` (integer, optional) — Result page (1-500, 20 results per page); `query` (string, **required**) — Specialty, condition, procedure, or provider name; `rating` (string, optional) — Minimum patient-satisfaction stars (5 means exactly 5); `sort` (string, optional) — Result order; `specialty` (string, optional) — Comma-separated practicing-specialty codes from the specialty filter; `where` (string, optional) — City and state, or ZIP code
+
+### `healthgrades_specialties`
+
+- **HTTP:** `GET /healthgrades/specialties`
+- **What:** List Healthgrades physician specialties. Returns every specialty name and directory URL shown on Healthgrades' public A-Z specialty directory. Requests use US egress and Safari browser impersonation because the site restricts some content by region.
+- **Params:** _none_
+
+### `healthgrades_top_searches`
+
+- **HTTP:** `GET /healthgrades/top-searches`
+- **What:** List popular Healthgrades searches. Returns Healthgrades' current popular specialty search suggestions.
+- **Params:** _none_
+
 ## Hermes (8)
 
 ### `hermes_categories`
@@ -7400,6 +7888,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Hotels.com hotels. Returns a page of date-bound Hotels.com hotel search results for either a free-text destination or a numeric Hotels.com region_id: normalized property cards with per-night and per-stay prices, review score and count, location, thumbnail, amenities, and promotional badges. Provide exactly one of query or region_id; region_id skips destination typeahead resolution. Prices are the live rates Hotels.com shows for the requested check-in and check-out dates.
 - **Params:** `request` (object, **required**) — Search request
 - **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
+
+## Houston Chronicle (5)
+
+### `houston_chronicle_article`
+
+- **HTTP:** `GET /houston-chronicle/article`
+- **What:** Get Houston Chronicle article content. Returns public Houston Chronicle article metadata and the body available in the anonymous response. Premium stories are flagged from the publisher's content-tier and JSON-LD markers; the service does not authenticate or bypass access controls.
+- **Params:** `url` (string, **required**) — Canonical Houston Chronicle article URL
+
+### `houston_chronicle_author`
+
+- **HTTP:** `GET /houston-chronicle/author`
+- **What:** Get a Houston Chronicle author profile. Returns an author's public profile and recent story cards from a canonical Houston Chronicle author URL.
+- **Params:** `url` (string, **required**) — Canonical Houston Chronicle author URL
+
+### `houston_chronicle_headlines`
+
+- **HTTP:** `GET /houston-chronicle/headlines`
+- **What:** Get Houston Chronicle section headlines. Returns current public headlines from a verified Houston Chronicle editorial section. Pages that return Hearst's Client Challenge are retried through configured rendering backends; the service does not solve or bypass access controls.
+- **Params:** `section` (string, **required**) — Houston Chronicle public section slug
+
+### `houston_chronicle_news`
+
+- **HTTP:** `GET /houston-chronicle/news`
+- **What:** Get Houston Chronicle top stories. Returns current public Houston Chronicle homepage stories. The public RSS endpoint returned no usable items; this uses the credential-free homepage and preserves publisher premium markers on article responses.
+- **Params:** _none_
+
+### `houston_chronicle_sections`
+
+- **HTTP:** `GET /houston-chronicle/sections`
+- **What:** Get Houston Chronicle sections. Returns every live-verified public editorial section accepted by the Houston Chronicle headlines endpoint. Newsletter, games, audio-only, external marketplace and interactive project/tool links are excluded.
+- **Params:** _none_
 
 ## How-To Geek (1)
 
@@ -7884,8 +8404,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `instagram_post`
 
 - **HTTP:** `GET /instagram/post/{id}/{post_id}`
-- **What:** Retrieve a specific Instagram post by user ID and post ID. Returns the media details of a specific post from an Instagram user.
-- **Params:** `id` (string, **required**) — Instagram user ID; `post_id` (string, **required**) — Instagram post ID
+- **What:** Retrieve a specific Instagram post by URL shortcode. Returns media details for an Instagram URL shortcode. Use media.code from the reels response or shortcode from a public post URL; numeric media IDs are rejected.
+- **Params:** `id` (string, **required**) — Instagram user ID retained for route compatibility; ownership is not verified; `post_id` (string, **required**) — Instagram URL shortcode (media.code), not a numeric media ID
 
 ### `instagram_profile`
 
@@ -9301,6 +9821,64 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Macy's search-box suggestions. Returns Macy's own search-box suggestions (typeahead) for a partial query: a flat list of suggested search phrases, no product data. A partial query with no real matches returns a normal, empty result rather than an error.
 - **Params:** `query` (string, **required**) — Partial search query
 
+## MakeUseOf (5)
+
+### `makeuseof_article`
+
+- **HTTP:** `GET /makeuseof/article`
+- **What:** Get MakeUseOf article content. Returns public MakeUseOf article metadata and readable body paragraphs from a canonical article URL.
+- **Params:** `url` (string, **required**) — Canonical MakeUseOf article URL
+
+### `makeuseof_author`
+
+- **HTTP:** `GET /makeuseof/author`
+- **What:** Get a MakeUseOf author profile. Returns an author's public byline metadata, biography, social links, and recent stories from a canonical author URL. Only the first page is covered.
+- **Params:** `url` (string, **required**) — Canonical MakeUseOf author URL
+
+### `makeuseof_headlines`
+
+- **HTTP:** `GET /makeuseof/headlines`
+- **What:** Get MakeUseOf section headlines. Returns current headlines from one of the 14 public MakeUseOf category RSS feeds. Use a slug from makeuseof_sections.
+- **Params:** `section` (string, **required**) — MakeUseOf section slug
+
+### `makeuseof_news`
+
+- **HTTP:** `GET /makeuseof/news`
+- **What:** Get MakeUseOf top stories. Returns current MakeUseOf top stories from its public RSS feed.
+- **Params:** _none_
+
+### `makeuseof_sections`
+
+- **HTTP:** `GET /makeuseof/sections`
+- **What:** Get MakeUseOf RSS sections. Returns all 14 live-verified MakeUseOf primary-navigation sections accepted by the headlines endpoint.
+- **Params:** _none_
+
+## Malay Mail (4)
+
+### `malaymail_article`
+
+- **HTTP:** `GET /malaymail/article`
+- **What:** Get a Malay Mail article. Extracts public article metadata and readable body paragraphs from a canonical Malay Mail story URL.
+- **Params:** `url` (string, **required**) — Canonical Malay Mail article URL
+
+### `malaymail_headlines`
+
+- **HTTP:** `GET /malaymail/headlines`
+- **What:** Get Malay Mail section headlines. Returns current headline cards for one of Malay Mail's public News sections.
+- **Params:** `section` (string, **required**) — Malay Mail News section slug
+
+### `malaymail_news`
+
+- **HTTP:** `GET /malaymail/news`
+- **What:** Get Malay Mail top stories. Returns up to 50 current stories from Malay Mail's public all-stories RSS feed. Summaries are publisher teasers, not full article text. Use the sections, headlines, and article routes for verified public archives and story pages.
+- **Params:** _none_
+
+### `malaymail_sections`
+
+- **HTTP:** `GET /malaymail/sections`
+- **What:** Get Malay Mail sections. Returns the verified public Malay Mail News navigation sections accepted by malaymail-headlines.
+- **Params:** _none_
+
 ## Manchester Evening News (5)
 
 ### `men_article`
@@ -9941,12 +10519,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get an MIT Sloan Management Review topic archive. Returns article cards from one public Sloan Review topic page. Use sloanreview-categories for the complete accepted slug set; this includes the primary navigation topics and the site's child topic pages.
 - **Params:** `topic` (string, **required**) — Sloan Review topic slug returned by sloanreview-categories
 
-## MLB (20)
+## MLB (66)
 
 ### `mlb_discovery`
 
 - **HTTP:** `GET /mlb/discovery`
-- **What:** Discover MLB sections and Stats API values. Returns MLB.com's live navigation tree, including hidden nodes labeled with visibility, and the MLB-only value sets for leagues, divisions, game types, roster types, standings types, stat groups, supported stat types, leader categories, MLB Pipeline prospect filters, league-stats hitter positions and player pools, and the observed Baseball Savant leaderboard categories and filters including Expected Statistics and Outs Above Average. Use these values to discover sections and supported filters before calling MLB endpoints.
+- **What:** Discover MLB sections and Stats API values. Returns MLB.com's live navigation tree, including hidden nodes labeled with visibility, and the MLB-only value sets for leagues, divisions, game types, roster types, standings types, stat groups, supported stat types, leader categories, MLB Pipeline prospect filters, league-stats hitter positions and player pools, and observed Baseball Savant leaderboard categories and filters including Top Performers, ABS Challenges, Expected Statistics, Outs Above Average, Arm Strength, Arm Value, Home Runs, Percentile Rankings, Pitch Movement, Rolling Windows, Pitcher Arm Angle, Year-to-Year Changes, Catcher Blocking, Catcher Framing, Catcher Throwing, First Base Receiving, and Fielding Run Value. Use these values to discover sections and supported filters before calling MLB endpoints.
 - **Params:** _none_
 
 ### `mlb_editorial_feed`
@@ -9997,6 +10575,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get MLB player season statistics. Returns one player's MLB season statistics. The group enum accepts every value returned by mlb_discovery.
 - **Params:** `end_date` (string, optional) — End date for byDateRange stat types; requires start_date; `game_type` (string, optional) — MLB game type; `group` (string, **required**) — Stat group; `id` (string, **required**) — Numeric MLB player id; `opponent_player_id` (string, optional) — Required by vsPlayer stat types; `opponent_team_id` (string, optional) — Required by vsTeam stat types; `season` (integer, optional) — Four-digit season; defaults to current year; `start_date` (string, optional) — Start date for byDateRange stat types; requires end_date; `stat_type` (string, optional) — Stats API stat type; defaults to season
 
+### `mlb_prospect_rankings`
+
+- **HTTP:** `GET /mlb/prospect-rankings`
+- **What:** Get MLB Pipeline curated prospect rankings. Returns MLB Pipeline's curated Top 100, Top 30 by Team, Top 10 by Position, Draft Top 200, or International Top 50 ranking. The anonymous first-party page embeds full ranked data. Search, sort, team filtering on Top 100, and pagination are applied to the extracted rows. Use mlb_discovery for the exact view, year, team, position, and sort values.
+- **Params:** `limit` (integer, optional) — Rows per page (1-250); `offset` (integer, optional) — Zero-based row offset; `position` (string, optional) — Required for view=position; `q` (string, optional) — Case-insensitive player-name substring; `sort` (string, optional) — Local sort field; `sort_dir` (string, optional) — Local sort direction; `team_filter` (string, optional) — Optional organization filter for view=top100; use a team slug from mlb_discovery.; `team_slug` (string, optional) — Required for view=team; one of the MLB Pipeline team ranking slugs. See mlb_discovery.; `view` (string, optional) — Ranking view; `year` (integer, optional) — Ranking year
+
 ### `mlb_prospect_stats`
 
 - **HTTP:** `GET /mlb/prospect-stats`
@@ -10018,7 +10602,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `mlb_standings`
 
 - **HTTP:** `GET /mlb/standings`
-- **What:** Get MLB standings. Returns American League and National League standings using any supported standings type returned by mlb_discovery.
+- **What:** Get MLB standings. Returns American League and National League standings, including source-provided expected, home/away, last-ten, ranking, and elimination fields when available, using any supported standings type returned by mlb_discovery.
 - **Params:** `date` (string, optional) — Snapshot date in YYYY-MM-DD format; returns standings as of that date; `season` (integer, optional) — Four-digit season; defaults to current year; `type` (string, optional) — Standings type
 
 ### `mlb_statcast`
@@ -10027,17 +10611,287 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Baseball Savant Statcast leaderboard data. Returns the standard anonymous Baseball Savant Statcast leaderboard for batters, pitchers, teams, or pitcher teams. Supports the page's season, team, batter position, minimum batted-ball event, and sortable metric filters, plus local pagination. Use mlb_discovery for exact filter sets. Other Baseball Savant leaderboard pages are listed there but are not represented by this route.
 - **Params:** `limit` (integer, optional) — Rows per page (1-500); `min_bbe` (string, optional) — Minimum batted-ball event threshold; `offset` (integer, optional) — Zero-based row offset; `position` (string, optional) — Batter position; `sort` (string, optional) — Sort field; `sort_dir` (string, optional) — Sort direction; `team_id` (string, optional) — Optional MLB team id from mlb_teams; `type` (string, optional) — Leaderboard row type; `year` (integer, optional) — Season; current season back 11 seasons
 
+### `mlb_statcast_abs_challenges`
+
+- **HTTP:** `GET /mlb/statcast-abs-challenges`
+- **What:** Get Baseball Savant ABS challenge rankings. Returns Baseball Savant's ABS challenge table with repeated season, game type, split, challenging-team, opponent-team, pitch-type, and shadow-zone filters, plus challenger type, level, thresholds, leverage, pitch location, breakeven, and split-year controls. Filter values are live-verified and listed by /mlb/discovery. The entire filtered table is returned; UI-only drawer details and client-side sorting are not separate source filters.
+- **Params:** `ball_strike` (string, optional) — Pitch location; empty selects All; `breakeven` (string, optional) — Challenge breakeven band; empty selects All; `challenge_team_ids` (array, optional) — Challenging MLB team ids; `challenge_type` (string, optional) — Challenge board group; `data_count` (string, optional) — Challenge count or run value; `data_mode` (string, optional) — Challenges made or against; `game_types` (array, optional) — Game type codes; `level` (string, optional) — Competition level; `leverage` (string, optional) — Leverage bucket; empty selects All; `min_challenges` (string, optional) — Minimum challenges made; `min_opponent_challenges` (string, optional) — Minimum challenges against; `opponent_team_ids` (array, optional) — Opponent MLB team ids; `pitch_types` (array, optional) — Pitch type codes; `seasons` (array, optional) — Season values; `shadow_zones` (array, optional) — Shadow zone codes; `split_year` (string, optional) — Separate year groups; `splits` (array, optional) — Split dimensions
+
+### `mlb_statcast_active_spin`
+
+- **HTTP:** `GET /mlb/statcast-active-spin`
+- **What:** Get Baseball Savant Active Spin rows. Returns pitcher Active Spin table rows for the selected season/calculation method, minimum pitch count, and throwing hand. Table sorting and pagination are applied locally. The player search only highlights pitchers in the first-party SVG visualization; the SVG chart and CSV download remain outside this JSON table contract.
+- **Params:** `hand` (string, optional) — Pitcher throwing hand; omit for both; `limit` (integer, optional) — Rows per page (1-500); `min` (string, optional) — Minimum total pitches; `offset` (integer, optional) — Zero-based row offset; `sort` (string, optional) — Local table sort field; `sort_dir` (string, optional) — Sort direction; `year` (string, optional) — Season and calculation method
+
+### `mlb_statcast_arm_angle`
+
+- **HTTP:** `GET /mlb/statcast-arm-angle`
+- **What:** Get Baseball Savant Pitcher Arm Angle rows. Returns Pitcher Arm Angle table rows and the matching MLB-average reference. Supports season, team, game type, pitch type, hand, batter side, pitch-count thresholds, date range, and up to four group-by selectors. Table sorting and pagination run locally. Visualization-only controls, animation, and CSV output are separate formats.
+- **Params:** `bat_side` (string, optional) — Batter side; omit for both.; `date_end` (string, optional) — Inclusive end date, YYYY-MM-DD.; `date_start` (string, optional) — Inclusive start date, YYYY-MM-DD.; `game_types` (array, optional) — Game type codes; defaults to R.; `group_by` (array, optional) — Up to four grouping fields.; `limit` (integer, optional) — Rows per page (1-500).; `min` (string, optional) — Minimum total pitches; defaults to q.; `min_group_pitches` (string, optional) — Minimum pitches per group; defaults to 1.; `offset` (integer, optional) — Zero-based row offset (0-5000).; `pitch_hand` (string, optional) — Pitcher throwing hand; omit for both.; `pitch_types` (array, optional) — Pitch type codes; defaults to FF.; `seasons` (array, optional) — Seasons; at most three may be combined. Defaults to 2026.; `sort` (string, optional) — Local table sort field; defaults to arm_angle.; `sort_dir` (string, optional) — Local sort direction; defaults to asc.; `teams` (array, optional) — MLB team ids; omit for all teams.
+
+### `mlb_statcast_arm_strength`
+
+- **HTTP:** `GET /mlb/statcast-arm-strength`
+- **What:** Get Baseball Savant Arm Strength leaderboard data. Returns the player or team Arm Strength leaderboard with verified year, team, position metric, minimum throws, local sort, and pagination filters. The player detail route returns individual throw records.
+- **Params:** `limit` (integer, optional) — Rows per page (1-500); `min_throws` (string, optional) — Minimum throws; `offset` (integer, optional) — Zero-based row offset; `position` (string, optional) — Position metric; `sort` (string, optional) — Local sort field; `sort_dir` (string, optional) — Sort direction; `team_id` (string, optional) — MLB team id; `type` (string, optional) — Leaderboard row type; `year` (string, optional) — Season or all years
+
+### `mlb_statcast_arm_strength_player`
+
+- **HTTP:** `GET /mlb/statcast-arm-strength-player`
+- **What:** Get Baseball Savant player throw details. Returns the player's individual Arm Strength throw records for a verified season or all years.
+- **Params:** `player_id` (string, **required**) — Positive MLB player id; `year` (string, optional) — Season or all years
+
+### `mlb_statcast_arm_value`
+
+- **HTTP:** `GET /mlb/statcast-arm-value`
+- **What:** Get Baseball Savant Extra Bases Run Value leaderboard data. Returns the Arm Value section's complete embedded table, including its Run, Fld, Pit, team, and league views, filters, local sorting, and pagination. Expanded player rows are available from mlb-statcast-arm-value-details. The JSON rows contain the same selected records as the upstream CSV export.
+- **Params:** `end_year` (integer, optional) — End season, 2016 through current season; must be >= start_year; `game_type` (string, optional) — Game type; `key_base_out` (string, optional) — Baserunner situation; `limit` (integer, optional) — Rows per page (1-500); `minimum_opps` (string, optional) — Minimum opportunities; `offset` (integer, optional) — Zero-based row offset; `q` (string, optional) — Case- and accent-insensitive local substring on the displayed row name; up to 100 characters; `sort` (string, optional) — Local table sort field; `sort_dir` (string, optional) — Local sort direction; `split` (string, optional) — Return one row per season; `start_year` (integer, optional) — Start season, 2016 through current season; `team_id` (string, optional) — MLB team id from mlb_discovery, split for All Teams Split by Team, or empty for All Teams; `type` (string, optional) — Leaderboard view; `with_team_only` (string, optional) — Team-roster membership for a selected team
+
+### `mlb_statcast_arm_value_details`
+
+- **HTTP:** `GET /mlb/statcast-arm-value-details`
+- **What:** Get expanded Baseball Savant Arm Value player plays. Returns the game-level play details displayed when expanding a Run, Fld, or Pit player row in the Arm Value leaderboard. Pass the leaderboard filters used to produce the selected row.
+- **Params:** `end_year` (integer, optional) — End season, 2016 through current season; must be >= start_year; `entity_id` (string, **required**) — Positive player id from an Arm Value player row; `game_type` (string, optional) — Game type; `key_base_out` (string, optional) — Baserunner situation; `minimum_opps` (string, optional) — Minimum opportunities; `split` (string, optional) — Split leaderboard records by season; `start_year` (integer, optional) — Start season, 2016 through current season; `team_id` (string, optional) — MLB team id from mlb_discovery, split, or empty; `type` (string, optional) — Player view; `with_team_only` (string, optional) — Team-roster membership for a selected team
+
+### `mlb_statcast_baserunning`
+
+- **HTTP:** `GET /mlb/statcast-baserunning`
+- **What:** Get Baseball Savant baserunning leaderboard tables. Returns Baseball Savant Baserunning Run Value, Basestealing, or Extra Bases Taken tables. All filter value sets were read from the live first-party controls; rows are embedded in the page response and searched, sorted, and paged locally. Use mlb_discovery.statcast_baserunning_filters for board-specific groups, thresholds, and sort fields. CSV and visual expansion modes are excluded; this returns the underlying JSON table rows.
+- **Params:** `board` (string, **required**) — Baseball Savant table; `game_type` (string, optional) — Game scope; `key_base_out` (string, optional) — Extra Bases Taken situation; `limit` (integer, optional) — Rows per page, 1-500; `n` (string, optional) — Board-specific row threshold; `offset` (integer, optional) — Zero-based row offset; `pitch_hand` (string, optional) — Basestealing pitcher hand; `prior_pk` (string, optional) — Basestealing prior pickoffs; `runner_moved` (string, optional) — Basestealing runner outcome; `search` (string, optional) — Case-insensitive substring in the displayed player or team name; `season_end` (integer, optional) — Inclusive last season; `season_start` (integer, optional) — Inclusive first season; `sort` (string, optional) — Local sort field; accepted values depend on board; `sort_dir` (string, optional) — Local sort direction; `split` (string, optional) — Return separate year rows; `target_base` (string, optional) — Basestealing target base; `team` (string, optional) — MLB team id or split-team rows; `type` (string, optional) — Board group; accepted values depend on board; `with_team_only` (boolean, optional) — Restrict to selected team's active player rows; requires a specific team id
+
+### `mlb_statcast_bat_tracking`
+
+- **HTTP:** `GET /mlb/statcast-bat-tracking`
+- **What:** Get Baseball Savant bat-tracking rows. Returns batter, batting-team, pitcher, pitching-team, or league bat-tracking rows with the live page's season, game type, swing threshold, date, side, contact, attack zone, team, pitch, count, and grouping filters. Use mlb_discovery for the same complete value sets. Multi-value filters are passed as repeated query parameters.
+- **Params:** `attack_zone` (string, optional) — Attack zone; `bat_side` (string, optional) — Batter side; `contact_type` (string, optional) — Contact type; `counts` (array, optional) — One or more ball-strike counts; `date_end` (string, optional) — Optional date range end in YYYY-MM-DD; `date_start` (string, optional) — Optional date range start in YYYY-MM-DD; `game_type` (string, optional) — Game type; `group_by` (array, optional) — Up to four grouping columns; `is_hard_hit` (string, optional) — Hard-hit filter; `limit` (integer, optional) — Rows per page (1-500); `min_group_swings` (string, optional) — Minimum swings per grouped row; `min_swings` (string, optional) — Minimum swing qualifier; `offset` (integer, optional) — Zero-based row offset; `pitch_hand` (string, optional) — Pitcher hand; `pitch_types` (array, optional) — One or more pitch types; `season_end` (string, optional) — Last season; must be >= season_start; `season_start` (string, optional) — First season; `sort` (string, optional) — Local row sort field; `sort_dir` (string, optional) — Sort direction; `teams` (array, optional) — One or more MLB team ids; `type` (string, optional) — Table row type
+
+### `mlb_statcast_batted_ball`
+
+- **HTTP:** `GET /mlb/statcast-batted-ball`
+- **What:** Get Baseball Savant Batted Ball Profile rows. Returns the Batted Ball Profile table for batters, batting teams, pitchers, pitching teams, or league totals. Supports first-party season, game type, split, team, date, side, hand, pitch type, event threshold, and split-group threshold filters. The All-Star A game type is accepted by the live page query although its checkbox is hidden. Sorting and pagination are local. The league-average reference row is returned separately when requested; CSV and visualization controls are outside this JSON contract.
+- **Params:** `bat_side` (string, optional) — Batter side; `date_end` (string, optional) — YYYY-MM-DD date range end (2015-04-05 through today); `date_start` (string, optional) — YYYY-MM-DD date range start (2015-04-05 through today); `game_types` (array, optional) — One or more game type codes; `include_league_average` (boolean, optional) — Include the first-party league-average reference row; `limit` (integer, optional) — Rows per page (1-500); `min` (string, optional) — Minimum batted-ball events; `min_split` (string, optional) — Minimum rows per split group; `offset` (integer, optional) — Zero-based row offset; `pitch_hand` (string, optional) — Pitcher throwing hand; `pitch_types` (array, optional) — One or more pitch type codes; `seasons` (array, optional) — One or more seasons; `sort` (string, optional) — Local table sort field; `sort_dir` (string, optional) — Sort direction; `split_year` (string, optional) — Split seasons into separate rows; `splits` (array, optional) — One or more split dimensions; `teams` (array, optional) — One or more MLB team ids; `type` (string, optional) — Row type
+
+### `mlb_statcast_birthday_index`
+
+- **HTTP:** `GET /mlb/statcast-birthday-index`
+- **What:** Get Baseball Savant Sarah Langs Birthday Index rows. Returns today's birthday tables for batters and pitchers plus the selected upcoming-birthday table. Type and minimum-games are first-party filters; date must fall inside the live page's season date range. The active-player toggle, sorting, and pagination are applied locally. The MLB Terms of Use notes a private, non-commercial-use boundary and restrictions on redistribution; this endpoint exposes statistical rows only and excludes media, graphics, and CSV.
+- **Params:** `date` (string, optional) — Optional birthday date in M-D form; accepted dates are bounded by the current live page season window; `limit` (integer, optional) — Rows per page (1-500); `min_games` (string, optional) — Minimum games played on the birthday; `offset` (integer, optional) — Zero-based row offset (0-5000); `show_inactives` (boolean, optional) — Include inactive and deceased players in upcoming rows; `sort` (string, optional) — Local sort column. Some values are type- or date-specific and invalid combinations are rejected.; `sort_dir` (string, optional) — Local sort direction; omitted values use the selected column's live first-party initial direction; `type` (string, optional) — Upcoming table
+
+### `mlb_statcast_catcher_blocking`
+
+- **HTTP:** `GET /mlb/statcast-catcher-blocking`
+- **What:** Get Baseball Savant Catcher Blocking leaderboard rows. Returns catcher, pitcher, catching-team, or league Catcher Blocking rows. Filters cover game type, season range, minimum opportunities, team/stint, and local table sorting. Use mlb_discovery for the exact filter sets. Row detail events are available from mlb-statcast-catcher-blocking-details; chart playback and CSV export controls are not data rows.
+- **Params:** `end_year` (integer, optional) — Last season, start_year through current season; `game_type` (string, optional) — Game type; `limit` (integer, optional) — Rows per page (1-500); `min` (string, optional) — Minimum opportunities; applies to Cat and Pit; `offset` (integer, optional) — Zero-based row offset; `sort` (string, optional) — Local sort field from mlb_discovery; `sort_dir` (string, optional) — Local sort direction; `split` (string, optional) — Split rows by season; `start_year` (integer, optional) — First season, 2018 through current season; `team` (string, optional) — Optional team filter: split or an MLB team id from mlb_discovery; `type` (string, optional) — Leaderboard group; `with_team_only` (boolean, optional) — For a specific Cat or Pit team, include only rows for that team; defaults true
+
+### `mlb_statcast_catcher_blocking_details`
+
+- **HTTP:** `GET /mlb/statcast-catcher-blocking-details`
+- **What:** Get Baseball Savant Catcher Blocking play details. Expands a Catcher Blocking Cat, Pit, or Pitching Team table row into paginated play-location events. entity_id must come from the matching leaderboard rows and other filters must match that row query. League rows have no detail feed.
+- **Params:** `end_year` (integer, optional) — Last season, start_year through current season; `entity_id` (string, **required**) — Entity id from a Cat, Pit, or Pitching Team leaderboard row; `game_type` (string, optional) — Game type; `limit` (integer, optional) — Rows per page (1-500); `offset` (integer, optional) — Zero-based row offset; `split` (string, optional) — Split details by season; `start_year` (integer, optional) — First season, 2018 through current season; `team` (string, optional) — Optional team id or split selector from mlb_discovery; `type` (string, optional) — Row group; `with_team_only` (boolean, optional) — For a specific Cat or Pit team, include only rows for that team; defaults true
+
+### `mlb_statcast_catcher_framing`
+
+- **HTTP:** `GET /mlb/statcast-catcher-framing`
+- **What:** Get Baseball Savant Catcher Framing leaderboard rows. Returns the Catcher Framing table for catcher, catching-team, batter, batting-team, pitcher, or league groups. Supports observed game, season, one-team, pitch/result minimum, date, bat-side, pitch-hand, pitch-type, ball/strike, and call-model filters, plus local sort and pagination. Use mlb_discovery for exact enum values; chart-only groupings and player comparison controls are excluded.
+- **Params:** `ball_strike` (string, optional) — Pitch location relative to strike zone; `bat_side` (string, optional) — Batter side; `call` (string, optional) — Framing model; `date_end` (string, optional) — Inclusive end date; `date_start` (string, optional) — Inclusive start date; `game_type` (string, optional) — Game type; `limit` (integer, optional) — Rows per page (1-500); `min_pitches` (string, optional) — Minimum pitches; `min_results` (integer, optional) — Minimum results; `offset` (integer, optional) — Zero-based row offset; `pitch_hand` (string, optional) — Pitcher hand; `pitch_type` (string, optional) — Single pitch type; `season_end` (integer, optional) — Last season; `season_start` (integer, optional) — First season; `sort` (string, optional) — Local sort field; `sort_dir` (string, optional) — Local sort direction; `team` (string, optional) — Optional single MLB team id; `type` (string, optional) — Table group
+
+### `mlb_statcast_catcher_framing_details`
+
+- **HTTP:** `GET /mlb/statcast-catcher-framing-details`
+- **What:** Get Baseball Savant Catcher Framing pitch-event details. Returns paginated pitch events for a Catcher Framing entity_id. Repeat the leaderboard filters used to obtain the entity; league aggregate rows have no detail feed. The upstream detail response may be large, so use limit and offset.
+- **Params:** `ball_strike` (string, optional) — Pitch location relative to strike zone; `bat_side` (string, optional) — Batter side; `call` (string, optional) — Framing model; `date_end` (string, optional) — Inclusive end date; `date_start` (string, optional) — Inclusive start date; `entity_id` (string, **required**) — Entity id from a Catcher Framing leaderboard row; `game_type` (string, optional) — Game type; `limit` (integer, optional) — Rows per page (1-500); `min_pitches` (string, optional) — Minimum pitches; `min_results` (integer, optional) — Minimum results; `offset` (integer, optional) — Zero-based row offset; `pitch_hand` (string, optional) — Pitcher hand; `pitch_type` (string, optional) — Single pitch type; `season_end` (integer, optional) — Last season; `season_start` (integer, optional) — First season; `team` (string, optional) — Optional single MLB team id; `type` (string, optional) — Table group; league details are unavailable
+
+### `mlb_statcast_catcher_pop_time`
+
+- **HTTP:** `GET /mlb/statcast-catcher-pop-time`
+- **What:** Get Baseball Savant Catcher Pop Time leaderboard. Returns catchers ranked by pop-time metrics, filtered by season, team, and minimum steal attempts to second or third. Sort and pagination are applied locally.
+- **Params:** `limit` (integer, optional) — Rows to return (1-500); `min2b` (string, optional) — Minimum attempts to second base; `min3b` (string, optional) — Minimum attempts to third base; `offset` (integer, optional) — Zero-based offset; `sort` (string, optional) — Sort field from mlb_discovery; `sort_dir` (string, optional) — Sort direction; `team_id` (string, optional) — MLB team id; `year` (string, optional) — Season from 2015 through 2026
+
+### `mlb_statcast_catcher_stance`
+
+- **HTTP:** `GET /mlb/statcast-catcher-stance`
+- **What:** Get Baseball Savant Catcher Stance rows. Returns the public Catcher Stance table for catchers, catching teams, batters, batting teams, pitchers, or league totals. Supports the live year, game, date, threshold, team, pitch type, batter/pitcher hand, knee posture, grouping, sorting, and pagination controls. Grouping accepts up to four values. Use mlb_discovery for exact value sets. Chart series and page-local search/column toggles are not included.
+- **Params:** `bat_side` (string, optional) — Batter side; omit for all; `date_end` (string, optional) — End date YYYY-MM-DD; `date_start` (string, optional) — Start date YYYY-MM-DD; `game_type` (string, optional) — Game type; `group_by` (array, optional) — Up to four grouping dimensions; none disables grouping; `knee_code` (string, optional) — Knee posture; `limit` (integer, optional) — Rows per page (1-500); `min_pitches` (string, optional) — Minimum pitches; `min_results` (string, optional) — Minimum results; `offset` (integer, optional) — Zero-based row offset; `pitch_hand` (string, optional) — Pitcher hand; omit for all; `pitch_types` (array, optional) — One or more pitch types; `season_end` (string, optional) — Last season; must be >= season_start; `season_start` (string, optional) — First season; `sort` (string, optional) — Local row sort field; `sort_dir` (string, optional) — Sort direction; `teams` (array, optional) — One or more MLB team ids; `type` (string, optional) — Table entity type
+
+### `mlb_statcast_catcher_throwing`
+
+- **HTTP:** `GET /mlb/statcast-catcher-throwing`
+- **What:** Get Baseball Savant Catcher Throwing leaderboard rows. Returns catcher, catching-team, or league caught-stealing and throw-quality rows with the public season, game, attempt-threshold, target-base, split-years, team, and roster-membership filters. Table sorting and pagination are applied locally. Catcher rows can be expanded with mlb-statcast-catcher-throwing-details. CSV, charts, and page-local display controls are excluded.
+- **Params:** `game_type` (string, optional) — Game type; `limit` (integer, optional) — Rows per page (1-500); `minimum` (string, optional) — Minimum steal attempts; `offset` (integer, optional) — Zero-based row offset; `season_end` (string, optional) — Last season; must be >= season_start; `season_start` (string, optional) — First season; `sort` (string, optional) — Local sort field; `sort_dir` (string, optional) — Local sort direction; `split` (string, optional) — Split results by season; `target_base` (string, optional) — Throw target; `team` (string, optional) — Empty for all teams, split for team stints, or an MLB team id; `type` (string, optional) — Table group; `with_team_only` (boolean, optional) — For a selected team, include only catchers on that team
+
+### `mlb_statcast_catcher_throwing_details`
+
+- **HTTP:** `GET /mlb/statcast-catcher-throwing-details`
+- **What:** Get Catcher Throwing attempt details. Returns per-attempt play records expanded from a Catcher Throwing catcher row. Supply the entity_id from a Cat row and the row's year/team when it represents a season or team stint. Details are ungrouped source attempts, paginated locally.
+- **Params:** `entity_id` (integer, **required**) — Positive catcher id from a Cat row; `game_type` (string, optional) — Game type; `limit` (integer, optional) — Rows per page (1-500); `minimum` (string, optional) — Minimum steal attempts; `offset` (integer, optional) — Zero-based row offset; `split` (string, optional) — Split rows by season; `target_base` (string, optional) — Throw target; `team` (string, optional) — Empty, split, or team id from the corresponding leaderboard row; `with_team_only` (boolean, optional) — Team roster membership filter; `year` (integer, optional) — Season
+
 ### `mlb_statcast_expected`
 
 - **HTTP:** `GET /mlb/statcast-expected`
 - **What:** Get Baseball Savant Expected Statistics. Returns the separate Expected Statistics leaderboard with batter, pitcher, and team views; season, team, batter-position, BIP/PA qualifier and threshold filters; local metric sorting; and pagination. League-average values are returned separately.
 - **Params:** `filter_type` (string, optional) — Minimum qualifier type; `limit` (integer, optional) — Rows per page (1-500); `minimum` (string, optional) — Minimum BIP/PA threshold; `offset` (integer, optional) — Zero-based row offset; `position` (string, optional) — Batter position; only supported for type=batter; `sort` (string, optional) — Sort field; `sort_dir` (string, optional) — Sort direction; `team_id` (string, optional) — Optional MLB team id from mlb_teams; `type` (string, optional) — Leaderboard view; `year` (integer, optional) — Season from 2015 through the current season
 
+### `mlb_statcast_fielding_run_value`
+
+- **HTTP:** `GET /mlb/statcast-fielding-run-value`
+- **What:** Get Baseball Savant Fielding Run Value rows. Returns fielding run value for fielder, fielding-team, batter, batting-team, or pitcher views. Dates and grouping dimensions follow the first-party leaderboard. Minimum 0.1 is available only for fielder and fielding-team views; the batting/pitching views omit it. Sorting and pagination are applied locally. CSV and player-page visualizations are outside this table contract.
+- **Params:** `date_end` (string, optional) — End date, YYYY-MM-DD, from 2018-03-29 through today; `date_start` (string, optional) — Start date, YYYY-MM-DD, from 2018-03-29 through today; `game_type` (string, optional) — Game type; `group_by` (array, optional) — Repeated split dimensions; `limit` (integer, optional) — Rows per page (1-500); `minimum` (string, optional) — Total minimum; 0.1 only for fielder and fielding-team; `minimum_split` (string, optional) — Minimum within each split; 0.1 only for fielder and fielding-team; `offset` (integer, optional) — Zero-based row offset (0-5000); `position` (string, optional) — Position / position group; `season_end` (string, optional) — Last season; must be >= season_start; `season_start` (string, optional) — First season; `sort` (string, optional) — Local sort field; `sort_dir` (string, optional) — Local sort direction; `team_id` (array, optional) — Repeated MLB team ids; `type` (string, optional) — Table type
+
+### `mlb_statcast_first_base_receiving`
+
+- **HTTP:** `GET /mlb/statcast-first-base-receiving`
+- **What:** Get Baseball Savant First Base Receiving leaderboards. Returns first baseman, throwing fielder, fielding team, batting team, or league receiving rows. Includes season/game selections, threshold and group filters, team/date/hand/height/outcome filters, and validated page-local split filters and sorting. Per-play source records are available through mlb-statcast-first-base-receiving-details. 3D trajectory visualizations are not included.
+- **Params:** `bin_time_X10[]` (array, optional) — Time bins; `dateEnd` (string, optional) — Inclusive end date (YYYY-MM-DD); `dateStart` (string, optional) — Inclusive start date (YYYY-MM-DD); `fielder_3_hand` (string, optional) — First baseman batting hand; `gameType[]` (array, optional) — Game types; `is_hit_into_play_field_out` (string, optional) — Field-out flag; `limit` (integer, optional) — Rows per page, 1-500; `min` (string, optional) — Minimum opportunities; `minSplit` (string, optional) — Minimum opportunities within each group; `min_height_in_inches` (string, optional) — Minimum fielder height, inches; `offset` (integer, optional) — Zero-based row offset; `runners_on_cd[]` (array, optional) — Base occupancy codes; `season[]` (array, optional) — Season values; `sortColumn` (string, optional) — Local sort field; `sortDirection` (string, optional) — Local sort direction; `splitYear` (string, optional) — Year split selector; `split[]` (array, optional) — Group dimensions; `team[]` (array, optional) — MLB team ids; `throw_height_code[]` (array, optional) — Throw heights; `throw_location_code_full[]` (array, optional) — Throw outcomes; `throw_pos_id[]` (array, optional) — Throwing position ids; `type` (string, optional) — Leaderboard group
+
+### `mlb_statcast_first_base_receiving_details`
+
+- **HTTP:** `GET /mlb/statcast-first-base-receiving-details`
+- **What:** Get a player's First Base Receiving play records. Returns per-play records backing an individual first-base receiving leaderboard row, including game/play ids, outcome codes, receiving OAA, expected out rate, timing, and field coordinates. This is tabular JSON; the separate 3D skeletal visualization route is excluded.
+- **Params:** `bin_time_X10[]` (array, optional) — Time bins; `dateEnd` (string, optional) — Inclusive end date (YYYY-MM-DD); `dateStart` (string, optional) — Inclusive start date (YYYY-MM-DD); `fielder_3_hand` (string, optional) — First baseman batting hand; `gameType[]` (array, optional) — Game types; `is_hit_into_play_field_out` (string, optional) — Field-out flag; `limit` (integer, optional) — Rows per page, 1-500; `min` (string, optional) — Minimum opportunities; `minSplit` (string, optional) — Grouped opportunity threshold; `min_height_in_inches` (string, optional) — Minimum fielder height; `offset` (integer, optional) — Zero-based row offset; `player_id` (integer, **required**) — Positive MLB player id; `runners_on_cd[]` (array, optional) — Base occupancy codes; `season[]` (array, optional) — Season values; `splitYear` (string, optional) — Year split selector; `split[]` (array, optional) — Group dimensions; `team[]` (array, optional) — MLB team ids; `throw_height_code[]` (array, optional) — Throw heights; `throw_location_code_full[]` (array, optional) — Throw outcomes; `throw_pos_id[]` (array, optional) — Throwing position ids; `type` (string, optional) — Leaderboard group
+
+### `mlb_statcast_home_runs`
+
+- **HTTP:** `GET /mlb/statcast-home-runs`
+- **What:** Get Baseball Savant Home Runs Tracking. Returns Batter or Pitcher Home Runs Tracking rows. Year, team id, minimum home runs, and Standard/Adjusted mode are first-party filters. The first-party table sorts client-side; this endpoint applies a named local sort and pagination. Use mlb_discovery for the exact filter sets. Per-player home-run plays are available from mlb-statcast-home-runs-details; trajectory images, video media, and CSV downloads are separate representations.
+- **Params:** `cat` (string, optional) — Trajectory mode; `limit` (integer, optional) — Rows per page (1-500); `min` (string, optional) — Minimum home run total; `offset` (integer, optional) — Zero-based row offset; `player_type` (string, optional) — Table type; `sort` (string, optional) — Local sort column; `sort_dir` (string, optional) — Local sort direction; `team` (string, optional) — MLB team id; blank selects all teams; `year` (string, optional) — Season
+
+### `mlb_statcast_home_runs_details`
+
+- **HTTP:** `GET /mlb/statcast-home-runs-details`
+- **What:** Get Baseball Savant Home Runs play details. Returns the home-run plays expanded from one batter or pitcher leaderboard row, with event measurements and park outcomes. Provide the exact player id, player type, year, and mode from the row. Play identifiers and source links are returned; trajectory images, video media, and CSV output are not included.
+- **Params:** `cat` (string, optional) — Trajectory mode; `limit` (integer, optional) — Rows per page (1-500); `offset` (integer, optional) — Zero-based row offset; `player_id` (string, **required**) — Positive MLB player id from mlb-statcast-home-runs; `player_type` (string, optional) — Table type; `year` (string, optional) — Season
+
 ### `mlb_statcast_oaa`
 
 - **HTTP:** `GET /mlb/statcast-oaa`
 - **What:** Get Baseball Savant Outs Above Average. Returns the separate Outs Above Average leaderboard for fielders, fielding teams, batters, batting teams, or pitchers. Supports season range, split years, team, monthly range, attempts, position, detailed fielder roles, local sorting, and pagination.
 - **Params:** `end_year` (integer, optional) — End season from 2016 through the current season; `limit` (integer, optional) — Rows per page (1-500); `minimum` (string, optional) — Minimum attempts; `offset` (integer, optional) — Zero-based row offset; `position` (string, optional) — Position filter; `range` (string, optional) — Time range; `roles` (string, optional) — Comma-separated detailed fielder role ids. Values: 32,30,31,77,71,70,72,78,43,42,40,41,46,87,81,82,89,64,62,60,61,98,91,90,92,99,51,50,52; `sort` (string, optional) — Sort field; `sort_dir` (string, optional) — Sort direction; `split` (string, optional) — Return one row per season in a year range; `start_year` (integer, optional) — Start season from 2016 through the current season; `team_id` (string, optional) — Optional MLB team id from mlb_teams; `type` (string, optional) — Leaderboard view
+
+### `mlb_statcast_park_factors`
+
+- **HTTP:** `GET /mlb/statcast-park-factors`
+- **What:** Get Baseball Savant Statcast Park Factors rows. Returns season, venue, distance, distance-all, raw, or dimensions rows from Baseball Savant. Query filters are conditional on type and are live-echo validated; local sorting and pagination are applied to returned rows. The fence-stat and allDiffs controls only change display columns and do not change row data; CSV and linked venue detail pages are separate surfaces.
+- **Params:** `bat_side` (string, optional) — Optional batter side for year, venue, or raw mode; `condition` (string, optional) — Park condition for year and venue modes; `limit` (integer, optional) — Rows per page (1-500); `offset` (integer, optional) — Zero-based row offset; `parks` (string, optional) — Park population selector; `rolling` (string, optional) — Rolling year count for year and venue modes; `sort` (string, optional) — Local row field present in the selected mode's data; `sort_dir` (string, optional) — Local sort direction; `stat` (string, optional) — Venue mode metric; `type` (string, optional) — Park Factors table mode; `year` (string, optional) — Mode-specific season; see endpoint markdown and mlb_discovery for exact values
+
+### `mlb_statcast_percentile`
+
+- **HTTP:** `GET /mlb/statcast-percentile`
+- **What:** Get Baseball Savant Percentile Rankings. Returns batter or pitcher percentile rankings. Type, season, and team are first-party table filters. Repeated pctl filters, table sorting, and pagination are applied locally to the embedded rows. Use mlb_discovery for exact type-specific fields, comparators, seasons, and team ids. CSV is a separate download.
+- **Params:** `limit` (integer, optional) — Rows per page (1-500); `offset` (integer, optional) — Zero-based row offset; `pctl` (array, optional) — Repeated field-comparator-value filter from the type-specific field set in mlb_discovery; value range 0-100; `sort` (string, optional) — Local sort field from the type-specific set in mlb_discovery; `sort_dir` (string, optional) — Local sort direction; `team` (string, optional) — MLB team id; blank selects all teams; `type` (string, optional) — Table type; `year` (string, optional) — Season
+
+### `mlb_statcast_pitch_arsenal`
+
+- **HTTP:** `GET /mlb/statcast-pitch-arsenal`
+- **What:** Get Baseball Savant Pitch Arsenal Stats. Returns pitcher or batter pitch-level arsenal leaderboards. Season, team, pitch type, minimum PA, and minimum-pitch qualification filters are replayed against the anonymous first-party table; sorting and pagination are applied locally. Use mlb_discovery for the full selector set. Player rows can be expanded with mlb-statcast-pitch-arsenal-details.
+- **Params:** `limit` (integer, optional) — Rows per page (1-500); `min_pa` (string, optional) — Minimum plate appearances; `min_pitches` (string, optional) — Minimum pitches; q means qualified; `offset` (integer, optional) — Zero-based row offset; `pitch_type` (string, optional) — Pitch code; blank means all pitch types; `sort` (string, optional) — Local sort field; `sort_dir` (string, optional) — Local sort direction; `team_id` (string, optional) — MLB team id from mlb_teams; `type` (string, optional) — Row type; `year` (string, optional) — Season
+
+### `mlb_statcast_pitch_arsenal_details`
+
+- **HTTP:** `GET /mlb/statcast-pitch-arsenal-details`
+- **What:** Get Baseball Savant Pitch Arsenal play details. Returns game-level pitches expanded from one batter or pitcher pitch-arsenal row. Supply player_id, player_type, year, and the row's pitch_type. The upstream's min_ab request parameter is ignored, so it is not exposed. Rows include play_id values used by Baseball Savant's video pages; this endpoint returns play data and identifiers, not video media.
+- **Params:** `limit` (integer, optional) — Rows per page (1-500); `offset` (integer, optional) — Zero-based row offset; `pitch_type` (string, **required**) — Pitch type from the selected row; `player_id` (string, **required**) — Positive MLB player id from mlb-statcast-pitch-arsenal; `player_type` (string, optional) — Row type; `year` (string, optional) — Season
+
+### `mlb_statcast_pitch_arsenals`
+
+- **HTTP:** `GET /mlb/statcast-pitch-arsenals`
+- **What:** Get Baseball Savant Pitch Arsenals. Returns pitcher pitch speed, percentage, or spin rankings by pitch class. Year, minimum-pitch threshold, and hand are first-party filters. Team filtering and table sorting are applied locally because the page JavaScript applies them after receiving the embedded rows. Use mlb_discovery for exact values. CSV and pitch movement visualizations remain separate representations.
+- **Params:** `hand` (string, optional) — Throwing hand; omit for all pitchers; `limit` (integer, optional) — Rows per page (1-500); `min_pitches` (string, optional) — Minimum pitches; `offset` (integer, optional) — Zero-based row offset; `sort` (string, optional) — Local sort column; `sort_dir` (string, optional) — Local sort direction; `team` (string, optional) — Current MLB team abbreviation; applied locally; `type` (string, optional) — Metric; `year` (string, optional) — Season
+
+### `mlb_statcast_pitch_movement`
+
+- **HTTP:** `GET /mlb/statcast-pitch-movement`
+- **What:** Get Baseball Savant Pitch Movement rows. Returns pitcher-level pitch movement table rows for the selected season, pitch type, throwing hand, and minimum pitch count. Sorting and pagination are applied locally. The page's X/Z visualization axes and CSV download are separate presentation formats and are not returned by this JSON table contract.
+- **Params:** `hand` (string, optional) — Pitcher throwing hand; omit for both; `limit` (integer, optional) — Rows per page (1-500); `min` (string, optional) — Minimum pitch count; `offset` (integer, optional) — Zero-based row offset; `pitch_type` (string, optional) — Pitch class; `sort` (string, optional) — Local table sort field; `sort_dir` (string, optional) — Sort direction; `year` (string, optional) — Season
+
+### `mlb_statcast_pitch_tempo`
+
+- **HTTP:** `GET /mlb/statcast-pitch-tempo`
+- **What:** Get Baseball Savant Pitch Tempo rows. Returns pitcher, batter, pitching-team, batting-team, or league tempo rows. Season, game type, minimum pitch, team, year comparison, and team membership options mirror the live first-party controls; q and sorting are applied locally before pagination. Use mlb_discovery for exact value sets.
+- **Params:** `game_type` (string, optional) — Game type; `limit` (integer, optional) — Rows per page (1-500); `n` (string, optional) — Minimum pitch count; `offset` (integer, optional) — Zero-based row offset; `q` (string, optional) — Case-insensitive local entity-name filter; `season_end` (string, optional) — Last season; must be >= season_start; `season_start` (string, optional) — First season; `sort` (string, optional) — Local sort field; `sort_dir` (string, optional) — Sort direction; `split` (string, optional) — Compare seasons separately; `team` (string, optional) — Optional MLB team id; `type` (string, optional) — Table group; `with_team_only` (string, optional) — Team membership mode; requires team
+
+### `mlb_statcast_pitch_tempo_player`
+
+- **HTTP:** `GET /mlb/statcast-pitch-tempo-player`
+- **What:** Get a player's Pitch Tempo detail rows. Returns game-level time buckets for the selected pitcher or batter. Use entity_id from an mlb_statcast_pitch_tempo result.
+- **Params:** `entity_id` (string, **required**) — Numeric entity id from a Pitch Tempo row; `game_type` (string, optional) — Game type; `season_end` (string, optional) — Last season; must be >= season_start; `season_start` (string, optional) — First season; `type` (string, optional) — Entity type
+
+### `mlb_statcast_pitch_timer`
+
+- **HTTP:** `GET /mlb/statcast-pitch-timer`
+- **What:** Get Baseball Savant Pitch Timer infraction rows. Returns the Pitch Timer Infractions table for pitchers, batters, catchers, teams, or opposing teams. Filters for type, season, minimum pitches, and zero-infraction rows are upstream-backed; entity search, table sorting, and pagination are applied locally. The chart ordering is included as view metadata; the endpoint returns table rows, not the SVG chart.
+- **Params:** `chart_sort` (string, optional) — Chart ordering metadata; `include_zeroes` (string, optional) — Include entities without infractions; `limit` (integer, optional) — Rows per page (1-500); `min_pitches` (string, optional) — Minimum pitches; `offset` (integer, optional) — Zero-based row offset; `q` (string, optional) — Local case-insensitive entity-name substring filter; `season` (string, optional) — Season; `sort` (string, optional) — Local table sort field; `sort_dir` (string, optional) — Sort direction; `type` (string, optional) — Entity group
+
+### `mlb_statcast_player_details`
+
+- **HTTP:** `GET /mlb/statcast-player-details`
+- **What:** Get expanded standard Baseball Savant Statcast player plays. Returns the game-level pitch or batted-ball rows shown when expanding a batter or pitcher row in the standard Statcast leaderboard, including matchup, date, event, exit velocity, launch angle, distance, play id, and video availability.
+- **Params:** `player_id` (string, **required**) — Positive MLB player id from a batter or pitcher row; `player_type` (string, optional) — Player row type; `year` (integer, optional) — Season from 2015 through the current season
+
+### `mlb_statcast_rolling`
+
+- **HTTP:** `GET /mlb/statcast-rolling`
+- **What:** Get Baseball Savant Rolling Windows rows. Returns the six embedded Batter/Pitcher rolling-window tables, filtered by metric, role, and plate-appearance window. Each group is sorted by the selected metric delta in the same direction as the first-party page and paginated independently. The upstream page has no season, team, or game-type filters.
+- **Params:** `limit` (integer, optional) — Rows per group (1-500); `metric` (string, optional) — Displayed metric; `offset` (integer, optional) — Zero-based row offset per group (0-5000); `role` (string, optional) — Optional player role; omit for both; `window_pa` (string, optional) — Optional rolling plate-appearance window; omit for all
+
+### `mlb_statcast_run_value`
+
+- **HTTP:** `GET /mlb/statcast-run-value`
+- **What:** Get Baseball Savant Run Value rows. Returns batting or pitching Run Value rows from the Swing-Take leaderboard. Filters are cold-replay verified; sorting and pagination are applied locally. The Bat-side R/L selector was verified to leave the embedded rows byte-identical and is omitted. The page's visual charts and CSV export are separate formats.
+- **Params:** `group` (string, optional) — Row group; `leverage` (string, optional) — Run-value method; `limit` (integer, optional) — Rows per page (1-500); `min` (string, optional) — Minimum plate appearances; `offset` (integer, optional) — Zero-based row offset; `sort` (string, optional) — Local table sort field; supported set varies by view; `sort_dir` (string, optional) — Sort direction; `sub_type` (string, optional) — Conditional subtype: Swing/Take; pitch name; or Heart/Shadow/Chase/Waste; `team` (string, optional) — MLB numeric team id; omit for all teams; `type` (string, optional) — Table view; `year` (string, optional) — Season, All, or Career
+
+### `mlb_statcast_running_game`
+
+- **HTTP:** `GET /mlb/statcast-running-game`
+- **What:** Get Baseball Savant Running Game leaderboards. Returns the Running Game table for pitchers, pitching teams, or league. Season/game, hand, runner movement, target base, prior pickoff count, minimum opportunities, team, and team-stint controls are live-verified; named sorting, player/team search, and pagination are applied locally. Per-play records are available from mlb-statcast-running-game-details. The expanded-column toggle returns the same source fields, and the first-party CSV download is not a separate JSON response mode.
+- **Params:** `game_type` (string, optional) — Game scope; `limit` (integer, optional) — Rows per page, 1-500; `n` (string, optional) — Minimum pitcher opportunities; `offset` (integer, optional) — Zero-based row offset; `pitch_hand` (string, optional) — Pitcher's throwing hand; `prior_pk` (string, optional) — Prior pickoff/disengagement count; `runner_moved` (string, optional) — Runner movement outcome; `search` (string, optional) — Case-insensitive substring of the displayed player or team name; `season_end` (integer, optional) — Inclusive last season; `season_start` (integer, optional) — Inclusive first season; `sort` (string, optional) — Local table sort field; `sort_dir` (string, optional) — Local sort direction; `split` (string, optional) — Return separate year rows; `target_base` (string, optional) — Target base; `team` (string, optional) — MLB team id, or split team stints; `type` (string, optional) — Leaderboard group; `with_team_only` (boolean, optional) — Restrict pitcher rows to the selected team; only valid with one specific team id
+
+### `mlb_statcast_running_game_details`
+
+- **HTTP:** `GET /mlb/statcast-running-game-details`
+- **What:** Get Baseball Savant Running Game play details. Returns individual attempted-running plays expanded from a pitcher or pitching-team Running Game row. Pass its entity_id and repeat the same table filters. For team-stint rows, pass that row's team id; League rows do not expose a detail feed.
+- **Params:** `entity_id` (integer, **required**) — Positive player or team entity id from the Running Game leaderboard; `game_type` (string, optional) — Game scope; `limit` (integer, optional) — Play rows per page, 1-500; `n` (string, optional) — Minimum pitcher opportunities; `offset` (integer, optional) — Zero-based play-row offset; `pitch_hand` (string, optional) — Pitcher's throwing hand; `prior_pk` (string, optional) — Prior pickoff/disengagement count; `runner_moved` (string, optional) — Runner movement outcome; `season_end` (integer, optional) — Inclusive last season; `season_start` (integer, optional) — Inclusive first season; `split` (string, optional) — Return separate year rows; `target_base` (string, optional) — Target base; `team` (string, optional) — One MLB team id; use the row's team id for split-team rows; `type` (string, optional) — Detail group; `with_team_only` (boolean, optional) — Restrict player rows to selected team; only valid with a specific team and Pit type
+
+### `mlb_statcast_sprint_speed`
+
+- **HTTP:** `GET /mlb/statcast-sprint-speed`
+- **What:** Get Baseball Savant Sprint Speed player rows. Returns player Sprint Speed rows from the Baseball Savant leaderboard. The source filters season range, position, and minimum competitive runs; team filtering and sorting are applied locally. Use mlb_discovery for every closed value set.
+- **Params:** `limit` (integer, optional) — Rows per page (1-500); `max_season` (string, optional) — Last season; must be >= min_season; `min_season` (string, optional) — First season; `minimum_runs` (string, optional) — Minimum competitive runs; `offset` (integer, optional) — Zero-based row offset; `position` (string, optional) — Position code; omitted is All Positions; `sort` (string, optional) — Local sort field; `sort_dir` (string, optional) — Sort direction; `team_id` (string, optional) — MLB team id
+
+### `mlb_statcast_sprint_speed_teams`
+
+- **HTTP:** `GET /mlb/statcast-sprint-speed-teams`
+- **What:** Get Baseball Savant Sprint Speed team rows. Returns team-level Sprint Speed rows. Season is selected upstream; team filtering and sorting are applied locally because the first-party page embeds every team before its client-side filter. Use mlb_discovery for all accepted seasons, teams, and sort fields.
+- **Params:** `limit` (integer, optional) — Rows per page (1-500); `offset` (integer, optional) — Zero-based row offset; `season` (string, optional) — Season or all seasons; `sort` (string, optional) — Local sort field; `sort_dir` (string, optional) — Sort direction; `team` (string, optional) — Optional first-party team selector abbreviation
+
+### `mlb_statcast_swing_path`
+
+- **HTTP:** `GET /mlb/statcast-swing-path`
+- **What:** Get Baseball Savant Swing Path and Attack Angle rows. Returns batter, batting-team, or league Swing Path and Attack Angle rows with the first-party season, game, swing, team, date, side, contact, hard-hit, attack-zone, and pitcher-hand filters. Use mlb_discovery for exact values.
+- **Params:** `attack_zone` (string, optional) — Attack zone; `bat_side` (string, optional) — Batter side; `contact_type` (string, optional) — Contact type; `date_end` (string, optional) — Optional range end in YYYY-MM-DD; `date_start` (string, optional) — Optional range start in YYYY-MM-DD; `game_type` (string, optional) — Game type; `is_hard_hit` (string, optional) — Hard-hit filter; `limit` (integer, optional) — Rows per page (1-500); `min_group_swings` (string, optional) — Minimum swings per group; `min_swings` (string, optional) — Minimum swing threshold; `offset` (integer, optional) — Zero-based row offset; `pitch_hand` (string, optional) — Pitcher hand; `season_end` (string, optional) — Last season; must be >= season_start; `season_start` (string, optional) — First season; `sort` (string, optional) — Local sort field; `sort_dir` (string, optional) — Sort direction; `team_id` (string, optional) — Optional MLB team id; `type` (string, optional) — Row type
+
+### `mlb_statcast_swing_timing`
+
+- **HTTP:** `GET /mlb/statcast-swing-timing`
+- **What:** Get Baseball Savant Swing Timing and Miss Distance rows. Returns batter, batting-team, pitcher, pitching-team, or league rows with the page's season, game type, pitch-group, split, team, date, swing, contact, zone, pitch hand/type, count, timing-axis, and timing-flag filters. Sorting is local. Use mlb_discovery for exact values.
+- **Params:** `attack_zone` (string, optional) — Attack zone; `bat_side` (string, optional) — Batter side; `contact_type` (string, optional) — Contact type; `counts` (array, optional) — One or more ball-strike counts; `date_end` (string, optional) — Optional range end in YYYY-MM-DD; `date_start` (string, optional) — Optional range start in YYYY-MM-DD; `flags` (array, optional) — Positive timing flags; `game_types` (array, optional) — One or more game types; `limit` (integer, optional) — Rows per page (1-500); `min_split` (string, optional) — Minimum swings per split group; `min_swings` (string, optional) — Minimum swing threshold; `not_flags` (array, optional) — Excluded timing flags; `offset` (integer, optional) — Zero-based row offset; `pitch_hand` (string, optional) — Pitcher hand; `pitch_types` (array, optional) — One or more pitch type codes; `seasons` (array, optional) — One or more seasons; `sort` (string, optional) — Local sort field; `sort_dir` (string, optional) — Sort direction; `split_year` (string, optional) — Split years into separate rows; `splits` (array, optional) — One or more split dimensions; `swing_timing_x` (array, optional) — Tied-up, centered, or flailed; `swing_timing_y` (array, optional) — Early, on-time, or late; `swing_timing_z` (array, optional) — Under, lined-up, or over; `teams` (array, optional) — One or more MLB team ids; `type` (string, optional) — Row type
+
+### `mlb_statcast_swing_timing_details`
+
+- **HTTP:** `GET /mlb/statcast-swing-timing-details`
+- **What:** Get Baseball Savant Swing Timing player details. Returns the four anonymous per-swing detail arrays expanded from a batter or pitcher Swing Timing row. Pass the row_id uniqueId from mlb-statcast-swing-timing and repeat its type and table filters so split values can be mapped to the upstream detail query.
+- **Params:** `attack_zone` (string, optional) — Attack zone; `bat_side` (string, optional) — Batter side; `contact_type` (string, optional) — Contact type; `counts` (array, optional) — Ball-strike counts; `date_end` (string, optional) — Filter end date in YYYY-MM-DD format; `date_start` (string, optional) — Filter start date in YYYY-MM-DD format; `flags` (array, optional) — Positive swing timing flags; `game_types` (array, optional) — Game-type filters; `min_split` (string, optional) — Minimum group swings; `min_swings` (string, optional) — Minimum swings; `not_flags` (array, optional) — Excluded swing timing flags; `pitch_hand` (string, optional) — Pitcher hand; `pitch_types` (array, optional) — Pitch type codes; `row_id` (string, **required**) — Unique row id from mlb-statcast-swing-timing, including any selected split values; `seasons` (array, optional) — Season filters; `split_year` (string, optional) — Include year in the row grouping; `splits` (array, optional) — Split dimensions; `swing_timing_x` (array, optional) — Tied-up/flail axis values; `swing_timing_y` (array, optional) — Early/late axis values; `swing_timing_z` (array, optional) — Over/under axis values; `teams` (array, optional) — MLB team ids; `type` (string, **required**) — Player row type
+
+### `mlb_statcast_top_performers`
+
+- **HTTP:** `GET /mlb/statcast-top-performers`
+- **What:** Get Baseball Savant Top Performers. Returns every current Top Performers card for the selected season, including batter and pitcher rankings across batting, batted-ball, expected-stat, fielding, catching, running, and pitch-metric views. The page exposes a season selector but no per-card filters; use the specialist Statcast endpoints for complete filtered leaderboards.
+- **Params:** `year` (integer, optional) — Season from 2015 through the current season; defaults to the current season
+
+### `mlb_statcast_year_to_year`
+
+- **HTTP:** `GET /mlb/statcast-year-to-year`
+- **What:** Get Baseball Savant Year-to-Year Changes. Returns one of Baseball Savant's Year-to-Year Changes tables for batters, pitchers, batting teams, or pitching teams. Select one of the live statistic types and comparison start years; the page data contains available yearly values and differences. Table sorting and pagination are applied locally. Use mlb_discovery for all accepted group, type, and year values.
+- **Params:** `group` (string, optional) — Table group; `limit` (integer, optional) — Rows per page (1-500); `offset` (integer, optional) — Zero-based row offset (0-5000); `sort` (string, optional) — Local sortable column; name_display_last_first, year_YYYY, TYPE_YYYY, or TYPE_diff_YYYY. Defaults to the selected metric's difference for the selected comparison year.; `sort_dir` (string, optional) — Sort direction; defaults to Batter descending and Pitcher ascending; `type` (string, optional) — Statistic type; `year` (string, optional) — Comparison start year; compares this season with the following year
 
 ### `mlb_team_roster`
 
@@ -10263,7 +11117,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get NBC News RSS sections. Returns the exact live-verified public RSS section slugs accepted by nbc-headlines.
 - **Params:** _none_
 
-## NDTV (6)
+## NDTV (12)
 
 ### `ndtv_article`
 
@@ -10274,14 +11128,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ndtv_author`
 
 - **HTTP:** `GET /ndtv/author`
-- **What:** Get an NDTV author profile. Returns an NDTV author's or news agency's byline profile (name, role, biography, image) and their most recent stories from a canonical author URL.
-- **Params:** `url` (string, **required**) — Canonical NDTV author or agency URL
+- **What:** Get an NDTV author profile. Returns an NDTV author's or news agency's byline profile (name, role, biography, image) and one page of authored news stories from a canonical author URL. Request sequential pages until articles is empty; NDTV does not expose a total count.
+- **Params:** `page` (integer, optional) — 1-based authored news story page; request sequentially until articles is empty; `url` (string, **required**) — Canonical NDTV author or agency URL
 
 ### `ndtv_headlines`
 
 - **HTTP:** `GET /ndtv/headlines`
 - **What:** Get NDTV section headlines. Returns the current story cards from one NDTV section page: title, canonical URL, and, where the section shows them, summary, publication time, byline, and image.
 - **Params:** `section` (string, **required**) — NDTV section slug from ndtv-sections
+
+### `ndtv_latest_videos`
+
+- **HTTP:** `GET /ndtv/latest-videos`
+- **What:** Get NDTV latest videos. Returns one page from NDTV's separate latest-videos feed. This feed is not a category slug; use page sequentially. Results contain metadata only, with no media bytes or player URLs.
+- **Params:** `page` (integer, optional) — 1-based latest-video page
+
+### `ndtv_live_blog`
+
+- **HTTP:** `GET /ndtv/live-blog`
+- **What:** Get structured updates from an NDTV live blog. Returns live-blog metadata and the ordered BlogPosting updates embedded in NDTV's public LiveBlogPosting JSON-LD. Regular article URLs are rejected.
+- **Params:** `url` (string, **required**) — Canonical NDTV live-blog article URL
+
+### `ndtv_live_blogs`
+
+- **HTTP:** `GET /ndtv/live-blogs`
+- **What:** Get NDTV live-blog index. Returns one page of public NDTV live-blog cards. Pages include only www.ndtv.com live blogs; sister-site cards are excluded. NDTV does not expose a total count or continuation marker; request sequential pages until the upstream reports not found.
+- **Params:** `page` (integer, optional) — 1-based index page
 
 ### `ndtv_news`
 
@@ -10300,6 +11172,24 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /ndtv/sections`
 - **What:** Get NDTV sections. Returns every NDTV section slug accepted by the headlines endpoint, with its display name and page URL.
 - **Params:** _none_
+
+### `ndtv_video`
+
+- **HTTP:** `GET /ndtv/video`
+- **What:** Get NDTV video metadata. Returns title, description, publication time, duration, and thumbnail metadata from one canonical NDTV video page. It does not fetch or return video media or player URLs.
+- **Params:** `url` (string, **required**) — Canonical NDTV video URL
+
+### `ndtv_video_categories`
+
+- **HTTP:** `GET /ndtv/video-categories`
+- **What:** Get NDTV video categories. Returns the live-verified NDTV-hosted category slugs accepted by ndtv-videos. Categories hosted on sister domains, Shorts, and unavailable Faith are excluded.
+- **Params:** _none_
+
+### `ndtv_videos`
+
+- **HTTP:** `GET /ndtv/videos`
+- **What:** Get videos from an NDTV category. Returns one page of metadata cards from a supported NDTV-hosted video category. Use ndtv-video-categories to discover the complete supported category set; request pages sequentially. This returns no media bytes or player URLs.
+- **Params:** `category` (string, **required**) — NDTV video category slug from ndtv-video-categories; `page` (integer, optional) — 1-based category result page
 
 ## New York Daily News (5)
 
@@ -11677,6 +12567,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get PhoneArena sections. Returns the public PhoneArena listings accepted by the headlines endpoint: recent news, current-month news and current-year reviews.
 - **Params:** _none_
 
+## Phys.org (4)
+
+### `physorg_article`
+
+- **HTTP:** `GET /physorg/article`
+- **What:** Get a Phys.org article. Returns public Phys.org article metadata and readable body paragraphs from a canonical dated news URL. The service tries proxied HTTP first and uses the production browser fleet when the article edge challenges HTTP. Billing is 2 credits for an HTTP-profile success and 10 credits when browser rendering is required. No author-profile route was verified.
+- **Params:** `url` (string, **required**) — Canonical Phys.org article URL
+
+### `physorg_headlines`
+
+- **HTTP:** `GET /physorg/headlines`
+- **What:** Get Phys.org section headlines. Returns current stories from one verified public Phys.org RSS feed. The accepted values are the seven Topics menu feeds plus the Breaking and Editorials feeds. Search and tag feeds are excluded because their paths are disallowed in robots.txt.
+- **Params:** `section` (string, **required**) — Phys.org RSS feed slug from physorg-sections
+
+### `physorg_news`
+
+- **HTTP:** `GET /physorg/news`
+- **What:** Get Phys.org top stories. Returns current stories from Phys.org's public all-stories RSS feed. Summaries are publisher-provided teasers. Use physorg-sections to discover the topic and editorial RSS feeds accepted by physorg-headlines.
+- **Params:** _none_
+
+### `physorg_sections`
+
+- **HTTP:** `GET /physorg/sections`
+- **What:** List Phys.org RSS sections. Lists the seven topic feeds in Phys.org's Topics menu and its two additional public Breaking and Editorials feeds. Every returned slug is accepted by physorg-headlines. Search and tag feeds are excluded because their paths are disallowed in robots.txt.
+- **Params:** _none_
+
 ## Pinterest (8)
 
 ### `pinterest_board`
@@ -12908,73 +13824,73 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `reddit_comments`
 
 - **HTTP:** `GET /reddit/comments/{id}`
-- **What:** Get Reddit post comments. Returns a Reddit post with its public comments. The default 1-credit mode uses RSS. Set `include_metrics=true` to use the anonymous HTML post page as the sole content request and return the server-rendered comments with public net score and award count plus post engagement metrics for 3 credits. Large threads may expose only an initial comment subset in anonymous HTML. Reddit does not expose per-comment upvote ratios or exact upvote/downvote totals anonymously. A post that exists but has no comments yet returns a 200 response with an empty comments list; a post that does not exist returns 404, and a temporary block or upstream failure returns 503 (retryable) rather than 404.
+- **What:** Get Reddit post comments. Returns a Reddit post with its public comments. The default 1-credit mode uses RSS. Set `include_metrics=true` to use the anonymous HTML post page as the sole content request and return the server-rendered comments with public net score and award count plus post engagement metrics for 3 credits. Large threads may expose only an initial comment subset in anonymous HTML. Reddit does not expose per-comment upvote ratios or exact upvote/downvote totals anonymously. A post that exists but has no comments yet returns a 200 response with an empty comments list; a post that does not exist returns 404, and a temporary block or upstream failure returns 503 (retryable) rather than 404. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
 - **Params:** `depth` (integer, optional) — Maximum flat comment depth returned in metrics mode.; `id` (string, **required**) — Reddit post id or t3_ id; `include_metrics` (boolean, optional) — Include public post and per-comment engagement metrics; costs 3 credits instead of 1; `limit` (integer, optional) — Maximum comments returned, defaults to 25 and clamps to 100; `sort` (string, optional) — Comment order: confidence, top, new, controversial, old, or qa. Applied to the anonymous HTML request when metrics are enabled.
 
 ### `reddit_domain_posts`
 
 - **HTTP:** `GET /reddit/domain/{domain}/posts`
-- **What:** List Reddit domain posts. Returns normalized public posts submitted from a linked domain. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
+- **What:** List Reddit domain posts. Returns normalized public posts submitted from a linked domain. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `domain` (string, **required**) — Domain hostname, without scheme or path; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
 
 ### `reddit_leads`
 
 - **HTTP:** `GET /reddit/leads`
-- **What:** Find Reddit buying-intent leads. Scans a Reddit search page for people actively asking for a product or service, scores each post 0-10 for buying intent, and returns them ranked highest-first with the signals that fired. Self-promotion, hiring posts, freelancer service adverts, revenue-milestone posts, duplicate reposts, and Title Case article headlines are filtered out before scoring. A deterministic prefilter always runs; when `classifier` resolves to `llm` the surviving candidates are additionally refined in one batched model call. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
+- **What:** Find Reddit buying-intent leads. Scans a Reddit search page for people actively asking for a product or service, scores each post 0-10 for buying intent, and returns them ranked highest-first with the signals that fired. Self-promotion, hiring posts, freelancer service adverts, revenue-milestone posts, duplicate reposts, and Title Case article headlines are filtered out before scoring. A deterministic prefilter always runs; when `classifier` resolves to `llm` the surviving candidates are additionally refined in one batched model call. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native Reddit search failures can use the internal Redlib provider while the existing lead-response fields and credit weights are preserved.
 - **Params:** `classifier` (string, optional) — Classifier: auto uses the model when configured, heuristic skips it, llm requires it; `limit` (integer, optional) — Maximum leads returned, defaults to 25 and clamps to 100; `min_score` (integer, optional) — Minimum buying-intent score to return, 0-10, defaults to 4; `q` (string, **required**) — What you offer, in plain language; `sort` (string, optional) — Sort: relevance, hot, new, top, or comments; `subreddit` (string, optional) — Restrict the search to a subreddit name, without r/; `time` (string, optional) — Time window: hour, day, week, month, year, or all
 
 ### `reddit_post`
 
 - **HTTP:** `GET /reddit/post/{id}`
-- **What:** Get Reddit post. Returns a normalized public Reddit post. The default 1-credit mode uses RSS. Set `include_metrics=true` to use the anonymous HTML post page as the sole content request and return public net score, upvote ratio, comment count, award count, and estimated upvote/downvote totals for 3 credits. Reddit fuzzes voting data, so estimates are approximate; share, repost/crosspost, and view counts are not exposed anonymously.
+- **What:** Get Reddit post. Returns a normalized public Reddit post. The default 1-credit mode uses RSS. Set `include_metrics=true` to use the anonymous HTML post page as the sole content request and return public net score, upvote ratio, comment count, award count, and estimated upvote/downvote totals for 3 credits. Reddit fuzzes voting data, so estimates are approximate; share, repost/crosspost, and view counts are not exposed anonymously. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
 - **Params:** `id` (string, **required**) — Reddit post id or t3_ id; `include_metrics` (boolean, optional) — Include public engagement metrics; costs 3 credits instead of 1
 
 ### `reddit_search`
 
 - **HTTP:** `GET /reddit/search`
-- **What:** Search Reddit posts. Searches public Reddit content and returns normalized public post entries. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
+- **What:** Search Reddit posts. Searches public Reddit content and returns normalized public post entries. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `q` (string, **required**) — Search keywords; `sort` (string, optional) — Sort: relevance, hot, new, top, or comments; `subreddit` (string, optional) — Restrict search to a subreddit name, without r/; `time` (string, optional) — Time window for top/comments sorts: hour, day, week, month, year, or all
 
 ### `reddit_subreddit_about`
 
 - **HTTP:** `GET /reddit/subreddit/{subreddit}/about`
-- **What:** Get Reddit subreddit metadata. Returns public metadata and sample posts for a subreddit. Subscriber counts, icons, and banners are omitted because they are not available on anonymous Reddit pages. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
+- **What:** Get Reddit subreddit metadata. Returns public metadata and sample posts for a subreddit. Subscriber counts, icons, and banners are omitted because they are not available on anonymous Reddit pages. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
 - **Params:** `limit` (integer, optional) — Maximum sample posts inspected, defaults to 25 and clamps to 100; `subreddit` (string, **required**) — Subreddit name, without r/
 
 ### `reddit_subreddit_comments`
 
 - **HTTP:** `GET /reddit/subreddit/{subreddit}/comments`
-- **What:** List Reddit subreddit comments. Returns flat public comment entries from a subreddit latest-comments feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
+- **What:** List Reddit subreddit comments. Returns flat public comment entries from a subreddit latest-comments feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `subreddit` (string, **required**) — Subreddit name, without r/
 
 ### `reddit_subreddit_posts`
 
 - **HTTP:** `GET /reddit/subreddit/{subreddit}/posts`
-- **What:** List Reddit subreddit posts. Returns normalized public posts from a subreddit. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
+- **What:** List Reddit subreddit posts. Returns normalized public posts from a subreddit. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `subreddit` (string, **required**) — Subreddit name, without r/; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
 
 ### `reddit_subreddits_posts`
 
 - **HTTP:** `GET /reddit/subreddits/posts`
-- **What:** List Reddit multi-subreddit posts. Returns normalized public posts from a combined multi-subreddit feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
+- **What:** List Reddit multi-subreddit posts. Returns normalized public posts from a combined multi-subreddit feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `subreddits` (string, **required**) — Comma-separated subreddit names, without r/, maximum 10; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
 
 ### `reddit_trends`
 
 - **HTTP:** `GET /reddit/trends`
-- **What:** List Reddit trends. Returns normalized public posts from broad Reddit hot, new, rising, or top feeds. For subreddit-specific trends, use `/reddit/subreddit/{subreddit}/posts` with `sort=hot`, `sort=new`, `sort=rising`, or `sort=top`. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
+- **What:** List Reddit trends. Returns normalized public posts from broad Reddit hot, new, rising, or top feeds. For subreddit-specific trends, use `/reddit/subreddit/{subreddit}/posts` with `sort=hot`, `sort=new`, `sort=rising`, or `sort=top`. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, rising, or top; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
 
 ### `reddit_user_comments`
 
 - **HTTP:** `GET /reddit/user/{username}/comments`
-- **What:** List Reddit user comments. Returns flat public comment entries from a public Reddit user's comments feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
+- **What:** List Reddit user comments. Returns flat public comment entries from a public Reddit user's comments feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/
 
 ### `reddit_user_posts`
 
 - **HTTP:** `GET /reddit/user/{username}/posts`
-- **What:** List Reddit user posts. Returns normalized public posts from a public Reddit user's submitted feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry.
+- **What:** List Reddit user posts. Returns normalized public posts from a public Reddit user's submitted feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/
 
 ## Redfin (5)
@@ -13052,6 +13968,86 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /resy/search`
 - **What:** Search Resy restaurants near a location. Searches restaurants by free-text term (name, cuisine, or neighborhood) near a latitude/longitude, optionally including live bookable-timeslot availability for a given date and party size. Credential-free.
 - **Params:** `date` (string, optional) — Reservation date, YYYY-MM-DD; when set, results include live timeslots; `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `party_size` (integer, optional) — Party size, default 2; `size` (integer, optional) — Max results, default 10; `term` (string, optional) — Free-text search term (name, cuisine, or neighborhood)
+
+## RetailMeNot (13)
+
+### `retailmenot_autocomplete`
+
+- **HTTP:** `GET /retailmenot/autocomplete`
+- **What:** Get RetailMeNot search suggestions. Returns RetailMeNot's search-box suggestions for a free-text term: matching stores (with domains usable with /retailmenot/store) and cash-back offers. Group names are returned as data.
+- **Params:** `term` (string, **required**) — Store or brand search term
+
+### `retailmenot_blog_categories`
+
+- **HTTP:** `GET /retailmenot/blog-categories`
+- **What:** List RetailMeNot blog categories. Returns every category of RetailMeNot's shopping and savings blog with its slug, post count, description, and URL. Use a slug as the category filter of /retailmenot/blog-posts.
+- **Params:** _none_
+
+### `retailmenot_blog_post`
+
+- **HTTP:** `GET /retailmenot/blog-post`
+- **What:** Get a RetailMeNot blog post. Returns one RetailMeNot blog post: metadata (title, author, dates, description, image, categories, tags), the article text as headed sections of paragraphs and lists, and the RetailMeNot stores and coupon categories the article links to (usable with /retailmenot/store and /retailmenot/category).
+- **Params:** `slug` (string, **required**) — Post slug from /retailmenot/blog-posts (a trailing .html is accepted)
+
+### `retailmenot_blog_posts`
+
+- **HTTP:** `GET /retailmenot/blog-posts`
+- **What:** List RetailMeNot blog posts. Returns one page of RetailMeNot blog posts (title, slug, URL, excerpt, description, author, published and modified dates, image, categories, and tags) with total and total pages, newest first by default. Filter by category slug, tag slug, and/or a search query; order by date, modified, title, or relevance (relevance requires query). A page past the end returns an empty list.
+- **Params:** `category` (string, optional) — Category slug from /retailmenot/blog-categories; `order` (string, optional) — Sort direction; `order_by` (string, optional) — Sort field; `page` (integer, optional) — Page number, starting at 1; `page_size` (integer, optional) — Posts per page (1-100); `query` (string, optional) — Search post text; `tag` (string, optional) — Tag slug from /retailmenot/blog-tags
+
+### `retailmenot_blog_tags`
+
+- **HTTP:** `GET /retailmenot/blog-tags`
+- **What:** List RetailMeNot blog tags. Returns one page of RetailMeNot blog tags ordered by post count, with slug, name, post count, and URL, plus total and total pages; optionally only tags matching a query. Use a slug as the tag filter of /retailmenot/blog-posts.
+- **Params:** `page` (integer, optional) — Page number, starting at 1; `page_size` (integer, optional) — Tags per page (1-100); `query` (string, optional) — Match tag names
+
+### `retailmenot_cashback`
+
+- **HTTP:** `GET /retailmenot/cashback`
+- **What:** List RetailMeNot cash-back offers. Returns the cash-back offers on RetailMeNot's cash-back hub (featured, top, and all cash-back offers) with each store's cash-back rate.
+- **Params:** _none_
+
+### `retailmenot_categories`
+
+- **HTTP:** `GET /retailmenot/categories`
+- **What:** List RetailMeNot coupon categories. Returns RetailMeNot's full three-level coupon category tree (parent, child, and grandchild categories) with slugs for /retailmenot/category.
+- **Params:** _none_
+
+### `retailmenot_category`
+
+- **HTTP:** `GET /retailmenot/category`
+- **What:** Get a RetailMeNot category's offers. Returns one page of a RetailMeNot category landing page: the featured offers across stores (24 per page, with page and total_pages), offer counts, and similar stores. Use a slug from /retailmenot/categories; a page past the end returns an empty offer list.
+- **Params:** `page` (integer, optional) — Offer page (24 offers per page; see total_pages); `slug` (string, **required**) — Category slug from /retailmenot/categories
+
+### `retailmenot_deal_event`
+
+- **HTTP:** `GET /retailmenot/deal-event`
+- **What:** Get a RetailMeNot deal event's offers. Returns one seasonal deal event page's offers grouped into the page's sections (top deals and per-category sections). Use a slug from /retailmenot/deal-events.
+- **Params:** `slug` (string, **required**) — Event slug from /retailmenot/deal-events
+
+### `retailmenot_deal_events`
+
+- **HTTP:** `GET /retailmenot/deal-events`
+- **What:** List RetailMeNot seasonal deal events. Returns RetailMeNot's seasonal and holiday deal events (for example Black Friday, Cyber Monday, Back-to-School) with slugs for /retailmenot/deal-event.
+- **Params:** _none_
+
+### `retailmenot_home`
+
+- **HTTP:** `GET /retailmenot/home`
+- **What:** Get RetailMeNot's homepage offers. Returns RetailMeNot's homepage: featured offer sections (cash-back stores with rates, seasonal savings deals with store, offer type, discount, and title), today's top product deals (title, discount, image, and retailer product URL), and the help FAQ.
+- **Params:** _none_
+
+### `retailmenot_store`
+
+- **HTTP:** `GET /retailmenot/store`
+- **What:** Get a RetailMeNot store's coupons and offers. Returns a store's RetailMeNot page: store details, shopper rating, category, offer counts, every listed coupon, sale, cash-back, and in-store offer (including the offers behind the page's "show more" button), similar stores, and FAQs. Coupon codes are only revealed on RetailMeNot after a click and are not returned. Set market=ca for a RetailMeNot Canada store page.
+- **Params:** `domain` (string, **required**) — Store domain or RetailMeNot store URL; `market` (string, optional) — us for RetailMeNot, ca for RetailMeNot Canada (stores from /retailmenot/stores with market=ca)
+
+### `retailmenot_stores`
+
+- **HTTP:** `GET /retailmenot/stores`
+- **What:** List RetailMeNot stores by letter. Returns every store in one letter of RetailMeNot's A-Z store directory, or of RetailMeNot Canada's store list with market=ca, with the domain to pass to /retailmenot/store (with the same market).
+- **Params:** `letter` (string, **required**) — Directory letter; `market` (string, optional) — us for RetailMeNot, ca for RetailMeNot Canada
 
 ## Reuters (6)
 
@@ -14536,7 +15532,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sonic_locations`
 
 - **HTTP:** `GET /sonic/locations`
-- **What:** List Sonic Drive-In restaurants with ready-made store paths. Returns Sonic Drive-In's restaurant listing one page at a time, each entry already split into its country, state, city and address parts plus a ready-made path value that GET /sonic/store takes -- so enumerating restaurants needs no path parsing. Filter by state and/or city to narrow the list; city slugs come from GET /sonic/directory. Results are sorted by path so paging is reproducible. This listing covers more store pages than GET /sonic/directory counts, since the directory counts listed restaurants while this enumerates every published store page; a filter that matches nothing returns an empty locations array with total 0, not an error.
+- **What:** List Sonic Drive-In restaurants with ready-made store paths. Returns Sonic Drive-In's restaurant listing one page at a time, each entry already split into its country, state, city and address parts plus a ready-made path value that GET /sonic/store takes -- so enumerating restaurants needs no path parsing. Filter by state and/or city to narrow the list; city slugs come from GET /sonic/directory. Results are sorted by path so paging is reproducible. This listing covers more store pages than GET /sonic/directory counts, since the directory counts listed restaurants while this enumerates every published store page; a filter that matches nothing returns an empty locations array with total 0, not an error. If Sonic's live store-locator service refuses the request, the list is built from Sonic's public store sitemap instead (same entry shape; it can omit stores without a published page, and source_url shows which source answered).
 - **Params:** `city` (string, optional) — City slug to filter by, from /sonic/directory; `page` (integer, optional) — 1-based page number. Defaults to 1.; `page_size` (integer, optional) — Entries per page, 1-500. Defaults to 100.; `state` (string, optional) — Two-letter state or province code to filter by
 
 ### `sonic_menu`
@@ -14691,7 +15687,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Sporting News sections. Returns the public Sporting News US sport, league and topic feeds accepted by the headlines endpoint.
 - **Params:** _none_
 
-## Sportskeeda (21)
+## Sportskeeda (48)
 
 ### `sportskeeda_article`
 
@@ -14705,11 +15701,59 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get a Sportskeeda author profile. Returns one public Sportskeeda author's name and recent article links from the canonical author profile.
 - **Params:** `slug` (string, optional) — Sportskeeda author slug, e.g. sripad; `url` (string, optional) — Canonical Sportskeeda /author/<slug> URL; alternative to slug
 
+### `sportskeeda_college_basketball_schedule`
+
+- **HTTP:** `GET /sportskeeda/college-basketball-schedule`
+- **What:** Get Sportskeeda college basketball games for a date. Returns all games and published scores for the requested date and season from Sportskeeda's first-party JSON feed. Discover valid season values with college-basketball-schedule-options. The upstream conference filter is currently unreliable and this endpoint does not accept it.
+- **Params:** `date` (string, **required**) — Game date in YYYY-MM-DD format; `season` (integer, **required**) — Season starting year returned by college-basketball-schedule-options
+
+### `sportskeeda_college_basketball_schedule_options`
+
+- **HTTP:** `GET /sportskeeda/college-basketball-schedule-options`
+- **What:** Discover college basketball schedule seasons and date window. Reads Sportskeeda's current college basketball schedule configuration. It returns every season from the published minimum through the current schedule season and the date-picker window. The conference selector is shown by the site, but its current-season feed metadata is incomplete.
+- **Params:** `season` (integer, optional) — A season starting year from the live seasons list; defaults to the current schedule season
+
+### `sportskeeda_cricket_commentary`
+
+- **HTTP:** `GET /sportskeeda/cricket-commentary`
+- **What:** Get Sportskeeda cricket ball-by-ball commentary. Returns the current commentary feed. To page to older events, pass a 24-character lowercase hexadecimal cursor from an event in /sportskeeda/cricket-match's commentary field (the full feed may contain zero-filled IDs); language then selects an upstream language. The match page's commentary selector offers en, hi, ta, te, and bho. Language without cursor is rejected because the upstream feed ignores it.
+- **Params:** `cursor` (string, optional) — Nonzero 24-character lowercase hexadecimal commentary ID from /sportskeeda/cricket-match commentary; `language` (string, optional) — Older-comment language; valid only with cursor; `slug` (string, **required**) — Host-free match path returned by /sportskeeda/schedule
+
+### `sportskeeda_cricket_match`
+
+- **HTTP:** `GET /sportskeeda/cricket-match`
+- **What:** Get a Sportskeeda cricket match center. Returns the public scorecard, innings, teams, squads, player data, and latest commentary for a cricket match slug discovered from /sportskeeda/schedule. Betting fields are excluded.
+- **Params:** `slug` (string, **required**) — Host-free match path returned by /sportskeeda/schedule
+
 ### `sportskeeda_depth_chart`
 
 - **HTTP:** `GET /sportskeeda/depth-chart`
 - **What:** Get the NFL depth chart for all teams. Returns every team and listed position/player from the live NFL depth chart. Players and team detail pages include slugs when Sportskeeda links them.
 - **Params:** `slug` (string, **required**) — Must be nfl/depth-chart
+
+### `sportskeeda_draft_picks`
+
+- **HTTP:** `GET /sportskeeda/draft-picks`
+- **What:** Get all historical NFL team draft picks from Sportskeeda. Reads the complete public draft JSON asset, not only the rows initially visible on the page. Filter by year, round, position or player name. Discover each team's exact filter values with draft-picks-options. Source history and latest available year are published by Sportskeeda and may lag the current season.
+- **Params:** `page` (integer, optional) — Page number, 1-1000; default 1; `per_page` (integer, optional) — Records per page, 1-500; default 100; `position` (string, optional) — Exact position from draft-picks-options; `q` (string, optional) — Case-insensitive player-name substring, at most 100 characters; `round` (string, optional) — Exact round from draft-picks-options; historical special labels are accepted; `slug` (string, **required**) — NFL team draft-picks page path without host; `year` (integer, optional) — Year from draft-picks-options; omit for all years
+
+### `sportskeeda_draft_picks_options`
+
+- **HTTP:** `GET /sportskeeda/draft-picks-options`
+- **What:** Discover an NFL team's complete Sportskeeda draft filters. Reads the public draft JSON asset named by the team page and returns every available year, round and position, including historical special rounds. Team page slugs are discoverable from page-options on an NFL team overview.
+- **Params:** `slug` (string, **required**) — NFL team draft-picks page path without host
+
+### `sportskeeda_event_calendar`
+
+- **HTTP:** `GET /sportskeeda/event-calendar`
+- **What:** Get Sportskeeda regional sports calendar events. Returns all events from the embedded Sports Calendar, optionally filtered by an offered region-specific sport, one or more offered months, or an inclusive date range. Discover the current region, sport, and month values through /sportskeeda/event-calendar-options.
+- **Params:** `end_date` (string, optional) — Inclusive range end in YYYY-MM-DD; provide together with start_date; `month` (array, optional) — One or more offered calendar months in YYYY-MM format; repeat this parameter for multiple months; `region` (string, optional) — Calendar region; `sport` (string, optional) — Exact sport label offered for the selected region; see event-calendar-options; `start_date` (string, optional) — Inclusive range start in YYYY-MM-DD; provide together with end_date
+
+### `sportskeeda_event_calendar_options`
+
+- **HTTP:** `GET /sportskeeda/event-calendar-options`
+- **What:** Discover Sportskeeda calendar regions, sports, and months. Returns the live region-specific sport and month filters from Sportskeeda's embedded event calendar feed. Use these values with /sportskeeda/event-calendar.
+- **Params:** _none_
 
 ### `sportskeeda_feed`
 
@@ -14729,6 +15773,30 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Discover football tournaments and matchdays. Lists the live football widget's tournament selector. With event, follows the full previous/next matchday chain and returns every currently offered round slug. The discovered values feed sportskeeda-football-data.
 - **Params:** `event` (string, optional) — Live tournament slug; current selector: featured, epl, uefa-champions-league, uefa-nations-league, la-liga, ligue-1, mls, bundesliga. Omit to list tournaments only
 
+### `sportskeeda_guessing_game`
+
+- **HTTP:** `GET /sportskeeda/guessing-game`
+- **What:** Get a Sportskeeda daily guessing-game puzzle. Returns the public clues and image metadata for a discovered player-guessing game and ISO date. The answer is omitted so the endpoint does not reveal the active puzzle solution.
+- **Params:** `date` (string, **required**) — Puzzle date in YYYY-MM-DD format; `slug` (string, **required**) — Discovered host-free game page path
+
+### `sportskeeda_guessing_game_entities`
+
+- **HTTP:** `GET /sportskeeda/guessing-game-entities`
+- **What:** List players for a Sportskeeda guessing game. Returns the live public entity list used by a discovered player-guessing game, including the game-specific team, position, and profile fields.
+- **Params:** `slug` (string, **required**) — Discovered host-free game page path
+
+### `sportskeeda_guessing_games`
+
+- **HTTP:** `GET /sportskeeda/guessing-games`
+- **What:** List Sportskeeda player-guessing games. Discovers every currently linked player-guessing game and returns its host-free page slug for the daily instance and entity endpoints.
+- **Params:** _none_
+
+### `sportskeeda_nba_queries`
+
+- **HTTP:** `GET /sportskeeda/nba-queries`
+- **What:** List Sportskeeda NBA player query pages. Pages through the server-rendered questions on Sportskeeda's Top NBA Queries page. Slugs are host-free and can be passed to sportskeeda_page_data for the linked player stats table. The live category directory is returned on every page.
+- **Params:** `category` (string, optional) — Optional category id; `limit` (integer, optional) — Page size; 0 or omitted defaults to 100, maximum is 500; `offset` (integer, optional) — Zero-based result offset
+
 ### `sportskeeda_news`
 
 - **HTTP:** `GET /sportskeeda/news`
@@ -14738,13 +15806,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sportskeeda_page_data`
 
 - **HTTP:** `GET /sportskeeda/page-data`
-- **What:** Get Sportskeeda structured sports tables. Returns server-rendered team, player, roster, leaderboard, ranking, depth, and playoff tables. Season and type are accepted only if offered by the selected page; discover their values with page-options. The trade value chart uses its public JSON asset and has a separate endpoint. A page with no structured tables returns an upstream error.
-- **Params:** `season` (integer, optional) — Season year offered by this page's page-options filter; `slug` (string, **required**) — Sportskeeda path without host; `type` (string, optional) — Season phase offered by this page's page-options filter; leaderboard pages offer pre, regular, post
+- **What:** Get Sportskeeda structured sports tables. Returns server-rendered team, player, roster, leaderboard, ranking, depth, playoff, and game-log tables. NFL team stats include team-leader cards, player-category tables, and Basic, Advanced, and Expert team tables. Season and type are accepted only if offered by the selected page; discover their values with page-options. Player game-log seasons use their discovered season-specific path and return every table offered by the page; NFL category tabs are listed by page-options. College-football schedule slugs accept a discovered conference slug and filter the embedded schedule rows locally; an offered group with no games on that week returns status no_data. The trade value chart uses its public JSON asset and has a separate endpoint. A page with no structured tables returns an upstream error.
+- **Params:** `conference` (string, optional) — College-football schedule conference slug from page-options; `season` (integer, optional) — Season year offered by this page's page-options filter; `slug` (string, **required**) — Sportskeeda path without host; `type` (string, optional) — Season phase offered by this page's page-options filter; leaderboard pages offer pre, regular, post
 
 ### `sportskeeda_page_options`
 
 - **HTTP:** `GET /sportskeeda/page-options`
-- **What:** Discover Sportskeeda page menus and filters. Returns the page's live contextual menus, team and ranking links, tabs, schedule views, and every currently offered select-filter value. Leaderboard category and metric values carry their destination slugs.
+- **What:** Discover Sportskeeda page menus and filters. Returns the page's live contextual menus, team and ranking links, tabs, schedule views, and every currently offered select-filter value. Leaderboard category and metric values carry their destination slugs. College-football schedule pages expose the client-side conference selector here.
 - **Params:** `slug` (string, **required**) — Sportskeeda path without host
 
 ### `sportskeeda_player_stats`
@@ -14758,6 +15826,30 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sportskeeda/profile`
 - **What:** Get a Sportskeeda player or team profile. Returns facts and available news cards from a public player or team profile path, including sport-specific slugs.
 - **Params:** `slug` (string, **required**) — Sportskeeda player or team profile path without host
+
+### `sportskeeda_quiz`
+
+- **HTTP:** `GET /sportskeeda/quiz`
+- **What:** Get a Sportskeeda quiz definition. Returns public question prompts and choice text from a quiz page, sorted by question number. The source does not expose correct answers in its anonymous page data; answer checking and user submissions are not included.
+- **Params:** `slug` (string, **required**) — Sportskeeda quiz path without host, discovered through /sportskeeda/quizzes
+
+### `sportskeeda_quiz_categories`
+
+- **HTTP:** `GET /sportskeeda/quiz-categories`
+- **What:** List current Sportskeeda quiz categories. Discovers every quiz category linked from the public quiz hub. Use a returned host-free category slug with /sportskeeda/quizzes.
+- **Params:** _none_
+
+### `sportskeeda_quizzes`
+
+- **HTTP:** `GET /sportskeeda/quizzes`
+- **What:** List quizzes in a Sportskeeda category. Returns public quiz cards for one category path discovered through /sportskeeda/quiz-categories. The source currently renders its first quiz page; page pagination is not exposed because the visible page links currently repeat the same cards.
+- **Params:** `slug` (string, **required**) — Sportskeeda quiz category path without host
+
+### `sportskeeda_salary_cap`
+
+- **HTTP:** `GET /sportskeeda/salary-cap`
+- **What:** Get NFL team salary-cap figures from Sportskeeda. Returns the source's published season, team totals, every player cap scenario and expanded salary breakdown. The site's player search and sortable columns are applied to the complete server-rendered rows. The published season may lag the current season.
+- **Params:** `order` (string, optional) — Sort direction; requires sort_by; default asc; `q` (string, optional) — Case-insensitive player-name substring, at most 100 characters; `slug` (string, **required**) — NFL team salary-cap page path without host; `sort_by` (string, optional) — Sortable column; omit to preserve source order
 
 ### `sportskeeda_schedule`
 
@@ -14801,11 +15893,29 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Sportskeeda categories and entities. Calls Sportskeeda's anonymous frontend taxonomy search across categories, events, teams, players, wiki pages, and wiki tags. The upstream UI always searches all six types; the q phrase is sanitized and capped at 100 characters just like the site.
 - **Params:** `q` (string, **required**) — Search phrase; punctuation is replaced with spaces and the result is capped at 100 characters
 
+### `sportskeeda_topic`
+
+- **HTTP:** `GET /sportskeeda/topic`
+- **What:** Get a Sportskeeda topic or entity overview's full content. Returns ordered prose, headings, lists, tables, images and embeds from a public topic, event, team or player overview page, plus available byline, modification text and related stories. Discover slugs with /sportskeeda/sitemap-items using tags.xml, tournaments.xml, teams.xml, players.xml or us-sitemap.xml. Pages without a CMS body return an upstream error.
+- **Params:** `slug` (string, **required**) — Canonical Sportskeeda topic, event, team or player path without host
+
 ### `sportskeeda_trade_values`
 
 - **HTTP:** `GET /sportskeeda/trade-values`
 - **What:** Get NFL redraft or dynasty trade values. Reads the same anonymous JSON asset as the public chart. Returns source update time, ranks, values, and linked player slugs. The All position includes all source rows, including positions not displayed as chart sections. Discover current chart and filter choices with page-options.
 - **Params:** `limit` (integer, optional) — Page size from 1 to 500; `offset` (integer, optional) — Zero-based player offset; `position` (string, optional) — Displayed position section; defaults to All; `scoring` (string, optional) — Scoring system; defaults to ppr; `slug` (string, **required**) — Chart path without host; `superflex` (boolean, optional) — Use superflex chart; defaults to false
+
+### `sportskeeda_transactions`
+
+- **HTTP:** `GET /sportskeeda/transactions`
+- **What:** Get complete monthly NFL league or team transactions. Reads the first-party public transaction feed in month-sized windows, avoiding its 10000-row broad-range cap. Discover accepted seasons, months, and team slugs with sportskeeda-transactions-options.
+- **Params:** `month` (string, **required**) — MMYYYY month code from transactions-options for the selected season; current live union is listed here; `page` (integer, optional) — Page number, 1-1000; default 1; `per_page` (integer, optional) — Records per page, 1-500; default 100; `season` (integer, optional) — Season start year; current live choices: 2020,2021,2022,2023,2024,2025,2026; defaults to current; `slug` (string, optional) — Host-free page slug; nfl/transactions or an NFL team transactions slug
+
+### `sportskeeda_transactions_options`
+
+- **HTTP:** `GET /sportskeeda/transactions-options`
+- **What:** List NFL transaction seasons, months and team slugs. Discovers the complete live NFL transaction season list, months for the selected season, and all team transaction page slugs. Use these values with sportskeeda-transactions.
+- **Params:** `season` (integer, optional) — Season start year; current live choices: 2020,2021,2022,2023,2024,2025,2026; defaults to current
 
 ### `sportskeeda_video`
 
@@ -14818,6 +15928,54 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sportskeeda/videos`
 - **What:** List Sportskeeda videos and channels. Lists public video cards from the main video library or a sport/event video listing.
 - **Params:** `slug` (string, optional) — Video listing path without host; defaults to videos
+
+### `sportskeeda_wiki_activity`
+
+- **HTTP:** `GET /sportskeeda/wiki-activity`
+- **What:** List accepted edits for a Sportskeeda Wiki page. Returns the public accepted activity history for one Wiki article, with bounded pagination and the page's live sort fields. The source page slug is obtained from sportskeeda-wiki-pages.
+- **Params:** `limit` (integer, optional) — Activity items per page; `page` (integer, optional) — 1-based page; `slug` (string, **required**) — Host-free Wiki page path_slug from sportskeeda-wiki-pages; `sort` (string, optional) — Sort direction; `sort_by` (string, optional) — Activity sort field
+
+### `sportskeeda_wiki_article`
+
+- **HTTP:** `GET /sportskeeda/wiki-article`
+- **What:** Get a Sportskeeda Wiki article. Returns the rendered article title, metadata, and body paragraphs. Pass the path_slug returned by sportskeeda-wiki-pages; URL and host input are not accepted.
+- **Params:** `slug` (string, **required**) — Host-free Wiki page path_slug from sportskeeda-wiki-pages
+
+### `sportskeeda_wiki_categories`
+
+- **HTTP:** `GET /sportskeeda/wiki-categories`
+- **What:** List Sportskeeda Wiki categories. Returns the nested live category menu for one Sportskeeda Wiki project, including child categories beneath expandable groups.
+- **Params:** `wiki` (string, **required**) — Project slug returned by sportskeeda-wiki-options
+
+### `sportskeeda_wiki_contributors`
+
+- **HTTP:** `GET /sportskeeda/wiki-contributors`
+- **What:** List contributors to a Sportskeeda Wiki page. Returns public accepted contributors for one Wiki article. The source page slug is obtained from sportskeeda-wiki-pages; user IP and private account fields are never returned.
+- **Params:** `limit` (integer, optional) — Contributors per page; `page` (integer, optional) — 1-based page; `slug` (string, **required**) — Host-free Wiki page path_slug from sportskeeda-wiki-pages; `sort` (string, optional) — Sort direction; `sort_by` (string, optional) — Contributor sort field
+
+### `sportskeeda_wiki_issues`
+
+- **HTTP:** `GET /sportskeeda/wiki-issues`
+- **What:** List reported issues for a Sportskeeda Wiki page. Returns public opened or closed issues for one Wiki article. The upstream also returns submitter IP addresses; this endpoint deliberately omits them.
+- **Params:** `limit` (integer, optional) — Issues per page; `page` (integer, optional) — 1-based page; `slug` (string, **required**) — Host-free Wiki page path_slug from sportskeeda-wiki-pages; `status` (string, optional) — Issue status
+
+### `sportskeeda_wiki_options`
+
+- **HTTP:** `GET /sportskeeda/wiki-options`
+- **What:** List Sportskeeda Wiki projects. Returns the live-verified project slugs and taxonomy mappings accepted by the Wiki category, catalog, and article endpoints.
+- **Params:** _none_
+
+### `sportskeeda_wiki_pages`
+
+- **HTTP:** `GET /sportskeeda/wiki-pages`
+- **What:** Search and paginate Sportskeeda Wiki pages. Returns catalog pages for one Wiki project. Use path_slug as the preferred host-free slug for sportskeeda-wiki-article. total_items is the record count; the upstream field named total_pages is mislabelled and does not mean page count.
+- **Params:** `limit` (integer, optional) — Items per page; `page` (integer, optional) — 1-based catalog page; `search` (string, optional) — Title or page search text; sent upstream as searchText; `sort` (string, optional) — Sort direction; `sort_by` (string, optional) — Catalog field to sort by; `wiki` (string, **required**) — Project slug returned by sportskeeda-wiki-options
+
+### `sportskeeda_wiki_summary`
+
+- **HTTP:** `GET /sportskeeda/wiki-summary`
+- **What:** Get community counts for a Sportskeeda Wiki page. Returns accepted contributor and activity totals plus the open-issue count for one Wiki article. The source page slug is obtained from sportskeeda-wiki-pages.
+- **Params:** `slug` (string, **required**) — Host-free Wiki page path_slug from sportskeeda-wiki-pages
 
 ## Spotify (30)
 
@@ -15337,6 +16495,74 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /strava/routes`
 - **What:** Strava route-index listing for a sport, country, and region. Returns a page of Strava's public route recommendations for a sport, country, and region (state, or state/city). `sport` values: `hiking`, `road-biking`, `mountain-biking`, `trail-running`, `gravel-biking`. Public data, sourced from Strava's own server-rendered route pages.
 - **Params:** `country` (string, **required**) — Country slug, e.g. usa; `page` (integer, optional) — Page number, starting at 1; `region` (string, **required**) — Region slug: a state (colorado) or state/city (colorado/boulder); `sport` (string, **required**) — Route sport. Allowed values: hiking, road-biking, mountain-biking, trail-running, gravel-biking
+
+## StreetEasy (11)
+
+### `streeteasy_areas`
+
+- **HTTP:** `GET /streeteasy/areas`
+- **What:** List StreetEasy search areas. Returns the complete area hierarchy exposed by StreetEasy's public homepage location picker. Use area IDs with streeteasy-rentals-search.
+- **Params:** _none_
+
+### `streeteasy_building`
+
+- **HTTP:** `GET /streeteasy/buildings/{slug}`
+- **What:** Get StreetEasy building details. Retrieves public building facts, location, description, policies, amenities, and available sale/rental listing cards from StreetEasy's server-rendered building page. Pass the building slug from a StreetEasy /building/{slug} URL.
+- **Params:** `slug` (string, **required**) — StreetEasy building slug
+
+### `streeteasy_market_data_catalog`
+
+- **HTTP:** `GET /streeteasy/market-data/catalog`
+- **What:** List StreetEasy dashboard metric datasets. Returns every selectable public dashboard dataset, including supported bedroom and property-type variants. Use a returned dataset ID with streeteasy-market-data-series.
+- **Params:** _none_
+
+### `streeteasy_market_data_series`
+
+- **HTTP:** `GET /streeteasy/market-data/series`
+- **What:** Get one StreetEasy monthly market metric. Returns a public dashboard metric for every published area. Obtain the complete dataset ID set and its labels/dimensions from streeteasy-market-data-catalog. Defaults to the latest 12 months and limits requests to 36 months.
+- **Params:** `dataset` (string, **required**) — StreetEasy dashboard dataset ID; `end_month` (string, optional) — Last month, inclusive, in YYYY-MM format; defaults to the latest available month; `start_month` (string, optional) — First month, inclusive, in YYYY-MM format
+
+### `streeteasy_market_indices`
+
+- **HTTP:** `GET /streeteasy/market-data/indices`
+- **What:** Get StreetEasy monthly market indices. Returns public sale-price and rent index values by dashboard area. The datasets have different historical start dates; missing values are omitted. Defaults to the latest 12 months and limits each request to 36 months.
+- **Params:** `end_month` (string, optional) — Last month, inclusive, in YYYY-MM format; defaults to the latest available month; `start_month` (string, optional) — First month, inclusive, in YYYY-MM format
+
+### `streeteasy_market_inventory`
+
+- **HTTP:** `GET /streeteasy/market-data/inventory`
+- **What:** Get StreetEasy monthly market inventory. Returns monthly sales and rental inventory counts for every area in StreetEasy's public Data Dashboard. Defaults to the latest 12 available months; each request is limited to 36 months.
+- **Params:** `end_month` (string, optional) — Last month, inclusive, in YYYY-MM format; defaults to the latest available month; `start_month` (string, optional) — First month, inclusive, in YYYY-MM format
+
+### `streeteasy_quick_search`
+
+- **HTTP:** `GET /streeteasy/quick-search`
+- **What:** Search StreetEasy across public result types. Searches StreetEasy's public quick-search page and returns its rendered neighborhood, building, complex, school, agent, and recorded-sale groups. Recorded-sale entries are a limited anonymous preview when the page requires registration to see the remaining matches.
+- **Params:** `query` (string, **required**) — Free-text StreetEasy quick-search query (1-160 characters)
+
+### `streeteasy_rentals_search`
+
+- **HTTP:** `GET /streeteasy/rentals/search`
+- **What:** Search StreetEasy rental listings. Searches active StreetEasy rentals in one or more areas with the public site's price, room, building, amenity, pet, open-house, tour, transit, and sort filters. Obtain valid area IDs from /streeteasy/areas.
+- **Params:** `amenity` (array, optional) — Required amenity; repeat for multiple; `area_id` (array, **required**) — StreetEasy area ID from /streeteasy/areas; repeat for multiple areas; `building_type` (array, optional) — Building type; repeat for multiple; `max_bathrooms` (number, optional) — Maximum bathrooms; `max_bedrooms` (integer, optional) — Maximum bedrooms; `max_price` (integer, optional) — Maximum monthly rent; `max_sqft` (integer, optional) — Maximum square footage; `min_bathrooms` (number, optional) — Minimum bathrooms; `min_bedrooms` (integer, optional) — Minimum bedrooms; zero means studio; `min_price` (integer, optional) — Minimum monthly rent; `min_sqft` (integer, optional) — Minimum square footage; `open_house` (boolean, optional) — Require an open house within the next seven days; `optional_amenity` (array, optional) — Preferred amenity; results may omit these. Repeat for multiple.; `page` (integer, optional) — 1-based result page; `per_page` (integer, optional) — Results per page, 1-500; `pets_allowed` (boolean, optional) — Require listings that allow pets; `sort` (string, optional) — Result order; `tour_3d` (boolean, optional) — Require a 3D tour; `transit_line` (array, optional) — Nearby transit line; repeat for multiple; `video_tour` (boolean, optional) — Require a video tour
+
+### `streeteasy_sales_search`
+
+- **HTTP:** `GET /streeteasy/sales/search`
+- **What:** Search StreetEasy sale listings. Searches public sale listings with location, status, sale type, price, bedroom, bathroom, square-footage, carrying cost, building age, school, ZIP, keyword, building type, amenity, pet, open-house, virtual-tour, transit, and sort filters. Obtain area IDs from /streeteasy/areas. When sale_status is omitted, active, preview, and coming_soon listings are included.
+- **Params:** `amenity` (array, optional) — Amenity filter; repeat for multiple; `area_id` (array, **required**) — StreetEasy area ID from /streeteasy/areas; repeat for multiple areas; `building_type` (array, optional) — Building type; `development` (string, optional) — New development filter; `include_unknown_price_per_sqft` (boolean, optional) — Include listings with unknown price per square foot; `income_restricted` (boolean, optional) — Set true to select income-restricted homes; `keywords` (string, optional) — Listing-description keyword filter; `max_bathrooms` (number, optional) — Maximum bathrooms; `max_bedrooms` (integer, optional) — Maximum bedrooms; `max_maintenance` (integer, optional) — Maximum monthly maintenance fee; `max_monthly_taxes` (integer, optional) — Maximum monthly property taxes; `max_price` (integer, optional) — Maximum sale price; `max_price_per_sqft` (integer, optional) — Maximum price per square foot; `max_sqft` (integer, optional) — Maximum square footage; `max_year_built` (integer, optional) — Maximum building year built; `min_bathrooms` (number, optional) — Minimum bathrooms; `min_bedrooms` (integer, optional) — Minimum bedrooms; zero means studio; `min_maintenance` (integer, optional) — Minimum monthly maintenance fee; `min_monthly_taxes` (integer, optional) — Minimum monthly property taxes; `min_price` (integer, optional) — Minimum sale price; `min_price_per_sqft` (integer, optional) — Minimum price per square foot; `min_sqft` (integer, optional) — Minimum square footage; `min_year_built` (integer, optional) — Minimum building year built; `open_house` (boolean, optional) — Require open house within the next seven days; `optional_amenity` (array, optional) — Nice-to-have amenity; results may omit these. Repeat for multiple.; `page` (integer, optional) — 1-based result page; `per_page` (integer, optional) — Results per page, 1-500; `pets_allowed` (boolean, optional) — Require pets allowed; `prewar` (boolean, optional) — Set true to select prewar buildings; `sale_status` (array, optional) — Sale status; repeat for multiple. Defaults to active, preview, and coming_soon.; `sale_type` (array, optional) — Sale type; repeat for multiple.; `school_id` (array, optional) — StreetEasy school ID selected by the public search UI; repeat for multiple schools; `sort` (string, optional) — default, newest, recently_updated, price_desc, price_asc, largest, or smallest; `tour_3d` (boolean, optional) — Require a 3D tour; `transit_line` (array, optional) — Nearby transit line; repeat for multiple; `video_tour` (boolean, optional) — Require a video tour; `zip_code` (string, optional) — Five-digit ZIP code
+
+### `streeteasy_school`
+
+- **HTTP:** `GET /streeteasy/schools/{slug}`
+- **What:** Get StreetEasy school details. Retrieves the public school facts rendered on StreetEasy, including neighborhood, grade labels, district, address, phone, and fax when available. Use the school slug from a public /nyc/school/{slug} link, including the school results returned by streeteasy-quick-search.
+- **Params:** `slug` (string, **required**) — StreetEasy school slug
+
+### `streeteasy_unit`
+
+- **HTTP:** `GET /streeteasy/units/{building_slug}/{unit}`
+- **What:** Get StreetEasy unit details. Retrieves a public unit's structured listing details from its server-rendered page, including address, asking price, description, amenities, and scheduled open houses.
+- **Params:** `building_slug` (string, **required**) — StreetEasy building slug; `unit` (string, **required**) — StreetEasy unit segment from /building/{building_slug}/{unit}
 
 ## StubHub (11)
 
@@ -16030,6 +17256,70 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get The Daily Caller sections. Returns the live-verified The Daily Caller section inventory used by the headlines endpoint.
 - **Params:** _none_
 
+## The Denver Post (5)
+
+### `denverpost_article`
+
+- **HTTP:** `GET /denverpost/article`
+- **What:** Get a Denver Post article. Returns article metadata and paragraphs present in the public HTML response. Subscriber-only pages may expose only an anonymous preview; this service does not bypass access controls.
+- **Params:** `url` (string, **required**) — Canonical Denver Post article URL
+
+### `denverpost_author`
+
+- **HTTP:** `GET /denverpost/author`
+- **What:** Get a Denver Post author archive. Returns one author's public profile and the articles listed on its first page.
+- **Params:** `slug` (string, optional) — Author slug, e.g. aldo-svaldi; `url` (string, optional) — Canonical denverpost.com/author/<slug>/ URL; alternative to slug
+
+### `denverpost_headlines`
+
+- **HTTP:** `GET /denverpost/headlines`
+- **What:** Get Denver Post section headlines. Returns current headlines from one public editorial section or topic archive.
+- **Params:** `section` (string, **required**) — Section or topic slug returned by denverpost-sections
+
+### `denverpost_news`
+
+- **HTTP:** `GET /denverpost/news`
+- **What:** Get Denver Post top stories. Returns current top stories from the public Denver Post homepage.
+- **Params:** _none_
+
+### `denverpost_sections`
+
+- **HTTP:** `GET /denverpost/sections`
+- **What:** Get Denver Post section and topic inventory. Returns the live-verified public editorial section and topic archive values accepted by headlines.
+- **Params:** _none_
+
+## The Express Tribune (5)
+
+### `expresstribune_article`
+
+- **HTTP:** `GET /expresstribune/article`
+- **What:** Get The Express Tribune article content. Returns public story metadata and body paragraphs from a canonical tribune.com.pk/story/<id>/<slug> URL.
+- **Params:** `url` (string, **required**) — Canonical Express Tribune story URL
+
+### `expresstribune_author`
+
+- **HTTP:** `GET /expresstribune/author`
+- **What:** Get an Express Tribune author's public archive. Returns one page of story cards from a canonical public author archive. Page is 1-based; the publisher's Next link indicates another page.
+- **Params:** `page` (integer, optional) — 1-based page number; `url` (string, **required**) — Canonical author archive URL
+
+### `expresstribune_headlines`
+
+- **HTTP:** `GET /expresstribune/headlines`
+- **What:** Get The Express Tribune section headlines. Returns headlines from one public RSS section. Some directory feeds are historical or infrequently updated; their publisher timestamps are preserved.
+- **Params:** `section` (string, **required**) — The Express Tribune section slug
+
+### `expresstribune_news`
+
+- **HTTP:** `GET /expresstribune/news`
+- **What:** Get The Express Tribune top stories. Returns current top stories from The Express Tribune's public RSS feed. Feed dates and publisher teasers are returned as published.
+- **Params:** _none_
+
+### `expresstribune_sections`
+
+- **HTTP:** `GET /expresstribune/sections`
+- **What:** Get The Express Tribune sections. Returns every usable feed section listed in the publisher's RSS directory. talko is omitted because its official endpoint currently returns an empty response.
+- **Params:** _none_
+
 ## The Hill (5)
 
 ### `thehill_article`
@@ -16158,6 +17448,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get The Indian Express RSS sections. Returns the public The Indian Express RSS section inventory used by the headlines endpoint.
 - **Params:** _none_
 
+## The Japan Times (5)
+
+### `japantimes_article`
+
+- **HTTP:** `GET /japantimes/article`
+- **What:** Get a The Japan Times article. Returns public article metadata. If the page marks its body as blurred for anonymous visitors, paywalled is true and hidden subscriber text is omitted.
+- **Params:** `url` (string, **required**) — Canonical HTTPS The Japan Times article URL
+
+### `japantimes_author`
+
+- **HTTP:** `GET /japantimes/author`
+- **What:** Get a The Japan Times author profile. Returns a public author name and linked article cards. Pagination paths are excluded because robots.txt disallows */page/*.
+- **Params:** `url` (string, **required**) — Canonical HTTPS /author/<numeric-id>/<slug>/ profile URL
+
+### `japantimes_headlines`
+
+- **HTTP:** `GET /japantimes/headlines`
+- **What:** Get The Japan Times section headlines. Returns public article cards from one canonical section page. This site's section pages are HTML; only the top stories surface has a verified RSS feed.
+- **Params:** `section` (string, **required**) — Canonical section slug from japantimes-sections
+
+### `japantimes_news`
+
+- **HTTP:** `GET /japantimes/news`
+- **What:** Get The Japan Times top stories. Returns current top stories from the public RSS feed. RSS descriptions are short publisher-provided teasers.
+- **Params:** _none_
+
+### `japantimes_sections`
+
+- **HTTP:** `GET /japantimes/sections`
+- **What:** Get The Japan Times sections. Returns the complete 60-link editorial navigation inventory used by japantimes-headlines.
+- **Params:** _none_
+
 ## The Motley Fool (5)
 
 ### `motleyfool_article`
@@ -16190,6 +17512,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List The Motley Fool news sections. Returns the complete article-bearing Stock Market News section set accepted by motleyfool_headlines.
 - **Params:** _none_
 
+## The National (5)
+
+### `national_article`
+
+- **HTTP:** `GET /national/article`
+- **What:** Get The National article content. Returns article metadata and the body served to an anonymous visitor for one canonical The National story URL. The endpoint does not bypass subscriber or access gates and reports paywalled when the page marks content as restricted.
+- **Params:** `url` (string, **required**) — Canonical thenationalnews.com article URL
+
+### `national_author`
+
+- **HTTP:** `GET /national/author`
+- **What:** Get a The National author profile. Returns one public author topic page, its name, optional author image and the latest article cards listed on that page.
+- **Params:** `slug` (string, optional) — The National author slug, e.g. cody-combs; `url` (string, optional) — Canonical thenationalnews.com/topics/Author/<slug> URL; alternative to slug
+
+### `national_headlines`
+
+- **HTTP:** `GET /national/headlines`
+- **What:** Get The National section headlines. Returns current The National stories from a public Arc category RSS feed. Pass one of the editorial section slugs from national_sections. A valid category with no current stories returns an empty items list.
+- **Params:** `section` (string, **required**) — The National editorial section slug
+
+### `national_news`
+
+- **HTTP:** `GET /national/news`
+- **What:** Get The National top stories. Returns current The National UAE stories from its public Arc RSS feed. Article and section extraction uses anonymous public responses.
+- **Params:** _none_
+
+### `national_sections`
+
+- **HTTP:** `GET /national/sections`
+- **What:** Get The National sections. Returns all 57 editorial categories in The National's Arc section sitemap taxonomy that are accepted by national_headlines. Podcast, newsletter, puzzle, partner and promotional surfaces are excluded.
+- **Params:** _none_
+
 ## The New Yorker (5)
 
 ### `newyorker_article`
@@ -16220,6 +17574,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /newyorker/sections`
 - **What:** List The New Yorker sections. Lists every The New Yorker section accepted by the headlines endpoint, with slug, display name, and feed URL. This is the complete set of public text-article feeds the publisher serves; cartoon, podcast, video, and puzzle feeds are not included.
+- **Params:** _none_
+
+## The Next Web (5)
+
+### `thenextweb_article`
+
+- **HTTP:** `GET /thenextweb/article`
+- **What:** Get The Next Web article content. Returns public The Next Web article metadata and body paragraphs from a canonical article URL.
+- **Params:** `url` (string, **required**) — Canonical thenextweb.com article URL
+
+### `thenextweb_author`
+
+- **HTTP:** `GET /thenextweb/author`
+- **What:** Get a The Next Web author profile. Returns one public author profile and the story cards shown on its public author archive.
+- **Params:** `slug` (string, optional) — Author slug from the public author sitemap or an article byline; `url` (string, optional) — Canonical thenextweb.com/author/<slug> URL; alternative to slug
+
+### `thenextweb_headlines`
+
+- **HTTP:** `GET /thenextweb/headlines`
+- **What:** Get The Next Web section headlines. Returns article cards from the public server-rendered section page. Pagination uses a robots-disallowed JSON path and is not requested.
+- **Params:** `section` (string, **required**) — Editorial section slug returned by thenextweb_sections
+
+### `thenextweb_news`
+
+- **HTTP:** `GET /thenextweb/news`
+- **What:** Get The Next Web top stories. Returns current The Next Web stories from its public RSS feed.
+- **Params:** _none_
+
+### `thenextweb_sections`
+
+- **HTTP:** `GET /thenextweb/sections`
+- **What:** Get The Next Web sections. Returns the ten editorial sections in The Next Web's current homepage navigation. Topic/tag archives, media, events and promotional categories are excluded.
 - **Params:** _none_
 
 ## The RealReal (11)
@@ -16480,6 +17866,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /theverge/sections`
 - **What:** Get The Verge sections. Returns the public The Verge editorial section inventory.
+- **Params:** _none_
+
+## TheBlaze (5)
+
+### `theblaze_article`
+
+- **HTTP:** `GET /theblaze/article`
+- **What:** Get a Blaze Media article. Returns article metadata and body paragraphs from a canonical, publicly accessible editorial or show-story URL.
+- **Params:** `url` (string, **required**) — Canonical theblaze.com article URL
+
+### `theblaze_author`
+
+- **HTTP:** `GET /theblaze/author`
+- **What:** Get a Blaze Media contributor profile. Returns a public /u/<slug> profile and up to 30 recent article feed items. Provide exactly one of slug or canonical profile URL.
+- **Params:** `slug` (string, optional) — TheBlaze author username; `url` (string, optional) — Canonical HTTPS theblaze.com/u/<slug> profile URL
+
+### `theblaze_headlines`
+
+- **HTTP:** `GET /theblaze/headlines`
+- **What:** Get Blaze Media section headlines. Returns headlines from a public section RSS feed. Use /theblaze/sections to discover the complete accepted section list.
+- **Params:** `section` (string, **required**) — Exact Blaze Media section slug
+
+### `theblaze_news`
+
+- **HTTP:** `GET /theblaze/news`
+- **What:** Get Blaze Media top stories. Returns fresh news and opinion stories from the public Blaze Media RSS feed.
+- **Params:** _none_
+
+### `theblaze_sections`
+
+- **HTTP:** `GET /theblaze/sections`
+- **What:** List Blaze Media sections. Returns all verified article-bearing editorial and show sections accepted by the headlines endpoint. The contributors collection is included; the off-site Profile feed is excluded.
 - **Params:** _none_
 
 ## TheJournal.ie (5)
@@ -16988,6 +18406,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Times of Israel sections. Returns the public Times of Israel section inventory used by the headlines endpoint.
 - **Params:** _none_
 
+## TimesLIVE (4)
+
+### `timeslive_article`
+
+- **HTTP:** `GET /timeslive/article`
+- **What:** Get TimesLIVE article content. Returns article metadata and body paragraphs for a canonical TimesLIVE editorial article URL. Some stories may have a publisher access gate; paywalled is set when the page's first-party access flags indicate restricted content.
+- **Params:** `url` (string, **required**) — Canonical TimesLIVE article URL
+
+### `timeslive_headlines`
+
+- **HTTP:** `GET /timeslive/headlines`
+- **What:** Get TimesLIVE section headlines. Returns current TimesLIVE stories from the public Arc section feed. Pass a slug from timeslive_sections; results are the first 15 items in the live section order.
+- **Params:** `section` (string, **required**) — TimesLIVE editorial section slug
+
+### `timeslive_news`
+
+- **HTTP:** `GET /timeslive/news`
+- **What:** Get TimesLIVE top stories. Returns current TimesLIVE stories from its public anonymous Arc RSS feed. Section-specific headlines use the public TimesLIVE content feed; article access can vary by story.
+- **Params:** _none_
+
+### `timeslive_sections`
+
+- **HTTP:** `GET /timeslive/sections`
+- **What:** Get TimesLIVE sections. Returns the complete public editorial navigation set accepted by the TimesLIVE headlines endpoint. External Sunday Times, partner, podcast, account, and link-only surfaces are excluded.
+- **Params:** _none_
+
 ## TMDB (9)
 
 ### `tmdb_collection`
@@ -17298,7 +18742,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /tripadvisor/reviews`
 - **What:** Get TripAdvisor reviews. Returns normalized TripAdvisor public reviews from credential-free GraphQL review data. Pass either id or url.
-- **Params:** `do_machine_translation` (boolean, optional) — Enable upstream machine translation; `id` (string, optional) — TripAdvisor location id; `language` (string, optional) — Review language; `limit` (integer, optional) — Maximum reviews; `page` (integer, optional) — 1-based review page; `photos_per_review_limit` (integer, optional) — Maximum photos per review; `ratings` (array, optional) — Rating filters; `sort_by` (string, optional) — Review sort field; `sort_type` (string, optional) — Review sort type; `url` (string, optional) — TripAdvisor place URL
+- **Params:** `do_machine_translation` (boolean, optional) — Enable upstream machine translation; `id` (string, optional) — TripAdvisor location id; `language` (string, optional) — Review language; `limit` (integer, optional) — Maximum reviews; `page` (integer, optional) — 1-based review page; `photos_per_review_limit` (integer, optional) — Maximum photos per review; `ratings` (array, optional) — Rating filters; `sort_by` (string, optional) — Legacy sort field; DATE selects newest first, FAVORABLE_RATING uses upstream order; `sort_type` (string, optional) — Legacy sort type; DEFAULT selects newest first, ML_SORTED uses upstream order unless sort_by is DATE; `url` (string, optional) — TripAdvisor place URL
 
 ### `tripadvisor_search`
 
@@ -17884,6 +19328,51 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Vox sections. Returns the public Vox editorial section inventory.
 - **Params:** _none_
 
+## Vrbo (7)
+
+### `vrbo_locations_search`
+
+- **HTTP:** `GET /vrbo/locations/search`
+- **What:** Suggest Vrbo destinations. Returns public destination suggestions, including region IDs and location types when Vrbo provides them. The verified search term is sent with Vrbo's observed lodging, destination, and entry-page criteria.
+- **Params:** `search_term` (string, **required**) — Destination text to suggest
+
+### `vrbo_properties_rate_calendar`
+
+- **HTTP:** `GET /vrbo/properties/{property_id}/rate-calendar`
+- **What:** Get a Vrbo property rate calendar. Returns public calendar dates, nightly display prices when provided, availability, check-in/out validity, and stay constraints. Resolves the property's GraphQL product ID from the server-rendered page and uses a fresh proxy connection for every request attempt.
+- **Params:** `property_id` (string, **required**) — Vrbo property ID (optionally ending in ha)
+
+### `vrbo_properties_reviews`
+
+- **HTTP:** `GET /vrbo/properties/{property_id}/reviews`
+- **What:** Get Vrbo property reviews. Returns one page of public traveler reviews, aggregate count, and current sort choices. Pagination and sort values follow the public reviews query; each property-page and GraphQL request uses a fresh proxy connection.
+- **Params:** `include_ratings_only_reviews` (boolean, optional) — Include rating-only reviews; `include_recent_reviews` (boolean, optional) — Include recent reviews; `property_id` (string, **required**) — Vrbo property ID (optionally ending in ha); `size` (integer, optional) — Page size from 1 to 50; `sort_by` (string, optional) — Sort value from the response's sort_options; `start_index` (integer, optional) — Zero-based review offset
+
+### `vrbo_property`
+
+- **HTTP:** `GET /vrbo/properties/{property_id}`
+- **What:** Get Vrbo property details. Reads public traveler-facing property details, grouped amenities, photos, content sections, FAQs, and aggregate rating. Tries request profiles in order; each attempt and retry uses a fresh proxy connection.
+- **Params:** `property_id` (string, **required**) — Vrbo property ID (optionally ending in ha)
+
+### `vrbo_search`
+
+- **HTTP:** `POST /vrbo/search`
+- **What:** Search Vrbo vacation rentals. Searches public Vrbo rental listings for a selected destination and dates. Obtain destination, region_id, and lat_long from Vrbo's destination suggestion UI. Supports date flexibility, per-room adult and child-age inputs, current filter selections and ranges, and observed sort values. Copy filter IDs and option values from the returned filters.
+- **Params:** `request` (object, **required**) — Search criteria
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
+
+### `vrbo_travel_page_detail`
+
+- **HTTP:** `GET /vrbo/travel-pages/{slug}`
+- **What:** Get a Vrbo travel page. Returns public editorial sections, visible rental cards, and related travel-page links for a /travel/{slug} page. Date-scoped prices are omitted; page slugs are not search-filter values.
+- **Params:** `slug` (string, **required**) — Vrbo travel-page slug returned by /vrbo/travel-pages
+
+### `vrbo_travel_pages`
+
+- **HTTP:** `GET /vrbo/travel-pages`
+- **What:** List Vrbo travel pages. Lists the public stay-type and travel-theme pages linked from Vrbo's vacation-rental index. These are editorial browse pages, not a complete search-filter enumeration.
+- **Params:** _none_
+
 ## WalesOnline (5)
 
 ### `walesonline_article`
@@ -18009,6 +19498,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /wayfair/product/{id}`
 - **What:** Get a Wayfair product's full detail. Returns one Wayfair product's full detail: name, brand, price, stock status, aggregate rating with a 1-5 star breakdown, images, every selectable variant option (e.g. color, finish), and site-selected feature highlights. id is the product's own "W"-prefixed id (e.g. W100794312), taken from a category result's product_id field or a product page's URL. An unrecognized id returns 404.
 - **Params:** `id` (string, **required**) — Wayfair product id, starting with W
+
+## Wccftech (5)
+
+### `wccftech_article`
+
+- **HTTP:** `GET /wccftech/article`
+- **What:** Get a Wccftech article. Returns metadata and body paragraphs for a canonical public Wccftech news, review, how-to, roundup, company, or best-of article URL.
+- **Params:** `url` (string, **required**) — Canonical Wccftech article URL
+
+### `wccftech_author`
+
+- **HTTP:** `GET /wccftech/author`
+- **What:** Get a Wccftech author profile. Returns one author's public profile and recent article cards. Identify the author by slug or canonical /author/<slug>/ URL.
+- **Params:** `slug` (string, optional) — Wccftech author slug, e.g. sarfraz; `url` (string, optional) — Canonical Wccftech author page URL
+
+### `wccftech_headlines`
+
+- **HTTP:** `GET /wccftech/headlines`
+- **What:** Get Wccftech section headlines. Returns current articles from one Wccftech topic, category, or editorial archive. Pass a slug from wccftech-sections, such as topic:hardware, category:news, or archive:videos.
+- **Params:** `section` (string, **required**) — Wccftech section slug returned by /wccftech/sections
+
+### `wccftech_news`
+
+- **HTTP:** `GET /wccftech/news`
+- **What:** Get current Wccftech news. Returns current top stories from Wccftech's public RSS feed, including title, canonical URL, summary, byline, publication time, and image when available.
+- **Params:** _none_
+
+### `wccftech_sections`
+
+- **HTTP:** `GET /wccftech/sections`
+- **What:** Discover Wccftech sections. Lists all non-empty public category and topic sections, plus the Reviews, Videos, How To, and Roundups archives. Use a returned slug with wccftech-headlines; taxonomy values are refreshed from the public WordPress REST API.
+- **Params:** _none_
 
 ## Wendys (10)
 
@@ -18922,6 +20443,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Yahoo Tech homepage story stream. Returns Yahoo Tech's homepage editorial story feed: title, destination URL, category, and thumbnail image for each story. Sourced from Yahoo Tech's own server-rendered homepage.
 - **Params:** _none_
 
+## Yardbarker (5)
+
+### `yardbarker_article`
+
+- **HTTP:** `GET /yardbarker/article`
+- **What:** Get a Yardbarker article. Extracts metadata and the publicly served text paragraphs from a canonical Yardbarker story URL. Quiz, account, player, and non-article URLs are rejected.
+- **Params:** `url` (string, **required**) — Canonical Yardbarker story URL
+
+### `yardbarker_author`
+
+- **HTTP:** `GET /yardbarker/author`
+- **What:** Get a Yardbarker author profile. Returns an author's public profile name, image, and story links from a canonical Yardbarker author URL.
+- **Params:** `url` (string, **required**) — Canonical Yardbarker author URL
+
+### `yardbarker_headlines`
+
+- **HTTP:** `GET /yardbarker/headlines`
+- **What:** Get headlines for a Yardbarker section. Returns recent Yardbarker headlines and short RSS summaries for one section. Call /yardbarker/sections for the complete current slug list.
+- **Params:** `section` (string, **required**) — Section slug returned by /yardbarker/sections
+
+### `yardbarker_news`
+
+- **HTTP:** `GET /yardbarker/news`
+- **What:** Get Yardbarker top stories. Returns recent Yardbarker story metadata and short summaries from its public homepage. Use /yardbarker/sections to discover the supported sports, team, school, and topic sections.
+- **Params:** _none_
+
+### `yardbarker_sections`
+
+- **HTTP:** `GET /yardbarker/sections`
+- **What:** List Yardbarker sections. Returns the complete live-verified directory snapshot of Yardbarker sports, teams, schools, and topics. Use each returned slug in /yardbarker/headlines.
+- **Params:** _none_
+
 ## Yelp (8)
 
 ### `yelp_business`
@@ -19243,7 +20796,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zillow_autocomplete`
 
 - **HTTP:** `GET /zillow/autocomplete`
-- **What:** Autocomplete Zillow locations. Returns normalized Zillow public web autocomplete candidates. Semantic candidates may include region_id/region_type compatibility aliases plus region_ids/region_types arrays; prefer complete bounds metadata for Zillow search when present.
+- **What:** Autocomplete Zillow locations. Returns normalized Zillow public web autocomplete candidates, including region ids and types. Zillow autocomplete does not currently return map bounds.
 - **Params:** `limit` (integer, optional) — Maximum results, clamped to 20; `query` (string, **required**) — Location query; `status` (string, optional) — Search context. Allowed values: for_sale (aliases sale, for-sale), for_rent (aliases rent, for-rent), sold
 
 ### `zillow_property`
@@ -19255,8 +20808,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zillow_search`
 
 - **HTTP:** `GET /zillow/search`
-- **What:** Search Zillow listings. Returns normalized Zillow public listing search results. Callers must pass complete map bounds from autocomplete when available, or a region id fallback.
-- **Params:** `east` (number, optional) — Map east bound from autocomplete; `location` (string, **required**) — Display location; `north` (number, optional) — Map north bound from autocomplete; `page` (integer, optional) — 1-based page; `region_id` (integer, optional) — Zillow region id from autocomplete, used when complete bounds are not provided; `region_type` (integer, optional) — Zillow region type from autocomplete, used with region_id fallback; `south` (number, optional) — Map south bound from autocomplete; `status` (string, optional) — Search context. Allowed values: for_sale (aliases sale, for-sale), for_rent (aliases rent, for-rent), sold; `west` (number, optional) — Map west bound from autocomplete
+- **What:** Search Zillow listings. Returns normalized Zillow public listing search results. Callers may pass a region id from autocomplete or a complete map bounding box. When a usable region-only response contains no listings, the API retries with a viewport from Zillow's public search page if that page selects exactly the same region. Upstream blocks and transport failures return errors.
+- **Params:** `east` (number, optional) — Map east bound; pass with west, south, and north; `location` (string, **required**) — Display location; `north` (number, optional) — Map north bound; pass with west, east, and south; `page` (integer, optional) — 1-based page; `region_id` (integer, optional) — Zillow region id from autocomplete, used when complete bounds are not provided; `region_type` (integer, optional) — Zillow region type from autocomplete, used with region_id fallback; `south` (number, optional) — Map south bound; pass with west, east, and north; `status` (string, optional) — Search context. Allowed values: for_sale (aliases sale, for-sale), for_rent (aliases rent, for-rent), sold; `west` (number, optional) — Map west bound; pass with east, south, and north
 
 ## Zomato (6)
 

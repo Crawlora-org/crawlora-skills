@@ -13,8 +13,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `instagram_post`
 
 - **HTTP:** `GET /instagram/post/{id}/{post_id}`
-- **What:** Retrieve a specific Instagram post by user ID and post ID. Returns the media details of a specific post from an Instagram user.
-- **Params:** `id` (string, **required**) — Instagram user ID; `post_id` (string, **required**) — Instagram post ID
+- **What:** Retrieve a specific Instagram post by URL shortcode. Returns media details for an Instagram URL shortcode. Use media.code from the reels response or shortcode from a public post URL; numeric media IDs are rejected.
+- **Params:** `id` (string, **required**) — Instagram user ID retained for route compatibility; ownership is not verified; `post_id` (string, **required**) — Instagram URL shortcode (media.code), not a numeric media ID
 
 ### `instagram_profile`
 

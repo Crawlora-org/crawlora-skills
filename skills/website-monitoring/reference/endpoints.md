@@ -14,7 +14,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /monitors/{id}/checks`
 - **What:** List a monitor's check history. Returns the caller's own monitor's most recent check runs (most recent first, capped at 50), including webhook delivery status per run.
-- **Params:** `id` (string, **required**) — Monitor id
+- **Params:** `id` (string, **required**) — Monitor ID returned by your account monitor create/list response; replace the illustrative example with your own ID
 
 ### `monitors_create`
 
@@ -27,13 +27,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `DELETE /monitors/{id}`
 - **What:** Delete a website-change monitor. Deletes one of the caller's own monitors. Free to call. Does not delete its past check history.
-- **Params:** `id` (string, **required**) — Monitor id
+- **Params:** `id` (string, **required**) — Monitor ID returned by your account monitor create/list response; replace the illustrative example with your own ID
 
 ### `monitors_get`
 
 - **HTTP:** `GET /monitors/{id}`
 - **What:** Get a website-change monitor. Returns one of the caller's own monitors by id. Free to call.
-- **Params:** `id` (string, **required**) — Monitor id
+- **Params:** `id` (string, **required**) — Monitor ID returned by your account monitor create/list response; replace the illustrative example with your own ID
 
 ### `monitors_list`
 
@@ -45,5 +45,5 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `PATCH /monitors/{id}`
 - **What:** Update a website-change monitor. Partially updates one of the caller's own monitors. Free to call. Changing `target_type` or `sitemap` resets the stored diff baseline (fingerprint, snapshot, or URL set), so the next check establishes a fresh baseline instead of comparing against a now-meaningless prior state.
-- **Params:** `id` (string, **required**) — Monitor id; `request` (object, **required**) — Fields to update
+- **Params:** `id` (string, **required**) — Monitor ID returned by your account monitor create/list response; replace the illustrative example with your own ID; `request` (object, **required**) — Fields to update
 - **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
