@@ -123,9 +123,15 @@ self-contained and do not require the broader bundles to be installed.
 | [`short-term-rental-market-research`](skills/short-term-rental-market-research) | Aggregate rental supply, density, mix, and price comparisons with separate live listing examples. | Airbnb market datasets and live listings |
 | [`used-car-market-comparison`](skills/used-car-market-comparison) | Matched vehicle listings, deduplicated asking-price ranges, and qualified price outliers. | CarMax, Autotrader, Cars.com |
 | [`software-vendor-shortlisting`](skills/software-vendor-shortlisting) | Requirements-based vendor shortlists, pricing scenarios, and evidence-led demo questions. | Capterra, Product Hunt, Bing, official vendor websites |
+| [`relocation-cost-comparison`](skills/relocation-cost-comparison) | Household expense baskets and city comparisons with explicit currencies and housing context. | Numbeo, US housing dataset |
+| [`brand-mention-research`](skills/brand-mention-research) | Disambiguated, deduplicated mention evidence and sample-aware reputation briefs. | Reddit, TikTok, YouTube |
+| [`congressional-disclosure-research`](skills/congressional-disclosure-research) | Filing inventories and supported Senate transaction evidence with dates, owners, and ranges preserved. | House/Senate disclosure index; Senate HTML reports |
+| [`newsletter-topic-landscape`](skills/newsletter-topic-landscape) | Publication-by-topic comparisons from bounded public editorial samples. | Substack |
+| [`football-player-comparison`](skills/football-player-comparison) | Role/competition/season-aware player statistics with minutes and metric denominators. | FotMob |
+| [`football-viewing-guide`](skills/football-viewing-guide) | Current seven-day broadcasts by market, fixture, timezone, and listed channel. | FotMob |
 
-The repository contains **126 installable skills**. The Claude Code marketplace
-bundle includes **88 skills**; the narrower per-platform alternatives below remain
+The repository contains **132 installable skills**. The Claude Code marketplace
+bundle includes **94 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -215,6 +221,10 @@ node --test scripts/*.test.mjs   # helper and focused-selection tests
 ```
 
 ## Coverage review
+
+The [six workflow additions](audits/workflow-additions-2026-10-05.md) build on
+existing endpoints with focused tool selections and source-specific interpretation.
+
 
 The [2026-10-05 audit](audits/coverage-2026-10-05.md) maps every catalog group
 and compares source API routes with the published skill contract. The

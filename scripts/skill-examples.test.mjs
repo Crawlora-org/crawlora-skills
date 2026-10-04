@@ -13,7 +13,9 @@ const skills = ["fotmob-research", "multi-sport-match-research", "microsoft-stor
   "company-ranking-research", "hiring-demand-analysis", "news-media-research",
   "sports-scores-research", "collectibles-market-research", "health-provider-research",
   "prescription-price-research", "rental-housing-research", "product-price-research",
-  "travel-accommodation-research"];
+  "travel-accommodation-research",
+  "relocation-cost-comparison", "brand-mention-research", "congressional-disclosure-research",
+  "newsletter-topic-landscape", "football-player-comparison", "football-viewing-guide"];
 
 test("changed workflow examples use allowed methods, routes, and real contract parameters", () => {
   const dir = mkdtempSync(join(tmpdir(), "crawlora-examples-"));
@@ -36,8 +38,16 @@ test("changed workflow examples use allowed methods, routes, and real contract p
         const tool = catalog.find(tool => tool._http.method === method && tool._http.path === path);
         assert.ok(tool, `${method} ${path} must exist in the published catalog`);
         if (method === "GET") {
-          const keys = args.filter((_, index) => args[index - 1] === "--data-urlencode").map(value => value.split("=", 1)[0]);
+          const pairs = args.filter((_, index) => args[index - 1] === "--data-urlencode").map(value => {
+            const separator = value.indexOf("=");
+            return [value.slice(0, separator), value.slice(separator + 1)];
+          });
+          const keys = pairs.map(([key]) => key);
           for (const key of keys) assert.ok(tool._http.query.includes(key), `${tool.name}: unknown parameter ${key}`);
+          for (const [key, value] of pairs) {
+            const values = tool.inputSchema.properties[key]?.enum;
+            if (values) assert.ok(values.some(allowed => String(allowed) === value), `${tool.name}: invalid ${key}=${value}`);
+          }
           for (const key of tool.inputSchema.required) assert.ok(keys.includes(key), `${tool.name}: missing ${key}`);
         } else {
           const value = JSON.parse(body);
