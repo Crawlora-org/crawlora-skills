@@ -638,5 +638,55 @@
     "streeteasy_sales_search",
     "streeteasy_school",
     "streeteasy_unit"
+  ],
+  "relocation-cost-comparison": [
+    "numbeo_cost_of_living_city",
+    "numbeo_cost_of_living_country",
+    "numbeo_cost_of_living_rankings",
+    "numbeo_cost_of_living_rankings_by_country",
+    "datasets_housing_markets_facets",
+    "datasets_housing_markets_search",
+    "datasets_housing_markets_item"
+  ],
+  "brand-mention-research": [
+    "reddit_search",
+    "reddit_post",
+    "reddit_comments",
+    "tiktok_search",
+    "tiktok_post",
+    "tiktok_comments",
+    "youtube_search",
+    "youtube_video",
+    "youtube_comments"
+  ],
+  "congressional-disclosure-research": [
+    "congress_stock_disclosures",
+    "congress_report"
+  ],
+  "newsletter-topic-landscape": [
+    "substack_search",
+    "substack_categories",
+    "substack_category",
+    "substack_publication",
+    "substack_publication_posts",
+    "substack_post",
+    "substack_publication_contributors",
+    "substack_publication_recommendations"
+  ],
+  "football-player-comparison": [
+    "fotmob_search",
+    "fotmob_player",
+    "fotmob_player_stats",
+    "fotmob_player_matches",
+    "fotmob_player_match_stats",
+    "fotmob_match"
+  ],
+  "football-viewing-guide": [
+    "fotmob_tv_guide_countries",
+    "fotmob_tv_guide_channels",
+    "fotmob_tv_guide",
+    "fotmob_search",
+    "fotmob_matches",
+    "fotmob_match"
   ]
 }
