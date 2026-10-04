@@ -6,9 +6,9 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**24 endpoints across 2 platform group(s).**
+**26 endpoints across 2 platform group(s).**
 
-## AppStore (13)
+## AppStore (15)
 
 ### `appstore_app`
 
@@ -21,6 +21,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /appstore/categories`
 - **What:** Retrieve App Store chart categories and collections. Returns every category ID and chart collection accepted by `/appstore/list`, including Games and Magazines & Newspapers subgenres with their parent ID. Collections carry their device platform (`phone`, `pad`, `mac`), chart type (`top_free`, `top_paid`, `top_grossing`, `top`, `new`), and whether the feed currently returns entries.
 - **Params:** _none_
+
+### `appstore_collection`
+
+- **HTTP:** `GET /appstore/collection`
+- **What:** Retrieve apps in one App Store collection. Returns app items embedded in an Apple room or EDS collection page. Discover IDs with `appstore_collections`. `platform` enum: `iphone`, `ipad`, `mac`, `vision`, `watch`, `tv`. `collection_id` must be a numeric room ID or `eds.UUID` ID returned by the discovery endpoint.
+- **Params:** `collection_id` (string, **required**) — Room ID or EDS UUID collection ID from appstore_collections; `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Result language tag; `platform` (string, **required**) — Apple device catalog
+
+### `appstore_collections`
+
+- **HTTP:** `GET /appstore/collections`
+- **What:** Discover App Store editorial collections. Returns the room and EDS collection links embedded in Apple's browse page for one device. `platform` enum: `iphone`, `ipad`, `mac`, `vision`, `watch`, `tv`. Pass a returned `id` and the same platform to `appstore_collection` to retrieve the collection's apps.
+- **Params:** `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Result language tag; `platform` (string, **required**) — Apple device catalog
 
 ### `appstore_developer`
 

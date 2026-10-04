@@ -46,9 +46,9 @@ rest=("${args[@]:1}")
 # caller-account surfaces and unrelated API routes out of the helper even if
 # someone supplies an undocumented path directly.
 case "$method" in
-  GET|POST) ;;
+  DELETE|GET|POST) ;;
   *)
-    echo "only GET and POST are supported by the apk-teardown-research skill" >&2
+    echo "only DELETE and GET and POST are supported by the apk-teardown-research skill" >&2
     exit 2
     ;;
 esac
@@ -73,7 +73,7 @@ case "$path" in
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
-
+  '^/apk-teardown/jobs/[^/]+$'
   )
   for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
     if [[ "$path" =~ $route_regex ]]; then
@@ -90,8 +90,10 @@ fi
 # Enforce the documented HTTP method for each route, not just the global method set.
 route_method_allowed=false
 route_method_regexes=(
+  '^DELETE:/apk-teardown/jobs/[^/]+$'
   '^GET:/apk-teardown/compare-ownership$'
   '^GET:/apk-teardown/diff$'
+  '^GET:/apk-teardown/jobs/[^/]+$'
   '^GET:/apk-teardown/timeline$'
   '^POST:/apk-teardown/jobs$'
 )

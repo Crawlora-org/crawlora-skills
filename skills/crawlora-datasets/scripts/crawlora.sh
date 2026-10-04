@@ -75,6 +75,9 @@ case "$path" in
   /datasets/chrome-extensions/search) route_allowed=true ;;
   /datasets/chrome-extensions/trending) route_allowed=true ;;
   /datasets/creators/search) route_allowed=true ;;
+  /datasets/doordash-stores/facets) route_allowed=true ;;
+  /datasets/doordash-stores/nearby) route_allowed=true ;;
+  /datasets/doordash-stores/search) route_allowed=true ;;
   /datasets/facebook-pages/facets) route_allowed=true ;;
   /datasets/facebook-pages/search) route_allowed=true ;;
   /datasets/github-users/facets) route_allowed=true ;;
@@ -153,6 +156,7 @@ if [ "$route_allowed" = false ]; then
   '^/datasets/boxofficemojo/items/[^/]+$'
   '^/datasets/chrome-extensions/history/[^/]+$'
   '^/datasets/chrome-extensions/items/[^/]+$'
+  '^/datasets/doordash-stores/items/[^/]+$'
   '^/datasets/facebook-pages/items/[^/]+$'
   '^/datasets/github-users/items/[^/]+$'
   '^/datasets/goodreads-authors/items/[^/]+$'

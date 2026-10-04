@@ -190,7 +190,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /tripadvisor/reviews`
 - **What:** Get TripAdvisor reviews. Returns normalized TripAdvisor public reviews from credential-free GraphQL review data. Pass either id or url.
-- **Params:** `do_machine_translation` (boolean, optional) — Enable upstream machine translation; `id` (string, optional) — TripAdvisor location id; `language` (string, optional) — Review language; `limit` (integer, optional) — Maximum reviews; `page` (integer, optional) — 1-based review page; `photos_per_review_limit` (integer, optional) — Maximum photos per review; `ratings` (array, optional) — Rating filters; `sort_by` (string, optional) — Review sort field; `sort_type` (string, optional) — Review sort type; `url` (string, optional) — TripAdvisor place URL
+- **Params:** `do_machine_translation` (boolean, optional) — Enable upstream machine translation; `id` (string, optional) — TripAdvisor location id; `language` (string, optional) — Review language; `limit` (integer, optional) — Maximum reviews; `page` (integer, optional) — 1-based review page; `photos_per_review_limit` (integer, optional) — Maximum photos per review; `ratings` (array, optional) — Rating filters; `sort_by` (string, optional) — Legacy sort field; DATE selects newest first, FAVORABLE_RATING uses upstream order; `sort_type` (string, optional) — Legacy sort type; DEFAULT selects newest first, ML_SORTED uses upstream order unless sort_by is DATE; `url` (string, optional) — TripAdvisor place URL
 
 ### `tripadvisor_search`
 

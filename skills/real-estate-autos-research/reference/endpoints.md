@@ -109,7 +109,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zillow_autocomplete`
 
 - **HTTP:** `GET /zillow/autocomplete`
-- **What:** Autocomplete Zillow locations. Returns normalized Zillow public web autocomplete candidates. Semantic candidates may include region_id/region_type compatibility aliases plus region_ids/region_types arrays; prefer complete bounds metadata for Zillow search when present.
+- **What:** Autocomplete Zillow locations. Returns normalized Zillow public web autocomplete candidates, including region ids and types. Zillow autocomplete does not currently return map bounds.
 - **Params:** `limit` (integer, optional) — Maximum results, clamped to 20; `query` (string, **required**) — Location query; `status` (string, optional) — Search context. Allowed values: for_sale (aliases sale, for-sale), for_rent (aliases rent, for-rent), sold
 
 ### `zillow_property`
@@ -121,8 +121,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zillow_search`
 
 - **HTTP:** `GET /zillow/search`
-- **What:** Search Zillow listings. Returns normalized Zillow public listing search results. Callers must pass complete map bounds from autocomplete when available, or a region id fallback.
-- **Params:** `east` (number, optional) — Map east bound from autocomplete; `location` (string, **required**) — Display location; `north` (number, optional) — Map north bound from autocomplete; `page` (integer, optional) — 1-based page; `region_id` (integer, optional) — Zillow region id from autocomplete, used when complete bounds are not provided; `region_type` (integer, optional) — Zillow region type from autocomplete, used with region_id fallback; `south` (number, optional) — Map south bound from autocomplete; `status` (string, optional) — Search context. Allowed values: for_sale (aliases sale, for-sale), for_rent (aliases rent, for-rent), sold; `west` (number, optional) — Map west bound from autocomplete
+- **What:** Search Zillow listings. Returns normalized Zillow public listing search results. Callers may pass a region id from autocomplete or a complete map bounding box. When a usable region-only response contains no listings, the API retries with a viewport from Zillow's public search page if that page selects exactly the same region. Upstream blocks and transport failures return errors.
+- **Params:** `east` (number, optional) — Map east bound; pass with west, south, and north; `location` (string, **required**) — Display location; `north` (number, optional) — Map north bound; pass with west, east, and south; `page` (integer, optional) — 1-based page; `region_id` (integer, optional) — Zillow region id from autocomplete, used when complete bounds are not provided; `region_type` (integer, optional) — Zillow region type from autocomplete, used with region_id fallback; `south` (number, optional) — Map south bound; pass with west, east, and north; `status` (string, optional) — Search context. Allowed values: for_sale (aliases sale, for-sale), for_rent (aliases rent, for-rent), sold; `west` (number, optional) — Map west bound; pass with east, south, and north
 
 ## Cars.com (2)
 

@@ -6,9 +6,9 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**4 endpoints across 1 platform group(s).**
+**6 endpoints across 1 platform group(s).**
 
-## AppInsights (4)
+## AppInsights (6)
 
 ### `apk_teardown_compare_ownership`
 
@@ -16,11 +16,23 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Compare two apk-teardown jobs for evidence of common ownership. Compares two DIFFERENT completed jobs (not versions of the same app) for signals of common ownership -- shared signing certificate, SDK/analytics identifiers, and more.
 - **Params:** `job_id_a` (string, **required**) — First job ID; `job_id_b` (string, **required**) — Second job ID
 
+### `apk_teardown_delete_job`
+
+- **HTTP:** `DELETE /apk-teardown/jobs/{job_id}`
+- **What:** Delete an apk-teardown job. Purges a job's metadata/result before its normal retention window expires. The uploaded binary is already gone by the time any job reaches a terminal state, so this only ever deletes job metadata, never a binary.
+- **Params:** `job_id` (string, **required**) — Job ID to delete
+
 ### `apk_teardown_diff`
 
 - **HTTP:** `GET /apk-teardown/diff`
 - **What:** Diff two completed apk-teardown jobs. Compares two already-completed jobs -- typically two versions of the same app -- and returns what changed (permissions, signing, SDKs, size, and more).
 - **Params:** `job_id_a` (string, **required**) — First job ID; `job_id_b` (string, **required**) — Second job ID
+
+### `apk_teardown_job_status`
+
+- **HTTP:** `GET /apk-teardown/jobs/{job_id}`
+- **What:** Poll an apk-teardown job's status/result. Returns the current status (queued, processing, done, failed, or lost) of a submitted job, and its full result once done.
+- **Params:** `job_id` (string, **required**) — Job ID returned by Submit
 
 ### `apk_teardown_submit`
 
