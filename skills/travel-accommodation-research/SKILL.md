@@ -58,3 +58,23 @@ scripts/crawlora.sh /tripcom/hotels/search keyword="Lisbon" | jq '.'
   verify material booking decisions on the originating platform.
 
 See [`reference/endpoints.md`](reference/endpoints.md) for the complete generated endpoint list.
+
+## Vrbo discovery, quotes, and reviews
+
+Use `vrbo_locations_search` to obtain the destination label, region ID, and
+coordinates for POST `vrbo_search`. Send the MCP `request` value as a flat REST
+JSON body, with explicit dates and party composition. Copy sort/filter/range IDs
+from returned facets rather than inventing them; `limit` trims local output and
+does not prove complete source search coverage. Follow returned property IDs to
+property, review, and rate-calendar routes. Calendar availability and nightly
+rates differ from the total quote for dates, occupants, taxes, fees, and currency.
+A challenge or failed query is unavailable evidence, not an empty destination.
+Travel pages are editorial/location discovery, not a booking quote.
+
+```sh
+scripts/crawlora.sh /vrbo/locations/search search_term="Paris"
+```
+
+Bound pagination, retain provider-specific IDs and timestamps, and use the exact
+review cursor/options in the reference. A research request does not authorise a
+booking, host message, or reservation.

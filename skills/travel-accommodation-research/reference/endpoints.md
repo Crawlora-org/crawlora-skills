@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**24 endpoints across 4 platform group(s).**
+**31 endpoints across 5 platform group(s).**
 
 ## Airbnb (7)
 
@@ -166,3 +166,48 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /tripcom/hotels/search`
 - **What:** Search Trip.com hotels by city. Returns Trip.com's own top-hotels page for a city: normalized hotel summaries (name, location, star rating, guest rating, review count, image, display price) for the hotels Trip.com features on that city's hotel-list page. Trip.com does not expose a credential-free free-text city search, so callers supply the exact city_slug and city_id pair from a known Trip.com hotel-list URL of the form https://www.trip.com/hotels/{city_slug}-hotels-list-{city_id}/. Credential-free public data sourced from Trip.com's own server-rendered hotel-list page.
 - **Params:** `city_id` (string, **required**) — Trip.com numeric city id, the trailing number of a /hotels/{city_slug}-hotels-list-{city_id}/ URL; `city_slug` (string, **required**) — Trip.com city slug, the text segment of a /hotels/{city_slug}-hotels-list-{city_id}/ URL
+
+## Vrbo (7)
+
+### `vrbo_locations_search`
+
+- **HTTP:** `GET /vrbo/locations/search`
+- **What:** Suggest Vrbo destinations. Returns public destination suggestions, including region IDs and location types when Vrbo provides them. The verified search term is sent with Vrbo's observed lodging, destination, and entry-page criteria.
+- **Params:** `search_term` (string, **required**) — Destination text to suggest
+
+### `vrbo_properties_rate_calendar`
+
+- **HTTP:** `GET /vrbo/properties/{property_id}/rate-calendar`
+- **What:** Get a Vrbo property rate calendar. Returns public calendar dates, nightly display prices when provided, availability, check-in/out validity, and stay constraints. Resolves the property's GraphQL product ID from the server-rendered page and uses a fresh proxy connection for every request attempt.
+- **Params:** `property_id` (string, **required**) — Vrbo property ID (optionally ending in ha)
+
+### `vrbo_properties_reviews`
+
+- **HTTP:** `GET /vrbo/properties/{property_id}/reviews`
+- **What:** Get Vrbo property reviews. Returns one page of public traveler reviews, aggregate count, and current sort choices. Pagination and sort values follow the public reviews query; each property-page and GraphQL request uses a fresh proxy connection.
+- **Params:** `include_ratings_only_reviews` (boolean, optional) — Include rating-only reviews; `include_recent_reviews` (boolean, optional) — Include recent reviews; `property_id` (string, **required**) — Vrbo property ID (optionally ending in ha); `size` (integer, optional) — Page size from 1 to 50; `sort_by` (string, optional) — Sort value from the response's sort_options; `start_index` (integer, optional) — Zero-based review offset
+
+### `vrbo_property`
+
+- **HTTP:** `GET /vrbo/properties/{property_id}`
+- **What:** Get Vrbo property details. Reads public traveler-facing property details, grouped amenities, photos, content sections, FAQs, and aggregate rating. Tries request profiles in order; each attempt and retry uses a fresh proxy connection.
+- **Params:** `property_id` (string, **required**) — Vrbo property ID (optionally ending in ha)
+
+### `vrbo_search`
+
+- **HTTP:** `POST /vrbo/search`
+- **What:** Search Vrbo vacation rentals. Searches public Vrbo rental listings for a selected destination and dates. Obtain destination, region_id, and lat_long from Vrbo's destination suggestion UI. Supports date flexibility, per-room adult and child-age inputs, current filter selections and ranges, and observed sort values. Copy filter IDs and option values from the returned filters.
+- **Params:** `request` (object, **required**) — Search criteria
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
+
+### `vrbo_travel_page_detail`
+
+- **HTTP:** `GET /vrbo/travel-pages/{slug}`
+- **What:** Get a Vrbo travel page. Returns public editorial sections, visible rental cards, and related travel-page links for a /travel/{slug} page. Date-scoped prices are omitted; page slugs are not search-filter values.
+- **Params:** `slug` (string, **required**) — Vrbo travel-page slug returned by /vrbo/travel-pages
+
+### `vrbo_travel_pages`
+
+- **HTTP:** `GET /vrbo/travel-pages`
+- **What:** List Vrbo travel pages. Lists the public stay-type and travel-theme pages linked from Vrbo's vacation-rental index. These are editorial browse pages, not a complete search-filter enumeration.
+- **Params:** _none_

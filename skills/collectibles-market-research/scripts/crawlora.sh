@@ -68,6 +68,10 @@ case "$path" in
   /comc/categories) route_allowed=true ;;
   /comc/listing) route_allowed=true ;;
   /comc/search) route_allowed=true ;;
+  /fanatics/categories) route_allowed=true ;;
+  /fanatics/category) route_allowed=true ;;
+  /fanatics/product) route_allowed=true ;;
+  /fanatics/search) route_allowed=true ;;
   /fanaticscollect/auctions) route_allowed=true ;;
   /fanaticscollect/categories) route_allowed=true ;;
   /fanaticscollect/instant-rips/categories) route_allowed=true ;;
@@ -84,6 +88,15 @@ case "$path" in
   /goldin/suggest) route_allowed=true ;;
   /pristine-auction/categories) route_allowed=true ;;
   /pristine-auction/search) route_allowed=true ;;
+  /pristine-marketplace/collections) route_allowed=true ;;
+  /pristine-marketplace/pages) route_allowed=true ;;
+  /pristine-marketplace/products) route_allowed=true ;;
+  /pristine-marketplace/reviews) route_allowed=true ;;
+  /pristine-marketplace/search) route_allowed=true ;;
+  /pristine-marketplace/search/suggest) route_allowed=true ;;
+  /pristine-marketplace/sitemap/urls) route_allowed=true ;;
+  /pristine-marketplace/sitemaps) route_allowed=true ;;
+  /pristine-marketplace/store) route_allowed=true ;;
   /psa/autographfacts/categories) route_allowed=true ;;
   /psa/autographfacts/gallery) route_allowed=true ;;
   /psa/autographfacts/subject) route_allowed=true ;;
@@ -103,6 +116,13 @@ case "$path" in
   /psa/ticketfacts/gallery) route_allowed=true ;;
   /psa/ticketfacts/subject) route_allowed=true ;;
   /psa/ticketfacts/subjects) route_allowed=true ;;
+  /psastore/collections) route_allowed=true ;;
+  /psastore/pages) route_allowed=true ;;
+  /psastore/products) route_allowed=true ;;
+  /psastore/search/suggest) route_allowed=true ;;
+  /psastore/sitemap/urls) route_allowed=true ;;
+  /psastore/sitemaps) route_allowed=true ;;
+  /psastore/store) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
@@ -113,6 +133,14 @@ if [ "$route_allowed" = false ]; then
   '^/fanaticslive/show/[^/]+$'
   '^/fanaticslive/show/[^/]+/instant-rips$'
   '^/pristine-auction/lot/[^/]+$'
+  '^/pristine-marketplace/collections/[^/]+/products$'
+  '^/pristine-marketplace/pages/[^/]+$'
+  '^/pristine-marketplace/products/[^/]+$'
+  '^/pristine-marketplace/products/[^/]+/recommendations$'
+  '^/psastore/collections/[^/]+/products$'
+  '^/psastore/pages/[^/]+$'
+  '^/psastore/products/[^/]+$'
+  '^/psastore/products/[^/]+/recommendations$'
   )
   for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
     if [[ "$path" =~ $route_regex ]]; then

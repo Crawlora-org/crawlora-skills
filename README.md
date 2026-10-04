@@ -25,8 +25,8 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | Skill | What it does | Platforms |
 |---|---|---|
 | [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured public data from **3,315** Crawlora MCP tools; teaches auth, credits, and the public-data catalog. | 459 public-data platform groups |
-| [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (126 tools) |
-| [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, Shopify and DTC brands, BigCommerce, Boots, CVS, Lazada, Otto, SparkFun, Tokopedia, Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, Walgreens (stores only), IKEA, Chewy |
+| [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (130 tools) |
+| [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, AliExpress, Shopify and DTC brands, BigCommerce, Boots, CVS, Lazada, Otto, SparkFun, Tokopedia, Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, Walgreens (stores only), IKEA, Chewy |
 | [`youtube-research`](skills/youtube-research) | Transcripts, comments, video/channel metadata, search — no `yt-dlp`. | YouTube |
 | [`app-review-mining`](skills/app-review-mining) | App details, reviews, ratings, rankings, similar apps (ASO). | App Store, Google Play |
 | [`app-store-research`](skills/app-store-research) | Cross-store app and extension discovery, ratings, reviews, permissions, privacy, and release history. | Apple App Store, Google Play, Chrome Web Store |
@@ -42,9 +42,9 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`job-market-research`](skills/job-market-research) | Search postings, pull any company's ATS board directly, hiring signals, freelance gigs. | Indeed, Google/Amazon/Apple/Meta/Tesla Jobs, Tes, 15+ ATS platforms, Upwork, Fiverr |
 | [`social-media-research`](skills/social-media-research) | Public profiles, posts, engagement, search, and trending topics. | Instagram, TikTok, Threads, Bluesky, X, Pinterest, LinkedIn, Facebook, Reddit, Bilibili, Patreon |
 | [`travel-hotel-research`](skills/travel-hotel-research) | Hotel/flight/attraction search and reviews, short-term rentals, event tickets. | Booking.com, Expedia, Agoda, TripAdvisor, Trip.com, Airbnb, Accor, Hotels.com, Ticketmaster, TicketWeb |
-| [`travel-accommodation-research`](skills/travel-accommodation-research) | Cross-platform accommodation, host, property, flight, and activity research without booking actions. | Airbnb, Agoda, Hotels.com, Trip.com |
+| [`travel-accommodation-research`](skills/travel-accommodation-research) | Cross-platform accommodation, host, property, flight, and activity research without booking actions. | Airbnb, Agoda, Hotels.com, Trip.com, Vrbo |
 | [`podcast-discovery-research`](skills/podcast-discovery-research) | Podcast show, episode, chart, ranking, and related-program discovery. | Apple Podcasts, Spotify Podcasts |
-| [`sports-scores-research`](skills/sports-scores-research) | Live scores, standings, rosters, player/team stats, boxscores, sportsbook odds, endurance routes. | ESPN, SofaScore, MLB, Strava, DraftKings Sportsbook, Cricinfo |
+| [`sports-scores-research`](skills/sports-scores-research) | Live scores, standings, rosters, player/team stats, boxscores, sportsbook odds, endurance routes. | ESPN, SofaScore, MLB, Strava, DraftKings Sportsbook, Cricinfo, Sportskeeda |
 | [`twitch-research`](skills/twitch-research) | Channel profile/live status, streams by game, clips, VODs, search, top games, team rosters, VOD chat replay. | Twitch |
 | [`music-podcast-research`](skills/music-podcast-research) | Tracks/albums/artists/playlists, podcast shows/episodes, record pressings, SoundCloud track/user stats. | Spotify, Spotify Podcasts, Apple Podcasts, Discogs, SoundCloud |
 | [`book-research`](skills/book-research) | Book/author ratings and reviews, reading lists, audiobooks. | Goodreads, Apple Books |
@@ -63,15 +63,28 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`patents-research`](skills/patents-research) | Full-text patent search (keyword/inventor/assignee), bibliographic detail, claims/citations/family, CPC classification lookup. | Google Patents, USPTO Patent Public Search |
 | [`gdelt-research`](skills/gdelt-research) | Global news search, coverage/sentiment timelines, sentence-level co-occurrence search; US TV transcripts/captions/on-screen-text/visual-label search. | GDELT, GDELT Television 2.0 AI |
 | [`apple-maps-research`](skills/apple-maps-research) | Search places, categories, guides, routes, transit, reverse geocoding, photos, and travel times. | Apple Maps |
-| [`news-media-research`](skills/news-media-research) | Search publisher-native headlines, articles, live coverage, and section/topic archives. | Al Jazeera, Axios, BBC, Bloomberg, CNN, FT, Foreign Affairs, Foreign Policy, Guardian, HBR, LA Times, NPR, NYT, Politico, Reuters, Washington Post |
+| [`news-media-research`](skills/news-media-research) | Search publisher-native headlines, articles, live coverage, and section/topic archives. | International, regional, business, tech, sports, science, and entertainment publishers; see the generated reference |
 | [`opensea-research`](skills/opensea-research) | Research NFT collections, items, traits, listings, offers, sales activity, chains, and creators. | OpenSea |
 | [`auction-research`](skills/auction-research) | Search auction calendars and lots, compare estimates and realized prices, and inspect sale details. | Bonhams |
 | [`courtlistener-research`](skills/courtlistener-research) | Search public US opinions and browse courts and judicial-person records for initial legal research. | CourtListener |
 | [`apk-teardown-research`](skills/apk-teardown-research) | Analyze authorized Android packages for permissions, SDKs, libraries, signing, release history, and ownership signals. | AppInsights |
-| [`collectibles-market-research`](skills/collectibles-market-research) | Trading-card and sports-collectible identity, PSA reference data, listings, auctions, sold items, and market trends. | PSA, COMC, Fanatics Collect, Fanatics Live, ALT, Goldin, Pristine Auction |
+| [`collectibles-market-research`](skills/collectibles-market-research) | Trading-card and sports-collectible identity, PSA reference data, listings, auctions, sold items, and market trends. | PSA, COMC, Fanatics Collect, Fanatics Live, ALT, Goldin, Pristine Auction, PSAStore, PristineMarketplace, Fanatics |
 | [`luxury-resale-research`](skills/luxury-resale-research) | Compare luxury-fashion, handbag, sneaker, streetwear, and watch resale evidence with condition and seller context. | 1stDibs, The RealReal, Fashionphile, Rebag, Vestiaire, Grailed, Chrono24, Farfetch, Gucci, Hermès, Prada, and more |
 | [`live-events-ticketing-research`](skills/live-events-ticketing-research) | Timestamped public event discovery and resale-price snapshots; never purchasing or guaranteeing inventory. | SeatGeek, StubHub |
 | [`dining-demand-research`](skills/dining-demand-research) | Compare restaurant discovery and time-specific availability snapshots without booking a table. | Resy, OpenTable |
+
+| [`fotmob-research`](skills/fotmob-research) | Football match briefs, player form, league leaders, transfers, and broadcast listings. | FotMob |
+| [`multi-sport-match-research`](skills/multi-sport-match-research) | Matched fixtures, score snapshots, standings, and source discrepancies across sports. | Flashscore, LiveScore |
+| [`microsoft-store-research`](skills/microsoft-store-research) | Windows app/game discovery, regional offers, charts, publishers, and review samples. | Microsoft Store |
+| [`xbox-research`](skills/xbox-research) | Game/edition shortlists with compatibility, accessibility, subscription evidence, and reviews. | Xbox |
+| [`deal-discovery-research`](skills/deal-discovery-research) | Posted offers with coupons, eligibility, expiry, and merchant-price caveats. | Slickdeals, RetailMeNot |
+| [`substack-research`](skills/substack-research) | Newsletter/writer discovery, public post coverage, Notes, and recommendations. | Substack |
+| [`google-finance-research`](skills/google-finance-research) | Exchange-qualified quotes, charts, financials, and attributed market snapshots. | Google Finance |
+| [`company-ranking-research`](skills/company-ranking-research) | Edition-aware company rankings, directory shortlists, and attributed wealth profiles. | Fortune, Forbes |
+
+| [`health-provider-research`](skills/health-provider-research) | Public physician/facility directory shortlist with specialty/filter discovery and coverage questions. | Healthgrades |
+| [`prescription-price-research`](skills/prescription-price-research) | Exact medication/form/quantity/location price snapshots with coupon and eligibility conditions. | GoodRx |
+| [`rental-housing-research`](skills/rental-housing-research) | NYC listing and market context; community shortlists with advertised-price and unit distinctions. | StreetEasy, Greystar |
 
 ### Focused research and prospecting workflows
 
@@ -111,8 +124,8 @@ self-contained and do not require the broader bundles to be installed.
 | [`used-car-market-comparison`](skills/used-car-market-comparison) | Matched vehicle listings, deduplicated asking-price ranges, and qualified price outliers. | CarMax, Autotrader, Cars.com |
 | [`software-vendor-shortlisting`](skills/software-vendor-shortlisting) | Requirements-based vendor shortlists, pricing scenarios, and evidence-led demo questions. | Capterra, Product Hunt, Bing, official vendor websites |
 
-The repository contains **115 installable skills**. The Claude Code marketplace
-bundle includes **77 skills**; the narrower per-platform alternatives below remain
+The repository contains **126 installable skills**. The Claude Code marketplace
+bundle includes **88 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -200,6 +213,14 @@ node scripts/generate.mjs --check  # CI parity check
 node scripts/validate.mjs        # lint all SKILL.md
 node --test scripts/*.test.mjs   # helper and focused-selection tests
 ```
+
+## Coverage review
+
+The [2026-10-05 audit](audits/coverage-2026-10-05.md) maps every catalog group
+and compares source API routes with the published skill contract. The
+[endpoint matrix](audits/endpoints-2026-10-05.tsv) records every source API
+operation, its publication status, and focused skill coverage. Counts measure
+routing coverage, not endpoint uptime or workflow quality.
 
 ## Links
 

@@ -81,6 +81,9 @@ case "$path" in
   /hotels/reviews/archive) route_allowed=true ;;
   /hotels/search) route_allowed=true ;;
   /tripcom/hotels/search) route_allowed=true ;;
+  /vrbo/locations/search) route_allowed=true ;;
+  /vrbo/search) route_allowed=true ;;
+  /vrbo/travel-pages) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
@@ -93,6 +96,10 @@ if [ "$route_allowed" = false ]; then
   '^/airbnb/room/[^/]+/calendar$'
   '^/airbnb/room/[^/]+/reviews$'
   '^/tripcom/hotels/[^/]+$'
+  '^/vrbo/properties/[^/]+$'
+  '^/vrbo/properties/[^/]+/rate-calendar$'
+  '^/vrbo/properties/[^/]+/reviews$'
+  '^/vrbo/travel-pages/[^/]+$'
   )
   for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
     if [[ "$path" =~ $route_regex ]]; then
@@ -126,6 +133,12 @@ route_method_regexes=(
   '^GET:/hotels/autocomplete$'
   '^GET:/tripcom/hotels/[^/]+$'
   '^GET:/tripcom/hotels/search$'
+  '^GET:/vrbo/locations/search$'
+  '^GET:/vrbo/properties/[^/]+$'
+  '^GET:/vrbo/properties/[^/]+/rate-calendar$'
+  '^GET:/vrbo/properties/[^/]+/reviews$'
+  '^GET:/vrbo/travel-pages$'
+  '^GET:/vrbo/travel-pages/[^/]+$'
   '^POST:/agoda/flights/itinerary-amenities$'
   '^POST:/hotels/offers$'
   '^POST:/hotels/property$'
@@ -133,6 +146,7 @@ route_method_regexes=(
   '^POST:/hotels/reviews$'
   '^POST:/hotels/reviews/archive$'
   '^POST:/hotels/search$'
+  '^POST:/vrbo/search$'
 )
 for route_method_regex in ${route_method_regexes[@]+"${route_method_regexes[@]}"}; do
   if [[ "$method:$path" =~ $route_method_regex ]]; then

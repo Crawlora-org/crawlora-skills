@@ -35,3 +35,24 @@ test("published workflow selections resolve and keep single-product workflows na
     assert.deepEqual([...selections[skill]].sort(), catalog.filter(t => t.name.startsWith(prefix)).map(t => t.name).sort());
   }
 });
+
+test("new workflows cover their complete published surface without importing mixed-group neighbours", () => {
+  const catalog = JSON.parse(readFileSync(new URL("./tools.json", import.meta.url)));
+  const selections = JSON.parse(readFileSync(new URL("./skill-tools.json", import.meta.url)));
+  const groups = {
+    "fotmob-research": ["FotMob"],
+    "multi-sport-match-research": ["Flashscore", "LiveScore"],
+    "microsoft-store-research": ["Microsoft Store"],
+    "xbox-research": ["Xbox"],
+    "deal-discovery-research": ["Slickdeals", "RetailMeNot"],
+    "substack-research": ["Substack"],
+    "company-ranking-research": ["Fortune", "Forbes"],
+    "health-provider-research": ["Healthgrades"],
+    "prescription-price-research": ["GoodRx"],
+    "rental-housing-research": ["StreetEasy", "Greystar"],
+  };
+  for (const [skill, allowed] of Object.entries(groups)) {
+    assert.deepEqual([...selections[skill]].sort(), catalog.filter(tool => allowed.includes(tool._http.group)).map(tool => tool.name).sort(), skill);
+  }
+  assert.deepEqual([...selections["google-finance-research"]].sort(), catalog.filter(tool => tool._http.path.startsWith("/google/finance/")).map(tool => tool.name).sort());
+});

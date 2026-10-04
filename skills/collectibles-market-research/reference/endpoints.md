@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**54 endpoints across 7 platform group(s).**
+**82 endpoints across 10 platform group(s).**
 
 ## Alt (9)
 
@@ -345,3 +345,177 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /pristine-auction/search`
 - **What:** Search Pristine Auction's live auction inventory. Browses or searches pristineauction.com's current sports card and memorabilia auction lots. term or category is required, matching pristineauction.com's own search form. All enum values (category, auction_type, sort, status) come from pristine-auction-categories. status=completed browses ended/sold lots (a prices-realized view); the default (all statuses) mirrors the site's own default. Every filter is optional and combines with AND semantics. Credential-free public data -- see the endpoint markdown for the transport used.
 - **Params:** `auction_type` (string, optional) — Comma-separated auction-type filter. Omit to include every auction type.; `category` (string, optional) — One value from pristine-auction-categories' categories[].slug. term or category is required.; `max_price` (number, optional) — Maximum current bid price in USD, inclusive. Omit or 0 for no maximum.; `min_price` (number, optional) — Minimum current bid price in USD, inclusive. Omit or 0 for no minimum.; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page. pristineauction.com only accepts 15, 30, or 60; any other value is rejected. Default 30.; `sort` (string, optional) — Result order, default newly-listed.; `status` (string, optional) — Comma-separated auction-status filter. status=completed browses ended/sold lots. Omit to include every status.; `term` (string, optional) — Free-text search across lot titles. term or category is required.
+
+## PristineMarketplace (13)
+
+### `pristine_marketplace_collection_products`
+
+- **HTTP:** `GET /pristine-marketplace/collections/{handle}/products`
+- **What:** List Pristine Marketplace collection products. Returns normalized products from one Pristine Marketplace (https://www.pristinemarketplace.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug (typically a player, team, or memorabilia-type collection, e.g. `pop-culture`).
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `pristine_marketplace_collections`
+
+- **HTTP:** `GET /pristine-marketplace/collections`
+- **What:** List Pristine Marketplace collections. Returns normalized collections from Pristine Marketplace (https://www.pristinemarketplace.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `pristine_marketplace_page`
+
+- **HTTP:** `GET /pristine-marketplace/pages/{handle}`
+- **What:** Get a Pristine Marketplace static page. Returns normalized static page detail for one Pristine Marketplace (https://www.pristinemarketplace.com) page handle. The storefront URL is fixed server-side. The "Shop by Sport" nav landing pages are reachable here as handles `nfl`, `mlb`, `nba`, `nhl`, and `nascar`.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `pristine_marketplace_pages`
+
+- **HTTP:** `GET /pristine-marketplace/pages`
+- **What:** List Pristine Marketplace static pages. Returns normalized static pages from Pristine Marketplace (https://www.pristinemarketplace.com). The storefront URL is fixed server-side. The storefront's "Shop by Sport" navigation (NFL, MLB, NBA, NHL, NASCAR) resolves to pages here (handles `nfl`, `mlb`, `nba`, `nhl`, `nascar`), not to a separate collections-style resource -- each is a landing page linking into many player/team collections.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `pristine_marketplace_product`
+
+- **HTTP:** `GET /pristine-marketplace/products/{handle}`
+- **What:** Get a Pristine Marketplace product. Returns normalized product detail for one Pristine Marketplace (https://www.pristinemarketplace.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `pristine_marketplace_product_recommendations`
+
+- **HTTP:** `GET /pristine-marketplace/products/{handle}/recommendations`
+- **What:** List Pristine Marketplace product recommendations. Returns normalized recommended products for one Pristine Marketplace (https://www.pristinemarketplace.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `pristine_marketplace_products`
+
+- **HTTP:** `GET /pristine-marketplace/products`
+- **What:** List Pristine Marketplace products. Returns normalized products from Pristine Marketplace's (https://www.pristinemarketplace.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `pristine_marketplace_reviews`
+
+- **HTTP:** `GET /pristine-marketplace/reviews`
+- **What:** List Pristine Marketplace store reviews. Returns one page of Pristine Marketplace's (https://www.pristinemarketplace.com) public Judge.me store review feed. This is a store-wide, most-recent-first feed, not a per-product one: confirmed live, the storefront's own on-page review widget draws from and displays this same feed (labeled "Reviews for other products" on an individual product page), and no product/handle filter parameter narrows it. The storefront URL is fixed server-side. Judge.me fixes 5 reviews per upstream page regardless of any requested size, so this endpoint has no `limit` parameter -- `page` maps 1:1 onto Judge.me's own pagination.
+- **Params:** `page` (integer, optional) — 1-based page, defaults to 1. 5 reviews per page.
+
+### `pristine_marketplace_search`
+
+- **HTTP:** `GET /pristine-marketplace/search`
+- **What:** Search Pristine Marketplace products. Returns normalized products from Pristine Marketplace's (https://www.pristinemarketplace.com) own native full-text search results page, distinct from `/pristine-marketplace/search/suggest`'s predictive suggestions. The storefront URL is fixed server-side. Per-page size is fixed by the storefront's own theme (16 products per page) and is not adjustable; `limit` is honored only as an upper bound on the returned page.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250, but never exceeds the storefront's own fixed 16-per-page grid; `page` (integer, optional) — 1-based page, defaults to 1; `q` (string, **required**) — Search query text
+
+### `pristine_marketplace_search_suggest`
+
+- **HTTP:** `GET /pristine-marketplace/search/suggest`
+- **What:** Get Pristine Marketplace search suggestions. Returns products, collections, and query suggestions from Pristine Marketplace's (https://www.pristinemarketplace.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `pristine_marketplace_sitemap_urls`
+
+- **HTTP:** `GET /pristine-marketplace/sitemap/urls`
+- **What:** List Pristine Marketplace sitemap URLs. Returns capped URL entries from Pristine Marketplace's (https://www.pristinemarketplace.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `pristine_marketplace_sitemaps`
+
+- **HTTP:** `GET /pristine-marketplace/sitemaps`
+- **What:** List Pristine Marketplace sitemaps. Returns child sitemap URLs from Pristine Marketplace's (https://www.pristinemarketplace.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `pristine_marketplace_store`
+
+- **HTTP:** `GET /pristine-marketplace/store`
+- **What:** Get Pristine Marketplace store metadata. Returns normalized storefront metadata for Pristine Marketplace (https://www.pristinemarketplace.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
+
+## PSAStore (11)
+
+### `psastore_collection_products`
+
+- **HTTP:** `GET /psastore/collections/{handle}/products`
+- **What:** List PSA Store collection products. Returns normalized products from one PSA Team Store (https://store.psacard.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `psastore_collections`
+
+- **HTTP:** `GET /psastore/collections`
+- **What:** List PSA Store collections. Returns normalized collections from the PSA Team Store (https://store.psacard.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `psastore_page`
+
+- **HTTP:** `GET /psastore/pages/{handle}`
+- **What:** Get a PSA Store static page. Returns normalized static page detail for one PSA Team Store (https://store.psacard.com) page handle. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Page handle
+
+### `psastore_pages`
+
+- **HTTP:** `GET /psastore/pages`
+- **What:** List PSA Store static pages. Returns normalized static pages from the PSA Team Store (https://store.psacard.com). The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `psastore_product`
+
+- **HTTP:** `GET /psastore/products/{handle}`
+- **What:** Get a PSA Store product. Returns normalized product detail for one PSA Team Store (https://store.psacard.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **Params:** `handle` (string, **required**) — Product handle
+
+### `psastore_product_recommendations`
+
+- **HTTP:** `GET /psastore/products/{handle}/recommendations`
+- **What:** List PSA Store product recommendations. Returns normalized recommended products for one PSA Team Store (https://store.psacard.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
+
+### `psastore_products`
+
+- **HTTP:** `GET /psastore/products`
+- **What:** List PSA Store products. Returns normalized products from the PSA Team Store's (https://store.psacard.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
+
+### `psastore_search_suggest`
+
+- **HTTP:** `GET /psastore/search/suggest`
+- **What:** Get PSA Store search suggestions. Returns products, collections, and query suggestions from the PSA Team Store's (https://store.psacard.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
+
+### `psastore_sitemap_urls`
+
+- **HTTP:** `GET /psastore/sitemap/urls`
+- **What:** List PSA Store sitemap URLs. Returns capped URL entries from the PSA Team Store's (https://store.psacard.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
+
+### `psastore_sitemaps`
+
+- **HTTP:** `GET /psastore/sitemaps`
+- **What:** List PSA Store sitemaps. Returns child sitemap URLs from the PSA Team Store's (https://store.psacard.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **Params:** _none_
+
+### `psastore_store`
+
+- **HTTP:** `GET /psastore/store`
+- **What:** Get PSA Store store metadata. Returns normalized storefront metadata for the PSA Team Store (https://store.psacard.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **Params:** _none_
+
+## Fanatics (4)
+
+### `fanatics_categories`
+
+- **HTTP:** `GET /fanatics/categories`
+- **What:** Get Fanatics' league and team navigation tree. Returns Fanatics' full top-level navigation tree: leagues (NFL, MLB, NBA, NHL, Soccer, WWE, College, ...) and, where Fanatics exposes a team-level breakdown, each league's teams (College's several hundred schools included). Each league's or team's url is directly usable as fanatics_category's url input. Public data sourced from fanatics.com's own navigation data.
+- **Params:** _none_
+
+### `fanatics_category`
+
+- **HTTP:** `GET /fanatics/category`
+- **What:** Browse a Fanatics league or team category. Returns one page of a Fanatics league or team category's product listing (name, brand, price, availability, image, url). Use GET /fanatics/categories to discover valid category urls.
+- **Params:** `page_number` (integer, optional) — 1-based result page. Defaults to 1.; `page_size` (integer, optional) — Results per page. One of 24, 48, 72. Defaults to 24.; `sort` (string, optional) — One of TopSellers, LowestPrice, HighestPrice, NewestArrivals. Defaults to TopSellers.; `url` (string, **required**) — A fanatics.com league or team category URL, exactly as returned by a fanatics_categories result's url field.
+
+### `fanatics_product`
+
+- **HTTP:** `GET /fanatics/product`
+- **What:** Get a Fanatics product's detail. Returns one Fanatics product's detail (name, brand, category, price, availability, condition, images), plus per-size availability/price, a fit/value/quality review-rating breakdown, a richer media gallery, and comparable-product alternates (e.g. a jersey's Game/Limited/Elite stitch tiers) where Fanatics exposes them. Use GET /fanatics/search or GET /fanatics/category to discover product urls.
+- **Params:** `url` (string, **required**) — A fanatics.com product-detail URL, exactly as returned by a fanatics_search or fanatics_category result's url field.
+
+### `fanatics_search`
+
+- **HTTP:** `GET /fanatics/search`
+- **What:** Search Fanatics' product catalog. Returns one page of Fanatics' own keyword search results (name, brand, price, availability, image, url).
+- **Params:** `page_number` (integer, optional) — 1-based result page. Defaults to 1.; `page_size` (integer, optional) — Results per page. One of 24, 48, 72. Defaults to 24.; `query` (string, **required**) — Free-text search keywords.; `sort` (string, optional) — One of TopSellers, LowestPrice, HighestPrice, NewestArrivals. Defaults to TopSellers.

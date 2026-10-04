@@ -28,3 +28,5 @@ jobs:
         run: node --test scripts/security.test.mjs
       - name: Focused endpoint selection
         run: node --test scripts/select-tools.test.mjs
+      - name: Coverage audit and workflow examples
+        run: node --test scripts/audit-coverage.test.mjs scripts/skill-examples.test.mjs

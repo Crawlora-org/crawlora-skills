@@ -180,3 +180,20 @@ this skill uses, including its method, path, parameters, and platform coverage.
 - **Old Navy's endpoints are shared across four storefronts** — pass
   `brand=on|gap|br|at` (Old Navy/Gap/Banana Republic/Athleta; defaults to
   `on`); a `cid`/`pid` found under one brand only works with that same brand.
+
+## AliExpress product and attribute comparisons
+
+Discover `aliexpress_search_filters` for the exact query before applying its
+attribute IDs and value IDs to search. Attribute pairs are query-specific, with
+at most one value per group and up to five pairs; do not reuse another search's
+facet identifiers. Preserve listing variant, currency (search price filters use
+USD), seller/condition evidence, shipping basis, and returned source identifiers.
+Review samples do not authenticate a seller or establish typical delivery times.
+Choice/free-shipping flags are source labels; quoted shipping and total cost can
+still depend on destination and checkout conditions. Compare observed offers,
+not guaranteed landed costs or transaction volume inferred from sort order.
+
+```sh
+scripts/crawlora.sh /aliexpress/search-filters q="usb c hub"
+scripts/crawlora.sh /aliexpress/search q="usb c hub" page=1 sort=best_match
+```

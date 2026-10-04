@@ -128,3 +128,20 @@ SofaScore, MLB, Strava, and DraftKings Sportsbook endpoint this skill uses.
   or the [playground](https://crawlora.net/playground?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills)
   if `/strava/routes` 404s — `/strava/challenges` needs no params and is a
   safe starting point.
+
+## Sportskeeda editorial and sports data
+
+Sportskeeda adds news/articles, author and topic coverage, supported football
+and other sports-data surfaces. Inspect the endpoint reference for each route's
+specific league, section, and identifier requirements; discover options with
+`sportskeeda_football_options` before selecting a football view. Editorial depth
+charts and news reports are not official roster announcements or live score feeds.
+Do not carry ESPN/SofaScore IDs into Sportskeeda.
+
+```sh
+scripts/crawlora.sh /sportskeeda/football-options
+```
+
+For FotMob player/football analysis use `fotmob-research`; for Flashscore or
+LiveScore match lookups use `multi-sport-match-research` when installed. The
+bundled helper here retains only the providers in its own endpoint reference.
