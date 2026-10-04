@@ -65,3 +65,23 @@ scripts/crawlora.sh /alt/market-trends | jq '.'
   times differ by platform. Say when a comparison is not apples-to-apples.
 - PSA price-guide and population fields are source-specific reference signals;
   they do not establish a card's current sale value or guarantee authenticity.
+
+## Retail catalog context
+
+PSAStore and PristineMarketplace expose storefront products and collections;
+Fanatics exposes sports-merchandise search and category/product detail. These
+are retail catalogs, distinct from PSA certification/price-guide evidence,
+Pristine Auction lots, and Fanatics Collect sold items. Discover collection
+handles or category URLs before retrieving products, and keep price, variant,
+stock status, and product condition separate from realized auction prices.
+PristineMarketplace search uses a fixed grid of at most 16 products per page
+even when a larger `limit` is requested. Do not infer complete coverage from a
+large requested limit. Reviews may describe the storefront, rather than the
+individual collectible. Merchandise availability does not prove authenticity
+or card rarity.
+
+```sh
+scripts/crawlora.sh /psastore/collections limit=10 page=1
+scripts/crawlora.sh /pristine-marketplace/search q="signed jersey" limit=16 page=1
+scripts/crawlora.sh /fanatics/categories
+```

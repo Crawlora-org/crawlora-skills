@@ -74,3 +74,19 @@ observed demand; trend claims require comparable dated snapshots and stable cove
 - Back off on `429`, retry transient `5xx` once, stop on `401`/`403`, and check
   application `code`. Stop on repeated pages; research does not apply to jobs or
   contact employers, and a snapshot request does not create ongoing monitoring.
+
+## Current search context
+
+For a current multi-employer search sample, use `google_jobs` separately from
+stored dataset counts. It calls POST `/google/jobs` with a flat JSON body, for
+example:
+
+```sh
+scripts/crawlora.sh -X POST /google/jobs '{"query":"software engineer","location":"San Francisco, CA","page":1}'
+```
+
+This is Google's aggregated job-search surface, distinct from Google's own
+careers site at `/google-jobs/search`. Returned snippets are discovery leads;
+verify the employer and posting before using them. Keep this bounded search
+sample separate from stored job-dataset denominators, refresh dates, and demand
+calculations. Do not infer a filled vacancy or absent demand from an empty result.

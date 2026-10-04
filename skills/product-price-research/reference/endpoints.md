@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**230 endpoints across 35 platform group(s).**
+**233 endpoints across 36 platform group(s).**
 
 ## Amazon (5)
 
@@ -1458,3 +1458,23 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sparkfun/search`
 - **What:** Search SparkFun products. Searches public SparkFun product data with pagination and dynamic facet filters. Each filter must be `attribute:value`; use values from the response's filters array.
 - **Params:** `filter` (array, optional) — Repeatable dynamic facet in attribute:value form; `page` (integer, optional) — One-based result page (1-100); `per_page` (integer, optional) — Products per page (1-24); `q` (string, **required**) — Product search query
+
+## AliExpress (3)
+
+### `aliexpress_reviews`
+
+- **HTTP:** `GET /aliexpress/reviews`
+- **What:** Get AliExpress product reviews. Returns one page of public reviews and rating statistics for a numeric AliExpress product id. AliExpress currently returns up to 20 review records per page.
+- **Params:** `page` (integer, optional) — 1-indexed review page (1-50), defaults to 1; `product_id` (string, **required**) — Numeric AliExpress product id
+
+### `aliexpress_search`
+
+- **HTTP:** `GET /aliexpress/search`
+- **What:** Search AliExpress products. Returns one page (up to 60 products) of public keyword search results with product ids, titles, links, images, prices, ratings, sold text, discount, SKU id, ship-from country, and store name when AliExpress lists them. Results can be sorted and filtered by price, free shipping, the Choice program, and product attributes; list the attribute values for a keyword with the search-filters endpoint. The search uses the anonymous US English/USD locale. Product-detail pages are currently unavailable through the supported HTTP profiles.
+- **Params:** `attr` (string, optional) — Attribute filter <attributeId>-<valueId>, from the search-filters endpoint for the same q; comma-separate up to 5 values, one per attribute group; `choice` (boolean, optional) — Only products in AliExpress's Choice program; `free_shipping` (boolean, optional) — Only free-shipping products; `max_price` (number, optional) — Maximum price in USD (0-1000000), not below min_price; `min_price` (number, optional) — Minimum price in USD (0-1000000); `page` (integer, optional) — 1-indexed result page (1-200), defaults to 1; `q` (string, **required**) — Free-text search keywords; `sort` (string, optional) — Sort order. Allowed values: best_match (default), orders, price_asc, price_desc
+
+### `aliexpress_search_filters`
+
+- **HTTP:** `GET /aliexpress/search-filters`
+- **What:** List AliExpress search filters. Returns every sort value and boolean filter the search endpoint accepts, plus the product-attribute filters (brand, color, style, and so on) AliExpress offers for the keyword, as ready-to-use attr values. Attribute filters differ per keyword, so call this with the same q as the search.
+- **Params:** `q` (string, **required**) — Free-text search keywords

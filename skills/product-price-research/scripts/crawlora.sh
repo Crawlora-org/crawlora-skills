@@ -73,6 +73,9 @@ case "$path" in
   /adidas/store) route_allowed=true ;;
   /adidas/stores) route_allowed=true ;;
   /adidas/suggest) route_allowed=true ;;
+  /aliexpress/reviews) route_allowed=true ;;
+  /aliexpress/search) route_allowed=true ;;
+  /aliexpress/search-filters) route_allowed=true ;;
   /amazon/charts) route_allowed=true ;;
   /amazon/charts/categories) route_allowed=true ;;
   /amazon/search) route_allowed=true ;;
@@ -322,6 +325,9 @@ route_method_regexes=(
   '^GET:/adidas/store$'
   '^GET:/adidas/stores$'
   '^GET:/adidas/suggest$'
+  '^GET:/aliexpress/reviews$'
+  '^GET:/aliexpress/search$'
+  '^GET:/aliexpress/search-filters$'
   '^GET:/amazon/charts$'
   '^GET:/amazon/charts/categories$'
   '^GET:/amazon/product/[^/]+$'

@@ -1,6 +1,6 @@
 ---
 name: news-media-research
-description: Researches public news from major international, US, business, and policy publishers through the Crawlora API — headlines, article text, search, live coverage, and section/topic archives — returning clean JSON. Use when the user wants source-specific coverage or article content without scraping pages directly.
+description: Researches public news from international, regional, business, technology, sports, science, and entertainment publishers through the Crawlora API — headlines, article text, search, live coverage, and section/topic archives — returning clean JSON. Use when the user wants source-specific coverage or article content without scraping pages directly.
 ---
 
 # News media research
@@ -59,3 +59,24 @@ scripts/crawlora.sh /foreignpolicy/live | jq '.'
   bounded feed as complete coverage or infer truth from headline agreement.
 - Quote sparingly and link the original article. Use `news-briefing-research`
   for cross-source comparison and uncertainty-aware synthesis.
+
+## Expanded publisher coverage
+
+The reference includes regional outlets and specialist technology, science,
+sports, entertainment, and business publishers in addition to the original
+international set. Search it for the requested outlet before choosing a tool:
+not every publisher has search, article, author, or discovery endpoints. Some
+only expose a public news list. Use only that outlet's returned section/category
+values and available routes; do not promise full article text from a headline
+or listing-only response. Publisher archive/page filters differ across outlets.
+
+```sh
+scripts/crawlora.sh /apnews/sections
+scripts/crawlora.sh /techcrunch/sections
+scripts/crawlora.sh /ndtv/sections
+```
+
+If HTTP succeeds but application `code` is an error, or content is challenged,
+empty, or partial, record what was actually retrieved. An unavailable article
+is not proof the story does not exist. Keep source URLs and timestamps and
+report bounded coverage. A section discovery result is not a complete archive.
