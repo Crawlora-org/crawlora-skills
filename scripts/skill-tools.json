@@ -1036,5 +1036,22 @@
     "rover_sitter_profile",
     "rover_trainer_search",
     "rover_trainer_profile"
+  ],
+  "topic-demand-validation": [
+    "google_suggest",
+    "google_trends_explore_interest_over_time",
+    "google_trends_explore_rising_queries",
+    "google_trends_explore_related_topics",
+    "google_trends_explore_interest_by_region",
+    "bing_search",
+    "brave_search",
+    "reddit_search",
+    "reddit_comments",
+    "tiktok_search",
+    "tiktok_comments",
+    "youtube_search",
+    "youtube_comments",
+    "youtube_transcript_languages",
+    "youtube_transcript"
   ]
 }

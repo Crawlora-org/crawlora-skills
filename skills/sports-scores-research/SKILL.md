@@ -17,6 +17,7 @@ stat pages.
 - "What's <player>'s stats this season?"
 - "Give me the boxscore / play-by-play for <game>."
 - "Head-to-head history between <team A> and <team B>."
+- "Explain the statistical story of a completed match using its event stats, lineup, and incidents."
 - League news, rankings/polls, or betting-odds snapshots (where exposed).
 - "What are the odds / spread / total for <game>?" or "what are the futures
   odds to win <league>?" (DraftKings Sportsbook).
@@ -90,6 +91,19 @@ scripts/crawlora.sh /draftkings/sportsbook/odds league_id=<league-id> | jq '.'
 Use `scripts/crawlora.sh` for all requests; it keeps the API key out of command-line arguments.
 
 
+~~~sh
+scripts/crawlora.sh /sofascore/search q="Arsenal Chelsea 2026-10-05"
+scripts/crawlora.sh /sofascore/event id=12345678
+scripts/crawlora.sh /sofascore/event-statistics id=12345678
+scripts/crawlora.sh /sofascore/event-lineups id=12345678
+scripts/crawlora.sh /sofascore/event-incidents id=12345678
+~~~
+
+Use the actual numeric event ID returned by search; the example ID above is a
+placeholder. Keep match statistics, incidents, lineups, and any odds snapshot
+as separate evidence. State when a stat is missing or its period/definition is
+unclear, and do not infer tactics or causation beyond the returned data.
+
 ## Endpoint reference
 
 See [`reference/endpoints.md`](reference/endpoints.md) for every ESPN,
@@ -102,6 +116,13 @@ SofaScore, MLB, Strava, and DraftKings Sportsbook endpoint this skill uses.
 - **Pre-game brief:** `/sofascore/event-h2h` (history) +
   `/draftkings/sportsbook/odds` or `/sofascore/event-odds` (market
   expectation) + both teams' `/sofascore/team-events` (recent form).
+- **Post-match performance brief:** resolve the event with `/sofascore/search`,
+  then compare `/sofascore/event`, `/sofascore/event-statistics`,
+  `/sofascore/event-lineups`, and `/sofascore/event-incidents`. Explain only
+  what the returned categories support; possession or shot totals alone do not
+  establish why a team won. Use event odds only when requested and label them as
+  a retrieved market snapshot, not archived pre-match odds unless the source
+  explicitly provides that timing.
 - **Season stat leaders:** `/mlb/league-stats` or `/espn/rankings` for
   top performers, then `/mlb/player-stats` / `/espn/athlete` for the detail.
 - **Roster/transaction watch:** `/mlb/team-roster` + `/mlb/transactions` to
