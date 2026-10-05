@@ -141,9 +141,15 @@ self-contained and do not require the broader bundles to be installed.
 | [`forecast-consensus-comparison`](skills/forecast-consensus-comparison) | Matched-proposition forecast divergence with rules, scales, price basis, and timestamps. | Polymarket, Kalshi, Metaculus |
 | [`sec-insider-transaction-analysis`](skills/sec-insider-transaction-analysis) | Classified Form 3/4/5 activity with date, owner, security, code, and cap reconciliation. | SEC live filings and stored insider history |
 | [`chain-store-footprint-analysis`](skills/chain-store-footprint-analysis) | Deduplicated observed branches, geographic overlap, amenities, and coverage gaps. | Starbucks live/dataset, McDonald's locator, Google Maps live/dataset |
+| [`app-privacy-disclosure-comparison`](skills/app-privacy-disclosure-comparison) | App privacy/data-safety/permission declaration matrices with identity and taxonomy boundaries. | App Store, Google Play |
+| [`game-price-history-research`](skills/game-price-history-research) | Observed Steam price ranges and current edition/store offers with currency and SKU scope. | Steam price/catalog dataset, live Steam, PlayStation live/dataset |
+| [`podcast-topic-landscape`](skills/podcast-topic-landscape) | Show-by-topic matrices from deduplicated episode metadata and bounded archives. | Apple Podcasts live/dataset, Spotify Podcasts |
+| [`broadcast-coverage-comparison`](skills/broadcast-coverage-comparison) | Station/show comparisons with channel, time-window, raw count, share, and airtime distinctions. | GDELT Television 2.0 AI |
+| [`business-complaint-pattern-analysis`](skills/business-complaint-pattern-analysis) | Complaint/response ledgers and sample-aware themes with reporting windows and missing lists. | BBB live complaints/profiles and stored business directory |
+| [`open-source-project-shortlisting`](skills/open-source-project-shortlisting) | Conditional project shortlists with requirement, version, maintenance, documentation, and license evidence. | GitHub and public project documentation |
 
-The repository contains **144 installable skills**. The Claude Code marketplace
-bundle includes **106 skills**; the narrower per-platform alternatives below remain
+The repository contains **150 installable skills**. The Claude Code marketplace
+bundle includes **112 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -233,6 +239,10 @@ node --test scripts/*.test.mjs   # helper and focused-selection tests
 ```
 
 ## Coverage review
+
+The [evidence workflow batch](audits/evidence-workflow-additions-2026-10-05.md)
+adds privacy disclosure, price history, podcast/broadcast coverage, complaint
+pattern, and open-source project comparisons.
 
 The [media and market workflow batch](audits/media-market-workflows-2026-10-05.md)
 adds books, box office, streaming offers, matched forecasts, insider transactions,
