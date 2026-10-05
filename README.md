@@ -147,9 +147,15 @@ self-contained and do not require the broader bundles to be installed.
 | [`broadcast-coverage-comparison`](skills/broadcast-coverage-comparison) | Station/show comparisons with channel, time-window, raw count, share, and airtime distinctions. | GDELT Television 2.0 AI |
 | [`business-complaint-pattern-analysis`](skills/business-complaint-pattern-analysis) | Complaint/response ledgers and sample-aware themes with reporting windows and missing lists. | BBB live complaints/profiles and stored business directory |
 | [`open-source-project-shortlisting`](skills/open-source-project-shortlisting) | Conditional project shortlists with requirement, version, maintenance, documentation, and license evidence. | GitHub and public project documentation |
+| [`mlb-statcast-player-comparison`](skills/mlb-statcast-player-comparison) | Board/role/season/qualification-aware player performance comparisons and metrics. | MLB, Baseball Savant |
+| [`cricket-player-team-comparison`](skills/cricket-player-team-comparison) | Format/table/context-specific records with innings, event denominators, and overs notation. | Cricinfo |
+| [`twitch-category-opportunity-research`](skills/twitch-category-opportunity-research) | Source-bounded live category concentration and content-planning hypotheses. | Twitch |
+| [`music-release-landscape`](skills/music-release-landscape) | Discography/release cohorts with primary/featured credits, edition grouping, and date precision. | Spotify |
+| [`nft-collection-liquidity-research`](skills/nft-collection-liquidity-research) | Observed depth/activity/holder comparisons with currencies, cumulative quantities, and eligibility limits. | OpenSea |
+| [`creator-membership-comparison`](skills/creator-membership-comparison) | Published benefit and billing matrices with active plans, currencies, and web/in-app distinctions. | Patreon, Substack |
 
-The repository contains **150 installable skills**. The Claude Code marketplace
-bundle includes **112 skills**; the narrower per-platform alternatives below remain
+The repository contains **156 installable skills**. The Claude Code marketplace
+bundle includes **118 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -239,6 +245,10 @@ node --test scripts/*.test.mjs   # helper and focused-selection tests
 ```
 
 ## Coverage review
+
+The [creator and sports workflow batch](audits/creator-sports-workflows-2026-10-05.md)
+adds baseball/cricket comparisons, Twitch category and music catalog landscapes,
+NFT liquidity snapshots, and creator membership offer comparisons.
 
 The [evidence workflow batch](audits/evidence-workflow-additions-2026-10-05.md)
 adds privacy disclosure, price history, podcast/broadcast coverage, complaint

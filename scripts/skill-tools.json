@@ -900,5 +900,73 @@
     "github_repo_contributors",
     "github_repo_languages",
     "web_scrape"
+  ],
+  "mlb-statcast-player-comparison": [
+    "mlb_discovery",
+    "mlb_search",
+    "mlb_player",
+    "mlb_player_stats",
+    "mlb_teams",
+    "mlb_statcast_expected",
+    "mlb_statcast_percentile",
+    "mlb_statcast_pitch_arsenal",
+    "mlb_statcast_batted_ball",
+    "mlb_statcast_pitch_movement",
+    "mlb_statcast_rolling",
+    "mlb_statcast_year_to_year"
+  ],
+  "cricket-player-team-comparison": [
+    "cricinfo_records_index",
+    "cricinfo_records",
+    "cricinfo_stats",
+    "cricinfo_teams",
+    "cricinfo_team",
+    "cricinfo_team_schedule",
+    "cricinfo_series",
+    "cricinfo_match",
+    "cricinfo_squads",
+    "cricinfo_rankings"
+  ],
+  "twitch-category-opportunity-research": [
+    "twitch_top_games",
+    "twitch_search",
+    "twitch_streams",
+    "twitch_channel",
+    "twitch_schedule",
+    "twitch_videos",
+    "twitch_clips"
+  ],
+  "music-release-landscape": [
+    "spotify_artists_search",
+    "spotify_albums_search",
+    "spotify_tracks_search",
+    "spotify_artist",
+    "spotify_artist_albums",
+    "spotify_album",
+    "spotify_album_tracks",
+    "spotify_track",
+    "spotify_artist_related"
+  ],
+  "nft-collection-liquidity-research": [
+    "opensea_chains",
+    "opensea_categories",
+    "opensea_search_collections",
+    "opensea_collection",
+    "opensea_collection_depth",
+    "opensea_collection_offers",
+    "opensea_collection_traits",
+    "opensea_collection_activity",
+    "opensea_collection_holders",
+    "opensea_collection_chart",
+    "opensea_collection_top_sales"
+  ],
+  "creator-membership-comparison": [
+    "patreon_explore",
+    "patreon_creator",
+    "patreon_creator_tiers",
+    "substack_search",
+    "substack_publication",
+    "substack_categories",
+    "substack_category"
   ]
 }
