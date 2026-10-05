@@ -129,9 +129,15 @@ self-contained and do not require the broader bundles to be installed.
 | [`newsletter-topic-landscape`](skills/newsletter-topic-landscape) | Publication-by-topic comparisons from bounded public editorial samples. | Substack |
 | [`football-player-comparison`](skills/football-player-comparison) | Role/competition/season-aware player statistics with minutes and metric denominators. | FotMob |
 | [`football-viewing-guide`](skills/football-viewing-guide) | Current seven-day broadcasts by market, fixture, timezone, and listed channel. | FotMob |
+| [`used-car-price-history-analysis`](skills/used-car-price-history-analysis) | Observed listing-price events and matched vehicles with temporal and crawl coverage limits. | Vehicle listing dataset; CarMax, Autotrader, Cars.com |
+| [`investor-fit-research`](skills/investor-fit-research) | Conditional firm/fund shortlists from public strategy and visible investment evidence. | PitchBook investor/fund/company datasets and public profiles |
+| [`developer-talent-discovery`](skills/developer-talent-discovery) | Role-specific developer shortlists with public repository and contribution evidence. | GitHub live tools and user dataset |
+| [`institutional-ownership-research`](skills/institutional-ownership-research) | Reported 13F concentration/overlap with period, truncation, class, and unit boundaries. | SEC filings and institutional positions dataset |
+| [`patent-landscape-analysis`](skills/patent-landscape-analysis) | Query-defined technology maps, family grouping, assignee reconciliation, and dated counts. | Google Patents, USPTO Patent Public Search |
+| [`flight-itinerary-comparison`](skills/flight-itinerary-comparison) | Matched flight offer shortlists with passenger, route, timing, and price-basis controls. | Agoda flights, Expedia departing-leg offers |
 
-The repository contains **132 installable skills**. The Claude Code marketplace
-bundle includes **94 skills**; the narrower per-platform alternatives below remain
+The repository contains **138 installable skills**. The Claude Code marketplace
+bundle includes **100 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -221,6 +227,10 @@ node --test scripts/*.test.mjs   # helper and focused-selection tests
 ```
 
 ## Coverage review
+
+The [next six research workflows](audits/research-workflow-additions-2026-10-05.md)
+add observed price histories, investor/developer shortlists, holdings and patent
+comparisons, and flight offer matching over the existing catalog.
 
 The [six workflow additions](audits/workflow-additions-2026-10-05.md) build on
 existing endpoints with focused tool selections and source-specific interpretation.

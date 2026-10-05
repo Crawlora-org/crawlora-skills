@@ -688,5 +688,68 @@
     "fotmob_search",
     "fotmob_matches",
     "fotmob_match"
+  ],
+  "used-car-price-history-analysis": [
+    "datasets_vehicle_listings_facets",
+    "datasets_vehicle_listings_search",
+    "datasets_vehicle_listings_item",
+    "datasets_vehicle_listings_price_history",
+    "carmax_search",
+    "carmax_vehicle",
+    "autotrader_search",
+    "autotrader_vehicle",
+    "carsdotcom_search",
+    "carsdotcom_vehicle"
+  ],
+  "investor-fit-research": [
+    "datasets_pitchbook_investors_facets",
+    "datasets_pitchbook_investors_search",
+    "datasets_pitchbook_investors_item",
+    "datasets_pitchbook_funds_facets",
+    "datasets_pitchbook_funds_search",
+    "datasets_pitchbook_funds_item",
+    "datasets_pitchbook_companies_facets",
+    "datasets_pitchbook_companies_search",
+    "datasets_pitchbook_companies_item",
+    "pitchbook_investor",
+    "pitchbook_fund",
+    "pitchbook_company"
+  ],
+  "developer-talent-discovery": [
+    "datasets_github_users_facets",
+    "datasets_github_users_search",
+    "datasets_github_users_item",
+    "github_search_users",
+    "github_search_repositories",
+    "github_user",
+    "github_user_events",
+    "github_user_pinned",
+    "github_user_repos",
+    "github_repo",
+    "github_repo_languages",
+    "github_repo_contributors"
+  ],
+  "institutional-ownership-research": [
+    "datasets_sec_institutional_positions_facets",
+    "datasets_sec_institutional_positions_search",
+    "sec_institutional_holdings",
+    "sec_company_submissions",
+    "sec_filing"
+  ],
+  "patent-landscape-analysis": [
+    "googlepatents_search",
+    "googlepatents_suggest",
+    "googlepatents_classification",
+    "googlepatents_detail",
+    "googlepatents_recent",
+    "googlepatents_coverage",
+    "usptoppubs_search",
+    "usptoppubs_detail"
+  ],
+  "flight-itinerary-comparison": [
+    "agoda_flights_search_locations",
+    "agoda_flights_search",
+    "agoda_flights_itinerary_amenities",
+    "expedia_flights_search"
   ]
 }
