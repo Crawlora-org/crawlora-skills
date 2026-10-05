@@ -153,9 +153,15 @@ self-contained and do not require the broader bundles to be installed.
 | [`music-release-landscape`](skills/music-release-landscape) | Discography/release cohorts with primary/featured credits, edition grouping, and date precision. | Spotify |
 | [`nft-collection-liquidity-research`](skills/nft-collection-liquidity-research) | Observed depth/activity/holder comparisons with currencies, cumulative quantities, and eligibility limits. | OpenSea |
 | [`creator-membership-comparison`](skills/creator-membership-comparison) | Published benefit and billing matrices with active plans, currencies, and web/in-app distinctions. | Patreon, Substack |
+| [`supply-chain-concentration-analysis`](skills/supply-chain-concentration-analysis) | Observed supplier/origin exposure with compatible periods, measures, and partial customs coverage. | ImportYeti and public company evidence |
+| [`job-posting-comparison`](skills/job-posting-comparison) | Advertised role matrices with requisition identity, requirement and compensation basis. | Jobs dataset, selected ATS boards, Indeed, public employer pages |
+| [`app-release-feedback-analysis`](skills/app-release-feedback-analysis) | Review-theme comparisons around documented releases with version/date attribution and sampling controls. | App Store, Google Play, stored app reviews |
+| [`youtube-content-gap-analysis`](skills/youtube-content-gap-analysis) | Sampled topic/format maps and content hypotheses supported by metadata and available captions. | YouTube |
+| [`company-identity-reconciliation`](skills/company-identity-reconciliation) | Scoped company/brand/registrant ID crosswalks with provenance, relationships, and unresolved matches. | Public domains, LinkedIn, SEC, employer records |
+| [`pet-care-provider-shortlisting`](skills/pet-care-provider-shortlisting) | Provider/service fit with starting-rate units, public experience evidence and unverified availability. | Rover sitters/walkers and dog trainers |
 
-The repository contains **156 installable skills**. The Claude Code marketplace
-bundle includes **118 skills**; the narrower per-platform alternatives below remain
+The repository contains **162 installable skills**. The Claude Code marketplace
+bundle includes **124 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -245,6 +251,10 @@ node --test scripts/*.test.mjs   # helper and focused-selection tests
 ```
 
 ## Coverage review
+
+The [decision workflow batch](audits/decision-workflow-additions-2026-10-05.md)
+adds supply-chain exposure, role comparisons, release feedback, content gap maps,
+company identity crosswalks, and pet-care provider shortlists.
 
 The [creator and sports workflow batch](audits/creator-sports-workflows-2026-10-05.md)
 adds baseball/cricket comparisons, Twitch category and music catalog landscapes,

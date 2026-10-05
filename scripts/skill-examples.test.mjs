@@ -23,7 +23,9 @@ const skills = ["fotmob-research", "multi-sport-match-research", "microsoft-stor
   "app-privacy-disclosure-comparison", "game-price-history-research", "podcast-topic-landscape",
   "broadcast-coverage-comparison", "business-complaint-pattern-analysis", "open-source-project-shortlisting",
   "mlb-statcast-player-comparison", "cricket-player-team-comparison", "twitch-category-opportunity-research",
-  "music-release-landscape", "nft-collection-liquidity-research", "creator-membership-comparison"];
+  "music-release-landscape", "nft-collection-liquidity-research", "creator-membership-comparison",
+  "supply-chain-concentration-analysis", "job-posting-comparison", "app-release-feedback-analysis",
+  "youtube-content-gap-analysis", "company-identity-reconciliation", "pet-care-provider-shortlisting"];
 
 test("changed workflow examples use allowed methods, routes, and real contract parameters", () => {
   const dir = mkdtempSync(join(tmpdir(), "crawlora-examples-"));
