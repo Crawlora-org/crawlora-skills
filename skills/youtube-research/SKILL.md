@@ -16,6 +16,7 @@ browser, no scraping.
 - "List this channel's recent videos / shorts / playlists."
 - "Search YouTube for …" or "what videos exist about …".
 - Building a transcript-based summary, sentiment, or research pipeline.
+- Comparing a bounded set of videos with timestamped transcript evidence.
 
 ## Setup (one-time)
 
@@ -36,6 +37,25 @@ browser, no scraping.
 5. **Discovery:** `/youtube/search?q=...` to find videos by keyword.
 
 Full endpoint list, methods, and params: [`reference/endpoints.md`](reference/endpoints.md).
+
+## Transcript-backed topic research
+
+For a topic brief, search first, deduplicate by video ID, and choose a bounded
+sample that reflects the requested date, language, and video types. Discover
+available transcript languages before fetching captions. Request JSON with
+timestamps for evidence extraction; tie each theme or claim to the actual
+caption segment and video URL. A caption or translation may mishear speech and
+does not independently verify factual claims. Report unavailable transcripts
+and keep search rank, view counts, and comment samples separate from demand.
+
+For a wider map of topic and format coverage across videos or channels, use
+youtube-content-gap-analysis when installed.
+
+~~~sh
+scripts/crawlora.sh /youtube/search q="home energy storage" type=video sort_by=relevance
+scripts/crawlora.sh /youtube/transcript/dQw4w9WgXcQ/languages
+scripts/crawlora.sh /youtube/transcript/dQw4w9WgXcQ format=json timestamps=true
+~~~
 
 ## Calling the API
 

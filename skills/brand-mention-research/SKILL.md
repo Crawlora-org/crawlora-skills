@@ -19,7 +19,11 @@ Preserve source IDs, URLs, retrieval times, and source dates where supplied.
 Produce a bounded mention brief for a brand, product, or campaign. Define the
 entity and aliases, competitors when requested, date window, languages/markets,
 platforms, and page budget before collecting. Common names need corroborating
-product, domain, handle, or contextual evidence to avoid false matches.
+product, domain, handle, or contextual evidence to avoid false matches. Start
+with a small sample for each query. If broad Reddit or platform search results
+are mostly unrelated, tighten the exact terms or select a relevant community;
+do not treat returned-result counts as mention volume or continue paging through
+a low-precision query.
 
 ## Collect and classify attributable mentions
 

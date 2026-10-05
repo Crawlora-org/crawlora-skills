@@ -27,11 +27,12 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured public data from **3,315** Crawlora MCP tools; teaches auth, credits, and the public-data catalog. | 459 public-data platform groups |
 | [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (130 tools) |
 | [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, AliExpress, Shopify and DTC brands, BigCommerce, Boots, CVS, Lazada, Otto, SparkFun, Tokopedia, Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, Walgreens (stores only), IKEA, Chewy |
-| [`youtube-research`](skills/youtube-research) | Transcripts, comments, video/channel metadata, search — no `yt-dlp`. | YouTube |
+| [`youtube-research`](skills/youtube-research) | Timestamped transcript evidence, comments, video/channel metadata, and search — no `yt-dlp`. | YouTube |
 | [`app-review-mining`](skills/app-review-mining) | App details, reviews, ratings, rankings, similar apps (ASO). | App Store, Google Play |
 | [`app-store-research`](skills/app-store-research) | Cross-store app and extension discovery, ratings, reviews, permissions, privacy, and release history. | Apple App Store, Google Play, Chrome Web Store |
 | [`sports-betting-research`](skills/sports-betting-research) | Time-stamped public sportsbook odds with schedule and game-status context. | DraftKings Sportsbook, ESPN, SofaScore |
 | [`serp-keyword-research`](skills/serp-keyword-research) | SERP snapshots, autocomplete keyword ideas, Google Trends. | Google, Bing, Brave, DuckDuckGo, Yahoo, Google Trends |
+| [`topic-demand-validation`](skills/topic-demand-validation) | Cross-check query phrasing, search trends, SERP competition, and a bounded social sample before testing a topic. | Google Suggest/Trends, Bing, Brave, Reddit, TikTok, YouTube |
 | [`finance-markets-research`](skills/finance-markets-research) | Stock quotes/financials, SEC filings & insider trades, congressional stock disclosures, crypto markets, VC/PE profiles. | Yahoo Finance, SEC EDGAR, Congress, CoinGecko, PitchBook |
 | [`crypto-market-research`](skills/crypto-market-research) | Coin discovery, market comparisons, global metrics, exchanges, categories, news, unlocks, and treasuries. | CoinGecko |
 | [`news-briefing-research`](skills/news-briefing-research) | Source-aware recent-news briefings, publisher comparisons, and coverage timelines. | GDELT, BBC, CNN, The Guardian, Yahoo News |
@@ -44,7 +45,7 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`travel-hotel-research`](skills/travel-hotel-research) | Hotel/flight/attraction search and reviews, short-term rentals, event tickets. | Booking.com, Expedia, Agoda, TripAdvisor, Trip.com, Airbnb, Accor, Hotels.com, Ticketmaster, TicketWeb |
 | [`travel-accommodation-research`](skills/travel-accommodation-research) | Cross-platform accommodation, host, property, flight, and activity research without booking actions. | Airbnb, Agoda, Hotels.com, Trip.com, Vrbo |
 | [`podcast-discovery-research`](skills/podcast-discovery-research) | Podcast show, episode, chart, ranking, and related-program discovery. | Apple Podcasts, Spotify Podcasts |
-| [`sports-scores-research`](skills/sports-scores-research) | Live scores, standings, rosters, player/team stats, boxscores, sportsbook odds, endurance routes. | ESPN, SofaScore, MLB, Strava, DraftKings Sportsbook, Cricinfo, Sportskeeda |
+| [`sports-scores-research`](skills/sports-scores-research) | Live scores, match-performance briefs, standings, player/team stats, boxscores, odds, endurance routes. | ESPN, SofaScore, MLB, Strava, DraftKings Sportsbook, Cricinfo, Sportskeeda |
 | [`twitch-research`](skills/twitch-research) | Channel profile/live status, streams by game, clips, VODs, search, top games, team rosters, VOD chat replay. | Twitch |
 | [`music-podcast-research`](skills/music-podcast-research) | Tracks/albums/artists/playlists, podcast shows/episodes, record pressings, SoundCloud track/user stats. | Spotify, Spotify Podcasts, Apple Podcasts, Discogs, SoundCloud |
 | [`book-research`](skills/book-research) | Book/author ratings and reviews, reading lists, audiobooks. | Goodreads, Apple Books |
@@ -160,8 +161,8 @@ self-contained and do not require the broader bundles to be installed.
 | [`company-identity-reconciliation`](skills/company-identity-reconciliation) | Scoped company/brand/registrant ID crosswalks with provenance, relationships, and unresolved matches. | Public domains, LinkedIn, SEC, employer records |
 | [`pet-care-provider-shortlisting`](skills/pet-care-provider-shortlisting) | Provider/service fit with starting-rate units, public experience evidence and unverified availability. | Rover sitters/walkers and dog trainers |
 
-The repository contains **162 installable skills**. The Claude Code marketplace
-bundle includes **124 skills**; the narrower per-platform alternatives below remain
+The repository contains **163 installable skills**. The Claude Code marketplace
+bundle includes **125 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -189,7 +190,8 @@ npx skills add github.com/Crawlora-org/crawlora-skills --skill youtube-research
 
 # several
 npx skills add github.com/Crawlora-org/crawlora-skills \
-  --skill product-price-research --skill serp-keyword-research
+  --skill product-price-research --skill serp-keyword-research \
+  --skill topic-demand-validation
 
 # everything
 npx skills add github.com/Crawlora-org/crawlora-skills --all
