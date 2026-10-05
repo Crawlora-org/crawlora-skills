@@ -20,6 +20,11 @@ Use Flashscore and LiveScore for fixtures, score snapshots, previews, and
 recaps. Choose the provider whose documented sport and match surfaces fit the
 request; both are optional sources, not a required double fetch.
 
+For a detailed post-match football performance report from SofaScore statistics,
+incidents, and lineups, use football-match-performance-analysis when installed.
+This skill remains focused on Flashscore/LiveScore identity, coverage, and
+provider reconciliation.
+
 ## Resolve the event and collect bounded evidence
 
 1. Discover accepted sports, competitions, seasons, stages, or calendar categories

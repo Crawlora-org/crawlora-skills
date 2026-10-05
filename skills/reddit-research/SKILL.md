@@ -18,6 +18,8 @@ Reddit scraping or unofficial client libraries.
 - "What has <username> posted or commented recently?"
 - "What's trending on Reddit today?" or "What's the sentiment in r/<subreddit>?"
 - Brand-mention monitoring, community research, or competitor sentiment tracking on Reddit.
+- For stock-specific Reddit discussion tied to a matched market window, use
+  reddit-stock-sentiment-research when installed.
 
 ## Setup (one-time)
 
