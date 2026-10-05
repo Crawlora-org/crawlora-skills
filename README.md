@@ -135,9 +135,15 @@ self-contained and do not require the broader bundles to be installed.
 | [`institutional-ownership-research`](skills/institutional-ownership-research) | Reported 13F concentration/overlap with period, truncation, class, and unit boundaries. | SEC filings and institutional positions dataset |
 | [`patent-landscape-analysis`](skills/patent-landscape-analysis) | Query-defined technology maps, family grouping, assignee reconciliation, and dated counts. | Google Patents, USPTO Patent Public Search |
 | [`flight-itinerary-comparison`](skills/flight-itinerary-comparison) | Matched flight offer shortlists with passenger, route, timing, and price-basis controls. | Agoda flights, Expedia departing-leg offers |
+| [`book-market-positioning`](skills/book-market-positioning) | Comparable-title and reception maps with work/edition and sample distinctions. | Goodreads live/catalog datasets, Apple Books, Audible |
+| [`film-box-office-comparison`](skills/film-box-office-comparison) | Theatrical gross comparisons with title/release, estimate, territory, and period controls. | Box Office Mojo live charts and dataset |
+| [`streaming-availability-comparison`](skills/streaming-availability-comparison) | Country/provider/title/episode offer matrices with viewing-condition gaps. | JustWatch |
+| [`forecast-consensus-comparison`](skills/forecast-consensus-comparison) | Matched-proposition forecast divergence with rules, scales, price basis, and timestamps. | Polymarket, Kalshi, Metaculus |
+| [`sec-insider-transaction-analysis`](skills/sec-insider-transaction-analysis) | Classified Form 3/4/5 activity with date, owner, security, code, and cap reconciliation. | SEC live filings and stored insider history |
+| [`chain-store-footprint-analysis`](skills/chain-store-footprint-analysis) | Deduplicated observed branches, geographic overlap, amenities, and coverage gaps. | Starbucks live/dataset, McDonald's locator, Google Maps live/dataset |
 
-The repository contains **138 installable skills**. The Claude Code marketplace
-bundle includes **100 skills**; the narrower per-platform alternatives below remain
+The repository contains **144 installable skills**. The Claude Code marketplace
+bundle includes **106 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -227,6 +233,10 @@ node --test scripts/*.test.mjs   # helper and focused-selection tests
 ```
 
 ## Coverage review
+
+The [media and market workflow batch](audits/media-market-workflows-2026-10-05.md)
+adds books, box office, streaming offers, matched forecasts, insider transactions,
+and chain-store footprint comparisons.
 
 The [next six research workflows](audits/research-workflow-additions-2026-10-05.md)
 add observed price histories, investor/developer shortlists, holdings and patent
