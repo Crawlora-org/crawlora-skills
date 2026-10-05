@@ -836,5 +836,69 @@
     "datasets_google_map_nearby",
     "google_map_search",
     "google_map_place"
+  ],
+  "app-privacy-disclosure-comparison": [
+    "appstore_search",
+    "appstore_app",
+    "appstore_privacy",
+    "googleplay_search",
+    "googleplay_app",
+    "googleplay_datasafety",
+    "googleplay_permissions"
+  ],
+  "game-price-history-research": [
+    "datasets_steam_games_facets",
+    "datasets_steam_games_search",
+    "datasets_steam_games_item",
+    "datasets_steam_prices_search",
+    "steam_app",
+    "steam_items",
+    "datasets_playstation_games_facets",
+    "datasets_playstation_games_search",
+    "datasets_playstation_games_item",
+    "playstation_search",
+    "playstation_product",
+    "playstation_concept"
+  ],
+  "podcast-topic-landscape": [
+    "datasets_apple_podcasts_shows_facets",
+    "datasets_apple_podcasts_shows_search",
+    "datasets_apple_podcasts_shows_item",
+    "apple_podcasts_search",
+    "apple_podcasts_episodes_search",
+    "apple_podcasts_show",
+    "apple_podcasts_show_episodes",
+    "spotify_podcasts_search",
+    "spotify_podcasts_show",
+    "spotify_podcasts_show_episodes",
+    "spotify_podcasts_episode"
+  ],
+  "broadcast-coverage-comparison": [
+    "gdelt_tv_stationdetails",
+    "gdelt_tv_search",
+    "gdelt_tv_stationchart",
+    "gdelt_tv_showchart",
+    "gdelt_tv_timeline",
+    "gdelt_tv_concept_entities",
+    "gdelt_tv_visual_entities",
+    "gdelt_tv_wordcloud"
+  ],
+  "business-complaint-pattern-analysis": [
+    "datasets_bbb_businesses_facets",
+    "datasets_bbb_businesses_search",
+    "datasets_bbb_businesses_item",
+    "bbb_search",
+    "bbb_business",
+    "bbb_business_complaints",
+    "bbb_business_more_info",
+    "bbb_business_reviews"
+  ],
+  "open-source-project-shortlisting": [
+    "github_search_repositories",
+    "github_repo",
+    "github_repo_releases",
+    "github_repo_contributors",
+    "github_repo_languages",
+    "web_scrape"
   ]
 }
