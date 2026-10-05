@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "crawlora-skills",
-      "description": "94 Agent Skills for structured web research through the Crawlora REST API, including relocation cost comparisons, brand mention briefs, congressional disclosures, newsletter topic landscapes, football player comparisons, football viewing guides, provider directory research, prescription-price comparisons, rental housing research, FotMob football research, multi-sport match research, Microsoft Store and Xbox comparisons, deal discovery, Substack publications and Notes, Google Finance snapshots, company rankings, sports betting research, news briefings, publisher coverage, collectibles market research, luxury resale, live-event ticketing, dining demand, startup launch screening, podcast discovery, app-store research, travel accommodation comparisons, entertainment discovery, crypto market snapshots, local business reputation, Google Maps lookups, local-business prospecting, local competitive landscapes, influencer discovery, journalist and media research, TikTok ad comparisons, TikTok trend research, TikTok creator research, competitor intelligence, technology prospecting, customer feedback analysis, Google Trends, SEC filings, earnings-event briefs, supplier sourcing, podcast guest research, startup acquisitions, housing markets, app opportunities, Chrome extensions, Steam niches, crowdfunding campaigns, event and venue comparisons, hiring-demand analysis, restaurant menu benchmarking, retail assortment gaps, short-term rental markets, used-car market comparisons, software vendor shortlisting, and focused platform research across commerce, social, jobs, finance, travel, media, and more. Additional per-platform skills are available through the skills CLI.",
+      "description": "100 Agent Skills for structured web research through the Crawlora REST API, including used-car price histories, investor fit, developer talent discovery, institutional holdings, patent landscapes, flight itinerary comparisons, relocation cost comparisons, brand mention briefs, congressional disclosures, newsletter topic landscapes, football player comparisons, football viewing guides, provider directory research, prescription-price comparisons, rental housing research, FotMob football research, multi-sport match research, Microsoft Store and Xbox comparisons, deal discovery, Substack publications and Notes, Google Finance snapshots, company rankings, sports betting research, news briefings, publisher coverage, collectibles market research, luxury resale, live-event ticketing, dining demand, startup launch screening, podcast discovery, app-store research, travel accommodation comparisons, entertainment discovery, crypto market snapshots, local business reputation, Google Maps lookups, local-business prospecting, local competitive landscapes, influencer discovery, journalist and media research, TikTok ad comparisons, TikTok trend research, TikTok creator research, competitor intelligence, technology prospecting, customer feedback analysis, Google Trends, SEC filings, earnings-event briefs, supplier sourcing, podcast guest research, startup acquisitions, housing markets, app opportunities, Chrome extensions, Steam niches, crowdfunding campaigns, event and venue comparisons, hiring-demand analysis, restaurant menu benchmarking, retail assortment gaps, short-term rental markets, used-car market comparisons, software vendor shortlisting, and focused platform research across commerce, social, jobs, finance, travel, media, and more. Additional per-platform skills are available through the skills CLI.",
       "source": "./",
       "homepage": "https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills",
       "repository": "https://github.com/Crawlora-org/crawlora-skills",
@@ -118,7 +118,13 @@
         "./skills/congressional-disclosure-research",
         "./skills/newsletter-topic-landscape",
         "./skills/football-player-comparison",
-        "./skills/football-viewing-guide"
+        "./skills/football-viewing-guide",
+        "./skills/used-car-price-history-analysis",
+        "./skills/investor-fit-research",
+        "./skills/developer-talent-discovery",
+        "./skills/institutional-ownership-research",
+        "./skills/patent-landscape-analysis",
+        "./skills/flight-itinerary-comparison"
       ]
     }
   ]
