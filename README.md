@@ -45,7 +45,8 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | [`travel-hotel-research`](skills/travel-hotel-research) | Hotel/flight/attraction search and reviews, short-term rentals, event tickets. | Booking.com, Expedia, Agoda, TripAdvisor, Trip.com, Airbnb, Accor, Hotels.com, Ticketmaster, TicketWeb |
 | [`travel-accommodation-research`](skills/travel-accommodation-research) | Cross-platform accommodation, host, property, flight, and activity research without booking actions. | Airbnb, Agoda, Hotels.com, Trip.com, Vrbo |
 | [`podcast-discovery-research`](skills/podcast-discovery-research) | Podcast show, episode, chart, ranking, and related-program discovery. | Apple Podcasts, Spotify Podcasts |
-| [`sports-scores-research`](skills/sports-scores-research) | Live scores, match-performance briefs, standings, player/team stats, boxscores, odds, endurance routes. | ESPN, SofaScore, MLB, Strava, DraftKings Sportsbook, Cricinfo, Sportskeeda |
+| [`sports-scores-research`](skills/sports-scores-research) | Live scores, standings, rosters, player/team stats, boxscores, odds, endurance routes. | ESPN, SofaScore, MLB, Strava, DraftKings Sportsbook, Cricinfo, Sportskeeda |
+| [`football-match-performance-analysis`](skills/football-match-performance-analysis) | Sourced post-match football/soccer performance reports from SofaScore event statistics, incidents, and lineups. | SofaScore |
 | [`twitch-research`](skills/twitch-research) | Channel profile/live status, streams by game, clips, VODs, search, top games, team rosters, VOD chat replay. | Twitch |
 | [`music-podcast-research`](skills/music-podcast-research) | Tracks/albums/artists/playlists, podcast shows/episodes, record pressings, SoundCloud track/user stats. | Spotify, Spotify Podcasts, Apple Podcasts, Discogs, SoundCloud |
 | [`book-research`](skills/book-research) | Book/author ratings and reviews, reading lists, audiobooks. | Goodreads, Apple Books |
@@ -126,6 +127,7 @@ self-contained and do not require the broader bundles to be installed.
 | [`software-vendor-shortlisting`](skills/software-vendor-shortlisting) | Requirements-based vendor shortlists, pricing scenarios, and evidence-led demo questions. | Capterra, Product Hunt, Bing, official vendor websites |
 | [`relocation-cost-comparison`](skills/relocation-cost-comparison) | Household expense baskets and city comparisons with explicit currencies and housing context. | Numbeo, US housing dataset |
 | [`brand-mention-research`](skills/brand-mention-research) | Disambiguated, deduplicated mention evidence and sample-aware reputation briefs. | Reddit, TikTok, YouTube |
+| [`reddit-stock-sentiment-research`](skills/reddit-stock-sentiment-research) | Bounded Reddit investor discussion with optional same-window market-price context. | Reddit, Yahoo Finance |
 | [`congressional-disclosure-research`](skills/congressional-disclosure-research) | Filing inventories and supported Senate transaction evidence with dates, owners, and ranges preserved. | House/Senate disclosure index; Senate HTML reports |
 | [`newsletter-topic-landscape`](skills/newsletter-topic-landscape) | Publication-by-topic comparisons from bounded public editorial samples. | Substack |
 | [`football-player-comparison`](skills/football-player-comparison) | Role/competition/season-aware player statistics with minutes and metric denominators. | FotMob |
@@ -161,8 +163,8 @@ self-contained and do not require the broader bundles to be installed.
 | [`company-identity-reconciliation`](skills/company-identity-reconciliation) | Scoped company/brand/registrant ID crosswalks with provenance, relationships, and unresolved matches. | Public domains, LinkedIn, SEC, employer records |
 | [`pet-care-provider-shortlisting`](skills/pet-care-provider-shortlisting) | Provider/service fit with starting-rate units, public experience evidence and unverified availability. | Rover sitters/walkers and dog trainers |
 
-The repository contains **163 installable skills**. The Claude Code marketplace
-bundle includes **125 skills**; the narrower per-platform alternatives below remain
+The repository contains **165 installable skills**. The Claude Code marketplace
+bundle includes **127 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -191,7 +193,9 @@ npx skills add github.com/Crawlora-org/crawlora-skills --skill youtube-research
 # several
 npx skills add github.com/Crawlora-org/crawlora-skills \
   --skill product-price-research --skill serp-keyword-research \
-  --skill topic-demand-validation
+  --skill topic-demand-validation \
+  --skill football-match-performance-analysis \
+  --skill reddit-stock-sentiment-research
 
 # everything
 npx skills add github.com/Crawlora-org/crawlora-skills --all

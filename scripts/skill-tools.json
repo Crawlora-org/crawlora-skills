@@ -1053,5 +1053,26 @@
     "youtube_comments",
     "youtube_transcript_languages",
     "youtube_transcript"
+  ],
+  "football-match-performance-analysis": [
+    "sofascore_search",
+    "sofascore_event",
+    "sofascore_event_statistics",
+    "sofascore_event_incidents",
+    "sofascore_event_lineups",
+    "sofascore_event_h2h",
+    "sofascore_event_odds",
+    "sofascore_team_events"
+  ],
+  "reddit-stock-sentiment-research": [
+    "yahoo_finance_search",
+    "yahoo_finance_ticker_info",
+    "yahoo_finance_ticker_quote",
+    "yahoo_finance_ticker_history",
+    "yahoo_finance_ticker_news",
+    "reddit_search",
+    "reddit_post",
+    "reddit_comments",
+    "reddit_subreddit_posts"
   ]
 }

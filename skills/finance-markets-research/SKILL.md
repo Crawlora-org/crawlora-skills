@@ -16,6 +16,8 @@ JSON from the Crawlora API — no scraping finance sites or parsing 10-Ks by han
 - "What's <coin>'s market cap / price / trending right now?"
 - "Give me a profile of <VC firm / private company / fund / LP>."
 - Stock screening, earnings calendars, sector/industry overviews.
+- For sampled Reddit discussion around a ticker alongside same-window price
+  context, use reddit-stock-sentiment-research when installed.
 
 ## Setup (one-time)
 
