@@ -52,7 +52,10 @@ test("new workflows cover their complete published surface without importing mix
     "rental-housing-research": ["StreetEasy", "Greystar"],
   };
   for (const [skill, allowed] of Object.entries(groups)) {
-    assert.deepEqual([...selections[skill]].sort(), catalog.filter(tool => allowed.includes(tool._http.group)).map(tool => tool.name).sort(), skill);
+    const expected = skill === "prescription-price-research"
+      ? ["goodrx_drugs", "goodrx_drug_options", "goodrx_drug_prices"]
+      : catalog.filter(tool => allowed.includes(tool._http.group)).map(tool => tool.name).sort();
+    assert.deepEqual([...selections[skill]].sort(), expected.sort(), skill);
   }
   assert.deepEqual([...selections["google-finance-research"]].sort(), catalog.filter(tool => tool._http.path.startsWith("/google/finance/")).map(tool => tool.name).sort());
 });

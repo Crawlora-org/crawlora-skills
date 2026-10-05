@@ -56,26 +56,9 @@ esac
 # segment; unlike a case '*', [^/]+ cannot consume another slash.
 route_allowed=false
 case "$path" in
-  /goodrx/answer) route_allowed=true ;;
-  /goodrx/answers) route_allowed=true ;;
-  /goodrx/brands) route_allowed=true ;;
-  /goodrx/class) route_allowed=true ;;
-  /goodrx/classes) route_allowed=true ;;
-  /goodrx/comparison) route_allowed=true ;;
-  /goodrx/comparisons) route_allowed=true ;;
-  /goodrx/condition) route_allowed=true ;;
-  /goodrx/condition-drugs) route_allowed=true ;;
-  /goodrx/conditions) route_allowed=true ;;
-  /goodrx/drug-guide) route_allowed=true ;;
-  /goodrx/drug-guides) route_allowed=true ;;
-  /goodrx/drug-info) route_allowed=true ;;
   /goodrx/drug-options) route_allowed=true ;;
   /goodrx/drug-prices) route_allowed=true ;;
   /goodrx/drugs) route_allowed=true ;;
-  /goodrx/health-article) route_allowed=true ;;
-  /goodrx/health-articles) route_allowed=true ;;
-  /goodrx/health-topics) route_allowed=true ;;
-  /goodrx/pet-medications) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(

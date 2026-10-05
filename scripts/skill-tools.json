@@ -596,26 +596,9 @@
     "healthgrades_top_searches"
   ],
   "prescription-price-research": [
-    "goodrx_answer",
-    "goodrx_answers",
-    "goodrx_brands",
-    "goodrx_class",
-    "goodrx_classes",
-    "goodrx_comparison",
-    "goodrx_comparisons",
-    "goodrx_condition",
-    "goodrx_condition_drugs",
-    "goodrx_conditions",
-    "goodrx_drug_guide",
-    "goodrx_drug_guides",
-    "goodrx_drug_info",
-    "goodrx_drug_options",
-    "goodrx_drug_prices",
     "goodrx_drugs",
-    "goodrx_health_article",
-    "goodrx_health_articles",
-    "goodrx_health_topics",
-    "goodrx_pet_medications"
+    "goodrx_drug_options",
+    "goodrx_drug_prices"
   ],
   "rental-housing-research": [
     "greystar_article",

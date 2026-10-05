@@ -161,7 +161,7 @@ test("ClawHub sync invokes the intended CLI and fails closed on old Node", () =>
 });
 
 test("flagged marketplace skills declare their helper scope and explain data flow", () => {
-  for (const name of ["luxury-resale-research", "shopify-research", "linkedin-research"]) {
+  for (const name of ["luxury-resale-research", "shopify-research", "linkedin-research", "prescription-price-research"]) {
     const skill = readFileSync(join(SKILLS_DIR, name, "SKILL.md"), "utf8");
     const normalized = skill.replace(/\s+/g, " ");
     const frontmatter = skill.match(/^---\n([\s\S]*?)\n---/);
@@ -174,8 +174,14 @@ test("flagged marketplace skills declare their helper scope and explain data flo
     assert.doesNotMatch(frontmatter[1], /Bash\(\*\)/, `${name}: no unrestricted shell grant`);
     assert.match(normalized, /reads `CRAWLORA_API_KEY` and sends it as an `x-api-key` header over HTTPS to `api\.crawlora\.net`/);
     assert.match(normalized, /mode-600 curl config under `TMPDIR` and removes it when the command exits/);
-    assert.match(normalized, /does not inspect other environment variables, enumerate files, install software, or run with elevated privileges/);
+    assert.match(normalized, /does not (?:inspect other environment variables, enumerate files|enumerate environment variables or files), install software, or run with elevated privileges/);
   }
+  const prescription = readFileSync(join(SKILLS_DIR, "prescription-price-research", "SKILL.md"), "utf8");
+  const normalizedPrescription = prescription.replace(/\s+/g, " ");
+  assert.match(normalizedPrescription, /reads `CRAWLORA_API_KEY` and sends it as an `x-api-key` header over HTTPS to `api\.crawlora\.net`/);
+  assert.match(normalizedPrescription, /reads `TMPDIR` only to choose a temporary config location/);
+  assert.match(normalizedPrescription, /three read-only GoodRx price routes/);
+  assert.doesNotMatch(normalizedPrescription, /condition routes|health articles|drug guide|pet medications/);
   const linkedin = readFileSync(join(SKILLS_DIR, "linkedin-research", "SKILL.md"), "utf8");
   const normalizedLinkedin = linkedin.replace(/\s+/g, " ");
   assert.match(normalizedLinkedin, /five documented, allowlisted Crawlora routes/);
