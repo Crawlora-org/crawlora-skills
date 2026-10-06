@@ -62,6 +62,8 @@ case "$path" in
   /greystar/markets) route_allowed=true ;;
   /greystar/newsroom) route_allowed=true ;;
   /greystar/search) route_allowed=true ;;
+  /greystar/unit-locations) route_allowed=true ;;
+  /greystar/units) route_allowed=true ;;
   /streeteasy/areas) route_allowed=true ;;
   /streeteasy/market-data/catalog) route_allowed=true ;;
   /streeteasy/market-data/indices) route_allowed=true ;;

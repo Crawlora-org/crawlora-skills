@@ -13,8 +13,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_suggest`
 
 - **HTTP:** `GET /google/suggest`
-- **What:** Suggest Google search queries. Returns Google autosuggest query completions from the public unauthenticated suggest JSON endpoint.
-- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 10, clamped to 1..12; `country` (string, optional) — Google result country; defaults to us; `lang` (string, optional) — Google UI language; defaults to en; `q` (string, **required**) — Search query prefix
+- **What:** Suggest Google search queries. Returns Google autosuggest query completions from the public unauthenticated suggest JSON endpoint. `source` selects the web, YouTube, or shopping suggestion list, and `rich=true` adds a type, relevance score, and short description to each suggestion.
+- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 10, clamped to 1..12; `country` (string, optional) — Google result country; defaults to us; `lang` (string, optional) — Google UI language; defaults to en; `q` (string, **required**) — Search query prefix; `rich` (boolean, optional) — Add Google's type, relevance score, and description to each suggestion; defaults to false; `source` (string, optional) — Suggestion source; defaults to web
 
 ### `google_trends_explore_interest_by_region`
 
