@@ -1,6 +1,7 @@
 ---
 name: reddit-research
-description: Researches Reddit via the Crawlora API — subreddit posts/comments/about, a single post plus its comment thread, keyword search, user post/comment history, domain-linked posts, and hot/new/rising/top trends — returning clean JSON. Use when the user wants community sentiment, a post's discussion, a user's Reddit history, or trending topics on a subreddit or across Reddit, instead of scraping Reddit or using an unofficial client.
+description: Researches public Reddit posts, comments, communities, user history, and trends through the Crawlora API. It also supports explicitly requested buying-intent lead discovery that scores public posts. Use for community research, sentiment, trends, or a clearly requested lead search; do not infer sensitive traits or target people on that basis.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Reddit research
@@ -9,6 +10,23 @@ Look up subreddit posts and comments, a single post's full comment thread,
 keyword search results, a public user's post/comment history, and
 hot/new/rising/top trends — all as normalized JSON from the Crawlora API, no
 Reddit scraping or unofficial client libraries.
+
+## Tool scope and data flow
+
+The optional shell helper is the only command this skill asks to run. It makes
+GET requests only to the documented, allowlisted Crawlora routes. When invoked,
+it reads `CRAWLORA_API_KEY` and sends it as an `x-api-key` header over HTTPS to
+`api.crawlora.net`; it does not send the key to Reddit. It briefly writes a
+mode-600 curl config under `TMPDIR` and removes it when the command exits. It
+does not inspect other environment variables, enumerate files, install software,
+or run with elevated privileges. Queries, subreddit/user identifiers, and
+requested post targets are sent to the Crawlora API; avoid confidential or
+sensitive investigation terms.
+
+The `/reddit/leads` route is a distinct, user-requested workflow: it ranks
+public posts by product/service buying intent. Use it only when the user asks
+for lead discovery, describe that post-level scoring in the output, and do not
+infer sensitive traits or rank people for high-impact decisions.
 
 ## When to use this skill
 
@@ -65,6 +83,9 @@ scripts/crawlora.sh /reddit/comments/1abcxyz sort=top limit=50 | jq '.'
 # User history + trends:
 scripts/crawlora.sh /reddit/user/spez/posts | jq '.'
 scripts/crawlora.sh /reddit/trends sort=rising | jq '.'
+
+# Explicit buying-intent lead discovery from public posts:
+scripts/crawlora.sh /reddit/leads q="looking for a project management tool" | jq '.'
 ```
 
 Use `scripts/crawlora.sh` for all requests; it keeps the API key out of command-line arguments.

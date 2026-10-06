@@ -161,7 +161,7 @@ test("ClawHub sync invokes the intended CLI and fails closed on old Node", () =>
 });
 
 test("flagged marketplace skills declare their helper scope and explain data flow", () => {
-  for (const name of ["luxury-resale-research", "shopify-research", "linkedin-research", "prescription-price-research"]) {
+  for (const name of ["luxury-resale-research", "shopify-research", "linkedin-research", "prescription-price-research", "reddit-research", "social-media-research", "sports-scores-research"]) {
     const skill = readFileSync(join(SKILLS_DIR, name, "SKILL.md"), "utf8");
     const normalized = skill.replace(/\s+/g, " ");
     const frontmatter = skill.match(/^---\n([\s\S]*?)\n---/);
@@ -188,4 +188,14 @@ test("flagged marketplace skills declare their helper scope and explain data flo
   assert.match(normalizedLinkedin, /product-category discovery/);
   assert.match(normalizedLinkedin, /public product-directory search by keyword or category/);
   assert.doesNotMatch(normalizedLinkedin, /no search or discovery endpoint is available/);
+
+  const reddit = readFileSync(join(SKILLS_DIR, "reddit-research", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.match(reddit, /buying-intent lead discovery/);
+  assert.match(reddit, /only when the user asks for lead discovery/);
+  const social = readFileSync(join(SKILLS_DIR, "social-media-research", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.match(social, /Facebook Marketplace listings/);
+  assert.match(social, /only for an explicit lead-discovery request/);
+  const sports = readFileSync(join(SKILLS_DIR, "sports-scores-research", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.match(sports, /Cricinfo, and Sportskeeda/);
+  assert.match(sports, /location-sensitive training patterns/);
 });
