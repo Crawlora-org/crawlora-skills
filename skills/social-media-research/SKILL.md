@@ -1,6 +1,7 @@
 ---
 name: social-media-research
-description: Researches social-media profiles, posts, and engagement across Instagram, TikTok, Threads, Bluesky, X, Pinterest, LinkedIn, Facebook, Reddit, Bilibili, and Patreon via the Crawlora API, returning clean JSON. Use when the user wants a public profile's stats, a post's content/engagement, a platform search, trending topics, or social listening/competitor research — instead of scraping each app.
+description: Researches public profiles, posts, trends, and Facebook Marketplace listings across Instagram, TikTok, Threads, Bluesky, X, Pinterest, LinkedIn, Facebook, Reddit, Bilibili, and Patreon through the Crawlora API. It also supports explicitly requested Reddit buying-intent lead discovery. Use for public social listening, or a clearly requested listings/lead search; avoid sensitive targeting.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Social media research
@@ -8,6 +9,23 @@ description: Researches social-media profiles, posts, and engagement across Inst
 Look up public profiles, posts, and engagement, run keyword/hashtag search,
 and track trending topics across eleven social platforms — all as normalized
 JSON from the Crawlora API, no app scraping or unofficial client libraries.
+
+## Tool scope and data flow
+
+The optional shell helper is the only command this skill asks to run. It makes
+GET requests only to the documented, allowlisted Crawlora routes. When invoked,
+it reads `CRAWLORA_API_KEY` and sends it as an `x-api-key` header over HTTPS to
+`api.crawlora.net`; it does not send the key to social platforms. It briefly
+writes a mode-600 curl config under `TMPDIR` and removes it when the command
+exits. It does not inspect other environment variables, enumerate files, install
+software, or run with elevated privileges. Search terms, public handles, URLs,
+and other requested targets are sent to Crawlora; do not submit confidential
+investigations or sensitive personal data.
+
+The Facebook Marketplace route returns public listings, not social posts. The
+Reddit leads route ranks public posts for product/service buying intent; use it
+only for an explicit lead-discovery request, disclose the post-level scoring,
+and do not infer sensitive traits or target people for high-impact decisions.
 
 ## When to use this skill
 

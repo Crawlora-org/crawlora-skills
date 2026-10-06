@@ -1,6 +1,7 @@
 ---
 name: sports-scores-research
-description: Pulls live scores, standings, rosters, player/team stats, and betting odds via the Crawlora API — ESPN (most sports/leagues), SofaScore (global soccer + more), MLB's own stats API, Strava (routes, clubs, challenges), and DraftKings Sportsbook (moneyline/spread/total odds, futures, live events) — returning clean JSON. Use when the user wants a live scoreboard, a team or player's stats, league standings, a game's boxscore/play-by-play, head-to-head history, sportsbook odds, or an endurance-sport route/club.
+description: Pulls sports scores, standings, rosters, player/team stats, public sports news, editorial, wiki/video content, and betting odds through the Crawlora API — ESPN, SofaScore, MLB, Strava, DraftKings Sportsbook, Cricinfo, and Sportskeeda. Use for scores/stats or explicitly requested public sports-media research; Strava routes and clubs can reveal location-sensitive patterns.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Sports & athletics research
@@ -9,6 +10,24 @@ Pull live scoreboards, standings, rosters, player/team stats, sportsbook
 odds, and endurance-sport routes/clubs across five sports-data sources as
 normalized JSON from the Crawlora API — no scraping scoreboard widgets or
 stat pages.
+
+## Tool scope and data flow
+
+The optional shell helper is the only command this skill asks to run. It makes
+GET requests only to the documented, allowlisted Crawlora routes. When invoked,
+it reads `CRAWLORA_API_KEY` and sends it as an `x-api-key` header over HTTPS to
+`api.crawlora.net`; it does not send the key to ESPN, SofaScore, Strava, or
+other sports sources. It briefly writes a mode-600 curl config under `TMPDIR`
+and removes it when the command exits. It does not inspect other environment
+variables, enumerate files, install software, or run with elevated privileges.
+Queries, public event/player/team identifiers, and requested routes are sent to
+Crawlora; avoid confidential research targets.
+
+In addition to score/stat endpoints, this skill includes public sports editorial,
+articles, wikis, quizzes, and video surfaces from Cricinfo and Sportskeeda.
+Use those sources only when relevant to the user's request. Strava route and
+club lookups can expose location-sensitive training patterns; do not use them
+to infer someone's home, routine, or sensitive location history.
 
 ## When to use this skill
 
@@ -133,10 +152,14 @@ SofaScore, MLB, Strava, and DraftKings Sportsbook endpoint this skill uses.
   if `/strava/routes` 404s — `/strava/challenges` needs no params and is a
   safe starting point.
 
-## Sportskeeda editorial and sports data
+## Cricinfo and Sportskeeda editorial and sports data
+
+Cricinfo supplies public cricket scorecards, commentary, profiles, records, and
+articles; use its discovery endpoints to identify available tournaments and
+series. These are editorial/provider snapshots, not an official league record.
 
 Sportskeeda adds news/articles, author and topic coverage, supported football
-and other sports-data surfaces. Inspect the endpoint reference for each route's
+and other sports-data surfaces, plus community and media pages. Inspect the endpoint reference for each route's
 specific league, section, and identifier requirements; discover options with
 `sportskeeda_football_options` before selecting a football view. Editorial depth
 charts and news reports are not official roster announcements or live score feeds.
