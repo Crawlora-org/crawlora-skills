@@ -227,6 +227,8 @@ case "$path" in
   /axios/article) route_allowed=true ;;
   /axios/categories) route_allowed=true ;;
   /axios/headlines) route_allowed=true ;;
+  /baidu/search) route_allowed=true ;;
+  /baidu/suggest) route_allowed=true ;;
   /balenciaga/categories) route_allowed=true ;;
   /balenciaga/category) route_allowed=true ;;
   /balenciaga/product) route_allowed=true ;;
@@ -665,6 +667,7 @@ case "$path" in
   /duckduckgo/news) route_allowed=true ;;
   /duckduckgo/search) route_allowed=true ;;
   /duckduckgo/shopping) route_allowed=true ;;
+  /duckduckgo/suggest) route_allowed=true ;;
   /duckduckgo/video) route_allowed=true ;;
   /dunkin/directory) route_allowed=true ;;
   /dunkin/menu) route_allowed=true ;;
@@ -1057,6 +1060,8 @@ case "$path" in
   /greystar/markets) route_allowed=true ;;
   /greystar/newsroom) route_allowed=true ;;
   /greystar/search) route_allowed=true ;;
+  /greystar/unit-locations) route_allowed=true ;;
+  /greystar/units) route_allowed=true ;;
   /grubhub/availability) route_allowed=true ;;
   /grubhub/offers) route_allowed=true ;;
   /grubhub/restaurant) route_allowed=true ;;
@@ -1970,6 +1975,7 @@ case "$path" in
   /quince/sitemap/urls) route_allowed=true ;;
   /quince/sitemaps) route_allowed=true ;;
   /quince/suggest) route_allowed=true ;;
+  /qwant/suggest) route_allowed=true ;;
   /raisingcanes/directory) route_allowed=true ;;
   /raisingcanes/menu) route_allowed=true ;;
   /raisingcanes/nearby) route_allowed=true ;;
@@ -2361,6 +2367,7 @@ case "$path" in
   /starbucks/menu) route_allowed=true ;;
   /starbucks/nearest-store) route_allowed=true ;;
   /starbucks/stores) route_allowed=true ;;
+  /startpage/suggest) route_allowed=true ;;
   /startribune/news) route_allowed=true ;;
   /steam/achievements) route_allowed=true ;;
   /steam/app) route_allowed=true ;;
@@ -2892,6 +2899,8 @@ case "$path" in
   /yahoo-tech/article) route_allowed=true ;;
   /yahoo-tech/category) route_allowed=true ;;
   /yahoo-tech/home) route_allowed=true ;;
+  /yandex/search) route_allowed=true ;;
+  /yandex/suggest) route_allowed=true ;;
   /yardbarker/article) route_allowed=true ;;
   /yardbarker/author) route_allowed=true ;;
   /yardbarker/headlines) route_allowed=true ;;
@@ -2904,6 +2913,7 @@ case "$path" in
   /yoox/product) route_allowed=true ;;
   /yoox/search) route_allowed=true ;;
   /youtube/search) route_allowed=true ;;
+  /youtube/suggest) route_allowed=true ;;
   /zalando/categories) route_allowed=true ;;
   /zalando/category) route_allowed=true ;;
   /zalando/markets) route_allowed=true ;;
@@ -3602,6 +3612,8 @@ route_method_regexes=(
   '^GET:/axios/article$'
   '^GET:/axios/categories$'
   '^GET:/axios/headlines$'
+  '^GET:/baidu/search$'
+  '^GET:/baidu/suggest$'
   '^GET:/balenciaga/categories$'
   '^GET:/balenciaga/category$'
   '^GET:/balenciaga/product$'
@@ -4082,6 +4094,7 @@ route_method_regexes=(
   '^GET:/duckduckgo/news$'
   '^GET:/duckduckgo/search$'
   '^GET:/duckduckgo/shopping$'
+  '^GET:/duckduckgo/suggest$'
   '^GET:/duckduckgo/video$'
   '^GET:/dunkin/directory$'
   '^GET:/dunkin/menu$'
@@ -4532,6 +4545,8 @@ route_method_regexes=(
   '^GET:/greystar/newsroom/[^/]+$'
   '^GET:/greystar/properties/[^/]+$'
   '^GET:/greystar/search$'
+  '^GET:/greystar/unit-locations$'
+  '^GET:/greystar/units$'
   '^GET:/grubhub/availability$'
   '^GET:/grubhub/offers$'
   '^GET:/grubhub/restaurant$'
@@ -5568,6 +5583,7 @@ route_method_regexes=(
   '^GET:/quince/sitemap/urls$'
   '^GET:/quince/sitemaps$'
   '^GET:/quince/suggest$'
+  '^GET:/qwant/suggest$'
   '^GET:/raisingcanes/directory$'
   '^GET:/raisingcanes/menu$'
   '^GET:/raisingcanes/nearby$'
@@ -6000,6 +6016,7 @@ route_method_regexes=(
   '^GET:/starbucks/nearest-store$'
   '^GET:/starbucks/product/[^/]+/[^/]+$'
   '^GET:/starbucks/stores$'
+  '^GET:/startpage/suggest$'
   '^GET:/startribune/news$'
   '^GET:/steam/achievements$'
   '^GET:/steam/app$'
@@ -6613,6 +6630,8 @@ route_method_regexes=(
   '^GET:/yahoo-tech/article$'
   '^GET:/yahoo-tech/category$'
   '^GET:/yahoo-tech/home$'
+  '^GET:/yandex/search$'
+  '^GET:/yandex/suggest$'
   '^GET:/yardbarker/article$'
   '^GET:/yardbarker/author$'
   '^GET:/yardbarker/headlines$'
@@ -6639,6 +6658,7 @@ route_method_regexes=(
   '^GET:/youtube/playlist/[^/]+$'
   '^GET:/youtube/profile/[^/]+$'
   '^GET:/youtube/search$'
+  '^GET:/youtube/suggest$'
   '^GET:/youtube/tag/[^/]+$'
   '^GET:/youtube/transcript/[^/]+$'
   '^GET:/youtube/transcript/[^/]+/languages$'

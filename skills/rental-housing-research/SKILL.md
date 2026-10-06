@@ -35,6 +35,11 @@ supplies its own communities in discovered markets. Keep their scopes distinct.
   property detail. A community's starting rent is not the price of a particular
   available unit. Price filters exclude communities without published prices,
   so an omitted community is not evidence of an absent local offer.
+- For advertised apartments rather than community summaries, discover the
+  accepted listing locations with `greystar_unit_locations`, then use
+  `greystar_units` for available unit-level prices, floor plans, and lease terms.
+  Its location slugs are separate from `greystar_markets` values, and results
+  are grouped by community.
 - StreetEasy market-data catalog discovers dataset and area/group choices. Match
   dataset, region, unit, frequency, period, and property type before comparing
   series. Asking-price/rent series differ from recorded sales and modelled
@@ -49,6 +54,8 @@ scripts/crawlora.sh /streeteasy/areas
 scripts/crawlora.sh /streeteasy/market-data/catalog
 scripts/crawlora.sh /greystar/markets
 scripts/crawlora.sh /greystar/search query="New York" page=1 per_page=10
+scripts/crawlora.sh /greystar/unit-locations query="austin"
+scripts/crawlora.sh /greystar/units location="austin-tx" bedrooms=1 max_price=2500 page=1
 # Use discovered area IDs and a user's budget, for example:
 # scripts/crawlora.sh /streeteasy/rentals/search area_id="$AREA_ID" max_price="$BUDGET" page=1
 ```

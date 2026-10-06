@@ -80,6 +80,7 @@ case "$path" in
   /duckduckgo/news) route_allowed=true ;;
   /duckduckgo/search) route_allowed=true ;;
   /duckduckgo/shopping) route_allowed=true ;;
+  /duckduckgo/suggest) route_allowed=true ;;
   /duckduckgo/video) route_allowed=true ;;
   /google/news) route_allowed=true ;;
   /google/suggest) route_allowed=true ;;
@@ -135,6 +136,7 @@ route_method_regexes=(
   '^GET:/duckduckgo/news$'
   '^GET:/duckduckgo/search$'
   '^GET:/duckduckgo/shopping$'
+  '^GET:/duckduckgo/suggest$'
   '^GET:/duckduckgo/video$'
   '^GET:/google/news$'
   '^GET:/google/suggest$'

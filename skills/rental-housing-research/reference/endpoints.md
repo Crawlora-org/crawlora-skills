@@ -6,9 +6,9 @@ Only the endpoints used by this workflow. Call them via `scripts/crawlora.sh` (s
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**20 endpoints across 2 platform group(s).**
+**22 endpoints across 2 platform group(s).**
 
-## Greystar (9)
+## Greystar (11)
 
 ### `greystar_article`
 
@@ -61,8 +61,20 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `greystar_search`
 
 - **HTTP:** `GET /greystar/search`
-- **What:** Search Greystar apartment communities. Lists Greystar communities published on greystar.com, optionally filtered by market area, neighborhood, city, state, country, starting rent, or free text. Filter values must come from /greystar/markets; an unknown value returns 400. Starting prices reflect each community's published minimum and are null when none is published. Results come from a snapshot refreshed every few minutes.
-- **Params:** `city` (string, optional) — Exact city from /greystar/markets; `country_code` (string, optional) — ISO country code from /greystar/markets, e.g. US; `market_area` (string, optional) — Exact market area from /greystar/markets, e.g. Greater Austin; `max_price` (number, optional) — Maximum starting monthly rent; excludes communities with no published price; `min_price` (number, optional) — Minimum starting monthly rent; excludes communities with no published price; `neighborhood` (string, optional) — Exact neighborhood from /greystar/markets; `page` (integer, optional) — 1-based page; `per_page` (integer, optional) — Results per page, 1-100; `query` (string, optional) — Free-text match on name, address, city, neighborhood, market area, or postal code (max 160 characters); `sort` (string, optional) — Result order; `state` (string, optional) — State or region abbreviation from /greystar/markets, e.g. TX
+- **What:** Search Greystar apartment communities. Lists Greystar communities published on greystar.com, optionally filtered by market area, neighborhood, city, state, country, starting rent, or free text. Filter values must come from /greystar/markets; an unknown value returns 400. Starting prices reflect each community's published minimum and are null when none is published. Results come from an hourly snapshot of every community listed on greystar.com; the default order follows the site.
+- **Params:** `city` (string, optional) — Exact city from /greystar/markets; `country_code` (string, optional) — ISO country code from /greystar/markets, e.g. US; `market_area` (string, optional) — Exact market area from /greystar/markets, e.g. Greater Austin; `max_price` (number, optional) — Maximum starting monthly rent; excludes communities with no published price; `min_price` (number, optional) — Minimum starting monthly rent; excludes communities with no published price; `neighborhood` (string, optional) — Exact neighborhood from /greystar/markets; `page` (integer, optional) — 1-based page; `per_page` (integer, optional) — Results per page, 1-100; `query` (string, optional) — Free-text match on name, address, city, neighborhood, market area, or postal code (max 160 characters); `sort` (string, optional) — Result order; relevance keeps the site's own order; `state` (string, optional) — State or region abbreviation from /greystar/markets, e.g. TX
+
+### `greystar_unit_locations`
+
+- **HTTP:** `GET /greystar/unit-locations`
+- **What:** List Greystar unit search locations. Lists every location accepted by /greystar/units: the nationwide us listing, states, metros, cities, and neighborhoods (nested ones carry their parent), taken from the site's own search pages. Locations Greystar has no unit listing for are dropped once detected.
+- **Params:** `query` (string, optional) — Text matched against the location slug, e.g. austin
+
+### `greystar_units`
+
+- **HTTP:** `GET /greystar/units`
+- **What:** Search available Greystar apartment units. Searches apartment units currently available to rent on greystar.com within one location (nationwide by default), filtered by bedrooms, bathrooms, building type, community highlights, and monthly price, sorted by relevance or price. Results are grouped by community: each carries its address, coordinates, the number of matching units, and up to about 100 units with unit number, floor plan, bedrooms, bathrooms, price range, and lease term. The response also returns filter counts for the location. Several values of one filter match any of them. Get location values from /greystar/unit-locations.
+- **Params:** `bathrooms` (array, optional) — Bathroom count; repeat for several; `bedrooms` (array, optional) — Bedroom count; repeat for several (0 is studio); `building_type` (array, optional) — Building type; repeat for several; `highlights` (array, optional) — Community highlight; repeat for several (matches any); `location` (string, optional) — Search location slug from /greystar/unit-locations, e.g. austin-tx, texas or greater-austin/round-rock; `max_price` (number, optional) — Maximum monthly unit price; `min_price` (number, optional) — Minimum monthly unit price; `page` (integer, optional) — 1-based page; `per_page` (integer, optional) — Communities per page, 1-100; `sort` (string, optional) — Result order
 
 ## StreetEasy (11)
 

@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**36 endpoints across 5 platform group(s).**
+**37 endpoints across 5 platform group(s).**
 
 ## Google (15)
 
@@ -26,8 +26,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_suggest`
 
 - **HTTP:** `GET /google/suggest`
-- **What:** Suggest Google search queries. Returns Google autosuggest query completions from the public unauthenticated suggest JSON endpoint.
-- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 10, clamped to 1..12; `country` (string, optional) — Google result country; defaults to us; `lang` (string, optional) — Google UI language; defaults to en; `q` (string, **required**) — Search query prefix
+- **What:** Suggest Google search queries. Returns Google autosuggest query completions from the public unauthenticated suggest JSON endpoint. `source` selects the web, YouTube, or shopping suggestion list, and `rich=true` adds a type, relevance score, and short description to each suggestion.
+- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 10, clamped to 1..12; `country` (string, optional) — Google result country; defaults to us; `lang` (string, optional) — Google UI language; defaults to en; `q` (string, **required**) — Search query prefix; `rich` (boolean, optional) — Add Google's type, relevance score, and description to each suggestion; defaults to false; `source` (string, optional) — Suggestion source; defaults to web
 
 ### `google_trends_categories`
 
@@ -131,8 +131,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bing_suggest`
 
 - **HTTP:** `GET /bing/suggest`
-- **What:** Suggest Bing search queries. Returns Bing autosuggest query completions for a query prefix. Locale defaults to country=us and lang=en-us. Suggestions are fetched from public Bing suggest endpoints and trimmed to the requested count.
-- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 10, clamped to 1..12; `country` (string, optional) — Two-letter country code; defaults to us; `lang` (string, optional) — Bing UI language; defaults to en-us; `q` (string, **required**) — Search query prefix
+- **What:** Suggest Bing search queries. Returns Bing autosuggest query completions for a query prefix. Locale defaults to country=us and lang=en-us. Suggestions are fetched from public Bing suggest endpoints and trimmed to the requested count. `rich=true` adds entity cards (name, description, image) where Bing shows them.
+- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 10, clamped to 1..12; `country` (string, optional) — Two-letter country code; defaults to us; `lang` (string, optional) — Bing UI language; defaults to en-us; `q` (string, **required**) — Search query prefix; `rich` (boolean, optional) — Add entity name, description, and image to suggestions Bing resolves to a known entity; defaults to false
 
 ### `bing_videos`
 
@@ -163,8 +163,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `brave_suggest`
 
 - **HTTP:** `GET /brave/suggest`
-- **What:** Suggest Brave search queries. Returns Brave autosuggest query completions for a query prefix. Locale defaults to country=us and lang=en-us. Suggestions are fetched from public Brave Search suggest JSON and trimmed to the requested count.
-- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 10, clamped to 1..12; `country` (string, optional) — Brave result country; defaults to us; `lang` (string, optional) — Brave UI language; defaults to en-us; `q` (string, **required**) — Search query prefix
+- **What:** Suggest Brave search queries. Returns Brave autosuggest query completions for a query prefix. Locale defaults to country=us and lang=en-us. Suggestions are fetched from public Brave Search suggest JSON and trimmed to the requested count. `rich=true` adds entity metadata (name, description, category, image) where Brave resolves a suggestion to a known entity.
+- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 10, clamped to 1..12; `country` (string, optional) — Brave result country; defaults to us; `lang` (string, optional) — Brave UI language; defaults to en-us; `q` (string, **required**) — Search query prefix; `rich` (boolean, optional) — Add entity name, description, category, and image to suggestions Brave resolves to a known entity; defaults to false
 
 ### `brave_videos`
 
@@ -172,7 +172,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Brave video results. Returns normalized Brave video search results for a query string. Locale defaults to country=us and lang=en-us. Results are fetched from public Brave Search video HTML and return 503 when Brave serves a challenge page or unusable HTML.
 - **Params:** `count` (integer, optional) — Results to return; defaults to 10, clamped to 1..50; `country` (string, optional) — Brave result country; defaults to us; `date_from` (string, optional) — Custom start date in YYYY-MM-DD; requires date_to; `date_to` (string, optional) — Custom end date in YYYY-MM-DD; requires date_from; `lang` (string, optional) — Brave UI language; defaults to en-us; `offset` (integer, optional) — Zero-based Brave result page; defaults to 0; `q` (string, **required**) — Search query; `time_range` (string, optional) — Preset time filter: any, day, week, month, year, or custom
 
-## DuckDuckGo Search (5)
+## DuckDuckGo Search (6)
 
 ### `duckduckgo_image`
 
@@ -197,6 +197,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /duckduckgo/shopping`
 - **What:** Search DuckDuckGo shopping results. Returns normalized DuckDuckGo shopping results for a query string: title, brand, merchant, description, price, rating, and review count, plus total page count. DuckDuckGo's shopping vertical is ad-funded, syndicated product listings, not organic content; every product link is wrapped in an ad-click-tracking redirect with no clean destination to unwrap, so no destination URL is returned. DuckDuckGo's own pagination token for this vertical is an opaque per-response blob rather than a plain page offset, so only the first page is supported.
 - **Params:** `q` (string, **required**) — Search query; `region` (string, optional) — DuckDuckGo market code, e.g. us-en, uk-en
+
+### `duckduckgo_suggest`
+
+- **HTTP:** `GET /duckduckgo/suggest`
+- **What:** Suggest DuckDuckGo search queries. Returns DuckDuckGo search-box autocomplete completions for a query prefix, in DuckDuckGo's own ranking order. DuckDuckGo never returns more than 8 suggestions per prefix.
+- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 8, clamped to 1..8; `q` (string, **required**) — Search query prefix; `region` (string, optional) — DuckDuckGo region code such as us-en, uk-en, de-de, or wt-wt (worldwide, the default)
 
 ### `duckduckgo_video`
 

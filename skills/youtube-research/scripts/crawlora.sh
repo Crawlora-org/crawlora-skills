@@ -57,6 +57,7 @@ esac
 route_allowed=false
 case "$path" in
   /youtube/search) route_allowed=true ;;
+  /youtube/suggest) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(

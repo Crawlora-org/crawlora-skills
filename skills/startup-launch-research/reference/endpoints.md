@@ -61,7 +61,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `producthunt_product`
 
 - **HTTP:** `GET /producthunt/product/{id}`
-- **What:** Retrieve Product Hunt product details. Returns the core Product Hunt product details.
+- **What:** Retrieve Product Hunt product details. Returns the core Product Hunt product details. The path takes an exact Product Hunt slug; if you only know the product name, look the slug up first with `/producthunt/search` (live) or `/datasets/producthunt-products/search` (indexed). Unknown slugs return 404, and that 404 is cached for one hour.
 - **Params:** `id` (string, **required**) — Product Hunt slug or numeric ID
 
 ### `producthunt_reviews`
