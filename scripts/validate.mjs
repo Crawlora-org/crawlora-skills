@@ -82,6 +82,7 @@ const marketplace = JSON.parse(readFileSync(join(ROOT, ".claude-plugin/marketpla
 const bundled = marketplace.plugins[0].skills;
 const catalog = JSON.parse(readFileSync(join(ROOT, "scripts/tools.json"), "utf8"));
 const readme = readFileSync(join(ROOT, "README.md"), "utf8");
+const umbrella = readFileSync(join(ROOT, "skills/crawlora/SKILL.md"), "utf8");
 const excludedUmbrellaGroups = new Set(["Monitors", "Usage", "AppInsights", "Datasets", "Web"]);
 const publicCatalog = catalog.filter((tool) => !excludedUmbrellaGroups.has(tool._http.group));
 const groupCount = new Set(publicCatalog.map((tool) => tool._http.group)).size;
@@ -90,6 +91,9 @@ for (const [label, expected, actual] of [
   ["README bundled skills", bundled.length, Number(readme.match(/bundle includes \*\*(\d+) skills\*\*/)?.[1])],
   ["README catalog tools", publicCatalog.length, Number(readme.match(/([\d,]+)(?:\*{2})?\s+Crawlora MCP tools/)?.[1]?.replaceAll(",", ""))],
   ["README platform groups", groupCount, Number(readme.match(/(\d+) public-data platform groups/)?.[1])],
+  ["umbrella catalog tools", publicCatalog.length, Number(umbrella.match(/catalog contains \*\*([\d,]+) tools/)?.[1]?.replaceAll(",", ""))],
+  ["umbrella platform groups", groupCount, Number(umbrella.match(/tools across\s+(\d+) platform\s+groups/)?.[1])],
+  ["umbrella installable skills", skills.length, Number(umbrella.match(/repository ships (\d+) installable research skills/)?.[1])],
   ["marketplace description", bundled.length, Number(marketplace.plugins[0].description.match(/^(\d+) Agent Skills/)?.[1])],
 ]) {
   if (actual !== expected) errors.push(`${label}: expected ${expected}, found ${actual}`);
