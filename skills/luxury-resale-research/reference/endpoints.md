@@ -351,7 +351,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gucci_product`
 
 - **HTTP:** `GET /gucci/product`
-- **What:** Get a Gucci product. Returns full normalized product detail for one style: name, marketing description, breadcrumb trail, brand line, gender, colors, materials, sizes, price, images, and stock -- combining Gucci's own structured product record with the product page's own marketing copy. style_code comes from gucci-search's or gucci-category's own style_code field.
+- **What:** Get a Gucci product. Returns product detail for one style: name, price, images, stock, and PDP attributes available from Gucci's current storefront, including description, breadcrumbs, SKU, colors, materials, and sizes. style_code comes from gucci-search's or gucci-category's own style_code field. PDP-only fields are omitted if the detail page is unavailable.
 - **Params:** `style_code` (string, **required**) — Product style code, from gucci-search's or gucci-category's own style_code field
 
 ### `gucci_recommendations`
@@ -363,8 +363,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gucci_search`
 
 - **HTTP:** `GET /gucci/search`
-- **What:** Search Gucci's product catalog. Searches Gucci's product catalog by keyword: normalized product summaries (name, price, colors, materials, sizes, gender, stock) with the search index's own live total result count. A genuinely empty result (e.g. a nonsense query) returns a well-formed empty products list, not an error. The response's own size_facets field lists every size value present in the result set (with live counts) -- pass one of those values as size on a follow-up call to filter to just that size.
-- **Params:** `limit` (integer, optional) — Results per page, defaults to 24, maximum 100; `page` (integer, optional) — One-based page number, defaults to 1; `q` (string, **required**) — Search keyword; `size` (string, optional) — Filter to products listing this exact size as available (e.g. \
+- **What:** Search Gucci's product catalog. Searches Gucci's US product catalog by keyword using the storefront's public catalog. Results include card-level data and the live total count; per-product colors, materials, sizes, gender, and line are omitted when the search source does not provide them. A genuinely empty result returns a well-formed empty products list. The response's size_facets field lists live size values and counts -- pass one as size on a follow-up call to filter.
+- **Params:** `limit` (integer, optional) — Results per page, defaults to 24, maximum 100; `page` (integer, optional) — One-based page number, defaults to 1; `q` (string, **required**) — Search keyword; `size` (string, optional) — Filter to products listing this exact size as available. See size_facets for live values -- omit size to see all sizes first.
 
 ### `gucci_size_guide`
 
@@ -393,7 +393,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gucci_suggest`
 
 - **HTTP:** `GET /gucci/suggest`
-- **What:** Gucci search-box suggestions. Returns Gucci's own search-box typeahead suggestions for a partial query, each with its own live total result count on the search index. Not product data -- pass a suggestion's own query value straight into gucci-search for results.
+- **What:** Gucci search-box suggestions. Returns Gucci's own search-box typeahead suggestions for a partial query. The current public suggestion source does not provide per-phrase result counts. Not product data -- pass a suggestion's query into gucci-search for results.
 - **Params:** `limit` (integer, optional) — Maximum suggestions to return, defaults to 5, maximum 20; `q` (string, **required**) — Partial search query
 
 ## Hermes (8)

@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**41 endpoints across 6 platform group(s).**
+**48 endpoints across 6 platform group(s).**
 
 ## ProductHunt (11)
 
@@ -184,7 +184,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Capterra products. Returns Capterra search-result products (id, name, url, description, rating). Credential-free public Capterra data, rendered from the search page through proxied browser renderers. Note: Capterra renders a fallback product list even for queries with no genuine match, rather than a distinct empty-results page, so callers should treat low-relevance results as an upstream characteristic, not a bug.
 - **Params:** `q` (string, **required**) — Search query
 
-## BBB (9)
+## BBB (16)
+
+### `bbb_article`
+
+- **HTTP:** `GET /bbb/article`
+- **What:** Get a BBB article. Returns published BBB article metadata, author names, body text, and useful links from a canonical public article URL.
+- **Params:** `url` (string, **required**) — Canonical BBB article URL
 
 ### `bbb_business`
 
@@ -195,8 +201,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bbb_business_complaints`
 
 - **HTTP:** `GET /bbb/business/complaints`
-- **What:** Get a Better Business Bureau business's complaint history. Returns a business's BBB complaint history: total complaint count, complaints closed in the last 12 months, and per-complaint detail (date, type, status, narrative text, and any business response / customer answer thread). A business with no filed complaints returns total_complaints 0 and an empty complaints list -- this is a normal result, not an error. Credential-free public Better Business Bureau data.
-- **Params:** `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url
+- **What:** Get a Better Business Bureau business's complaint history. Returns a business's BBB complaint history: total complaint count, complaints closed or filed in the last 12 months, and one page of per-complaint detail (date, type, status, narrative text, and any business response / customer answer thread). Complaints are listed newest first, 10 per page; use page with the returned page, total_pages and has_more to walk the full list. A business with no filed complaints returns total_complaints 0 and an empty complaints list -- this is a normal result, not an error. Credential-free public Better Business Bureau data.
+- **Params:** `page` (integer, optional) — Complaint list page, 1 or greater (10 complaints per page, newest first). Defaults to 1; `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url
 
 ### `bbb_business_more_info`
 
@@ -213,8 +219,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bbb_category`
 
 - **HTTP:** `GET /bbb/category`
-- **What:** Browse a Better Business Bureau category. Browses bbb.org businesses by category and location directly, without a free-text search query. Returns the same normalized business-result shape as bbb-search. Credential-free public Better Business Bureau data.
-- **Params:** `page` (integer, optional) — Result page, default 1; `url` (string, **required**) — BBB category browse URL, from a bbb-search result's related_categories
+- **What:** Browse a Better Business Bureau category. Browses bbb.org businesses by category and location directly, without a free-text search query. Returns the same normalized business-result shape as bbb-search. Optional sort and filter parameters use the same values as bbb-search; query-scoped category and state/province values come from bbb-search-filters. Credential-free public Better Business Bureau data.
+- **Params:** `accredited` (boolean, optional) — Only BBB-accredited businesses; `category_id` (array, optional) — Query-scoped category ID from bbb-search-filters; `distance` (string, optional) — Maximum distance in miles; omit for all distances; `get_quote` (boolean, optional) — Only businesses offering quote requests; `page` (integer, optional) — Result page, default 1; `rating` (array, optional) — One or more BBB rating buckets; `service_area` (boolean, optional) — Only businesses serving the searched area; `sort` (string, optional) — Sort order; `state` (array, optional) — Query-scoped state or province code from bbb-search-filters; `url` (string, **required**) — BBB category browse URL, from a bbb-search result's related_categories
+
+### `bbb_local_bbb`
+
+- **HTTP:** `GET /bbb/local-bbb`
+- **What:** Get a local BBB chapter profile. Returns public chapter profile details including office locations and hours, service territory, supported languages, and upcoming public events. Use a canonical chapter URL from bbb-local-bbbs or a business record's local_bbb_url. Credential-free public Better Business Bureau data.
+- **Params:** `url` (string, **required**) — Canonical BBB chapter URL from bbb-local-bbbs or a business record's local_bbb_url
+
+### `bbb_local_bbbs`
+
+- **HTTP:** `GET /bbb/local-bbbs`
+- **What:** List local BBB chapters serving a region. Lists every chapter and public office shown on BBB's directory page for a region discovered by bbb-regions. Office addresses can be outside the selected service region. Credential-free public Better Business Bureau data.
+- **Params:** `country` (string, **required**) — Country code from bbb-regions; `region` (string, **required**) — Two-letter region code from bbb-regions
+
+### `bbb_news`
+
+- **HTTP:** `GET /bbb/news`
+- **What:** Get BBB newsroom stories. Returns one page of public BBB newsroom stories from a canonical US or Canada newsroom URL. Event dates and links are preserved when present.
+- **Params:** `url` (string, **required**) — Canonical BBB newsroom or topic page URL; include page=N for pagination
+
+### `bbb_news_topics`
+
+- **HTTP:** `GET /bbb/news/topics`
+- **What:** List BBB newsroom topics. Returns the complete topic navigation shown by a US or Canada BBB newsroom page, including its active topic.
+- **Params:** `url` (string, **required**) — Canonical BBB newsroom page URL
+
+### `bbb_regions`
+
+- **HTTP:** `GET /bbb/regions`
+- **What:** List Better Business Bureau directory regions. Returns the complete current country and region list from BBB's public local directory. Use the returned region code with bbb-local-bbbs. Credential-free public Better Business Bureau data.
+- **Params:** _none_
 
 ### `bbb_scamtracker_detail`
 
@@ -237,8 +273,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bbb_search`
 
 - **HTTP:** `GET /bbb/search`
-- **What:** Search Better Business Bureau businesses. Searches bbb.org for businesses by name or category near a location. Returns each business's BBB rating letter grade, accreditation status, categories, service areas, contact info, and profile URL. Credential-free public Better Business Bureau data.
-- **Params:** `location` (string, **required**) — City and state (e.g. 'Austin, TX') or a ZIP code; `page` (integer, optional) — Result page, default 1; `query` (string, **required**) — Business name or category/service keyword
+- **What:** Search Better Business Bureau businesses. Searches bbb.org for businesses by name or category near a location. Returns each business's BBB rating letter grade, accreditation status, categories, service areas, contact info, and profile URL. Category IDs and state/province codes are query-scoped; call bbb-search-filters to discover values for this query and location. Credential-free public Better Business Bureau data.
+- **Params:** `accredited` (boolean, optional) — Only BBB-accredited businesses; `category_id` (array, optional) — Query-scoped category ID from bbb-search-filters; `country` (string, optional) — BBB country code; `distance` (string, optional) — Maximum distance in miles; omit for all distances; `get_quote` (boolean, optional) — Only businesses offering quote requests; `location` (string, **required**) — City and state (e.g. 'Austin, TX') or a ZIP code; `page` (integer, optional) — Result page, default 1; `query` (string, **required**) — Business name or category/service keyword; `rating` (array, optional) — One or more BBB rating buckets; `service_area` (boolean, optional) — Only businesses serving the searched area; `sort` (string, optional) — Sort order; `state` (array, optional) — Query-scoped state or province code from bbb-search-filters
+
+### `bbb_search_filters`
+
+- **HTTP:** `GET /bbb/search/filters`
+- **What:** Discover Better Business Bureau search filters. Returns the live sort, category, and state/province values BBB currently advertises for one context. Supply query and location for text search, or category_url for the exact category-browse context; do not combine these modes. Category IDs and state/province codes are query-scoped; call this endpoint again when the search context changes. Static accepted values are country USA or CAN; sort Relevance, Distance, Rating, AToZ, or ZToA; distance 5, 10, 25, 50, or 100 miles; rating A, B, C, D, or F. Credential-free public Better Business Bureau data.
+- **Params:** `accredited` (boolean, optional) — Only BBB-accredited businesses; `category_id` (array, optional) — Selected category IDs previously returned for this search context; `category_url` (string, optional) — BBB category browse URL; use instead of query and location; `country` (string, optional) — BBB country code; `distance` (string, optional) — Maximum distance in miles; omit for all distances; `get_quote` (boolean, optional) — Only businesses offering quote requests; `location` (string, optional) — City and state/province or ZIP code; use with query when category_url is omitted; `page` (integer, optional) — Result page, default 1; `query` (string, optional) — Business name or category/service keyword; use with location when category_url is omitted; `rating` (array, optional) — Selected rating values; `service_area` (boolean, optional) — Only businesses serving the searched area; `sort` (string, optional) — Sort order; `state` (array, optional) — Selected state/province codes previously returned for this search context
 
 ## Kickstarter (4)
 

@@ -35,7 +35,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `extract`
 
 - **HTTP:** `POST /extract`
-- **What:** Extract schema-conforming JSON from a URL. Scrapes a public URL into clean Markdown, then returns data that strictly conforms to the supplied bounded JSON Schema.
+- **What:** Extract schema-conforming JSON from a URL. Scrapes a public URL into clean Markdown, then returns data that strictly conforms to the supplied bounded JSON Schema. The response includes `truncated`, which is true when the page was too long and only its first part was used.
 - **Params:** `extractOption` (object, **required**) — Extraction options
 - **REST body:** Send the value of the MCP argument `extractOption` directly as the JSON body; do not wrap it in a `extractOption` property.
 

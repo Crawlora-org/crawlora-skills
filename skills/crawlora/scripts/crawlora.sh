@@ -240,14 +240,21 @@ case "$path" in
   /barrons/headlines) route_allowed=true ;;
   /barrons/news) route_allowed=true ;;
   /barrons/topics) route_allowed=true ;;
+  /bbb/article) route_allowed=true ;;
   /bbb/business) route_allowed=true ;;
   /bbb/business/complaints) route_allowed=true ;;
   /bbb/business/more-info) route_allowed=true ;;
   /bbb/business/reviews) route_allowed=true ;;
   /bbb/category) route_allowed=true ;;
+  /bbb/local-bbb) route_allowed=true ;;
+  /bbb/local-bbbs) route_allowed=true ;;
+  /bbb/news) route_allowed=true ;;
+  /bbb/news/topics) route_allowed=true ;;
+  /bbb/regions) route_allowed=true ;;
   /bbb/scamtracker/search) route_allowed=true ;;
   /bbb/scamtracker/state-stats) route_allowed=true ;;
   /bbb/search) route_allowed=true ;;
+  /bbb/search/filters) route_allowed=true ;;
   /bbc/article) route_allowed=true ;;
   /bbc/author) route_allowed=true ;;
   /bbc/headlines) route_allowed=true ;;
@@ -638,6 +645,8 @@ case "$path" in
   /depop/search/facets) route_allowed=true ;;
   /depop/sizes) route_allowed=true ;;
   /depop/suggest) route_allowed=true ;;
+  /developer/search) route_allowed=true ;;
+  /developer/sources) route_allowed=true ;;
   /discogs/search) route_allowed=true ;;
   /dominos/coupons) route_allowed=true ;;
   /dominos/customization) route_allowed=true ;;
@@ -788,24 +797,54 @@ case "$path" in
   /flashscore/calendar) route_allowed=true ;;
   /flashscore/calendar-categories) route_allowed=true ;;
   /flashscore/competitions) route_allowed=true ;;
+  /flashscore/entity-news) route_allowed=true ;;
+  /flashscore/match-box-score) route_allowed=true ;;
+  /flashscore/match-darts) route_allowed=true ;;
   /flashscore/match-h2h) route_allowed=true ;;
   /flashscore/match-highlights) route_allowed=true ;;
   /flashscore/match-info) route_allowed=true ;;
   /flashscore/match-lineups) route_allowed=true ;;
+  /flashscore/match-missing-players) route_allowed=true ;;
+  /flashscore/match-momentum) route_allowed=true ;;
   /flashscore/match-news) route_allowed=true ;;
+  /flashscore/match-odds) route_allowed=true ;;
+  /flashscore/match-player-stats) route_allowed=true ;;
+  /flashscore/match-point-by-point) route_allowed=true ;;
+  /flashscore/match-predicted-lineups) route_allowed=true ;;
+  /flashscore/match-report) route_allowed=true ;;
   /flashscore/match-standings) route_allowed=true ;;
   /flashscore/match-stats) route_allowed=true ;;
+  /flashscore/match-tv) route_allowed=true ;;
   /flashscore/navigation) route_allowed=true ;;
   /flashscore/news) route_allowed=true ;;
   /flashscore/news-article) route_allowed=true ;;
+  /flashscore/news-article-body) route_allowed=true ;;
   /flashscore/news-categories) route_allowed=true ;;
+  /flashscore/news-most-read) route_allowed=true ;;
+  /flashscore/odds-geos) route_allowed=true ;;
+  /flashscore/player) route_allowed=true ;;
+  /flashscore/player-fixtures) route_allowed=true ;;
+  /flashscore/player-injuries) route_allowed=true ;;
+  /flashscore/player-match-log) route_allowed=true ;;
+  /flashscore/player-news) route_allowed=true ;;
+  /flashscore/player-results) route_allowed=true ;;
+  /flashscore/player-transfers) route_allowed=true ;;
   /flashscore/ranking-categories) route_allowed=true ;;
   /flashscore/rankings) route_allowed=true ;;
   /flashscore/scores) route_allowed=true ;;
   /flashscore/search) route_allowed=true ;;
   /flashscore/sports) route_allowed=true ;;
+  /flashscore/team) route_allowed=true ;;
+  /flashscore/team-fixtures) route_allowed=true ;;
+  /flashscore/team-news) route_allowed=true ;;
+  /flashscore/team-outright-odds) route_allowed=true ;;
+  /flashscore/team-results) route_allowed=true ;;
+  /flashscore/team-squad) route_allowed=true ;;
+  /flashscore/team-transfers) route_allowed=true ;;
   /flashscore/top-search) route_allowed=true ;;
+  /flashscore/tournament-archive-seasons) route_allowed=true ;;
   /flashscore/tournament-events) route_allowed=true ;;
+  /flashscore/tournament-outright-odds) route_allowed=true ;;
   /flashscore/tournament-seasons) route_allowed=true ;;
   /flashscore/tournament-standings) route_allowed=true ;;
   /flashscore/tournament-standings-views) route_allowed=true ;;
@@ -2009,6 +2048,12 @@ case "$path" in
   /redfin/region-trends) route_allowed=true ;;
   /redfin/search) route_allowed=true ;;
   /redfin/similar) route_allowed=true ;;
+  /research/jobs) route_allowed=true ;;
+  /research/papers/metadata) route_allowed=true ;;
+  /research/papers/read) route_allowed=true ;;
+  /research/papers/related) route_allowed=true ;;
+  /research/papers/search) route_allowed=true ;;
+  /research/sources) route_allowed=true ;;
   /resy/availability) route_allowed=true ;;
   /resy/cuisines) route_allowed=true ;;
   /resy/event) route_allowed=true ;;
@@ -2227,21 +2272,115 @@ case "$path" in
   /smh/headlines) route_allowed=true ;;
   /smh/news) route_allowed=true ;;
   /smh/sections) route_allowed=true ;;
+  /sofascore/categories) route_allowed=true ;;
+  /sofascore/category-tournaments) route_allowed=true ;;
+  /sofascore/draft) route_allowed=true ;;
+  /sofascore/draft-picks) route_allowed=true ;;
+  /sofascore/esports-game) route_allowed=true ;;
   /sofascore/event) route_allowed=true ;;
+  /sofascore/event-at-bat-pitches) route_allowed=true ;;
+  /sofascore/event-at-bats) route_allowed=true ;;
+  /sofascore/event-average-positions) route_allowed=true ;;
+  /sofascore/event-baseball-top-performers) route_allowed=true ;;
+  /sofascore/event-best-players) route_allowed=true ;;
+  /sofascore/event-comments) route_allowed=true ;;
+  /sofascore/event-esports-games) route_allowed=true ;;
+  /sofascore/event-graph) route_allowed=true ;;
   /sofascore/event-h2h) route_allowed=true ;;
+  /sofascore/event-highlights) route_allowed=true ;;
   /sofascore/event-incidents) route_allowed=true ;;
+  /sofascore/event-innings) route_allowed=true ;;
   /sofascore/event-lineups) route_allowed=true ;;
+  /sofascore/event-managers) route_allowed=true ;;
   /sofascore/event-odds) route_allowed=true ;;
+  /sofascore/event-player-heatmap) route_allowed=true ;;
+  /sofascore/event-player-statistics) route_allowed=true ;;
+  /sofascore/event-point-by-point) route_allowed=true ;;
+  /sofascore/event-pregame-form) route_allowed=true ;;
+  /sofascore/event-shotmap) route_allowed=true ;;
   /sofascore/event-statistics) route_allowed=true ;;
+  /sofascore/event-team-heatmap) route_allowed=true ;;
+  /sofascore/event-team-streaks) route_allowed=true ;;
+  /sofascore/event-tennis-power) route_allowed=true ;;
+  /sofascore/event-tv-channels) route_allowed=true ;;
+  /sofascore/event-votes) route_allowed=true ;;
   /sofascore/live-events) route_allowed=true ;;
+  /sofascore/manager) route_allowed=true ;;
+  /sofascore/manager-events) route_allowed=true ;;
+  /sofascore/mma-card) route_allowed=true ;;
+  /sofascore/mma-schedule) route_allowed=true ;;
+  /sofascore/odds-dropping) route_allowed=true ;;
+  /sofascore/odds-winning) route_allowed=true ;;
   /sofascore/player) route_allowed=true ;;
+  /sofascore/player-attributes) route_allowed=true ;;
+  /sofascore/player-events) route_allowed=true ;;
+  /sofascore/player-last-year-summary) route_allowed=true ;;
+  /sofascore/player-national-team-statistics) route_allowed=true ;;
+  /sofascore/player-penalty-history) route_allowed=true ;;
+  /sofascore/player-ratings) route_allowed=true ;;
+  /sofascore/player-season-heatmap) route_allowed=true ;;
+  /sofascore/player-season-statistics) route_allowed=true ;;
+  /sofascore/player-statistical-rankings) route_allowed=true ;;
+  /sofascore/player-statistics-seasons) route_allowed=true ;;
+  /sofascore/player-tournaments) route_allowed=true ;;
+  /sofascore/player-transfers) route_allowed=true ;;
+  /sofascore/ranking-types) route_allowed=true ;;
+  /sofascore/rankings) route_allowed=true ;;
+  /sofascore/referee) route_allowed=true ;;
+  /sofascore/referee-events) route_allowed=true ;;
+  /sofascore/referee-statistics) route_allowed=true ;;
   /sofascore/round-events) route_allowed=true ;;
+  /sofascore/scheduled-events) route_allowed=true ;;
+  /sofascore/scheduled-tournaments) route_allowed=true ;;
   /sofascore/search) route_allowed=true ;;
+  /sofascore/search-typed) route_allowed=true ;;
+  /sofascore/season-events) route_allowed=true ;;
+  /sofascore/sports) route_allowed=true ;;
+  /sofascore/stage) route_allowed=true ;;
+  /sofascore/stage-categories) route_allowed=true ;;
+  /sofascore/stage-driver-performance) route_allowed=true ;;
+  /sofascore/stage-featured) route_allowed=true ;;
+  /sofascore/stage-schedule) route_allowed=true ;;
+  /sofascore/stage-seasons) route_allowed=true ;;
+  /sofascore/stage-standings) route_allowed=true ;;
+  /sofascore/stage-substages) route_allowed=true ;;
   /sofascore/standings) route_allowed=true ;;
   /sofascore/team) route_allowed=true ;;
+  /sofascore/team-achievements) route_allowed=true ;;
   /sofascore/team-events) route_allowed=true ;;
+  /sofascore/team-goal-distributions) route_allowed=true ;;
+  /sofascore/team-near-events) route_allowed=true ;;
+  /sofascore/team-of-the-week) route_allowed=true ;;
+  /sofascore/team-of-the-week-periods) route_allowed=true ;;
+  /sofascore/team-performance) route_allowed=true ;;
+  /sofascore/team-player-statistics) route_allowed=true ;;
+  /sofascore/team-player-statistics-seasons) route_allowed=true ;;
   /sofascore/team-players) route_allowed=true ;;
+  /sofascore/team-rankings) route_allowed=true ;;
+  /sofascore/team-season-statistics) route_allowed=true ;;
+  /sofascore/team-statistics-seasons) route_allowed=true ;;
+  /sofascore/team-top-players) route_allowed=true ;;
+  /sofascore/team-tournaments) route_allowed=true ;;
+  /sofascore/team-transfers) route_allowed=true ;;
+  /sofascore/tennis-player-grand-slam-results) route_allowed=true ;;
+  /sofascore/tournament-cuptree) route_allowed=true ;;
+  /sofascore/tournament-info) route_allowed=true ;;
+  /sofascore/tournament-player-of-the-season) route_allowed=true ;;
+  /sofascore/tournament-player-statistics) route_allowed=true ;;
+  /sofascore/tournament-rounds) route_allowed=true ;;
   /sofascore/tournament-seasons) route_allowed=true ;;
+  /sofascore/tournament-statistics-info) route_allowed=true ;;
+  /sofascore/tournament-team-of-the-season) route_allowed=true ;;
+  /sofascore/tournament-teams) route_allowed=true ;;
+  /sofascore/tournament-top-players) route_allowed=true ;;
+  /sofascore/tournament-top-teams) route_allowed=true ;;
+  /sofascore/tournament-venues) route_allowed=true ;;
+  /sofascore/tournament-winners) route_allowed=true ;;
+  /sofascore/tournaments-with-feature) route_allowed=true ;;
+  /sofascore/trending-events) route_allowed=true ;;
+  /sofascore/trending-players) route_allowed=true ;;
+  /sofascore/venue) route_allowed=true ;;
+  /sofascore/venue-events) route_allowed=true ;;
   /sonic/availability) route_allowed=true ;;
   /sonic/categories) route_allowed=true ;;
   /sonic/deals) route_allowed=true ;;
@@ -2791,6 +2930,10 @@ case "$path" in
   /wccftech/headlines) route_allowed=true ;;
   /wccftech/news) route_allowed=true ;;
   /wccftech/sections) route_allowed=true ;;
+  /web/capabilities) route_allowed=true ;;
+  /web/crawl) route_allowed=true ;;
+  /web/map) route_allowed=true ;;
+  /web/search) route_allowed=true ;;
   /wendys/categories) route_allowed=true ;;
   /wendys/directory) route_allowed=true ;;
   /wendys/item) route_allowed=true ;;
@@ -3252,6 +3395,10 @@ if [ "$route_allowed" = false ]; then
   '^/reddit/subreddit/[^/]+/posts$'
   '^/reddit/user/[^/]+/comments$'
   '^/reddit/user/[^/]+/posts$'
+  '^/research/jobs/[^/]+$'
+  '^/research/jobs/[^/]+/cancel$'
+  '^/research/jobs/[^/]+/events$'
+  '^/research/jobs/[^/]+/results$'
   '^/rightmove/agents/[^/]+$'
   '^/rightmove/properties/[^/]+$'
   '^/rothys/collections/[^/]+/products$'
@@ -3332,6 +3479,9 @@ if [ "$route_allowed" = false ]; then
   '^/walmart/product/[^/]+$'
   '^/walmart/product/[^/]+/reviews$'
   '^/wayfair/product/[^/]+$'
+  '^/web/crawl/[^/]+$'
+  '^/web/crawl/[^/]+/cancel$'
+  '^/web/crawl/[^/]+/results$'
   '^/whatnot/live/[^/]+$'
   '^/whatnot/seller/[^/]+$'
   '^/wish/product/[^/]+$'
@@ -3625,15 +3775,22 @@ route_method_regexes=(
   '^GET:/barrons/headlines$'
   '^GET:/barrons/news$'
   '^GET:/barrons/topics$'
+  '^GET:/bbb/article$'
   '^GET:/bbb/business$'
   '^GET:/bbb/business/complaints$'
   '^GET:/bbb/business/more-info$'
   '^GET:/bbb/business/reviews$'
   '^GET:/bbb/category$'
+  '^GET:/bbb/local-bbb$'
+  '^GET:/bbb/local-bbbs$'
+  '^GET:/bbb/news$'
+  '^GET:/bbb/news/topics$'
+  '^GET:/bbb/regions$'
   '^GET:/bbb/scamtracker/[^/]+$'
   '^GET:/bbb/scamtracker/search$'
   '^GET:/bbb/scamtracker/state-stats$'
   '^GET:/bbb/search$'
+  '^GET:/bbb/search/filters$'
   '^GET:/bbc/article$'
   '^GET:/bbc/author$'
   '^GET:/bbc/headlines$'
@@ -4053,6 +4210,7 @@ route_method_regexes=(
   '^GET:/depop/shop/[^/]+$'
   '^GET:/depop/sizes$'
   '^GET:/depop/suggest$'
+  '^GET:/developer/sources$'
   '^GET:/discogs/artist/[^/]+$'
   '^GET:/discogs/artist/[^/]+/releases$'
   '^GET:/discogs/label/[^/]+$'
@@ -4240,24 +4398,54 @@ route_method_regexes=(
   '^GET:/flashscore/calendar$'
   '^GET:/flashscore/calendar-categories$'
   '^GET:/flashscore/competitions$'
+  '^GET:/flashscore/entity-news$'
+  '^GET:/flashscore/match-box-score$'
+  '^GET:/flashscore/match-darts$'
   '^GET:/flashscore/match-h2h$'
   '^GET:/flashscore/match-highlights$'
   '^GET:/flashscore/match-info$'
   '^GET:/flashscore/match-lineups$'
+  '^GET:/flashscore/match-missing-players$'
+  '^GET:/flashscore/match-momentum$'
   '^GET:/flashscore/match-news$'
+  '^GET:/flashscore/match-odds$'
+  '^GET:/flashscore/match-player-stats$'
+  '^GET:/flashscore/match-point-by-point$'
+  '^GET:/flashscore/match-predicted-lineups$'
+  '^GET:/flashscore/match-report$'
   '^GET:/flashscore/match-standings$'
   '^GET:/flashscore/match-stats$'
+  '^GET:/flashscore/match-tv$'
   '^GET:/flashscore/navigation$'
   '^GET:/flashscore/news$'
   '^GET:/flashscore/news-article$'
+  '^GET:/flashscore/news-article-body$'
   '^GET:/flashscore/news-categories$'
+  '^GET:/flashscore/news-most-read$'
+  '^GET:/flashscore/odds-geos$'
+  '^GET:/flashscore/player$'
+  '^GET:/flashscore/player-fixtures$'
+  '^GET:/flashscore/player-injuries$'
+  '^GET:/flashscore/player-match-log$'
+  '^GET:/flashscore/player-news$'
+  '^GET:/flashscore/player-results$'
+  '^GET:/flashscore/player-transfers$'
   '^GET:/flashscore/ranking-categories$'
   '^GET:/flashscore/rankings$'
   '^GET:/flashscore/scores$'
   '^GET:/flashscore/search$'
   '^GET:/flashscore/sports$'
+  '^GET:/flashscore/team$'
+  '^GET:/flashscore/team-fixtures$'
+  '^GET:/flashscore/team-news$'
+  '^GET:/flashscore/team-outright-odds$'
+  '^GET:/flashscore/team-results$'
+  '^GET:/flashscore/team-squad$'
+  '^GET:/flashscore/team-transfers$'
   '^GET:/flashscore/top-search$'
+  '^GET:/flashscore/tournament-archive-seasons$'
   '^GET:/flashscore/tournament-events$'
+  '^GET:/flashscore/tournament-outright-odds$'
   '^GET:/flashscore/tournament-seasons$'
   '^GET:/flashscore/tournament-standings$'
   '^GET:/flashscore/tournament-standings-views$'
@@ -5629,6 +5817,12 @@ route_method_regexes=(
   '^GET:/redfin/region-trends$'
   '^GET:/redfin/search$'
   '^GET:/redfin/similar$'
+  '^GET:/research/jobs/[^/]+$'
+  '^GET:/research/jobs/[^/]+/events$'
+  '^GET:/research/jobs/[^/]+/results$'
+  '^GET:/research/papers/metadata$'
+  '^GET:/research/papers/search$'
+  '^GET:/research/sources$'
   '^GET:/resy/availability$'
   '^GET:/resy/cuisines$'
   '^GET:/resy/event$'
@@ -5875,21 +6069,115 @@ route_method_regexes=(
   '^GET:/smh/headlines$'
   '^GET:/smh/news$'
   '^GET:/smh/sections$'
+  '^GET:/sofascore/categories$'
+  '^GET:/sofascore/category-tournaments$'
+  '^GET:/sofascore/draft$'
+  '^GET:/sofascore/draft-picks$'
+  '^GET:/sofascore/esports-game$'
   '^GET:/sofascore/event$'
+  '^GET:/sofascore/event-at-bat-pitches$'
+  '^GET:/sofascore/event-at-bats$'
+  '^GET:/sofascore/event-average-positions$'
+  '^GET:/sofascore/event-baseball-top-performers$'
+  '^GET:/sofascore/event-best-players$'
+  '^GET:/sofascore/event-comments$'
+  '^GET:/sofascore/event-esports-games$'
+  '^GET:/sofascore/event-graph$'
   '^GET:/sofascore/event-h2h$'
+  '^GET:/sofascore/event-highlights$'
   '^GET:/sofascore/event-incidents$'
+  '^GET:/sofascore/event-innings$'
   '^GET:/sofascore/event-lineups$'
+  '^GET:/sofascore/event-managers$'
   '^GET:/sofascore/event-odds$'
+  '^GET:/sofascore/event-player-heatmap$'
+  '^GET:/sofascore/event-player-statistics$'
+  '^GET:/sofascore/event-point-by-point$'
+  '^GET:/sofascore/event-pregame-form$'
+  '^GET:/sofascore/event-shotmap$'
   '^GET:/sofascore/event-statistics$'
+  '^GET:/sofascore/event-team-heatmap$'
+  '^GET:/sofascore/event-team-streaks$'
+  '^GET:/sofascore/event-tennis-power$'
+  '^GET:/sofascore/event-tv-channels$'
+  '^GET:/sofascore/event-votes$'
   '^GET:/sofascore/live-events$'
+  '^GET:/sofascore/manager$'
+  '^GET:/sofascore/manager-events$'
+  '^GET:/sofascore/mma-card$'
+  '^GET:/sofascore/mma-schedule$'
+  '^GET:/sofascore/odds-dropping$'
+  '^GET:/sofascore/odds-winning$'
   '^GET:/sofascore/player$'
+  '^GET:/sofascore/player-attributes$'
+  '^GET:/sofascore/player-events$'
+  '^GET:/sofascore/player-last-year-summary$'
+  '^GET:/sofascore/player-national-team-statistics$'
+  '^GET:/sofascore/player-penalty-history$'
+  '^GET:/sofascore/player-ratings$'
+  '^GET:/sofascore/player-season-heatmap$'
+  '^GET:/sofascore/player-season-statistics$'
+  '^GET:/sofascore/player-statistical-rankings$'
+  '^GET:/sofascore/player-statistics-seasons$'
+  '^GET:/sofascore/player-tournaments$'
+  '^GET:/sofascore/player-transfers$'
+  '^GET:/sofascore/ranking-types$'
+  '^GET:/sofascore/rankings$'
+  '^GET:/sofascore/referee$'
+  '^GET:/sofascore/referee-events$'
+  '^GET:/sofascore/referee-statistics$'
   '^GET:/sofascore/round-events$'
+  '^GET:/sofascore/scheduled-events$'
+  '^GET:/sofascore/scheduled-tournaments$'
   '^GET:/sofascore/search$'
+  '^GET:/sofascore/search-typed$'
+  '^GET:/sofascore/season-events$'
+  '^GET:/sofascore/sports$'
+  '^GET:/sofascore/stage$'
+  '^GET:/sofascore/stage-categories$'
+  '^GET:/sofascore/stage-driver-performance$'
+  '^GET:/sofascore/stage-featured$'
+  '^GET:/sofascore/stage-schedule$'
+  '^GET:/sofascore/stage-seasons$'
+  '^GET:/sofascore/stage-standings$'
+  '^GET:/sofascore/stage-substages$'
   '^GET:/sofascore/standings$'
   '^GET:/sofascore/team$'
+  '^GET:/sofascore/team-achievements$'
   '^GET:/sofascore/team-events$'
+  '^GET:/sofascore/team-goal-distributions$'
+  '^GET:/sofascore/team-near-events$'
+  '^GET:/sofascore/team-of-the-week$'
+  '^GET:/sofascore/team-of-the-week-periods$'
+  '^GET:/sofascore/team-performance$'
+  '^GET:/sofascore/team-player-statistics$'
+  '^GET:/sofascore/team-player-statistics-seasons$'
   '^GET:/sofascore/team-players$'
+  '^GET:/sofascore/team-rankings$'
+  '^GET:/sofascore/team-season-statistics$'
+  '^GET:/sofascore/team-statistics-seasons$'
+  '^GET:/sofascore/team-top-players$'
+  '^GET:/sofascore/team-tournaments$'
+  '^GET:/sofascore/team-transfers$'
+  '^GET:/sofascore/tennis-player-grand-slam-results$'
+  '^GET:/sofascore/tournament-cuptree$'
+  '^GET:/sofascore/tournament-info$'
+  '^GET:/sofascore/tournament-player-of-the-season$'
+  '^GET:/sofascore/tournament-player-statistics$'
+  '^GET:/sofascore/tournament-rounds$'
   '^GET:/sofascore/tournament-seasons$'
+  '^GET:/sofascore/tournament-statistics-info$'
+  '^GET:/sofascore/tournament-team-of-the-season$'
+  '^GET:/sofascore/tournament-teams$'
+  '^GET:/sofascore/tournament-top-players$'
+  '^GET:/sofascore/tournament-top-teams$'
+  '^GET:/sofascore/tournament-venues$'
+  '^GET:/sofascore/tournament-winners$'
+  '^GET:/sofascore/tournaments-with-feature$'
+  '^GET:/sofascore/trending-events$'
+  '^GET:/sofascore/trending-players$'
+  '^GET:/sofascore/venue$'
+  '^GET:/sofascore/venue-events$'
   '^GET:/sonic/availability$'
   '^GET:/sonic/categories$'
   '^GET:/sonic/deals$'
@@ -6485,6 +6773,9 @@ route_method_regexes=(
   '^GET:/wccftech/headlines$'
   '^GET:/wccftech/news$'
   '^GET:/wccftech/sections$'
+  '^GET:/web/capabilities$'
+  '^GET:/web/crawl/[^/]+$'
+  '^GET:/web/crawl/[^/]+/results$'
   '^GET:/wendys/categories$'
   '^GET:/wendys/directory$'
   '^GET:/wendys/item$'
@@ -6698,6 +6989,7 @@ route_method_regexes=(
   '^GET:/zomato/restaurant/menu$'
   '^GET:/zomato/search$'
   '^POST:/agoda/flights/itinerary-amenities$'
+  '^POST:/developer/search$'
   '^POST:/ebay/search$'
   '^POST:/expedia/activities/search$'
   '^POST:/expedia/flights/search$'
@@ -6726,12 +7018,20 @@ route_method_regexes=(
   '^POST:/polymarket/tokens/orderbooks$'
   '^POST:/polymarket/tokens/prices$'
   '^POST:/polymarket/tokens/spreads$'
+  '^POST:/research/jobs$'
+  '^POST:/research/jobs/[^/]+/cancel$'
+  '^POST:/research/papers/read$'
+  '^POST:/research/papers/related$'
   '^POST:/shein/products/aggregation-filters$'
   '^POST:/shein/products/search$'
   '^POST:/shein/search/autocomplete$'
   '^POST:/shein/search/keywords$'
   '^POST:/starbucks/product/[^/]+/[^/]+/nutrition$'
   '^POST:/vrbo/search$'
+  '^POST:/web/crawl$'
+  '^POST:/web/crawl/[^/]+/cancel$'
+  '^POST:/web/map$'
+  '^POST:/web/search$'
   '^POST:/yahoo-finance/download$'
   '^POST:/yahoo-finance/screener$'
 )

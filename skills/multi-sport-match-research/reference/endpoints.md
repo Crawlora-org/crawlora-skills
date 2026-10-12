@@ -13,7 +13,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `flashscore_calendar`
 
 - **HTTP:** `GET /flashscore/calendar`
-- **What:** Flashscore season calendar. Returns public tournament calendar entries, dates, winners when available, and competition paths for the current season.
+- **What:** Flashscore season calendar. Returns public tournament calendar entries for the current season, sorted by start date, with date ranges, UTC start and end times, host country, winners and winner paths when decided, and competition paths.
 - **Params:** `category` (string, **required**) — Calendar category from flashscore-calendar-categories
 
 ### `flashscore_calendar_categories`
@@ -139,7 +139,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `flashscore_tournament_seasons`
 
 - **HTTP:** `GET /flashscore/tournament-seasons`
-- **What:** Flashscore tournament archive seasons. Lists the seasons and winners from a public competition archive page. Discover archive paths through flashscore-navigation or flashscore-competitions. Each returned results_path and fixtures_path can be passed to flashscore-tournament-events to retrieve season event feeds.
+- **What:** Flashscore tournament archive seasons. Lists the seasons and winners (both players for doubles) from a public competition archive page. Discover archive paths through flashscore-navigation or flashscore-competitions. Each returned results_path and fixtures_path can be passed to flashscore-tournament-events to retrieve season event feeds.
 - **Params:** `path` (string, **required**) — Relative Flashscore competition archive path ending in /archive/
 
 ### `flashscore_tournament_standings`

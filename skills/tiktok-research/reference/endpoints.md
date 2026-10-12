@@ -121,8 +121,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tiktok_top_ads_location_info`
 
 - **HTTP:** `GET /tiktok/top-ads/location-info`
-- **What:** Retrieve TikTok Top Ads location info. Returns the initial location and industry context used by TikTok Creative Center Top Ads.
-- **Params:** `module` (integer, optional) — Creative Center module id
+- **What:** Retrieve TikTok Top Ads location info. Returns TikTok's inferred initial country and industry targeting context for Top Ads. Use it when you need starting targeting values; use the locations, filters, and list endpoints to choose criteria and retrieve ads.
+- **Params:** `module` (integer, optional) — Optional upstream Creative Center module identifier; omitted or 0 defaults to 1, other nonzero IDs are passed through without local range validation
 
 ### `tiktok_top_ads_locations`
 

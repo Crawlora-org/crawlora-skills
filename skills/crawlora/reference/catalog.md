@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**3325 endpoints across 463 platform group(s).**
+**3475 endpoints across 466 platform group(s).**
 
 ## 1stDibs (4)
 
@@ -632,8 +632,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `alt_listing`
 
 - **HTTP:** `GET /alt/listing`
-- **What:** Get one Alt listing's full public detail. One listing's full public detail -- title, description, price/bid state, grading info, and images -- normalized across Alt's own native listings and its aggregated external listings. id and listing_type come from a prior alt-search/alt-auctions result. Not every response field applies to every listing_type -- see the field-level notes in this endpoint's markdown doc.
-- **Params:** `id` (string, **required**) — The listing's id, from a Search/Auctions result's id field; `listing_type` (string, **required**) — The listing's listing_type from the same Search/Auctions result
+- **What:** Get one Alt listing's full public detail. One listing's full public detail -- title, description, price/bid state, grading info, and images -- normalized across Alt's own native listings and its aggregated external listings. id and listing_type come from a prior alt-search/alt-auctions result, or from an alt-sold-listings result's listing_id and listing_type for a completed sale on Alt itself. Not every response field applies to every listing_type -- see the field-level notes in this endpoint's markdown doc.
+- **Params:** `id` (string, **required**) — The listing's id, from a Search/Auctions result's id field, or a sold-listings result's listing_id for a completed sale on Alt itself; `listing_type` (string, **required**) — The listing's listing_type from the same Search/Auctions result
 
 ### `alt_market_trends`
 
@@ -650,7 +650,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `alt_sold_listings`
 
 - **HTTP:** `GET /alt/sold-listings`
-- **What:** Search Alt's completed sales archive. Searches Alt's global archive of completed card sales, aggregated across every source auction house its search carries -- the "market data" side of Alt's card-investment-marketplace positioning. This is a separate index from alt-search/alt-auctions, scoped to a rolling recent time window, not a filtered view of live listings. Pass auction_house=Alt to see only Alt's own completed auctions. Credential-free public data from Alt's own search backend. See alt-categories for the accepted category/auction_house/grading_company values.
+- **What:** Search Alt's completed sales archive. Searches Alt's global archive of completed card sales, aggregated across every source auction house its search carries -- the "market data" side of Alt's card-investment-marketplace positioning. This is a separate index from alt-search/alt-auctions, scoped to a rolling recent time window, not a filtered view of live listings. Pass auction_house=Alt to see only Alt's own completed sales. Each of Alt's own sales carries listing_id and listing_type -- pass both to alt-listing to get that item's certificate number -- and its url is the alt.xyz item page; a sale aggregated from another auction house carries that source site's own url instead. Credential-free public data from Alt's own search backend. See alt-categories for the accepted category/auction_house/grading_company values.
 - **Params:** `auction_house` (string, optional) — Comma-separated source auction house filter. Pass Alt to see only Alt's own completed auctions.; `category` (string, optional) — Comma-separated card category filter; `grading_company` (string, optional) — Comma-separated grading company filter; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 24, max 100; `q` (string, optional) — Free-text search across item name, subject, brand, and variety. Omit or pass * to browse the most recent sales.
 
 ### `alt_top_movers`
@@ -1471,7 +1471,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List Barron's topics. Lists every Barron's editorial topic accepted by /barrons/headlines' section parameter, with each topic's slug, display name, and landing-page URL.
 - **Params:** _none_
 
-## BBB (9)
+## BBB (16)
+
+### `bbb_article`
+
+- **HTTP:** `GET /bbb/article`
+- **What:** Get a BBB article. Returns published BBB article metadata, author names, body text, and useful links from a canonical public article URL.
+- **Params:** `url` (string, **required**) — Canonical BBB article URL
 
 ### `bbb_business`
 
@@ -1482,8 +1488,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bbb_business_complaints`
 
 - **HTTP:** `GET /bbb/business/complaints`
-- **What:** Get a Better Business Bureau business's complaint history. Returns a business's BBB complaint history: total complaint count, complaints closed in the last 12 months, and per-complaint detail (date, type, status, narrative text, and any business response / customer answer thread). A business with no filed complaints returns total_complaints 0 and an empty complaints list -- this is a normal result, not an error. Credential-free public Better Business Bureau data.
-- **Params:** `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url
+- **What:** Get a Better Business Bureau business's complaint history. Returns a business's BBB complaint history: total complaint count, complaints closed or filed in the last 12 months, and one page of per-complaint detail (date, type, status, narrative text, and any business response / customer answer thread). Complaints are listed newest first, 10 per page; use page with the returned page, total_pages and has_more to walk the full list. A business with no filed complaints returns total_complaints 0 and an empty complaints list -- this is a normal result, not an error. Credential-free public Better Business Bureau data.
+- **Params:** `page` (integer, optional) — Complaint list page, 1 or greater (10 complaints per page, newest first). Defaults to 1; `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url
 
 ### `bbb_business_more_info`
 
@@ -1500,8 +1506,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bbb_category`
 
 - **HTTP:** `GET /bbb/category`
-- **What:** Browse a Better Business Bureau category. Browses bbb.org businesses by category and location directly, without a free-text search query. Returns the same normalized business-result shape as bbb-search. Credential-free public Better Business Bureau data.
-- **Params:** `page` (integer, optional) — Result page, default 1; `url` (string, **required**) — BBB category browse URL, from a bbb-search result's related_categories
+- **What:** Browse a Better Business Bureau category. Browses bbb.org businesses by category and location directly, without a free-text search query. Returns the same normalized business-result shape as bbb-search. Optional sort and filter parameters use the same values as bbb-search; query-scoped category and state/province values come from bbb-search-filters. Credential-free public Better Business Bureau data.
+- **Params:** `accredited` (boolean, optional) — Only BBB-accredited businesses; `category_id` (array, optional) — Query-scoped category ID from bbb-search-filters; `distance` (string, optional) — Maximum distance in miles; omit for all distances; `get_quote` (boolean, optional) — Only businesses offering quote requests; `page` (integer, optional) — Result page, default 1; `rating` (array, optional) — One or more BBB rating buckets; `service_area` (boolean, optional) — Only businesses serving the searched area; `sort` (string, optional) — Sort order; `state` (array, optional) — Query-scoped state or province code from bbb-search-filters; `url` (string, **required**) — BBB category browse URL, from a bbb-search result's related_categories
+
+### `bbb_local_bbb`
+
+- **HTTP:** `GET /bbb/local-bbb`
+- **What:** Get a local BBB chapter profile. Returns public chapter profile details including office locations and hours, service territory, supported languages, and upcoming public events. Use a canonical chapter URL from bbb-local-bbbs or a business record's local_bbb_url. Credential-free public Better Business Bureau data.
+- **Params:** `url` (string, **required**) — Canonical BBB chapter URL from bbb-local-bbbs or a business record's local_bbb_url
+
+### `bbb_local_bbbs`
+
+- **HTTP:** `GET /bbb/local-bbbs`
+- **What:** List local BBB chapters serving a region. Lists every chapter and public office shown on BBB's directory page for a region discovered by bbb-regions. Office addresses can be outside the selected service region. Credential-free public Better Business Bureau data.
+- **Params:** `country` (string, **required**) — Country code from bbb-regions; `region` (string, **required**) — Two-letter region code from bbb-regions
+
+### `bbb_news`
+
+- **HTTP:** `GET /bbb/news`
+- **What:** Get BBB newsroom stories. Returns one page of public BBB newsroom stories from a canonical US or Canada newsroom URL. Event dates and links are preserved when present.
+- **Params:** `url` (string, **required**) — Canonical BBB newsroom or topic page URL; include page=N for pagination
+
+### `bbb_news_topics`
+
+- **HTTP:** `GET /bbb/news/topics`
+- **What:** List BBB newsroom topics. Returns the complete topic navigation shown by a US or Canada BBB newsroom page, including its active topic.
+- **Params:** `url` (string, **required**) — Canonical BBB newsroom page URL
+
+### `bbb_regions`
+
+- **HTTP:** `GET /bbb/regions`
+- **What:** List Better Business Bureau directory regions. Returns the complete current country and region list from BBB's public local directory. Use the returned region code with bbb-local-bbbs. Credential-free public Better Business Bureau data.
+- **Params:** _none_
 
 ### `bbb_scamtracker_detail`
 
@@ -1524,8 +1560,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bbb_search`
 
 - **HTTP:** `GET /bbb/search`
-- **What:** Search Better Business Bureau businesses. Searches bbb.org for businesses by name or category near a location. Returns each business's BBB rating letter grade, accreditation status, categories, service areas, contact info, and profile URL. Credential-free public Better Business Bureau data.
-- **Params:** `location` (string, **required**) — City and state (e.g. 'Austin, TX') or a ZIP code; `page` (integer, optional) — Result page, default 1; `query` (string, **required**) — Business name or category/service keyword
+- **What:** Search Better Business Bureau businesses. Searches bbb.org for businesses by name or category near a location. Returns each business's BBB rating letter grade, accreditation status, categories, service areas, contact info, and profile URL. Category IDs and state/province codes are query-scoped; call bbb-search-filters to discover values for this query and location. Credential-free public Better Business Bureau data.
+- **Params:** `accredited` (boolean, optional) — Only BBB-accredited businesses; `category_id` (array, optional) — Query-scoped category ID from bbb-search-filters; `country` (string, optional) — BBB country code; `distance` (string, optional) — Maximum distance in miles; omit for all distances; `get_quote` (boolean, optional) — Only businesses offering quote requests; `location` (string, **required**) — City and state (e.g. 'Austin, TX') or a ZIP code; `page` (integer, optional) — Result page, default 1; `query` (string, **required**) — Business name or category/service keyword; `rating` (array, optional) — One or more BBB rating buckets; `service_area` (boolean, optional) — Only businesses serving the searched area; `sort` (string, optional) — Sort order; `state` (array, optional) — Query-scoped state or province code from bbb-search-filters
+
+### `bbb_search_filters`
+
+- **HTTP:** `GET /bbb/search/filters`
+- **What:** Discover Better Business Bureau search filters. Returns the live sort, category, and state/province values BBB currently advertises for one context. Supply query and location for text search, or category_url for the exact category-browse context; do not combine these modes. Category IDs and state/province codes are query-scoped; call this endpoint again when the search context changes. Static accepted values are country USA or CAN; sort Relevance, Distance, Rating, AToZ, or ZToA; distance 5, 10, 25, 50, or 100 miles; rating A, B, C, D, or F. Credential-free public Better Business Bureau data.
+- **Params:** `accredited` (boolean, optional) — Only BBB-accredited businesses; `category_id` (array, optional) — Selected category IDs previously returned for this search context; `category_url` (string, optional) — BBB category browse URL; use instead of query and location; `country` (string, optional) — BBB country code; `distance` (string, optional) — Maximum distance in miles; omit for all distances; `get_quote` (boolean, optional) — Only businesses offering quote requests; `location` (string, optional) — City and state/province or ZIP code; use with query when category_url is omitted; `page` (integer, optional) — Result page, default 1; `query` (string, optional) — Business name or category/service keyword; use with location when category_url is omitted; `rating` (array, optional) — Selected rating values; `service_area` (boolean, optional) — Only businesses serving the searched area; `sort` (string, optional) — Sort order; `state` (array, optional) — Selected state/province codes previously returned for this search context
 
 ## BBC (5)
 
@@ -4986,7 +5028,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fanaticscollect_sold_items`
 
 - **HTTP:** `GET /fanaticscollect/sold-items`
-- **What:** Search Fanatics Collect sold items. Searches Fanatics Collect's sales-history archive -- every completed sale across every marketplace, not just what the live search index currently surfaces. A separate product from Search, reached from the "View all sold items" link on every marketplace search page. Credential-free public data from Fanatics Collect's own public sales-history API. See GetCategories for the accepted category, grading-service, eye-appeal-grade, and sort values.
+- **What:** Search Fanatics Collect sold items. Searches Fanatics Collect's sales-history archive -- every completed sale across every marketplace, not just what the live search index currently surfaces. A separate product from Search, reached from the "View all sold items" link on every marketplace search page. purchase_price is what the buyer paid in US dollars: for WEEKLY and PREMIER auction sales it includes the buyer's premium, so it is higher than the listing's final bid; for FIXED sales it equals the asking price. Credential-free public data from Fanatics Collect's own public sales-history API. See GetCategories for the accepted category, grading-service, eye-appeal-grade, and sort values.
 - **Params:** `category` (string, optional) — Item category; `eye_appeal_grade` (string, optional) — Eye-appeal grade; `grading_service` (string, optional) — Grading/authentication service, including ungraded for raw items; `max_price` (number, optional) — Maximum sold price, inclusive; `max_year` (integer, optional) — Maximum card/item year, inclusive; `min_price` (number, optional) — Minimum sold price, inclusive; `min_year` (integer, optional) — Minimum card/item year, inclusive; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 20, max 100; `sort` (string, optional) — Result order. Default sold_date_desc.; `title` (string, optional) — Free-text search across item title
 
 ### `fanaticscollect_trending_searches`
@@ -5327,12 +5369,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Fiverr seller profile. Returns a normalized Fiverr seller profile: display name, one-liner title, description, country, seller level, verification status, hourly rate, spoken languages, join date, and the seller's gig ids. Public data sourced from Fiverr's own server-rendered seller profile pages via a real browser-rendering backend. Seller level uses the same values on the search, seller and gig endpoints: level_one_seller, level_two_seller, top_rated_seller, or new_seller.
 - **Params:** `username` (string, **required**) — Fiverr seller username, e.g. from a search result's seller_username field
 
-## Flashscore (24)
+## Flashscore (54)
 
 ### `flashscore_calendar`
 
 - **HTTP:** `GET /flashscore/calendar`
-- **What:** Flashscore season calendar. Returns public tournament calendar entries, dates, winners when available, and competition paths for the current season.
+- **What:** Flashscore season calendar. Returns public tournament calendar entries for the current season, sorted by start date, with date ranges, UTC start and end times, host country, winners and winner paths when decided, and competition paths.
 - **Params:** `category` (string, **required**) — Calendar category from flashscore-calendar-categories
 
 ### `flashscore_calendar_categories`
@@ -5346,6 +5388,24 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /flashscore/competitions`
 - **What:** Flashscore competitions by sport and date. Discovers competitions present in a selected sport's score feed, including the provider competition id, label, region, canonical path, and event count. This is the active feed-date inventory, not an archive of inactive or historical seasons.
 - **Params:** `day_offset` (integer, optional) — Days from today; -7 to 7; defaults to 0; `sport` (string, **required**) — Sport key
+
+### `flashscore_entity_news`
+
+- **HTTP:** `GET /flashscore/entity-news`
+- **What:** Flashscore news for a team, player, tournament or sport. Returns the article ids of Flashscore's own news layout for one entity: the featured article plus the 25 most recent ones, grouped in the sections Flashscore shows. The layout has no pagination. Resolve the ids with flashscore-news-article (metadata) or flashscore-news-article-body (full text). Teams and players share one layout type. A tournament is a tournament template id (the competition id in event lists); a sport is one of the SPORT entity ids listed by flashscore-news-categories. An id with no news layout returns not found.
+- **Params:** `id` (string, **required**) — Eight-character entity id: team or player id, tournament template id, or a SPORT entity id from flashscore-news-categories; `type` (string, **required**) — Entity type
+
+### `flashscore_match_box_score`
+
+- **HTTP:** `GET /flashscore/match-box-score`
+- **What:** Flashscore basketball, hockey and baseball box score. Returns the per-player box score of a basketball, hockey or baseball match: one table per team (hockey adds a goalkeeper table and baseball a pitcher table) with the statistic columns the provider defines for that sport, and each player's value per column, or null where Flashscore shows a dash. Other sports and matches without box-score coverage return not found.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore match id
+
+### `flashscore_match_darts`
+
+- **HTTP:** `GET /flashscore/match-darts`
+- **What:** Flashscore darts throw-by-throw and statistics. Returns a darts match leg by leg: who started and won each leg, the leg score, every visit with the points scored, the score remaining and 180 or 140-plus highlights, and the score the winner finished from, plus the statistics comparison (three-dart average, 180s, 140+ and 100+ visits, checkout percentage, highest checkout). Streamed events whose scoring is not tracked and non-darts matches return not found.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore match id
 
 ### `flashscore_match_h2h`
 
@@ -5371,10 +5431,52 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Flashscore match lineups and formations. Returns the public starting-lineup and formation feed as the provider's raw delimited text. Matches without published lineups return not found.
 - **Params:** `id` (string, **required**) — Eight-character Flashscore match id
 
+### `flashscore_match_missing_players`
+
+- **HTTP:** `GET /flashscore/match-missing-players`
+- **What:** Flashscore missing and doubtful players. Returns the players listed as missing and as doubtful for each side of a match, with the stated reason. Empty lists are a valid answer: nobody is reported missing, or the match has no coverage. Expected return dates are not provided by the source.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore match id
+
+### `flashscore_match_momentum`
+
+- **HTTP:** `GET /flashscore/match-momentum`
+- **What:** Flashscore football match momentum. Returns the per-minute momentum series of a football match (values from -1 to 1, positive favouring the home side) with the half and stoppage-time marker of each minute, and the key events plotted on it (goals, own goals, penalties, red cards) with their team and player. Matches without momentum coverage and non-football matches return not found.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore football match id
+
 ### `flashscore_match_news`
 
 - **HTTP:** `GET /flashscore/match-news`
 - **What:** Flashscore match news references. Returns article references from the public news layout associated with a match. Article content is not included; use the article id with flashscore-news-article for public metadata.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore match id
+
+### `flashscore_match_odds`
+
+- **HTTP:** `GET /flashscore/match-odds`
+- **What:** Flashscore match bookmaker odds comparison. Returns bookmaker odds for a match in one viewer market, grouped by betting type and scope with every bookmaker's priced outcomes, opening odds, handicap or total lines, and a normalized selection label. Bookmakers and prices depend on the market, so pick geo (and subdivision for US or CA) from flashscore-odds-geos. A market with no licensed bookmakers returns empty lists. Promotional bonus text is not included.
+- **Params:** `betting_type` (string, optional) — Optional filter to one betting type; `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `id` (string, **required**) — Eight-character Flashscore match id; `scope` (string, optional) — Optional filter to one scope; `subdivision` (string, optional) — US state (with geo US) or Canadian province (with geo CA) code from flashscore-odds-geos; rejected with any other geo
+
+### `flashscore_match_player_stats`
+
+- **HTTP:** `GET /flashscore/match-player-stats`
+- **What:** Flashscore football player match statistics and ratings. Returns per-player statistics for a football match with player-statistics coverage: the Flashscore rating, highlight badges and every statistic of the player-statistics tabs (shots, expected goals, passes, duels, goalkeeping and more) with display text, unrounded value and rank, plus the statistic and group definitions. The full response is large; narrow it with group, or with player_id for a single player. Other sports and matches without coverage return not found.
+- **Params:** `group` (string, optional) — Optional statistic group; `id` (string, **required**) — Eight-character Flashscore football match id; `player_id` (string, optional) — Eight-character Flashscore player id from this match; returns only that player
+
+### `flashscore_match_point_by_point`
+
+- **HTTP:** `GET /flashscore/match-point-by-point`
+- **What:** Flashscore point-by-point scoring history. Returns the scoring history of a tennis, volleyball, badminton, handball or basketball match, grouped by set, quarter or half. Tennis lists each game with its server, winner, the running score inside the game and break, set and match point flags, plus tiebreak points; the other sports list every rally or basket with the leading side's margin. When a tennis match is live, current_game holds the game or tiebreak in progress. Other sports and matches without coverage return not found.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore match id
+
+### `flashscore_match_predicted_lineups`
+
+- **HTTP:** `GET /flashscore/match-predicted-lineups`
+- **What:** Flashscore predicted lineups. Returns each side's predicted formation, predicted starters with position tags and player details, lineup groups, and coaches. Predictions usually appear shortly before kickoff for covered matches; a match with no predicted players on either side returns not found.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore match id
+
+### `flashscore_match_report`
+
+- **HTTP:** `GET /flashscore/match-report`
+- **What:** Flashscore editorial match report. Returns Flashscore's written match report: title, author, publication time, the full text as ordered paragraphs and inline images (with links to teams, players and competitions kept as structured data), and the credited photos. Only matches with editorial coverage have a report; every other match returns not found.
 - **Params:** `id` (string, **required**) — Eight-character Flashscore match id
 
 ### `flashscore_match_standings`
@@ -5388,6 +5490,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /flashscore/match-stats`
 - **What:** Flashscore match statistics. Returns Flashscore's public delimited statistics feed for a match id copied from a Flashscore match URL. The raw upstream feed is preserved as text because its format is not JSON.
 - **Params:** `id` (string, **required**) — Eight-character Flashscore match id
+
+### `flashscore_match_tv`
+
+- **HTTP:** `GET /flashscore/match-tv`
+- **What:** Flashscore match TV and streaming broadcasters. Returns the TV channels and streaming services listed for a match in one viewer market, with provider ids, names and website links. Listings are country specific, so pick geo from flashscore-odds-geos; an empty list means no broadcaster is listed for that market. Bookmaker promotions are not included.
+- **Params:** `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `id` (string, **required**) — Eight-character Flashscore match id
 
 ### `flashscore_navigation`
 
@@ -5407,11 +5515,71 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Flashscore news article metadata. Returns public article metadata and image credits for an article id from a Flashscore match news listing. Article body text is not included.
 - **Params:** `id` (string, **required**) — Eight-character Flashscore article id
 
+### `flashscore_news_article_body`
+
+- **HTTP:** `GET /flashscore/news-article-body`
+- **What:** Flashscore news article with full text. Returns a Flashscore article with its headline, standfirst, author, source credit, tags, publication and edit times, cover image and the full body converted to plain-text paragraphs and headings with structured links to players, teams, matches and other articles. Embedded posts, images and info boxes are kept as placeholder blocks, not in the text. Live blogs work too. An unknown article id returns not found. For metadata and image variants only, use flashscore-news-article.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore news article id from a news listing, flashscore-entity-news or flashscore-news-most-read
+
 ### `flashscore_news_categories`
 
 - **HTTP:** `GET /flashscore/news-categories`
 - **What:** Flashscore News categories. Returns the exact currently usable public News section keys, names, and source paths from the live navigation inventory. Olympic Games is excluded because its linked page currently returns 404.
 - **Params:** _none_
+
+### `flashscore_news_most_read`
+
+- **HTTP:** `GET /flashscore/news-most-read`
+- **What:** Flashscore most-read news. Returns Flashscore's site-wide list of the most-read news articles right now (about 20) in the provider's order, with title, slug, path, publication time and cover image. Use flashscore-news-article-body for an article's full text.
+- **Params:** _none_
+
+### `flashscore_odds_geos`
+
+- **HTTP:** `GET /flashscore/odds-geos`
+- **What:** Flashscore odds markets, subdivisions and odds enums. Lists every country code accepted by flashscore-match-odds and flashscore-match-tv (with whether bookmakers were found for it when verified), the US states and Canadian provinces that change the bookmaker list, and every betting type, scope and handicap type that can appear in odds responses.
+- **Params:** _none_
+
+### `flashscore_player`
+
+- **HTTP:** `GET /flashscore/player`
+- **What:** Flashscore player profile and career. Returns a player's public profile: name, country, birth date, sport, photo and current team, plus (for team-sport players) position, age, market value, contract expiry, extra details such as height, and career statistics by season, team and competition grouped into league, domestic cups, international cups and national team. Players of individual sports such as tennis return the profile (and ranking text) without a career table.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore player id; `slug` (string, optional) — Optional player slug; must match the id when supplied
+
+### `flashscore_player_fixtures`
+
+- **HTTP:** `GET /flashscore/player-fixtures`
+- **What:** Flashscore player fixtures. Returns one page of an individual-sport player's upcoming matches (tennis, darts, golf, snooker and similar), soonest first, as structured events. Football, basketball and hockey players have no event list and return an empty list; use flashscore-team-fixtures for their team. Request successive pages until event_count is 0.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore player id; `page` (integer, optional) — 1-based page from 1 to 300; defaults to 1
+
+### `flashscore_player_injuries`
+
+- **HTTP:** `GET /flashscore/player-injuries`
+- **What:** Flashscore player injury history. Returns a team-sport player's injury history, newest first, with start date, end date (absent while unresolved) and injury type. A player with no recorded injuries returns an empty list. Players of individual sports have no injury page and return not found.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore player id; `slug` (string, optional) — Optional player slug; must match the id when supplied
+
+### `flashscore_player_match_log`
+
+- **HTTP:** `GET /flashscore/player-match-log`
+- **What:** Flashscore player match log. Returns one page of a football, basketball or hockey player's match log, newest first: each match with date, both sides and scores, competition, the player's rating and labelled statistics (minutes, goals, assists, cards, goalkeeper saves, points, rebounds, time on ice and more depending on the sport). Matches without statistics say why (on the bench, injured, suspended). Page 1 holds the 10 newest matches and every later page 25 older ones; request pages until has_more is false. Players of individual sports return an empty list, use flashscore-player-results for those.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore player id; `page` (integer, optional) — 1-based page from 1 to 300; defaults to 1
+
+### `flashscore_player_news`
+
+- **HTTP:** `GET /flashscore/player-news`
+- **What:** Flashscore player news. Returns up to 100 recent headlines about a player, aggregated from news publishers, with publisher, publication time and image. Links point to Flashscore's redirect to the publisher. A player without news returns an empty list. A team id returns not found, use flashscore-team-news for teams.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore player id
+
+### `flashscore_player_results`
+
+- **HTTP:** `GET /flashscore/player-results`
+- **What:** Flashscore player results. Returns one page of an individual-sport player's finished and in-progress matches (tennis, darts, golf, snooker and similar), newest first, as structured events with start time, stage, both sides, score and competition. Competition blocks carry tournament_id and tournament_stage_id for the tournament endpoints. Football, basketball and hockey players have no event list and return an empty list, use flashscore-player-match-log for those. Request successive pages until event_count is 0.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore player id; `page` (integer, optional) — 1-based page from 1 to 300; defaults to 1
+
+### `flashscore_player_transfers`
+
+- **HTTP:** `GET /flashscore/player-transfers`
+- **What:** Flashscore player transfer history. Returns a team-sport player's club history, newest first, with date, type such as Loan or Free agent, fee text and the clubs on each side. A player with no recorded transfers returns an empty list. Players of individual sports have no transfers page and return not found.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore player id; `slug` (string, optional) — Optional player slug; must match the id when supplied
 
 ### `flashscore_ranking_categories`
 
@@ -5443,11 +5611,59 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Flashscore sports and live category counts. Returns every sport category visible in Flashscore's score navigation, with sport id, caller key, page path, and current event/competition counts. Counts are a live snapshot and may be zero when the sport has no fixtures in the current feed window.
 - **Params:** _none_
 
+### `flashscore_team`
+
+- **HTTP:** `GET /flashscore/team`
+- **What:** Flashscore team profile. Returns a team's public profile: name, country, sport, logo, the stadium and capacity shown on its summary page, and the competitions of its recent and upcoming fixtures. Use a team id from flashscore-search, a Flashscore team URL, a match endpoint's team ids, or flashscore-team-squad and flashscore-player. A player id returns not found.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore team id
+
+### `flashscore_team_fixtures`
+
+- **HTTP:** `GET /flashscore/team-fixtures`
+- **What:** Flashscore team fixtures. Returns one page of a team's upcoming matches, soonest first, as structured events with start time, both sides and competition. Event ids work with the flashscore match endpoints. Request successive pages until event_count is 0; a page past the end returns an empty list.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore team id; `page` (integer, optional) — 1-based page from 1 to 300; defaults to 1
+
+### `flashscore_team_news`
+
+- **HTTP:** `GET /flashscore/team-news`
+- **What:** Flashscore team news headlines. Returns up to 100 recent headlines that Flashscore aggregates from news publishers for a team: title, publisher, publication time, image and a Flashscore link that redirects to the publisher's article. These are third-party headlines, separate from Flashscore's own articles in flashscore-news. Article text is not included.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore team id
+
+### `flashscore_team_outright_odds`
+
+- **HTTP:** `GET /flashscore/team-outright-odds`
+- **What:** Flashscore team title odds. Returns the title odds bookmakers list for a team in one viewer market, grouped by the competitions it is priced in (league, cup, European competition) with every bookmaker's price and last movement. Pick geo (and subdivision for US or CA) from flashscore-odds-geos. A team with no listed title odds returns empty lists; a player id returns not found.
+- **Params:** `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `id` (string, **required**) — Eight-character Flashscore team id; `subdivision` (string, optional) — US state (with geo US) or Canadian province (with geo CA) code from flashscore-odds-geos; rejected with any other geo
+
+### `flashscore_team_results`
+
+- **HTTP:** `GET /flashscore/team-results`
+- **What:** Flashscore team results. Returns one page of a team's finished and in-progress matches, newest first, as structured events with start time, stage, both sides, score and competition. Event ids work with the flashscore match endpoints. Request successive pages until event_count is 0; a page past the end returns an empty list.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore team id; `page` (integer, optional) — 1-based page from 1 to 300; defaults to 1
+
+### `flashscore_team_squad`
+
+- **HTTP:** `GET /flashscore/team-squad`
+- **What:** Flashscore team squad. Returns a team's squad grouped by position (goalkeepers, defenders, and so on, plus the coach) with each person's jersey number, age, country (or club, for national teams), injury or absence note and season statistics. The default scope totals all competitions; the scopes list in every response names the per-competition scopes accepted by the scope parameter. Sports without a squad page return not found.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore team id; `scope` (string, optional) — Squad statistics scope key from the scopes list of a previous response (for example overall-all or league-SY30SsKF); defaults to overall-all; `slug` (string, optional) — Optional team slug; must match the id when supplied
+
+### `flashscore_team_transfers`
+
+- **HTTP:** `GET /flashscore/team-transfers`
+- **What:** Flashscore team transfers. Returns one page (30 rows) of a team's transfer history, newest first: date, direction (in or out), type such as Loan or Transfer, fee text, the player and the clubs on each side. Filter by type to see arrivals or departures only. Request successive pages until transfer_count is 0.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore team id; `page` (integer, optional) — 1-based page from 1 to 300; defaults to 1; `type` (string, optional) — Transfer direction filter; defaults to all
+
 ### `flashscore_top_search`
 
 - **HTTP:** `GET /flashscore/top-search`
 - **What:** Flashscore top search entities. Returns the ten-or-fewer public team, player, and tournament results shown in Flashscore's search overlay. This is a changing curated list, not a complete entity directory.
 - **Params:** _none_
+
+### `flashscore_tournament_archive_seasons`
+
+- **HTTP:** `GET /flashscore/tournament-archive-seasons`
+- **What:** Flashscore competition seasons by stage id. Returns every season of the competition that owns a tournament stage: season label, season tournament id, whether it is current, the winning participants and the stage ids of each season, plus the requested stage's names and page tabs (summary, odds, standings, results, fixtures, draw, news). Get a stage id from tournament_stage_id in the competition block of team, player and match event lists, then reuse the stage ids returned here for older seasons. Pass a stage id, not a season tournament id or a competition id: other ids can return an unrelated competition, so check the returned tournament name. An unknown stage id returns not found.
+- **Params:** `stage_id` (string, **required**) — Eight-character tournament stage id (tournament_stage_id of an event competition block)
 
 ### `flashscore_tournament_events`
 
@@ -5455,10 +5671,16 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Flashscore tournament season results or fixtures. Returns a page of the public results or fixtures feed for any supported sport and competition path. Page 1 is embedded in the public tournament page; later pages follow its Show more feed sequence. Sum event_count from successive pages until total_events is reached.
 - **Params:** `page` (integer, optional) — 1-based page; defaults to 1; `path` (string, **required**) — Relative Flashscore competition season results or fixtures path
 
+### `flashscore_tournament_outright_odds`
+
+- **HTTP:** `GET /flashscore/tournament-outright-odds`
+- **What:** Flashscore competition winner odds. Returns the title odds bookmakers list for one competition season in one viewer market, grouped by participant with every bookmaker's price and last movement. The provider lists only the top favourites (three in every competition checked), so this is a favourites market, not the full field. Bookmakers depend on the market: pick geo (and subdivision for US or CA) from flashscore-odds-geos. A market with no listed odds returns empty lists. Use the season-level tournament_id from event competition blocks or flashscore-tournament-archive-seasons.
+- **Params:** `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `subdivision` (string, optional) — US state (with geo US) or Canadian province (with geo CA) code from flashscore-odds-geos; rejected with any other geo; `tournament_id` (string, **required**) — Eight-character season-level tournament id (tournament_id of an event competition block or of a season)
+
 ### `flashscore_tournament_seasons`
 
 - **HTTP:** `GET /flashscore/tournament-seasons`
-- **What:** Flashscore tournament archive seasons. Lists the seasons and winners from a public competition archive page. Discover archive paths through flashscore-navigation or flashscore-competitions. Each returned results_path and fixtures_path can be passed to flashscore-tournament-events to retrieve season event feeds.
+- **What:** Flashscore tournament archive seasons. Lists the seasons and winners (both players for doubles) from a public competition archive page. Discover archive paths through flashscore-navigation or flashscore-competitions. Each returned results_path and fixtures_path can be passed to flashscore-tournament-events to retrieve season event feeds.
 - **Params:** `path` (string, **required**) — Relative Flashscore competition archive path ending in /archive/
 
 ### `flashscore_tournament_standings`
@@ -7412,7 +7634,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gucci_product`
 
 - **HTTP:** `GET /gucci/product`
-- **What:** Get a Gucci product. Returns full normalized product detail for one style: name, marketing description, breadcrumb trail, brand line, gender, colors, materials, sizes, price, images, and stock -- combining Gucci's own structured product record with the product page's own marketing copy. style_code comes from gucci-search's or gucci-category's own style_code field.
+- **What:** Get a Gucci product. Returns product detail for one style: name, price, images, stock, and PDP attributes available from Gucci's current storefront, including description, breadcrumbs, SKU, colors, materials, and sizes. style_code comes from gucci-search's or gucci-category's own style_code field. PDP-only fields are omitted if the detail page is unavailable.
 - **Params:** `style_code` (string, **required**) — Product style code, from gucci-search's or gucci-category's own style_code field
 
 ### `gucci_recommendations`
@@ -7424,8 +7646,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gucci_search`
 
 - **HTTP:** `GET /gucci/search`
-- **What:** Search Gucci's product catalog. Searches Gucci's product catalog by keyword: normalized product summaries (name, price, colors, materials, sizes, gender, stock) with the search index's own live total result count. A genuinely empty result (e.g. a nonsense query) returns a well-formed empty products list, not an error. The response's own size_facets field lists every size value present in the result set (with live counts) -- pass one of those values as size on a follow-up call to filter to just that size.
-- **Params:** `limit` (integer, optional) — Results per page, defaults to 24, maximum 100; `page` (integer, optional) — One-based page number, defaults to 1; `q` (string, **required**) — Search keyword; `size` (string, optional) — Filter to products listing this exact size as available (e.g. \
+- **What:** Search Gucci's product catalog. Searches Gucci's US product catalog by keyword using the storefront's public catalog. Results include card-level data and the live total count; per-product colors, materials, sizes, gender, and line are omitted when the search source does not provide them. A genuinely empty result returns a well-formed empty products list. The response's size_facets field lists live size values and counts -- pass one as size on a follow-up call to filter.
+- **Params:** `limit` (integer, optional) — Results per page, defaults to 24, maximum 100; `page` (integer, optional) — One-based page number, defaults to 1; `q` (string, **required**) — Search keyword; `size` (string, optional) — Filter to products listing this exact size as available. See size_facets for live values -- omit size to see all sizes first.
 
 ### `gucci_size_guide`
 
@@ -7454,7 +7676,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gucci_suggest`
 
 - **HTTP:** `GET /gucci/suggest`
-- **What:** Gucci search-box suggestions. Returns Gucci's own search-box typeahead suggestions for a partial query, each with its own live total result count on the search index. Not product data -- pass a suggestion's own query value straight into gucci-search for results.
+- **What:** Gucci search-box suggestions. Returns Gucci's own search-box typeahead suggestions for a partial query. The current public suggestion source does not provide per-phrase result counts. Not product data -- pass a suggestion's query into gucci-search for results.
 - **Params:** `limit` (integer, optional) — Maximum suggestions to return, defaults to 5, maximum 20; `q` (string, **required**) — Partial search query
 
 ## Gulf News (5)
@@ -7862,7 +8084,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `homedepot_search`
 
 - **HTTP:** `GET /homedepot/search`
-- **What:** Home Depot keyword search. Returns one page (up to 12 products) of a Home Depot keyword search's product listing: normalized products with title, image, model, current/original price, and rating/review count, plus the search's total result count. q is free-text search keywords, e.g. "impact driver". page is a 1-indexed page number (default 1). An unrecognized/blocked query returns an upstream error rather than an empty result.
+- **What:** Home Depot keyword search. Returns one page of a Home Depot keyword search's product listing: normalized products with title, image, model, current/original price, and rating/review count, plus the search's total result count. A page carries up to 24 products, or up to 12 when Home Depot answers the query with a category page. q is free-text search keywords, e.g. "impact driver". page is a 1-indexed page number (default 1). An unrecognized/blocked query returns an upstream error rather than an empty result.
 - **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `q` (string, **required**) — Free-text search keywords, e.g. \
 
 ### `homedepot_suggest`
@@ -13965,13 +14187,80 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Redfin comparable listings. Returns Redfin's comparable ("similar") listings for a property as normalized listing rows. Faithful pass-through of Redfin's public similars resource.
 - **Params:** `property_id` (string, **required**) — Redfin property id
 
+## Research (5)
+
+### `research_inspect_paper`
+
+- **HTTP:** `GET /research/papers/metadata`
+- **What:** Inspect paper metadata. Return normalized paper records including titles, abstracts when available, authors, publication dates and verified identifier aliases. Europe PMC resolution is limited to MED-backed PMID, PMCID and DOI records; no full-text body is fetched.
+- **Params:** `paper_id` (string, **required**) — arXiv identifier, PMID, PMCID, DOI, Europe PMC primary ID or canonical paper ID
+
+### `research_read_paper`
+
+- **HTTP:** `POST /research/papers/read`
+- **What:** Read a research paper. Return licensed Europe PMC body prose, question-ranked passages, byte locators, license and content provenance. Restricted or unavailable bodies return metadata-only availability; arXiv does not fetch PDFs. Full text costs 5 credits, metadata-only reads 1.
+- **Params:** `request` (object, **required**) — Paper read request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
+
+### `research_related_papers`
+
+- **HTTP:** `POST /research/papers/related`
+- **What:** Get paper references or citing papers. Return one-hop Europe PMC citation edges, canonical seed IDs, source provenance and a frozen owner-bound cursor. Modes are references and citers; intent is unsupported. Partial results explicitly report indexed-source and candidate-window limits.
+- **Params:** `request` (object, **required**) — Seed IDs and graph direction, or cursor and optional limit
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
+
+### `research_search_papers`
+
+- **HTTP:** `GET /research/papers/search`
+- **What:** Search research papers. Search arXiv papers with an owner-bound frozen result window and cursor-only continuation.
+- **Params:** `authors` (array, optional) — Author names (up to five; 256 characters each); `cursor` (string, optional) — Owner-bound continuation cursor (cursor-only with optional limit); `limit` (integer, optional) — Page size (1–50; default 10); `published_from` (string, optional) — Inclusive publication date (YYYY-MM-DD); `published_to` (string, optional) — Inclusive publication date (YYYY-MM-DD); `q` (string, optional) — Required for initial search; omit on cursor continuation; `sources` (array, optional) — Enabled paper sources
+
+### `research_sources`
+
+- **HTTP:** `GET /research/sources`
+- **What:** List paper sources. Return the stable authenticated paper source registry, including arXiv search and MED-backed Europe PMC metadata, licensed text and citation operations.
+- **Params:** _none_
+
+## Research Jobs (5)
+
+### `research_cancel`
+
+- **HTTP:** `POST /research/jobs/{job_id}/cancel`
+- **What:** Cancel a research job. Requests cancellation of the authenticated owner's research job. The existing job kind is checked before the state is changed.
+- **Params:** `job_id` (string, **required**) — Research job ID
+
+### `research_events`
+
+- **HTTP:** `GET /research/jobs/{job_id}/events`
+- **What:** Read research job events. Reads a signed owner-bound page of research job events. `limit` defaults to 50 and accepts 1 through 100.
+- **Params:** `cursor` (string, optional) — Signed event cursor; `job_id` (string, **required**) — Research job ID; `limit` (integer, optional) — Page size from 1 through 100; default 50
+
+### `research_results`
+
+- **HTTP:** `GET /research/jobs/{job_id}/results`
+- **What:** Read all retained research results. Returns the complete owner-scoped retained result prefix up to a consistent manifest sequence. Before a valid report or structured result exists, returns `ready=false` with `partial=true` and any retained evidence.
+- **Params:** `job_id` (string, **required**) — Research job ID
+
+### `research_start`
+
+- **HTTP:** `POST /research/jobs`
+- **What:** Start a durable cross-corpus research job. Submits bounded research over the selected web, arXiv paper, and developer-document sources. Repeated owner-scoped idempotency requests return the original job.
+- **Params:** `request` (object, **required**) — Research request; `scope` is `web`, `papers`, `developer`, or `mixed`; `output_format` is `report` or `json`.
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
+
+### `research_status`
+
+- **HTTP:** `GET /research/jobs/{job_id}`
+- **What:** Read a research job status. Returns the authenticated owner's research job state, progress, and cumulative usage.
+- **Params:** `job_id` (string, **required**) — Research job ID
+
 ## Resy (7)
 
 ### `resy_availability`
 
 - **HTTP:** `GET /resy/availability`
-- **What:** Get a Resy restaurant's bookable reservation timeslots. Returns the bookable reservation timeslots Resy currently shows for a restaurant, date, and party size -- the same read-only availability an anonymous visitor sees before signing in. This is discovery only; it does not create, hold, modify, or cancel a reservation.
-- **Params:** `date` (string, **required**) — Reservation date, YYYY-MM-DD; `party_size` (integer, optional) — Party size, default 2; `restaurant_id` (string, **required**) — Resy restaurant id
+- **What:** Get a Resy restaurant's bookable reservation timeslots. Returns the bookable reservation timeslots Resy currently shows for a restaurant, date, and party size -- the same read-only availability an anonymous visitor sees before signing in. The date is optional and defaults to the current date in UTC; the response echoes the date used. This is discovery only; it does not create, hold, modify, or cancel a reservation.
+- **Params:** `date` (string, optional) — Reservation date, YYYY-MM-DD. Defaults to the current date in UTC; `party_size` (integer, optional) — Party size, default 2; `restaurant_id` (string, **required**) — Resy restaurant id
 
 ### `resy_cuisines`
 
@@ -14089,6 +14378,66 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List RetailMeNot stores by letter. Returns every store in one letter of RetailMeNot's A-Z store directory, or of RetailMeNot Canada's store list with market=ca, with the domain to pass to /retailmenot/store (with the same market).
 - **Params:** `letter` (string, **required**) — Directory letter; `market` (string, optional) — us for RetailMeNot, ca for RetailMeNot Canada
 
+## Retrieval (9)
+
+### `developer_search`
+
+- **HTTP:** `POST /developer/search`
+- **What:** Search indexed developer documentation. Searches indexed sources only; this operation never starts ingestion or contacts upstream sources. The current ready source is `go:docs` and it covers only the 18 selected verified pages documented by `developer-sources`. Search matches Unicode-aware lexical terms and punctuation-bearing identifiers such as `context.Context`; passages retain byte/line locators into the indexed document. `types` accepts `doc`, `readme`, `issue`, and `pull_request`, but the current source supports only `doc`; unsupported values return 400. The `version` filter is not supported by the current unversioned source and returns 400. Continuation bodies contain only `cursor` and optional `limit`; their pages come from the frozen snapshot and do not repeat the search.
+- **Params:** `request` (object, **required**) — Search query or cursor-only continuation
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
+
+### `developer_sources`
+
+- **HTTP:** `GET /developer/sources`
+- **What:** Discover indexed developer sources. Returns the registered developer source catalog and each source's exact supported operations, filters, artifact types, and index state. The current catalog contains only `go:docs`, a selected set of 18 parser-verified Go documentation/specification pages. A source is `not_indexed` until a complete generation is promoted. The catalog does not accept a cursor; `limit` may be 1–100.
+- **Params:** `limit` (integer, optional) — Maximum sources to return (1–100; defaults to 100)
+
+### `web_capabilities`
+
+- **HTTP:** `GET /web/capabilities`
+- **What:** Get web retrieval capabilities and limits. Return supported search/map modes, effective limits, and published credit unit prices.
+- **Params:** _none_
+
+### `web_crawl`
+
+- **HTTP:** `POST /web/crawl`
+- **What:** Submit a bounded resumable web crawl. Accepts an owner-scoped durable crawl job. `max_credits` is required; the accepted request and active reader/source revisions are frozen for idempotent replay. A repeated matching idempotency key returns the original job without preparing another reservation.
+- **Params:** `request` (object, **required**) — Bounded crawl request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
+
+### `web_crawl_cancel`
+
+- **HTTP:** `POST /web/crawl/{job_id}/cancel`
+- **What:** Request cooperative crawl cancellation. Requests cancellation of an owned crawl job. This control call does not reserve, charge, or settle credits; retained successful work is reconciled by the job settlement worker.
+- **Params:** `job_id` (string, **required**) — Owned crawl job ID
+
+### `web_crawl_results`
+
+- **HTTP:** `GET /web/crawl/{job_id}/results`
+- **What:** Read committed crawl outcomes. Reads committed outcomes in stable publication order. While running, `has_more=false` only means the job is currently drained; poll again with `next_cursor` to observe later outcomes. Each response is bounded to 1 MiB.
+- **Params:** `cursor` (string, optional) — Opaque owner-bound cursor; `job_id` (string, **required**) — Owned crawl job ID; `limit` (integer, optional) — Outcomes per page
+
+### `web_crawl_status`
+
+- **HTTP:** `GET /web/crawl/{job_id}`
+- **What:** Read crawl job status and cumulative accounting. Returns status for a crawl job owned by the authenticated principal. This control call does not reserve or settle credits.
+- **Params:** `job_id` (string, **required**) — Owned crawl job ID
+
+### `web_map`
+
+- **HTTP:** `POST /web/map`
+- **What:** Map a public site. Discover a bounded approximate URL inventory using robots, sitemaps, and the seed page.
+- **Params:** `request` (object, **required**) — Map request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
+
+### `web_search`
+
+- **HTTP:** `POST /web/search`
+- **What:** Search the public web. Search Brave's public web results. limit (1-50, default 10) is honoured by reading up to 3 result pages; each successful result page read costs 3 credits, and optional page reads (5 credits each) remain scoped to each result host. country and language select the result locale (defaults us and en-us).
+- **Params:** `request` (object, **required**) — Search request
+- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
+
 ## Reuters (6)
 
 ### `reuters_article`
@@ -14100,7 +14449,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `reuters_articles`
 
 - **HTTP:** `GET /reuters/articles`
-- **What:** Get recent Reuters articles. Returns a page of recent Reuters articles: title, canonical URL, update time, and the lead image URL when available. The index covers the most recent 10,000 articles.
+- **What:** Get recent Reuters articles. Returns a page of recent Reuters articles: canonical URL, update time, and the lead image URL when available, plus the title when Reuters publishes one in this index (currently it does not). The index covers the most recent 10,000 articles. Use /reuters/news for a title-bearing feed of fresh stories, or /reuters/article for one article's title and text.
 - **Params:** `page` (integer, optional) — Results page, 100 items per page
 
 ### `reuters_author`
@@ -14118,7 +14467,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `reuters_section`
 
 - **HTTP:** `GET /reuters/section`
-- **What:** Get recent articles in a Reuters section. Returns a page of one top-level Reuters section's recent articles: canonical URL, update time, lead image URL, and image caption. This feed does not publish titles; use /reuters/articles for a title-bearing index.
+- **What:** Get recent articles in a Reuters section. Returns a page of one top-level Reuters section's recent articles: canonical URL, update time, lead image URL, and image caption. This feed does not publish titles; use /reuters/news for a title-bearing feed of fresh stories.
 - **Params:** `page` (integer, optional) — Results page, 100 items per page; `section` (string, **required**) — Top-level Reuters section
 
 ### `reuters_sections`
@@ -15033,7 +15382,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /shop-app/analysis`
 - **What:** Analyze Shop.app query results. Returns a market snapshot derived from Shop.app search results, including price ranges, currencies, sale counts, discounts, and top shops. Limit defaults to 20 and accepts values up to 50.
-- **Params:** `deep_search` (boolean, optional) — Enable Shop.app deep search mode; `in_stock` (boolean, optional) — Request in-stock products; `limit` (integer, optional) — Maximum products to analyze, defaults to 20 and supports up to 50; `on_sale` (boolean, optional) — Request sale products; `query` (string, **required**) — Search query
+- **Params:** `deep_search` (boolean, optional) — Accepted for compatibility; Shop.app no longer offers a separate deep search mode, so results are unchanged; `in_stock` (boolean, optional) — Request in-stock products; `limit` (integer, optional) — Maximum products to analyze, defaults to 20 and supports up to 50; `on_sale` (boolean, optional) — Request sale products; `query` (string, **required**) — Search query
 
 ### `shop_app_categories`
 
@@ -15087,7 +15436,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /shop-app/search`
 - **What:** Search Shop.app products. Searches Shop.app product results using the credential-free public web search flow. Limit defaults to 20 and accepts values up to 50.
-- **Params:** `deep_search` (boolean, optional) — Enable Shop.app deep search mode; `in_stock` (boolean, optional) — Request in-stock products; `limit` (integer, optional) — Maximum products, defaults to 20 and supports up to 50; `on_sale` (boolean, optional) — Request sale products; `query` (string, **required**) — Search query
+- **Params:** `deep_search` (boolean, optional) — Accepted for compatibility; Shop.app no longer offers a separate deep search mode, so results are unchanged; `in_stock` (boolean, optional) — Request in-stock products; `limit` (integer, optional) — Maximum products, defaults to 20 and supports up to 50; `on_sale` (boolean, optional) — Request sale products; `query` (string, **required**) — Search query
 
 ### `shop_app_shop`
 
@@ -15439,12 +15788,90 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Slickdeals with real pagination, counts, and facets. Searches Slickdeals' modern search surface -- a richer alternative to GET /slickdeals/search's keyword-only RSS feed. Returns real pagination (page/total_pages/per_page/result_count), integer vote/comment/view counts read directly from the page's own data (not parsed from free text), a fuller per-deal record (store id, discount percent, status flags), and facets -- Categories, Stores, and Brands available for the current query, each option carrying a value usable as category_id/brand_id/store_id. Facet values and counts are scoped to the current query, not a site-wide enumeration -- category_id/brand_id/store_id are passthrough filters (obtain a value from a prior response's own facets), not validated against a closed enum. sort defaults to relevance; other values are passed through unvalidated since no server-side enumeration of the full accepted set was found.
 - **Params:** `brand_id` (integer, optional) — Brand facet id, from a prior response's own facets; `category_id` (integer, optional) — Category facet id, from a prior response's own facets; `page` (integer, optional) — 1-based result page, default 1; `q` (string, **required**) — Free-text keyword query; `sort` (string, optional) — Sort order, default relevance; `store_id` (integer, optional) — Store facet id, from a prior response's own facets
 
-## SofaScore (15)
+## SofaScore (109)
+
+### `sofascore_categories`
+
+- **HTTP:** `GET /sofascore/categories`
+- **What:** SofaScore categories for a sport. Returns every category (country or region, such as England or International) SofaScore lists for a sport, with id, name, slug, flag, optional two-letter code, and priority, highest priority first. Use a category `id` with category-tournaments (its competitions) and with scheduled-events (its fixtures on a date). The `sport` enum accepts `american-football`, `aussie-rules`, `badminton`, `bandy`, `baseball`, `basketball`, `beach-volley`, `cricket`, `darts`, `esports`, `floorball`, `football`, `futsal`, `handball`, `ice-hockey`, `mma`, `minifootball`, `padel`, `rugby`, `snooker`, `table-tennis`, `tennis`, `volleyball`, and `waterpolo`. Slugs are not unique across categories, so identify a category by `id`.
+- **Params:** `sport` (string, **required**) — Sport key
+
+### `sofascore_category_tournaments`
+
+- **HTTP:** `GET /sofascore/category-tournaments`
+- **What:** SofaScore competitions in a category. Returns the competitions (unique tournaments) inside one category, most followed first. Each `id` is the competition id the tournament-seasons, standings, tournament-rounds, and round-events endpoints take. Get the category `id` from the categories endpoint. An empty `tournaments` list is a valid response: some categories exist without any competitions. Returns 404 for an unknown category id.
+- **Params:** `id` (string, **required**) — Numeric SofaScore category id from the categories endpoint
+
+### `sofascore_draft`
+
+- **HTTP:** `GET /sofascore/draft`
+- **What:** SofaScore league draft. Returns the draft attached to a league season: the upcoming or just-held `draft` and the `previous_draft`, each with its year, start and end time, status, the draft `rounds` (the valid `round` values for draft-picks) and whether the lottery is complete. The `league` enum accepts `nba` and `nfl`. Get `season` from tournament-seasons (NBA competition id 132, NFL 9464). A season without a draft, or a season id that does not belong to the league, returns 404. A season whose draft is not scheduled yet returns only `previous_draft`.
+- **Params:** `league` (string, **required**) — League whose draft to return; `season` (string, **required**) — Numeric SofaScore season id of the league
+
+### `sofascore_draft_picks`
+
+- **HTTP:** `GET /sofascore/draft-picks`
+- **What:** SofaScore league draft picks. Returns one round of a league draft: each pick with the overall and in-round number, the drafting team, and the drafted prospect (name, position, college or club, top-prospect flag and the player id when SofaScore has one), plus the teams that hold no pick in that round. The `league` enum accepts `nba` (rounds 1 and 2) and `nfl` (rounds 1 to 7); other rounds return 400. Get `year` from the draft endpoint's `draft.year` and `previous_draft.year`; SofaScore keeps only recent drafts, so an older year returns 404. Returns 404 when SofaScore has no picks for that year and round.
+- **Params:** `league` (string, **required**) — League whose draft to return; `round` (integer, **required**) — Draft round: 1 to 2 for nba, 1 to 7 for nfl; `year` (string, **required**) — Four-digit draft year
+
+### `sofascore_esports_game`
+
+- **HTTP:** `GET /sofascore/esports-game`
+- **What:** SofaScore esports game detail. Returns one resource of one esports game from SofaScore's credential-free public JSON, chosen with `part`: `statistics` (team totals such as kills, towers and barracks for Dota 2, gold and drakes for League of Legends), `lineups` (every player with hero or champion and per-player statistics such as net worth, gold or ADR), `bans` (banned heroes or champions per side) and `rounds` (Counter-Strike round history with outcome, winner and side per round, including overtime). Only the requested block is returned. Get the game id from sofascore-event-esports-games. Statistics and bans exist for Dota 2 and League of Legends only (404 for Counter-Strike), rounds fill for Counter-Strike only (an empty list otherwise) and lineups work for all three. Returns 404 when SofaScore has no such data for the game.
+- **Params:** `id` (string, **required**) — Numeric SofaScore esports game id from sofascore-event-esports-games; `part` (string, **required**) — Which resource of the game to return
 
 ### `sofascore_event`
 
 - **HTTP:** `GET /sofascore/event`
 - **What:** SofaScore event detail. Returns one match's detail (teams, score, status, venue, referee) from SofaScore's credential-free public JSON.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_at_bat_pitches`
+
+- **HTTP:** `GET /sofascore/event-at-bat-pitches`
+- **What:** SofaScore event at-bat pitches. Returns every pitch of one baseball at-bat from SofaScore's credential-free public JSON, in pitch order: the ball-strike-out count, outcome code, pitch type and name, speed in kilometres per hour, zone, plate location, strike-zone bounds, batter and pitcher hand, the score, and for balls put in play the hit type, trajectory, hardness and location plus runner movements and fielder credits. Get the at-bat id (`at_bat_id`) from sofascore-event-at-bats for the same event. Returns 404 when SofaScore has no pitches for that at-bat, which includes an at-bat id that does not belong to the event.
+- **Params:** `at_bat_id` (string, **required**) — Numeric at-bat id from sofascore-event-at-bats for the same event; `id` (string, **required**) — Numeric SofaScore baseball event (match) id
+
+### `sofascore_event_at_bats`
+
+- **HTTP:** `GET /sofascore/event-at-bats`
+- **What:** SofaScore event at-bats. Returns a baseball match's at-bat timeline from SofaScore's credential-free public JSON, in play order: for each plate appearance the inning and half (`top` or `bottom`), pitcher, hitter, their teams, when it ended and the home and away win probabilities before and after it. Use an at-bat `id` with sofascore-event-at-bat-pitches to read its pitches. Returns 404 when SofaScore has no at-bat data for the match, which includes matches that have not started and sports other than baseball.
+- **Params:** `id` (string, **required**) — Numeric SofaScore baseball event (match) id
+
+### `sofascore_event_average_positions`
+
+- **HTTP:** `GET /sofascore/event-average-positions`
+- **What:** SofaScore event average positions. Returns every player's average position on the pitch during a football match (`average_x` and `average_y` on SofaScore's 0-100 pitch scale, plus the number of touches behind it) for the home and away sides, and the substitutions with their minute. Returns 404 when SofaScore has no positional data for the match, which includes unstarted matches and sports other than football.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_baseball_top_performers`
+
+- **HTTP:** `GET /sofascore/event-baseball-top-performers`
+- **What:** SofaScore event baseball top performers. Returns a baseball match's top performers from SofaScore's credential-free public JSON: each pitcher or batter (`role`) with a rating, their team and a snake_case map of the statistics that earned the mention (for example pitching strike outs, batting home runs and runs batted in). Returns 404 when SofaScore has no top performers for the match, which includes matches that have not started and sports other than baseball.
+- **Params:** `id` (string, **required**) — Numeric SofaScore baseball event (match) id
+
+### `sofascore_event_best_players`
+
+- **HTTP:** `GET /sofascore/event-best-players`
+- **What:** SofaScore event best players. Returns a match's best-rated players per side, the overall top-rated list, and the player of the match (each with team and value) from SofaScore's credential-free public JSON. Covers football (value is the match rating, label `rating`) and ice hockey (label `pts`, value the points scored; a goalkeeper with no points has no numeric `value` and carries the upstream dash in `value_text`). The basketball, baseball and tennis matches checked returned no summary. Returns 404 when SofaScore has no best-players summary for the match, which includes matches that have not started, sports without one and fixtures without rated players.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_comments`
+
+- **HTTP:** `GET /sofascore/event-comments`
+- **What:** SofaScore event commentary. Returns a match's text commentary (minute, type, text, and the players involved, plus the running score on scoring lines) from SofaScore's credential-free public JSON, newest first. Works for football and basketball matches that have commentary. An empty `comments` list is a valid response (a live match with no lines yet). Returns 404 when SofaScore has no commentary for the match, which includes matches that have not started.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_esports_games`
+
+- **HTTP:** `GET /sofascore/event-esports-games`
+- **What:** SofaScore event esports games. Returns the games (maps) of an esports match from SofaScore's credential-free public JSON: each game's id, status, start time, length in seconds, winner, score per side (kills for Dota 2 and League of Legends, rounds with half and overtime split for Counter-Strike), the map for Counter-Strike, and whether complete statistics exist. Use a game `id` with sofascore-esports-game to read its statistics, lineups, bans or rounds. Returns 404 when SofaScore has no games for the event, which includes sports other than esports.
+- **Params:** `id` (string, **required**) — Numeric SofaScore esports event (match) id
+
+### `sofascore_event_graph`
+
+- **HTTP:** `GET /sofascore/event-graph`
+- **What:** SofaScore event momentum graph. Returns a match's momentum graph as minute and value points (positive values favour the home side) plus period length information, from SofaScore's credential-free public JSON. Covers football, ice hockey and basketball. An empty `points` list is a valid response (a live match that has just started). Returns 404 when SofaScore has no momentum graph for the match, which includes matches that have not started and sports without one such as tennis and baseball.
 - **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
 
 ### `sofascore_event_h2h`
@@ -15453,16 +15880,34 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** SofaScore event head-to-head. Returns the historical head-to-head win/draw record between a match's two teams (and managers, when available) from SofaScore's credential-free public JSON.
 - **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
 
+### `sofascore_event_highlights`
+
+- **HTTP:** `GET /sofascore/event-highlights`
+- **What:** SofaScore event highlights. Returns the highlight videos attached to a match: title, subtitle (for example `Full Highlights`), video `url`, thumbnail, the publish time, whether it is the key highlight, and the countries it is restricted to when SofaScore limits it. `media_type_code` is SofaScore's own numeric code and is returned untranslated. Returns 404 when the match has no highlight videos, which includes matches that have not finished.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
 ### `sofascore_event_incidents`
 
 - **HTTP:** `GET /sofascore/event-incidents`
 - **What:** SofaScore event incidents. Returns one match's goal, card, substitution, and period timeline from SofaScore's credential-free public JSON. An empty `incidents` list is a valid response before kickoff.
 - **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
 
+### `sofascore_event_innings`
+
+- **HTTP:** `GET /sofascore/event-innings`
+- **What:** SofaScore event innings. Returns a cricket match's innings scorecards from SofaScore's credential-free public JSON. Each innings has the batting and bowling teams, runs, wickets, overs in cricket notation (18.4 is 18 overs and 4 balls), extras (wides, no balls, byes, leg byes, penalty), every batter's line (runs, balls, fours, sixes, dismissal with the bowler and fielder, fall-of-wicket score and over), every bowler's figures (overs, maidens, runs, wickets, wides, no balls), the partnerships and a derived fall-of-wickets list. Works for T20, one-day and Test matches (a Test lists up to four innings). Returns 404 when SofaScore has no innings data for the match, which includes matches that have not started and sports other than cricket.
+- **Params:** `id` (string, **required**) — Numeric SofaScore cricket event (match) id
+
 ### `sofascore_event_lineups`
 
 - **HTTP:** `GET /sofascore/event-lineups`
-- **What:** SofaScore event lineups. Returns one match's starting XI and substitutes per side, with formation, from SofaScore's credential-free public JSON. Returns 404 when SofaScore has no lineups for the match.
+- **What:** SofaScore event lineups. Returns one match's starting XI and substitutes per side, with formation, from SofaScore's credential-free public JSON. Returns 404 when SofaScore has no lineups for the match. A missing-lineup result may be reused for up to two minutes before checking again.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_managers`
+
+- **HTTP:** `GET /sofascore/event-managers`
+- **What:** SofaScore event managers. Returns the two managers (coaches) of a match with their SofaScore ids, names and slugs. The manager `id` works with the manager and manager-events endpoints. Returns 404 when SofaScore lists no managers for the match, which includes tennis matches.
 - **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
 
 ### `sofascore_event_odds`
@@ -15471,17 +15916,113 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** SofaScore event odds. Returns one match's betting markets and choices from SofaScore's credential-free public JSON. Returns 404 when SofaScore has no odds for the match.
 - **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
 
+### `sofascore_event_player_heatmap`
+
+- **HTTP:** `GET /sofascore/event-player-heatmap`
+- **What:** SofaScore event player heatmap. Returns one player's touch locations in a football match as `points`, each an `x` and `y` on SofaScore's 0-100 pitch scale. Get `player_id` from event-lineups. Returns 404 when SofaScore has no heatmap for that player in that match, which includes players who did not play, unstarted matches and sports other than football.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id; `player_id` (string, **required**) — Numeric SofaScore player id that played in the match
+
+### `sofascore_event_player_statistics`
+
+- **HTTP:** `GET /sofascore/event-player-statistics`
+- **What:** SofaScore event player statistics. Returns one player's statistics inside one football match (minutes, rating, passes, duels, shots, expected goals, and more) as a snake_case metric map from SofaScore's credential-free public JSON. The set of metrics depends on the player's position, so absent metrics are omitted rather than zero. Get `player_id` from event-lineups. Returns 404 when SofaScore has no statistics for that player in that match.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id; `player_id` (string, **required**) — Numeric SofaScore player id that took part in the match
+
+### `sofascore_event_point_by_point`
+
+- **HTTP:** `GET /sofascore/event-point-by-point`
+- **What:** SofaScore event point-by-point. Returns a racket-sport match's point-by-point timeline from SofaScore's credential-free public JSON, with sets and games in play order. Tennis sets list games and each game lists every point with the running score (`0`, `15`, `30`, `40`, `A`, or a plain count in a tie-break), the server, the game winner, a `description` of `ace` or `double_fault` where SofaScore flags it, and break point (`break_point`) or set or match point (`set_or_match_point`) markers per player. Table tennis and badminton sets list their points directly. The ace flag is a lower bound of the match's real ace count. Darts matches are not covered. Returns 404 when SofaScore has no point-by-point data for the match, which includes matches that have not started and sports without it.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_pregame_form`
+
+- **HTTP:** `GET /sofascore/event-pregame-form`
+- **What:** SofaScore event pre-game form. Returns each side's form going into a match: league position, points (football) or win-loss record (basketball) in `value` with the `label` that names it, the average player rating where SofaScore has one, and the recent results (`W`, `D`, `L`) in the order SofaScore returns them. Covers football and basketball; returns 404 when SofaScore has no pre-game form for the match, which includes tennis matches.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_shotmap`
+
+- **HTTP:** `GET /sofascore/event-shotmap`
+- **What:** SofaScore event shot map. Returns every shot in a football or ice hockey match from SofaScore's credential-free public JSON. Football shots carry the shooter, side, outcome (`shot_type`), situation, body part, expected goals (xG and xGOT), minute, and pitch and goal-mouth coordinates. Ice hockey shots carry the shooter, team, side, shot technique (`shot_type`, for example `wrist`), `outcome` (`made`, `saved`, `missed` or `blocked`), `strength` (`even`, `powerplay` or `shorthanded`), period and period clock, rink `coordinates` and, for most shots, `xg`. An empty `shots` list is a valid response (a live match with no shots yet). Returns 404 when SofaScore has no shot map for the match, which includes matches that have not started, basketball and other sports without one, and fixtures without expected-goals coverage.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
 ### `sofascore_event_statistics`
 
 - **HTTP:** `GET /sofascore/event-statistics`
 - **What:** SofaScore event statistics. Returns one match's statistics (possession, shots, passes, and more, grouped and split by period) from SofaScore's credential-free public JSON. Returns 404 when SofaScore has no tracked statistics for the match.
 - **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
 
+### `sofascore_event_team_heatmap`
+
+- **HTTP:** `GET /sofascore/event-team-heatmap`
+- **What:** SofaScore event team heatmap. Returns one team's touch locations in a football match as `player_points` (outfield players) and `goalkeeper_points`, each point an `x` and `y` on SofaScore's 0-100 pitch scale. `team_id` must be the home or away team of the event; get both ids from the event endpoint. Returns 404 when SofaScore has no heatmap for that team in that match, which includes teams that did not play it, unstarted matches and sports other than football.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id; `team_id` (string, **required**) — Numeric SofaScore team id of the home or away side
+
+### `sofascore_event_team_streaks`
+
+- **HTTP:** `GET /sofascore/event-team-streaks`
+- **What:** SofaScore event team streaks. Returns a match's team streaks and trends from SofaScore's credential-free public JSON: `general` statements about each side's recent matches (for example `Wins` 6 or `No goals conceded` 4) and `head2head` statements about their meetings. Each item names the streak, a `value` that is either a run length (`6`) or a ratio (`5/5`), the `team` it refers to (`home`, `away` or `both`) and, where SofaScore reports it, whether the streak `continued` into this match. Returns 404 when SofaScore lists no streaks for the match, which includes tennis matches.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_tennis_power`
+
+- **HTTP:** `GET /sofascore/event-tennis-power`
+- **What:** SofaScore event tennis power. Returns a tennis match's per-game momentum series from SofaScore's credential-free public JSON: for each game of each set a `value` (positive favours the home player or team, negative the away side) and whether a break of serve `break_occurred`. An empty `games` list is a valid response (a live match with no completed game yet). Returns 404 when SofaScore has no tennis power data for the match, which includes matches that have not started and sports other than tennis.
+- **Params:** `id` (string, **required**) — Numeric SofaScore tennis event (match) id
+
+### `sofascore_event_tv_channels`
+
+- **HTTP:** `GET /sofascore/event-tv-channels`
+- **What:** SofaScore event TV channels. Returns where a match is broadcast. `available_countries` lists every country that has a broadcast with its channel ids; those country codes are the valid values for `country`. With `country` set (a two-letter ISO 3166-1 alpha-2 code such as `GB`, any case) the response also resolves that country's `channels` to names, using one extra upstream call. A well-formed country code the match is not broadcast in returns 404, and so does a match with no broadcast information.
+- **Params:** `country` (string, optional) — Two-letter ISO 3166-1 alpha-2 country code. Omit to list the broadcasting countries only; `id` (string, **required**) — Numeric SofaScore event (match) id
+
+### `sofascore_event_votes`
+
+- **HTTP:** `GET /sofascore/event-votes`
+- **What:** SofaScore event votes. Returns a match's community vote tallies from SofaScore's credential-free public JSON: the match result vote (`match_result` with `home`, `away`, `total` and `draw`, where `draw` is absent for two-way sports such as basketball and tennis), both teams to score, which team scores first and who should have won (when SofaScore has opened that vote). A block that holds no votes is omitted. Returns 404 when SofaScore has no votes for the match.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
+
 ### `sofascore_live_events`
 
 - **HTTP:** `GET /sofascore/live-events`
-- **What:** SofaScore live events. Returns currently live events for a sport from SofaScore's credential-free public JSON. The `sport` enum accepts `football`, `basketball`, and `tennis`. An empty `events` list is a valid response when nothing is live right now.
+- **What:** SofaScore live events. Returns currently live events for a sport from SofaScore's credential-free public JSON. The `sport` enum accepts `american-football`, `aussie-rules`, `badminton`, `bandy`, `baseball`, `basketball`, `beach-volley`, `cricket`, `darts`, `esports`, `floorball`, `football`, `futsal`, `handball`, `ice-hockey`, `mma`, `minifootball`, `padel`, `rugby`, `snooker`, `table-tennis`, `tennis`, `volleyball`, and `waterpolo`; the sports endpoint lists them. An empty `events` list is a valid response when nothing is live right now.
 - **Params:** `sport` (string, **required**) — Sport key
+
+### `sofascore_manager`
+
+- **HTTP:** `GET /sofascore/manager`
+- **What:** SofaScore manager detail. Returns a manager's (coach's) profile (nationality, birth date, preferred formation, current team and teams, and the career win/draw/loss and goals record) from SofaScore's credential-free public JSON. Get a manager id from sofascore-search results of type `manager`.
+- **Params:** `id` (string, **required**) — Numeric SofaScore manager id
+
+### `sofascore_manager_events`
+
+- **HTTP:** `GET /sofascore/manager-events`
+- **What:** SofaScore manager recent matches. Returns a page of the matches a manager (coach) has recently taken charge of, newest first, across all clubs they managed, from SofaScore's credential-free public JSON. Only past matches are available; SofaScore publishes no upcoming list for managers. Returns 404 for a page past the end of the manager's history.
+- **Params:** `id` (string, **required**) — Numeric SofaScore manager id; `page` (integer, optional) — Zero-based page number
+
+### `sofascore_mma_card`
+
+- **HTTP:** `GET /sofascore/mma-card`
+- **What:** SofaScore MMA card. Returns the bouts of one MMA fight card from SofaScore's credential-free public JSON, main event first, narrowed with `part` to `all` bouts, the `maincard`, the `prelims` or the `earlyprelims`. Each bout has the fighters (country, nickname, ranking where 0 is the champion, record), weight class, scheduled rounds, status, and for finished bouts the winner, win type, final round and fight time. Get `org_id` and `card_id` from sofascore-mma-schedule. Returns 404 when the card is unknown or has no bouts in that segment (for example a card without early prelims).
+- **Params:** `card_id` (string, **required**) — Numeric card id (card_id) from sofascore-mma-schedule; `org_id` (string, **required**) — Numeric SofaScore MMA organisation id; `part` (string, **required**) — Which segment of the card to return
+
+### `sofascore_mma_schedule`
+
+- **HTTP:** `GET /sofascore/mma-schedule`
+- **What:** SofaScore MMA schedule. Returns the main event of every fight card an MMA organisation holds in one calendar month from SofaScore's credential-free public JSON, with the card id and name, fighters (country, nickname, ranking where 0 is the champion, record), weight class, scheduled rounds, status, and for finished fights the winner, win type and final round. Find organisation ids (UFC 19906, PFL 19910, ONE 20269, Rizin 19905, Fight Nation Championship 20463, KSW 19946, OKTAGON 20258, Absolute Championship Akhmat 20254, Cage Warriors 19909, Dana White's Contender Series 20264, Brave CF 20267, Jungle Fight 20253) with sofascore-categories (sport `mma`) and sofascore-category-tournaments (category 1708). Use the `card_id` with sofascore-mma-card to read every bout. Returns 404 when the organisation has no card in that month or the id is not an MMA organisation.
+- **Params:** `month` (string, **required**) — Calendar month as YYYY-MM; `org_id` (string, **required**) — Numeric SofaScore MMA organisation id
+
+### `sofascore_odds_dropping`
+
+- **HTTP:** `GET /sofascore/odds-dropping`
+- **What:** SofaScore dropping odds. Returns SofaScore's dropping odds list for a sport: about twenty upcoming events whose odds moved most, each as the usual event summary plus the `choice_name` and `percentage` SofaScore reports for the move (returned as supplied) and the market with opening and current prices (`change` is 1 above the opening price, -1 below it, 0 unchanged). The `sport` enum accepts `all` and the SofaScore sport keys; it defaults to `all`. A sport with no qualifying events at the moment (for example esports when probed) returns 404.
+- **Params:** `sport` (string, optional) — Sport key, or all for every sport. Defaults to all
+
+### `sofascore_odds_winning`
+
+- **HTTP:** `GET /sofascore/odds-winning`
+- **What:** SofaScore winning odds. Returns SofaScore's winning odds list for a sport: about twenty upcoming events whose favourite SofaScore highlights, each as the usual event summary plus `winning_odds` (fractional), the `expected` and `actual` percentages SofaScore reports for it (returned as supplied) and the full-time market with opening and current prices (`change` is 1 above the opening price, -1 below it, 0 unchanged). The `sport` enum accepts `all` and the SofaScore sport keys; it defaults to `all`. A sport with no qualifying events at the moment (for example baseball, cricket and esports when probed) returns 404.
+- **Params:** `sport` (string, optional) — Sport key, or all for every sport. Defaults to all
 
 ### `sofascore_player`
 
@@ -15489,17 +16030,197 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** SofaScore player detail. Returns one player's bio (position, height, market value, current team) from SofaScore's credential-free public JSON.
 - **Params:** `id` (string, **required**) — Numeric SofaScore player id
 
+### `sofascore_player_attributes`
+
+- **HTTP:** `GET /sofascore/player-attributes`
+- **What:** SofaScore player attributes and characteristics. Returns a football player's attribute scores (0 to 100) for the current year and up to three earlier years (`year_shift` 0 to 3), the average scores for the player's position, and the player's characteristics: playing positions plus strengths and weaknesses, each with SofaScore's numeric `code`, a `key` and `name` such as finishing or aerial duels, and a `rank`. Outfield players carry attacking, technical, tactical, defending and creativity scores; goalkeepers carry saves, anticipation, ball_distribution, aerial and tactical. Combines two SofaScore requests. Returns 404 for players without attribute overviews, which includes non-football players.
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id
+
+### `sofascore_player_events`
+
+- **HTTP:** `GET /sofascore/player-events`
+- **What:** SofaScore player matches with per-match numbers. Returns one page (30 matches) of a player's matches, each with the player's own numbers merged in: `statistics` (football: rating and minutes_played; basketball: points, rebounds, assists and more), `incident_counts` (goals, assists, yellow and red cards, penalty goals), `on_bench` for an unused substitute and `played_for_team_id` (club or national team). Page 0 is the most recent window and can include upcoming fixtures (status type `notstarted`); matches inside a page run oldest first. Follow `has_next_page` for older pages; a page past the end returns 404.
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id; `page` (integer, optional) — Zero-based page number. Defaults to 0
+
+### `sofascore_player_last_year_summary`
+
+- **HTTP:** `GET /sofascore/player-last-year-summary`
+- **What:** SofaScore player form over the last year. Returns a player's form timeline over roughly the last year: `summary` entries, each with a `type`, a date and (where it applies) a competition. `event` is a rated match (the rating is in `value` as published and as a number in `rating`, the competition in `tournament_id`); `injury` is an injury period whose `value` is an opaque number; `missing` is a match the player missed; `transfer` is a transfer date. `tournaments` describes the competitions referenced. An empty `summary` is a valid response for a player with no rated appearance in the period.
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id
+
+### `sofascore_player_national_team_statistics`
+
+- **HTTP:** `GET /sofascore/player-national-team-statistics`
+- **What:** SofaScore player national team record. Returns a player's national team record: for each national team the appearances, goals and debut date. An empty `teams` list is a valid response for a player who never played internationally.
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id
+
+### `sofascore_player_penalty_history`
+
+- **HTTP:** `GET /sofascore/player-penalty-history`
+- **What:** SofaScore player penalty history. Returns the penalties a player has taken, newest first: the totals (`attempts`, `scored`) and, per penalty, the outcome (`goal`, `miss`, `post` or `save`), the zone of the goal (for example `low-right`, `high-left`, `close-high`), the x and y position in the goal mouth on SofaScore's 0 to 100 scale, the expected-goals value when available and the match. Returns 404 for players with no recorded penalties, such as most goalkeepers and defenders.
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id
+
+### `sofascore_player_ratings`
+
+- **HTTP:** `GET /sofascore/player-ratings`
+- **What:** SofaScore player match ratings for a season. Returns a player's rating in every match of one competition season, newest first, with the opponent, home or away and the match. The `type` enum accepts `overall`, `home`, `away`, `regular_season` and `playoffs` and defaults to `overall`; football seasons answer `overall` and NBA seasons answer `regular_season` and `playoffs` (the types a season offers are listed by player-statistics-seasons). Returns 404 when SofaScore has no ratings of that type for the combination.
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id; `season` (string, **required**) — Numeric SofaScore season id from player-statistics-seasons; `tournament_id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id from player-statistics-seasons; `type` (string, optional) — Statistics view
+
+### `sofascore_player_season_heatmap`
+
+- **HTTP:** `GET /sofascore/player-season-heatmap`
+- **What:** SofaScore player season heatmap. Returns a football player's aggregated touch locations over one competition season: `points` with an `x`, `y` and touch `count` on SofaScore's 0-100 pitch scale, the number of `matches` behind it and the matched `events`. Get `tournament_id` and `season` from player-statistics-seasons. The response is large for a full league season. Returns 404 when SofaScore has no heatmap for that player, competition and season, which includes sports other than football and seasons the player did not play.
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id; `season` (string, **required**) — Numeric SofaScore season id; `tournament_id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id
+
+### `sofascore_player_season_statistics`
+
+- **HTTP:** `GET /sofascore/player-season-statistics`
+- **What:** SofaScore player season statistics. Returns a player's statistics for one competition season (appearances, rating, goals, assists, passing, duels, and more) as a snake_case metric map, plus the team and a rating breakdown when available, from SofaScore's credential-free public JSON. The `type` enum accepts `overall`, `home`, `away`, `regular_season`, and `playoffs` and defaults to `overall`; only the types listed for that season by player-statistics-seasons exist (football players have `overall`, `home`, `away`; basketball, ice hockey and baseball players have `regular_season` and `playoffs`). Returns 404 when SofaScore has no statistics of that type for the combination.
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id; `season` (string, **required**) — Numeric SofaScore season id from player-statistics-seasons; `tournament_id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id from player-statistics-seasons; `type` (string, optional) — Statistics view
+
+### `sofascore_player_statistical_rankings`
+
+- **HTTP:** `GET /sofascore/player-statistical-rankings`
+- **What:** SofaScore player ranking among all players in a season. Returns where a football player ranks against every other player of the competition season for about 78 statistics (goals, assists, rating, expected goals, passes, duels, distance covered and more): the `value`, the `rank` (tied values share a rank), the number of ranked players (`count`) and the tie-broken `order`. Statistics are snake_case and sorted alphabetically. The `type` enum accepts only `overall`, which is also the default; the other statistics views answer 404. Returns 404 for players without a ranking in that season, which includes basketball players.
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id; `season` (string, **required**) — Numeric SofaScore season id from player-statistics-seasons; `type` (string, optional) — Statistics view
+
+### `sofascore_player_statistics_seasons`
+
+- **HTTP:** `GET /sofascore/player-statistics-seasons`
+- **What:** SofaScore player statistics seasons. Lists the competitions and seasons a player has statistics for, with the statistics `types` available for each season, from SofaScore's credential-free public JSON. Use a returned competition id (`unique_tournament_id`), season `id` and one of its `types` with player-season-statistics. The `types` values are `overall`, `home`, `away`, `regular_season`, and `playoffs`. Returns 404 for players with no tracked statistics (for example tennis players).
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id
+
+### `sofascore_player_tournaments`
+
+- **HTTP:** `GET /sofascore/player-tournaments`
+- **What:** SofaScore player competitions. Lists every competition a player has played in, with id, name, slug, category, sport and gender. It includes competitions without season statistics (cups, friendlies, all-star games) that player-statistics-seasons leaves out. Returns 404 when SofaScore has no competitions for the player.
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id
+
+### `sofascore_player_transfers`
+
+- **HTTP:** `GET /sofascore/player-transfers`
+- **What:** SofaScore player transfer history. Returns a player's transfer history (clubs moved from and to, date, fee, and SofaScore's numeric transfer type code), newest first, from SofaScore's credential-free public JSON. An empty `transfers` list is a valid response for a player who has never moved clubs. Returns 404 when SofaScore has no transfer record for the player (seen for ice hockey and baseball players). The `type_code` values are SofaScore's own opaque codes and are not translated.
+- **Params:** `id` (string, **required**) — Numeric SofaScore player id
+
+### `sofascore_ranking_types`
+
+- **HTTP:** `GET /sofascore/ranking-types`
+- **What:** SofaScore ranking catalogue. Lists every ranking available from the sofascore rankings endpoint: the numeric `type` id, a descriptive name, the sport, the gender and the kind of entity that is ranked (`team`, `player` or `unique_tournament`). Covers 32 rankings across football (league coefficients, FIFA national teams, club coefficients), rugby, tennis (ATP and WTA official and live rankings, UTR), padel and MMA (UFC and Fight Nation Championship divisions). The catalogue is a fixed list and costs no upstream request.
+- **Params:** _none_
+
+### `sofascore_rankings`
+
+- **HTTP:** `GET /sofascore/rankings`
+- **What:** SofaScore rankings. Returns one SofaScore ranking list: the rank, previous rank, points and the ranked team, player or competition, plus when the list was last updated. Choose the `type` id from sofascore-ranking-types, for example 5 for the ATP men's singles ranking or 2 for the FIFA men's national team ranking. Optional `limit` returns only the first rows of long lists (tennis lists hold 500 rows). MMA division rankings use rank 0 for the reigning champion.
+- **Params:** `limit` (integer, optional) — Return only the first N rows, 1 to 500. Omit to return every row; `type` (integer, **required**) — Ranking id from sofascore-ranking-types
+
+### `sofascore_referee`
+
+- **HTTP:** `GET /sofascore/referee`
+- **What:** SofaScore referee profile. Returns a referee's profile: name, country, sport, career matches officiated and career yellow, red and yellow-red card totals, plus date of birth and first league debut when SofaScore records them. Get the referee id from the `referee.id` of the sofascore-event endpoint or from a sofascore-search result of type referee. Returns 404 for an unknown id.
+- **Params:** `id` (string, **required**) — Numeric SofaScore referee id
+
+### `sofascore_referee_events`
+
+- **HTTP:** `GET /sofascore/referee-events`
+- **What:** SofaScore referee officiated matches. Returns one page (30 matches) of the matches a referee officiated, most recent first, across every competition. Follow `has_next_page` for older pages; a page past the end returns 404. Only past matches exist (no upcoming list), and the list includes canceled and postponed fixtures (their `status.type` says so), which the career match total of sofascore-referee does not count.
+- **Params:** `id` (string, **required**) — Numeric SofaScore referee id; `page` (integer, optional) — Zero-based page number. Defaults to 0
+
+### `sofascore_referee_statistics`
+
+- **HTTP:** `GET /sofascore/referee-statistics`
+- **What:** SofaScore referee card statistics. Returns a referee's record per competition: matches officiated, yellow cards, red cards, yellow-red cards and penalties awarded. The per-competition appearances add up to the career matches in sofascore-referee. An empty `competitions` list is valid for a referee with no recorded competitions.
+- **Params:** `id` (string, **required**) — Numeric SofaScore referee id
+
 ### `sofascore_round_events`
 
 - **HTTP:** `GET /sofascore/round-events`
-- **What:** SofaScore round fixtures. Returns fixtures for one round of a competition season from SofaScore's credential-free public JSON. Get `id` from search and `season` from tournament-seasons.
-- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `round` (integer, **required**) — Round number; `season` (string, **required**) — Numeric SofaScore season id
+- **What:** SofaScore round fixtures. Returns fixtures for one round of a competition season from SofaScore's credential-free public JSON. Get `id` from search or category-tournaments, `season` from tournament-seasons, and the round values from tournament-rounds. Round numbers are not unique in cups, and knockout or named rounds return 404 unless the round's `slug` is passed (plus its `prefix` when tournament-rounds lists one): the UEFA Champions League has a qualifying and a league-phase round 1, and a playoff round 636 both with the `Qualification` prefix and without. Plain numbered league rounds need only `round`. `slug` is lowercase letters, digits, and hyphens (up to 64 characters); `prefix` is letters, digits, spaces, and hyphens (up to 64 characters) and is only valid together with `slug`.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `prefix` (string, optional) — Round prefix from tournament-rounds, for example Qualification; only valid together with slug; `round` (integer, **required**) — Round number; `season` (string, **required**) — Numeric SofaScore season id; `slug` (string, optional) — Round slug from tournament-rounds, for example round-of-16; required for knockout and named cup rounds
+
+### `sofascore_scheduled_events`
+
+- **HTTP:** `GET /sofascore/scheduled-events`
+- **What:** SofaScore events scheduled in a category on a date. Returns the events (matches) in one category, such as a country, that start on a UTC date, ordered by start time. Get the category `id` from the categories endpoint (or `category_id` from scheduled-tournaments). `date` must be a real calendar date written `YYYY-MM-DD` and is a UTC day; to cover a local day in another timezone, request the neighbouring dates and filter on `start_timestamp`. An empty `events` list is a valid response when the category has no fixtures that day. Returns 404 for an unknown category id.
+- **Params:** `category_id` (string, **required**) — Numeric SofaScore category id from the categories endpoint; `date` (string, **required**) — UTC calendar date, YYYY-MM-DD
+
+### `sofascore_scheduled_tournaments`
+
+- **HTTP:** `GET /sofascore/scheduled-tournaments`
+- **What:** SofaScore tournaments scheduled on a date. Returns one page of the tournaments that have fixtures on a UTC date for a sport, each with the number of events starting that UTC day. This lists competitions, not matches: use scheduled-events with a tournament's `category_id` for the matches, or its `unique_tournament_id` with the tournament-seasons and round endpoints. `date` must be a real calendar date written `YYYY-MM-DD`. Pages are one-based; follow `has_next_page`. The `sport` enum accepts `american-football`, `aussie-rules`, `badminton`, `bandy`, `baseball`, `basketball`, `beach-volley`, `cricket`, `darts`, `esports`, `floorball`, `football`, `futsal`, `handball`, `ice-hockey`, `mma`, `minifootball`, `padel`, `rugby`, `snooker`, `table-tennis`, `tennis`, `volleyball`, and `waterpolo`. An empty `tournaments` list is a valid response for a date with no fixtures or a page past the last one.
+- **Params:** `date` (string, **required**) — UTC calendar date, YYYY-MM-DD; `page` (integer, optional) — One-based page number; defaults to 1; `sport` (string, **required**) — Sport key
 
 ### `sofascore_search`
 
 - **HTTP:** `GET /sofascore/search`
 - **What:** SofaScore universal search. Searches SofaScore's credential-free public JSON for teams, players, and competitions matching a free-text query. An empty `results` list is a valid response when nothing matches.
 - **Params:** `q` (string, **required**) — Free-text search query
+
+### `sofascore_search_typed`
+
+- **HTTP:** `GET /sofascore/search-typed`
+- **What:** SofaScore search by entity type. Searches SofaScore for one entity type and returns up to 20 ranked results per page, each normalized for its type: `events` (matches), `teams`, `players` (with team and position), `managers`, `referees`, `venues` (with city and capacity) and `unique_tournaments` (competitions with category). Page with the zero-based `page`; an empty page means there are no further results. The optional `sport` filter (any key listed by sofascore/sports, such as `football`, `basketball`, `tennis` or `mma`) narrows `teams`, `players`, `managers` and `unique_tournaments`, and is rejected for `events`, `referees` and `venues`, which ignore it. Use the returned ids with the matching endpoints (team, player, manager, venue, tournament-seasons, event).
+- **Params:** `page` (integer, optional) — Zero-based page number. Defaults to 0; `q` (string, **required**) — Search text, up to 128 characters; `sport` (string, optional) — Restrict teams, players, managers or unique_tournaments to one sport; `type` (string, **required**) — Entity type to search
+
+### `sofascore_season_events`
+
+- **HTTP:** `GET /sofascore/season-events`
+- **What:** SofaScore season fixtures and results. Returns one page (about 30 events) of every fixture or result of a competition season, with the round of each event. The `direction` enum accepts `next` (upcoming fixtures) and `last` (finished results). Follow `has_next_page` to read further pages: a page past the end, a direction with no events (for example `next` in a finished season) and a season id that does not belong to the competition all answer 404. Get `id` from search and `season` from tournament-seasons.
+- **Params:** `direction` (string, **required**) — Upcoming fixtures or finished results; `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `page` (integer, optional) — Zero-based page number. Defaults to 0; `season` (string, **required**) — Numeric SofaScore season id
+
+### `sofascore_sports`
+
+- **HTTP:** `GET /sofascore/sports`
+- **What:** SofaScore supported sports. Lists every sport key the SofaScore endpoints accept (the `sport` enum of live-events, categories, and scheduled-tournaments), with live and total event counts when available. The list is fixed and always complete; if the live counts cannot be read, `counts_available` is `false` and the per-sport counts are omitted instead of failing the call. Counts are also omitted for a sport the count feed does not cover (for example `mma`). Accepted sport keys: `american-football`, `aussie-rules`, `badminton`, `bandy`, `baseball`, `basketball`, `beach-volley`, `cricket`, `darts`, `esports`, `floorball`, `football`, `futsal`, `handball`, `ice-hockey`, `mma`, `minifootball`, `padel`, `rugby`, `snooker`, `table-tennis`, `tennis`, `volleyball`, `waterpolo`.
+- **Params:** _none_
+
+### `sofascore_stage`
+
+- **HTTP:** `GET /sofascore/stage`
+- **What:** SofaScore motorsport and cycling stage. Returns one stage from SofaScore's stage hierarchy: a season (Formula 1 2026), an event (a Grand Prix weekend, a NASCAR race, a rally, a cycling race), a session (practice, qualifying, sprint, race) or a cycling stage. The response has its type (`Season`, `Event`, `Practice`, `Qualifying`, `Qualifying part`, `Race`, `Sprint race`, `Sprint qualifying`, `Practice part`, `Stage`), status (`finished`, `notstarted`, `canceled`), start time, country, competition, parent stage (the season of an event, the event of a session), the winner once decided, and circuit, weather and race facts where published (laps, race distance, lap record, safety car, NASCAR cautions, rally special stages, cycling route). `info` fields are omitted when not published, never zero. A season has no status. Stage ids and competition ids are different id spaces. Returns 404 for an unknown stage id.
+- **Params:** `id` (string, **required**) — Numeric SofaScore stage id from stage-schedule, stage-seasons or stage-substages
+
+### `sofascore_stage_categories`
+
+- **HTTP:** `GET /sofascore/stage-categories`
+- **What:** SofaScore motorsport and cycling categories and competitions. Lists the categories SofaScore keeps for a stage sport, each with its competitions. For `motorsport` that is the racing series (Formula 1, MotoGP, Moto2, Moto3, Superbike, NASCAR with its Cup, Truck and Xfinity competitions, WRC, Formula E, Indycar, DTM); for `cycling` it is Cycling Men and Cycling Women. Use a competition `id` with stage-seasons to list its seasons. Some categories exist without any competition (for example Motocross, Speedway, WEC) and return an empty `competitions` list. Motorsport and cycling are not available on the match-based endpoints (live-events, categories, scheduled-events); they use the stage endpoints. The `sport` enum accepts `motorsport` and `cycling`.
+- **Params:** `sport` (string, **required**) — Stage sport key
+
+### `sofascore_stage_driver_performance`
+
+- **HTTP:** `GET /sofascore/stage-driver-performance`
+- **What:** SofaScore motorsport race progress per driver. Returns every competitor's progress through a finished race or rally. For circuit races (Formula 1, MotoGP and similar) `laps` lists the position at the end of each lap, starting with lap 0 for the grid, plus the tyre compound and a `pit_stop` flag where published; the lap a driver retired has `retired` set and no position. For rallies `stage_positions` lists the overall position after each special stage. The response also repeats the stage itself. It is published for races and sprints of some series (verified for Formula 1, MotoGP and WRC) and not for practice, qualifying, NASCAR, cycling, events or seasons, which return 404. Returns 404 for an unknown id.
+- **Params:** `id` (string, **required**) — Numeric SofaScore stage id of a finished race, sprint or rally
+
+### `sofascore_stage_featured`
+
+- **HTTP:** `GET /sofascore/stage-featured`
+- **What:** SofaScore featured motorsport and cycling events. Returns the events SofaScore features for a stage sport right now: a mix of the latest finished events (with `winner` and result facts such as laps and circuit) and the next upcoming ones, across series such as Formula 1, MotoGP, Moto2, Moto3, Superbike, NASCAR and cycling races. Each event carries its competition, season name, parent season stage and country. Use an event `id` with stage-substages for its sessions or stages and stage-standings for results. The `sport` enum accepts `motorsport` and `cycling`.
+- **Params:** `sport` (string, **required**) — Stage sport key
+
+### `sofascore_stage_schedule`
+
+- **HTTP:** `GET /sofascore/stage-schedule`
+- **What:** SofaScore motorsport and cycling events around a date. Returns the events SofaScore lists for a stage sport around a UTC date: Grand Prix weekends, NASCAR race weekends, rallies and cycling races, each with its country, competition, every session start time (`session_start_timestamps`) and the session SofaScore highlights (`session`: the live, next or latest one). The list is not a strict one-day filter. It holds the events in progress on the date plus the next upcoming ones, and a quiet date still returns the next events; use `on_date`, which is true when a session of the event starts inside the requested UTC day, to separate them. Schedule rows carry no event status or winner: use `session.status`, or pass the event `id` to stage for the event detail and to stage-substages for its sessions. `date` must be a real calendar date written `YYYY-MM-DD`. An empty `stages` list is valid when nothing is in progress or scheduled nearby. The `sport` enum accepts `motorsport` and `cycling`.
+- **Params:** `date` (string, **required**) — UTC calendar date, YYYY-MM-DD; `sport` (string, **required**) — Stage sport key
+
+### `sofascore_stage_seasons`
+
+- **HTTP:** `GET /sofascore/stage-seasons`
+- **What:** SofaScore seasons of a motorsport or cycling competition. Returns the seasons of one stage competition, newest first, for example Formula 1 2026 (id 214140) back to 1950. A season `id` is a stage id: pass it to stage-substages for the race calendar and to stage-standings for the championship table. The season still in progress has no `end_timestamp`. Get the competition `id` from stage-categories (for example 40 for Formula 1, 17 for MotoGP, 18 for the NASCAR Cup Series, 9 for Cycling Men). Competition ids and stage ids are different id spaces, so a competition id passed to stage returns an unrelated stage. Returns 404 for an unknown competition id.
+- **Params:** `id` (string, **required**) — Numeric SofaScore competition id from stage-categories
+
+### `sofascore_stage_standings`
+
+- **HTTP:** `GET /sofascore/stage-standings`
+- **What:** SofaScore motorsport and cycling stage standings. Returns one classification of a stage. For a race or sprint it is the result (position, grid, race time, gap, interval, laps, laps led, pit stops, tyre stints, fastest lap, points, retirement status); for practice and qualifying the timing order (`time` is the best lap); for a cycling stage the stage result with time gaps; for an event the event aggregate; for a season the championship table (points, victories, races started, pole positions, podiums, fastest laps; NASCAR adds top 5, top 10 and races not finished). `competitor` returns drivers and riders, `team` returns constructors and teams, which only some seasons and events publish (verified for the Formula 1 and MotoGP seasons and the Formula 1 event; races, NASCAR, WRC and cycling return 404 for `team`). Rows are in upstream order. `position` is omitted for competitors who did not finish or set no time, and `gap` is `DNF` for a retirement. The parent session of a split qualifying has no standings; use the ids of its parts from stage-substages. Fields a classification does not publish are omitted. Returns 404 for an unknown id, a stage that has no results yet, or a kind of stage without that classification. The `type` enum accepts `competitor` and `team`.
+- **Params:** `id` (string, **required**) — Numeric SofaScore stage id of a season, event, session or cycling stage; `type` (string, **required**) — Classification kind
+
+### `sofascore_stage_substages`
+
+- **HTTP:** `GET /sofascore/stage-substages`
+- **What:** SofaScore children of a motorsport or cycling stage. Returns the children of a stage in upstream order. For a season it is the race calendar: every event with status (`finished`, `notstarted`, `canceled`), dates, round, circuit and winner. For an event it is the sessions: practices, qualifying, sprint qualifying, sprint and race for a Grand Prix, the numbered stages of a cycling race or rally. Qualifying and practice sessions list their `parts`, and the part ids carry the timing results (the parent session of a split qualifying has no standings of its own). Use a child `id` with stage for detail, stage-standings for its results and stage-driver-performance for race progress. A race, session or cycling stage has no children and returns 404, as does an unknown id.
+- **Params:** `id` (string, **required**) — Numeric SofaScore stage id of a season or an event
 
 ### `sofascore_standings`
 
@@ -15513,11 +16234,59 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** SofaScore team detail. Returns one team's detail (identity, manager, venue, primary competition) from SofaScore's credential-free public JSON.
 - **Params:** `id` (string, **required**) — Numeric SofaScore team id
 
+### `sofascore_team_achievements`
+
+- **HTTP:** `GET /sofascore/team-achievements`
+- **What:** SofaScore team trophies. Returns the trophies a team has won: the total and, per competition, the number won and the winning seasons (newest first, with the season id where SofaScore tracks it). Some competitions, such as US leagues, report a count with an empty or shorter `seasons` list. Returns 404 when SofaScore records no achievements for the team.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id
+
 ### `sofascore_team_events`
 
 - **HTTP:** `GET /sofascore/team-events`
 - **What:** SofaScore team fixtures. Returns a page of a team's upcoming or recent fixtures from SofaScore's credential-free public JSON. The `direction` enum accepts `next` and `last`. An empty `events` list is a valid response when there is no fixture on that page.
 - **Params:** `direction` (string, **required**) — Fixture direction; `id` (string, **required**) — Numeric SofaScore team id; `page` (integer, optional) — Zero-based page number
+
+### `sofascore_team_goal_distributions`
+
+- **HTTP:** `GET /sofascore/team-goal-distributions`
+- **What:** SofaScore team goals by match minute. Returns a football team's goals scored and conceded per block of match minutes (1-15, 16-30, 31-45, 46-60, 61-75, 76-90) for one competition season, in three views: `overall`, `home` and `away`, each with the matches played and the goal totals. A block with no goals is returned as 0. Returns 404 for non-football teams and for a team and season that do not belong together.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id; `season` (string, **required**) — Numeric SofaScore season id; `tournament_id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id of a football competition
+
+### `sofascore_team_near_events`
+
+- **HTTP:** `GET /sofascore/team-near-events`
+- **What:** SofaScore team previous and next match. Returns a team's last played match and its next scheduled match with teams, competition, status, score and start time. Either side can be missing (a team with no upcoming fixture returns only `previous_event`). Returns 404 when SofaScore has neither. For full fixture lists use team-events.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id
+
+### `sofascore_team_of_the_week`
+
+- **HTTP:** `GET /sofascore/team-of-the-week`
+- **What:** SofaScore team of the week. Returns one team of the week: the formation and the selected players with their SofaScore rating, team and, for round and weekly selections, the match the rating was earned in. Get the `period` id from sofascore-team-of-the-week-periods; a period that does not belong to the given competition season is rejected with 400.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `period` (string, **required**) — Numeric period id from sofascore-team-of-the-week-periods; `season` (string, **required**) — Numeric SofaScore season id
+
+### `sofascore_team_of_the_week_periods`
+
+- **HTTP:** `GET /sofascore/team-of-the-week-periods`
+- **What:** SofaScore team of the week periods. Lists the periods of a competition season for which SofaScore published a team of the week, newest first: league rounds (`round`), weekly time spans (`timespan`) and season-level selections (`season`, such as an NBA regular season or playoff team). Use a returned period `id` with sofascore-team-of-the-week. An empty list is valid when no team of the week has been published yet. Get `id` from search and `season` from tournament-seasons.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `season` (string, **required**) — Numeric SofaScore season id
+
+### `sofascore_team_performance`
+
+- **HTTP:** `GET /sofascore/team-performance`
+- **What:** SofaScore team recent performance. Returns a team's most recent matches (about ten, oldest first) with SofaScore's per-match performance value in `points`: higher is better and a heavy defeat is negative. An event SofaScore gave no value for has no `points`. An empty `events` list is a valid response for a team with no recent matches.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id
+
+### `sofascore_team_player_statistics`
+
+- **HTTP:** `GET /sofascore/team-player-statistics`
+- **What:** SofaScore team player statistics. Returns the statistics of every player in a team's squad for one competition season, each as a snake_case metric map (appearances, minutes, rating, goals, assists, passing and duel metrics for football; points, rebounds and assists for basketball), in SofaScore's order. The `type` enum accepts `overall`, `home`, `away`, `regular_season` and `playoffs` and defaults to `overall`; only the types listed for that season by team-player-statistics-seasons exist (football `overall`, `home`, `away`; NBA `regular_season`, `playoffs`). A metric SofaScore did not record is omitted rather than returned as 0. Returns 404 when SofaScore has no statistics of that type for the combination.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id; `season` (string, **required**) — Numeric SofaScore season id from team-player-statistics-seasons; `tournament_id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id from team-player-statistics-seasons; `type` (string, optional) — Statistics view
+
+### `sofascore_team_player_statistics_seasons`
+
+- **HTTP:** `GET /sofascore/team-player-statistics-seasons`
+- **What:** SofaScore team player statistics seasons. Lists the competitions and seasons for which SofaScore has per-player statistics for a team, with the statistics `types` available in each season (`overall`, `home`, `away`, `regular_season`, `playoffs`). Use it to find the `tournament_id`, `season` and `type` accepted by team-player-statistics and team-top-players. Football teams offer `overall`, `home` and `away`; NBA teams offer `regular_season` and `playoffs`. Returns 404 when SofaScore has no player statistics for the team.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id
 
 ### `sofascore_team_players`
 
@@ -15525,11 +16294,155 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** SofaScore team players. Returns a team's full squad from SofaScore's credential-free public JSON.
 - **Params:** `id` (string, **required**) — Numeric SofaScore team id
 
+### `sofascore_team_rankings`
+
+- **HTTP:** `GET /sofascore/team-rankings`
+- **What:** SofaScore team rankings. Returns every ranking a team or tennis player appears in: for a tennis player the ATP or WTA ranking, its live version and the UTR rating, for a football club the UEFA club coefficient by year. Each ranking carries its `type_id` (the same ids the rankings endpoint takes), name, sport, category and last update, and `rows` with the `position`, `points`, previous and best position where SofaScore reports them. Returns 404 when the id appears in no ranking.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id (a tennis player id for tennis)
+
+### `sofascore_team_season_statistics`
+
+- **HTTP:** `GET /sofascore/team-season-statistics`
+- **What:** SofaScore team season statistics. Returns a team's statistics for one competition season (goals, shots, passing, duels, discipline, and the matching conceded-side metrics) as a snake_case metric map from SofaScore's credential-free public JSON. The `type` enum accepts `overall`, `home`, `away`, `regular_season`, and `playoffs` and defaults to `overall`; only the types listed for that season by team-statistics-seasons exist (football teams have `overall` only; basketball, ice hockey and baseball teams have `regular_season` and `playoffs`). Returns 404 when SofaScore has no statistics of that type for the combination.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id; `season` (string, **required**) — Numeric SofaScore season id from team-statistics-seasons; `tournament_id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id from team-statistics-seasons; `type` (string, optional) — Statistics view
+
+### `sofascore_team_statistics_seasons`
+
+- **HTTP:** `GET /sofascore/team-statistics-seasons`
+- **What:** SofaScore team statistics seasons. Lists the competitions and seasons a team has statistics for, with the statistics `types` available for each season, from SofaScore's credential-free public JSON. Use a returned competition id (`unique_tournament_id`), season `id` and one of its `types` with team-season-statistics. The `types` values are `overall`, `home`, `away`, `regular_season`, and `playoffs`. Returns 404 for teams with no tracked statistics.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id
+
+### `sofascore_team_top_players`
+
+- **HTTP:** `GET /sofascore/team-top-players`
+- **What:** SofaScore team top players. Returns a team's best players for every statistic category SofaScore ranks within the team and season (rating, goals, assists, expected goals, tackles, saves and more for football; points, rebounds and assists for basketball), each as a ranked list with player, team and value. The category set depends on the sport, so the response lists every category it holds. The `type` enum accepts `overall`, `regular_season` and `playoffs`: football competitions publish `overall`, the NBA publishes `regular_season` and `playoffs`, and a type the competition does not publish answers 404. Optional `limit` caps the rows per category (up to 50); the payload is large without it.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id; `limit` (integer, optional) — Rows per category, 1 to 50. Omit to return every row; `season` (string, **required**) — Numeric SofaScore season id from team-player-statistics-seasons; `tournament_id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id from team-player-statistics-seasons; `type` (string, optional) — Statistics scope
+
+### `sofascore_team_tournaments`
+
+- **HTTP:** `GET /sofascore/team-tournaments`
+- **What:** SofaScore team competitions. Lists the competitions a team plays in, each with id, name, slug, category and sport. By default (`all=false`) it returns the competitions the team currently takes part in; with `all=true` it returns every competition the team has been recorded in, including friendlies and older tournaments. Competition ids can be used as `tournament_id` elsewhere in the SofaScore endpoints; use team-player-statistics-seasons for the seasons that have statistics. Returns 404 when SofaScore has no competitions for the team.
+- **Params:** `all` (boolean, optional) — false returns current competitions, true returns every recorded competition; `id` (string, **required**) — Numeric SofaScore team id
+
+### `sofascore_team_transfers`
+
+- **HTTP:** `GET /sofascore/team-transfers`
+- **What:** SofaScore team transfers. Returns a team's recent incoming (`transfers_in`) and outgoing (`transfers_out`) transfers with player, clubs, date, fee, and SofaScore's numeric transfer type code from SofaScore's credential-free public JSON. Empty lists are valid for a quiet transfer window. Returns 404 when SofaScore has no transfer record for the team (seen for ice hockey and baseball teams). The `type_code` values are SofaScore's own opaque codes and are not translated.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id
+
+### `sofascore_tennis_player_grand_slam_results`
+
+- **HTTP:** `GET /sofascore/tennis-player-grand-slam-results`
+- **What:** SofaScore tennis player grand slam results. Returns a tennis player's best round at each grand slam (Australian Open, Roland Garros, Wimbledon and US Open) for the last five editions: per edition the `year`, the `season_id`, the best `round` reached and whether the player won it (`winner`). A year without a `round` means no result is recorded for that edition. `id` is the SofaScore team id of a tennis player (tennis players are teams in SofaScore); get it from search or rankings. Returns 404 for ids that are not tennis players.
+- **Params:** `id` (string, **required**) — Numeric SofaScore team id of a tennis player
+
+### `sofascore_tournament_cuptree`
+
+- **HTTP:** `GET /sofascore/tournament-cuptree`
+- **What:** SofaScore competition knockout tree. Returns the knockout tree(s) of a cup or playoff competition season: every round with its ties, each tie's participants (team or player, seed, winner flag, the earlier tie it advanced from), result and score strings (a shoot-out is appended, such as `1 (4)`), match ids and start time, plus the final and third-place tie. Tennis competitions return two trees (main draw and qualifying). League seasons have no tree and answer 404, as does a season id that does not belong to the competition. Get `id` from search or tournaments-with-feature and `season` from tournament-seasons; pass the returned `event_ids` to the event endpoints.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id of a cup or playoff competition; `season` (string, **required**) — Numeric SofaScore season id
+
+### `sofascore_tournament_info`
+
+- **HTTP:** `GET /sofascore/tournament-info`
+- **What:** SofaScore competition info. Returns a competition's metadata (name, sport, category, tier, title holder, most titles, current season dates, divisions above and below, linked competitions). When `season` is given it also returns that season's aggregates: number of competitors and, for football competitions, goals, home wins, away wins, draws, yellow and red cards and the promoted teams. Get `id` from search and `season` from tournament-seasons.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `season` (string, optional) — Numeric SofaScore season id. Omit for competition metadata only
+
+### `sofascore_tournament_player_of_the_season`
+
+- **HTTP:** `GET /sofascore/tournament-player-of-the-season`
+- **What:** SofaScore player of the season. Returns the player SofaScore names player of the season for a finished competition season: the player, their team, shirt number, average rating, appearances and the statistics scope (`overall`, or `regular_season` for the NBA). A season that is still running, has not been awarded, or does not belong to the competition answers 404. Get `id` from search and `season` from tournament-seasons or tournament-winners.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `season` (string, **required**) — Numeric SofaScore season id of a finished season
+
+### `sofascore_tournament_player_statistics`
+
+- **HTTP:** `GET /sofascore/tournament-player-statistics`
+- **What:** SofaScore season player statistics table. Returns one page of a football competition season's player statistics table, sortable by a statistic. `order` chooses the statistic to sort by, `direction` the sort direction (`desc` or `asc`), `accumulation` whether values are season totals, per-game averages or per-90-minute averages (`total`, `perGame`, `per90`), and `group` which statistic columns each row carries (`summary`, `attack`, `defence`, `passing`, `goalkeeper`). Page with `limit` (up to 100) and `offset`; `has_next_page` shows whether more rows follow. Optional filters narrow the table: `team` (team ids), `nationality` (SofaScore nationality codes), `position` (`G`, `D`, `M`, `F`), `min_appearances` and `min_minutes`; several filters combine (AND) and several values of one filter are alternatives (OR). The team ids and nationality codes of a season come from tournament-statistics-info. A filter that matches nobody returns an empty `players` list. Other sports return no rows (404). Get `id` from search and `season` from tournament-seasons.
+- **Params:** `accumulation` (string, optional) — How statistics are accumulated. Defaults to total; `direction` (string, optional) — Sort direction. Defaults to desc; `group` (string, optional) — Statistic columns returned. Defaults to summary; `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id of a football competition; `limit` (integer, optional) — Rows per page, 1 to 100. Defaults to 20; `min_appearances` (integer, optional) — Keep players with at least this many appearances, 0 to 1000. Omit for no minimum; `min_minutes` (integer, optional) — Keep players with at least this many minutes played, 0 to 100000. Omit for no minimum; `nationality` (array, optional) — Nationality codes to keep, comma separated, up to 20 (codes from tournament-statistics-info); `offset` (integer, optional) — Rows to skip. Defaults to 0; `order` (string, optional) — Statistic to sort by. Defaults to rating; `position` (array, optional) — Position codes to keep, comma separated; `season` (string, **required**) — Numeric SofaScore season id; `team` (array, optional) — Team ids to keep, comma separated, up to 20 (ids from tournament-statistics-info or tournament-teams)
+
+### `sofascore_tournament_rounds`
+
+- **HTTP:** `GET /sofascore/tournament-rounds`
+- **What:** SofaScore competition season rounds. Returns the rounds of a competition season and the current round. Round numbers are not unique in cups: the UEFA Champions League has both a qualifying and a league-phase round 1, and the same playoff round number with and without a `prefix`. To fetch a round's fixtures, pass its `round` to round-events together with its `slug` and, when present, its `prefix`; knockout and named rounds return 404 from round-events without the slug. Plain numbered rounds (a league's round 1 to 38) have no slug. Get `id` from category-tournaments or search and `season` from tournament-seasons. Returns 404 when SofaScore has no rounds for the season (for example a season that has not started).
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `season` (string, **required**) — Numeric SofaScore season id from tournament-seasons
+
 ### `sofascore_tournament_seasons`
 
 - **HTTP:** `GET /sofascore/tournament-seasons`
 - **What:** SofaScore competition seasons. Returns the season list for a competition from SofaScore's credential-free public JSON. Use a returned season id with the standings and round-events endpoints.
 - **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id
+
+### `sofascore_tournament_statistics_info`
+
+- **HTTP:** `GET /sofascore/tournament-statistics-info`
+- **What:** SofaScore player statistics table filters. Returns what the tournament-player-statistics table of a football competition season can be filtered by: the season's teams (ids for the `team` filter), the nationality codes (for the `nationality` filter; SofaScore uses `EN`, `SX`, `WA` and `NX` for the home nations), the position codes `G`, `D`, `M` and `F` (for the `position` filter), and the statistic columns of each `group` value (`summary`, `attack`, `defence`, `passing`, `goalkeeper`). Other sports answer 404. Get `id` from search and `season` from tournament-seasons.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id of a football competition; `season` (string, **required**) — Numeric SofaScore season id
+
+### `sofascore_tournament_team_of_the_season`
+
+- **HTTP:** `GET /sofascore/tournament-team-of-the-season`
+- **What:** SofaScore team of the season. Returns the team of the season SofaScore selected for a finished competition season: the formation, when it was created and the selected players (11 in football, 5 in basketball) with position, shirt number, team and average rating. A season that is still running, has no selection, or does not belong to the competition answers 404. Get `id` from search and `season` from tournament-seasons or tournament-winners.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `season` (string, **required**) — Numeric SofaScore season id of a finished season
+
+### `sofascore_tournament_teams`
+
+- **HTTP:** `GET /sofascore/tournament-teams`
+- **What:** SofaScore teams of a competition season. Returns every team (or, for tennis and other individual sports, every player) entered in a competition season, with id, name, short name, name code, country, gender, type (`0` team, `1` individual player) and, for individual players, the current ranking. Use the team ids with team, team-players and the `team` filter of tournament-player-statistics. A season id that does not belong to the competition, or a field not yet decided, answers 404. Get `id` from search and `season` from tournament-seasons.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `season` (string, **required**) — Numeric SofaScore season id
+
+### `sofascore_tournament_top_players`
+
+- **HTTP:** `GET /sofascore/tournament-top-players`
+- **What:** SofaScore season top players. Returns a competition season's top players for every statistic category SofaScore ranks (for football about 30 categories such as rating, goals, assists, expected goals, tackles and saves; for basketball points, rebounds, assists and more), each with the ranked players, their team and the value. The category set depends on the sport and competition, so the response lists every category it holds. The `type` enum accepts `overall`, `regular_season` and `playoffs`: football competitions publish `overall`, the NBA publishes `regular_season` and `playoffs`, and a type the competition does not publish answers 404. Optional `limit` caps the rows per category (up to 50). Get `id` from search and `season` from tournament-seasons.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `limit` (integer, optional) — Rows per category, 1 to 50. Omit to return every row; `season` (string, **required**) — Numeric SofaScore season id; `type` (string, optional) — Statistics scope. Defaults to overall
+
+### `sofascore_tournament_top_teams`
+
+- **HTTP:** `GET /sofascore/tournament-top-teams`
+- **What:** SofaScore season top teams. Returns a competition season's top teams for every team statistic category SofaScore ranks (for football about 30 categories such as average rating, goals scored, possession, shots and clean sheets; for basketball points, pace, ratings and more), each with the ranked teams and the value. The category set depends on the sport and competition, so the response lists every category it holds. The `type` enum accepts `overall`, `regular_season` and `playoffs`: football competitions publish `overall`, the NBA publishes `regular_season`, and a type the competition does not publish answers 404. Optional `limit` caps the rows per category (up to 50). Get `id` from search and `season` from tournament-seasons.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `limit` (integer, optional) — Rows per category, 1 to 50. Omit to return every row; `season` (string, **required**) — Numeric SofaScore season id; `type` (string, optional) — Statistics scope. Defaults to overall
+
+### `sofascore_tournament_venues`
+
+- **HTTP:** `GET /sofascore/tournament-venues`
+- **What:** SofaScore venues of a competition season. Returns every venue used by a competition season with id, name, capacity, city, state (US), coordinates and the `hidden` flag. Use the venue ids with venue and venue-events. A season id that does not belong to the competition answers 404. Get `id` from search and `season` from tournament-seasons.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `season` (string, **required**) — Numeric SofaScore season id
+
+### `sofascore_tournament_winners`
+
+- **HTTP:** `GET /sofascore/tournament-winners`
+- **What:** SofaScore past winners of a competition. Returns one page (10 seasons, newest first) of a competition's past winners: the year, the season id and the winning team or player. Follow `has_next_page` and pass `page` (zero-based) for older seasons; a page past the last one and an unknown competition both answer 404. Get `id` from search; the returned `season_id` works with every season-scoped endpoint.
+- **Params:** `id` (string, **required**) — Numeric SofaScore unique-tournament (competition) id; `page` (integer, optional) — Zero-based page number. Defaults to 0
+
+### `sofascore_tournaments_with_feature`
+
+- **HTTP:** `GET /sofascore/tournaments-with-feature`
+- **What:** SofaScore competitions that carry a feature. Returns SofaScore's short list (up to 10) of the most followed competitions of a sport that carry one feature. The `feature` enum accepts `cuptree` (knockout tree, for tournament-cuptree), `standings` (league table), `totw` (team of the week) and `power_rankings`. The `sport` enum accepts `american-football`, `aussie-rules`, `badminton`, `bandy`, `baseball`, `basketball`, `beach-volley`, `cricket`, `darts`, `esports`, `floorball`, `football`, `futsal`, `handball`, `ice-hockey`, `minifootball`, `rugby`, `snooker`, `table-tennis`, `tennis`, `volleyball` and `waterpolo` (`mma` and `padel` are not supported). The list is fixed by SofaScore and cannot be paged or searched; a sport with no such competition returns an empty list. Use search-typed with `type` `unique_tournaments` to find other competitions.
+- **Params:** `feature` (string, **required**) — Competition feature; `sport` (string, **required**) — Sport key
+
+### `sofascore_trending_events`
+
+- **HTTP:** `GET /sofascore/trending-events`
+- **What:** SofaScore trending events. Returns the events trending in one country across every sport (live, recent and upcoming), each as the usual event summary plus its `sport` key. `country` is a two-letter ISO 3166-1 alpha-2 code such as `GB` or `US` (any case); SofaScore serves a trending list per country, and a code it does not serve returns 404. The list is about twenty events and changes through the day.
+- **Params:** `country` (string, **required**) — Two-letter ISO 3166-1 alpha-2 country code
+
+### `sofascore_trending_players`
+
+- **HTTP:** `GET /sofascore/trending-players`
+- **What:** SofaScore trending players. Returns a sport's trending top players: standout performers from recent matches with the player, team, the match and that match's numbers as a snake_case metric map (`rating`, `minutes_played`, `goals` and more; the metric set depends on the sport and position). The `sport` enum accepts `football` and `basketball`, the sports for which SofaScore publishes this list. Returns 404 when SofaScore has no trending players for the sport right now.
+- **Params:** `sport` (string, **required**) — Sport key
+
+### `sofascore_venue`
+
+- **HTTP:** `GET /sofascore/venue`
+- **What:** SofaScore venue. Returns one venue (stadium or arena): name, capacity, city, country, coordinates, its home teams, the venue-wide match totals (matches, goals, home and away win shares, and for football cards and corners per game) and a per-sport record in `sports`, most matches first. `hidden` venues, such as NBA arenas, have no venue-wide match list in venue-events and are listed per competition season instead. An unknown venue id answers 404. Get `id` from search-typed with `type` `venues`, from tournament-venues or from an event's venue.
+- **Params:** `id` (string, **required**) — Numeric SofaScore venue id
+
+### `sofascore_venue_events`
+
+- **HTTP:** `GET /sofascore/venue-events`
+- **What:** SofaScore matches at a venue. Returns one page (up to 30) of the matches played (`direction` `last`, newest page first) or scheduled (`next`) at a venue, as match summaries. Without `tournament` and `season` it lists every match at the venue, optionally narrowed by `sport` (`all`, or any key listed in the venue's `sports`, such as `football`, `rugby`, `basketball`, `mma`); with both it lists that competition season's matches at the venue and `sport` must be omitted. Hidden venues (see venue) have no venue-wide list and answer 404 without `tournament` and `season`. A direction with no matches, a sport the venue never hosted and a page past the last one also answer 404; follow `has_next_page`.
+- **Params:** `direction` (string, **required**) — Upcoming matches or finished matches; `id` (string, **required**) — Numeric SofaScore venue id; `page` (integer, optional) — Zero-based page number. Defaults to 0; `season` (string, optional) — Numeric season id; with tournament, lists that competition season's matches at the venue; `sport` (string, optional) — Sport filter for the venue-wide list. Defaults to all; `tournament` (string, optional) — Numeric unique-tournament id; with season, lists that competition season's matches at the venue
 
 ## Sonic (12)
 
@@ -18319,8 +19232,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tiktok_top_ads_location_info`
 
 - **HTTP:** `GET /tiktok/top-ads/location-info`
-- **What:** Retrieve TikTok Top Ads location info. Returns the initial location and industry context used by TikTok Creative Center Top Ads.
-- **Params:** `module` (integer, optional) — Creative Center module id
+- **What:** Retrieve TikTok Top Ads location info. Returns TikTok's inferred initial country and industry targeting context for Top Ads. Use it when you need starting targeting values; use the locations, filters, and list endpoints to choose criteria and retrieve ads.
+- **Params:** `module` (integer, optional) — Optional upstream Creative Center module identifier; omitted or 0 defaults to 1, other nonzero IDs are passed through without local range validation
 
 ### `tiktok_top_ads_locations`
 

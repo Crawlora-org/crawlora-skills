@@ -39,8 +39,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `resy_availability`
 
 - **HTTP:** `GET /resy/availability`
-- **What:** Get a Resy restaurant's bookable reservation timeslots. Returns the bookable reservation timeslots Resy currently shows for a restaurant, date, and party size -- the same read-only availability an anonymous visitor sees before signing in. This is discovery only; it does not create, hold, modify, or cancel a reservation.
-- **Params:** `date` (string, **required**) — Reservation date, YYYY-MM-DD; `party_size` (integer, optional) — Party size, default 2; `restaurant_id` (string, **required**) — Resy restaurant id
+- **What:** Get a Resy restaurant's bookable reservation timeslots. Returns the bookable reservation timeslots Resy currently shows for a restaurant, date, and party size -- the same read-only availability an anonymous visitor sees before signing in. The date is optional and defaults to the current date in UTC; the response echoes the date used. This is discovery only; it does not create, hold, modify, or cancel a reservation.
+- **Params:** `date` (string, optional) — Reservation date, YYYY-MM-DD. Defaults to the current date in UTC; `party_size` (integer, optional) — Party size, default 2; `restaurant_id` (string, **required**) — Resy restaurant id
 
 ### `resy_cuisines`
 

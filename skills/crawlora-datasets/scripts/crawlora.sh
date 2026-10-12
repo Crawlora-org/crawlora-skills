@@ -67,6 +67,8 @@ case "$path" in
   /datasets/apps/search) route_allowed=true ;;
   /datasets/bbb-businesses/facets) route_allowed=true ;;
   /datasets/bbb-businesses/search) route_allowed=true ;;
+  /datasets/bbb-scamtracker-reports/facets) route_allowed=true ;;
+  /datasets/bbb-scamtracker-reports/search) route_allowed=true ;;
   /datasets/boxofficemojo/facets) route_allowed=true ;;
   /datasets/boxofficemojo/search) route_allowed=true ;;
   /datasets/chrome-extensions/changes) route_allowed=true ;;
@@ -100,6 +102,8 @@ case "$path" in
   /datasets/jobs/search) route_allowed=true ;;
   /datasets/journalists/facets) route_allowed=true ;;
   /datasets/journalists/search) route_allowed=true ;;
+  /datasets/llms/facets) route_allowed=true ;;
+  /datasets/llms/search) route_allowed=true ;;
   /datasets/numbeo-cities/facets) route_allowed=true ;;
   /datasets/numbeo-cities/search) route_allowed=true ;;
   /datasets/numbeo-countries/search) route_allowed=true ;;
@@ -153,6 +157,7 @@ if [ "$route_allowed" = false ]; then
   '^/datasets/airbnb-markets/items/[^/]+$'
   '^/datasets/apple-podcasts-shows/items/[^/]+$'
   '^/datasets/bbb-businesses/items/[^/]+$'
+  '^/datasets/bbb-scamtracker-reports/items/[^/]+$'
   '^/datasets/boxofficemojo/items/[^/]+$'
   '^/datasets/chrome-extensions/history/[^/]+$'
   '^/datasets/chrome-extensions/items/[^/]+$'
@@ -167,6 +172,7 @@ if [ "$route_allowed" = false ]; then
   '^/datasets/jobs/companies/[^/]+$'
   '^/datasets/jobs/items/[^/]+$'
   '^/datasets/journalists/items/[^/]+/[^/]+$'
+  '^/datasets/llms/items/[^/]+$'
   '^/datasets/numbeo-cities/items/[^/]+$'
   '^/datasets/numbeo-countries/items/[^/]+$'
   '^/datasets/pitchbook-advisors/items/[^/]+$'

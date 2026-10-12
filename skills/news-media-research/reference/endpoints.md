@@ -461,7 +461,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `reuters_articles`
 
 - **HTTP:** `GET /reuters/articles`
-- **What:** Get recent Reuters articles. Returns a page of recent Reuters articles: title, canonical URL, update time, and the lead image URL when available. The index covers the most recent 10,000 articles.
+- **What:** Get recent Reuters articles. Returns a page of recent Reuters articles: canonical URL, update time, and the lead image URL when available, plus the title when Reuters publishes one in this index (currently it does not). The index covers the most recent 10,000 articles. Use /reuters/news for a title-bearing feed of fresh stories, or /reuters/article for one article's title and text.
 - **Params:** `page` (integer, optional) — Results page, 100 items per page
 
 ### `reuters_author`
@@ -479,7 +479,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `reuters_section`
 
 - **HTTP:** `GET /reuters/section`
-- **What:** Get recent articles in a Reuters section. Returns a page of one top-level Reuters section's recent articles: canonical URL, update time, lead image URL, and image caption. This feed does not publish titles; use /reuters/articles for a title-bearing index.
+- **What:** Get recent articles in a Reuters section. Returns a page of one top-level Reuters section's recent articles: canonical URL, update time, lead image URL, and image caption. This feed does not publish titles; use /reuters/news for a title-bearing feed of fresh stories.
 - **Params:** `page` (integer, optional) — Results page, 100 items per page; `section` (string, **required**) — Top-level Reuters section
 
 ### `reuters_sections`

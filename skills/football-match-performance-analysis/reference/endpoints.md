@@ -31,7 +31,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sofascore_event_lineups`
 
 - **HTTP:** `GET /sofascore/event-lineups`
-- **What:** SofaScore event lineups. Returns one match's starting XI and substitutes per side, with formation, from SofaScore's credential-free public JSON. Returns 404 when SofaScore has no lineups for the match.
+- **What:** SofaScore event lineups. Returns one match's starting XI and substitutes per side, with formation, from SofaScore's credential-free public JSON. Returns 404 when SofaScore has no lineups for the match. A missing-lineup result may be reused for up to two minutes before checking again.
 - **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
 
 ### `sofascore_event_odds`

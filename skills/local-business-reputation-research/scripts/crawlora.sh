@@ -56,14 +56,21 @@ esac
 # segment; unlike a case '*', [^/]+ cannot consume another slash.
 route_allowed=false
 case "$path" in
+  /bbb/article) route_allowed=true ;;
   /bbb/business) route_allowed=true ;;
   /bbb/business/complaints) route_allowed=true ;;
   /bbb/business/more-info) route_allowed=true ;;
   /bbb/business/reviews) route_allowed=true ;;
   /bbb/category) route_allowed=true ;;
+  /bbb/local-bbb) route_allowed=true ;;
+  /bbb/local-bbbs) route_allowed=true ;;
+  /bbb/news) route_allowed=true ;;
+  /bbb/news/topics) route_allowed=true ;;
+  /bbb/regions) route_allowed=true ;;
   /bbb/scamtracker/search) route_allowed=true ;;
   /bbb/scamtracker/state-stats) route_allowed=true ;;
   /bbb/search) route_allowed=true ;;
+  /bbb/search/filters) route_allowed=true ;;
   /opentable/restaurant) route_allowed=true ;;
   /opentable/restaurant/menus) route_allowed=true ;;
   /opentable/restaurant/reviews) route_allowed=true ;;
