@@ -36,7 +36,7 @@ test("published workflow selections resolve and keep single-product workflows na
   }
 });
 
-test("new workflows cover their complete published surface without importing mixed-group neighbours", () => {
+test("new workflows cover their intended surfaces without importing mixed-group neighbours", () => {
   const catalog = JSON.parse(readFileSync(new URL("./tools.json", import.meta.url)));
   const selections = JSON.parse(readFileSync(new URL("./skill-tools.json", import.meta.url)));
   const groups = {
@@ -52,10 +52,41 @@ test("new workflows cover their complete published surface without importing mix
     "rental-housing-research": ["StreetEasy", "Greystar"],
   };
   for (const [skill, allowed] of Object.entries(groups)) {
+    const selected = [...selections[skill]].sort();
+    if (skill === "multi-sport-match-research") {
+      // This workflow is intentionally a match/score comparison subset of the
+      // larger Flashscore and LiveScore catalogs. New provider routes such as
+      // odds, player/team research, and sport-specific box scores belong to
+      // other workflows and should not silently widen this one.
+      const providerTools = new Set(catalog
+        .filter(tool => allowed.includes(tool._http.group))
+        .map(tool => tool.name));
+      assert.ok(selected.every(name => providerTools.has(name)),
+        `${skill} must only select Flashscore/LiveScore tools`);
+      for (const name of [
+        "flashscore_scores",
+        "flashscore_match_stats",
+        "flashscore_match_info",
+        "livescore_scores",
+        "livescore_live_scores",
+        "livescore_match",
+        "livescore_match_stats",
+      ]) {
+        assert.ok(selected.includes(name), `${skill} must retain ${name}`);
+      }
+      for (const prefix of ["flashscore_player_", "flashscore_team_"]) {
+        assert.ok(!selected.some(name => name.startsWith(prefix)),
+          `${skill} must not absorb ${prefix} routes`);
+      }
+      for (const name of ["flashscore_match_odds", "flashscore_match_box_score", "flashscore_match_darts"]) {
+        assert.ok(!selected.includes(name), `${skill} must not absorb ${name}`);
+      }
+      continue;
+    }
     const expected = skill === "prescription-price-research"
       ? ["goodrx_drugs", "goodrx_drug_options", "goodrx_drug_prices"]
       : catalog.filter(tool => allowed.includes(tool._http.group)).map(tool => tool.name).sort();
-    assert.deepEqual([...selections[skill]].sort(), expected.sort(), skill);
+    assert.deepEqual(selected, expected.sort(), skill);
   }
   assert.deepEqual([...selections["google-finance-research"]].sort(), catalog.filter(tool => tool._http.path.startsWith("/google/finance/")).map(tool => tool.name).sort());
 });
