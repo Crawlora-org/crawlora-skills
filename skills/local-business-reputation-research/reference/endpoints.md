@@ -63,7 +63,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bbb_article`
 
 - **HTTP:** `GET /bbb/article`
-- **What:** Get a BBB article. Returns published BBB article metadata, author names, body text, and useful links from a canonical public article URL.
+- **What:** Get a BBB article. Returns published BBB article metadata, author names, body text, and useful links from a canonical public article URL. Returns 404 when BBB no longer has the article, including a story BBB has moved to one of its evergreen pages under /all/; the error then names the new address, and the answer is permanent.
 - **Params:** `url` (string, **required**) — Canonical BBB article URL
 
 ### `bbb_business`
@@ -76,19 +76,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /bbb/business/complaints`
 - **What:** Get a Better Business Bureau business's complaint history. Returns a business's BBB complaint history: total complaint count, complaints closed or filed in the last 12 months, and one page of per-complaint detail (date, type, status, narrative text, and any business response / customer answer thread). Complaints are listed newest first, 10 per page; use page with the returned page, total_pages and has_more to walk the full list. A business with no filed complaints returns total_complaints 0 and an empty complaints list -- this is a normal result, not an error. Credential-free public Better Business Bureau data.
-- **Params:** `page` (integer, optional) — Complaint list page, 1 or greater (10 complaints per page, newest first). Defaults to 1; `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url
+- **Params:** `page` (integer, optional) — Complaint list page, 1 or greater (10 complaints per page, newest first). Defaults to 1; `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url. A location URL ending in /addressId/<number> is accepted and read from the business profile
 
 ### `bbb_business_more_info`
 
 - **HTTP:** `GET /bbb/business/more-info`
 - **What:** Get a Better Business Bureau business's full rating reasons and service area. Returns a business's full per-factor "Reasons for Rating" list and full service-area list, from the separate BBB business profile /more-info sub-page. The bbb-business endpoint's own rating_reasons field is read from the main profile page and typically holds only one generic boilerplate bullet regardless of actual rating; this endpoint fetches the richer, business-specific list instead. Service area is business-conditional -- some businesses render no service-area section at all, in which case service_areas is empty. Credential-free public Better Business Bureau data.
-- **Params:** `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url
+- **Params:** `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url. A location URL ending in /addressId/<number> is accepted and read from the business profile
 
 ### `bbb_business_reviews`
 
 - **HTTP:** `GET /bbb/business/reviews`
 - **What:** Get a Better Business Bureau business's customer reviews. Returns a business's full customer-review list (author, star rating, date, text, and any business response thread), paginated 10 per page, plus the average star rating and total review count. Credential-free public Better Business Bureau data. Unlike the other bbb-business-* endpoints, this one is fetched with browser impersonation rather than plain direct HTTP -- see the family's maintenance note for why.
-- **Params:** `page` (integer, optional) — Result page (10 per page), default 1; `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url
+- **Params:** `page` (integer, optional) — Result page (10 per page), default 1; `url` (string, **required**) — BBB business profile URL, from a bbb-search result's url or hq_profile_url. A location URL ending in /addressId/<number> is accepted and read from the business profile
 
 ### `bbb_category`
 
@@ -111,14 +111,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bbb_news`
 
 - **HTTP:** `GET /bbb/news`
-- **What:** Get BBB newsroom stories. Returns one page of public BBB newsroom stories from a canonical US or Canada newsroom URL. Event dates and links are preserved when present.
-- **Params:** `url` (string, **required**) — Canonical BBB newsroom or topic page URL; include page=N for pagination
+- **What:** Get BBB newsroom stories. Returns one page of public BBB newsroom stories from a canonical BBB newsroom URL. Three scopes are accepted, each with an optional topic: the US or Canada newsroom (/us/news), a state, province or city newsroom (/us/ca/news, /us/ca/san-francisco/news), and one local BBB chapter's own newsroom (/local-bbb/<chapter>/news, the news_url returned by bbb-local-bbbs and bbb-local-bbb). The list is whatever BBB shows on that page: a city or chapter whose local BBB publishes its own stories returns those, and other cities, other chapters and the state pages checked so far return the same list as the country newsroom, so compare total and the first items with the country newsroom before treating a list as local. A chapter URL also returns local_bbb_id and local_bbb_name. Event dates and links are preserved when present.
+- **Params:** `url` (string, **required**) — Canonical https://www.bbb.org newsroom URL: /us/news or /ca/news; /<country>/<state>/news or /<country>/<state>/<city>/news with country us or ca, the two-letter region code from bbb-regions and the city slug from a business profile URL; or a chapter's news_url from bbb-local-bbbs. Append a topic segment from bbb-news-topics to narrow it and ?page=N (1 to 1000) to page; no other query key is accepted
 
 ### `bbb_news_topics`
 
 - **HTTP:** `GET /bbb/news/topics`
-- **What:** List BBB newsroom topics. Returns the complete topic navigation shown by a US or Canada BBB newsroom page, including its active topic.
-- **Params:** `url` (string, **required**) — Canonical BBB newsroom page URL
+- **What:** List BBB newsroom topics. Returns the complete topic navigation shown by a BBB newsroom page, including its active topic. The page can be the US or Canada newsroom, a state, province or city newsroom, or one local BBB chapter's newsroom; the returned topic URLs stay in that scope, and a chapter has its own topic set.
+- **Params:** `url` (string, **required**) — Canonical https://www.bbb.org newsroom URL, optionally with a topic segment: /us/news or /ca/news; /<country>/<state>/news or /<country>/<state>/<city>/news with country us or ca, the two-letter region code from bbb-regions and the city slug from a business profile URL; or a chapter's news_url from bbb-local-bbbs
 
 ### `bbb_regions`
 

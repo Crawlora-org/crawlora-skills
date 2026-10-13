@@ -53,7 +53,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_apps_reviews_search`
 
 - **HTTP:** `GET /datasets/apps-reviews/search`
-- **What:** Search the app-reviews dataset. Searches user reviews scraped from the iOS App Store and Google Play, stored in a search index (one document per review). Store enum: `ios`, `android`. Sort enum: `recent`, `score_desc`, `score_asc`, `helpful_desc`.
+- **What:** Search the app-reviews dataset. Searches user reviews scraped from the iOS App Store and Google Play, stored in a search index (one document per review). Store enum: `ios`, `android`. Sort enum: `recent`, `score_desc`, `score_asc`, `helpful_desc`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
 - **Params:** `app_id` (string, optional) — Exact app filter — iOS numeric track id or Android package, max 128 characters; `country` (string, optional) — Exact storefront country filter, max 128 characters; `min_score` (integer, optional) — Minimum star rating, 1 through 5; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over review text, title and author, max 256 characters; `sort` (string, optional) — Sort enum: recent, score_desc, score_asc, helpful_desc; `store` (string, optional) — Store enum: ios, android
 
 ## Trustpilot (3)
