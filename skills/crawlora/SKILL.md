@@ -1,6 +1,6 @@
 ---
 name: crawlora
-description: Fetches structured public web data via the Crawlora REST API — search engines, e-commerce, social, finance, maps, app stores, media, and reviews — returning clean JSON instead of HTML. Use whenever the user needs real data from a public website (prices, listings, reviews, transcripts, SERPs, trends, financials, places) and would otherwise have to scrape or parse HTML.
+description: Fetches structured public web data through Crawlora's hosted REST API, including broad search, bounded web crawls, and durable cross-corpus research jobs. Calls require a user-provided API key and successful requests may consume credits. Use for public prices, listings, reviews, transcripts, SERPs, trends, financials, and places.
 ---
 
 # Crawlora — structured public web data
@@ -12,6 +12,18 @@ you the endpoints in the bundled [catalog](reference/catalog.md) — search engi
 marketplaces, social and video, finance and crypto, maps, app stores, media, and
 reviews — so an agent can fetch real data without running a browser, proxies, or
 HTML parsers.
+
+## Scope, billing, and job side effects
+
+This skill calls Crawlora's hosted third-party API. Its catalog includes broad
+public-web search and bounded crawl routes as well as ordinary one-shot data
+lookups. Some routes start durable research or bounded web-crawl jobs that
+continue after the initial request and retain owner-scoped job status, events,
+and results. Successful requests may consume credits; `POST /web/crawl` requires
+a `max_credits` limit. Before starting one of these jobs, make the source scope,
+credit limit, and continuing job behavior clear to the user. Do not start
+recurring or unbounded work. Use only the API key the user supplied through
+`CRAWLORA_API_KEY`, and never print, store, or commit it.
 
 Account usage, recent-IP, website-monitor management, generic URL scraping, APK
 analysis, and bulk profile-dataset endpoints are intentionally excluded from
@@ -96,6 +108,9 @@ endpoints (method, path, params, description) grouped by platform.
 
 - **Credits / pay-on-success:** billed only on `2xx` responses; failures aren't charged.
   Free tier is 2,000 credits/mo. Get a key at [https://crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills).
+- **Long-running jobs:** `/research/jobs` and `/web/crawl` create durable work.
+  Bound crawl credits with `max_credits`, poll only as needed, and cancel a job
+  when the user no longer needs it.
 - **Public data only.** Crawlora returns publicly available web data; no third-party
   account credentials are involved. Respect each source's terms and rate limits.
 - **Security:** keep the key in `CRAWLORA_API_KEY` only — never hardcode it, never put
