@@ -217,6 +217,35 @@ so you can add it as a marketplace and install the bundle:
 /plugin install crawlora-skills@crawlora-skills
 ```
 
+### As a Codex plugin
+
+This repo also ships a Codex plugin marketplace
+([`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json)) with a
+single `crawlora` plugin that bundles every skill:
+
+```bash
+codex plugin marketplace add Crawlora-org/crawlora-skills
+codex plugin add crawlora@crawlora
+export CRAWLORA_API_KEY=sk_your_key_here
+```
+
+The Codex plugin carries the skills only. The skills call the REST API with
+`CRAWLORA_API_KEY`. Codex's plugin loader does not expand environment variables in
+bundled MCP headers, so to also use the agent-native MCP tools, add the server
+separately (see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp)):
+
+```bash
+codex mcp add crawlora --url https://mcp.crawlora.net/mcp --bearer-token-env-var CRAWLORA_API_KEY
+```
+
+### As a Cursor plugin
+
+The repo root is also a Cursor plugin ([`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json)):
+the skills load from `skills/`, and [`mcp.json`](mcp.json) registers the hosted Crawlora
+MCP server using `${env:CRAWLORA_API_KEY}`. For a local test, copy or link the repo to
+`~/.cursor/plugins/local/crawlora`, set `CRAWLORA_API_KEY` in the environment Cursor
+launches from, then run **Developer: Reload Window**.
+
 ## Usage
 
 Every skill bundles a `scripts/crawlora.sh` helper and a `reference/` file listing
@@ -237,6 +266,10 @@ scripts/crawlora.sh -X POST /google/search '{"keyword":"web scraping api","langu
 ```
 crawlora-skills/
 ├── .claude-plugin/marketplace.json   # also a Claude Code plugin marketplace
+├── .agents/plugins/marketplace.json  # Codex plugin marketplace
+├── .codex-plugin/plugin.json         # Codex plugin manifest (skills only)
+├── .cursor-plugin/plugin.json        # Cursor plugin manifest
+├── mcp.json                          # Cursor plugin MCP server (hosted Crawlora MCP)
 ├── lib/crawlora.sh                   # shared REST helper template (GET + POST)
 ├── scripts/
 │   ├── tools.json                    # endpoint catalog (source of truth, from crawlora-mcp)
