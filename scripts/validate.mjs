@@ -103,6 +103,23 @@ for (const path of bundled) {
   if (!existsSync(join(ROOT, path, "SKILL.md"))) errors.push(`marketplace skill missing: ${path}`);
 }
 
+// Codex and Cursor plugin manifests must stay in step with the package.
+const codexPlugin = JSON.parse(readFileSync(join(ROOT, ".codex-plugin/plugin.json"), "utf8"));
+const cursorPlugin = JSON.parse(readFileSync(join(ROOT, ".cursor-plugin/plugin.json"), "utf8"));
+const codexMarketplace = JSON.parse(readFileSync(join(ROOT, ".agents/plugins/marketplace.json"), "utf8"));
+for (const [label, manifest] of [["codex", codexPlugin], ["cursor", cursorPlugin]]) {
+  if (manifest.name !== "crawlora") errors.push(`${label} plugin name must be "crawlora"`);
+  if (Number(manifest.description.match(/^(\d+) Crawlora Agent Skills/)?.[1]) !== skills.length)
+    errors.push(`${label} plugin description: expected "${skills.length} Crawlora Agent Skills"`);
+}
+if (codexPlugin.version !== cursorPlugin.version) errors.push("codex and cursor plugin versions differ");
+if (codexPlugin.skills !== "./skills/" || !existsSync(join(ROOT, "skills"))) errors.push("codex plugin skills path must be ./skills/");
+if (codexPlugin.mcpServers) errors.push("codex plugin must not bundle MCP (the loader does not expand env vars in headers)");
+if (codexMarketplace.plugins?.[0]?.name !== "crawlora") errors.push("codex marketplace must list the crawlora plugin");
+const cursorMcp = JSON.parse(readFileSync(join(ROOT, "mcp.json"), "utf8"));
+if (cursorMcp.mcpServers?.crawlora?.url !== "https://mcp.crawlora.net/mcp") errors.push("mcp.json must point at the hosted Crawlora MCP server");
+if (JSON.stringify(cursorMcp).includes("sk_")) errors.push("mcp.json must not contain a key");
+
 if (errors.length) {
   console.error("SKILL validation FAILED:\n" + errors.map((e) => "  - " + e).join("\n"));
   process.exit(1);

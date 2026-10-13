@@ -8,7 +8,10 @@ node_modules/
 # NEVER run those installers from inside this source repo (they symlink skills/<name>
 # into these paths, which git sees as deleting the real tracked files). Run them from
 # a scratch directory pointed at the GitHub URL instead.
-.agents/
+.agents/*
+!.agents/plugins/
+.agents/plugins/*
+!.agents/plugins/marketplace.json
 .claude/
 agent/
 skills-lock.json
