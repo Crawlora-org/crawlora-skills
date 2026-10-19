@@ -19,13 +19,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cricinfo_rankings`
 
 - **HTTP:** `GET /cricinfo/rankings`
-- **What:** Get ICC rankings from Cricinfo. Returns ICC rankings (team or player) from a Cricinfo rankings page. `url` must be a canonical `https://www.cricinfo.com/rankings/...` URL.
+- **What:** Get ICC rankings from Cricinfo. Returns ICC rankings (team or player) from a Cricinfo rankings page, given as the required `url`, which must be a canonical `https://www.cricinfo.com/rankings/...` address. Each entry has its rank, name, country, rating, points, matches and format, plus a team or player id.
 - **Params:** `url` (string, **required**) — Canonical Cricinfo rankings URL
 
 ### `cricinfo_records`
 
 - **HTTP:** `GET /cricinfo/records`
-- **What:** Get a Cricinfo record table. Returns a bounded normalized table from a public Cricinfo records page. `record` is a relative Statsguru record path such as `batting/most_runs_career.html`. `class` must be one of `1`, `2`, `3`, `4`, `5`, `6`, `8`, `9`, `10`, `11`, `12`, `20`, `21`, `22`, or `23`.
+- **What:** Get a Cricinfo record table. Returns a bounded table from a Cricinfo records page. `record` is a relative Statsguru record path such as `batting/most_runs_career.html`. `class` must be one of `1`, `2`, `3`, `4`, `5`, `6`, `8`, `9`, `10`, `11`, `12`, `20`, `21`, `22`, or `23`.
 - **Params:** `class` (integer, **required**) — Record match-class. Allowed values: 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 20, 21, 22, 23; `current` (string, optional) — Record currentness selector; `id` (string, optional) — Numeric record subject identifier; `record` (string, **required**) — Relative Statsguru record path; `type` (string, optional) — Record subject type
 
 ### `cricinfo_records_index`
@@ -49,7 +49,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cricinfo_stats`
 
 - **HTTP:** `GET /cricinfo/stats`
-- **What:** Query Cricinfo Statsguru. Returns a bounded normalized Statsguru table. `class` must be one of `1`, `2`, `3`, `4`, `5`, `6`, `8`, `9`, `10`, `11`, `12`, `20`, `21`, `22`, or `23`; `type` must be one of `batting`, `bowling`, `fielding`, `allround`, `fow`, `team`, `official`, or `aggregate`; `view` may be `innings`, `match`, `series`, `ground`, `host`, `opposition`, `year`, or `season`.
+- **What:** Query Cricinfo Statsguru. Returns a bounded Statsguru table. `class` must be one of `1`, `2`, `3`, `4`, `5`, `6`, `8`, `9`, `10`, `11`, `12`, `20`, `21`, `22`, or `23`; `type` must be one of `batting`, `bowling`, `fielding`, `allround`, `fow`, `team`, `official`, or `aggregate`; `view` may be `innings`, `match`, `series`, `ground`, `host`, `opposition`, `year`, or `season`.
 - **Params:** `class` (integer, **required**) — Statsguru match-class. Allowed values: 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 20, 21, 22, 23; `ground` (string, optional) — Numeric ground identifier; `host` (string, optional) — Numeric host-country identifier; `limit` (integer, optional) — Maximum rows returned, from 1 to 100; `opposition` (string, optional) — Numeric opposition team identifier; `orderby` (string, optional) — Statsguru sort column; `orderby_desc` (boolean, optional) — Sort descending when true; `player` (string, optional) — Numeric Cricinfo player identifier; `season` (string, optional) — Season formatted as YYYY or YYYY/YY; `span_max` (string, optional) — Statsguru ending date; `span_min` (string, optional) — Statsguru starting date; `team` (string, optional) — Numeric Cricinfo team identifier; `type` (string, **required**) — Statsguru statistic family; `view` (string, optional) — Statsguru table view
 
 ### `cricinfo_team`
@@ -61,11 +61,11 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cricinfo_team_schedule`
 
 - **HTTP:** `GET /cricinfo/team/schedule`
-- **What:** Get a Cricinfo team match schedule. Returns a team's recent fixtures and results from its dedicated page. `url` must be a canonical `https://www.cricinfo.com/team/...` URL.
+- **What:** Get a Cricinfo team match schedule. Returns a cricket team's recent fixtures and results from its Cricinfo team page, given as the required `url`, which must be a canonical `https://www.cricinfo.com/team/...` address. The response has the team's id, name and slug, and matches with series, format, state, status text, team scores and scorecard URL.
 - **Params:** `url` (string, **required**) — Canonical Cricinfo team URL
 
 ### `cricinfo_teams`
 
 - **HTTP:** `GET /cricinfo/teams`
-- **What:** List Cricinfo teams. Returns Cricinfo's grouped public team directory, including international, domestic, and franchise team identities.
+- **What:** List Cricinfo teams. Returns Cricinfo's team directory with no parameters, organised into titled groups such as popular international teams. Each team has its id, name, slug, abbreviation, country, logo URL and primary colour where Cricinfo gives them, and whether it is a national side.
 - **Params:** _none_

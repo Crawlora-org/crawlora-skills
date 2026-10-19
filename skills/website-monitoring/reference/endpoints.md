@@ -19,26 +19,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `monitors_create`
 
 - **HTTP:** `POST /monitors`
-- **What:** Create a website-change monitor. Creates a monitor that periodically checks a page or sitemap for changes and can notify a webhook. Free to call -- only completed check runs consume credits, at 1 credit per completed run regardless of target type or whether a change was detected. `target_type` defaults to "page" (exact-fingerprint diff of the scraped page). "sitemap" watches the sitemap at `url` for added/removed entries instead, honoring `sitemap.include_patterns`/`exclude_patterns` (shell-style globs matched against each URL's path) and `sitemap.max_urls` (default 5000, hard cap 10000).
+- **What:** Create a website-change monitor. Creates a monitor that periodically checks a page or sitemap for changes and can notify a webhook. Free to call -- only completed check runs consume credits, at 1 credit per completed run regardless of target type or whether a change was detected. `target_type` defaults to "page" (exact-fingerprint diff of the page). "sitemap" watches the sitemap at `url` for added/removed entries instead, honoring `sitemap.include_patterns`/`exclude_patterns` (shell-style globs matched against each URL's path) and `sitemap.max_urls` (default 5000, hard cap 10000).
 - **Params:** `request` (object, **required**) — Monitor definition
 - **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `monitors_delete`
 
 - **HTTP:** `DELETE /monitors/{id}`
-- **What:** Delete a website-change monitor. Deletes one of the caller's own monitors. Free to call. Does not delete its past check history.
+- **What:** Delete a website-change monitor. Deletes one website-change monitor by its `id`, which must belong to the calling account. Returns `deleted: true` on success. The monitor's past check history is not removed.
 - **Params:** `id` (string, **required**) — Monitor ID returned by your account monitor create/list response; replace the illustrative example with your own ID
 
 ### `monitors_get`
 
 - **HTTP:** `GET /monitors/{id}`
-- **What:** Get a website-change monitor. Returns one of the caller's own monitors by id. Free to call.
+- **What:** Get a website-change monitor. Returns one of your website-change monitors by `id`. The monitor includes its `target_type` (`page` or `sitemap`), URL, name, check cadence in minutes, enabled flag, last and next check times, failure count and last error, plus notification and sitemap settings.
 - **Params:** `id` (string, **required**) — Monitor ID returned by your account monitor create/list response; replace the illustrative example with your own ID
 
 ### `monitors_list`
 
 - **HTTP:** `GET /monitors`
-- **What:** List website-change monitors. Returns the caller's own monitors (most recently created first, capped at 100). Free to call.
+- **What:** List website-change monitors. Lists the website-change monitors on your account, most recently created first, up to 100. Each monitor has its `target_type` (`page` or `sitemap`), URL, name, cadence in minutes, enabled flag, last checked and last changed times, next check time, failure count, last error, and notification and sitemap settings.
 - **Params:** _none_
 
 ### `monitors_update`

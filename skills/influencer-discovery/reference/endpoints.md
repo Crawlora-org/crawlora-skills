@@ -19,13 +19,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_instagram_users_facets`
 
 - **HTTP:** `GET /datasets/instagram-users/facets`
-- **What:** Facet the Instagram users dataset. Returns terms aggregation counts for the Instagram users dataset. Facet enum: `is_verified`, `is_business_account`, `has_bio`, `has_external_url`, `category_name`, `source_tier`.
+- **What:** Facet the Instagram users dataset. Returns value counts for the Instagram users dataset by the required `facet`: `is_verified`, `is_business_account`, `has_bio`, `has_external_url`, `category_name` or `source_tier`. The counts follow the search filters, including follower ranges and creation dates, and cover up to 50 values.
 - **Params:** `category_name` (string, optional) — Exact category filter (case-insensitive, e.g. Digital Creator), max 128 characters; `crawled_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `crawled_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `created_after` (string, optional) — Accounts created on or after this date (RFC3339 or YYYY-MM-DD); `created_before` (string, optional) — Accounts created on or before this date (RFC3339 or YYYY-MM-DD); `facet` (string, **required**) — Facet enum: is_verified, is_business_account, has_bio, has_external_url, category_name, source_tier; `has_bio` (boolean, optional) — Filter by a non-empty profile biography; `has_external_url` (boolean, optional) — Filter by a linked external URL; `is_business_account` (boolean, optional) — Filter by business or creator accounts; `is_verified` (boolean, optional) — Filter by the Instagram verification checkmark; `max_followers` (integer, optional) — Maximum follower count; `max_ratio` (number, optional) — Maximum follower-to-following ratio; `min_followers` (integer, optional) — Minimum follower count; `min_ratio` (number, optional) — Minimum follower-to-following ratio; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over username, full_name and biography, max 256 characters; `sort` (string, optional) — Sort enum: relevance, followers_desc, followers_asc, crawled_at_desc, crawled_at_asc, created_at_desc, created_at_asc; `source_tier` (string, optional) — Exact filter for seed tier (e.g. crossref, vertical-hashtags, mention-graph, head-directory); `username` (string, optional) — Exact username filter (case-insensitive), max 128 characters
 
 ### `datasets_instagram_users_item`
 
 - **HTTP:** `GET /datasets/instagram-users/items/{username}`
-- **What:** Get an Instagram user from the dataset. Returns one Instagram user record by username from dataset id enum value `instagram-users`.
+- **What:** Get an Instagram user from the dataset. Returns one Instagram user from the dataset by `username`, with or without a leading @, matched case-insensitively. The record has full name, biography, external URL, avatar, verified and business flags, category, followers, following, posts and follower-to-following ratio. An unknown user returns 404.
 - **Params:** `username` (string, **required**) — Instagram username, with or without a leading @, max 128 characters
 
 ### `datasets_instagram_users_search`
@@ -37,13 +37,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_youtube_creators_facets`
 
 - **HTTP:** `GET /datasets/youtube-creators/facets`
-- **What:** Facet the YouTube creators dataset. Returns terms aggregation counts for the YouTube creators dataset. Facet enum: `region`, `discovery_source`.
+- **What:** Facet the YouTube creators dataset. Returns value counts for the YouTube creators dataset by the required `facet`: `region` or `discovery_source`. The counts honour the search filters, such as subscriber, video and view ranges and join or refresh dates, and cover the top 50 values.
 - **Params:** `channel_id` (string, optional) — Exact channel id filter, max 128 characters; `discovery_source` (string, optional) — Exact filter for how the channel was discovered, max 128 characters; `facet` (string, **required**) — Facet enum: region, discovery_source; `followers_count_available` (boolean, optional) — Filter by whether the channel exposes a public subscriber count; `has_bio` (boolean, optional) — Filter by a non-empty About bio; `has_links` (boolean, optional) — Filter by at least one linked external URL; `hydrated_after` (string, optional) — Records last refreshed on or after this date (RFC3339 or YYYY-MM-DD); `hydrated_before` (string, optional) — Records last refreshed on or before this date (RFC3339 or YYYY-MM-DD); `joined_after` (string, optional) — Channels created on or after this date (RFC3339 or YYYY-MM-DD); `joined_before` (string, optional) — Channels created on or before this date (RFC3339 or YYYY-MM-DD); `max_followers` (integer, optional) — Maximum subscriber count; `max_videos` (integer, optional) — Maximum uploaded-video count; `max_views` (integer, optional) — Maximum total view count; `min_followers` (integer, optional) — Minimum subscriber count; `min_videos` (integer, optional) — Minimum uploaded-video count; `min_views` (integer, optional) — Minimum total view count; `q` (string, optional) — Full-text query over channel_name and bio, max 256 characters; `region` (string, optional) — Exact channel region/country filter (case-insensitive), max 128 characters; `sort` (string, optional) — Sort enum: relevance, followers_desc, followers_asc, views_desc, videos_desc, hydrated_at_desc, hydrated_at_asc; `videos_count_available` (boolean, optional) — Filter by whether the channel has a known uploaded-video count; `views_count_available` (boolean, optional) — Filter by whether the channel has a known total view count
 
 ### `datasets_youtube_creators_item`
 
 - **HTTP:** `GET /datasets/youtube-creators/items/{channel_id}`
-- **What:** Get a YouTube creator from the dataset. Returns one YouTube channel record by channel id from dataset id enum value `youtube-creators`.
+- **What:** Get a YouTube creator from the dataset. Returns one YouTube channel from the dataset by `channel_id`. The record has channel name and URL, bio, region, join date, links, profile picture, and subscriber, video and view counts, each with an availability flag. A channel not in the dataset returns 404.
 - **Params:** `channel_id` (string, **required**) — YouTube channel id, e.g. UCxxxxxxxxxxxxxxxxxxxxxxxx
 
 ### `datasets_youtube_creators_search`
@@ -57,25 +57,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tiktok_post`
 
 - **HTTP:** `GET /tiktok/post/{id}`
-- **What:** Retrieve TikTok video details. Returns the TikTok video detail payload for a video id.
+- **What:** Retrieve TikTok video details. Returns TikTok's detail record for one video by video id. `itemInfo.itemStruct` holds the video's description, the author's profile and the author's statistics (such as followers, following and hearts) along with the rest of TikTok's video object; `shareMeta` holds the share title and description.
 - **Params:** `id` (string, **required**) — TikTok video id
 
 ### `tiktok_posts`
 
 - **HTTP:** `GET /tiktok/posts`
-- **What:** Retrieve posts from a TikTok profile. Returns posts from a TikTok profile by `secUid`, with optional cursor pagination and sort mode.
+- **What:** Retrieve posts from a TikTok profile. Lists posts from a TikTok profile identified by `secUid`. `sort_type` is `0` latest (default), `1` popular or `2` oldest. `cursor` defaults to 0. The response has `itemList`, `hasMore` and a `cursor` to pass back to fetch the next page.
 - **Params:** `cursor` (integer, optional) — Pagination cursor; `secUid` (string, **required**) — TikTok secUid for the profile; `sort_type` (integer, optional) — Sort mode: 0 latest, 1 popular, 2 oldest
 
 ### `tiktok_profile`
 
 - **HTTP:** `GET /tiktok/profile/{handler}`
-- **What:** Retrieve a TikTok profile. Returns the TikTok profile payload for a public handle.
+- **What:** Retrieve a TikTok profile. Returns a public TikTok profile by `handler`, the username without the leading `@`. The `user` object has the id, `uniqueId`, nickname, signature, verified and private flags, region, language, avatar, bio link and `secUid`; `stats` has follower, following, heart, video and friend counts. A missing, deleted or banned handle returns 404.
 - **Params:** `handler` (string, **required**) — TikTok handle without the leading @
 
 ### `tiktok_search_user`
 
 - **HTTP:** `GET /tiktok/search/user`
-- **What:** Search TikTok users. Searches TikTok users by keyword with cursor-based pagination.
+- **What:** Search TikTok users. Searches TikTok users for `keyword`, with `cursor` (default 0) for paging. The response has `user_list` with the matching accounts, plus a `cursor` and `has_more` to continue. Pass the returned `cursor` back to fetch the next page.
 - **Params:** `cursor` (integer, optional) — Pagination cursor; `keyword` (string, **required**) — Search keyword
 
 ## Instagram (3)
@@ -89,7 +89,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `instagram_profile`
 
 - **HTTP:** `GET /instagram/profile/{username}`
-- **What:** Retrieve an Instagram user profile by username. Returns public profile details for a specified Instagram username.
+- **What:** Retrieve an Instagram user profile by username. Returns the public profile of an Instagram account by `username`. The response has the user id, full name, biography, bio links, external URL, category, follower, following and post counts, verified and private flags, location, profile picture, recent posts with captions and like counts, and related profiles.
 - **Params:** `username` (string, **required**) — Instagram username
 
 ### `instagram_reels`
@@ -103,13 +103,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `youtube_channel_videos`
 
 - **HTTP:** `GET /youtube/channel/{id}/videos`
-- **What:** Retrieve the videos tab for a YouTube channel. Returns normalized video items from a channel's Videos tab and an optional continuation token.
+- **What:** Retrieve the videos tab for a YouTube channel. Lists the videos on a YouTube channel's Videos tab. `id` accepts a channel id, `@handle`, `/c` or `/user` path, or a full channel URL. Each item has its video id, title, URL, duration, view count, published text, thumbnail, badges and live flag. Pass the returned `continuation_token` to fetch the next page.
 - **Params:** `continuation_token` (string, optional) — Pagination token returned by a previous request; `id` (string, **required**) — Channel ID, @handle, /c path, /user path, or full YouTube channel URL
 
 ### `youtube_profile`
 
 - **HTTP:** `GET /youtube/profile/{id}`
-- **What:** Retrieve channel profile. Returns full profile details for a YouTube channel.
+- **What:** Retrieve channel profile. Returns the profile of a YouTube channel by `id`, which can be a channel id, `@handle`, `/c` or `/user` path, bare username or full channel URL. The profile has channel id, name and URL, bio, join date, region, profile picture, links, and `stats` with `followers_count`, `videos_count` and `views_count`.
 - **Params:** `id` (string, **required**) — Channel ID, @handle, /c path, /user path, bare username, or full YouTube channel URL
 
 ### `youtube_search`
@@ -121,7 +121,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `youtube_video`
 
 - **HTTP:** `GET /youtube/video/{id}`
-- **What:** Retrieve video metadata & captions. Returns title, description, stats, and captions for a YouTube video ID.
+- **What:** Retrieve video metadata & captions. Returns the metadata of a YouTube video by its 11-character `id`: title, description, channel id and title, publication time, duration in seconds, and view, like and comment counts. Some fields are best-effort.
 - **Params:** `id` (string, **required**) — YouTube video ID (11-char code)
 
 ## Substack (10)

@@ -97,11 +97,11 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `healthgrades_specialties`
 
 - **HTTP:** `GET /healthgrades/specialties`
-- **What:** List Healthgrades physician specialties. Returns every specialty name and directory URL shown on Healthgrades' public A-Z specialty directory. Requests use US egress and Safari browser impersonation because the site restricts some content by region.
+- **What:** List Healthgrades physician specialties. Returns every specialty name and directory URL shown on Healthgrades' public A-Z specialty directory.
 - **Params:** _none_
 
 ### `healthgrades_top_searches`
 
 - **HTTP:** `GET /healthgrades/top-searches`
-- **What:** List popular Healthgrades searches. Returns Healthgrades' current popular specialty search suggestions.
+- **What:** List popular Healthgrades searches. Returns the popular specialty searches Healthgrades currently suggests, in `groups`. Each group has a category, a title such as Popular Healthcare Specialties, and suggestions with a label and value. The set changes over time and is not a fixed list.
 - **Params:** _none_

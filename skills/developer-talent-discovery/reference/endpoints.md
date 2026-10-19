@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_github_users_item`
 
 - **HTTP:** `GET /datasets/github-users/items/{login}`
-- **What:** Get a GitHub user from the dataset. Returns one enriched GitHub user record by login from dataset id enum value `github-users`.
+- **What:** Get a GitHub user from the dataset. Returns one GitHub user from the dataset by `login`, with profile fields (name, bio, company, blog, location, email), follower, repo and 30-day activity counts, `influence_tier`, `rank_score`, geo, linked social accounts and bot or organisation flags. An unknown login returns 404.
 - **Params:** `login` (string, **required**) — GitHub login, max 128 characters
 
 ### `datasets_github_users_search`
@@ -33,31 +33,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `github_repo`
 
 - **HTTP:** `GET /github/repo/{owner}/{repo}`
-- **What:** Retrieve a GitHub repository. Returns public detail for a single repository (the core project object).
+- **What:** Retrieve a GitHub repository. Returns the public details of one GitHub repository, identified by the required `owner` and `repo`. Fields include the full name, description, main language, topics, stars, forks, watchers, open issues, license, default branch and last push time.
 - **Params:** `owner` (string, **required**) — Repository owner (user or org login); `repo` (string, **required**) — Repository name
 
 ### `github_repo_contributors`
 
 - **HTTP:** `GET /github/repo/{owner}/{repo}/contributors`
-- **What:** List a repository's contributors. Returns a page of a repository's contributors (who builds a project).
+- **What:** List a repository's contributors. Lists the contributors to a GitHub repository, identified by the required `owner` and `repo`, ordered by number of contributions. Page with `page` and `per_page` (max 100). Each contributor has their login, id, contribution count, profile URL and account type.
 - **Params:** `owner` (string, **required**) — Repository owner (user or org login); `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `repo` (string, **required**) — Repository name
 
 ### `github_repo_languages`
 
 - **HTTP:** `GET /github/repo/{owner}/{repo}/languages`
-- **What:** Retrieve a repository's language breakdown. Returns the language byte breakdown for a repository, sorted by bytes descending (tech fingerprint).
+- **What:** Retrieve a repository's language breakdown. Returns the languages detected in a GitHub repository, identified by the required `owner` and `repo`, as language and byte-count pairs sorted by bytes, largest first.
 - **Params:** `owner` (string, **required**) — Repository owner (user or org login); `repo` (string, **required**) — Repository name
 
 ### `github_search_repositories`
 
 - **HTTP:** `GET /github/search/repositories`
-- **What:** Search public GitHub repositories. Searches public GitHub repositories (market/competitive discovery). Unauthenticated search is rate limited to roughly 10 requests per minute.
+- **What:** Search public GitHub repositories. Searches public GitHub repositories with the required GitHub search query `q`. Order with `sort` (`stars`, `forks`, `help-wanted-issues` or `updated`) and `order`, and page with `page` and `per_page` (max 100). The response has `total_count` and items with full name, owner, description, language, stars, forks, topics and license.
 - **Params:** `order` (string, optional) — Sort order; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `q` (string, **required**) — GitHub repository search query; `sort` (string, optional) — Sort field
 
 ### `github_search_users`
 
 - **HTTP:** `GET /github/search/users`
-- **What:** Search public GitHub users. Searches public GitHub users (developer discovery). Unauthenticated search is rate limited to roughly 10 requests per minute.
+- **What:** Search public GitHub users. Searches public GitHub user accounts with the required GitHub search query `q`. Order with `sort` (`followers`, `repositories` or `joined`) and `order`, and page with `page` and `per_page` (max 100). The response has `total_count` and items with login, id, profile URL, account type and match score.
 - **Params:** `order` (string, optional) — Sort order; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `q` (string, **required**) — GitHub user search query; `sort` (string, optional) — Sort field
 
 ### `github_user`
@@ -69,17 +69,17 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `github_user_events`
 
 - **HTTP:** `GET /github/user/{username}/events`
-- **What:** List a GitHub user's recent public activity. Returns a page of a user's recent public events, normalized to type, repository, and timestamp (freshness signal).
+- **What:** List a GitHub user's recent public activity. Lists a GitHub user's recent public events, identified by the required `username`. Page with `page` and `per_page` (max 100). Each event has its id, event type such as `PushEvent`, repository name, timestamp and public flag.
 - **Params:** `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `username` (string, **required**) — GitHub username
 
 ### `github_user_pinned`
 
 - **HTTP:** `GET /github/user/{username}/pinned`
-- **What:** List a GitHub user's pinned repositories. Returns the repositories a user pinned on their public profile (showcase signal). Empty when the user pinned nothing.
+- **What:** List a GitHub user's pinned repositories. Returns the repositories a GitHub user has pinned on their profile, identified by the required `username`. Each has its owner, name, URL, description, language, stars and forks. The list is empty when the user has pinned nothing.
 - **Params:** `username` (string, **required**) — GitHub username
 
 ### `github_user_repos`
 
 - **HTTP:** `GET /github/user/{username}/repos`
-- **What:** List a GitHub user's public repositories. Returns a page of a user's public repositories (tech-stack signal).
+- **What:** List a GitHub user's public repositories. Lists the public repositories of a GitHub user, identified by the required `username`. Filter with `type` (`all`, `owner` or `member`), order with `sort` (`created`, `updated`, `pushed` or `full_name`) and `direction`, and page with `page` and `per_page` (max 100). Each repository has its name, description, language, stars, forks, topics, fork flag and last push time.
 - **Params:** `direction` (string, optional) — Sort direction; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `sort` (string, optional) — Sort field; `type` (string, optional) — Repository type; `username` (string, **required**) — GitHub username

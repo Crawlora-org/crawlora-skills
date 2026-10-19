@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `x_profile`
 
 - **HTTP:** `GET /x/profile/{username}`
-- **What:** Retrieve an X profile. Returns public profile details for an X username, including visible counts and profile media when available.
+- **What:** Retrieve an X profile. Returns the public profile of an X account by `username`, with or without a leading `@`: name, description, location, avatar and banner images, creation date, verification flags, and `metrics` for followers, following, posts, likes, listed and media. `verified_type` and `affiliate_label` appear only when the account has them. Returns 404 when the profile is not public.
 - **Params:** `username` (string, **required**) — X username
 
 ### `x_profile_posts`

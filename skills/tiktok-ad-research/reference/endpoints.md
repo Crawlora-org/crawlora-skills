@@ -43,29 +43,29 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tiktok_top_ads_locations`
 
 - **HTTP:** `GET /tiktok/top-ads/locations`
-- **What:** Retrieve TikTok Top Ads locations. Returns available Top Ads location filters from TikTok Creative Center.
+- **What:** Retrieve TikTok Top Ads locations. Lists the country filters offered by TikTok Creative Center Top Ads. Each country has an `id` such as `US`, a `value` (the country name), a `label` and a `has_conversion` flag. Takes no parameters.
 - **Params:** _none_
 
 ### `tiktok_top_ads_recommend`
 
 - **HTTP:** `GET /tiktok/top-ads/recommend`
-- **What:** Retrieve TikTok Top Ads recommendations. Returns recommended Top Ads materials related to a material id.
+- **What:** Retrieve TikTok Top Ads recommendations. Lists Top Ads materials that TikTok Creative Center recommends as related to the ad with `material_id`. `page` starts at 1; `limit` defaults to 20 and is capped at 100. Each ad has its title, brand, likes, comments, shares, CTR, objectives and video info. The list can be empty for a valid id.
 - **Params:** `limit` (integer, optional) — Maximum number of ads to return; `material_id` (string, **required**) — Top Ads material id; `page` (integer, optional) — Page number
 
 ### `tiktok_top_ads_safety`
 
 - **HTTP:** `GET /tiktok/top-ads/safety`
-- **What:** Retrieve TikTok Top Ads safety configuration. Returns public Creative Center safety configuration flags related to search surfaces.
+- **What:** Retrieve TikTok Top Ads safety configuration. Returns the Creative Center safety configuration flags for search: `top_ads_search`, `keyword_search`, `hashtag_search`, `creator_search`, `sound_search` and `cc_banner_key`. It carries feature flags only, not ad materials. Takes no parameters.
 - **Params:** _none_
 
 ### `tiktok_top_ads_spotlight`
 
 - **HTTP:** `GET /tiktok/top-ads/spotlight`
-- **What:** Retrieve TikTok Top Ads Spotlight. Returns Top Ads Spotlight materials handpicked by TikTok Creative Center.
+- **What:** Retrieve TikTok Top Ads Spotlight. Lists the Top Ads Spotlight materials that TikTok Creative Center hand-picks. `page` starts at 1; `limit` defaults to 20 and is capped at 100. Each ad has its title, brand, likes, comments, shares, CTR, objectives and video info. `data.pagination` gives the page, size, total and `has_more`.
 - **Params:** `limit` (integer, optional) — Maximum number of ads to return; `page` (integer, optional) — Page number
 
 ### `tiktok_top_ads_suggestions`
 
 - **HTTP:** `GET /tiktok/top-ads/suggestions`
-- **What:** Retrieve TikTok Top Ads suggestions. Returns Top Ads search suggestions from TikTok Creative Center.
+- **What:** Retrieve TikTok Top Ads suggestions. Returns Top Ads search suggestions from TikTok Creative Center. `count` is the maximum number of suggestions (default 50) and `scenario` picks the suggestion scenario id (default 1). The `query` list can be empty for the default scenario.
 - **Params:** `count` (integer, optional) — Maximum number of suggestions to return; `scenario` (integer, optional) — Suggestion scenario id

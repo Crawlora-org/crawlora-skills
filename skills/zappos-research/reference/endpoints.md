@@ -31,7 +31,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zappos_search`
 
 - **HTTP:** `GET /zappos/search`
-- **What:** Search Zappos products. Searches Zappos's product catalog by keyword, with real page-based pagination. Returns normalized products with brand, pricing, sale status, rating, and review count, plus filterable facets (gender, department, shoe size, and more) each with a live result count and its own drill-down URL. Requesting a page beyond the available results returns a normal, empty result rather than an error.
+- **What:** Search Zappos products. Searches Zappos's product catalog by keyword, with real page-based pagination. Returns products with brand, pricing, sale status, rating, and review count, plus filterable facets (gender, department, shoe size, and more) each with a live result count and its own drill-down URL. Requesting a page beyond the available results returns a normal, empty result rather than an error.
 - **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `term` (string, **required**) — Search keyword
 
 ### `zappos_suggest`

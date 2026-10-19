@@ -13,13 +13,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_pitchbook_companies_facets`
 
 - **HTTP:** `GET /datasets/pitchbook-companies/facets`
-- **What:** Facet PitchBook companies dataset. Returns terms aggregation counts for the PitchBook companies dataset. Facet enum: `status`, `primary_industry`, `financing_status`, `ownership_status`, `hq_country`, `hq_state`, `run_id`.
+- **What:** Facet PitchBook companies dataset. Returns value counts for the PitchBook companies dataset by the required `facet`: `status`, `primary_industry`, `financing_status`, `ownership_status`, `hq_country`, `hq_state` or `run_id`. Filters such as `q`, `min_year_founded` and `min_investor_count` apply, and the top 50 values come back.
 - **Params:** `facet` (string, **required**) — Facet enum: status, primary_industry, financing_status, ownership_status, hq_country, hq_state, run_id; `financing_status` (string, optional) — Exact financing status filter, max 128 characters; `hq_country` (string, optional) — Exact headquarters country filter, max 128 characters; `hq_state` (string, optional) — Exact headquarters state/region filter, max 128 characters; `max_year_founded` (integer, optional) — Maximum founding year; `min_investor_count` (integer, optional) — Minimum number of investors; `min_year_founded` (integer, optional) — Minimum founding year; `ownership_status` (string, optional) — Exact ownership status filter, max 128 characters; `primary_industry` (string, optional) — Exact primary industry filter, max 128 characters; `q` (string, optional) — Full-text query over name and description, max 256 characters; `run_id` (string, optional) — Exact crawl run-id filter, max 128 characters; `status` (string, optional) — Exact status filter, max 128 characters
 
 ### `datasets_pitchbook_companies_item`
 
 - **HTTP:** `GET /datasets/pitchbook-companies/items/{id}`
-- **What:** Get a PitchBook company from dataset. Returns one crawled PitchBook company record by id from dataset id enum value `pitchbook-companies`.
+- **What:** Get a PitchBook company from dataset. Returns one PitchBook company from the dataset by `id`, such as `752821-12`. The record has name, description, status, primary industry, financing and ownership status, headquarters, founding year, employees, investor count, latest deal type, website, FAQs and data tables. An unknown id returns 404.
 - **Params:** `id` (string, **required**) — PitchBook company id, e.g. 752821-12
 
 ### `datasets_pitchbook_companies_search`
@@ -31,13 +31,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_pitchbook_funds_facets`
 
 - **HTTP:** `GET /datasets/pitchbook-funds/facets`
-- **What:** Facet PitchBook funds dataset. Returns terms aggregation counts for the PitchBook funds dataset. Facet enum: `fund_strategy`, `fund_status`, `run_id`.
+- **What:** Facet PitchBook funds dataset. Returns value counts for the PitchBook funds dataset by the required `facet`: `fund_strategy`, `fund_status` or `run_id`. The search filters `q`, `fund_strategy`, `fund_status`, `min_vintage_year` and `max_vintage_year` apply to the counts, which list the top 50 values.
 - **Params:** `facet` (string, **required**) — Facet enum: fund_strategy, fund_status, run_id; `fund_status` (string, optional) — Exact fund status filter, max 128 characters; `fund_strategy` (string, optional) — Exact fund strategy filter, max 128 characters; `max_vintage_year` (integer, optional) — Maximum vintage year; `min_vintage_year` (integer, optional) — Minimum vintage year; `q` (string, optional) — Full-text query over name and description, max 256 characters; `run_id` (string, optional) — Exact crawl run-id filter, max 128 characters
 
 ### `datasets_pitchbook_funds_item`
 
 - **HTTP:** `GET /datasets/pitchbook-funds/items/{id}`
-- **What:** Get a PitchBook fund from dataset. Returns one crawled PitchBook fund record by id from dataset id enum value `pitchbook-funds`.
+- **What:** Get a PitchBook fund from dataset. Returns one PitchBook fund from the dataset by `id`, such as `19719-91F`. The record has name, strategy, status, fund size, vintage year, managing firm, contact details and data tables such as limited partners and benchmarks. An id not in the dataset returns 404.
 - **Params:** `id` (string, **required**) — PitchBook fund id, e.g. 19719-91F
 
 ### `datasets_pitchbook_funds_search`
@@ -49,13 +49,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_pitchbook_investors_facets`
 
 - **HTTP:** `GET /datasets/pitchbook-investors/facets`
-- **What:** Facet PitchBook investors dataset. Returns terms aggregation counts for the PitchBook investors dataset. Facet enum: `status`, `investor_type`, `hq_country`, `hq_state`, `run_id`.
+- **What:** Facet PitchBook investors dataset. Returns value counts for the PitchBook investors dataset by the required `facet`: `status`, `investor_type`, `hq_country`, `hq_state` or `run_id`. The counts follow search filters including `q`, `min_portfolio_count` and `min_exits_count`, and show the top 50 values.
 - **Params:** `facet` (string, **required**) — Facet enum: status, investor_type, hq_country, hq_state, run_id; `hq_country` (string, optional) — Exact headquarters country filter, max 128 characters; `hq_state` (string, optional) — Exact headquarters state/region filter, max 128 characters; `investor_type` (string, optional) — Exact investor type filter, max 128 characters; `min_exits_count` (integer, optional) — Minimum number of exits; `min_portfolio_count` (integer, optional) — Minimum current portfolio size; `q` (string, optional) — Full-text query over name and description, max 256 characters; `run_id` (string, optional) — Exact crawl run-id filter, max 128 characters; `status` (string, optional) — Exact status filter, max 128 characters
 
 ### `datasets_pitchbook_investors_item`
 
 - **HTTP:** `GET /datasets/pitchbook-investors/items/{id}`
-- **What:** Get a PitchBook investor from dataset. Returns one crawled PitchBook investor record by id from dataset id enum value `pitchbook-investors`.
+- **What:** Get a PitchBook investor from dataset. Returns one PitchBook investor from the dataset by `id`, such as `294471-37`. The record has name, description, investor type, status, headquarters, investment, portfolio and exit counts, contact and website, FAQs and data tables. An unknown id returns 404.
 - **Params:** `id` (string, **required**) — PitchBook investor id, e.g. 294471-37
 
 ### `datasets_pitchbook_investors_search`

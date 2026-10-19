@@ -25,17 +25,17 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `amazon_product`
 
 - **HTTP:** `GET /amazon/product/{asin}`
-- **What:** Retrieve Amazon product details. Returns normalized product details for an Amazon ASIN on `amazon.com`, including pricing, availability, overview data, inline review samples, and descriptive content.
+- **What:** Retrieve Amazon product details. Returns product details for an Amazon ASIN on `amazon.com`, including pricing, availability, overview data, inline review samples, and descriptive content.
 - **Params:** `asin` (string, **required**) — Amazon ASIN; `currency` (string, optional) — Amazon currency; `language` (string, optional) — Amazon language
 
 ### `amazon_search`
 
 - **HTTP:** `GET /amazon/search`
-- **What:** Search Amazon products. Returns normalized Amazon search result cards for `amazon.com`.
+- **What:** Search Amazon products. Searches `amazon.com` by keyword, with optional sort order and page. Each result card has the ASIN, title, link, image, price and list price, rating and review count, the bought-in-last-month figure, and flags for sponsored placement and free delivery.
 - **Params:** `k` (string, **required**) — Search keyword; `page` (integer, optional) — 1-based page number; `s` (string, optional) — Sort order
 
 ### `amazon_suggest`
 
 - **HTTP:** `GET /amazon/suggest/{keyword}`
-- **What:** Retrieve Amazon search suggestions. Returns typeahead keyword suggestions from Amazon's public suggestion API for `amazon.com`.
+- **What:** Retrieve Amazon search suggestions. Returns Amazon's search-box autocomplete suggestions for a keyword prefix on `amazon.com`, as a plain list of suggested search phrases such as `apple watch bands`.
 - **Params:** `keyword` (string, **required**) — Suggestion prefix

@@ -25,5 +25,5 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `courtlistener_search`
 
 - **HTTP:** `GET /courtlistener/search`
-- **What:** Search CourtListener opinions. Searches CourtListener's public opinion-search index by text and returns normalized opinion-result metadata with a cursor for the next page. The endpoint uses CourtListener's anonymous public search data and does not retrieve authenticated opinion detail, dockets, judges, alerts, or account data.
+- **What:** Search CourtListener opinions. Searches CourtListener's opinion-search index by text and returns opinion-result metadata with a cursor for the next page. The endpoint does not return opinion detail, dockets, judges, alerts, or account data.
 - **Params:** `cursor` (string, optional) — Cursor from a prior response's next_cursor field; `q` (string, **required**) — Opinion search text

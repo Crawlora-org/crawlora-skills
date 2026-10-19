@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `doordash_store`
 
 - **HTTP:** `GET /doordash/store/{store_id}`
-- **What:** Get a DoorDash store. Returns location-aware DoorDash store metadata through the Android mobile guest flow. No DoorDash account or caller-supplied token is required.
+- **What:** Get a DoorDash store. Returns public metadata for a DoorDash store by its numeric `store_id`, as seen from the delivery location given by the required `latitude` and `longitude`. The response has the name, URL, images, average rating, rating count, and menu section and item counts. Address, coordinates and price range appear only when DoorDash supplies them. Missing or out-of-range coordinates return `400`.
 - **Params:** `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
 
 ### `doordash_store_menu`
@@ -33,19 +33,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ubereats_search`
 
 - **HTTP:** `GET /ubereats/search`
-- **What:** Search UberEats restaurants. Returns restaurants delivering to a location: name, rating, review count, delivery estimate, cuisine tags, and image. Pass a keyword to search by name/cuisine/dish, or omit it to browse the general feed for that location. Credential-free public UberEats data.
+- **What:** Search UberEats restaurants. Returns restaurants delivering to a location: name, rating, review count, delivery estimate, cuisine tags, and image. Pass a keyword to search by name/cuisine/dish, or omit it to browse the general feed for that location.
 - **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous keyword-search response; `latitude` (number, **required**) — Delivery search center latitude; `limit` (integer, optional) — Number of restaurants to return, clamped to 50. Default 20; `longitude` (number, **required**) — Delivery search center longitude; `offset` (integer, optional) — Result offset for the location feed (used only when query is omitted). Default 0; `query` (string, optional) — Keyword — restaurant name, cuisine, or dish
 
 ### `ubereats_store`
 
 - **HTTP:** `GET /ubereats/store/{store_id}`
-- **What:** Get an UberEats store. Returns a normalized UberEats store: address, phone, rating, cuisine tags, hours tagline, and the full menu (sections with items, descriptions, and prices). Credential-free public UberEats data.
+- **What:** Get an UberEats store. Returns an UberEats store: address, phone, rating, cuisine tags, hours tagline, and the full menu (sections with items, descriptions, and prices).
 - **Params:** `store_id` (string, **required**) — UberEats store UUID, as returned by the search endpoint's storeUuid field
 
 ### `ubereats_store_menu`
 
 - **HTTP:** `GET /ubereats/store/{store_id}/menu`
-- **What:** Get an UberEats store menu. Returns the full menu for an UberEats store: section titles, items, item descriptions, prices, and availability status. Credential-free public UberEats data.
+- **What:** Get an UberEats store menu. Returns the full menu for an UberEats store: section titles, items, item descriptions, prices, and availability status.
 - **Params:** `store_id` (string, **required**) — UberEats store UUID, as returned by the search endpoint's storeUuid field
 
 ## Chipotle (3)

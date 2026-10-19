@@ -13,25 +13,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `numbeo_cost_of_living_city`
 
 - **HTTP:** `GET /numbeo/cost-of-living/city/{slug}`
-- **What:** Get a Numbeo city's cost-of-living prices. Returns itemized cost-of-living prices for one city (restaurants, markets, transportation, utilities, rent, and more), grouped by category. Credential-free public Numbeo data (numbeo.com).
+- **What:** Get a Numbeo city's cost-of-living prices. Returns itemized cost-of-living prices for one city (restaurants, markets, transportation, utilities, rent, and more), grouped by category.
 - **Params:** `slug` (string, **required**) — Numbeo city slug
 
 ### `numbeo_cost_of_living_country`
 
 - **HTTP:** `GET /numbeo/cost-of-living/country`
-- **What:** Get a Numbeo country's cost-of-living prices. Returns aggregate itemized cost-of-living prices for a country, plus the headline cost-of-living indices for every city Numbeo tracks there. Credential-free public Numbeo data (numbeo.com).
+- **What:** Get a Numbeo country's cost-of-living prices. Returns aggregate itemized cost-of-living prices for a country, plus the headline cost-of-living indices for every city Numbeo tracks there.
 - **Params:** `country` (string, **required**) — Country name as Numbeo spells it
 
 ### `numbeo_cost_of_living_rankings`
 
 - **HTTP:** `GET /numbeo/cost-of-living/rankings`
-- **What:** Get the global Numbeo cost-of-living city ranking. Returns the global cost-of-living city ranking (Cost of Living, Rent, Cost of Living Plus Rent, Groceries, Restaurant Price, and Local Purchasing Power indices), either the continuously-updated current index or a historical periodic snapshot. Credential-free public Numbeo data (numbeo.com).
+- **What:** Get the global Numbeo cost-of-living city ranking. Returns the global cost-of-living city ranking (Cost of Living, Rent, Cost of Living Plus Rent, Groceries, Restaurant Price, and Local Purchasing Power indices), either the continuously-updated current index or a historical periodic snapshot.
 - **Params:** `period` (string, optional) — Required when scope=historical, e.g. 2026-mid or 2025; `scope` (string, optional) — current (default) or historical
 
 ### `numbeo_cost_of_living_rankings_by_country`
 
 - **HTTP:** `GET /numbeo/cost-of-living/rankings-by-country`
-- **What:** Get the global Numbeo cost-of-living country ranking. Returns the global country-level cost-of-living ranking (Cost of Living, Rent, Cost of Living Plus Rent, Groceries, Restaurant Price, and Local Purchasing Power indices). Credential-free public Numbeo data (numbeo.com).
+- **What:** Get the global Numbeo cost-of-living country ranking. Returns the global country-level cost-of-living ranking (Cost of Living, Rent, Cost of Living Plus Rent, Groceries, Restaurant Price, and Local Purchasing Power indices).
 - **Params:** _none_
 
 ## Datasets (3)

@@ -19,13 +19,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `xbox_collection`
 
 - **HTTP:** `GET /xbox/collection`
-- **What:** Get one page of a curated Xbox collection. Returns one page of a named, editorially curated Xbox collection (e.g. Top Free Games, Top Paid Games, Optimized for Series X|S, Xbox Play Anywhere) -- the same mechanism that powers xbox.com's own marketing hub pages. Pages forward via an opaque cursor: pass the previous response's next_cursor to fetch the next page. This is a partial, non-exhaustive list of known collection ids -- the upstream exposes no discovery endpoint for the full set. Credential-free public Xbox data, read directly from the store's own named-channel API.
+- **What:** Get one page of a curated Xbox collection. Returns one page of a named, editorially curated Xbox collection (e.g. Top Free Games, Top Paid Games, Optimized for Series X|S, Xbox Play Anywhere). Pages forward via an opaque cursor: pass the previous response's next_cursor to fetch the next page. This is a partial, non-exhaustive list of known collection ids -- there is no discovery endpoint for the full set.
 - **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous response's next_cursor; `id` (string, **required**) — Curated collection to fetch; `locale` (string, optional) — Display locale (BCP-47)
 
 ### `xbox_game`
 
 - **HTTP:** `GET /xbox/game`
-- **What:** Get Xbox catalog details for a single product. Returns normalized Xbox catalog details for a single product id: title, description, publisher, categories, supported platforms, content rating, price, preorder status, media (box art, poster, hero art), trailers, and which subscriptions (e.g. Game Pass) include it. Credential-free public Xbox data, read directly from the store's own batch product-detail API.
+- **What:** Get Xbox catalog details for a single product. Returns Xbox catalog details for a single product id: title, description, publisher, categories, supported platforms, content rating, price, preorder status, media (box art, poster, hero art), trailers, and which subscriptions (e.g. Game Pass) include it.
 - **Params:** `locale` (string, optional) — Display locale (BCP-47); `product_id` (string, **required**) — Xbox catalog product id
 
 ### `xbox_reviews`
@@ -37,5 +37,5 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `xbox_search`
 
 - **HTTP:** `GET /xbox/search`
-- **What:** Search the Xbox catalog, with optional sort and filters. Returns one page of Xbox search results for a keyword, scoped to a category (games, add-ons, or hardware) and optionally sorted/filtered with the same parameters as /xbox/browse. Cursor-paginated. Credential-free public Xbox data, read directly from the store's own per-category search API.
+- **What:** Search the Xbox catalog, with optional sort and filters. Returns one page of Xbox search results for a keyword, scoped to a category (games, add-ons, or hardware) and optionally sorted/filtered with the same parameters as /xbox/browse. Cursor-paginated.
 - **Params:** `accessibility` (array, optional) — Accessibility-feature filter (repeatable); `age_rating` (array, optional) — ESRB age-rating filter (repeatable); `category` (string, optional) — Result category; `cursor` (string, optional) — Opaque pagination cursor from a previous response's next_cursor; `genre` (array, optional) — Genre filter (repeatable); `handheld_compatibility` (array, optional) — Handheld compatibility filter (repeatable); `locale` (string, optional) — Display locale (BCP-47); `multiplayer` (array, optional) — Multiplayer-mode filter (repeatable); `platform` (array, optional) — Platform filter (repeatable); `price` (array, optional) — Price-band filter (repeatable); `query` (string, **required**) — Search keyword; `sort` (string, optional) — Sort order; `subscription` (array, optional) — Subscription filter, by the subscription's own product id (repeatable); `supported_language` (array, optional) — Supported-language filter, by BCP-47 tag (repeatable); `technical_features` (array, optional) — Technical-feature filter (repeatable)

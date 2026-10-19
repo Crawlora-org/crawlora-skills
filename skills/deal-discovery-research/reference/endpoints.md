@@ -25,13 +25,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `slickdeals_comments`
 
 - **HTTP:** `GET /slickdeals/comments`
-- **What:** Get one Slickdeals deal thread's comments. Returns one Slickdeals deal thread's full comment thread: for each comment, the public username who posted it (with their forum rank/title and total post count -- the same public-forum-post attribution class this repo already exposes for Reddit), the comment content (as HTML and as cleaned plain text), when it was posted, a permalink, and reaction counts (like, funny, helpful, not helpful). Give either url (the exact value returned by GET /slickdeals/search or GET /slickdeals/deal) or thread_id; at least one is required. has_more indicates whether Slickdeals' own page truncated the reply list (no further pagination is currently exposed by this endpoint).
+- **What:** Get one Slickdeals deal thread's comments. Returns one Slickdeals deal thread's full comment thread: for each comment, the public username who posted it (with their forum rank/title and total post count), the comment content (as HTML and as cleaned plain text), when it was posted, a permalink, and reaction counts (like, funny, helpful, not helpful). Give either url (the exact value returned by GET /slickdeals/search or GET /slickdeals/deal) or thread_id; at least one is required. has_more indicates whether Slickdeals' own page truncated the reply list (no further pagination is currently exposed by this endpoint).
 - **Params:** `thread_id` (integer, optional) — Slickdeals numeric thread id; `url` (string, optional) — Full Slickdeals deal URL, as returned by GET /slickdeals/search or GET /slickdeals/deal (https://slickdeals.net/f/...)
 
 ### `slickdeals_deal`
 
 - **HTTP:** `GET /slickdeals/deal`
-- **What:** Get one Slickdeals deal thread's full detail. Returns one Slickdeals deal thread's full detail: title, store, final/list price, community vote score, comment count, whether the deal is marked expired, the deal's product category and taxonomy (category/sub_category/category_paths, and separately the legacy forum/forum_id the thread was posted under), the public Slickdeals username who posted it ("found by" attribution, the same public-forum-post class this repo already exposes for Reddit) with a public community-standing summary (reputation, join date, deals posted, total votes/comments), a related_deals sidebar (Slickdeals' own Popular/Trending picks), the outbound merchant link, and the deal's own description. Give either url (the exact value returned by GET /slickdeals/search) or thread_id (Slickdeals' own numeric thread id, e.g. from a deal's URL path /f/{thread_id}-...); at least one is required. An unknown or removed deal returns 404.
+- **What:** Get one Slickdeals deal thread's full detail. Returns one Slickdeals deal thread's full detail: title, store, final/list price, community vote score, comment count, whether the deal is marked expired, the deal's product category and taxonomy (category/sub_category/category_paths, and separately the legacy forum/forum_id the thread was posted under), the public Slickdeals username who posted it ("found by" attribution) with a public community-standing summary (reputation, join date, deals posted, total votes/comments), a related_deals sidebar (Slickdeals' own Popular/Trending picks), the outbound merchant link, and the deal's own description. Give either url (the exact value returned by GET /slickdeals/search) or thread_id (Slickdeals' own numeric thread id, e.g. from a deal's URL path /f/{thread_id}-...); at least one is required. An unknown or removed deal returns 404.
 - **Params:** `thread_id` (integer, optional) — Slickdeals numeric thread id; `url` (string, optional) — Full Slickdeals deal URL, as returned by GET /slickdeals/search (https://slickdeals.net/f/...)
 
 ### `slickdeals_deal_types`
@@ -67,13 +67,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `slickdeals_search`
 
 - **HTTP:** `GET /slickdeals/search`
-- **What:** Search Slickdeals community-submitted deals by keyword. Searches Slickdeals (slickdeals.net), a community deal/coupon aggregator, for deal threads matching a free-text keyword query -- the same search this repo already exposes for Reddit, applied to Slickdeals' own deal-posting community. Each result is one community-submitted deal thread with its title (which conventionally embeds the deal price), a best-effort price extracted from that title, the merchant domain, the community vote ("thumb") score, the public Slickdeals username who posted it, and when it was posted. Pair a result's thread_id or url with GET /slickdeals/deal for the full detail record, including comment count and category. An optional forum_id restricts results to one Slickdeals legacy sub-forum (e.g. Hot Deals, Coupons) -- obtain a value from GET /slickdeals/forums, a closed enum validated before the request reaches upstream. An optional deal_type_id restricts results to one Slickdeals deal-type tag (e.g. Coupon, Free / Freebie, YMMV) -- obtain a value from GET /slickdeals/deal-types, also a closed enum validated before the request reaches upstream; composes with forum_id.
+- **What:** Search Slickdeals community-submitted deals by keyword. Searches Slickdeals (slickdeals.net), a community deal/coupon aggregator, for deal threads matching a free-text keyword query. Each result is one community-submitted deal thread with its title (which conventionally embeds the deal price), a best-effort price extracted from that title, the merchant domain, the community vote ("thumb") score, the public Slickdeals username who posted it, and when it was posted. Pair a result's thread_id or url with GET /slickdeals/deal for the full detail record, including comment count and category. An optional forum_id restricts results to one Slickdeals legacy sub-forum (e.g. Hot Deals, Coupons) -- obtain a value from GET /slickdeals/forums, a closed enum validated before the request is made. An optional deal_type_id restricts results to one Slickdeals deal-type tag (e.g. Coupon, Free / Freebie, YMMV) -- obtain a value from GET /slickdeals/deal-types, also a closed enum validated before the request is made; composes with forum_id.
 - **Params:** `deal_type_id` (integer, optional) — Restrict results to one Slickdeals deal-type tag, from GET /slickdeals/deal-types; `forum_id` (integer, optional) — Restrict results to one Slickdeals legacy sub-forum, from GET /slickdeals/forums; `q` (string, **required**) — Free-text keyword query
 
 ### `slickdeals_search_advanced`
 
 - **HTTP:** `GET /slickdeals/search/advanced`
-- **What:** Search Slickdeals with real pagination, counts, and facets. Searches Slickdeals' modern search surface -- a richer alternative to GET /slickdeals/search's keyword-only RSS feed. Returns real pagination (page/total_pages/per_page/result_count), integer vote/comment/view counts read directly from the page's own data (not parsed from free text), a fuller per-deal record (store id, discount percent, status flags), and facets -- Categories, Stores, and Brands available for the current query, each option carrying a value usable as category_id/brand_id/store_id. Facet values and counts are scoped to the current query, not a site-wide enumeration -- category_id/brand_id/store_id are passthrough filters (obtain a value from a prior response's own facets), not validated against a closed enum. sort defaults to relevance; other values are passed through unvalidated since no server-side enumeration of the full accepted set was found.
+- **What:** Search Slickdeals with real pagination, counts, and facets. Searches Slickdeals' modern search surface -- a richer alternative to GET /slickdeals/search's keyword-only search. Returns real pagination (page/total_pages/per_page/result_count), integer vote/comment/view counts (not parsed from free text), a fuller per-deal record (store id, discount percent, status flags), and facets -- Categories, Stores, and Brands available for the current query, each option carrying a value usable as category_id/brand_id/store_id. Facet values and counts are scoped to the current query, not a site-wide enumeration -- category_id/brand_id/store_id are passthrough filters (obtain a value from a prior response's own facets), not validated against a closed enum. sort defaults to relevance; other values are passed through unvalidated.
 - **Params:** `brand_id` (integer, optional) — Brand facet id, from a prior response's own facets; `category_id` (integer, optional) — Category facet id, from a prior response's own facets; `page` (integer, optional) — 1-based result page, default 1; `q` (string, **required**) — Free-text keyword query; `sort` (string, optional) — Sort order, default relevance; `store_id` (integer, optional) — Store facet id, from a prior response's own facets
 
 ## RetailMeNot (13)
@@ -111,13 +111,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `retailmenot_cashback`
 
 - **HTTP:** `GET /retailmenot/cashback`
-- **What:** List RetailMeNot cash-back offers. Returns the cash-back offers on RetailMeNot's cash-back hub (featured, top, and all cash-back offers) with each store's cash-back rate.
+- **What:** List RetailMeNot cash-back offers. Lists the offers on RetailMeNot's cash-back page, grouped into sections such as Today's Featured Cash Back, Top Cash Back and All Cash Back Offers. Each offer has its position, store name, domain and RetailMeNot URL, the cash-back rate in `discount`, and a title. It takes no parameters.
 - **Params:** _none_
 
 ### `retailmenot_categories`
 
 - **HTTP:** `GET /retailmenot/categories`
-- **What:** List RetailMeNot coupon categories. Returns RetailMeNot's full three-level coupon category tree (parent, child, and grandchild categories) with slugs for /retailmenot/category.
+- **What:** List RetailMeNot coupon categories. Lists RetailMeNot's coupon category tree as a flat list with no parameters. Each entry has `name`, `slug`, `url` and `level` (1 parent, 2 child, 3 grandchild); levels 2 and 3 also carry `parent_slug`. The `slug` is what RetailMeNot's category endpoint takes.
 - **Params:** _none_
 
 ### `retailmenot_category`
@@ -135,7 +135,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `retailmenot_deal_events`
 
 - **HTTP:** `GET /retailmenot/deal-events`
-- **What:** List RetailMeNot seasonal deal events. Returns RetailMeNot's seasonal and holiday deal events (for example Black Friday, Cyber Monday, Back-to-School) with slugs for /retailmenot/deal-event.
+- **What:** List RetailMeNot seasonal deal events. Lists the seasonal and holiday deal events linked from RetailMeNot's deals hub, such as Black Friday or Back-to-School, each with `name`, `slug` and `url`. The `slug` feeds the deal-event endpoint. Out-of-season events may list fewer offers. It takes no parameters.
 - **Params:** _none_
 
 ### `retailmenot_home`

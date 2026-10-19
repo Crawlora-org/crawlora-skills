@@ -13,7 +13,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `threads_post`
 
 - **HTTP:** `GET /threads/post/{username}/{code}`
-- **What:** Retrieve a public Threads post. Returns the public text, author, canonical URL, and preview image for a Threads post.
+- **What:** Retrieve a public Threads post. Returns one public Threads post by `username` (with or without a leading `@`) and the post `code` from its URL. The response has the post text, canonical URL, preview image URL, and the author's id, name and username. Replies and logged-in fields are not included. An unavailable post returns 404.
 - **Params:** `code` (string, **required**) — Threads post code; `username` (string, **required**) — Threads username
 
 ### `threads_post_replies`
@@ -25,13 +25,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `threads_profile`
 
 - **HTTP:** `GET /threads/profile/{username}`
-- **What:** Retrieve a public Threads profile. Returns public profile metadata for a Threads username, including the visible biography and counts.
+- **What:** Retrieve a public Threads profile. Returns a public Threads profile by `username` (with or without a leading `@`): name, profile URL, biography, avatar URL, `followers_count` and `threads_count`. Counts are derived from the compact figures shown on the profile page. An unavailable profile returns 404.
 - **Params:** `username` (string, **required**) — Threads username
 
 ### `threads_profile_posts`
 
 - **HTTP:** `GET /threads/profile/{username}/posts`
-- **What:** Retrieve public posts from a Threads profile. Returns public profile posts with an opaque continuation cursor when more posts are available.
+- **What:** Retrieve public posts from a Threads profile. Lists public posts from a Threads profile by `username`. Each item has its code, URL, text, creation time, image and video URLs, like, reply, repost and quote counts, reply flag and author. When `has_more` is true, pass `next_cursor` unchanged as `cursor` to fetch the next page.
 - **Params:** `cursor` (string, optional) — Opaque cursor returned by the previous response; `username` (string, **required**) — Threads username
 
 ### `threads_search`

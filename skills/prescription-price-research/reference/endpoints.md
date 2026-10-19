@@ -25,5 +25,5 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `goodrx_drugs`
 
 - **HTTP:** `GET /goodrx/drugs`
-- **What:** List GoodRx drugs by letter. Returns every drug in one letter of GoodRx's A-Z drug directory, with the price-page slug and drug-information URL.
+- **What:** List GoodRx drugs by letter. Lists the drugs GoodRx files under one letter of its A-Z directory, chosen with the required `letter` (`a` to `z`). Each drug has its name, price-page `slug`, GoodRx URL and drug-information URL. If GoodRx is unreachable, a retained copy up to about a day old is returned and flagged with an `X-Availability-Mode: stale` header.
 - **Params:** `letter` (string, **required**) — Directory letter

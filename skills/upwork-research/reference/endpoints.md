@@ -13,17 +13,17 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `upwork_freelancer`
 
 - **HTTP:** `GET /upwork/freelancer/{id}`
-- **What:** Get Upwork freelancer profile. Returns a normalized Upwork freelancer profile: name, title, verification badge, overview, hourly rate, rating and review count, Job Success Score, location and local time, total jobs/hours worked, and recent client feedback (title, comment, date, client name, rating). Public data sourced from Upwork's own server-rendered profile pages via a real browser-rendering backend.
+- **What:** Get Upwork freelancer profile. Returns an Upwork freelancer profile: name, title, verification badge, overview, hourly rate, rating and review count, Job Success Score, location and local time, total jobs/hours worked, and recent client feedback (title, comment, date, client name, rating).
 - **Params:** `id` (string, **required**) — Upwork freelancer id, the value after \
 
 ### `upwork_job`
 
 - **HTTP:** `GET /upwork/job/{id}`
-- **What:** Get Upwork job posting detail. Returns a normalized Upwork job posting: title, full description, employment type, budget (hourly range or fixed amount), location/remote type, experience level, duration, project type, proposal count, allowed applicant countries, and a summary of the posting client (member since, location, total spend, hires, hours, industry, company size). Public data sourced from Upwork's own server-rendered job pages via a real browser-rendering backend.
+- **What:** Get Upwork job posting detail. Returns an Upwork job posting: title, full description, employment type, budget (hourly range or fixed amount), location/remote type, experience level, duration, project type, proposal count, allowed applicant countries, and a summary of the posting client (member since, location, total spend, hires, hours, industry, company size).
 - **Params:** `id` (string, **required**) — Upwork job id, e.g. from a search result's id field
 
 ### `upwork_search`
 
 - **HTTP:** `GET /upwork/search`
-- **What:** Search Upwork job postings. Searches Upwork's public job listings by free-text keyword, returning normalized job summaries (title, budget, experience level, duration, posted date, description snippet, skill tags). Public data sourced from Upwork's own server-rendered search pages via a real browser-rendering backend.
+- **What:** Search Upwork job postings. Searches Upwork's public job listings by free-text keyword, returning job summaries (title, budget, experience level, duration, posted date, description snippet, skill tags).
 - **Params:** `page` (integer, optional) — 1-based result page. Defaults to 1.; `q` (string, **required**) — Free-text job search keyword

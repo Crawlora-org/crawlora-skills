@@ -13,7 +13,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `aljazeera_article`
 
 - **HTTP:** `GET /aljazeera/article`
-- **What:** Get Al Jazeera article content. Returns a public Al Jazeera article's metadata and body paragraphs from a canonical article URL.
+- **What:** Get Al Jazeera article content. Returns an Al Jazeera article by `url`, a canonical dated `www.aljazeera.com` address such as `/news/2026/9/20/example-slug`: title, description, publication and update times, section, credited authors, lead image and body `paragraphs`. Live-blog URLs return their opening summary bullets as the body; a video page with no article text returns `503` and a malformed URL `400`.
 - **Params:** `url` (string, **required**) — Canonical www.aljazeera.com article URL
 
 ### `aljazeera_author`
@@ -25,13 +25,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `aljazeera_categories`
 
 - **HTTP:** `GET /aljazeera/categories`
-- **What:** Get Al Jazeera section navigation. Returns Al Jazeera's current public section navigation. Use a returned slug directly as the topic parameter on aljazeera-topic.
+- **What:** Get Al Jazeera section navigation. Lists Al Jazeera's current section navigation, each entry with a `name`, `slug` and `url`. A slug has one segment (`news`, `middle-east`) or two (`tag/human-rights`), and any returned `slug` can be passed as the `topic` parameter of `aljazeera-topic`.
 - **Params:** _none_
 
 ### `aljazeera_headlines`
 
 - **HTTP:** `GET /aljazeera/headlines`
-- **What:** Get Al Jazeera site-wide headlines. Returns fresh headlines from Al Jazeera's public, site-wide RSS feed.
+- **What:** Get Al Jazeera site-wide headlines. Returns recent Al Jazeera text-news headlines from across the site, with no input needed. Each item has a title, canonical URL, summary, publication time and the section when present. Video items are excluded because the article endpoint supports text stories only.
 - **Params:** _none_
 
 ### `aljazeera_topic`
@@ -71,13 +71,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bbc_author`
 
 - **HTTP:** `GET /bbc/author`
-- **What:** Get a BBC News correspondent's profile. Returns a BBC News correspondent's public profile: name, short bio, and their recent articles.
+- **What:** Get a BBC News correspondent's profile. Returns a BBC News correspondent's profile from `url`, a canonical `bbc.co.uk/news/correspondents/<slug>` address: name, short `bio` and recent articles with title, URL, section and publication date when the page shows one. `published_at` is `YYYY-MM-DD` when the page gives a full date; items labelled only with a relative time, such as `2 days ago`, come back as written.
 - **Params:** `url` (string, **required**) — Canonical BBC News correspondent URL
 
 ### `bbc_headlines`
 
 - **HTTP:** `GET /bbc/headlines`
-- **What:** Get BBC News section headlines. Returns fresh headlines from a public BBC News RSS section. section defaults to world.
+- **What:** Get BBC News section headlines. Returns fresh BBC News headlines for one section, `world` by default. `section` can be `all`, `world`, `uk`, `politics`, `business`, `health`, `science_and_environment`, `technology` or `entertainment_and_arts`; `all` can mix stories from several sections. Each item has a title, URL, summary and publication time when available.
 - **Params:** `section` (string, optional) — BBC News RSS section, defaults to world
 
 ### `bbc_live`
@@ -97,13 +97,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bloomberg_article`
 
 - **HTTP:** `GET /bloomberg/article`
-- **What:** Get a Bloomberg article's content. Returns one public Bloomberg article's metadata and body paragraphs from a canonical article URL. Subscriber-only articles are not available.
+- **What:** Get a Bloomberg article's content. Returns a public Bloomberg article by `url`: title, description, publication and update times, section, categories, authors, image, `is_premium` and the body `paragraphs` in order. Subscriber-only articles that Bloomberg shows as a truncated preview return `403`, an article with no body returns `503`, and non-article or non-Bloomberg URLs return `400`.
 - **Params:** `url` (string, **required**) — Canonical Bloomberg article URL
 
 ### `bloomberg_author`
 
 - **HTTP:** `GET /bloomberg/author`
-- **What:** Get a Bloomberg author's profile. Returns one public Bloomberg author's profile (name, title, bio) and their recent-content feed from a canonical author URL.
+- **What:** Get a Bloomberg author's profile. Returns a Bloomberg author's profile from `url`, a canonical `https://www.bloomberg.com/authors/<id>/<slug>` address, where `<id>` is an opaque token Bloomberg assigns and cannot be guessed. The response has `name`, `title`, `bio` and recent content with title, URL, `type`, `section`, full `byline` and publication and update times.
 - **Params:** `url` (string, **required**) — Canonical Bloomberg author URL
 
 ### `bloomberg_categories`
@@ -115,7 +115,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bloomberg_headlines`
 
 - **HTTP:** `GET /bloomberg/headlines`
-- **What:** Get the latest stories in a Bloomberg section. Returns Bloomberg story cards from one editorial section. Section must be a slug returned by /bloomberg/categories.
+- **What:** Get the latest stories in a Bloomberg section. Returns current Bloomberg story cards for one editorial section. `section` is required and takes a slug from the Bloomberg categories list, such as `markets`, `economics` or `politics`. Each item has a title and canonical URL, and may also carry a description, image and publication time.
 - **Params:** `section` (string, **required**) — Section slug from /bloomberg/categories
 
 ### `bloomberg_news`
@@ -127,7 +127,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bloomberg_news_sitemaps`
 
 - **HTTP:** `GET /bloomberg/news-sitemaps`
-- **What:** List Bloomberg monthly news sitemaps. Returns Bloomberg's public monthly news-sitemap index so callers can discover historical news feeds beyond the rolling latest feed.
+- **What:** List Bloomberg monthly news sitemaps. Lists Bloomberg's monthly news sitemaps, each with its `url` and `last_modified` date. Use them to find historical news beyond the rolling latest feed at `/bloomberg/news`. Takes no parameters.
 - **Params:** _none_
 
 ## CNN (4)
@@ -153,7 +153,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cnn_live_story`
 
 - **HTTP:** `GET /cnn/live-story`
-- **What:** CNN live story updates. Returns a CNN live story's title, description, update time, and chronological post updates. Provide a canonical cnn.com live-news URL.
+- **What:** CNN live story updates. Returns a CNN live story from its canonical cnn.com live-news `url`: title, description, last update time and the posts in chronological order. Each post has an id, title, paragraphs of text, and published and updated times.
 - **Params:** `url` (string, **required**) — Canonical cnn.com live-news URL
 
 ## FT (6)
@@ -223,7 +223,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `foreignaffairs_topics`
 
 - **HTTP:** `GET /foreignaffairs/topics`
-- **What:** List Foreign Affairs topic feeds. Returns the complete research-backed directory of topic values accepted by foreignaffairs-topic, including each topic's public RSS feed URL.
+- **What:** List Foreign Affairs topic feeds. Lists the 19 Foreign Affairs topics accepted by the topic endpoint, such as `economics`, `nato`, `sanctions` and `us-foreign-policy`. Each topic has its `slug`, display name and RSS `feed_url`. It takes no parameters.
 - **Params:** _none_
 
 ## ForeignPolicy (8)
@@ -281,7 +281,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `guardian_article`
 
 - **HTTP:** `GET /guardian/article`
-- **What:** Get Guardian article content. Returns a Guardian article's public metadata and body paragraphs from a canonical article URL. Live-blog timelines are not supported.
+- **What:** Get Guardian article content. Returns a Guardian article by `url`, a canonical `www.theguardian.com` article link. The response has the title, description, section, authors, lead image, publication and update times, and the body as `paragraphs`. Live-blog timelines are not supported.
 - **Params:** `url` (string, **required**) — Canonical www.theguardian.com article URL
 
 ### `guardian_author`
@@ -293,7 +293,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `guardian_headlines`
 
 - **HTTP:** `GET /guardian/headlines`
-- **What:** Get Guardian section headlines. Returns fresh headlines from a public Guardian RSS section. section defaults to world.
+- **What:** Get Guardian section headlines. Returns recent Guardian headlines for one section. `section` is optional and defaults to `world`; the other values are `uk-news`, `us-news`, `politics`, `business`, `technology`, `environment`, `science`, `sport`, `culture`, `lifeandstyle` and `commentisfree`. Each item has a title, URL, summary, publication time and author, plus its section when available.
 - **Params:** `section` (string, optional) — Guardian RSS section, defaults to world
 
 ### `guardian_topic`
@@ -319,7 +319,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `hbr_headlines`
 
 - **HTTP:** `GET /hbr/headlines`
-- **What:** Get Harvard Business Review latest headlines. Returns fresh entries from Harvard Business Review's public, site-wide "The Latest" content stream.
+- **What:** Get Harvard Business Review latest headlines. Returns the latest items from Harvard Business Review's site-wide The Latest stream, with no parameters. Each item has its `title`, `url`, `summary`, `topic`, `content_type` (for example Digital Article), and `authors` and an `image_url` when available. Items carry no publication time.
 - **Params:** _none_
 
 ### `hbr_topic`
@@ -339,7 +339,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `latimes_author`
 
 - **HTTP:** `GET /latimes/author`
-- **What:** Get a Los Angeles Times author profile. Returns a Los Angeles Times author's byline metadata, biography, contact/social links, and recent articles from a canonical author URL.
+- **What:** Get a Los Angeles Times author profile. Returns a Los Angeles Times author profile by `url`, a canonical `https://www.latimes.com/people/<slug>` link; other hosts or paths return a bad-request error. The response has the `name`, `job_title`, `bio`, `email`, `image_url`, `social_accounts` and recent articles with title, URL, summary, publication time and lead image. Accounts the page does not list are absent.
 - **Params:** `url` (string, **required**) — Canonical Los Angeles Times author URL
 
 ### `latimes_headlines`
@@ -359,25 +359,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `npr_article`
 
 - **HTTP:** `GET /npr/article`
-- **What:** Get NPR article content. Returns a public NPR article's metadata and body paragraphs from a canonical article URL.
+- **What:** Get NPR article content. Returns an NPR article by canonical `url` in the form `https://www.npr.org/YYYY/MM/DD/...`: title, description, section, authors, lead image, publication and update times, and body `paragraphs`. Tracking query strings and fragments are ignored; other hosts, encoded paths and non-article paths are rejected.
 - **Params:** `url` (string, **required**) — Canonical www.npr.org article URL
 
 ### `npr_author`
 
 - **HTTP:** `GET /npr/author`
-- **What:** Get an NPR author profile. Returns an NPR author's byline metadata, biography, and recent articles from a canonical author URL.
+- **What:** Get an NPR author profile. Returns an NPR author profile from a required `url` in the form `https://www.npr.org/people/<id>/<slug>`. The response has `name`, `job_title`, `bio` and the recent stories listed under Stories By, each with title, URL, summary, publication date and a lead image where the card has one. Other hosts or paths return a bad-request error.
 - **Params:** `url` (string, **required**) — Canonical www.npr.org author URL
 
 ### `npr_categories`
 
 - **HTTP:** `GET /npr/categories`
-- **What:** Get NPR section navigation. Returns NPR's current public section navigation. Use a returned slug directly as the topic parameter on npr-topic.
+- **What:** Get NPR section navigation. Lists the sections in NPR's current navigation, each with its name, slug and URL. Pass a returned `slug` as the `topic` parameter of `npr-topic`. The list is not a fixed set, so it follows whatever sections NPR currently shows.
 - **Params:** _none_
 
 ### `npr_headlines`
 
 - **HTTP:** `GET /npr/headlines`
-- **What:** Get NPR site-wide headlines. Returns fresh headlines from NPR's public, site-wide RSS feed.
+- **What:** Get NPR site-wide headlines. Returns the current NPR headlines across the site, with no parameters and no section filter. Each item has a title, canonical URL, summary, publication time and author when one is given.
 - **Params:** _none_
 
 ### `npr_topic`
@@ -391,7 +391,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `nyt_article`
 
 - **HTTP:** `GET /nyt/article`
-- **What:** Get a New York Times article's content. Returns one public New York Times article's metadata and body paragraphs from a canonical article URL.
+- **What:** Get a New York Times article's content. Returns a New York Times article by canonical `url`, with `title`, `description`, `published_at`, `updated_at`, `section`, `authors`, `keywords`, `image_url` and the body `paragraphs` in order. Query strings and fragments are stripped. A subscription barrier returns `403`, and non-article or non-NYT URLs return `400`.
 - **Params:** `url` (string, **required**) — Canonical NYT article URL
 
 ### `nyt_author`
@@ -415,7 +415,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `nyt_sections`
 
 - **HTTP:** `GET /nyt/sections`
-- **What:** List New York Times sections. Lists every New York Times section accepted by /nyt/headlines, with its slug, display name, and public feed URL.
+- **What:** List New York Times sections. Lists the New York Times section slugs accepted by `nyt-headlines`, such as `World` and `Business`, each with its display `name` and `url`. It covers only the sections that endpoint takes; use `nyt-categories` for the broader site navigation, including Politics, DealBook and Wirecutter.
 - **Params:** _none_
 
 ## Politico (5)
@@ -423,7 +423,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `politico_article`
 
 - **HTTP:** `GET /politico/article`
-- **What:** Get Politico article content. Returns a public Politico article's metadata and full body paragraphs from a canonical article URL.
+- **What:** Get Politico article content. Returns a Politico article by its canonical `url`, in the form `https://www.politico.com/news/YYYY/MM/DD/slug`. The response has the title, description, authors, publication and update times, lead image URL and the body `paragraphs`.
 - **Params:** `url` (string, **required**) — Canonical www.politico.com article URL
 
 ### `politico_author`
@@ -441,7 +441,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `politico_headlines`
 
 - **HTTP:** `GET /politico/headlines`
-- **What:** Get Politico site-wide headlines. Returns fresh headlines from Politico's public, site-wide RSS feed.
+- **What:** Get Politico site-wide headlines. Returns the latest Politico stories across the whole site, not limited to one section. Takes no parameters. Each item has its title, URL, a short summary, publication time and author.
 - **Params:** _none_
 
 ### `politico_topic`
@@ -467,7 +467,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `reuters_author`
 
 - **HTTP:** `GET /reuters/author`
-- **What:** Get a Reuters author profile. Returns a Reuters author's byline metadata, contact/social links, and recent articles from a canonical author URL.
+- **What:** Get a Reuters author profile. Returns a Reuters author's profile by canonical `url` (`https://www.reuters.com/authors/<slug>/`): name, company, editorial email, social accounts, profile image, `total_articles` and the first 20 recent articles, each with title, URL, summary, publication time and an image when the story card has one. Accounts the page does not list are absent.
 - **Params:** `url` (string, **required**) — Canonical Reuters author URL
 
 ### `reuters_news`
@@ -485,7 +485,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `reuters_sections`
 
 - **HTTP:** `GET /reuters/sections`
-- **What:** List Reuters sections. Lists every top-level Reuters section accepted by /reuters/section, with its slug, display name, and landing-page URL.
+- **What:** List Reuters sections. Lists the top-level Reuters sections accepted by the `section` parameter of `/reuters/section`, returned under `items`. Each entry has a `slug`, a display `name` and the landing-page `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Washington Post (5)
@@ -511,13 +511,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `wapo_news`
 
 - **HTTP:** `GET /wapo/news`
-- **What:** Get the latest Washington Post stories. Returns The Washington Post's current public news-sitemap feed with titles, canonical URLs, publication times, and last-modified times.
+- **What:** Get the latest Washington Post stories. Returns the current Washington Post news list with no parameters. Each item has its `title`, canonical `url`, `published_at` and `last_modified`, the last when the publisher supplies it. Items do not include summaries or authors.
 - **Params:** _none_
 
 ### `wapo_sections`
 
 - **HTTP:** `GET /wapo/sections`
-- **What:** List Washington Post sections. Lists every Washington Post section accepted by /wapo/headlines, with its path slug, display name, and landing-page URL.
+- **What:** List Washington Post sections. Lists the Washington Post sections accepted by `wapo-headlines`. Each has a path `slug` such as `politics` or `business/technology`, a display `name` and a landing-page `url`. Use it to find valid `section` values. Takes no parameters.
 - **Params:** _none_
 
 ## ABC News Australia (5)
@@ -525,31 +525,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `abcau_article`
 
 - **HTTP:** `GET /abcau/article`
-- **What:** Get ABC News Australia article content. Returns public ABC News Australia article metadata and body paragraphs from a canonical article URL.
+- **What:** Get ABC News Australia article content. Returns an ABC News Australia article by `url`, a canonical `abc.net.au` address in the form `/news/<date>/<slug>/<id>`: title, description, publication time, section, authors, image and the body `paragraphs`. Rolling live-blog posts, whose slug ends `-live-blog`, return an error instead of partial content.
 - **Params:** `url` (string, **required**) — Canonical ABC News Australia article URL
 
 ### `abcau_author`
 
 - **HTTP:** `GET /abcau/author`
-- **What:** Get an ABC News Australia author profile. Returns an ABC News Australia author's byline metadata, biography, and recent articles from a canonical author URL.
+- **What:** Get an ABC News Australia author profile. Returns an ABC News Australia author profile from `url`, a canonical `https://www.abc.net.au/news/<slug>/<id>` address: name, `biography`, `image_url` and recent articles. Not every author has a headshot or biography, and wire or staff bylines often have neither.
 - **Params:** `url` (string, **required**) — Canonical ABC News Australia author URL
 
 ### `abcau_headlines`
 
 - **HTTP:** `GET /abcau/headlines`
-- **What:** Get ABC News Australia section headlines. Returns fresh headlines from one public ABC News Australia section.
+- **What:** Get ABC News Australia section headlines. Returns current headlines for one ABC News Australia section. `section` is required and takes one of 15 slugs, including `justin`, `politics`, `rural`, `analysis-and-opinion` and `australia`. Each item has a title and URL, and may also carry a summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — ABC News Australia section slug
 
 ### `abcau_news`
 
 - **HTTP:** `GET /abcau/news`
-- **What:** Get ABC News Australia top stories. Returns fresh ABC News Australia top stories from its public RSS feed.
+- **What:** Get ABC News Australia top stories. Returns the current ABC News Australia top stories, with no input needed. Each item has a title and canonical URL, and may also carry a summary, author, publication time and image.
 - **Params:** _none_
 
 ### `abcau_sections`
 
 - **HTTP:** `GET /abcau/sections`
-- **What:** Get ABC News Australia sections. Returns the public ABC News Australia section inventory used by the headlines endpoint.
+- **What:** Get ABC News Australia sections. Lists the 15 ABC News Australia section slugs accepted by `abcau-headlines`, from `justin` and `world` to `backstory` and `australia`. Each entry has a `slug`, a display `name` (for example `Just In`) and the section's page `url`.
 - **Params:** _none_
 
 ## ABC News (5)
@@ -563,25 +563,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `abcnews_author`
 
 - **HTTP:** `GET /abcnews/author`
-- **What:** Get an ABC News author profile. Returns an ABC News author's profile: name, job title/biography when the page carries one, and social links, from a canonical author URL. Does NOT include a list of the author's recent articles -- unlike this repo's other news-author endpoints, ABC News only exposes that list through an internal endpoint disallowed for every crawler in abcnews.com's robots.txt (a generic "Disallow: /proxy/*" rule, not limited to AI-training bots), so it is out of scope for this endpoint.
+- **What:** Get an ABC News author profile. Returns an ABC News author's profile: name, job title/biography when the page carries one, and social links, from a canonical author URL. Does not include a list of the author's recent articles.
 - **Params:** `url` (string, **required**) — Canonical ABC News author URL
 
 ### `abcnews_headlines`
 
 - **HTTP:** `GET /abcnews/headlines`
-- **What:** Get ABC News section headlines. Returns fresh headlines from one ABC News section's public hub page.
+- **What:** Get ABC News section headlines. Returns the current headlines for one ABC News section. `section` is required and must be `us`, `world`, `politics`, `business`, `technology`, `entertainment`, `health` or `sports`. Each item has a title and URL, and may also carry a summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — ABC News section slug
 
 ### `abcnews_news`
 
 - **HTTP:** `GET /abcnews/news`
-- **What:** Get ABC News top stories. Returns fresh ABC News top stories from its public news sitemap feed.
+- **What:** Get ABC News top stories. Returns the current ABC News top stories, with no input needed. Each item has a title and canonical URL, and may also carry a summary, author, publication time and image.
 - **Params:** _none_
 
 ### `abcnews_sections`
 
 - **HTTP:** `GET /abcnews/sections`
-- **What:** Get ABC News sections. Returns the ABC News section inventory: the 8 core news sections accepted by abcnews-headlines.
+- **What:** Get ABC News sections. Lists the 8 core ABC News sections that `abcnews-headlines` accepts: `us`, `world`, `politics`, `business`, `technology`, `entertainment`, `health` and `sports`. Each entry has a `slug`, a display `name` and the section's page `url`.
 - **Params:** _none_
 
 ## AL.com (3)
@@ -589,19 +589,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `alcom_headlines`
 
 - **HTTP:** `GET /alcom/headlines`
-- **What:** Get AL.com section headlines. Returns current headlines from one of AL.com's public Arc RSS section feeds. Summaries are brief publisher teasers, not full article text.
+- **What:** Get AL.com section headlines. Returns current headlines from one of AL.com's section feeds. Summaries are brief publisher teasers, not full article text.
 - **Params:** `section` (string, **required**) — AL.com editorial section
 
 ### `alcom_news`
 
 - **HTTP:** `GET /alcom/news`
-- **What:** Get AL.com top stories. Returns current AL.com News stories from its public Arc RSS feed. Feed summaries are brief publisher teasers, not full article text.
+- **What:** Get AL.com top stories. Returns current AL.com News stories. Summaries are brief publisher teasers, not full article text.
 - **Params:** _none_
 
 ### `alcom_sections`
 
 - **HTTP:** `GET /alcom/sections`
-- **What:** Get AL.com editorial sections. Returns the three top-level editorial sections exposed in AL.com's site navigation and accepted by the headlines endpoint.
+- **What:** Get AL.com editorial sections. Lists the three top-level editorial sections in AL.com's navigation: `news`, `sports` and `life`. Each has a `slug`, a display `name` and the section's page `url`, and the slugs are the values `alcom-headlines` accepts for `section`.
 - **Params:** _none_
 
 ## Android Authority (4)
@@ -609,25 +609,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `androidauthority_article`
 
 - **HTTP:** `GET /androidauthority/article`
-- **What:** Get Android Authority article content. Returns public Android Authority article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Android Authority article content. Returns an Android Authority article by `url`, a canonical `androidauthority.com` address whose path is one slug ending in the numeric post id: title, description, publication and update times, section, authors, image and body `paragraphs`, with TL;DR and pros/cons bullets as separate entries. Section, tag and author pages are rejected, and an unknown post id returns not-found.
 - **Params:** `url` (string, **required**) — Canonical Android Authority article URL
 
 ### `androidauthority_headlines`
 
 - **HTTP:** `GET /androidauthority/headlines`
-- **What:** Get Android Authority section headlines. Returns fresh headlines from one public Android Authority section page.
+- **What:** Get Android Authority section headlines. Returns the newest 10 to 20 stories from one Android Authority section hub. `section` is required and takes a slug such as `reviews`, `how-to`, `smartwatches` or `android-phones`. Each item has a title, URL, author and image; `summary` appears on the lead story of a hub, and `published_at` only on stories more than a day old.
 - **Params:** `section` (string, **required**) — Android Authority section slug
 
 ### `androidauthority_news`
 
 - **HTTP:** `GET /androidauthority/news`
-- **What:** Get Android Authority top stories. Returns the latest Android Authority stories from the public site-wide feed.
+- **What:** Get Android Authority top stories. Returns about 80 of the latest Android Authority stories from across the site, newest first, with no input needed. Each has a title, canonical URL, standfirst `summary`, exact publication time, byline `author` and lead image. The headlines endpoint covers a single section.
 - **Params:** _none_
 
 ### `androidauthority_sections`
 
 - **HTTP:** `GET /androidauthority/sections`
-- **What:** Get Android Authority sections. Returns the public Android Authority section inventory accepted by the headlines endpoint.
+- **What:** Get Android Authority sections. Lists the 44 Android Authority sections that `androidauthority-headlines` accepts: the content-type hubs (`news`, `reviews`, `best`, `how-to`, `features`, `deals`, `authority-insights`), the top-level topic hubs and their sub-hubs. Each has a `slug`, display `name` and page `url`. Tag archives are not sections.
 - **Params:** _none_
 
 ## AP News (6)
@@ -635,37 +635,37 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `apnews_article`
 
 - **HTTP:** `GET /apnews/article`
-- **What:** Get AP News article content. Returns public AP News article metadata and body paragraphs. The service uses the configured production browser fleet when ordinary HTTP transport encounters AP's edge challenge; it does not bypass authentication or access controls. Billing is 2 credits for an HTTP-profile success and 10 credits when browser rendering is required.
+- **What:** Get AP News article content. Returns public AP News article metadata and body paragraphs. The service does not bypass authentication or access controls. Billing is 2 credits, or 10 credits when browser rendering is required.
 - **Params:** `url` (string, **required**) — Canonical AP News article URL
 
 ### `apnews_author`
 
 - **HTTP:** `GET /apnews/author`
-- **What:** Get an AP News author profile. Returns an AP News author's byline metadata, biography, and recent articles from a canonical author URL. The service uses the configured production browser fleet when ordinary HTTP transport encounters AP's edge challenge; it does not bypass authentication or access controls. Billing is 1 credit for an HTTP-profile success and 5 credits when browser rendering is required.
+- **What:** Get an AP News author profile. Returns an AP News author's byline metadata, biography, and recent articles from a canonical author URL. The service does not bypass authentication or access controls. Billing is 1 credit, or 5 credits when browser rendering is required.
 - **Params:** `url` (string, **required**) — Canonical AP News author URL
 
 ### `apnews_fact_check`
 
 - **HTTP:** `GET /apnews/fact-check`
-- **What:** Get AP News fact checks. Returns current headlines from AP News' public Fact Check page. The service uses the configured production browser fleet when ordinary HTTP transport encounters AP's edge challenge; it does not bypass authentication or access controls. Billing is 1 credit for an HTTP-profile success and 5 credits when browser rendering is required.
+- **What:** Get AP News fact checks. Returns current headlines from AP News' public Fact Check page. The service does not bypass authentication or access controls. Billing is 1 credit, or 5 credits when browser rendering is required.
 - **Params:** _none_
 
 ### `apnews_headlines`
 
 - **HTTP:** `GET /apnews/headlines`
-- **What:** Get AP News section headlines. Returns AP News headlines from a public editorial hub. The service uses the configured production browser fleet when ordinary HTTP transport encounters AP's edge challenge; it does not bypass authentication or access controls. Billing is 1 credit for an HTTP-profile success and 5 credits when browser rendering is required.
+- **What:** Get AP News section headlines. Returns AP News headlines from a public editorial hub. The service does not bypass authentication or access controls. Billing is 1 credit, or 5 credits when browser rendering is required.
 - **Params:** `section` (string, **required**) — AP News section slug
 
 ### `apnews_news`
 
 - **HTTP:** `GET /apnews/news`
-- **What:** Get AP News top stories. Returns AP News top stories from the public AP News Top News hub. The service uses the configured production browser fleet when ordinary HTTP transport encounters AP's edge challenge; it does not bypass authentication or access controls. Billing is 1 credit for an HTTP-profile success and 5 credits when browser rendering is required.
+- **What:** Get AP News top stories. Returns AP News top stories from the public AP News Top News hub. The service does not bypass authentication or access controls. Billing is 1 credit, or 5 credits when browser rendering is required.
 - **Params:** _none_
 
 ### `apnews_sections`
 
 - **HTTP:** `GET /apnews/sections`
-- **What:** Get AP News sections. Returns the AP News editorial hub inventory used by apnews-headlines.
+- **What:** Get AP News sections. Lists the 11 AP News hubs accepted by `apnews-headlines`: `ap-top-news`, `us-news`, `world-news`, `politics`, `business`, `technology`, `science`, `health`, `sports`, `entertainment` and `lifestyle`. Each has a `slug`, display `name` and hub `url`. The Fact Check page is served by `apnews-fact-check` instead.
 - **Params:** _none_
 
 ## Ars Technica (5)
@@ -673,25 +673,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `arstechnica_article`
 
 - **HTTP:** `GET /arstechnica/article`
-- **What:** Get Ars Technica article content. Returns public Ars Technica article metadata and body paragraphs from a canonical article URL. The service uses the configured production browser fleet when ordinary HTTP transport encounters Ars Technica's bot-verification challenge; it does not bypass authentication or access controls.
+- **What:** Get Ars Technica article content. Returns public Ars Technica article metadata and body paragraphs from a canonical article URL. The service does not bypass authentication or access controls.
 - **Params:** `url` (string, **required**) — Canonical Ars Technica article URL
 
 ### `arstechnica_author`
 
 - **HTTP:** `GET /arstechnica/author`
-- **What:** Get an Ars Technica contributor profile. Returns an Ars Technica contributor's byline metadata (name, job title, headshot, contact email), biography, and recent articles from a canonical author URL. The service uses the configured production browser fleet when ordinary HTTP transport encounters Ars Technica's bot-verification challenge; it does not bypass authentication or access controls.
+- **What:** Get an Ars Technica contributor profile. Returns an Ars Technica contributor's byline metadata (name, job title, headshot, contact email), biography, and recent articles from a canonical author URL. The service does not bypass authentication or access controls.
 - **Params:** `url` (string, **required**) — Canonical Ars Technica contributor URL
 
 ### `arstechnica_headlines`
 
 - **HTTP:** `GET /arstechnica/headlines`
-- **What:** Get Ars Technica section headlines. Returns fresh headlines from one Ars Technica section's public RSS feed.
+- **What:** Get Ars Technica section headlines. Returns recent Ars Technica headlines for one section. `section` is required and takes `ai`, `apple`, `cars`, `culture`, `features`, `gadgets`, `gaming`, `health`, `information-technology`, `reviews`, `science`, `security`, `space`, `staff` or `tech-policy`. Each item has a title and URL, and may also carry a summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — Ars Technica section slug
 
 ### `arstechnica_news`
 
 - **HTTP:** `GET /arstechnica/news`
-- **What:** Get Ars Technica top stories. Returns fresh Ars Technica stories from its public RSS feed.
+- **What:** Get Ars Technica top stories. Returns the latest Ars Technica stories, with no input needed. Each item has a title and canonical URL, and may also carry a summary, author, publication time and lead image.
 - **Params:** _none_
 
 ### `arstechnica_sections`
@@ -723,7 +723,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `barrons_topics`
 
 - **HTTP:** `GET /barrons/topics`
-- **What:** List Barron's topics. Lists every Barron's editorial topic accepted by /barrons/headlines' section parameter, with each topic's slug, display name, and landing-page URL.
+- **What:** List Barron's topics. Lists Barron's editorial topics, each with its `slug`, display `name` and landing-page `url`. The list is long and changes over time. Every `slug` is a valid `section` value for `/barrons/headlines`. Takes no parameters.
 - **Params:** _none_
 
 ## Billboard (5)
@@ -743,13 +743,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `billboard_headlines`
 
 - **HTTP:** `GET /billboard/headlines`
-- **What:** Get Billboard section headlines. Returns fresh headlines from one public Billboard section.
+- **What:** Get Billboard section headlines. Returns the 10 most recent items from one Billboard section. `section` is required and takes a slug such as `chart-beat`, `country`, `rb-hip-hop`, `streaming` or `touring`. Parent sections such as `music` and `business` overlap with their subsections, so one item can appear under several. Items carry title, URL, summary, author and time.
 - **Params:** `section` (string, **required**) — Billboard section slug
 
 ### `billboard_news`
 
 - **HTTP:** `GET /billboard/news`
-- **What:** Get Billboard top stories. Returns fresh Billboard top stories from its public RSS feed.
+- **What:** Get Billboard top stories. Returns the latest Billboard stories, with no input needed. Each item has a title and canonical URL, plus a publication time, summary and image when Billboard provides them.
 - **Params:** _none_
 
 ### `billboard_sections`
@@ -787,7 +787,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `birminghammail_sections`
 
 - **HTTP:** `GET /birminghammail/sections`
-- **What:** Get Birmingham Mail sections. Returns the public Birmingham Mail editorial section inventory used by birminghammail-headlines.
+- **What:** Get Birmingham Mail sections. Lists the 23 Birmingham Mail sections that `birminghammail-headlines` accepts, such as `news/midlands-news`, `black-country`, `sport/football/transfer-news` and `whats-on`. Each has a `slug`, a display `name` and the feed `url`. Only sections with a recently updated feed are included (last verified 2026-09-25), and each returns up to about 25 entries.
 - **Params:** _none_
 
 ## Bleacher Report (5)
@@ -801,25 +801,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bleacherreport_author`
 
 - **HTTP:** `GET /bleacherreport/author`
-- **What:** Get a Bleacher Report writer profile. Returns one Bleacher Report writer's public profile: name, role, biography, photo, and the latest stories listed on the page.
+- **What:** Get a Bleacher Report writer profile. Returns a Bleacher Report writer's profile, identified by `slug` (such as `scott-polacek`) or a canonical `bleacherreport.com/writers/<slug>` `url`; exactly one is required. The response has name, role, biography, photo and about 20 latest stories with title, URL and thumbnail. Publication times are not shown on the profile, so `published_at` is omitted; an unknown slug returns 404.
 - **Params:** `slug` (string, optional) — Writer slug, e.g. scott-polacek; `url` (string, optional) — Canonical bleacherreport.com/writers/<slug> URL; alternative to slug
 
 ### `bleacherreport_headlines`
 
 - **HTTP:** `GET /bleacherreport/headlines`
-- **What:** Get Bleacher Report section headlines. Returns current Bleacher Report headlines from one public league or league sub-hub page.
+- **What:** Get Bleacher Report section headlines. Returns the stories on one Bleacher Report league or sub-hub page, newest first. `section` is required and takes a slug such as `nfl`, `nba-draft`, `formula-1` or `recruiting`. Each has a headline, article URL and publication time, plus thumbnail and blurb when present. Busy leagues return 100 or more stories, quiet ones only a few.
 - **Params:** `section` (string, **required**) — Bleacher Report section slug
 
 ### `bleacherreport_news`
 
 - **HTTP:** `GET /bleacherreport/news`
-- **What:** Get Bleacher Report top stories. Returns fresh Bleacher Report top sports stories from the public news sitemap.
+- **What:** Get Bleacher Report top stories. Returns around 180 Bleacher Report sports stories from roughly the last day or two, newest first, with no input needed. Each has a title, canonical article URL and publication time. Live blogs are excluded because they are not article pages.
 - **Params:** _none_
 
 ### `bleacherreport_sections`
 
 - **HTTP:** `GET /bleacherreport/sections`
-- **What:** Get Bleacher Report sections. Returns the public Bleacher Report league and league sub-hub sections accepted by the headlines endpoint.
+- **What:** Get Bleacher Report sections. Lists the 30 Bleacher Report sections that `bleacherreport-headlines` accepts: 18 league and sport hubs such as `nfl`, `tennis` and `olympics`, plus 12 sub-hubs such as `nba-draft` and `bracketology`. Each has a `slug`, display `name` and landing-page `url`. Team pages, scores, standings and MotoGP are not included.
 - **Params:** _none_
 
 ## Boston Globe (1)
@@ -827,7 +827,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bostonglobe_news`
 
 - **HTTP:** `GET /bostonglobe/news`
-- **What:** Get Boston Globe top stories. Returns recent Boston Globe story metadata and RSS summaries from its public Arc feed. The feed also carries content:encoded article prose, which this endpoint intentionally omits. Article bodies, sections, headlines-by-section, and author profiles are not exposed because the public contracts are not fully verified and some stories require a subscription.
+- **What:** Get Boston Globe top stories. Returns recent Boston Globe story metadata and summaries. Article bodies, sections, headlines-by-section, and author profiles are not exposed, and some stories require a subscription.
 - **Params:** _none_
 
 ## Breitbart (5)
@@ -835,7 +835,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `breitbart_article`
 
 - **HTTP:** `GET /breitbart/article`
-- **What:** Get Breitbart article content. Returns public Breitbart article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Breitbart article content. Returns a Breitbart article by `url`, a canonical `https://www.breitbart.com/<section>/<yyyy>/<mm>/<dd>/<slug>/` address. The response has the title, description, publication and update times, section, image, `authors` and the body `paragraphs`.
 - **Params:** `url` (string, **required**) — Canonical Breitbart article URL
 
 ### `breitbart_author`
@@ -847,19 +847,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `breitbart_headlines`
 
 - **HTTP:** `GET /breitbart/headlines`
-- **What:** Get Breitbart section headlines. Returns fresh headlines from one public Breitbart section hub page.
+- **What:** Get Breitbart section headlines. Returns current headlines from one Breitbart section hub. `section` is required and takes one of 21 slugs, such as `politics`, `border`, `the-media` or `europe`. The `world-news`, `news` and `on-the-hill-exclusive-video` hubs aggregate stories, so their links point to articles under whichever section owns each story.
 - **Params:** `section` (string, **required**) — Breitbart section slug
 
 ### `breitbart_news`
 
 - **HTTP:** `GET /breitbart/news`
-- **What:** Get Breitbart top stories. Returns fresh Breitbart top stories from its public RSS feed.
+- **What:** Get Breitbart top stories. Returns the latest Breitbart top stories from across the site, with no input needed. Each item has a title and canonical URL, and may also carry a summary, publication time, author and image.
 - **Params:** _none_
 
 ### `breitbart_sections`
 
 - **HTTP:** `GET /breitbart/sections`
-- **What:** Get Breitbart sections. Returns the live-verified public Breitbart editorial section inventory used by the headlines endpoint.
+- **What:** Get Breitbart sections. Lists the 21 Breitbart sections accepted by `breitbart-headlines`, including `politics`, `economy`, `border`, `national-security`, `the-media`, `world-news` and `america250`. Each has a `slug`, a display `name` and the section's page `url`. The list was verified on 2026-09-23.
 - **Params:** _none_
 
 ## Business Insider (5)
@@ -867,31 +867,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `businessinsider_article`
 
 - **HTTP:** `GET /businessinsider/article`
-- **What:** Get Business Insider article content. Returns public Business Insider article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Business Insider article content. Returns a Business Insider article by canonical `url`: title, description, publication and update times, section, authors, image and the body `paragraphs`. Subscriber-only or blocked content returns an error instead of partial text.
 - **Params:** `url` (string, **required**) — Canonical Business Insider article URL
 
 ### `businessinsider_author`
 
 - **HTTP:** `GET /businessinsider/author`
-- **What:** Get a Business Insider author profile. Returns one Business Insider author's public profile: name, job title, bio, social accounts, and their recent articles.
+- **What:** Get a Business Insider author profile. Returns a Business Insider author's profile, identified by `slug` (the last segment of the author's page address) or a canonical `https://www.businessinsider.com/author/<slug>` `url`; exactly one is required. The response has name, job title, bio, image, `social_accounts` and one page of recent articles with title, URL and summary. Accounts the author does not list are simply absent.
 - **Params:** `slug` (string, optional) — Author slug; `url` (string, optional) — Canonical businessinsider.com/author/<slug> URL; alternative to slug
 
 ### `businessinsider_headlines`
 
 - **HTTP:** `GET /businessinsider/headlines`
-- **What:** Get Business Insider section headlines. Returns fresh headlines from one public Business Insider section.
+- **What:** Get Business Insider section headlines. Returns fresh headlines for one Business Insider section. `section` is required and is one of `business`, `markets`, `technology`, `politics`, `strategy`, `finance`, `science`, `lifestyle` or `reviews`. Each item has a title and URL, and may also carry a summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — Business Insider section slug
 
 ### `businessinsider_news`
 
 - **HTTP:** `GET /businessinsider/news`
-- **What:** Get Business Insider top stories. Returns fresh Business Insider stories from the public RSS feed.
+- **What:** Get Business Insider top stories. Returns the latest Business Insider top stories, with no input needed. Each item has a title and canonical URL, and may also carry a summary, author, publication time and image.
 - **Params:** _none_
 
 ### `businessinsider_sections`
 
 - **HTTP:** `GET /businessinsider/sections`
-- **What:** Get Business Insider sections. Returns the public Business Insider editorial section inventory.
+- **What:** Get Business Insider sections. Lists the Business Insider editorial sections accepted by `businessinsider-headlines`, such as `business`, `markets` and `technology`. Each entry has a stable `slug`, a display `name` and the section's page `url`.
 - **Params:** _none_
 
 ## Business Standard (5)
@@ -905,25 +905,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `businessstandard_author`
 
 - **HTTP:** `GET /businessstandard/author`
-- **What:** Get a Business Standard author profile. Returns a Business Standard author's byline metadata, biography, social links, and recent stories from a canonical author profile URL.
+- **What:** Get a Business Standard author profile. Returns a Business Standard author's profile from `url`, a canonical `https://www.business-standard.com/author/<slug>` address: name, designation, biography, image, and Twitter, Facebook, LinkedIn and YouTube links where listed, plus about 20 recent stories. Stories carry a title, URL and optionally summary, date and a `premium` flag for subscriber-only text. An unknown author returns `404`.
 - **Params:** `url` (string, **required**) — Canonical Business Standard author URL
 
 ### `businessstandard_headlines`
 
 - **HTTP:** `GET /businessstandard/headlines`
-- **What:** Get Business Standard section headlines. Returns fresh headlines from one public Business Standard section.
+- **What:** Get Business Standard section headlines. Returns recent headlines for one Business Standard section: up to 35 stories, or 100 for `latest-news`. `section` is required and takes one of 25 slugs such as `companies`, `markets`, `cricket` or `todays-paper`. Some stories are premium (subscriber-only), and requesting one from the article endpoint returns `403`.
 - **Params:** `section` (string, **required**) — Business Standard section slug
 
 ### `businessstandard_news`
 
 - **HTTP:** `GET /businessstandard/news`
-- **What:** Get Business Standard top stories. Returns fresh Business Standard (business-standard.com) top stories from its public home-page feed.
+- **What:** Get Business Standard top stories. Returns Business Standard top stories from its home page, with no input needed: title, canonical URL and, where present, publication time, summary, author and image. Some listed stories are premium (subscriber-only), and requesting one from the article endpoint returns `403`.
 - **Params:** _none_
 
 ### `businessstandard_sections`
 
 - **HTTP:** `GET /businessstandard/sections`
-- **What:** Get Business Standard sections. Returns the public Business Standard section inventory used by the headlines endpoint.
+- **What:** Get Business Standard sections. Lists the 25 Business Standard section slugs accepted by `businessstandard-headlines`, from `latest-news`, `companies` and `markets` to `cricket`, `immigration` and `todays-paper`. Each entry has a `slug`, a display `name` and the section's page `url`.
 - **Params:** _none_
 
 ## CBC News (5)
@@ -937,7 +937,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cbc_author`
 
 - **HTTP:** `GET /cbc/author`
-- **What:** Get a CBC journalist profile. Returns one CBC journalist's public profile: name, job title, biography, photo, profile links, and their most recent articles.
+- **What:** Get a CBC journalist profile. Returns a CBC journalist's profile, identified by `slug` (ending in CBC's author id, such as `darren-major-1.4462710`) or a `https://www.cbc.ca/author/<slug>` `url`; exactly one is required and an unknown author returns 404. The response has name, title, biography, photo, profile links and usually 10 latest articles, with `has_more_articles` showing whether older ones exist.
 - **Params:** `slug` (string, optional) — Author slug, e.g. darren-major-1.4462710; `url` (string, optional) — Canonical https://www.cbc.ca/author/<slug> URL; alternative to slug
 
 ### `cbc_headlines`
@@ -949,13 +949,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cbc_news`
 
 - **HTTP:** `GET /cbc/news`
-- **What:** Get CBC News top stories. Returns fresh CBC News top stories from CBC's public Top Stories RSS feed. Live-updates pages are omitted.
+- **What:** Get CBC News top stories. Returns fresh CBC News top stories with no input needed: title, canonical story URL, publication time, byline when given and lead image. Only stories the article endpoint accepts are returned, so video player pages, CBC Radio, Music and Books links and live-updates pages are omitted.
 - **Params:** _none_
 
 ### `cbc_sections`
 
 - **HTTP:** `GET /cbc/sections`
-- **What:** Get CBC News sections. Returns the CBC News sections accepted by the headlines endpoint: national desks, regional newsrooms, and CBC Sports feeds.
+- **What:** Get CBC News sections. Lists the 35 CBC News sections that `cbc-headlines` accepts: 8 national desks such as `politics` and `world`, 21 regional newsrooms such as `toronto` and `nova-scotia`, and 6 CBC Sports feeds such as `sports-nhl`. Each has a `slug`, a display `name` and the feed `url`. Top stories come from `cbc-news`, not a section.
 - **Params:** _none_
 
 ## CBR (5)
@@ -963,13 +963,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cbr_article`
 
 - **HTTP:** `GET /cbr/article`
-- **What:** Get CBR article content. Returns public CBR article metadata and body paragraphs from a canonical article URL.
+- **What:** Get CBR article content. Returns a CBR article by `url`, a canonical `cbr.com` address of the form `/<slug>/`: title, description, publication and update times, section, authors, image and the body `paragraphs`. Section, video, author and category pages are rejected as invalid. `paywalled` is `true` only if the page declares the article not free, and then `paragraphs` may be a teaser.
 - **Params:** `url` (string, **required**) — Canonical CBR article URL
 
 ### `cbr_author`
 
 - **HTTP:** `GET /cbr/author`
-- **What:** Get a CBR author profile. Returns a CBR author's byline metadata, biography, social links, and recent articles from a canonical author URL.
+- **What:** Get a CBR author profile. Returns a CBR author profile from `url`, a canonical `https://www.cbr.com/author/<slug>/` address; paginated `/page/N/` URLs are rejected. The response has name, `title`, biography, image, `social_links` and about 20 items from the profile's Latest module, with no older pages available.
 - **Params:** `url` (string, **required**) — Canonical CBR author URL
 
 ### `cbr_headlines`
@@ -981,13 +981,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cbr_news`
 
 - **HTTP:** `GET /cbr/news`
-- **What:** Get CBR top stories. Returns fresh CBR top stories from its public RSS feed.
+- **What:** Get CBR top stories. Returns about 10 of the latest CBR stories from the site's main feed, with no input needed. Each has a title, canonical URL, summary, publication time, author names (co-authors joined with a comma) and lead image.
 - **Params:** _none_
 
 ### `cbr_sections`
 
 - **HTTP:** `GET /cbr/sections`
-- **What:** Get CBR RSS sections. Returns the public CBR RSS section inventory used by the headlines endpoint.
+- **What:** Get CBR RSS sections. Lists the 28 CBR section slugs accepted by `cbr-headlines`, grouped by movies, TV, comics, anime and games with news, reviews, features and lists variants, plus `lists` and `cbr-exclusives`. Each entry has a `slug` (for example `news-movies` or `comics/reviews`), a display `name` and the feed `url`.
 - **Params:** _none_
 
 ## CBS News (5)
@@ -995,7 +995,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cbsnews_article`
 
 - **HTTP:** `GET /cbsnews/article`
-- **What:** Get CBS News article content. Returns public CBS News article metadata and body paragraphs from a canonical article URL.
+- **What:** Get CBS News article content. Returns a CBS News article by `url`, a canonical HTTPS `cbsnews.com/news/<slug>` address. The response has the title, description, publication and update times, authors, section, lead image and the body `paragraphs`.
 - **Params:** `url` (string, **required**) — Canonical CBS News article URL
 
 ### `cbsnews_author`
@@ -1007,19 +1007,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cbsnews_headlines`
 
 - **HTTP:** `GET /cbsnews/headlines`
-- **What:** Get CBS News section headlines. Returns fresh headlines from one public CBS News RSS section.
+- **What:** Get CBS News section headlines. Returns fresh headlines for one CBS News section. `section` is required and is one of `main`, `us`, `world`, `politics`, `moneywatch`, `health`, `entertainment`, `science`, `technology` or `space`. Each item has a title and URL, and may also carry a summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — CBS News RSS section slug
 
 ### `cbsnews_news`
 
 - **HTTP:** `GET /cbsnews/news`
-- **What:** Get CBS News top stories. Returns fresh CBS News top stories from its public RSS feed.
+- **What:** Get CBS News top stories. Returns the latest CBS News top stories, with no input needed. Each item has a title and canonical URL, and may also carry a summary, author, publication time and image.
 - **Params:** _none_
 
 ### `cbsnews_sections`
 
 - **HTTP:** `GET /cbsnews/sections`
-- **What:** Get CBS News sections. Returns the live-verified public CBS News RSS section inventory used by cbsnews-headlines.
+- **What:** Get CBS News sections. Lists the ten CBS News sections accepted by `cbsnews-headlines`: `main`, `us`, `world`, `politics`, `moneywatch`, `health`, `entertainment`, `science`, `technology` and `space`. Each has a `slug`, a display `name` and the feed `url`.
 - **Params:** _none_
 
 ## CBS Sports (5)
@@ -1027,31 +1027,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cbssports_article`
 
 - **HTTP:** `GET /cbssports/article`
-- **What:** Get CBS Sports article content. Returns public CBS Sports article metadata and body paragraphs from a canonical cbssports.com/<sport>/news/<slug> URL.
+- **What:** Get CBS Sports article content. Returns a CBS Sports article by `url`, a canonical `https://www.cbssports.com/<sport>/news/<slug>/` address, including `nfl/draft/news/` and fantasy football news: title, description, publication and update times, authors, lead image and body `paragraphs`. Video, scores, schedule and player pages are rejected. `paywalled` is omitted because the articles are free.
 - **Params:** `url` (string, **required**) — Canonical CBS Sports article URL
 
 ### `cbssports_author`
 
 - **HTTP:** `GET /cbssports/author`
-- **What:** Get a CBS Sports writer profile. Returns one CBS Sports writer's public profile: name, title, headshot, bio, X/Twitter link, and their recent articles.
+- **What:** Get a CBS Sports writer profile. Returns a CBS Sports writer's profile, identified by `slug` (such as `david-cobb`) or a `cbssports.com/writers/<slug>/` `url`; exactly one is required and an unknown slug returns not-found. The response has name, title, headshot, bio, X/Twitter link and about 15 recent articles with title, URL and summary. Profile fields the page lacks are omitted.
 - **Params:** `slug` (string, optional) — Writer slug, e.g. david-cobb; `url` (string, optional) — Canonical cbssports.com/writers/<slug>/ URL; alternative to slug
 
 ### `cbssports_headlines`
 
 - **HTTP:** `GET /cbssports/headlines`
-- **What:** Get CBS Sports section headlines. Returns fresh headlines from one public CBS Sports per-sport RSS feed.
+- **What:** Get CBS Sports section headlines. Returns fresh headlines from one CBS Sports per-sport feed. `section` is required and takes one of 21 slugs, such as `nfl`, `college-basketball`, `soccer`, `ufc`, `betting` or `general`. Each item has a title and URL, and may carry a summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — CBS Sports section slug
 
 ### `cbssports_news`
 
 - **HTTP:** `GET /cbssports/news`
-- **What:** Get CBS Sports top stories. Returns fresh CBS Sports top stories from its public headlines RSS feed.
+- **What:** Get CBS Sports top stories. Returns the current CBS Sports headlines across every sport, with no input needed: news stories, analysis columns and picks or predictions articles. Only article links are returned; video, scores, schedule and player pages are filtered out. Items have `title` and `url`, plus `summary`, `published_at` and `author` when provided.
 - **Params:** _none_
 
 ### `cbssports_sections`
 
 - **HTTP:** `GET /cbssports/sections`
-- **What:** Get CBS Sports sections. Returns the live-verified public CBS Sports per-sport RSS feed inventory used by cbssports-headlines.
+- **What:** Get CBS Sports sections. Lists the 21 CBS Sports per-sport sections accepted by `cbssports-headlines`, from `nfl`, `nba` and `soccer` to `betting`, `prediction` and `general`. Each has a `slug`, a display `name` and the feed `url`. A feed can include a story from a neighbouring sport, and off-season ones such as `olympics` can be weeks or months old.
 - **Params:** _none_
 
 ## Chicago Tribune (5)
@@ -1071,19 +1071,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `chicagotribune_headlines`
 
 - **HTTP:** `GET /chicagotribune/headlines`
-- **What:** Get Chicago Tribune section headlines. Returns fresh headlines from one public Chicago Tribune section page.
+- **What:** Get Chicago Tribune section headlines. Returns headlines from one Chicago Tribune section page. `section` is required and takes one of 60 slugs, such as `local-news`, `crime-public-safety`, `chicago-bears`, `restaurants-food-drink` or `naperville-sun`. Each story has a title, article URL, publication time, byline, excerpt and image where the card shows them. Most sections give about 10 stories.
 - **Params:** `section` (string, **required**) — Chicago Tribune section slug
 
 ### `chicagotribune_news`
 
 - **HTTP:** `GET /chicagotribune/news`
-- **What:** Get Chicago Tribune top stories. Returns the current Chicago Tribune top stories from the public homepage.
+- **What:** Get Chicago Tribune top stories. Returns the current Chicago Tribune top stories from its homepage, with no input needed. Each has a title and canonical article URL, plus publication time, byline, excerpt and lead image where the story card shows them.
 - **Params:** _none_
 
 ### `chicagotribune_sections`
 
 - **HTTP:** `GET /chicagotribune/sections`
-- **What:** Get Chicago Tribune sections. Returns the public Chicago Tribune editorial section inventory.
+- **What:** Get Chicago Tribune sections. Lists the 60 Chicago Tribune sections accepted by `chicagotribune-headlines`, spanning news, suburban papers, opinion, sports teams and arts, such as `crime-public-safety`, `daily-southtown`, `chicago-cubs` and `theater`. Each has a `slug`, display `name` and page `url`. Tag pages and hubs that repeat the homepage are not included.
 - **Params:** _none_
 
 ## Cleveland.com (1)
@@ -1099,31 +1099,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cna_article`
 
 - **HTTP:** `GET /cna/article`
-- **What:** Get CNA article content. Returns public CNA article metadata and body paragraphs from a canonical article URL.
+- **What:** Get CNA article content. Returns a CNA (Channel NewsAsia) article by `url`, a canonical `channelnewsasia.com` address such as `/singapore/<slug>-<id>` or `/commentary/<slug>-<id>`: title, description, publication and update times, section, authors, image and the body `paragraphs`. No paywalled or gated content was found during validation.
 - **Params:** `url` (string, **required**) — Canonical CNA article URL
 
 ### `cna_author`
 
 - **HTTP:** `GET /cna/author`
-- **What:** Get a CNA author profile. Returns one CNA correspondent's or contributor's public profile: name, job title, biography, contact email, and their recent bylined articles.
+- **What:** Get a CNA author profile. Returns a CNA correspondent's or contributor's profile, identified by `slug` (such as `aqil-haziq-mahmud`) or a `channelnewsasia.com/author/<slug>` `url`; exactly one is required. The response has name, job title, bio, email, image and the latest page of bylined articles, each with title, URL and label. External Commentary contributors usually have only a name and articles.
 - **Params:** `slug` (string, optional) — Author slug, e.g. aqil-haziq-mahmud; `url` (string, optional) — Canonical channelnewsasia.com/author/<slug> URL; alternative to slug
 
 ### `cna_headlines`
 
 - **HTTP:** `GET /cna/headlines`
-- **What:** Get CNA section headlines. Returns fresh headlines from one public CNA section.
+- **What:** Get CNA section headlines. Returns fresh CNA headlines for one section. `section` is required and is `asia`, `business`, `singapore`, `sport` or `world`. Each item has a title and URL, and may also carry a summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — CNA section slug
 
 ### `cna_news`
 
 - **HTTP:** `GET /cna/news`
-- **What:** Get CNA top stories. Returns fresh CNA (Channel NewsAsia) top stories from its public RSS feed.
+- **What:** Get CNA top stories. Returns the latest CNA (Channel NewsAsia) top stories, with no input needed. Each item has a title and canonical URL, and may also carry a summary, author, publication time and image.
 - **Params:** _none_
 
 ### `cna_sections`
 
 - **HTTP:** `GET /cna/sections`
-- **What:** Get CNA sections. Returns the public CNA editorial section inventory used by the headlines endpoint.
+- **What:** Get CNA sections. Lists the five CNA sections accepted by `cna-headlines`: `asia`, `business`, `singapore`, `sport` and `world`. Each has a `slug`, a display `name` and the feed `url`.
 - **Params:** _none_
 
 ## CNBC (4)
@@ -1169,19 +1169,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cnet_headlines`
 
 - **HTTP:** `GET /cnet/headlines`
-- **What:** Get CNET section headlines. Returns fresh CNET headlines from one public topic feed.
+- **What:** Get CNET section headlines. Returns fresh CNET headlines for one topic. `section` is required and takes a topic slug such as `ai`, `deals`, `smart-home`, `electric-vehicles` or `tv-and-movies`; an invalid value returns a 400 error. Each item has a title and URL, and may also carry a summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — CNET topic slug
 
 ### `cnet_news`
 
 - **HTTP:** `GET /cnet/news`
-- **What:** Get CNET top stories. Returns fresh CNET top stories from the public news feed.
+- **What:** Get CNET top stories. Returns the latest CNET top stories, with no input needed. Each item has a title, canonical URL, summary, publication time and author name when CNET provides them.
 - **Params:** _none_
 
 ### `cnet_sections`
 
 - **HTTP:** `GET /cnet/sections`
-- **What:** Get CNET sections. Returns the public CNET topic taxonomy accepted by the headlines endpoint.
+- **What:** Get CNET sections. Lists the 51 CNET topics accepted by `cnet-headlines`: top-level and second-level topics with a recently updated feed, plus `ai`, `deals` and `tv-and-movies`. Each has a `slug`, a display `name` and the feed `url`. Deeper sub-topics are not separate sections; `internet` means Home Internet and `security` means Home Security.
 - **Params:** _none_
 
 ## Collider (5)
@@ -1189,13 +1189,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `collider_article`
 
 - **HTTP:** `GET /collider/article`
-- **What:** Get Collider article content. Returns public Collider article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Collider article content. Returns one Collider article by its `url`, which must be a single-segment `https://collider.com/<slug>/` address. The response has the title, description, publish and update times, section, authors, lead image and body `paragraphs`. Section hubs and video or author pages are rejected as invalid parameters.
 - **Params:** `url` (string, **required**) — Canonical Collider article URL
 
 ### `collider_author`
 
 - **HTTP:** `GET /collider/author`
-- **What:** Get a Collider author profile. Returns a Collider author's byline metadata, biography, social links, and recent articles from a canonical author URL.
+- **What:** Get a Collider author profile. Returns a Collider author profile for a `url` of the form `https://collider.com/author/<slug>/`. The response has the name, title, image, biography, `social_links` (type and URL) and the roughly 20 latest articles on the profile. Paginated author URLs are rejected, so older articles are not available.
 - **Params:** `url` (string, **required**) — Canonical Collider author URL
 
 ### `collider_headlines`
@@ -1207,13 +1207,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `collider_news`
 
 - **HTTP:** `GET /collider/news`
-- **What:** Get Collider top stories. Returns fresh Collider top stories from its public RSS feed.
+- **What:** Get Collider top stories. Lists the latest Collider stories, about 10 items. Each item has its title, canonical URL, summary, publish time, author names (co-authors are joined with a comma) and lead image. Takes no parameters.
 - **Params:** _none_
 
 ### `collider_sections`
 
 - **HTTP:** `GET /collider/sections`
-- **What:** Get Collider RSS sections. Returns the public Collider RSS section inventory used by the headlines endpoint.
+- **What:** Get Collider RSS sections. Lists the Collider section slugs that `collider-headlines` accepts, such as `movie-news`, `tv-reviews`, `trailers`, `interviews`, `horror` and `video-games`. Each entry has the `slug`, display `name` and feed `url`. Takes no parameters.
 - **Params:** _none_
 
 ## CTV News (5)
@@ -1245,7 +1245,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ctvnews_sections`
 
 - **HTTP:** `GET /ctvnews/sections`
-- **What:** Get CTV News sections. Returns the public CTV News section inventory (national topic sections and local newsroom sections) used by the headlines endpoint.
+- **What:** Get CTV News sections. Lists the 27 CTV News sections accepted by `ctvnews-headlines`: 12 national topic sections such as `canada`, `politics` and `sci-tech`, and 15 local newsrooms such as `toronto`, `calgary` and `atlantic`. Video, photo, weather, podcast, sponsored and shopping hubs are not included.
 - **Params:** _none_
 
 ## The Daily Caller (5)
@@ -1265,19 +1265,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dailycaller_headlines`
 
 - **HTTP:** `GET /dailycaller/headlines`
-- **What:** Get The Daily Caller section headlines. Returns the newest headlines listed on one public The Daily Caller section page.
+- **What:** Get The Daily Caller section headlines. Returns the newest headlines, about 40, from one Daily Caller section page. `section` is required (`politics`, `world`, `energy`, `opinion`, `patriots` and others); any other value returns a 400. Items have a title, URL, lead image and sometimes a `type` such as `opinion`. Section pages carry no publish time or byline.
 - **Params:** `section` (string, **required**) — The Daily Caller section slug
 
 ### `dailycaller_news`
 
 - **HTTP:** `GET /dailycaller/news`
-- **What:** Get The Daily Caller top stories. Returns fresh The Daily Caller top stories from its public RSS feed.
+- **What:** Get The Daily Caller top stories. Returns about 25 of the newest Daily Caller top stories, mixed across sections. Each item has its title, URL, author, publication time (RFC 3339, UTC) and lead image. It takes no parameters; use the headlines endpoint when you want a single section.
 - **Params:** _none_
 
 ### `dailycaller_sections`
 
 - **HTTP:** `GET /dailycaller/sections`
-- **What:** Get The Daily Caller sections. Returns the live-verified The Daily Caller section inventory used by the headlines endpoint.
+- **What:** Get The Daily Caller sections. Lists the 22 Daily Caller section slugs that the headlines endpoint accepts, from `politics` and `world` to `opinion` and `video`, each with its `name` and section page `url`. Sponsored content is not offered. A few sections such as `satire`, `two-sides` and `video` publish rarely, so their newest items can be months old.
 - **Params:** _none_
 
 ## Daily Express (5)
@@ -1285,7 +1285,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dailyexpress_article`
 
 - **HTTP:** `GET /dailyexpress/article`
-- **What:** Get Daily Express article content. Returns public Daily Express article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Daily Express article content. Returns one Daily Express article by its canonical article `url`. The response has the title, description, publish and update times, section, authors, lead image, body `paragraphs` and a `paywalled` flag. Subscriber-only or blocked articles return an upstream error instead of partial text.
 - **Params:** `url` (string, **required**) — Canonical Daily Express article URL
 
 ### `dailyexpress_author`
@@ -1297,19 +1297,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dailyexpress_headlines`
 
 - **HTTP:** `GET /dailyexpress/headlines`
-- **What:** Get Daily Express section headlines. Returns fresh headlines from one public Daily Express RSS section.
+- **What:** Get Daily Express section headlines. Returns the latest Daily Express headlines for one section. `section` is required and takes a slug such as `news`, `royal`, `showbiz-tv`, `formula-1` or `city-business`. Each item has its title, URL, summary, publication time and image.
 - **Params:** `section` (string, **required**) — Daily Express section slug
 
 ### `dailyexpress_news`
 
 - **HTTP:** `GET /dailyexpress/news`
-- **What:** Get Daily Express top stories. Returns fresh Daily Express stories from the public News RSS feed.
+- **What:** Get Daily Express top stories. Returns the current Daily Express top stories. Each item has its title, URL, summary, publication time and image. Takes no parameters; use `dailyexpress-headlines` to read a single section instead.
 - **Params:** _none_
 
 ### `dailyexpress_sections`
 
 - **HTTP:** `GET /dailyexpress/sections`
-- **What:** Get Daily Express sections. Returns the live public Daily Express RSS section inventory.
+- **What:** Get Daily Express sections. Lists the Daily Express sections that `dailyexpress-headlines` accepts, such as `news`, `uk`, `royal`, `sport` and `personal-finance`. Each entry has a stable `slug`, a display `name` and the section `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Daily Mail (5)
@@ -1317,7 +1317,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dailymail_article`
 
 - **HTTP:** `GET /dailymail/article`
-- **What:** Get Daily Mail article content. Returns public Daily Mail article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Daily Mail article content. Returns one Daily Mail article by its canonical `url`, which must contain an `article-<id>` path segment. The response has the title, description, publish and update times, section, authors, lead image, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical Daily Mail article URL
 
 ### `dailymail_author`
@@ -1329,19 +1329,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dailymail_headlines`
 
 - **HTTP:** `GET /dailymail/headlines`
-- **What:** Get Daily Mail section headlines. Returns fresh headlines from one public Daily Mail RSS section.
+- **What:** Get Daily Mail section headlines. Returns the latest Daily Mail headlines for one section. `section` is required and must be one of `home`, `news`, `sport`, `tvshowbiz`, `health`, `femail`, `travel`, `sciencetech`, `money`, `debate`, `us` or `australia`. Each item has its title, URL, summary, publication time and image.
 - **Params:** `section` (string, **required**) — Daily Mail RSS section slug
 
 ### `dailymail_news`
 
 - **HTTP:** `GET /dailymail/news`
-- **What:** Get Daily Mail top stories. Returns fresh Daily Mail top stories from its public RSS feed.
+- **What:** Get Daily Mail top stories. Returns the current Daily Mail top stories. Each item has its title, URL, summary, publication time and image. Takes no parameters; use `dailymail-headlines` for a single section.
 - **Params:** _none_
 
 ### `dailymail_sections`
 
 - **HTTP:** `GET /dailymail/sections`
-- **What:** Get Daily Mail RSS sections. Returns the live-verified public Daily Mail RSS section inventory.
+- **What:** Get Daily Mail RSS sections. Lists the 12 Daily Mail sections accepted by `dailymail-headlines`: `home`, `news`, `sport`, `tvshowbiz`, `health`, `femail`, `travel`, `sciencetech`, `money`, `debate`, `us` and `australia`. Each entry has the `slug`, display `name` and feed `url`.
 - **Params:** _none_
 
 ## Daily Record (5)
@@ -1349,31 +1349,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dailyrecord_article`
 
 - **HTTP:** `GET /dailyrecord/article`
-- **What:** Get Daily Record article content. Returns public Daily Record article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Daily Record article content. Returns one Daily Record article by its canonical article `url`. The response has the title, description, publish and update times, section, authors, lead image, body `paragraphs` and a `paywalled` flag. Subscriber-only or blocked articles return an upstream error.
 - **Params:** `url` (string, **required**) — Canonical Daily Record article URL
 
 ### `dailyrecord_author`
 
 - **HTTP:** `GET /dailyrecord/author`
-- **What:** Get a Daily Record author profile. Returns one Daily Record author's public profile: name, job title, bio, email, X/Twitter handle, and their recent articles.
+- **What:** Get a Daily Record author profile. Returns a Daily Record author profile, found by `slug` (for example `paul-hutcheon`) or by a canonical `url`; send exactly one of the two. The response has the name, job title, bio, email, X/Twitter link and recent articles with their label. Contact details the page does not list are simply absent.
 - **Params:** `slug` (string, optional) — Author slug, e.g. paul-hutcheon; `url` (string, optional) — Canonical dailyrecord.co.uk/authors/<slug>/ URL; alternative to slug
 
 ### `dailyrecord_headlines`
 
 - **HTTP:** `GET /dailyrecord/headlines`
-- **What:** Get Daily Record section headlines. Returns fresh headlines from one public Daily Record section.
+- **What:** Get Daily Record section headlines. Returns the latest Daily Record headlines for one section. `section` is required and must be one of `news`, `scotland`, `uk-world-news`, `sport`, `football`, `showbiz`, `lifestyle`, `money`, `travel` or `in-your-area`. Every item has its title and URL; the `news` section also carries summary, publication time and image.
 - **Params:** `section` (string, **required**) — Daily Record section slug
 
 ### `dailyrecord_news`
 
 - **HTTP:** `GET /dailyrecord/news`
-- **What:** Get Daily Record top stories. Returns fresh Daily Record stories from the public News RSS feed.
+- **What:** Get Daily Record top stories. Returns the current Daily Record top stories. Each item has its title, URL, summary, publication time and image. Takes no parameters; use `dailyrecord-headlines` for a single section.
 - **Params:** _none_
 
 ### `dailyrecord_sections`
 
 - **HTTP:** `GET /dailyrecord/sections`
-- **What:** Get Daily Record sections. Returns the public Daily Record editorial section inventory.
+- **What:** Get Daily Record sections. Lists the Daily Record sections accepted by `dailyrecord-headlines`, such as `news`, `scotland`, `uk-world-news`, `football` and `in-your-area`. Each entry has a stable `slug`, a display `name` and the section `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Daily Star UK (5)
@@ -1405,7 +1405,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dailystaruk_sections`
 
 - **HTTP:** `GET /dailystaruk/sections`
-- **What:** Get Daily Star (UK) sections. Returns the public Daily Star (UK) editorial section inventory used by dailystaruk-headlines.
+- **What:** Get Daily Star (UK) sections. Lists the Daily Star (UK) sections accepted by `dailystaruk-headlines`, including nested slugs such as `sport/football`, `news/weird-news` and `tech/gaming`. Each entry has the `slug`, `name` and feed `url`. Feeds were checked on 2026-09-25 and return up to about 25 entries.
 - **Params:** _none_
 
 ## DailyWire (5)
@@ -1425,19 +1425,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dailywire_headlines`
 
 - **HTTP:** `GET /dailywire/headlines`
-- **What:** Get Daily Wire section headlines. Returns current Daily Wire headlines for one content-vertical section, sourced from the site's own homepage feed.
+- **What:** Get Daily Wire section headlines. Returns current Daily Wire headlines for one content vertical. `section` is required and takes `news`, `opinion`, `dw-opinion`, `analysis`, `news-and-commentary`, `news-and-analysis`, `exclusive`, `entertainment`, `original`, `upstream`, `sports` or `mi-x-dw`. An empty result means the front page does not currently feature that vertical.
 - **Params:** `section` (string, **required**) — Daily Wire section slug
 
 ### `dailywire_news`
 
 - **HTTP:** `GET /dailywire/news`
-- **What:** Get Daily Wire top stories. Returns fresh Daily Wire top stories from its public RSS feed.
+- **What:** Get Daily Wire top stories. Returns the current Daily Wire top stories. Each item has its title, URL, summary, publication time, author and image. Takes no parameters; use `dailywire-headlines` to filter by content vertical.
 - **Params:** _none_
 
 ### `dailywire_sections`
 
 - **HTTP:** `GET /dailywire/sections`
-- **What:** Get Daily Wire content-vertical sections. Returns the live-sampled public Daily Wire content-vertical inventory used by the headlines endpoint.
+- **What:** Get Daily Wire content-vertical sections. Lists the Daily Wire content verticals that `dailywire-headlines` accepts, such as `news`, `opinion`, `analysis`, `entertainment`, `upstream` and `sports`. Each entry has a `slug`, `name` and `url`. Sampled on 2026-09-24, so the list may not be exhaustive.
 - **Params:** _none_
 
 ## Dawn (5)
@@ -1445,7 +1445,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dawn_article`
 
 - **HTTP:** `GET /dawn/article`
-- **What:** Get Dawn article content. Returns public Dawn article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Dawn article content. Returns one Dawn article by its canonical `url` in the form `https://www.dawn.com/news/<id>/<slug>`. The response has the title, description, publish and update times, section, authors, lead image and body `paragraphs`. Blocked or malformed pages return an upstream error.
 - **Params:** `url` (string, **required**) — Canonical Dawn article URL
 
 ### `dawn_author`
@@ -1457,13 +1457,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dawn_headlines`
 
 - **HTTP:** `GET /dawn/headlines`
-- **What:** Get Dawn section headlines. Returns fresh headlines from one public Dawn section.
+- **What:** Get Dawn section headlines. Returns the latest Dawn headlines for one section. `section` is required and takes a slug such as `pakistan`, `pakistan-sindh`, `world-south-asia`, `business-finance`, `sport-cricket`, `opinion` or `prism`. Each item has its title, URL, summary, publication time and, when the outlet provides one, image.
 - **Params:** `section` (string, **required**) — Dawn section slug
 
 ### `dawn_news`
 
 - **HTTP:** `GET /dawn/news`
-- **What:** Get Dawn top stories. Returns fresh Dawn (Pakistan) stories from the public RSS feed.
+- **What:** Get Dawn top stories. Returns the current top stories from Dawn, the Pakistani newspaper. Each item has its title, URL, summary, publication time and, when the outlet provides one, image. Takes no parameters; use `dawn-headlines` for a single section.
 - **Params:** _none_
 
 ### `dawn_sections`
@@ -1489,19 +1489,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `deadline_headlines`
 
 - **HTTP:** `GET /deadline/headlines`
-- **What:** Get Deadline section headlines. Returns fresh headlines from one public Deadline section or vertical feed.
+- **What:** Get Deadline section headlines. Returns the latest Deadline headlines for one section or vertical. `section` is required and takes one of 48 slugs, for example `film`, `tv`, `box-office`, `awards`, `casting`, `reviews` or `obituaries`. Each item has its title, URL, summary, publication time, author and image.
 - **Params:** `section` (string, **required**) — Deadline section slug
 
 ### `deadline_news`
 
 - **HTTP:** `GET /deadline/news`
-- **What:** Get Deadline top stories. Returns fresh Deadline Hollywood Entertainment top stories from its public RSS feed.
+- **What:** Get Deadline top stories. Returns the current Deadline Hollywood top stories from its main feed. Each item has its title, URL, summary, publication time, author and image. Takes no parameters; use `deadline-headlines` for a single section or vertical.
 - **Params:** _none_
 
 ### `deadline_sections`
 
 - **HTTP:** `GET /deadline/sections`
-- **What:** Get Deadline sections. Returns the complete public section inventory accepted by /api/v1/deadline/headlines (both Deadline's editorial categories and its verticals).
+- **What:** Get Deadline sections. Lists the 48 Deadline sections accepted by `deadline-headlines`: 28 editorial categories such as `news`, `reviews` and `festivals`, and 20 verticals such as `film`, `tv`, `business` and `awards`. Each entry has the `slug`, `name` and feed `url`.
 - **Params:** _none_
 
 ## DW (5)
@@ -1509,7 +1509,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dw_article`
 
 - **HTTP:** `GET /dw/article`
-- **What:** Get DW article content. Returns public Deutsche Welle article metadata and body paragraphs from a canonical article URL.
+- **What:** Get DW article content. Returns one Deutsche Welle article by its canonical `url`, either a standard `/en/<slug>/a-<id>` article or a `/en/<slug>/live-<id>` live-blog page. The response has the title, description, publish time, section, authors, lead image and body `paragraphs`. Blocked or malformed pages return an upstream error.
 - **Params:** `url` (string, **required**) — Canonical DW article URL
 
 ### `dw_author`
@@ -1521,19 +1521,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dw_headlines`
 
 - **HTTP:** `GET /dw/headlines`
-- **What:** Get DW section headlines. Returns fresh headlines from one public Deutsche Welle section.
+- **What:** Get DW section headlines. Returns the latest Deutsche Welle headlines for one section. `section` is required and takes one of 18 slugs, such as `africa`, `middle-east`, `germany`, `climate`, `migration`, `human-rights`, `business` or `sports`. Each item has its title and URL, plus an image when the card shows one.
 - **Params:** `section` (string, **required**) — DW section slug
 
 ### `dw_news`
 
 - **HTTP:** `GET /dw/news`
-- **What:** Get DW top stories. Returns fresh Deutsche Welle stories from the public RSS feed.
+- **What:** Get DW top stories. Returns the current Deutsche Welle top stories. Each item has its title, URL, summary and publication time. Takes no parameters; use `dw-headlines` for a single region, topic or category.
 - **Params:** _none_
 
 ### `dw_sections`
 
 - **HTTP:** `GET /dw/sections`
-- **What:** Get DW sections. Returns the complete public Deutsche Welle English-edition section inventory (regions, topics, and categories) accepted by /dw/headlines.
+- **What:** Get DW sections. Lists the DW English-edition sections accepted by `dw-headlines`, grouped under the site's three navigation groups: regions, topics and categories. Each entry has a stable `slug`, display `name` and the section `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Economic Times (5)
@@ -1547,19 +1547,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `economictimes_author`
 
 - **HTTP:** `GET /economictimes/author`
-- **What:** Get an Economic Times author profile. Returns one Economic Times reporter's public profile: name, job title, biography, headshot, and their recent articles.
+- **What:** Get an Economic Times author profile. Returns an Economic Times reporter profile for a `url` like `https://economictimes.indiatimes.com/etreporter/author-<name>-<id>.cms`. The response has the name, job title (role and desk in one string), biography, headshot and recent articles with title and URL. Job title, biography and image may be empty; no email field exists.
 - **Params:** `url` (string, **required**) — Canonical Economic Times author URL
 
 ### `economictimes_headlines`
 
 - **HTTP:** `GET /economictimes/headlines`
-- **What:** Get The Economic Times section headlines. Returns fresh headlines from one public Economic Times section feed.
+- **What:** Get The Economic Times section headlines. Returns the latest Economic Times headlines for one section. `section` is required and takes a slug such as `top-stories`, `markets-stocks`, `mf-mf-news`, `industry-banking-finance`, `jobs-fresher` or `news-india`. Each item has its title, URL, summary, publication time and image.
 - **Params:** `section` (string, **required**) — Economic Times section slug
 
 ### `economictimes_news`
 
 - **HTTP:** `GET /economictimes/news`
-- **What:** Get The Economic Times top stories. Returns fresh Economic Times top-stories headline metadata from its public RSS feed.
+- **What:** Get The Economic Times top stories. Returns the current Economic Times top stories. Each item has its title, URL and publication time, plus a summary for some stories. Takes no parameters; use `economictimes-headlines` for a single section.
 - **Params:** _none_
 
 ### `economictimes_sections`
@@ -1585,19 +1585,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `engadget_headlines`
 
 - **HTTP:** `GET /engadget/headlines`
-- **What:** Get Engadget section headlines. Returns fresh Engadget headlines from one public category feed.
+- **What:** Get Engadget section headlines. Returns the latest Engadget headlines for one category. `section` is required and takes one of 48 slugs such as `ai`, `gaming`, `apple`, `laptop-pc-reviews` or `transportation-evs`; other values return an invalid-parameter error. Small categories, such as buying guides, may hold only a few items.
 - **Params:** `section` (string, **required**) — Engadget category slug
 
 ### `engadget_news`
 
 - **HTTP:** `GET /engadget/news`
-- **What:** Get Engadget top stories. Returns fresh Engadget technology news from the public homepage feed. Engadget articles are free to read.
+- **What:** Get Engadget top stories. Returns the current Engadget technology news. Each item has a title, URL, summary, publish time, author and image when available. Engadget articles are free to read. Takes no parameters; use `engadget-headlines` for a single category.
 - **Params:** _none_
 
 ### `engadget_sections`
 
 - **HTTP:** `GET /engadget/sections`
-- **What:** Get Engadget sections. Returns the public Engadget category taxonomy (48 categories) accepted by the headlines endpoint.
+- **What:** Get Engadget sections. Lists the 48 Engadget categories accepted by `engadget-headlines`, such as `ai`, `cybersecurity`, `smartphone-reviews`, `space` and `xbox`. Each entry has the `slug`, display `name` and category feed `url`. Categories with an empty feed are not listed.
 - **Params:** _none_
 
 ## E! News (5)
@@ -1605,31 +1605,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `eonline_article`
 
 - **HTTP:** `GET /eonline/article`
-- **What:** Get E! News article content. Returns public E! News article metadata, byline and body paragraphs from a canonical article URL.
+- **What:** Get E! News article content. Returns one E! News article by its `url`, in the form `https://www.eonline.com/news/<numeric id>/<slug>`. The response has the title, description, publish time, byline, lead image, body `paragraphs` and `section`, which is the article's first tag. Photo galleries, videos and show pages are rejected; an unknown id returns not-found.
 - **Params:** `url` (string, **required**) — Canonical E! News article URL
 
 ### `eonline_author`
 
 - **HTTP:** `GET /eonline/author`
-- **What:** Get an E! News author page. Returns an E! News writer's name and the articles listed on their author page, from a canonical author URL.
+- **What:** Get an E! News author page. Returns an E! News writer's `name` and the articles on their author page, about 45 per page, for a `url` like `https://www.eonline.com/authors/natalie-finn` (add `/page/<n>` for older ones). There is no biography or photo. `published_at` is the page's own text, such as `18 minutes ago`, not a timestamp.
 - **Params:** `url` (string, **required**) — Canonical E! News author URL
 
 ### `eonline_headlines`
 
 - **HTTP:** `GET /eonline/headlines`
-- **What:** Get E! News section headlines. Returns fresh headlines from one E! News section feed.
+- **What:** Get E! News section headlines. Returns up to 30 E! News headlines for one section. `section` is required and must be one of `top_stories`, `tv`, `movies`, `music`, `celebrities`, `couples`, `royals`, `red_carpet`, `influencer`, `style`, `fashion` or `shop`. Each item has its title, URL, summary, publication time, author and image.
 - **Params:** `section` (string, **required**) — E! News section slug
 
 ### `eonline_news`
 
 - **HTTP:** `GET /eonline/news`
-- **What:** Get E! News top stories. Returns fresh E! News (US edition) top stories from its public RSS feed.
+- **What:** Get E! News top stories. Returns up to 30 top stories from the US edition of E! News. Each item has its title, canonical article URL, summary, publication time, byline and thumbnail. Takes no parameters; use `eonline-headlines` for a single section.
 - **Params:** _none_
 
 ### `eonline_sections`
 
 - **HTTP:** `GET /eonline/sections`
-- **What:** Get E! News sections. Returns the E! News section inventory used by the headlines endpoint.
+- **What:** Get E! News sections. Lists the 12 E! News sections accepted by `eonline-headlines`, from `top_stories`, `tv` and `movies` to `royals`, `fashion` and `shop`. Each entry has the `slug`, `name` and feed `url`. The list is curated from the main navigation hubs and major tag feeds, not every tag.
 - **Params:** _none_
 
 ## Euronews (5)
@@ -1637,31 +1637,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `euronews_article`
 
 - **HTTP:** `GET /euronews/article`
-- **What:** Get Euronews article content. Returns public Euronews article metadata and body paragraphs from a canonical English-edition article URL.
+- **What:** Get Euronews article content. Returns one Euronews English-edition article by its `url`, in the form `https://www.euronews.com/YYYY/MM/DD/<slug>`. The response has the title, description, publish and update times, section, authors, lead image and body `paragraphs`.
 - **Params:** `url` (string, **required**) — Canonical Euronews article URL
 
 ### `euronews_author`
 
 - **HTTP:** `GET /euronews/author`
-- **What:** Get a Euronews author profile. Returns a Euronews author's byline metadata and recent articles from a canonical profile URL.
+- **What:** Get a Euronews author profile. Returns a Euronews author profile for a `url` like `https://www.euronews.com/profiles/<id>`. The response has the name, job title, editorial team, `social_links` (usually one X/Twitter link, empty if none) and recent articles. There is no headshot or biography, and `job_title` is repeated as Euronews gives it.
 - **Params:** `url` (string, **required**) — Canonical Euronews author profile URL
 
 ### `euronews_headlines`
 
 - **HTTP:** `GET /euronews/headlines`
-- **What:** Get Euronews section headlines. Returns fresh headlines from one public Euronews English-edition section.
+- **What:** Get Euronews section headlines. Returns the latest Euronews English-edition headlines for one section. `section` is required and takes one of 42 slugs, including themes (`business`, `culture`, `earth`, `health`, `next`, `travel`) and their sub-sections such as `business-markets` or `next-space`. Each item has its title and URL; the `news` and `business` sections also carry summary and publication time.
 - **Params:** `section` (string, **required**) — Euronews section slug
 
 ### `euronews_news`
 
 - **HTTP:** `GET /euronews/news`
-- **What:** Get Euronews top stories. Returns fresh Euronews English-edition top stories from its public RSS feed.
+- **What:** Get Euronews top stories. Returns the current Euronews English-edition top stories. Each item has its title, URL, summary and publication time. Takes no parameters; use `euronews-headlines` for a single theme or sub-section.
 - **Params:** _none_
 
 ### `euronews_sections`
 
 - **HTTP:** `GET /euronews/sections`
-- **What:** Get Euronews sections. Returns the public Euronews English-edition section inventory used by the headlines endpoint.
+- **What:** Get Euronews sections. Lists the 42 Euronews English-edition sections accepted by `euronews-headlines`. Top-level themes include `news`, `business`, `culture`, `earth`, `health`, `my-europe`, `next` and `travel`, each with sub-sections such as `news-africa` or `earth-climate`. Each entry has the `slug`, `name` and `url`.
 - **Params:** _none_
 
 ## Entertainment Weekly (5)
@@ -1669,7 +1669,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ew_article`
 
 - **HTTP:** `GET /ew/article`
-- **What:** Get Entertainment Weekly article content. Returns public Entertainment Weekly article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Entertainment Weekly article content. Returns one Entertainment Weekly article by its canonical `url` in the form `ew.com/<slug>-<id>`. The response has the title, description, publish and update times, section, authors, lead image, body `paragraphs` and a `paywalled` flag. Blocked or malformed pages return an upstream error.
 - **Params:** `url` (string, **required**) — Canonical Entertainment Weekly article URL
 
 ### `ew_author`
@@ -1681,19 +1681,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ew_headlines`
 
 - **HTTP:** `GET /ew/headlines`
-- **What:** Get Entertainment Weekly section headlines. Returns fresh headlines from one public Entertainment Weekly section.
+- **What:** Get Entertainment Weekly section headlines. Returns the latest Entertainment Weekly headlines for one section. `section` is required and must be one of `tv`, `movies`, `music`, `what-to-watch`, `binge`, `celebrity`, `awardist`, `books` or `theater`. Each item has its title and URL, plus an image when the card shows one.
 - **Params:** `section` (string, **required**) — Entertainment Weekly section slug
 
 ### `ew_news`
 
 - **HTTP:** `GET /ew/news`
-- **What:** Get Entertainment Weekly top stories. Returns fresh Entertainment Weekly stories from its homepage.
+- **What:** Get Entertainment Weekly top stories. Returns the current Entertainment Weekly top stories. Each item has its title and URL, plus an image when the card shows one. Takes no parameters; use `ew-headlines` for a single section.
 - **Params:** _none_
 
 ### `ew_sections`
 
 - **HTTP:** `GET /ew/sections`
-- **What:** Get Entertainment Weekly sections. Returns the complete public Entertainment Weekly primary-navigation section inventory accepted by /ew/headlines.
+- **What:** Get Entertainment Weekly sections. Lists the nine Entertainment Weekly primary-navigation sections accepted by `ew-headlines`: `tv`, `movies`, `music`, `what-to-watch`, `binge`, `celebrity`, `awardist`, `books` and `theater`. Each entry has the `slug`, display `name` and section `url`.
 - **Params:** _none_
 
 ## Fast Company (5)
@@ -1701,13 +1701,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fastcompany_article`
 
 - **HTTP:** `GET /fastcompany/article`
-- **What:** Get Fast Company article content. Returns public Fast Company article metadata and body paragraphs from a canonical article URL. The service uses the configured production browser fleet when ordinary HTTP transport encounters Fast Company's bot-verification challenge; it does not bypass authentication or access controls.
+- **What:** Get Fast Company article content. Returns public Fast Company article metadata and body paragraphs from a canonical article URL. It does not bypass authentication or access controls.
 - **Params:** `url` (string, **required**) — Canonical Fast Company article URL
 
 ### `fastcompany_author`
 
 - **HTTP:** `GET /fastcompany/author`
-- **What:** Get a Fast Company contributor profile. Returns a Fast Company contributor's name, biography, and recent articles from a canonical contributor URL. Recent articles and the contributor's name come from their own public RSS feed; the biography comes from the contributor's profile page and is omitted if that page's bot-verification challenge cannot be cleared. The service uses the configured production browser fleet when ordinary HTTP transport encounters that challenge; it does not bypass authentication or access controls.
+- **What:** Get a Fast Company contributor profile. Returns a Fast Company contributor's name, biography, and recent articles from a canonical contributor URL. The biography is omitted if the contributor's profile page cannot be loaded. It does not bypass authentication or access controls.
 - **Params:** `url` (string, **required**) — Canonical Fast Company contributor URL
 
 ### `fastcompany_headlines`
@@ -1719,7 +1719,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fastcompany_news`
 
 - **HTTP:** `GET /fastcompany/news`
-- **What:** Get Fast Company top stories. Returns fresh Fast Company stories from its public RSS feed.
+- **What:** Get Fast Company top stories. Returns the current Fast Company top stories. Each item has its title, canonical URL, summary, publication time, author and image. Takes no parameters, so there is no section or paging control.
 - **Params:** _none_
 
 ### `fastcompany_sections`
@@ -1745,7 +1745,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `foxnews_headlines`
 
 - **HTTP:** `GET /foxnews/headlines`
-- **What:** Get Fox News section headlines. Returns fresh headlines from one public Fox News article RSS section. Use foxnews-sections for the current value space.
+- **What:** Get Fox News section headlines. Returns the latest 25 Fox News headlines for one section. `section` is required and must be one of `us`, `world`, `politics`, `science`, `health`, `sports`, `travel`, `tech`, `opinion`, `entertainment`, `media` or `lifestyle`. Each item has its title, URL, summary, publication time and image.
 - **Params:** `section` (string, **required**) — Fox News RSS section slug: us, world, politics, science, health, sports, travel, tech, opinion, entertainment, media, or lifestyle
 
 ### `foxnews_news`
@@ -1757,7 +1757,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `foxnews_search`
 
 - **HTTP:** `GET /foxnews/search`
-- **What:** Search Fox News public content. Searches Fox News' public credential-free Moxie search surface. Results may include article, video, or slideshow records; use type to restrict the result kind.
+- **What:** Search Fox News public content. Searches Fox News. Results may include article, video, or slideshow records; use type to restrict the result kind.
 - **Params:** `q` (string, **required**) — Search query; `start` (integer, optional) — 1-based result offset; `type` (string, optional) — Result type
 
 ### `foxnews_sections`
@@ -1777,19 +1777,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `foxsports_headlines`
 
 - **HTTP:** `GET /foxsports/headlines`
-- **What:** Get FOX Sports section headlines. Returns current headlines from one public FOX Sports editorial RSS feed.
+- **What:** Get FOX Sports section headlines. Returns current FOX Sports headlines for one sport or topic. `section` is required and takes one of 23 slugs such as `top`, `nfl`, `nba`, `college-football`, `ufc`, `golf` or `fifa-world-cup`; others return an invalid-parameter error. Feeds follow FOX Sports' own curation and can include related cross-sport items.
 - **Params:** `section` (string, **required**) — FOX Sports section slug
 
 ### `foxsports_news`
 
 - **HTTP:** `GET /foxsports/news`
-- **What:** Get FOX Sports top stories. Returns current FOX Sports top stories from the official public All Headlines RSS feed.
+- **What:** Get FOX Sports top stories. Returns current cross-sport stories from FOX Sports' All Headlines feed. Each item has its title and canonical story URL, plus summary, publication time, author and image when FOX Sports supplies them. Takes no parameters.
 - **Params:** _none_
 
 ### `foxsports_sections`
 
 - **HTTP:** `GET /foxsports/sections`
-- **What:** Get FOX Sports news sections. Returns the live-verified public editorial RSS feed inventory used by foxsports-headlines.
+- **What:** Get FOX Sports news sections. Lists the 23 FOX Sports editorial feeds accepted by `foxsports-headlines`, including `top`, `mlb`, `nfl`, `soccer`, `olympics` and `wwe`. Each entry has the `slug`, `name` and feed `url`. The All Headlines feed is served by `foxsports-news`, not as a section; checked 2026-09-28.
 - **Params:** _none_
 
 ## France 24 (5)
@@ -1809,19 +1809,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `france24_headlines`
 
 - **HTTP:** `GET /france24/headlines`
-- **What:** Get France 24 section headlines. Returns fresh headlines from one public France 24 English-edition section.
+- **What:** Get France 24 section headlines. Returns the latest France 24 English-edition headlines for one section. `section` is required and must be one of `africa`, `americas`, `asia-pacific`, `europe`, `france`, `middle-east`, `business-tech`, `culture`, `environment`, `sport`, `live-news` or `tv-shows`. Each item has its title, URL, summary, publication time and author.
 - **Params:** `section` (string, **required**) — France 24 section slug
 
 ### `france24_news`
 
 - **HTTP:** `GET /france24/news`
-- **What:** Get France 24 top stories. Returns fresh France 24 English-edition stories from the public RSS feed.
+- **What:** Get France 24 top stories. Returns the current France 24 English-edition top stories. Each item has its title, URL, summary, publication time and author. Takes no parameters; use `france24-headlines` for a single region or topic.
 - **Params:** _none_
 
 ### `france24_sections`
 
 - **HTTP:** `GET /france24/sections`
-- **What:** Get France 24 sections. Returns the complete public France 24 English-edition section inventory (regions, topics, and other public hubs) accepted by /france24/headlines.
+- **What:** Get France 24 sections. Lists the 12 France 24 English-edition sections accepted by `france24-headlines`: six regions, four topics, the `live-news` wire-briefs hub and the `tv-shows` programmes hub. Each entry has the `slug`, display `name` and section `url`.
 - **Params:** _none_
 
 ## Free Malaysia Today (2)
@@ -1843,13 +1843,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gamerant_article`
 
 - **HTTP:** `GET /gamerant/article`
-- **What:** Get Game Rant article content. Returns public Game Rant article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Game Rant article content. Returns one Game Rant article by its `https://gamerant.com/<slug>/` `url`. The response has the title, description, publish and update times, section, authors, lead image and body `paragraphs`. Section hubs, video pages and author pages are rejected as invalid parameters; `paywalled` is set only if the page declares the article not free.
 - **Params:** `url` (string, **required**) — Canonical Game Rant article URL
 
 ### `gamerant_author`
 
 - **HTTP:** `GET /gamerant/author`
-- **What:** Get a Game Rant author profile. Returns a Game Rant author's byline metadata, biography, social links, and recent articles from a canonical author URL.
+- **What:** Get a Game Rant author profile. Returns a Game Rant author profile for a `url` of the form `https://gamerant.com/author/<slug>/`. The response has the name, title, image, biography, `social_links` (type and URL) and about 20 latest articles. Paginated author URLs are rejected, so older articles are not available.
 - **Params:** `url` (string, **required**) — Canonical Game Rant author URL
 
 ### `gamerant_headlines`
@@ -1861,13 +1861,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gamerant_news`
 
 - **HTTP:** `GET /gamerant/news`
-- **What:** Get Game Rant top stories. Returns fresh Game Rant top stories from its public RSS feed.
+- **What:** Get Game Rant top stories. Lists the latest Game Rant stories, about 10 items. Each item has its title, canonical URL, summary, publish time, author names (co-authors are joined with a comma) and lead image. Takes no parameters.
 - **Params:** _none_
 
 ### `gamerant_sections`
 
 - **HTTP:** `GET /gamerant/sections`
-- **What:** Get Game Rant RSS sections. Returns the public Game Rant RSS section inventory used by the headlines endpoint.
+- **What:** Get Game Rant RSS sections. Lists the 178 Game Rant section slugs accepted by `gamerant-headlines`, covering platforms (`pc-news`, `ps5-news`, `nintendo-switch-news`), franchises (`fortnite-news`, `pokemon-news`, `fallout-news`), `anime` and `game-reviews`. Each entry has the `slug`, `name` and feed `url`.
 - **Params:** _none_
 
 ## GamesRadar+ (5)
@@ -1875,31 +1875,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gamesradar_article`
 
 - **HTTP:** `GET /gamesradar/article`
-- **What:** Get GamesRadar+ article content. Returns public GamesRadar+ article metadata and body paragraphs from a canonical article URL.
+- **What:** Get GamesRadar+ article content. Returns one GamesRadar+ article by its canonical `gamesradar.com` `url`. The response has the title, description, publish and update times, section, authors, lead image and body `paragraphs`. Game and hardware review pages work too, taking the author from the page byline when no article-level author exists.
 - **Params:** `url` (string, **required**) — Canonical GamesRadar+ article URL
 
 ### `gamesradar_author`
 
 - **HTTP:** `GET /gamesradar/author`
-- **What:** Get a GamesRadar+ author profile. Returns one GamesRadar+ author's public profile: name, job title, biography, social links, and one page of their recent articles.
+- **What:** Get a GamesRadar+ author profile. Returns a GamesRadar+ author profile, found by `slug` (for example `rosalie-newcombe`) or by `url`; send exactly one. `page` (1-based, default 1) overrides any page in the URL. The response has the name, job title, biography, `social_links`, one page of articles, `page` and `has_next_page`.
 - **Params:** `page` (integer, optional) — 1-based page number; overrides any page number in url; `slug` (string, optional) — Author slug, e.g. rosalie-newcombe; `url` (string, optional) — Canonical gamesradar.com/author/<slug> URL, optionally with a /page/<n> segment; alternative to slug
 
 ### `gamesradar_headlines`
 
 - **HTTP:** `GET /gamesradar/headlines`
-- **What:** Get GamesRadar+ section headlines. Returns fresh GamesRadar+ headlines from one public section hub page.
+- **What:** Get GamesRadar+ section headlines. Returns the latest GamesRadar+ headlines for one section. `section` is required and takes one of 21 slugs such as `games`, `games-reviews`, `hardware-news`, `entertainment-tv`, `lego` or `dungeons-and-dragons`. Each item has its title, URL and `type`, plus publication time, author and image when the section page shows them.
 - **Params:** `section` (string, **required**) — GamesRadar+ section slug
 
 ### `gamesradar_news`
 
 - **HTTP:** `GET /gamesradar/news`
-- **What:** Get GamesRadar+ top stories. Returns fresh GamesRadar+ top stories from the public RSS feed.
+- **What:** Get GamesRadar+ top stories. Returns the current GamesRadar+ top stories. Each item has its title, URL, summary, publication time, author and image. Takes no parameters; use `gamesradar-headlines` for a single games, hardware or entertainment section.
 - **Params:** _none_
 
 ### `gamesradar_sections`
 
 - **HTTP:** `GET /gamesradar/sections`
-- **What:** Get GamesRadar+ sections. Returns the public GamesRadar+ editorial taxonomy used by the headlines endpoint.
+- **What:** Get GamesRadar+ sections. Lists the 21 GamesRadar+ sections accepted by `gamesradar-headlines`, from top-level hubs like `games`, `hardware` and `entertainment` to sub-sections such as `games-guides`, `hardware-reviews` and `entertainment-streaming`. Each entry has the `slug`, `name` and `url`.
 - **Params:** _none_
 
 ## GB News (5)
@@ -1907,7 +1907,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gbnews_article`
 
 - **HTTP:** `GET /gbnews/article`
-- **What:** Get GB News article content. Returns public GB News article metadata and body paragraphs from a canonical story URL.
+- **What:** Get GB News article content. Returns one GB News story by its `gbnews.com` `url` (news, opinion or sport; query strings are ignored). The response has the title, description, publish and update times, section label, authors, lead image and body `paragraphs`, without captions or widgets. `paywalled` is never set. Video, audio, author and hub pages return an error.
 - **Params:** `url` (string, **required**) — Canonical GB News story URL
 
 ### `gbnews_author`
@@ -1919,19 +1919,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gbnews_headlines`
 
 - **HTTP:** `GET /gbnews/headlines`
-- **What:** Get GB News section headlines. Returns fresh GB News headlines from one public section or topic feed.
+- **What:** Get GB News section headlines. Returns the latest GB News headlines for one section or topic. `section` is required and takes a site path such as `news`, `news/uk/london`, `news/world/ukraine`, `news/us` or `news/migrant-crisis`; the accepted values are listed by `gbnews-sections`. Each item has its title, URL, summary, publication time, author and image.
 - **Params:** `section` (string, **required**) — GB News section or topic path
 
 ### `gbnews_news`
 
 - **HTTP:** `GET /gbnews/news`
-- **What:** Get GB News top stories. Returns fresh GB News top stories from the public news feed.
+- **What:** Get GB News top stories. Returns the latest 30 GB News top stories. Each item has a title, canonical URL, summary (the story's first paragraph), publication time, author name and lead image, when GB News provides them. Takes no parameters.
 - **Params:** _none_
 
 ### `gbnews_sections`
 
 - **HTTP:** `GET /gbnews/sections`
-- **What:** Get GB News sections. Returns the public GB News section and topic taxonomy accepted by the headlines endpoint.
+- **What:** Get GB News sections. Lists the 390 GB News sections and topics accepted by `gbnews-headlines`. Each entry has a `slug` that is the path on the site, such as `news/uk/scotland` or `news/world/china`, a display `name` and the feed `url`. Takes no parameters.
 - **Params:** _none_
 
 ## GhanaWeb (9)
@@ -1945,7 +1945,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ghanaweb_archive_months`
 
 - **HTTP:** `GET /ghanaweb/archive/months`
-- **What:** Discover GhanaWeb archive months. Returns every YYYYMM month currently advertised by GhanaWeb's official article-sitemap index. Use one of these values with ghanaweb-archive.
+- **What:** Discover GhanaWeb archive months. Lists the `YYYYMM` months currently available in GhanaWeb's article archive, each with the time it was last updated. Use a returned month with the GhanaWeb archive endpoint; the set grows over time. It takes no parameters.
 - **Params:** _none_
 
 ### `ghanaweb_article`
@@ -1957,31 +1957,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ghanaweb_headlines`
 
 - **HTTP:** `GET /ghanaweb/headlines`
-- **What:** Get GhanaWeb section headlines. Returns article cards from a verified GhanaWeb section page.
+- **What:** Get GhanaWeb section headlines. Returns the article cards currently listed on one GhanaWeb section. `section` is required and takes one of 15 slugs such as `news`, `sports`, `crime`, `tabloid` or `regional`. Each item has its `title`, `url` and, when the card shows one, `image_url`. Summary, author and publication time are not returned.
 - **Params:** `section` (string, **required**) — Section slug from ghanaweb-sections
 
 ### `ghanaweb_news`
 
 - **HTTP:** `GET /ghanaweb/news`
-- **What:** Get GhanaWeb latest stories. Returns GhanaWeb's current public stories from its Google News sitemap, including canonical URL, headline, and publication time.
+- **What:** Get GhanaWeb latest stories. Lists GhanaWeb's current stories across the site, with no parameters. Each item carries its headline as `title`, the canonical article `url` and the `published_at` time. No author, summary or image is returned.
 - **Params:** _none_
 
 ### `ghanaweb_sections`
 
 - **HTTP:** `GET /ghanaweb/sections`
-- **What:** Get GhanaWeb article sections. Returns the complete verified article-bearing section set accepted by ghanaweb-headlines. Static, media, and non-article destinations are excluded.
+- **What:** Get GhanaWeb article sections. Lists the 15 article sections GhanaWeb accepts for `ghanaweb-headlines`, from `news` and `sports` to `tabloid`, `lifestyle` and `features`. Each entry has a `slug`, display `name` and section `url`. Video and other non-article areas are left out.
 - **Params:** _none_
 
 ### `ghanaweb_video`
 
 - **HTTP:** `GET /ghanaweb/video`
-- **What:** Get GhanaWeb TV video metadata. Returns public GhanaWeb TV metadata and the page's YouTube embed URL. The media itself is not retrieved.
+- **What:** Get GhanaWeb TV video metadata. Returns metadata for one GhanaWeb TV video by its required numeric `id`: title, page URL, image URL, published and updated times, and the YouTube embed URL. The video file itself is not returned.
 - **Params:** `id` (string, **required**) — Numeric GhanaWeb TV video ID
 
 ### `ghanaweb_video_sections`
 
 - **HTTP:** `GET /ghanaweb/video-sections`
-- **What:** Get GhanaWeb TV video sections. Returns the complete four-value video category set accepted by ghanaweb-videos.
+- **What:** Get GhanaWeb TV video sections. Lists the four GhanaWeb TV video categories accepted by `ghanaweb-videos`: `news`, `sports`, `business` and `entertainment`. Each entry has a `slug`, a display `name` and the category `url` on GhanaWeb. Takes no parameters.
 - **Params:** _none_
 
 ### `ghanaweb_videos`
@@ -2007,13 +2007,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gizmodo_headlines`
 
 - **HTTP:** `GET /gizmodo/headlines`
-- **What:** Get Gizmodo section headlines. Returns fresh headlines from one Gizmodo section's public RSS feed.
+- **What:** Get Gizmodo section headlines. Returns the latest Gizmodo headlines for one section. `section` is required and takes a slug such as `gadgets`, `artificial-intelligence`, `io9`, `science` or `deals`; any other value returns an invalid-params error. Each item has its title, URL, summary, publication time, author and image. Use `gizmodo-sections` to list the slugs.
 - **Params:** `section` (string, **required**) — Gizmodo section slug
 
 ### `gizmodo_news`
 
 - **HTTP:** `GET /gizmodo/news`
-- **What:** Get Gizmodo top stories. Returns fresh Gizmodo stories from its public RSS feed.
+- **What:** Get Gizmodo top stories. Returns Gizmodo's current top stories from the main site-wide listing, with no parameters. Each item has its title, URL, summary, publication time, author and lead image.
 - **Params:** _none_
 
 ### `gizmodo_sections`
@@ -2027,25 +2027,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `globalnews_article`
 
 - **HTTP:** `GET /globalnews/article`
-- **What:** Get Global News article content. Returns public Global News article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Global News article content. Returns one Global News article by `url`, a canonical `globalnews.ca` link of the form `/news/<id>/<slug>/` or `/the-curator/<id>/<slug>/`. The response has the title, description, section, authors, lead image, publish and update times, the body as `paragraphs`, and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical Global News article URL
 
 ### `globalnews_author`
 
 - **HTTP:** `GET /globalnews/author`
-- **What:** Get a Global News author profile. Returns a Global News author's byline metadata, biography, and recent articles from a canonical author URL.
+- **What:** Get a Global News author profile. Returns a Global News author profile by `url`, a canonical `https://globalnews.ca/author/<slug>/` link. The response has the author's `name`, `biography`, `image_url` and a list of recent articles. `title`, `image_url` and `biography` appear only if the author page shows them, and each article's `published_at` is relative text such as `2 hours` or `Sep 16`, not a timestamp.
 - **Params:** `url` (string, **required**) — Canonical Global News author URL
 
 ### `globalnews_headlines`
 
 - **HTTP:** `GET /globalnews/headlines`
-- **What:** Get Global News section headlines. Returns fresh headlines from one public Global News RSS section.
+- **What:** Get Global News section headlines. Returns recent Global News headlines for one section. `section` is required and takes a slug such as `canada`, `world`, `money`, `us-news`, `the-curator` or a local-station slug like `toronto` or `calgary`. Each item has its title and URL, plus summary, author, publication time and image when the outlet provides them.
 - **Params:** `section` (string, **required**) — Global News RSS section slug
 
 ### `globalnews_news`
 
 - **HTTP:** `GET /globalnews/news`
-- **What:** Get Global News top stories. Returns fresh Global News (globalnews.ca) top stories from its public RSS feed.
+- **What:** Get Global News top stories. Returns the latest top stories from Global News (globalnews.ca), with no parameters. Each item has its title and URL, plus summary, author, publication time and image when the outlet provides them, so it works as a quick check on what the outlet is leading with.
 - **Params:** _none_
 
 ### `globalnews_sections`
@@ -2097,7 +2097,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gmanews_headlines`
 
 - **HTTP:** `GET /gmanews/headlines`
-- **What:** Get GMA News section headlines. Returns fresh GMA News Online headlines from one public section RSS feed.
+- **What:** Get GMA News section headlines. Returns up to 15 of the newest GMA News Online stories for one section, newest first. `section` is required and takes one of 44 slugs such as `topstories-world`, `money-economy`, `sports-nba` or `showbiz`. Each item has `title`, `url`, `summary`, `published_at` (UTC) and `image_url`. Quiet sections can return only a few items. An invalid or missing `section` returns 400.
 - **Params:** `section` (string, **required**) — GMA News section slug
 
 ### `gmanews_news`
@@ -2109,7 +2109,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gmanews_sections`
 
 - **HTTP:** `GET /gmanews/sections`
-- **What:** Get GMA News sections. Returns the public GMA News Online section feeds accepted by the headlines endpoint.
+- **What:** Get GMA News sections. Lists the 44 GMA News Online sections accepted by `gmanews-headlines`, each with a `slug`, display `name` and `url`. Slugs run from `topstories` and `money` to sub-sections such as `sports-basketball` and `lifestyle-travel`. Video, photo and TV-show sections are excluded. Takes no parameters.
 - **Params:** _none_
 
 ## GQ (5)
@@ -2123,25 +2123,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gq_author`
 
 - **HTTP:** `GET /gq/author`
-- **What:** Get a GQ contributor profile. Returns one GQ contributor's public profile: name, biography, headshot, social links, and one page of their recent articles.
+- **What:** Get a GQ contributor profile. Returns a GQ contributor profile, identified by `slug` (such as `tom-ward`) or by a canonical `url`; provide exactly one. The response has the name, job title, biography, headshot, social links and one page of recent articles. `page` runs from 1 to 100 (default 1) and `has_next_page` signals more. Unknown contributors return 404.
 - **Params:** `page` (integer, optional) — 1-based page of the contributor's article list (1-100); `slug` (string, optional) — Contributor slug, e.g. tom-ward; provide slug or url; `url` (string, optional) — Canonical www.gq.com/contributor/<slug> URL; alternative to slug
 
 ### `gq_headlines`
 
 - **HTTP:** `GET /gq/headlines`
-- **What:** Get GQ section headlines. Returns the current story cards from one GQ section page: headline, standfirst, byline, publish date, and image.
+- **What:** Get GQ section headlines. Returns the story cards currently on one GQ section page. `section` is required and takes one of 11 slugs such as `style`, `grooming`, `watches` or `gqsports`. Each item has its `title`, `url`, `summary`, `author`, `image_url` and a `published_at` date (`YYYY-MM-DD`). Only `/story/` articles are listed, and fields GQ does not show are omitted.
 - **Params:** `section` (string, **required**) — GQ section slug
 
 ### `gq_news`
 
 - **HTTP:** `GET /gq/news`
-- **What:** Get GQ top stories. Returns fresh GQ top stories from the public RSS feed.
+- **What:** Get GQ top stories. Returns GQ's current top stories, with no parameters. Each item has its `title`, `url`, `summary`, `author`, `image_url` and `published_at` as an RFC 3339 UTC timestamp. Only `/story/` articles are included; galleries and other content types are skipped.
 - **Params:** _none_
 
 ### `gq_sections`
 
 - **HTTP:** `GET /gq/sections`
-- **What:** Get GQ sections. Returns the GQ section (channel) slugs accepted by the headlines endpoint, each verified to list live stories.
+- **What:** Get GQ sections. Lists the 11 GQ sections accepted by `gq-headlines`: `culture`, `entertainment`, `fitness`, `gq-hype`, `gq-recommends`, `gqsports`, `grooming`, `politics`, `style`, `watches` and `wellness`. Each entry has a `slug`, display `name` and section `url`. Pages that list no stories are not included.
 - **Params:** _none_
 
 ## Gulf News (5)
@@ -2149,31 +2149,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gulfnews_article`
 
 - **HTTP:** `GET /gulfnews/article`
-- **What:** Get Gulf News article content. Returns public Gulf News article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Gulf News article content. Returns a Gulf News article by `url`, a canonical `gulfnews.com` link whose path ends in the `-1.<id>` suffix. The response has the title, description, section, authors, lead image, publish and update times, and body `paragraphs`. Section and author pages are rejected, and `paywalled` is omitted because sampled articles were freely readable.
 - **Params:** `url` (string, **required**) — Canonical Gulf News article URL
 
 ### `gulfnews_author`
 
 - **HTTP:** `GET /gulfnews/author`
-- **What:** Get a Gulf News author profile. Returns one Gulf News author's public profile: name, job title, bio, and their recent articles.
+- **What:** Get a Gulf News author profile. Returns a Gulf News author profile, identified by `slug` (such as `nathaniel-lacsina`) or by a canonical `gulfnews.com/author/<slug>` `url`; provide exactly one. The response has the name, job title, bio and the single page of recent articles on the profile, each with `title`, `url` and sometimes a `summary`. Unknown authors return not found.
 - **Params:** `slug` (string, optional) — Author slug, e.g. nathaniel-lacsina; `url` (string, optional) — Canonical gulfnews.com/author/<slug> URL; alternative to slug
 
 ### `gulfnews_headlines`
 
 - **HTTP:** `GET /gulfnews/headlines`
-- **What:** Get Gulf News section headlines. Returns fresh headlines from one public Gulf News section.
+- **What:** Get Gulf News section headlines. Returns current Gulf News headlines for one section. `section` is required and takes one of 19 slugs such as `latest-news`, `business`, `uae`, `sport`, `living-in-uae` or `your-money`; other values return an invalid-params error. Each item has a title and canonical article URL.
 - **Params:** `section` (string, **required**) — Gulf News section slug
 
 ### `gulfnews_news`
 
 - **HTTP:** `GET /gulfnews/news`
-- **What:** Get Gulf News top stories. Returns fresh Gulf News stories from the public site-wide RSS feed.
+- **What:** Get Gulf News top stories. Returns the latest Gulf News stories across all sections, with no parameters. Each item has its title, canonical article URL, publication time and lead image. The listing carries no summary text.
 - **Params:** _none_
 
 ### `gulfnews_sections`
 
 - **HTTP:** `GET /gulfnews/sections`
-- **What:** Get Gulf News sections. Returns the public Gulf News editorial section inventory.
+- **What:** Get Gulf News sections. Lists the 19 top-level Gulf News sections accepted by `gulfnews-headlines`, such as `latest-news`, `business`, `uae`, `world`, `sport` and `things-to-do`. Each entry has a `slug`, display `name` and section `url`. Sub-sections such as `business/aviation` are not separate values; their stories appear under the parent.
 - **Params:** _none_
 
 ## Hindustan Times (5)
@@ -2193,19 +2193,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `hindustantimes_headlines`
 
 - **HTTP:** `GET /hindustantimes/headlines`
-- **What:** Get Hindustan Times section headlines. Returns fresh headlines from one public Hindustan Times section.
+- **What:** Get Hindustan Times section headlines. Returns current Hindustan Times headlines for one section. `section` is required and takes one of 24 slugs such as `india-news`, `world-news`, `cricket`, `business`, `htcity` or `editorials`. Each item has its title, URL, summary, author, publication time and image where the site provides them.
 - **Params:** `section` (string, **required**) — Hindustan Times section slug
 
 ### `hindustantimes_news`
 
 - **HTTP:** `GET /hindustantimes/news`
-- **What:** Get Hindustan Times top stories. Returns fresh Hindustan Times top stories from its public "Latest News" feed.
+- **What:** Get Hindustan Times top stories. Returns Hindustan Times' current top stories from its Latest News listing, with no parameters. Each item has its title, URL, summary, author, publication time and image where available.
 - **Params:** _none_
 
 ### `hindustantimes_sections`
 
 - **HTTP:** `GET /hindustantimes/sections`
-- **What:** Get Hindustan Times sections. Returns the public Hindustan Times section inventory used by the headlines endpoint.
+- **What:** Get Hindustan Times sections. Lists the 24 Hindustan Times sections accepted by `hindustantimes-headlines`, including `india-news`, `world-news`, `cricket`, `real-estate`, `nri` and `editors-pick`. Each entry has a `slug`, display `name` and section `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Hollywood Reporter (5)
@@ -2225,13 +2225,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `hollywoodreporter_headlines`
 
 - **HTTP:** `GET /hollywoodreporter/headlines`
-- **What:** Get The Hollywood Reporter section headlines. Returns fresh headlines from one public The Hollywood Reporter section or editorial-vertical feed.
+- **What:** Get The Hollywood Reporter section headlines. Returns recent Hollywood Reporter headlines for one section or editorial vertical. `section` is required and takes one of 37 slugs such as `movie-reviews`, `tv-news`, `music-industry-news`, `awards`, `heat-vision` or `thr-esq`. Each item has its title and URL, plus summary, author, publication time and image when the outlet provides them.
 - **Params:** `section` (string, **required**) — Hollywood Reporter section slug
 
 ### `hollywoodreporter_news`
 
 - **HTTP:** `GET /hollywoodreporter/news`
-- **What:** Get The Hollywood Reporter top stories. Returns fresh The Hollywood Reporter entertainment-industry top stories from its public RSS feed.
+- **What:** Get The Hollywood Reporter top stories. Returns The Hollywood Reporter's current top entertainment-industry stories from its home feed, with no parameters. Each item has its title and URL, plus summary, author, publication time and image when the outlet provides them.
 - **Params:** _none_
 
 ### `hollywoodreporter_sections`
@@ -2253,31 +2253,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `huffpost_article`
 
 - **HTTP:** `GET /huffpost/article`
-- **What:** Get HuffPost article content. Returns public HuffPost article metadata and body paragraphs from a canonical article URL.
+- **What:** Get HuffPost article content. Returns a HuffPost article by `url`, a canonical `huffpost.com/entry/<slug>_<type>_<id>` link. The response has the title, description, section, authors, lead image, publish and update times, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical HuffPost article URL
 
 ### `huffpost_author`
 
 - **HTTP:** `GET /huffpost/author`
-- **What:** Get a HuffPost author profile. Returns one HuffPost author or contributor's public profile: name, job title, headshot, biography, social links, and their recent articles.
+- **What:** Get a HuffPost author profile. Returns a HuffPost author or contributor profile by `url`, a canonical `https://www.huffpost.com/author/<slug>` link. The response has the name, recent articles, and, when the profile shows them, `job_title`, `image_url`, `biography` and `social_links` (platform and URL). Outside contributors often lack most of these optional fields.
 - **Params:** `url` (string, **required**) — Canonical huffpost.com/author/<slug> URL
 
 ### `huffpost_headlines`
 
 - **HTTP:** `GET /huffpost/headlines`
-- **What:** Get HuffPost section headlines. Returns fresh headlines from one public HuffPost topic hub.
+- **What:** Get HuffPost section headlines. Returns current HuffPost headlines for one topic hub. `section` is required and takes a slug that can include a path, such as `news/politics`, `impact/green`, `entertainment/tv`, `life/travel` or `voices/black-voices`. Each item has its title, URL and image. Summary, author and publication time are not returned.
 - **Params:** `section` (string, **required**) — HuffPost section slug
 
 ### `huffpost_news`
 
 - **HTTP:** `GET /huffpost/news`
-- **What:** Get HuffPost top stories. Returns fresh HuffPost top stories from its public homepage.
+- **What:** Get HuffPost top stories. Returns HuffPost's current top stories from its homepage, with no parameters. Each item has its title, URL and image where available. Summary, author and publication time are not returned.
 - **Params:** _none_
 
 ### `huffpost_sections`
 
 - **HTTP:** `GET /huffpost/sections`
-- **What:** Get HuffPost sections. Returns the live-verified public HuffPost topic-hub inventory used by the headlines endpoint.
+- **What:** Get HuffPost sections. Lists the topic hubs accepted by `huffpost-headlines`, such as `news/politics`, `impact/business`, `life/travel` and `voices/latino-voices`. Each entry has a `slug`, display `name` and hub `url`. Games, Horoscopes, Newsletters and HuffPost's international editions are excluded.
 - **Params:** _none_
 
 ## IGN (5)
@@ -2291,25 +2291,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ign_author`
 
 - **HTTP:** `GET /ign/author`
-- **What:** Get an IGN author profile. Returns one IGN author's public profile: name, job title, location, biography, social links, and their recent articles.
+- **What:** Get an IGN author profile. Returns an IGN author profile by `url`, a canonical `https://www.ign.com/person/<username>` link. The response has the `username`, name, job title, location, biography, headshot, `social_links` (platform and URL) and the author's recent articles.
 - **Params:** `url` (string, **required**) — Canonical www.ign.com/person/<username> URL
 
 ### `ign_headlines`
 
 - **HTTP:** `GET /ign/headlines`
-- **What:** Get IGN section headlines. Returns fresh IGN headlines from one public section feed.
+- **What:** Get IGN section headlines. Returns current IGN headlines for one section. `section` is required and takes one of `news`, `reviews`, `games`, `movies`, `tv`, `tech`, `nintendo`, `playstation`, `xbox`, `pc`, `mobile` or `comics`. Each item has its title and URL, plus summary, author, publication time and image when the outlet provides them.
 - **Params:** `section` (string, **required**) — IGN section slug
 
 ### `ign_news`
 
 - **HTTP:** `GET /ign/news`
-- **What:** Get IGN top stories. Returns fresh IGN top stories (gaming and entertainment news) from the public RSS feed.
+- **What:** Get IGN top stories. Returns IGN's current top stories on gaming and entertainment, with no parameters. Each item has its title and URL, plus summary, author, publication time and image when the outlet provides them, covering games, film and TV news in one list.
 - **Params:** _none_
 
 ### `ign_sections`
 
 - **HTTP:** `GET /ign/sections`
-- **What:** Get IGN sections. Returns the public IGN section taxonomy used by the headlines endpoint.
+- **What:** Get IGN sections. Lists the 12 IGN sections accepted by `ign-headlines`: `news`, `reviews`, `games`, `movies`, `tv`, `tech`, `nintendo`, `playstation`, `xbox`, `pc`, `mobile` and `comics`. Each entry has a `slug`, display `name` and `url`.
 - **Params:** _none_
 
 ## The Independent (5)
@@ -2317,31 +2317,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `independent_article`
 
 - **HTTP:** `GET /independent/article`
-- **What:** Get The Independent article content. Returns public The Independent article metadata and body paragraphs from a canonical article URL.
+- **What:** Get The Independent article content. Returns one The Independent article by `url`, which must be a canonical HTTPS `independent.co.uk` article link. The response has the title, description, section, authors, publication and update times, lead image URL, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical The Independent article URL
 
 ### `independent_author`
 
 - **HTTP:** `GET /independent/author`
-- **What:** Get an Independent author profile. Returns one Independent author's public profile: name, job title, bio, X/Twitter handle, and their recent articles.
+- **What:** Get an Independent author profile. Returns one Independent author's profile by `slug` (for example `lizzie-dearden`) or `url`; exactly one is required. The response has name, job title, bio, X/Twitter handle and the author's recent articles with title, URL, section and section URL. It is a single page of articles with no further pagination.
 - **Params:** `slug` (string, optional) — Author slug, e.g. lizzie-dearden; `url` (string, optional) — Canonical independent.co.uk/author/<slug> URL; alternative to slug
 
 ### `independent_headlines`
 
 - **HTTP:** `GET /independent/headlines`
-- **What:** Get The Independent section headlines. Returns fresh headlines from one public The Independent RSS section.
+- **What:** Get The Independent section headlines. Returns the current headlines for one The Independent section. `section` is required and takes one of 17 slugs, such as `news/uk`, `news/world`, `sport`, `voices`, `money` or `bulletin`. Each item has its title and URL, plus summary, author, publication time and image when the outlet provides them, and the response echoes the `section`.
 - **Params:** `section` (string, **required**) — The Independent RSS section slug
 
 ### `independent_news`
 
 - **HTTP:** `GET /independent/news`
-- **What:** Get The Independent top stories. Returns fresh The Independent top stories from its public RSS feed.
+- **What:** Get The Independent top stories. Returns the current top stories from The Independent. It takes no parameters. Each item has its title, URL and, where the outlet gives them, a summary, author, publication time, image URL and `type`. Use the headlines endpoint for one section.
 - **Params:** _none_
 
 ### `independent_sections`
 
 - **HTTP:** `GET /independent/sections`
-- **What:** Get The Independent RSS sections. Returns the live-verified public RSS section inventory for The Independent.
+- **What:** Get The Independent RSS sections. Lists the 17 The Independent section slugs that the headlines endpoint accepts, from `news` and `news/uk` to `life-style`, `voices`, `money` and `bulletin`. Each entry has a `slug`, a display `name` and a `url`.
 - **Params:** _none_
 
 ## The Indian Express (5)
@@ -2355,25 +2355,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `indianexpress_author`
 
 - **HTTP:** `GET /indianexpress/author`
-- **What:** Get a The Indian Express author profile. Returns a The Indian Express author's byline metadata, biography, and recent articles from a canonical author URL.
+- **What:** Get a The Indian Express author profile. Returns a The Indian Express author's profile by `url`, a canonical `indianexpress.com/profile/author/<slug>/` link: name, image URL, biography and recent articles with title, URL, summary and image. `image_url` and `biography` may be missing, and `published_at` is the page's date text such as `Sep 24, 2026 16:36 IST`, not a timestamp.
 - **Params:** `url` (string, **required**) — Canonical The Indian Express author URL
 
 ### `indianexpress_headlines`
 
 - **HTTP:** `GET /indianexpress/headlines`
-- **What:** Get The Indian Express section headlines. Returns fresh headlines from one public The Indian Express RSS section.
+- **What:** Get The Indian Express section headlines. Returns the current headlines for one The Indian Express section. `section` is required and takes a slug such as `india`, `explained`, `cities-delhi`, `entertainment-bollywood`, `sports-cricket` or `political-pulse`. Items carry title, URL, summary, author, publication time and image, and the response echoes the `section`.
 - **Params:** `section` (string, **required**) — The Indian Express RSS section slug
 
 ### `indianexpress_news`
 
 - **HTTP:** `GET /indianexpress/news`
-- **What:** Get The Indian Express top stories. Returns fresh The Indian Express top stories from its public RSS feed.
+- **What:** Get The Indian Express top stories. Returns the current top stories from The Indian Express. It takes no parameters. Each item has its title, URL and, where the outlet gives them, a summary, author, publication time, image URL and `type`. Use the headlines endpoint to read one section.
 - **Params:** _none_
 
 ### `indianexpress_sections`
 
 - **HTTP:** `GET /indianexpress/sections`
-- **What:** Get The Indian Express RSS sections. Returns the public The Indian Express RSS section inventory used by the headlines endpoint.
+- **What:** Get The Indian Express RSS sections. Lists the The Indian Express section slugs that the headlines endpoint accepts, including `politics`, `india`, `explained`, `cities-mumbai`, `entertainment-tamil`, `lifestyle-health` and `smart-stocks`. Each entry has a `slug`, a display `name` and a section `url`.
 - **Params:** _none_
 
 ## India Today (5)
@@ -2387,13 +2387,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `indiatoday_author`
 
 - **HTTP:** `GET /indiatoday/author`
-- **What:** Get an India Today author profile. Returns an India Today author's name, job title, headshot, biography, and recent stories from a canonical author URL.
+- **What:** Get an India Today author profile. Returns an India Today author profile by `url`, a canonical `https://www.indiatoday.in/author/<slug>` link; desk bylines such as `india-today-business-desk` work too. The response has the name, job title, headshot, biography and the first page of recent text stories (typically 20), each with title, URL, section, summary and image. Stories carry no dates.
 - **Params:** `url` (string, **required**) — Canonical India Today author URL
 
 ### `indiatoday_headlines`
 
 - **HTTP:** `GET /indiatoday/headlines`
-- **What:** Get India Today section headlines. Returns current headlines from one India Today section hub page.
+- **What:** Get India Today section headlines. Returns the text stories listed on one India Today section page, typically 12 to 60. `section` is required and takes one of 35 slugs such as `top-news`, `cricket`, `markets`, `bollywood` or `fact-check`; other values return 400. Items have title, URL, `type`, summary and image when shown, but no `published_at`.
 - **Params:** `section` (string, **required**) — India Today section slug
 
 ### `indiatoday_news`
@@ -2405,7 +2405,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `indiatoday_sections`
 
 - **HTTP:** `GET /indiatoday/sections`
-- **What:** Get India Today sections. Returns the live-verified India Today section inventory used by the headlines endpoint.
+- **What:** Get India Today sections. Lists the 35 India Today sections accepted by `indiatoday-headlines`, such as `top-news`, `south-india`, `markets`, `ott`, `elections` and `history-of-it`. Each entry has a `slug`, display `name` and the section page `url`. Takes no parameters.
 - **Params:** _none_
 
 ## IndieWire (5)
@@ -2431,13 +2431,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `indiewire_news`
 
 - **HTTP:** `GET /indiewire/news`
-- **What:** Get IndieWire top stories. Returns fresh IndieWire independent film, TV and awards top stories from its public RSS feed.
+- **What:** Get IndieWire top stories. Returns IndieWire's current top stories on independent film, TV and awards, with no parameters. Each item has its title, URL, one-sentence summary, author and publication time. Gallery and list pages are left out because they are not text articles.
 - **Params:** _none_
 
 ### `indiewire_sections`
 
 - **HTTP:** `GET /indiewire/sections`
-- **What:** Get IndieWire sections. Returns the complete public section inventory accepted by /api/v1/indiewire/headlines (IndieWire's 32 editorial categories).
+- **What:** Get IndieWire sections. Lists IndieWire's 32 editorial categories accepted by `indiewire-headlines`, such as `analysis`, `box-office`, `festivals`, `interviews`, `obituary` and `trailers`. Each entry has a `slug`, display `name` and the category feed `url`. Categories nest under the roots `news`, `features`, `awards` and `criticism`.
 - **Params:** _none_
 
 ## i (5)
@@ -2451,7 +2451,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `inews_author`
 
 - **HTTP:** `GET /inews/author`
-- **What:** Get an i author profile. Returns an i author's name, biography, social links, and most recent articles from a canonical author URL.
+- **What:** Get an i author profile. Returns an author profile from i (inews.co.uk) by `url`, a canonical `https://inews.co.uk/author/<slug>` link. The response has `name`, `bio`, `image_url`, `same_as` social profiles and up to about 30 recent articles, each with title, URL, summary, section and `published_at`. Paginated or non-author URLs return 400, and an unknown author returns 404.
 - **Params:** `url` (string, **required**) — Canonical i author URL
 
 ### `inews_headlines`
@@ -2469,7 +2469,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `inews_sections`
 
 - **HTTP:** `GET /inews/sections`
-- **What:** Get i sections. Returns every i section slug accepted by the headlines endpoint, with its display name and public RSS feed URL.
+- **What:** Get i sections. Lists the 45 i sections accepted by `inews-headlines`, from `home` and `news` to `football`, `money` and `relationships`. Each entry has a `slug`, display `name` and `url`. `home` is the site-wide listing, and low-volume sections such as `golf` or `comedy` may hold only one or two items.
 - **Params:** _none_
 
 ## Philippine Daily Inquirer (5)
@@ -2489,19 +2489,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `inquirer_headlines`
 
 - **HTTP:** `GET /inquirer/headlines`
-- **What:** Get Philippine Daily Inquirer section headlines. Returns fresh headlines from one Philippine Daily Inquirer section's public RSS feed.
+- **What:** Get Philippine Daily Inquirer section headlines. Returns the latest Philippine Daily Inquirer stories for one section. `section` is required and takes `newsinfo`, `globalnation`, `business`, `sports`, `entertainment`, `lifestyle`, `technology`, `opinion`, `usa` or `cebudailynews`. Each item has its title, URL, summary, publication time, author and lead image.
 - **Params:** `section` (string, **required**) — Philippine Daily Inquirer section slug
 
 ### `inquirer_news`
 
 - **HTTP:** `GET /inquirer/news`
-- **What:** Get Philippine Daily Inquirer top stories. Returns fresh Philippine Daily Inquirer top stories from its public news RSS feed.
+- **What:** Get Philippine Daily Inquirer top stories. Returns the latest top stories from the Philippine Daily Inquirer's flagship national-news site, newsinfo.inquirer.net. Takes no parameters. Each item has its title, URL, summary, publication time, author and lead image.
 - **Params:** _none_
 
 ### `inquirer_sections`
 
 - **HTTP:** `GET /inquirer/sections`
-- **What:** Get Philippine Daily Inquirer sections. Returns the Philippine Daily Inquirer section inventory: the ten public news subdomains accepted by inquirer-headlines.
+- **What:** Get Philippine Daily Inquirer sections. Lists the ten Philippine Daily Inquirer sections that `inquirer-headlines` accepts, from `newsinfo` to `cebudailynews`. Each entry has a `slug`, a display `name` and the section's `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Investopedia (5)
@@ -2541,25 +2541,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `iol_article`
 
 - **HTTP:** `GET /iol/article`
-- **What:** Get IOL article content. Returns public IOL article metadata and body paragraphs from a canonical article URL.
+- **What:** Get IOL article content. Returns an IOL article by `url`, a canonical `iol.co.za` story link. The response has the title, description, section (the deepest in the breadcrumb, such as `Crime and Courts`), authors, lead image, publish and update times, and body `paragraphs`. Section, author, tag and search pages are rejected. `paywalled` is never set.
 - **Params:** `url` (string, **required**) — Canonical IOL article URL
 
 ### `iol_author`
 
 - **HTTP:** `GET /iol/author`
-- **What:** Get an IOL author profile. Returns one IOL author's public profile: name, role, photo, and the recent articles listed on their page.
+- **What:** Get an IOL author profile. Returns an IOL author profile, identified by `slug` (such as `xolile-mtembu`) or a canonical `iol.co.za/authors/<slug>/` `url`; provide exactly one. The response has the name, `role` and `image_url` when present, and up to 25 recent articles with title, URL, summary, section and a `published_date` taken from the article URL. Unknown authors return not found.
 - **Params:** `slug` (string, optional) — Author slug, e.g. xolile-mtembu; `url` (string, optional) — Canonical iol.co.za/authors/<slug>/ URL; alternative to slug
 
 ### `iol_headlines`
 
 - **HTTP:** `GET /iol/headlines`
-- **What:** Get IOL section headlines. Returns fresh headlines from one public IOL section feed.
+- **What:** Get IOL section headlines. Returns recent IOL headlines for one section path. `section` is required and takes a value such as `news`, `news/south-africa/gauteng`, `sport/rugby/springboks`, `business/economy` or `entertainment/music`. Each item has its title, URL, summary, publication time and image, plus the author when the outlet names one. Unlisted values are rejected.
 - **Params:** `section` (string, **required**) — IOL section path
 
 ### `iol_news`
 
 - **HTTP:** `GET /iol/news`
-- **What:** Get IOL top stories. Returns fresh IOL (Independent Online, South Africa) stories from the public news feed.
+- **What:** Get IOL top stories. Returns the 30 newest stories from IOL (Independent Online, South Africa), with no parameters. Each item has its title, canonical article URL, short summary, publication time, author byline and lead image.
 - **Params:** _none_
 
 ### `iol_sections`
@@ -2617,19 +2617,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `irishtimes_headlines`
 
 - **HTTP:** `GET /irishtimes/headlines`
-- **What:** Get Irish Times section headlines. Returns fresh headlines from one public Irish Times section.
+- **What:** Get Irish Times section headlines. Returns current Irish Times headlines for one section. `section` is required and takes one of 16 slugs such as `ireland`, `politics`, `your-money`, `life-style`, `motors` or `abroad`; other values return 400. Some listed articles are subscriber-only, and `irishtimes-article` returns a permission error for those.
 - **Params:** `section` (string, **required**) — Irish Times section slug
 
 ### `irishtimes_news`
 
 - **HTTP:** `GET /irishtimes/news`
-- **What:** Get Irish Times top stories. Returns fresh Irish Times top stories from its public Irish news feed.
+- **What:** Get Irish Times top stories. Returns up to 100 current Irish Times top stories from its Irish news listing, with no parameters. Each item has its title, URL, summary, author, publication time and image where available.
 - **Params:** _none_
 
 ### `irishtimes_sections`
 
 - **HTTP:** `GET /irishtimes/sections`
-- **What:** Get Irish Times sections. Returns the public Irish Times section inventory used by the headlines endpoint.
+- **What:** Get Irish Times sections. Lists the 16 Irish Times sections accepted by `irishtimes-headlines`: `ireland`, `opinion`, `politics`, `business`, `your-money`, `world`, `sport`, `life-style`, `health`, `technology`, `culture`, `property`, `food`, `motors`, `history` and `abroad`. Each entry has a `slug`, `name` and `url`.
 - **Params:** _none_
 
 ## Jerusalem Post (6)
@@ -2643,7 +2643,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `jerusalempost_author`
 
 - **HTTP:** `GET /jerusalempost/author`
-- **What:** Get Jerusalem Post author profile. Returns a public author or blogger profile and article cards from its first-party profile page.
+- **What:** Get Jerusalem Post author profile. Returns a Jerusalem Post author or blogger profile by `url`, a canonical `/author/<slug>` or `/blogger/<slug>` link. The response has the profile `type`, name, `description`, `image_url` and article cards with title, URL, summary and publication time.
 - **Params:** `url` (string, **required**) — Canonical Jerusalem Post /author/<slug> or /blogger/<slug> profile URL
 
 ### `jerusalempost_authors`
@@ -2655,19 +2655,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `jerusalempost_headlines`
 
 - **HTTP:** `GET /jerusalempost/headlines`
-- **What:** Get Jerusalem Post section headlines. Returns fresh non-premium stories from one public Jerusalem Post RSS section. Premium feed snippets are omitted.
+- **What:** Get Jerusalem Post section headlines. Returns current Jerusalem Post stories for one section. `section` is required and takes one of 40 slugs such as `israel-news`, `iran-news`, `middle-east`, `tech-and-startups` or `torah-portion`. Each item has its title, URL, author, publication time and image, plus a summary except on premium items, which have none.
 - **Params:** `section` (string, **required**) — Jerusalem Post section slug
 
 ### `jerusalempost_news`
 
 - **HTTP:** `GET /jerusalempost/news`
-- **What:** Get Jerusalem Post top stories. Returns fresh non-premium Jerusalem Post stories from its public front-page RSS feed. Premium feed snippets are omitted.
+- **What:** Get Jerusalem Post top stories. Returns recent Jerusalem Post front-page stories, with no parameters. Each item has its title, URL, author, publication time and image where available. Premium items keep their title and metadata but have no summary. Use `jerusalempost-article` to read an article and check its paywall flag.
 - **Params:** _none_
 
 ### `jerusalempost_sections`
 
 - **HTTP:** `GET /jerusalempost/sections`
-- **What:** Get Jerusalem Post section inventory. Returns the live-verified public RSS sections accepted by jerusalempost-headlines.
+- **What:** Get Jerusalem Post section inventory. Lists the 40 English-language editorial sections accepted by `jerusalempost-headlines`, such as `world-news`, `israel-politics`, `archaeology` and `jewish-holidays`. Each entry has a `slug`, display `name` and section `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Khaleej Times (5)
@@ -2687,7 +2687,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `khaleejtimes_headlines`
 
 - **HTTP:** `GET /khaleejtimes/headlines`
-- **What:** Get Khaleej Times section headlines. Returns fresh headlines from one public Khaleej Times section (top-level sections and sub-sections).
+- **What:** Get Khaleej Times section headlines. Returns current Khaleej Times headlines for one section or sub-section. `section` is required; its slug is the section's URL path with slashes turned into hyphens, so `/business/markets` is `business-markets`. Top-level sections mix their sub-sections' stories. Each item has its title, URL and publication time, plus summary, author and image when the outlet provides them. Call `khaleejtimes-sections` for the slugs.
 - **Params:** `section` (string, **required**) — Khaleej Times section slug
 
 ### `khaleejtimes_news`
@@ -2713,19 +2713,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `kotaku_author`
 
 - **HTTP:** `GET /kotaku/author`
-- **What:** Get a Kotaku author profile. Returns a Kotaku author's name, biography, headshot, social links, and most recent articles from a canonical author URL.
+- **What:** Get a Kotaku author profile. Returns a Kotaku author profile by `url`, a canonical `https://kotaku.com/author/<slug>` link. The response has the `name`, `biography`, `image_url`, `social_links` (a `type` label and URL) and recent articles. The article `published_at` is the page's own date text, such as `Published September 23, 2026 at 11:20 am`, not a timestamp.
 - **Params:** `url` (string, **required**) — Canonical Kotaku author URL
 
 ### `kotaku_headlines`
 
 - **HTTP:** `GET /kotaku/headlines`
-- **What:** Get Kotaku section headlines. Returns fresh headlines from one Kotaku section's public RSS feed.
+- **What:** Get Kotaku section headlines. Returns recent Kotaku headlines for one section. `section` is required and takes one of 17 slugs such as `news`, `reviews`, `games`, `game-tips`, `retro`, `horror` or `deals`. Each item has its title, URL, summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — Kotaku section slug
 
 ### `kotaku_news`
 
 - **HTTP:** `GET /kotaku/news`
-- **What:** Get Kotaku top stories. Returns fresh Kotaku gaming stories from its public RSS feed.
+- **What:** Get Kotaku top stories. Returns Kotaku's current top gaming stories, with no parameters. Each item has its title, URL, summary, author, publication time and image where Kotaku provides them. Use `kotaku-headlines` for a single section instead.
 - **Params:** _none_
 
 ### `kotaku_sections`
@@ -2745,25 +2745,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `livemint_author`
 
 - **HTTP:** `GET /livemint/author`
-- **What:** Get a Mint author profile. Returns a Mint author's byline metadata, biography, and social links from a canonical author profile URL.
+- **What:** Get a Mint author profile. Returns a Mint author profile from a required `url` in the form `https://www.livemint.com/authors/<slug>`. The response has `name`, `job_title`, `biography`, `image_url` and Twitter, Facebook, LinkedIn and Instagram links, each present only when the profile carries it. It does not list the author's articles.
 - **Params:** `url` (string, **required**) — Canonical Mint author URL
 
 ### `livemint_headlines`
 
 - **HTTP:** `GET /livemint/headlines`
-- **What:** Get Mint section headlines. Returns fresh headlines from one public Mint section.
+- **What:** Get Mint section headlines. Returns recent Mint headlines for one section. `section` is required and takes one of 15 slugs, including `companies`, `markets`, `money`, `ai` and `videos`. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — Mint section slug
 
 ### `livemint_news`
 
 - **HTTP:** `GET /livemint/news`
-- **What:** Get Mint top stories. Returns fresh Mint (livemint.com) top stories from its public "news" feed.
+- **What:** Get Mint top stories. Returns the current Mint (livemint.com) top stories, with no parameters. Each item has a title and URL, and may include summary, author, publication time and image. For one topic area, use `livemint-headlines` with a `section`.
 - **Params:** _none_
 
 ### `livemint_sections`
 
 - **HTTP:** `GET /livemint/sections`
-- **What:** Get Mint sections. Returns the public Mint section inventory used by the headlines endpoint.
+- **What:** Get Mint sections. Lists the 15 Mint section slugs accepted by `livemint-headlines`, such as `companies`, `markets`, `money`, `budget` and `videos`. Each entry has its `slug`, display `name` and page `url`.
 - **Params:** _none_
 
 ## Liverpool Echo (5)
@@ -2795,7 +2795,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `liverpoolecho_sections`
 
 - **HTTP:** `GET /liverpoolecho/sections`
-- **What:** Get Liverpool Echo sections. Returns the public Liverpool Echo editorial section inventory used by liverpoolecho-headlines.
+- **What:** Get Liverpool Echo sections. Lists the Liverpool Echo sections accepted by `liverpoolecho-headlines`, such as `news/liverpool-news`, `sport/football/transfer-news`, `whats-on/theatre-news` and `in-your-area`. Each entry has a `slug`, display `name` and feed `url`. Each listed section had at least one current entry when last checked, and feeds hold up to about 25 entries.
 - **Params:** _none_
 
 ## Live Science (5)
@@ -2803,7 +2803,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `livescience_article`
 
 - **HTTP:** `GET /livescience/article`
-- **What:** Get Live Science article content. Returns public Live Science article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Live Science article content. Returns a Live Science article by `url`, a canonical HTTPS `livescience.com` article link. The response has the title, description, section, authors, lead image, publish and update times, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical Live Science article URL
 
 ### `livescience_author`
@@ -2815,19 +2815,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `livescience_headlines`
 
 - **HTTP:** `GET /livescience/headlines`
-- **What:** Get Live Science section headlines. Returns fresh Live Science headlines from one public section hub page.
+- **What:** Get Live Science section headlines. Returns current Live Science headlines for one section. `section` is required and takes one of 14 slugs: `animals`, `archaeology`, `chemistry`, `features`, `health`, `human-behavior`, `interviews`, `news`, `opinion`, `physics-mathematics`, `planet-earth`, `products`, `space` or `technology`. Each item has a title and URL, plus author, publication time and image when the section page shows them.
 - **Params:** `section` (string, **required**) — Live Science section slug
 
 ### `livescience_news`
 
 - **HTTP:** `GET /livescience/news`
-- **What:** Get Live Science top stories. Returns fresh Live Science top stories from the public RSS feed.
+- **What:** Get Live Science top stories. Returns Live Science's current top stories across the site, with no parameters. Each item has its title, URL, summary, author, publication time and image where available. Use `livescience-headlines` to narrow to one section.
 - **Params:** _none_
 
 ### `livescience_sections`
 
 - **HTTP:** `GET /livescience/sections`
-- **What:** Get Live Science sections. Returns the public Live Science top-level editorial taxonomy used by the headlines endpoint.
+- **What:** Get Live Science sections. Lists the 14 top-level Live Science sections accepted by `livescience-headlines`, including `animals`, `archaeology`, `human-behavior`, `physics-mathematics`, `planet-earth` and `space`. Each entry has a `slug`, display `name` and section `url`.
 - **Params:** _none_
 
 ## MacRumors (5)
@@ -2835,31 +2835,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `macrumors_article`
 
 - **HTTP:** `GET /macrumors/article`
-- **What:** Get MacRumors article content. Returns public MacRumors article metadata and body paragraphs from a canonical news, guide, how-to or review URL.
+- **What:** Get MacRumors article content. Returns a MacRumors article by `url`: a dated news post, or a `/guide/`, `/how-to/` or `/review/` page. The response has the title, description, section, authors, lead image, publish time, `updated_at` and body `paragraphs`. Roundup, author and forum URLs are rejected. Reviews have no `updated_at`, and `paywalled` is omitted.
 - **Params:** `url` (string, **required**) — Canonical MacRumors article URL
 
 ### `macrumors_author`
 
 - **HTTP:** `GET /macrumors/author`
-- **What:** Get a MacRumors author profile. Returns one MacRumors author's public profile: name, bio, avatar, and their recent articles.
+- **What:** Get a MacRumors author profile. Returns a MacRumors author profile, identified by `slug` (such as `juli-clover`) or a canonical `macrumors.com/author/<slug>` `url`; provide exactly one. The response has the name, `bio`, `image_url` and about 20 recent articles with title, URL, publication time and, when shown, summary and image. Unknown authors return not found.
 - **Params:** `slug` (string, optional) — Author slug, e.g. juli-clover; `url` (string, optional) — Canonical macrumors.com/author/<slug> URL; alternative to slug
 
 ### `macrumors_headlines`
 
 - **HTTP:** `GET /macrumors/headlines`
-- **What:** Get MacRumors section headlines. Returns fresh headlines from one public MacRumors section.
+- **What:** Get MacRumors section headlines. Returns the newest 20 MacRumors entries for one section. `section` is required and takes `front-page`, `guides`, `how-to` or `reviews`; other values return an invalid-params error. Each item has its title, URL, author, publication time and short summary. Items from `guides`, `how-to` and `reviews` also carry a thumbnail `image_url`.
 - **Params:** `section` (string, **required**) — MacRumors section slug
 
 ### `macrumors_news`
 
 - **HTTP:** `GET /macrumors/news`
-- **What:** Get MacRumors top stories. Returns fresh MacRumors Apple news and rumor stories from the public all-stories RSS feed.
+- **What:** Get MacRumors top stories. Returns the latest 20 stories across MacRumors, with no parameters. Each item has its title, canonical article URL, author, publication time and a plain-text summary of about 300 characters. Items carry no lead image.
 - **Params:** _none_
 
 ### `macrumors_sections`
 
 - **HTTP:** `GET /macrumors/sections`
-- **What:** Get MacRumors sections. Returns the public MacRumors editorial section inventory.
+- **What:** Get MacRumors sections. Lists the four MacRumors sections accepted by `macrumors-headlines`: `front-page` (all stories mixed), `guides`, `how-to` and `reviews`. Each entry has a `slug`, display `name` and `url`. Roundups, the Buyer's Guide and the forums are not sections.
 - **Params:** _none_
 
 ## MarketWatch (5)
@@ -2867,31 +2867,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `marketwatch_article`
 
 - **HTTP:** `GET /marketwatch/article`
-- **What:** Get MarketWatch article content. Returns public MarketWatch article metadata and body paragraphs from a canonical article URL.
+- **What:** Get MarketWatch article content. Returns a MarketWatch article by `url`, a canonical HTTPS article link. The response has the title, description, section, authors, lead image, publish and update times, body `paragraphs` and a `paywalled` flag. Subscriber-only or blocked articles return an upstream error, so some URLs may fail.
 - **Params:** `url` (string, **required**) — Canonical MarketWatch article URL
 
 ### `marketwatch_author`
 
 - **HTTP:** `GET /marketwatch/author`
-- **What:** Get a MarketWatch author profile. Returns one MarketWatch author's public profile: name, job title, bio, and their recent articles.
+- **What:** Get a MarketWatch author profile. Returns a MarketWatch author profile, identified by `slug` (such as `hannah-pedone`) or a canonical `marketwatch.com/author/<slug>` `url`; provide exactly one. The response has the name, job title, bio, `works_for` and one page of recent articles with title and URL. The `?mod=` attribution query is removed from article URLs.
 - **Params:** `slug` (string, optional) — Author slug, e.g. hannah-pedone; `url` (string, optional) — Canonical marketwatch.com/author/<slug> URL; alternative to slug
 
 ### `marketwatch_headlines`
 
 - **HTTP:** `GET /marketwatch/headlines`
-- **What:** Get MarketWatch section headlines. Returns fresh headlines from one public MarketWatch section.
+- **What:** Get MarketWatch section headlines. Returns current MarketWatch headlines for one section. `section` is required and takes `latest-news`, `markets`, `investing`, `personal-finance`, `economy-politics`, `technology`, `retirement` or `real-estate`. Each item has its title, URL, summary, author, publication time and image where available.
 - **Params:** `section` (string, **required**) — MarketWatch section slug
 
 ### `marketwatch_news`
 
 - **HTTP:** `GET /marketwatch/news`
-- **What:** Get MarketWatch top stories. Returns fresh MarketWatch stories from the public Top Stories RSS feed.
+- **What:** Get MarketWatch top stories. Returns MarketWatch's current top stories, with no parameters. Each item has its title, URL, summary, author, publication time and image where available. Use `marketwatch-headlines` to read a single section instead.
 - **Params:** _none_
 
 ### `marketwatch_sections`
 
 - **HTTP:** `GET /marketwatch/sections`
-- **What:** Get MarketWatch sections. Returns the public MarketWatch editorial section inventory.
+- **What:** Get MarketWatch sections. Lists the eight MarketWatch sections accepted by `marketwatch-headlines`: `latest-news`, `markets`, `investing`, `personal-finance`, `economy-politics`, `technology`, `retirement` and `real-estate`. Each entry has a `slug`, display `name` and section `url`.
 - **Params:** _none_
 
 ## Mashable (5)
@@ -2937,25 +2937,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `mediaite_author`
 
 - **HTTP:** `GET /mediaite/author`
-- **What:** Get a Mediaite author profile. Returns one Mediaite author's public profile: name, biography, avatar, email and X/Twitter links, and their recent articles.
+- **What:** Get a Mediaite author profile. Returns a Mediaite author profile by `slug` (for example `michael-luciano`) or by a mediaite.com author `url`; supply exactly one. The response has `name`, `bio`, `avatar_url`, `email`, `twitter` and about 10 recent articles, each with `title`, `url` and a short `date` label such as `Sep 24th` (no year or time). Contact fields are omitted when the page shows none.
 - **Params:** `slug` (string, optional) — Author slug, e.g. michael-luciano; `url` (string, optional) — Canonical mediaite.com/author/<slug>/ URL; alternative to slug
 
 ### `mediaite_headlines`
 
 - **HTTP:** `GET /mediaite/headlines`
-- **What:** Get Mediaite section headlines. Returns fresh Mediaite headlines from one public category feed.
+- **What:** Get Mediaite section headlines. Returns up to 20 recent Mediaite stories for one category. `section` is required and takes a slug such as `tv`, `politics`, `opinion` or `premium`; any other value returns an invalid-parameter error. Each item has a title, URL and publication time, and may include author, summary and image.
 - **Params:** `section` (string, **required**) — Mediaite category slug
 
 ### `mediaite_news`
 
 - **HTTP:** `GET /mediaite/news`
-- **What:** Get Mediaite top stories. Returns fresh Mediaite top stories from the public news feed.
+- **What:** Get Mediaite top stories. Returns the 20 most recent Mediaite stories across the site, with no parameters. Each item has its title, canonical URL, summary, publication time and author. Use `mediaite-headlines` to read a single category instead.
 - **Params:** _none_
 
 ### `mediaite_sections`
 
 - **HTTP:** `GET /mediaite/sections`
-- **What:** Get Mediaite sections. Returns the public Mediaite category taxonomy accepted by the headlines endpoint.
+- **What:** Get Mediaite sections. Lists the 15 Mediaite category slugs accepted as `section` by `mediaite-headlines`, such as `tv`, `politics`, `opinion` and `crime`. Each entry has its `slug`, display `name` and `url`. `premium` is the Mediaite One Sheet newsletter category, and `election-2020` is a legacy category that still publishes occasionally.
 - **Params:** _none_
 
 ## Medical News Today (5)
@@ -2969,19 +2969,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `medicalnewstoday_author`
 
 - **HTTP:** `GET /medicalnewstoday/author`
-- **What:** Get a Medical News Today author profile. Returns an author's public profile and recent articles. Supply either the author slug or profile URL.
+- **What:** Get a Medical News Today author profile. Returns a Medical News Today author profile by `slug` including its numeric id (for example `peter-brown-1595`) or by the profile `url`; provide one of the two. The response has the author's `name`, a `bio` when one is listed, and recent articles with title and URL, plus summary, date and image where present.
 - **Params:** `slug` (string, optional) — Author slug including numeric id, e.g. peter-brown-1595; `url` (string, optional) — Public author profile URL
 
 ### `medicalnewstoday_headlines`
 
 - **HTTP:** `GET /medicalnewstoday/headlines`
-- **What:** Get Medical News Today section headlines. Returns dated article cards from the dedicated Health News stream.
+- **What:** Get Medical News Today section headlines. Returns the dated story cards from the Medical News Today Health News stream. `section` is required and currently accepts only `news`; `medicalnewstoday-sections` shows the accepted value. Each item has a title and URL, with a publication date such as `2026-09-26`, author, summary and image when the card shows them.
 - **Params:** `section` (string, **required**) — Medical News Today newsroom section
 
 ### `medicalnewstoday_news`
 
 - **HTTP:** `GET /medicalnewstoday/news`
-- **What:** Get Medical News Today latest health news. Returns current stories from the site's dedicated Health News listing.
+- **What:** Get Medical News Today latest health news. Returns the current article cards from Medical News Today's Health News listing, with no parameters. Each item has a title and URL, plus publication date, author, summary and image when the card shows them. It is the way to read the latest health stories without choosing a section.
 - **Params:** _none_
 
 ### `medicalnewstoday_sections`
@@ -2995,31 +2995,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `men_article`
 
 - **HTTP:** `GET /men/article`
-- **What:** Get Manchester Evening News article content. Returns public Manchester Evening News article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Manchester Evening News article content. Returns a Manchester Evening News article by `url`, a canonical HTTPS article link. The response has the title, description, section, authors, lead image, publish and update times, body `paragraphs` and a `paywalled` flag. Subscriber-only or blocked articles return an upstream error.
 - **Params:** `url` (string, **required**) — Canonical Manchester Evening News article URL
 
 ### `men_author`
 
 - **HTTP:** `GET /men/author`
-- **What:** Get a Manchester Evening News author profile. Returns one Manchester Evening News author's public profile: name, job title, bio, email, X/Twitter handle, and their recent articles.
+- **What:** Get a Manchester Evening News author profile. Returns a Manchester Evening News author profile, identified by `slug` (such as `lee-swettenham`) or a canonical `manchestereveningnews.co.uk/authors/<slug>/` `url`; provide exactly one. The response has the name, job title, bio, `email`, `twitter` and one page of recent articles with title, URL and label. Contact fields are absent when unlisted.
 - **Params:** `slug` (string, optional) — Author slug, e.g. lee-swettenham; `url` (string, optional) — Canonical manchestereveningnews.co.uk/authors/<slug>/ URL; alternative to slug
 
 ### `men_headlines`
 
 - **HTTP:** `GET /men/headlines`
-- **What:** Get Manchester Evening News section headlines. Returns fresh headlines from one public Manchester Evening News section.
+- **What:** Get Manchester Evening News section headlines. Returns current Manchester Evening News headlines for one section. `section` is required and takes a slug such as `news`, `news/greater-manchester-news`, `sport/football/transfer-news`, `whats-on/theatre-news` or `trips-and-breaks`. Each item has its title, URL, summary, publication time and image.
 - **Params:** `section` (string, **required**) — Manchester Evening News section slug
 
 ### `men_news`
 
 - **HTTP:** `GET /men/news`
-- **What:** Get Manchester Evening News top stories. Returns fresh Manchester Evening News top stories from the public News RSS feed.
+- **What:** Get Manchester Evening News top stories. Returns the Manchester Evening News' current top stories, with no parameters. Each item has its title, URL, summary, author, publication time and image where available.
 - **Params:** _none_
 
 ### `men_sections`
 
 - **HTTP:** `GET /men/sections`
-- **What:** Get Manchester Evening News sections. Returns the public Manchester Evening News editorial section inventory used by men-headlines.
+- **What:** Get Manchester Evening News sections. Lists the Manchester Evening News sections accepted by `men-headlines`, such as `news`, `news/uk-news`, `sport/football`, `whats-on/music-nightlife-news` and `trips-and-breaks`. Each entry has a stable `slug`, display `name` and section `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Metro (5)
@@ -3051,7 +3051,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `metro_sections`
 
 - **HTTP:** `GET /metro/sections`
-- **What:** Get Metro sections. Returns every Metro section slug accepted by the headlines endpoint, with its display name and public RSS feed URL.
+- **What:** Get Metro sections. Lists the 42 Metro section slugs accepted by `metro-headlines`, each with its display name and URL. Slugs include `uk`, `football`, `showbiz` and `coronation-street`. `home` is the site-wide stream, the same stories as `metro-news`, and parent sections such as `news` and `sport` aggregate their child sections.
 - **Params:** _none_
 
 ## Mirror (5)
@@ -3059,31 +3059,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `mirror_article`
 
 - **HTTP:** `GET /mirror/article`
-- **What:** Get Mirror article content. Returns public Mirror article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Mirror article content. Returns a Mirror article by its canonical `url`: title, description, section, authors, lead image, publication and update times, a `paywalled` flag and the body `paragraphs`. Only public content is returned; subscriber-only or blocked articles return an upstream error.
 - **Params:** `url` (string, **required**) — Canonical Mirror article URL
 
 ### `mirror_author`
 
 - **HTTP:** `GET /mirror/author`
-- **What:** Get a Mirror author profile. Returns one Mirror author's public profile: name, job title, bio, email, X/Twitter handle, and their recent articles.
+- **What:** Get a Mirror author profile. Returns a Mirror author profile by `slug` (for example `neil-shaw`) or by a mirror.co.uk author `url`; supply exactly one. The response has `name`, `job_title`, `bio`, `email`, `twitter` and one page of recent articles with title, URL and label. There is no paging, and unlisted contact details are omitted rather than raising an error.
 - **Params:** `slug` (string, optional) — Author slug, e.g. neil-shaw; `url` (string, optional) — Canonical mirror.co.uk/authors/<slug>/ URL; alternative to slug
 
 ### `mirror_headlines`
 
 - **HTTP:** `GET /mirror/headlines`
-- **What:** Get Mirror section headlines. Returns fresh headlines from one public Mirror section.
+- **What:** Get Mirror section headlines. Returns recent Mirror headlines for one section. `section` is required and takes one of 34 slugs or paths, such as `news/uk-news`, `sport/football`, `3am` or `lifestyle/food-drink`. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — Mirror section slug
 
 ### `mirror_news`
 
 - **HTTP:** `GET /mirror/news`
-- **What:** Get Mirror top stories. Returns fresh Mirror top stories from the public News RSS feed.
+- **What:** Get Mirror top stories. Returns the current Mirror top stories, with no parameters. Each item has a title and URL, and may include summary, author, publication time and image. Use `mirror-headlines` to read a single section.
 - **Params:** _none_
 
 ### `mirror_sections`
 
 - **HTTP:** `GET /mirror/sections`
-- **What:** Get Mirror sections. Returns the public Mirror editorial section inventory used by mirror-headlines.
+- **What:** Get Mirror sections. Lists the Mirror section slugs accepted by `mirror-headlines`. Each entry has a stable `slug`, a display `name` and a section `url`. Slugs can contain a path, such as `news/uk-news` or `sport/football`.
 - **Params:** _none_
 
 ## MLive (1)
@@ -3091,7 +3091,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `mlive_news`
 
 - **HTTP:** `GET /mlive/news`
-- **What:** Get MLive top stories. Returns current MLive top stories from its anonymous Arc RSS feed, including title, canonical URL, brief summary, author, publication time, and image where available. Article pages are currently blocked by DataDome; category endpoints are deferred because the full accepted section set could not be verified.
+- **What:** Get MLive top stories. Returns current MLive top stories, including title, canonical URL, brief summary, author, publication time, and image where available. Article pages are not currently available, and category endpoints are deferred.
 - **Params:** _none_
 
 ## Moneycontrol (5)
@@ -3111,19 +3111,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `moneycontrol_headlines`
 
 - **HTTP:** `GET /moneycontrol/headlines`
-- **What:** Get Moneycontrol section headlines. Returns the current headlines of one Moneycontrol news section (25 to 50 stories, without publication times).
+- **What:** Get Moneycontrol section headlines. Returns the current front page of one Moneycontrol section: 25 or 50 stories, each with `title`, `url`, a short `summary` and `image_url`. `section` is required and takes one of 52 slugs such as `markets`, `ipo` or `cricket`; other values return `400`. Publication time and author are omitted, and only the first page is available.
 - **Params:** `section` (string, **required**) — Moneycontrol section slug
 
 ### `moneycontrol_news`
 
 - **HTTP:** `GET /moneycontrol/news`
-- **What:** Get Moneycontrol latest news. Returns the 50 newest Moneycontrol stories across all sections, newest first, with publication time and image.
+- **What:** Get Moneycontrol latest news. Returns the 50 newest Moneycontrol stories across all sections, newest first, with no parameters. Each item has `title`, `url`, `published_at` (RFC3339 UTC) and `image_url`. Videos, podcasts, photo galleries and sponsored brand-connect posts are left out.
 - **Params:** _none_
 
 ### `moneycontrol_sections`
 
 - **HTTP:** `GET /moneycontrol/sections`
-- **What:** Get Moneycontrol sections. Returns the Moneycontrol news sections accepted by the headlines endpoint.
+- **What:** Get Moneycontrol sections. Lists the 52 Moneycontrol news section slugs accepted by `moneycontrol-headlines`, such as `markets`, `economy`, `ipo` and `cricket`. Each entry has its `slug`, display `name` and page `url`. Moneycontrol Pro-only research, video, podcast and photo hubs are not sections.
 - **Params:** _none_
 
 ## The Motley Fool (5)
@@ -3131,31 +3131,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `motleyfool_article`
 
 - **HTTP:** `GET /motleyfool/article`
-- **What:** Get a Motley Fool article. Returns public metadata and body paragraphs from a canonical Fool investing article URL.
+- **What:** Get a Motley Fool article. Returns one Motley Fool investing article by `url`, which must look like `https://www.fool.com/investing/YYYY/MM/DD/slug/`; only public `/investing/` URLs are accepted. The response has the title, description, section, authors, publication and update times, image URL, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical The Motley Fool investing article URL
 
 ### `motleyfool_author`
 
 - **HTTP:** `GET /motleyfool/author`
-- **What:** Get a Motley Fool author profile. Returns a public Fool author's name, biography, image, and recent articles from a canonical author URL.
+- **What:** Get a Motley Fool author profile. Returns a Motley Fool author's name, biography when published, image when available and recent investing articles from their author page. `url` is required, for example `https://www.fool.com/author/2104/`. Each article has a title, URL, summary, author, image, `type` and publication time.
 - **Params:** `url` (string, **required**) — Canonical The Motley Fool author URL
 
 ### `motleyfool_headlines`
 
 - **HTTP:** `GET /motleyfool/headlines`
-- **What:** Get The Motley Fool section headlines. Returns article headlines from one live-verified public Fool investing-news section.
+- **What:** Get The Motley Fool section headlines. Returns the article cards of one Motley Fool investing-news section. `section` is required: `trending-news`, `news`, `market-movers`, `tech-stock-news`, `market-trends`, `crypto-news`, `markets`, `most-active-stocks`, `top-stock-gainers` or `top-stock-losers`. Other values return a 400. Items carry the title, URL and, where present, summary, author and publication time.
 - **Params:** `section` (string, **required**) — The Motley Fool section slug
 
 ### `motleyfool_news`
 
 - **HTTP:** `GET /motleyfool/news`
-- **What:** Get The Motley Fool top investing stories. Returns recent public investing stories from The Motley Fool's news sitemap.
+- **What:** Get The Motley Fool top investing stories. Returns up to 50 recent Motley Fool investing stories, newest first, each with its title, URL and publication time. Only stories at `/investing/YYYY/MM/DD/slug/` URLs are included. It takes no parameters; use the headlines endpoint for a named section.
 - **Params:** _none_
 
 ### `motleyfool_sections`
 
 - **HTTP:** `GET /motleyfool/sections`
-- **What:** List The Motley Fool news sections. Returns the complete article-bearing Stock Market News section set accepted by motleyfool_headlines.
+- **What:** List The Motley Fool news sections. Lists the 10 Motley Fool Stock Market News section slugs that the headlines endpoint accepts, from `trending-news` and `news` to `most-active-stocks`, `top-stock-gainers` and `top-stock-losers`. Each entry has a `slug`, a display `name` (`news` is named Stock News) and a section `url`.
 - **Params:** _none_
 
 ## Nation Africa (5)
@@ -3181,13 +3181,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `nationafrica_news`
 
 - **HTTP:** `GET /nationafrica/news`
-- **What:** Get Nation Africa top stories. Returns the newest Nation Africa (Daily Nation, Kenya) stories from the site's public news sitemap: headline, publication time and lead image. Video pages are excluded.
+- **What:** Get Nation Africa top stories. Returns the newest Nation Africa (Daily Nation, Kenya) stories from its public news sitemap: headline, publication time and lead image. If the sitemap returns 404, it falls back to the public News section hub, whose relative timestamps may omit publication time. Video pages are excluded.
 - **Params:** _none_
 
 ### `nationafrica_sections`
 
 - **HTTP:** `GET /nationafrica/sections`
-- **What:** Get Nation Africa sections. Returns the public Nation Africa (Kenya edition) editorial section inventory.
+- **What:** Get Nation Africa sections. Lists the 47 section slugs of Nation Africa's Kenya edition accepted by `nationafrica-headlines`, such as `news`, `politics`, `counties`, `football` and `fact-checks`. Each entry has its `slug`, display `name` and section page `url`. Photo, video, audio, puzzle, newsletter and cartoon pages are not included.
 - **Params:** _none_
 
 ## National Post (5)
@@ -3207,19 +3207,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `nationalpost_headlines`
 
 - **HTTP:** `GET /nationalpost/headlines`
-- **What:** Get National Post section headlines. Returns fresh headlines from one public National Post section.
+- **What:** Get National Post section headlines. Returns National Post headlines for one section; `section` is required and takes one of 45 slugs such as `canada`, `hockey` or `deals`. The top-level sections `health`, `opinion`, `longreads`, `modern-life`, `travel`, `entertainment`, `shopping-essentials` and `sports` return 10 stories with publication time and byline. Others return up to about 45 without either. Sponsored stories are left out.
 - **Params:** `section` (string, **required**) — National Post section slug
 
 ### `nationalpost_news`
 
 - **HTTP:** `GET /nationalpost/news`
-- **What:** Get National Post top stories. Returns fresh National Post stories from the public site-wide RSS feed.
+- **What:** Get National Post top stories. Returns the latest 10 National Post stories across all sections, with no parameters. Each item has a title, canonical article URL, one-line summary, publication time and byline. Use `nationalpost-headlines` to read a single section.
 - **Params:** _none_
 
 ### `nationalpost_sections`
 
 - **HTTP:** `GET /nationalpost/sections`
-- **What:** Get National Post sections. Returns the public National Post editorial section inventory (the site's own primary navigation).
+- **What:** Get National Post sections. Lists the 45 National Post section slugs accepted by `nationalpost-headlines`, such as `canada`, `opinion`, `hockey` and `gift-guide`, each with its display `name` and category page `url`. Links that leave nationalpost.com (Financial Post, Driving.ca, puzzles, classifieds, e-paper) and the paid Sponsored categories are not included.
 - **Params:** _none_
 
 ## NBC News (5)
@@ -3239,19 +3239,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `nbc_headlines`
 
 - **HTTP:** `GET /nbc/headlines`
-- **What:** Get NBC News section headlines. Returns fresh headlines from one public NBC News RSS section. Use nbc-sections for the current value space.
+- **What:** Get NBC News section headlines. Returns recent NBC News stories for one section. `section` is required and must be one of `news`, `world`, `us-news`, `politics`, `business`, `science` or `health`. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — NBC News RSS section slug: news, world, us-news, politics, business, science, or health
 
 ### `nbc_news`
 
 - **HTTP:** `GET /nbc/news`
-- **What:** Get NBC News top stories. Returns fresh NBC News top stories from the public site-wide RSS feed.
+- **What:** Get NBC News top stories. Returns the current NBC News top stories across the site, with no parameters. Each item has a title and URL, and may include summary, author, publication time and image. Use `nbc-headlines` to read one section.
 - **Params:** _none_
 
 ### `nbc_sections`
 
 - **HTTP:** `GET /nbc/sections`
-- **What:** Get NBC News RSS sections. Returns the exact live-verified public RSS section slugs accepted by nbc-headlines.
+- **What:** Get NBC News RSS sections. Lists the seven NBC News section slugs accepted by `nbc-headlines`: `news`, `world`, `us-news`, `politics`, `business`, `science` and `health`. Each entry has its `slug`, display `name` and `url`.
 - **Params:** _none_
 
 ## NDTV (12)
@@ -3283,7 +3283,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ndtv_live_blog`
 
 - **HTTP:** `GET /ndtv/live-blog`
-- **What:** Get structured updates from an NDTV live blog. Returns live-blog metadata and the ordered BlogPosting updates embedded in NDTV's public LiveBlogPosting JSON-LD. Regular article URLs are rejected.
+- **What:** Get structured updates from an NDTV live blog. Returns the metadata and ordered updates of an NDTV live blog, given its canonical article `url`. The blog carries title, description, section, authors, image and publish and update times. Each update has its title, URL, body text, timestamps, authors and image when NDTV gives them. A regular article URL is rejected with an error.
 - **Params:** `url` (string, **required**) — Canonical NDTV live-blog article URL
 
 ### `ndtv_live_blogs`
@@ -3307,7 +3307,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ndtv_sections`
 
 - **HTTP:** `GET /ndtv/sections`
-- **What:** Get NDTV sections. Returns every NDTV section slug accepted by the headlines endpoint, with its display name and page URL.
+- **What:** Get NDTV sections. Lists the NDTV section slugs accepted by `ndtv-headlines`, each with its display name and page URL. They cover national and world news (`latest`, `india`, `world`), city and state pages such as `mumbai-news` and `kerala-news`, and topics such as `education` and `food`. `spotlight` is NDTV's Premium hub; video, podcasts and sister sites are excluded.
 - **Params:** _none_
 
 ### `ndtv_video`
@@ -3333,31 +3333,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `news18_article`
 
 - **HTTP:** `GET /news18/article`
-- **What:** Get News18 article content. Returns public News18 article metadata and body paragraphs from a canonical article URL.
+- **What:** Get News18 article content. Returns a News18 article by canonical `url` in the form `/<section>/<slug>-<id>.html`, optionally with a subsection. The response has title, description, authors, lead image, publication and update times, a `paywalled` flag and body `paragraphs`. `section` is the article's own category, so it can be a subsection such as `business/markets` that `news18-sections` does not list.
 - **Params:** `url` (string, **required**) — Canonical News18 article URL
 
 ### `news18_author`
 
 - **HTTP:** `GET /news18/author`
-- **What:** Get a News18 author profile. Returns a News18 author's byline metadata, biography, social links, and recent articles from a canonical author URL.
+- **What:** Get a News18 author profile. Returns a News18 author profile from a required `url` in the form `https://www.news18.com/byline/<slug>.html`. The response has `name`, `biography`, `image_url`, `social_links` (whichever of website, X/Twitter, Facebook, Instagram, YouTube and LinkedIn are set) and recent articles with `published_at` in RFC3339 UTC. Wire and staff bylines often have no bio or links.
 - **Params:** `url` (string, **required**) — Canonical News18 author URL
 
 ### `news18_headlines`
 
 - **HTTP:** `GET /news18/headlines`
-- **What:** Get News18 section headlines. Returns fresh headlines from one public News18 RSS section.
+- **What:** Get News18 section headlines. Returns recent News18 stories for one section. `section` is required and takes one of 18 slugs, such as `india`, `cricket`, `elections`, `viral` or `breaking-news`. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — News18 RSS section slug
 
 ### `news18_news`
 
 - **HTTP:** `GET /news18/news`
-- **What:** Get News18 top stories. Returns fresh News18 top stories from its public RSS feed.
+- **What:** Get News18 top stories. Returns the current News18 top stories, with no parameters. Each item has a title and URL, and may include summary, author, publication time and image. Use `news18-headlines` to read one section.
 - **Params:** _none_
 
 ### `news18_sections`
 
 - **HTTP:** `GET /news18/sections`
-- **What:** Get News18 RSS sections. Returns the public News18 RSS section inventory used by the headlines endpoint.
+- **What:** Get News18 RSS sections. Lists the 18 News18 section slugs accepted by `news18-headlines`, such as `india`, `world`, `cricket`, `explainers` and `education-career`. Each entry has its `slug`, display `name` and `url`.
 - **Params:** _none_
 
 ## News24 (4)
@@ -3371,19 +3371,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `news24_headlines`
 
 - **HTTP:** `GET /news24/headlines`
-- **What:** Get News24 section headlines. Returns fresh News24 headlines from one public section page. Cards that News24 marks subscriber-only carry type "subscriber".
+- **What:** Get News24 section headlines. Returns News24 headlines for one section. `section` is required and takes a path such as `business/markets`, `sport/rugby/springboks` or `politics`, from the 73 listed by `news24-sections`. Each item has a title and URL, and `type` is `subscriber` on cards News24 marks subscriber-only. Summary, author, publication time and image appear when available.
 - **Params:** `section` (string, **required**) — News24 section path
 
 ### `news24_news`
 
 - **HTTP:** `GET /news24/news`
-- **What:** Get News24 top stories. Returns fresh News24 top stories from the public homepage. Cards that News24 marks subscriber-only carry type "subscriber".
+- **What:** Get News24 top stories. Returns the current News24 top stories, with no parameters. Each item has a title, canonical URL and image. `type` is `subscriber` when News24 marks the story subscriber-only and is omitted for freely readable stories.
 - **Params:** _none_
 
 ### `news24_sections`
 
 - **HTTP:** `GET /news24/sections`
-- **What:** Get News24 sections. Returns the public News24 section navigation accepted by the headlines endpoint.
+- **What:** Get News24 sections. Lists the 73 News24 sections accepted by `news24-headlines`. Each entry has a `slug` (the URL path under news24.com, which may contain `/`, as in `sport/rugby/springboks`), a display `name` and a page `url`. Top-level groups include `business`, `life`, `opinions`, `southafrica`, `sport` and `world`.
 - **Params:** _none_
 
 ## News.com.au (5)
@@ -3391,7 +3391,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `newscomau_article`
 
 - **HTTP:** `GET /newscomau/article`
-- **What:** Get News.com.au article content. Returns public News.com.au article metadata and body paragraphs from a canonical article URL.
+- **What:** Get News.com.au article content. Returns a News.com.au article by canonical `url`, which must be a `www.news.com.au` link ending in `/news-story/<32-character-id>`. The response has title, description, section, authors, lead image, publication and update times, a `paywalled` flag and body `paragraphs`. `authors` is empty for wire or agency pieces with no byline.
 - **Params:** `url` (string, **required**) — Canonical News.com.au article URL
 
 ### `newscomau_author`
@@ -3409,7 +3409,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `newscomau_news`
 
 - **HTTP:** `GET /newscomau/news`
-- **What:** Get News.com.au top stories. Returns fresh News.com.au stories from the public homepage.
+- **What:** Get News.com.au top stories. Returns the current News.com.au top stories, with no parameters and no section filter. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** _none_
 
 ### `newscomau_sections`
@@ -3423,31 +3423,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `newsmax_article`
 
 - **HTTP:** `GET /newsmax/article`
-- **What:** Get Newsmax article content. Returns public Newsmax article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Newsmax article content. Returns a Newsmax article by canonical `url` in the form `/<section>/<slug>/YYYY/MM/DD/id/<id>`: title, description, section, authors, lead image, publication and update times, and body `paragraphs`. `authors` may be empty for wire or staff-aggregated stories. Paywalled Platinum URLs are not accepted.
 - **Params:** `url` (string, **required**) — Canonical Newsmax article URL
 
 ### `newsmax_author`
 
 - **HTTP:** `GET /newsmax/author`
-- **What:** Get a Newsmax Insiders author profile. Returns a Newsmax Insiders (opinion columnist) author's byline metadata, biography, and recent columns from a canonical author URL.
+- **What:** Get a Newsmax Insiders author profile. Returns a Newsmax Insiders (opinion columnist) profile from a required `url` such as `https://www.newsmax.com/insiders/<slug>/id-<id>/`. The response has `name`, `biography`, `image_url` and recent columns. `biography` is omitted when Newsmax's separate profile page is unavailable, and article `published_at` is date text such as `Sep 23, 2026`.
 - **Params:** `url` (string, **required**) — Canonical Newsmax Insiders author URL
 
 ### `newsmax_headlines`
 
 - **HTTP:** `GET /newsmax/headlines`
-- **What:** Get Newsmax section headlines. Returns fresh headlines from one public Newsmax RSS section.
+- **What:** Get Newsmax section headlines. Returns recent Newsmax stories for one section. `section` is required and takes one of 20 slugs, such as `newsfront`, `politics`, `health-news`, `finance-news` or `insiders`. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — Newsmax RSS section slug
 
 ### `newsmax_news`
 
 - **HTTP:** `GET /newsmax/news`
-- **What:** Get Newsmax top stories. Returns fresh Newsmax top stories from its public RSS feed.
+- **What:** Get Newsmax top stories. Returns the current Newsmax top stories from the Newsfront section, with no parameters. Each item has a title and URL, and may include summary, author, publication time and image. Use `newsmax-headlines` for other sections.
 - **Params:** _none_
 
 ### `newsmax_sections`
 
 - **HTTP:** `GET /newsmax/sections`
-- **What:** Get Newsmax RSS sections. Returns the public Newsmax RSS section inventory used by the headlines endpoint.
+- **What:** Get Newsmax RSS sections. Lists the 20 Newsmax section slugs accepted by `newsmax-headlines`, such as `newsfront`, `scitech`, `street-talk` and `global-talk`. Each entry has its `slug`, display `name` and `url`. `insiders` is the combined opinion section, and `finance-headlines` is the finance section's Headlines listing.
 - **Params:** _none_
 
 ## Newsweek (5)
@@ -3455,31 +3455,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `newsweek_article`
 
 - **HTTP:** `GET /newsweek/article`
-- **What:** Get Newsweek article content. Returns public Newsweek article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Newsweek article content. Returns a Newsweek article by canonical `url`, which must be a `newsweek.com` link ending in a numeric article id. The response has title, description, section, authors, lead image, publication and update times, a `paywalled` flag and body `paragraphs`.
 - **Params:** `url` (string, **required**) — Canonical Newsweek article URL
 
 ### `newsweek_author`
 
 - **HTTP:** `GET /newsweek/author`
-- **What:** Get a Newsweek author profile. Returns one Newsweek author's public profile: name, job title, bio, email, and one page of their recent articles.
+- **What:** Get a Newsweek author profile. Returns a Newsweek author profile by `slug` (for example `jennifer-fink`) or a newsweek.com authors `url`; supply exactly one. `page` selects the 1-based page of recent articles (default 1) and overrides any page in `url`. The response has `name`, `job_title`, `bio`, `email`, `image_url`, articles and `has_next_page`; a page past the end gives an empty `articles` list, not an error.
 - **Params:** `page` (integer, optional) — 1-based page number; overrides any page number in url; `slug` (string, optional) — Author slug, e.g. jennifer-fink; `url` (string, optional) — Canonical newsweek.com/authors/<slug> URL, optionally with a ?page=<n> query; alternative to slug
 
 ### `newsweek_headlines`
 
 - **HTTP:** `GET /newsweek/headlines`
-- **What:** Get Newsweek section headlines. Returns fresh Newsweek section headlines from the public category page.
+- **What:** Get Newsweek section headlines. Returns recent Newsweek stories for one section. `section` is required and takes one of 21 slugs, such as `politics`, `fact-check`, `better-planet`, `personal-finance` or `my-turn`. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — Newsweek section slug
 
 ### `newsweek_news`
 
 - **HTTP:** `GET /newsweek/news`
-- **What:** Get Newsweek top stories. Returns fresh Newsweek top stories from its public RSS feed.
+- **What:** Get Newsweek top stories. Returns the current Newsweek top stories, with no parameters. Each item has a title and URL, and may include summary, author, publication time and image. Use `newsweek-headlines` to read one section.
 - **Params:** _none_
 
 ### `newsweek_sections`
 
 - **HTTP:** `GET /newsweek/sections`
-- **What:** Get Newsweek sections. Returns the public Newsweek editorial section inventory used by the headlines endpoint.
+- **What:** Get Newsweek sections. Lists the 21 Newsweek section slugs accepted by `newsweek-headlines`, such as `news`, `world`, `us`, `fact-check` and `pets`. Each entry has its `slug`, display `name` and section page `url`.
 - **Params:** _none_
 
 ## The New Yorker (5)
@@ -3519,31 +3519,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ninetofivemac_article`
 
 - **HTTP:** `GET /ninetofivemac/article`
-- **What:** Get 9to5Mac article content. Returns public 9to5Mac article metadata and body paragraphs from a canonical article URL.
+- **What:** Get 9to5Mac article content. Returns a 9to5Mac article by `url`, a canonical `9to5mac.com` address in the form `/YYYY/MM/DD/<slug>/`: title, description, publication and update times, `authors`, `section`, image and the body `paragraphs`. The affiliate FTC disclaimer and embedded-tweet text are left out, and `paywalled` is never set because the articles are free.
 - **Params:** `url` (string, **required**) — Canonical 9to5Mac article URL
 
 ### `ninetofivemac_author`
 
 - **HTTP:** `GET /ninetofivemac/author`
-- **What:** Get a 9to5Mac author profile. Returns a 9to5Mac author's name, avatar, biography, social links, and recent articles from a canonical author URL.
+- **What:** Get a 9to5Mac author profile. Returns a 9to5Mac author profile from `url`, a canonical `https://9to5mac.com/author/<slug>/` address: name, avatar, `biography`, `social_links` and the first page of recent articles. Each social link's `type` comes from the page's icon, and each article's `published_at` is the page's own text, such as `9 hours ago`, not a timestamp.
 - **Params:** `url` (string, **required**) — Canonical 9to5Mac author URL
 
 ### `ninetofivemac_headlines`
 
 - **HTTP:** `GET /ninetofivemac/headlines`
-- **What:** Get 9to5Mac section headlines. Returns fresh headlines from one public 9to5Mac topic guide RSS feed.
+- **What:** Get 9to5Mac section headlines. Returns the newest posts from one 9to5Mac topic guide, up to 100. `section` is required and takes a guide slug such as `iphone`, `macbook-pro`, `vision-pro` or `how-to`; an unknown or missing value returns an invalid-params error. Smaller guides, such as `apple-watch-se`, return fewer. Items carry title, URL, summary, time and author.
 - **Params:** `section` (string, **required**) — 9to5Mac guide slug
 
 ### `ninetofivemac_news`
 
 - **HTTP:** `GET /ninetofivemac/news`
-- **What:** Get 9to5Mac top stories. Returns fresh 9to5Mac (9to5mac.com) Apple news top stories from its public RSS feed.
+- **What:** Get 9to5Mac top stories. Returns the latest 9to5Mac Apple news stories with no input needed. Each item has a title, canonical article URL, summary, publication time, author and image when present. The list can include podcast episode posts, such as Happy Hour and 9to5Mac Daily, alongside news articles.
 - **Params:** _none_
 
 ### `ninetofivemac_sections`
 
 - **HTTP:** `GET /ninetofivemac/sections`
-- **What:** Get 9to5Mac sections. Returns the public 9to5Mac topic guides (each with its own RSS feed) accepted by the headlines endpoint.
+- **What:** Get 9to5Mac sections. Lists the 35 9to5Mac topic guides that the headlines endpoint accepts as `section`. Each has a `slug` (for example `iphone`, `mac-studio` or `carplay`), a display `name` and the guide's feed `url`.
 - **Params:** _none_
 
 ## NJ.com (1)
@@ -3551,7 +3551,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `njcom_news`
 
 - **HTTP:** `GET /njcom/news`
-- **What:** Get NJ.com top stories. Returns current NJ.com top stories from its anonymous Arc RSS feed, including title, canonical URL, short feed summary, author, publication time, and image where available. Category discovery and section headlines are deferred because the complete accepted feed taxonomy could not be verified; article and author routes remain unverified behind the site's DataDome challenge.
+- **What:** Get NJ.com top stories. Returns current NJ.com top stories, including title, canonical URL, short summary, author, publication time, and image where available. Category discovery, section headlines, and article and author routes are not available.
 - **Params:** _none_
 
 ## New York Daily News (5)
@@ -3571,19 +3571,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `nydailynews_headlines`
 
 - **HTTP:** `GET /nydailynews/headlines`
-- **What:** Get New York Daily News section headlines. Returns fresh headlines from one public New York Daily News section page.
+- **What:** Get New York Daily News section headlines. Returns New York Daily News headlines for one section, newest first, up to about 100 stories. `section` is required and takes one of 36 slugs such as `crime-public-safety`, `new-york-yankees` or `opinion`; other values return an invalid-params error. Items carry a title and URL, plus publication time, byline, excerpt and lead image where shown. Team pages can list fewer stories out of season.
 - **Params:** `section` (string, **required**) — New York Daily News section slug
 
 ### `nydailynews_news`
 
 - **HTTP:** `GET /nydailynews/news`
-- **What:** Get New York Daily News top stories. Returns the current New York Daily News top stories from the public homepage.
+- **What:** Get New York Daily News top stories. Returns the current New York Daily News top stories, with no parameters. Each item has a title and canonical article URL, plus publication time, byline, excerpt and lead image where the story card shows them. Use `nydailynews-headlines` for a single section.
 - **Params:** _none_
 
 ### `nydailynews_sections`
 
 - **HTTP:** `GET /nydailynews/sections`
-- **What:** Get New York Daily News sections. Returns the public New York Daily News editorial section inventory.
+- **What:** Get New York Daily News sections. Lists the 36 New York Daily News section slugs accepted by `nydailynews-headlines`, such as `crime-public-safety`, `new-york-mets`, `nfl` and `things-to-do`. Each entry has its `slug` (the last path segment of the section URL), display `name` and `url`. Topic (`/tag/...`) pages and off-site properties are not sections.
 - **Params:** _none_
 
 ## New York Magazine (5)
@@ -3591,31 +3591,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `nymag_article`
 
 - **HTTP:** `GET /nymag/article`
-- **What:** Get New York Magazine article content. Returns public New York Magazine article metadata and body paragraphs from a canonical article URL.
+- **What:** Get New York Magazine article content. Returns a New York Magazine article by its canonical `url`: title, description, section, authors, lead image, publication and update times, a `paywalled` flag and the body `paragraphs`. Subscriber-only or blocked articles return an upstream error.
 - **Params:** `url` (string, **required**) — Canonical New York Magazine article URL
 
 ### `nymag_author`
 
 - **HTTP:** `GET /nymag/author`
-- **What:** Get a New York Magazine author profile. Returns a New York Magazine author's byline metadata, biography, and recent articles from a canonical author URL.
+- **What:** Get a New York Magazine author profile. Returns a New York Magazine author profile from a required `url` in the form `https://nymag.com/author/<slug>/`. The response has `name`, `job_title` (empty for some contributors), `bio` and recent articles with title, URL, `excerpt` and a `section` label. Each article's `published_at` is the page's date text, such as `Sept. 20, 2026`, not a timestamp.
 - **Params:** `url` (string, **required**) — Canonical New York Magazine author URL
 
 ### `nymag_headlines`
 
 - **HTTP:** `GET /nymag/headlines`
-- **What:** Get New York Magazine section headlines. Returns fresh headlines from one public New York Magazine section.
+- **What:** Get New York Magazine section headlines. Returns recent New York Magazine stories for one site section. `section` is required and takes one of nine slugs: `intelligencer`, `thecut`, `vulture`, `grub-street`, `curbed`, `strategist`, `select-all`, `science` or `daily`. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — New York Magazine section slug
 
 ### `nymag_news`
 
 - **HTTP:** `GET /nymag/news`
-- **What:** Get New York Magazine top stories. Returns fresh New York Magazine stories from the public homepage.
+- **What:** Get New York Magazine top stories. Returns the current New York Magazine top stories, with no parameters. Each item has a title and URL, and may include summary, author, publication time and image. Use `nymag-headlines` to read one of its sections.
 - **Params:** _none_
 
 ### `nymag_sections`
 
 - **HTTP:** `GET /nymag/sections`
-- **What:** Get New York Magazine sections. Returns the public New York Magazine section inventory.
+- **What:** Get New York Magazine sections. Lists the New York Magazine section slugs accepted by `nymag-headlines`, such as `intelligencer`, `thecut`, `vulture` and `grub-street`. Each entry has its stable `slug`, display `name` and section `url`.
 - **Params:** _none_
 
 ## New York Post (5)
@@ -3623,31 +3623,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `nypost_article`
 
 - **HTTP:** `GET /nypost/article`
-- **What:** Get New York Post article content. Returns public New York Post article metadata and body paragraphs from a canonical article URL.
+- **What:** Get New York Post article content. Returns a New York Post article by canonical `url` in the form `https://nypost.com/YYYY/MM/DD/<section>/<slug>/`: title, description, section, authors, lead image, publication and update times, a `paywalled` flag and the body `paragraphs`.
 - **Params:** `url` (string, **required**) — Canonical New York Post article URL
 
 ### `nypost_author`
 
 - **HTTP:** `GET /nypost/author`
-- **What:** Get a New York Post author profile. Returns a New York Post author's byline metadata, biography, social links, and recent articles from a canonical author URL.
+- **What:** Get a New York Post author profile. Returns a New York Post author profile from a required `url` in the form `https://nypost.com/author/<slug>/`. The response has `name`, `biography`, `image_url`, `social_links` and recent articles. Staff and wire bylines often have no headshot or bio, and each article's `published_at` is the page's date text such as `September 20, 2026 | 10:06pm`.
 - **Params:** `url` (string, **required**) — Canonical New York Post author URL
 
 ### `nypost_headlines`
 
 - **HTTP:** `GET /nypost/headlines`
-- **What:** Get New York Post section headlines. Returns fresh headlines from one public New York Post RSS section.
+- **What:** Get New York Post section headlines. Returns recent New York Post stories for one section. `section` is required and takes one of 54 slugs, such as `us-news`, `metro`, `nfl`, `business`, `real-estate` or `astrology`. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — New York Post RSS section slug
 
 ### `nypost_news`
 
 - **HTTP:** `GET /nypost/news`
-- **What:** Get New York Post top stories. Returns fresh New York Post top stories from its public RSS feed.
+- **What:** Get New York Post top stories. Returns the current New York Post top stories, with no parameters. Each item has a title and URL, and may include summary, author, publication time and image. Use `nypost-headlines` to read a single section.
 - **Params:** _none_
 
 ### `nypost_sections`
 
 - **HTTP:** `GET /nypost/sections`
-- **What:** Get New York Post RSS sections. Returns the public New York Post RSS section inventory used by the headlines endpoint.
+- **What:** Get New York Post RSS sections. Lists the 54 New York Post section slugs accepted by `nypost-headlines`, such as `us-news`, `politics`, `nfl`, `celebrities` and `mental-health`. Each entry has its `slug`, display `name` and `url`.
 - **Params:** _none_
 
 ## NZ Herald (5)
@@ -3661,25 +3661,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `nzherald_author`
 
 - **HTTP:** `GET /nzherald/author`
-- **What:** Get an NZ Herald author profile. Returns an NZ Herald author's byline metadata, biography, headshot, contact details, and recent articles from a canonical author URL.
+- **What:** Get an NZ Herald author profile. Returns an NZ Herald author profile from a required `url` in the form `https://www.nzherald.co.nz/author/<slug>/`. The response has `name`, `job_title`, `location`, `email`, `biography`, `image_url` and recent articles. Each field reflects what the author's page shows, and article `published_at` is RFC3339 where the page gives a machine-readable timestamp.
 - **Params:** `url` (string, **required**) — Canonical NZ Herald author URL
 
 ### `nzherald_headlines`
 
 - **HTTP:** `GET /nzherald/headlines`
-- **What:** Get NZ Herald section headlines. Returns fresh headlines from one public NZ Herald section.
+- **What:** Get NZ Herald section headlines. Returns recent NZ Herald headlines for one section. `section` is required and takes a slug listed by `nzherald-sections`, such as `nz`, `business`, `rugby`, `politics` or `world`. Each item has a title and URL. A URL may point at a premium article, which `nzherald-article` rejects with a permission error.
 - **Params:** `section` (string, **required**) — NZ Herald section slug
 
 ### `nzherald_news`
 
 - **HTTP:** `GET /nzherald/news`
-- **What:** Get NZ Herald top stories. Returns fresh New Zealand Herald top stories from its public homepage.
+- **What:** Get NZ Herald top stories. Returns the current New Zealand Herald top stories, with no parameters. Each item has a title and URL, and may include summary, author, publication time and image. Use `nzherald-headlines` to read one section.
 - **Params:** _none_
 
 ### `nzherald_sections`
 
 - **HTTP:** `GET /nzherald/sections`
-- **What:** Get NZ Herald sections. Returns the public NZ Herald section inventory used by the headlines endpoint.
+- **What:** Get NZ Herald sections. Lists the NZ Herald section slugs accepted by `nzherald-headlines`, such as `nz`, `business`, `rugby`, `technology` and `world`. Each entry has its `slug`, a display `name` (for example `New Zealand` for `nz`) and a `url`.
 - **Params:** _none_
 
 ## Page Six (5)
@@ -3687,31 +3687,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `pagesix_article`
 
 - **HTTP:** `GET /pagesix/article`
-- **What:** Get Page Six article content. Returns public Page Six article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Page Six article content. Returns a Page Six article by canonical `url` in the form `https://pagesix.com/YYYY/MM/DD/<section>/<slug>/`: title, description, section, authors, lead image, publication and update times, a `paywalled` flag and the body `paragraphs`.
 - **Params:** `url` (string, **required**) — Canonical Page Six article URL
 
 ### `pagesix_author`
 
 - **HTTP:** `GET /pagesix/author`
-- **What:** Get a Page Six author profile. Returns a Page Six author's byline metadata, biography, social links, and recent articles from a canonical author URL.
+- **What:** Get a Page Six author profile. Returns a Page Six author profile from a required `url` in the form `https://pagesix.com/author/<slug>/`. The response has `name`, `biography`, `image_url`, `social_links` and recent articles. An RSS feed link is the only social link always present, and each article's `published_at` is the page's date text such as `September 23, 2026 | 8:16pm`.
 - **Params:** `url` (string, **required**) — Canonical Page Six author URL
 
 ### `pagesix_headlines`
 
 - **HTTP:** `GET /pagesix/headlines`
-- **What:** Get Page Six section headlines. Returns fresh headlines from one public Page Six RSS section.
+- **What:** Get Page Six section headlines. Returns recent Page Six stories for one section. `section` is required and takes one of 30 slugs, such as `celebrity-news`, `royal-family`, `taylor-swift` or `new-york-city-society`. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — Page Six RSS section slug
 
 ### `pagesix_news`
 
 - **HTTP:** `GET /pagesix/news`
-- **What:** Get Page Six top stories. Returns fresh Page Six top stories from its public RSS feed.
+- **What:** Get Page Six top stories. Returns the current Page Six top stories, with no parameters. Each item has a title and URL, and may include summary, author, publication time and image. Use `pagesix-headlines` to read one section.
 - **Params:** _none_
 
 ### `pagesix_sections`
 
 - **HTTP:** `GET /pagesix/sections`
-- **What:** Get Page Six RSS sections. Returns the public Page Six RSS section inventory used by the headlines endpoint.
+- **What:** Get Page Six RSS sections. Lists the 30 Page Six section slugs accepted by `pagesix-headlines`, such as `celebrity-news`, `royal-family`, `taylor-swift` and `palm-beach-society`. Each entry has its `slug`, display `name` and `url`.
 - **Params:** _none_
 
 ## PC Gamer (5)
@@ -3719,31 +3719,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `pcgamer_article`
 
 - **HTTP:** `GET /pcgamer/article`
-- **What:** Get PC Gamer article content. Returns public PC Gamer article metadata and body paragraphs from a canonical article URL.
+- **What:** Get PC Gamer article content. Returns a PC Gamer article by canonical `pcgamer.com` `url`; review pages work the same way as news articles. The response has title, description, section, authors, lead image, publication and update times, a `paywalled` flag and body `paragraphs`.
 - **Params:** `url` (string, **required**) — Canonical PC Gamer article URL
 
 ### `pcgamer_author`
 
 - **HTTP:** `GET /pcgamer/author`
-- **What:** Get a PC Gamer author profile. Returns one PC Gamer author's public profile: name, biography, social links, and one page of their recent articles.
+- **What:** Get a PC Gamer author profile. Returns a PC Gamer author profile by `slug` (for example `harvey-randall`) or a pcgamer.com author `url`; supply exactly one. `page` picks the 1-based page of recent articles (default 1) and overrides a `/page/<n>` segment in `url`. The response has `name`, `job_title`, `biography`, `social_links`, articles, `page` and `has_next_page`.
 - **Params:** `page` (integer, optional) — 1-based page number; overrides any page number in url; `slug` (string, optional) — Author slug, e.g. harvey-randall; `url` (string, optional) — Canonical pcgamer.com/author/<slug> URL, optionally with a /page/<n> segment; alternative to slug
 
 ### `pcgamer_headlines`
 
 - **HTTP:** `GET /pcgamer/headlines`
-- **What:** Get PC Gamer section headlines. Returns fresh PC Gamer headlines from one public section hub page.
+- **What:** Get PC Gamer section headlines. Returns recent PC Gamer headlines for one section. `section` is required and takes one of eight slugs: `deals`, `games`, `gaming-industry`, `guides`, `hardware`, `movies-tv`, `news` or `software`. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — PC Gamer section slug
 
 ### `pcgamer_news`
 
 - **HTTP:** `GET /pcgamer/news`
-- **What:** Get PC Gamer top stories. Returns fresh PC Gamer top stories from the public RSS feed.
+- **What:** Get PC Gamer top stories. Returns the current PC Gamer top stories, with no parameters. Each item has a title and URL, and may include summary, author, publication time and image. Use `pcgamer-headlines` to read one section.
 - **Params:** _none_
 
 ### `pcgamer_sections`
 
 - **HTTP:** `GET /pcgamer/sections`
-- **What:** Get PC Gamer sections. Returns the public PC Gamer top-level editorial taxonomy used by the headlines endpoint.
+- **What:** Get PC Gamer sections. Lists the eight top-level PC Gamer sections accepted by `pcgamer-headlines`: `deals`, `games`, `gaming-industry`, `guides`, `hardware`, `movies-tv`, `news` and `software`. Each entry has its `slug`, display `name` and `url`.
 - **Params:** _none_
 
 ## PCMag (5)
@@ -3751,31 +3751,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `pcmag_article`
 
 - **HTTP:** `GET /pcmag/article`
-- **What:** Get PCMag article or review content. Returns public PCMag article or product-review metadata and body paragraphs from a canonical article URL.
+- **What:** Get PCMag article or review content. Returns a PCMag article or product review by canonical `pcmag.com` `url`, such as `/news/<slug>` or `/reviews/<slug>`. The response has title, description, publication time, section label, authors, lead image and body `paragraphs`. Hub pages, author pages and pages without a readable body return an upstream error.
 - **Params:** `url` (string, **required**) — Canonical PCMag article or review URL
 
 ### `pcmag_author`
 
 - **HTTP:** `GET /pcmag/author`
-- **What:** Get a PCMag author profile. Returns one PCMag author's public profile: name, role, biography, areas of expertise, social links, and their recent articles.
+- **What:** Get a PCMag author profile. Returns a PCMag author profile by `slug` (for example `michael-kan`) or a pcmag.com authors `url`; supply exactly one. The response has `name`, `role`, `biography`, `image_url`, `expertise` topics linked to category hubs, `social_links` (X, LinkedIn, Bluesky, Threads) as full URLs, and recent articles.
 - **Params:** `slug` (string, optional) — Author slug, e.g. michael-kan; `url` (string, optional) — Canonical pcmag.com/authors/<slug> URL; alternative to slug
 
 ### `pcmag_headlines`
 
 - **HTTP:** `GET /pcmag/headlines`
-- **What:** Get PCMag section headlines. Returns fresh PCMag headlines from one public topic/category hub.
+- **What:** Get PCMag section headlines. Returns recent PCMag headlines for one product or topic category. `section` is required and takes a category slug such as `ai`, `antivirus`, `cameras`, `crm-software` or `gaming-systems`; `pcmag-sections` lists them. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — PCMag category slug
 
 ### `pcmag_news`
 
 - **HTTP:** `GET /pcmag/news`
-- **What:** Get PCMag top stories. Returns fresh PCMag top stories from the public news feed.
+- **What:** Get PCMag top stories. Returns the current PCMag top stories, with no parameters. Each item has a title, canonical URL, summary, publication time and author name when available. Use `pcmag-headlines` to read one product or topic category.
 - **Params:** _none_
 
 ### `pcmag_sections`
 
 - **HTTP:** `GET /pcmag/sections`
-- **What:** Get PCMag sections. Returns the public PCMag product/topic taxonomy accepted by the headlines endpoint.
+- **What:** Get PCMag sections. Lists the PCMag product and topic category slugs accepted by `pcmag-headlines`, such as `3d-printers`, `ai`, `antivirus`, `crm-software` and `drones`. Each entry has a `slug`, a display `name` and the category hub `url`.
 - **Params:** _none_
 
 ## PEOPLE (5)
@@ -3783,7 +3783,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `people_article`
 
 - **HTTP:** `GET /people/article`
-- **What:** Get PEOPLE article content. Returns public PEOPLE article metadata and body paragraphs from a canonical article URL.
+- **What:** Get PEOPLE article content. Returns a PEOPLE article by canonical `people.com` `url`, such as `https://people.com/example-headline-12345678`. The response has title, description, section, authors, lead image, publication and update times, a `paywalled` flag and body `paragraphs`. `authors` is empty for pieces with no byline.
 - **Params:** `url` (string, **required**) — Canonical PEOPLE article URL
 
 ### `people_author`
@@ -3801,7 +3801,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `people_news`
 
 - **HTTP:** `GET /people/news`
-- **What:** Get PEOPLE top stories. Returns fresh PEOPLE celebrity and entertainment stories from the public homepage.
+- **What:** Get PEOPLE top stories. Returns the current PEOPLE celebrity and entertainment top stories, with no parameters and no section filter. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** _none_
 
 ### `people_sections`
@@ -3815,31 +3815,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `phillyinquirer_article`
 
 - **HTTP:** `GET /phillyinquirer/article`
-- **What:** Get Philadelphia Inquirer article content. Returns public Philadelphia Inquirer article metadata and body paragraphs from a canonical story URL.
+- **What:** Get Philadelphia Inquirer article content. Returns a Philadelphia Inquirer story by canonical `inquirer.com` `url` ending in `-<yyyymmdd>.html`: title, description, publication and update times, section, authors, lead image and body `paragraphs` in reading order. Captions, teasers and comments are excluded. Associated Press `/wires/` pages, section pages and author pages return `400`.
 - **Params:** `url` (string, **required**) — Canonical Philadelphia Inquirer story URL
 
 ### `phillyinquirer_author`
 
 - **HTTP:** `GET /phillyinquirer/author`
-- **What:** Get a Philadelphia Inquirer author profile. Returns one Philadelphia Inquirer staff author's public profile: name, role, biography, social links, and their latest listed stories.
+- **What:** Get a Philadelphia Inquirer author profile. Returns a Philadelphia Inquirer staff author profile by `slug` (for example `gammage_jeff`) or an inquirer.com author `url`; supply exactly one. The response has `name`, `role`, `biography`, `image_url`, public web social links (no email or phone) and the latest 20 stories, with no paging. An unknown slug returns a 404 error.
 - **Params:** `slug` (string, optional) — Author slug, e.g. gammage_jeff; `url` (string, optional) — Canonical inquirer.com/author/<slug> URL; alternative to slug
 
 ### `phillyinquirer_headlines`
 
 - **HTTP:** `GET /phillyinquirer/headlines`
-- **What:** Get Philadelphia Inquirer section headlines. Returns fresh Philadelphia Inquirer headlines from one public section feed. Associated Press wire copy is not included.
+- **What:** Get Philadelphia Inquirer section headlines. Returns recent Philadelphia Inquirer stories for one section, without Associated Press wire copy. `section` is required and takes one of 24 slugs, such as `news`, `sixers`, `eagles`, `south-jersey` or `real-estate`; invalid values return `400`. Each item has a title and URL, and may include summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — Philadelphia Inquirer section slug
 
 ### `phillyinquirer_news`
 
 - **HTTP:** `GET /phillyinquirer/news`
-- **What:** Get Philadelphia Inquirer top stories. Returns fresh Philadelphia Inquirer top stories from the public news feed. Associated Press wire copy is not included.
+- **What:** Get Philadelphia Inquirer top stories. Returns the current Philadelphia Inquirer top stories, with no parameters. Each item has a title, canonical URL, summary, publication time and author name when available. Associated Press wire copy, which makes up much of the source, is excluded.
 - **Params:** _none_
 
 ### `phillyinquirer_sections`
 
 - **HTTP:** `GET /phillyinquirer/sections`
-- **What:** Get Philadelphia Inquirer sections. Returns the public Philadelphia Inquirer section taxonomy accepted by the headlines endpoint.
+- **What:** Get Philadelphia Inquirer sections. Lists the 24 Philadelphia Inquirer section slugs accepted by `phillyinquirer-headlines`, such as `news`, `sixers`, `eagles` and `south-jersey`. Each entry has a `slug`, display `name` and `url`. Sub-sections such as `news/philadelphia` are not listed because the `news` section already contains them.
 - **Params:** _none_
 
 ## Philstar (5)
@@ -3903,7 +3903,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `phonearena_sections`
 
 - **HTTP:** `GET /phonearena/sections`
-- **What:** Get PhoneArena sections. Returns the public PhoneArena listings accepted by the headlines endpoint: recent news, current-month news and current-year reviews.
+- **What:** Get PhoneArena sections. Lists the three PhoneArena listings that `phonearena-headlines` accepts: `news` (the last two days of news), `news-month` (the newest news of the current calendar month) and `reviews` (the newest reviews, comparisons and hands-on articles of the current year). Each entry has a `slug`, a display `name` and a source `url`.
 - **Params:** _none_
 
 ## Polygon (5)
@@ -3911,31 +3911,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `polygon_article`
 
 - **HTTP:** `GET /polygon/article`
-- **What:** Get Polygon article content. Returns public Polygon article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Polygon article content. Returns a Polygon article by canonical `url` (`https://www.polygon.com/<slug>/`): title, description, section, authors, publication and update times, lead image, body `paragraphs` and a `paywalled` flag. Section, guide and other non-article URLs, such as `/gaming-news/` or `/guides/`, are rejected as an invalid parameter.
 - **Params:** `url` (string, **required**) — Canonical Polygon article URL
 
 ### `polygon_author`
 
 - **HTTP:** `GET /polygon/author`
-- **What:** Get a Polygon author profile. Returns a Polygon author's byline metadata, biography, social links, and recent articles from a canonical author URL.
+- **What:** Get a Polygon author profile. Returns a Polygon author profile by canonical `url` (`https://www.polygon.com/author/<slug>/`): name, `title`, `image_url`, `biography`, social links and the articles in the profile's Latest module. Title, image and biography appear only as the profile shows them. `social_links` holds the author's own accounts, not Polygon's internal follow link.
 - **Params:** `url` (string, **required**) — Canonical Polygon author URL
 
 ### `polygon_headlines`
 
 - **HTTP:** `GET /polygon/headlines`
-- **What:** Get Polygon section headlines. Returns fresh headlines from one public Polygon RSS section.
+- **What:** Get Polygon section headlines. Returns the latest Polygon stories for one section. `section` is required and takes one of 15 slugs, including `gaming-news`, `gaming-reviews`, `movie-tv-reviews`, `anime`, `guides` and `videos`. Each item has its title, URL, summary, publication time, author and image.
 - **Params:** `section` (string, **required**) — Polygon RSS section slug
 
 ### `polygon_news`
 
 - **HTTP:** `GET /polygon/news`
-- **What:** Get Polygon top stories. Returns fresh Polygon top stories from its public RSS feed.
+- **What:** Get Polygon top stories. Returns Polygon's latest top stories across the site, covering games and entertainment. Takes no parameters, and `polygon-headlines` narrows by section instead. Each item has its title, URL, summary, publication time, author and image.
 - **Params:** _none_
 
 ### `polygon_sections`
 
 - **HTTP:** `GET /polygon/sections`
-- **What:** Get Polygon RSS sections. Returns the public Polygon RSS section inventory used by the headlines endpoint.
+- **What:** Get Polygon RSS sections. Lists the Polygon sections that `polygon-headlines` accepts, from `gaming-news` and `gaming-reviews` to `guides` and `videos`. Each entry has a `slug`, a display `name` and the section's feed `url`.
 - **Params:** _none_
 
 ## Popular Mechanics (1)
@@ -3951,7 +3951,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `propublica_article`
 
 - **HTTP:** `GET /propublica/article`
-- **What:** Get ProPublica article content. Returns public ProPublica article metadata (title, author(s), published/updated dates, dek) and body paragraphs from a canonical article URL.
+- **What:** Get ProPublica article content. Returns a ProPublica article by canonical `url` (`propublica.org/article/<slug>`): title, authors, publication and update dates, the dek as `description`, lead image where available, section, a `paywalled` flag and the body `paragraphs`.
 - **Params:** `url` (string, **required**) — Canonical ProPublica article URL
 
 ### `propublica_author`
@@ -3963,19 +3963,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `propublica_headlines`
 
 - **HTTP:** `GET /propublica/headlines`
-- **What:** Get ProPublica topic headlines. Returns fresh headlines from one public ProPublica topic feed.
+- **What:** Get ProPublica topic headlines. Returns the latest ProPublica stories for one topic. `section` is required and takes one of 33 topic slugs, such as `politics`, `health-care`, `immigration`, `courts`, `environment` or `trump-administration`. Each item has its title, URL, publication time and author.
 - **Params:** `section` (string, **required**) — ProPublica topic slug
 
 ### `propublica_news`
 
 - **HTTP:** `GET /propublica/news`
-- **What:** Get ProPublica top stories. Returns fresh ProPublica top stories from its public RSS feed.
+- **What:** Get ProPublica top stories. Returns the latest ProPublica top stories across topics. Takes no parameters. Each item has its title, URL, summary, publication time and image, plus the author byline, which can name more than one reporter.
 - **Params:** _none_
 
 ### `propublica_sections`
 
 - **HTTP:** `GET /propublica/sections`
-- **What:** Get ProPublica topics. Returns the complete public topic inventory accepted by /api/v1/propublica/headlines.
+- **What:** Get ProPublica topics. Lists the 33 topics from ProPublica's Browse Topics menu that `propublica-headlines` accepts. Each entry has a stable `slug`, a display `name` and the topic's feed `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Punch (5)
@@ -3983,31 +3983,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `punch_article`
 
 - **HTTP:** `GET /punch/article`
-- **What:** Get Punch article content. Returns public Punch article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Punch article content. Returns a Punch article by canonical `url` (`https://punchng.com/<slug>/`): title, description, publication and update times, section, authors, image and the body `paragraphs`. Punch articles are free to read, so `paywalled` is never set. Video-led stories may have only a short text summary.
 - **Params:** `url` (string, **required**) — Canonical Punch article URL
 
 ### `punch_author`
 
 - **HTTP:** `GET /punch/author`
-- **What:** Get a Punch author archive. Returns a Punch author's byline name and recent articles from a canonical author URL.
+- **What:** Get a Punch author archive. Returns a Punch author's name and their most recent articles (the first archive page, about 30) from a canonical `url` (`https://punchng.com/author/<slug>/`). `total_pages` is the number of archive pages. Punch author pages have no biography, photo or social links, so none are returned. An unknown author returns not-found.
 - **Params:** `url` (string, **required**) — Canonical Punch author URL
 
 ### `punch_headlines`
 
 - **HTTP:** `GET /punch/headlines`
-- **What:** Get Punch section headlines. Returns fresh headlines from one Punch topic page.
+- **What:** Get Punch section headlines. Returns the current stories, about 30, from one Punch topic page. `section` is required and takes a topic slug such as `news`, `politics`, `business`, `sports`, `metro-plus` or `top-stories`; any other value is an invalid-parameter error. Each item has a title and article URL, plus summary, publication time and image URL when the page shows them.
 - **Params:** `section` (string, **required**) — Punch topic slug
 
 ### `punch_news`
 
 - **HTTP:** `GET /punch/news`
-- **What:** Get Punch top stories. Returns fresh Punch top stories from its public RSS feed.
+- **What:** Get Punch top stories. Returns the latest Punch stories from punchng.com: title, article URL, summary, author and publication time. Takes no parameters. Punch labels its times as UTC but publishes them in West Africa Time (UTC+1), and `published_at` is corrected for that one-hour skew.
 - **Params:** _none_
 
 ### `punch_sections`
 
 - **HTTP:** `GET /punch/sections`
-- **What:** Get Punch sections. Returns the live-verified Punch topic (section) inventory used by the headlines endpoint.
+- **What:** Get Punch sections. Lists the Punch topic slugs that `punch-headlines` accepts, such as `news`, `politics`, `business` and `sports`. Each entry has a `slug`, a display `name` and the topic page `url`. The list covers top-level topics linked from Punch's navigation or active in the 90 days before 2026-09-25.
 - **Params:** _none_
 
 ## Rappler (5)
@@ -4021,25 +4021,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rappler_author`
 
 - **HTTP:** `GET /rappler/author`
-- **What:** Get a Rappler author profile. Returns one Rappler author's public profile: name, bio, public social links, and their most recent articles.
+- **What:** Get a Rappler author profile. Returns a Rappler author's profile, looked up by `slug` (for example `delfin-dioquino`) or by canonical `url`; exactly one is required. The response has the name, `bio`, `social_links` and the 10 most recent articles, each with title, URL, section and publication time. There is no further paging. `bio` and `social_links` are omitted when empty; an unknown author returns not-found.
 - **Params:** `slug` (string, optional) — Author slug, e.g. delfin-dioquino; `url` (string, optional) — Canonical rappler.com/author/<slug>/ URL; alternative to slug
 
 ### `rappler_headlines`
 
 - **HTTP:** `GET /rappler/headlines`
-- **What:** Get Rappler section headlines. Returns fresh headlines from one public Rappler section feed.
+- **What:** Get Rappler section headlines. Returns the latest Rappler stories for one section. `section` is required and takes one of the site's category slugs, such as `business`, `nation`, `entertainment`, `fact-check`, `investigative` or `climate-change`. Each item has its title, URL, summary, publication time and author, plus an image when the outlet provides one.
 - **Params:** `section` (string, **required**) — Rappler section slug
 
 ### `rappler_news`
 
 - **HTTP:** `GET /rappler/news`
-- **What:** Get Rappler top stories. Returns fresh Rappler stories from the public site-wide RSS feed.
+- **What:** Get Rappler top stories. Returns the newest Rappler stories across all sections. Takes no parameters. Each item has its title, canonical article URL, a short summary, publication time, author byline and lead image.
 - **Params:** _none_
 
 ### `rappler_sections`
 
 - **HTTP:** `GET /rappler/sections`
-- **What:** Get Rappler sections. Returns the public Rappler editorial section inventory: every category the site publishes with a live feed.
+- **What:** Get Rappler sections. Lists the 175 Rappler categories that have a live feed and are accepted by `rappler-headlines`, such as `news-updates`, `business`, `nation`, `fact-check` and `climate-change`. Each entry has a `slug`, a display `name` and the category `url`.
 - **Params:** _none_
 
 ## Raw Story (5)
@@ -4047,31 +4047,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rawstory_article`
 
 - **HTTP:** `GET /rawstory/article`
-- **What:** Get Raw Story article content. Returns public Raw Story article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Raw Story article content. Returns a Raw Story article by canonical `url` on `rawstory.com`, for example `https://www.rawstory.com/trump-media-ban-2677933730/`: title, description, publication and update times, section, authors, image and body `paragraphs` (embedded videos excluded). `section` is omitted for slug-only URLs. Hub, tag and author URLs return an invalid-params error; a missing story returns not-found.
 - **Params:** `url` (string, **required**) — Canonical Raw Story article URL
 
 ### `rawstory_author`
 
 - **HTTP:** `GET /rawstory/author`
-- **What:** Get a Raw Story author profile. Returns one Raw Story author's public profile: name, bio, avatar, public social links, and their 15 most recent stories.
+- **What:** Get a Raw Story author profile. Returns a Raw Story author's profile, looked up by `slug` (for example `bennitokelty`) or canonical `url`; exactly one is required. The response has the name, `bio`, avatar, social links and the 15 most recent stories, each with title, URL and a `YYYY-MM-DD` date. Older stories are not reachable, and an unknown author returns not-found.
 - **Params:** `slug` (string, optional) — Author slug, e.g. bennitokelty; `url` (string, optional) — Canonical rawstory.com/u/<slug> URL; alternative to slug
 
 ### `rawstory_headlines`
 
 - **HTTP:** `GET /rawstory/headlines`
-- **What:** Get Raw Story section headlines. Returns fresh headlines from one public Raw Story section feed.
+- **What:** Get Raw Story section headlines. Returns the latest Raw Story stories, up to 30, for one section hub. `section` is required and takes one of 15 slugs such as `us-news`, `trump-news`, `world`, `commentary` or `supreme-court`. Each item has its title, URL, lead-paragraph summary, publication time, author and image when given. The dormant `presidential-campaign-issues` hub returns 9 stories.
 - **Params:** `section` (string, **required**) — Raw Story section slug
 
 ### `rawstory_news`
 
 - **HTTP:** `GET /rawstory/news`
-- **What:** Get Raw Story top stories. Returns fresh Raw Story stories from the public site-wide RSS feed.
+- **What:** Get Raw Story top stories. Returns the 30 newest Raw Story stories across all sections. Takes no parameters. Each item has its title, story URL, a lead-paragraph summary capped at 500 characters, publication time, author byline and lead image.
 - **Params:** _none_
 
 ### `rawstory_sections`
 
 - **HTTP:** `GET /rawstory/sections`
-- **What:** Get Raw Story sections. Returns the public Raw Story section and topic hub inventory: every hub the site publishes with a live feed.
+- **What:** Get Raw Story sections. Lists the 15 section and topic hubs that `rawstory-headlines` accepts. Each entry has a `slug`, a display `name` such as `U.S. News` or `Raw Exclusives`, and the hub page `url`. Hubs overlap: `us-news`, `trump-news` and `smartnews` share most recent stories, and `presidential-campaign-issues` is dormant.
 - **Params:** _none_
 
 ## RNZ (5)
@@ -4091,19 +4091,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rnz_headlines`
 
 - **HTTP:** `GET /rnz/headlines`
-- **What:** Get RNZ section headlines. Returns fresh headlines from one public RNZ section feed.
+- **What:** Get RNZ section headlines. Returns the latest RNZ (Radio New Zealand) stories for one section. `section` is required and takes one of 19 slugs such as `news`, `national`, `political`, `business`, `pacific`, `te-manu-korihi` or `weather`; others return a 400. Each item has its title, URL, summary and publication time. Smaller sections can carry items from earlier weeks, so check `published_at`.
 - **Params:** `section` (string, **required**) — RNZ section slug
 
 ### `rnz_news`
 
 - **HTTP:** `GET /rnz/news`
-- **What:** Get RNZ top stories. Returns fresh RNZ (Radio New Zealand) top stories from the public all-news RSS feed.
+- **What:** Get RNZ top stories. Returns RNZ (Radio New Zealand) top stories from its all-news feed: title, article URL, summary and publication time in UTC. Takes no parameters. Lifestyle guides, audio programme pages and section hubs are left out, and article URLs use RNZ's current section names.
 - **Params:** _none_
 
 ### `rnz_sections`
 
 - **HTTP:** `GET /rnz/sections`
-- **What:** Get RNZ sections. Returns the public RNZ news section inventory (one RSS feed each) accepted by rnz-headlines.
+- **What:** Get RNZ sections. Lists the 19 RNZ news sections that `rnz-headlines` accepts, such as `news`, `national`, `political`, `pacific` and `te-manu-korihi`. Each entry has a `slug`, a display `name` and the section's feed `url`. RNZ's programme-schedule and recipe feeds are not included.
 - **Params:** _none_
 
 ## Rolling Stone (5)
@@ -4111,7 +4111,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rollingstone_article`
 
 - **HTTP:** `GET /rollingstone/article`
-- **What:** Get Rolling Stone article content. Returns public Rolling Stone article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Rolling Stone article content. Returns a Rolling Stone article by canonical `url`, a `rollingstone.com` address ending in a numeric article id: title, description, section, authors, publication and update times, image, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical Rolling Stone article URL
 
 ### `rollingstone_author`
@@ -4123,13 +4123,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rollingstone_headlines`
 
 - **HTTP:** `GET /rollingstone/headlines`
-- **What:** Get Rolling Stone section headlines. Returns fresh headlines from one public Rolling Stone section.
+- **What:** Get Rolling Stone section headlines. Returns the latest Rolling Stone stories for one section. `section` is required and takes one of 34 slugs, including `music`, `music-news`, `music-album-reviews`, `politics`, `tv-movie-reviews`, `culture` and `rs-gaming`. Each item has its title, URL, summary, publication time and author.
 - **Params:** `section` (string, **required**) — Rolling Stone section slug
 
 ### `rollingstone_news`
 
 - **HTTP:** `GET /rollingstone/news`
-- **What:** Get Rolling Stone top stories. Returns fresh Rolling Stone top stories from its public RSS feed.
+- **What:** Get Rolling Stone top stories. Returns Rolling Stone's latest top stories across the site. Takes no parameters, and `rollingstone-headlines` narrows by section instead. Each item has its title, URL, summary, publication time and author.
 - **Params:** _none_
 
 ### `rollingstone_sections`
@@ -4149,13 +4149,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rte_author`
 
 - **HTTP:** `GET /rte/author`
-- **What:** Get an RTÉ News author profile. Returns an RTÉ News author's byline name, role, headshot and recent articles from a canonical author URL.
+- **What:** Get an RTÉ News author profile. Returns an RTÉ News author's profile by canonical `url` (`https://www.rte.ie/author/<id>-<slug>/`, the author link on an article byline): name, headshot, `role` and recent articles, each with title, URL, summary, publication time and image. `role` is the job title the page shows, for example Political Correspondent, and is omitted when there is none.
 - **Params:** `url` (string, **required**) — Canonical RTÉ author URL
 
 ### `rte_headlines`
 
 - **HTTP:** `GET /rte/headlines`
-- **What:** Get RTÉ News section headlines. Returns fresh headlines from one public RTÉ News section.
+- **What:** Get RTÉ News section headlines. Returns the latest RTÉ News stories for one section. `section` is required and takes one of 29 slugs such as `ireland`, `world`, `politics`, `dublin`, `courts` or `nuacht` (Irish-language); others return a 400. Each item has its title, URL, summary, publication time and image. Small sections like `science` return only a handful of items.
 - **Params:** `section` (string, **required**) — RTÉ News section slug
 
 ### `rte_news`
@@ -4167,7 +4167,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rte_sections`
 
 - **HTTP:** `GET /rte/sections`
-- **What:** Get RTÉ News sections. Returns the public RTÉ News section inventory used by the headlines endpoint.
+- **What:** Get RTÉ News sections. Lists the 29 RTÉ News section hubs that `rte-headlines` accepts, such as `ireland`, `politics`, `dublin`, `ukraine` and `investigations-unit`. Each entry has a `slug`, a display `name` and the feed `url`. The list is curated to hubs with their own article feed, so narrower topic pages are not included.
 - **Params:** _none_
 
 ## Salon (5)
@@ -4175,31 +4175,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `salon_article`
 
 - **HTTP:** `GET /salon/article`
-- **What:** Get Salon article content. Returns public Salon article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Salon article content. Returns a Salon article by canonical `url` on `www.salon.com` in the `/YYYY/MM/DD/<slug>/` form: title, description, section, authors, publication and update times, image, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical Salon article URL
 
 ### `salon_author`
 
 - **HTTP:** `GET /salon/author`
-- **What:** Get a Salon writer profile. Returns a Salon writer's byline metadata, biography, and recent articles from a canonical writer URL.
+- **What:** Get a Salon writer profile. Returns a Salon writer's profile by canonical `url` (`https://www.salon.com/writer/<slug>`): name, `job_title`, `bio`, `image_url`, `same_as` links and a list of articles. Each article carries only a title and URL, with no date or category. Job title, photo and `same_as` appear only when the writer page shows them.
 - **Params:** `url` (string, **required**) — Canonical Salon writer URL
 
 ### `salon_headlines`
 
 - **HTTP:** `GET /salon/headlines`
-- **What:** Get Salon section headlines. Returns fresh headlines from one public Salon RSS section.
+- **What:** Get Salon section headlines. Returns the latest Salon stories for one section. `section` is required and takes one of 32 slugs, including `home`, `news-and-politics`, `politics`, `opinion`, `culture`, `science-and-health` and `technology`. Each item has its title, URL, summary, publication time, author and image.
 - **Params:** `section` (string, **required**) — Salon RSS section slug
 
 ### `salon_news`
 
 - **HTTP:** `GET /salon/news`
-- **What:** Get Salon top stories. Returns fresh Salon top stories from its public RSS feed.
+- **What:** Get Salon top stories. Returns Salon's latest top stories across the site. Takes no parameters, and `salon-headlines` narrows by section instead. Each item has its title, URL, summary, publication time, author and image.
 - **Params:** _none_
 
 ### `salon_sections`
 
 - **HTTP:** `GET /salon/sections`
-- **What:** Get Salon RSS sections. Returns the public Salon RSS section inventory used by the headlines endpoint.
+- **What:** Get Salon RSS sections. Lists the 32 Salon sections that `salon-headlines` accepts, from `home` and `news-and-politics` to `working_ahead`. Each entry has a `slug`, a display `name` and the section's feed `url`. The list includes older event slugs such as `oscars_2012` and `sxsw_2013`.
 - **Params:** _none_
 
 ## SBS News (5)
@@ -4213,25 +4213,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sbsnews_author`
 
 - **HTTP:** `GET /sbsnews/author`
-- **What:** Get an SBS News author profile. Returns a public SBS News byline collection with author name, profile image, biography, pagination state, and recent articles.
+- **What:** Get an SBS News author profile. Returns an SBS News byline collection by canonical `url`, for example `https://www.sbs.com.au/news/collection/jennifer-scherer`: name, headshot, biography and the articles on the requested archive `page` (1-based, default 1), with `has_next_page` for paging. Articles are limited to SBS News article, Insight and Dateline links.
 - **Params:** `page` (integer, optional) — 1-based author archive page number; `url` (string, **required**) — Canonical SBS News author collection URL
 
 ### `sbsnews_headlines`
 
 - **HTTP:** `GET /sbsnews/headlines`
-- **What:** Get SBS News section headlines. Returns current SBS News headlines for a supported navigation or featured topic section.
+- **What:** Get SBS News section headlines. Returns current SBS News headlines for one section. `section` is required and takes one of 15 slugs from `sbsnews-sections`, such as `top`, `latest`, `australia`, `world`, `politics`, `indigenous`, `cost-of-living` or `sport`. Every item has its title and URL. The `top`, `latest`, `australia` and `world` sections also include summary, publication time and image.
 - **Params:** `section` (string, **required**) — Section slug from sbsnews-sections
 
 ### `sbsnews_news`
 
 - **HTTP:** `GET /sbsnews/news`
-- **What:** Get SBS News top stories. Returns current SBS News Top Stories from its public RSS feed.
+- **What:** Get SBS News top stories. Returns the current SBS News Top Stories. Takes no parameters. Each item has its title, canonical SBS News article URL and summary, with publication time, author and image when present.
 - **Params:** _none_
 
 ### `sbsnews_sections`
 
 - **HTTP:** `GET /sbsnews/sections`
-- **What:** Get SBS News sections. Returns the SBS News navigation and featured public topic/collection pages accepted by sbsnews-headlines.
+- **What:** Get SBS News sections. Lists the SBS News sections that `sbsnews-headlines` accepts: the seven primary navigation sections, the Top Stories feed and featured topic and collection pages. Each entry has a `slug`, a display `name` and a `url`. News Podcasts and video surfaces are not included.
 - **Params:** _none_
 
 ## ScienceAlert (5)
@@ -4239,31 +4239,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sciencealert_article`
 
 - **HTTP:** `GET /sciencealert/article`
-- **What:** Get ScienceAlert article content. Returns public article metadata and body paragraphs from a canonical ScienceAlert article URL.
+- **What:** Get ScienceAlert article content. Returns a ScienceAlert article by absolute canonical `url`: title, description, section, authors, publication and update times, image, the cleaned body `paragraphs` and a `paywalled` flag. Section pages and author listing URLs are rejected.
 - **Params:** `url` (string, **required**) — Canonical ScienceAlert article URL
 
 ### `sciencealert_author`
 
 - **HTTP:** `GET /sciencealert/author`
-- **What:** Get a ScienceAlert author profile. Returns a journalist's public profile, biography, social links, and one page of recent articles.
+- **What:** Get a ScienceAlert author profile. Returns a ScienceAlert author's profile and one page of articles, from an author listing `url` in the form `https://www.sciencealert.com/<author>/page/<number>`; the first observed page is `/page/0`. The response has the name, `slug`, biography, image, social links, that page's articles, and `page` and `has_next_page` for paging.
 - **Params:** `url` (string, **required**) — Canonical ScienceAlert author listing URL, e.g. /michelle-starr/page/0
 
 ### `sciencealert_headlines`
 
 - **HTTP:** `GET /sciencealert/headlines`
-- **What:** Get ScienceAlert section headlines. Returns headlines from one public ScienceAlert section.
+- **What:** Get ScienceAlert section headlines. Returns the latest ScienceAlert stories for one section. `section` is required and takes `space`, `health`, `environment`, `humans`, `tech`, `nature`, `physics` or `this-week-in-science`; other values are rejected. Each item has its title and URL.
 - **Params:** `section` (string, **required**) — Section slug
 
 ### `sciencealert_news`
 
 - **HTTP:** `GET /sciencealert/news`
-- **What:** Get ScienceAlert top stories. Returns fresh ScienceAlert top stories from its public RSS feed.
+- **What:** Get ScienceAlert top stories. Returns ScienceAlert's latest top stories across the site. Takes no parameters, and `sciencealert-headlines` narrows by section instead. Each item has its title, URL, summary, author and publication time.
 - **Params:** _none_
 
 ### `sciencealert_sections`
 
 - **HTTP:** `GET /sciencealert/sections`
-- **What:** Get ScienceAlert sections. Returns the complete public top-level ScienceAlert taxonomy used by headlines.
+- **What:** Get ScienceAlert sections. Lists the eight top-level ScienceAlert sections that `sciencealert-headlines` accepts: `space`, `health`, `environment`, `humans`, `tech`, `nature`, `physics` and `this-week-in-science`. Each entry has a `slug`, a display `name` and the section page `url`.
 - **Params:** _none_
 
 ## SCMP (4)
@@ -4297,31 +4297,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `screenrant_article`
 
 - **HTTP:** `GET /screenrant/article`
-- **What:** Get ScreenRant article content. Returns public ScreenRant article metadata and body paragraphs from a canonical article URL.
+- **What:** Get ScreenRant article content. Returns a ScreenRant article by canonical `url` of the form `https://screenrant.com/<slug>/`: title, description, section, authors, publication and update times, image and body `paragraphs`. Warning and note callouts and Related cards are left out of `paragraphs`. Section hubs and multi-segment URLs such as `/video/<slug>/` are rejected as invalid.
 - **Params:** `url` (string, **required**) — Canonical ScreenRant article URL
 
 ### `screenrant_author`
 
 - **HTTP:** `GET /screenrant/author`
-- **What:** Get a ScreenRant author profile. Returns a ScreenRant author's byline metadata, biography, social links, and recent articles from a canonical author URL.
+- **What:** Get a ScreenRant author profile. Returns a ScreenRant author's profile by canonical `url` (`https://screenrant.com/author/<slug>/`): name, `title`, `biography`, image, social links (such as `x`, `linkedin`, `youtube` or `muckrack`) and about 20 articles from the profile's Latest module. Older pages are not available.
 - **Params:** `url` (string, **required**) — Canonical ScreenRant author URL
 
 ### `screenrant_headlines`
 
 - **HTTP:** `GET /screenrant/headlines`
-- **What:** Get ScreenRant section headlines. Returns fresh headlines from one public ScreenRant RSS section.
+- **What:** Get ScreenRant section headlines. Returns about 10 of the most recent ScreenRant items for one section. `section` is required and takes one of 34 slugs such as `movie-news`, `tv-reviews`, `reality-tv`, `comics`, `game-news` or `anime`. Items in `videos`, and some in `interviews` and `movie-trailers`, link to `/video/<slug>/` pages that `screenrant-article` rejects.
 - **Params:** `section` (string, **required**) — ScreenRant RSS section slug
 
 ### `screenrant_news`
 
 - **HTTP:** `GET /screenrant/news`
-- **What:** Get ScreenRant top stories. Returns fresh ScreenRant top stories from its public RSS feed.
+- **What:** Get ScreenRant top stories. Returns ScreenRant's main feed of latest stories, about 10 items. Takes no parameters. Each item has its title, URL, summary, publication time, author and image.
 - **Params:** _none_
 
 ### `screenrant_sections`
 
 - **HTTP:** `GET /screenrant/sections`
-- **What:** Get ScreenRant RSS sections. Returns the public ScreenRant RSS section inventory used by the headlines endpoint.
+- **What:** Get ScreenRant RSS sections. Lists the 34 ScreenRant sections that `screenrant-headlines` accepts, spanning movies, TV, reality TV, comics, gaming, anime, books, interviews and videos. Each entry has a `slug`, a display `name` and the section's feed `url`.
 - **Params:** _none_
 
 ## Seattle Times (5)
@@ -4341,13 +4341,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `seattletimes_headlines`
 
 - **HTTP:** `GET /seattletimes/headlines`
-- **What:** Get Seattle Times section headlines. Returns fresh headlines from one public Seattle Times section feed.
+- **What:** Get Seattle Times section headlines. Returns about 30 to 35 of the latest Seattle Times stories for one section. `section` is required and takes a section slug such as `seattle-news`, `politics`, `boeing-aerospace`, `mariners`, `seahawks` or `obituaries`. Each item has its title, canonical URL without tracking parameters, summary, publication time and author. Only the newest page is available.
 - **Params:** `section` (string, **required**) — Seattle Times section slug
 
 ### `seattletimes_news`
 
 - **HTTP:** `GET /seattletimes/news`
-- **What:** Get Seattle Times top stories. Returns fresh Seattle Times stories from the public site-wide RSS feed.
+- **What:** Get Seattle Times top stories. Returns about 30 of the newest Seattle Times stories across all sections, including Associated Press wire stories. Takes no parameters. Each item has its title, canonical URL without tracking parameters, summary, publication time, author byline and lead image.
 - **Params:** _none_
 
 ### `seattletimes_sections`
@@ -4373,13 +4373,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sevennewsau_headlines`
 
 - **HTTP:** `GET /sevennewsau/headlines`
-- **What:** Get 7NEWS Australia section headlines. Returns fresh 7NEWS headlines from one public topic feed (the 100 most recent stories tagged with that topic).
+- **What:** Get 7NEWS Australia section headlines. Returns the 100 most recent 7NEWS Australia stories for one topic. `section` is required and takes a topic slug such as `news-sydney`, `sport-afl` or `business-property`, which is the site path with slashes replaced by hyphens. Each item has its title, URL, summary, publication time, author when credited, and lead image.
 - **Params:** `section` (string, **required**) — 7NEWS topic slug (the site path with slashes replaced by hyphens)
 
 ### `sevennewsau_news`
 
 - **HTTP:** `GET /sevennewsau/news`
-- **What:** Get 7NEWS Australia top stories. Returns fresh 7NEWS (7news.com.au) top stories from the public site-wide news feed.
+- **What:** Get 7NEWS Australia top stories. Returns the 100 most recent 7NEWS Australia stories across every section, with no input needed. Each item has its title, canonical URL, summary, publication time, lead image, and the author when one is credited. Agency copy is often credited to `Digital Staff`.
 - **Params:** _none_
 
 ### `sevennewsau_sections`
@@ -4405,13 +4405,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sfgate_headlines`
 
 - **HTTP:** `GET /sfgate/headlines`
-- **What:** Get SFGate section headlines. Returns fresh headlines from one SFGATE public RSS feed.
+- **What:** Get SFGate section headlines. Returns the latest SFGATE stories for one section. `section` is required and takes `top-news`, `bay-area`, `business-technology`, `entertainment`, `celebrity`, `food-dining`, `travel`, `routes`, `top-sports`, `giants`, `49ers` or `warriors`. Feeds hold 12 to 30 items, and the `warriors` feed is quiet in the off-season.
 - **Params:** `section` (string, **required**) — SFGate section slug
 
 ### `sfgate_news`
 
 - **HTTP:** `GET /sfgate/news`
-- **What:** Get SFGate top stories. Returns fresh SFGATE stories from its public "Top News Stories" RSS feed.
+- **What:** Get SFGate top stories. Returns the latest stories from SFGATE's Top News Stories feed: title, canonical URL, summary, author and publication time in UTC. Takes no parameters. The feed carries no images.
 - **Params:** _none_
 
 ### `sfgate_sections`
@@ -4425,13 +4425,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `skynews_article`
 
 - **HTTP:** `GET /skynews/article`
-- **What:** Get Sky News article content. Returns public Sky News article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Sky News article content. Returns a Sky News article by canonical `url` of the form `https://news.sky.com/story/...-<id>`: title, description, section, authors, publication and update times, image, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical Sky News article URL
 
 ### `skynews_author`
 
 - **HTTP:** `GET /skynews/author`
-- **What:** Get a Sky News author profile. Returns a Sky News author's byline metadata, biography, and recent articles from a canonical author URL.
+- **What:** Get a Sky News author profile. Returns a Sky News author's profile by canonical `url` (`https://news.sky.com/author/<name>-<id>`): name, `job_title`, biography paragraphs and recent articles. An `info` list carries whatever else the page shows, as label and value entries with an optional link, such as expertise, location, social handles or email.
 - **Params:** `url` (string, **required**) — Canonical Sky News author URL
 
 ### `skynews_headlines`
@@ -4443,7 +4443,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `skynews_news`
 
 - **HTTP:** `GET /skynews/news`
-- **What:** Get Sky News top stories. Returns fresh Sky News top stories from its public RSS feed.
+- **What:** Get Sky News top stories. Returns Sky News's latest top stories across the site. Takes no parameters. Each item has its title, URL, summary, publication time and image. Pass an item's URL to `skynews-article` for its body paragraphs.
 - **Params:** _none_
 
 ### `skynews_sections`
@@ -4461,7 +4461,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `skynews_videos`
 
 - **HTTP:** `GET /skynews/videos`
-- **What:** Get the Sky News videos hub. Returns recent videos from the public Sky News videos hub.
+- **What:** Get the Sky News videos hub. Lists recent videos from the Sky News videos hub. Takes no parameters. Each item has its title, URL, summary, author, lead image, publication time and type. An item's `url` can be passed to `skynews-video` to get that video's own metadata.
 - **Params:** _none_
 
 ## Sky Sports (5)
@@ -4469,31 +4469,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `skysports_article`
 
 - **HTTP:** `GET /skysports/article`
-- **What:** Get a Sky Sports article. Returns public Sky Sports article metadata and body paragraphs from a canonical article URL.
+- **What:** Get a Sky Sports article. Returns a Sky Sports article by `url`, an HTTPS `skysports.com` address with a sport news path such as `/football/news/<id>/<slug>`: title, description, section, authors, publication and update times, image and body `paragraphs`. The returned URL uses `www.skysports.com`, and query strings and fragments are discarded.
 - **Params:** `url` (string, **required**) — Canonical Sky Sports article URL
 
 ### `skysports_author`
 
 - **HTTP:** `GET /skysports/author`
-- **What:** Get a Sky Sports author profile. Returns public author metadata, biography, and recent articles from a canonical author URL.
+- **What:** Get a Sky Sports author profile. Returns a Sky Sports author's name, current `job_title`, biography paragraphs and the article links on their profile page, from an author `url` such as `https://www.skysports.com/author/kaveh-solhekol-773`. Each article has a title and URL, with summary, author, publication time and image where present.
 - **Params:** `url` (string, **required**) — Canonical Sky Sports author URL
 
 ### `skysports_headlines`
 
 - **HTTP:** `GET /skysports/headlines`
-- **What:** Get Sky Sports section headlines. Returns current headlines from one live Sky Sports section page.
+- **What:** Get Sky Sports section headlines. Returns the article cards from one Sky Sports section listing page. `section` is required and takes one of 22 slugs such as `football`, `f1`, `cricket`, `rugby-union`, `golf`, `boxing`, `nfl` or `darts`. The site's Show More pagination is not exposed, so only the first listing comes back.
 - **Params:** `section` (string, **required**) — Sky Sports section slug
 
 ### `skysports_news`
 
 - **HTTP:** `GET /skysports/news`
-- **What:** Get Sky Sports top stories. Returns the latest Sky Sports top stories from its public RSS feed.
+- **What:** Get Sky Sports top stories. Returns the 20 latest Sky Sports top stories. Takes no parameters. Each item has its title, canonical `www.skysports.com` article URL, summary, publication time and image.
 - **Params:** _none_
 
 ### `skysports_sections`
 
 - **HTTP:** `GET /skysports/sections`
-- **What:** Get Sky Sports sections. Returns the 22 currently reachable sections in the live Sky Sports sports navigation.
+- **What:** Get Sky Sports sections. Lists the 22 Sky Sports sections that `skysports-headlines` accepts, from `football` and `f1` to `wwe` and `olympics`. Each entry has a `slug`, a display `name` and the section `url`. Winter Sports and Commonwealth Games pages returned 404 in the 2026-09-28 check and are not accepted.
 - **Params:** _none_
 
 ## Slate (3)
@@ -4539,7 +4539,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sloanreview_headlines`
 
 - **HTTP:** `GET /sloanreview/headlines`
-- **What:** Get MIT Sloan Management Review headlines. Returns article cards from MIT Sloan Management Review's public homepage feed.
+- **What:** Get MIT Sloan Management Review headlines. Returns the article cards on the MIT Sloan Management Review homepage, including editor picks and tiled feeds, with no parameters. Each item has a `title` and `url` and, when present, `topic`, `authors` and `published_at`. It covers the homepage only; the articles endpoint finds URLs beyond it.
 - **Params:** _none_
 
 ### `sloanreview_topic`
@@ -4585,31 +4585,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `space_article`
 
 - **HTTP:** `GET /space/article`
-- **What:** Get Space.com article content. Returns public Space.com article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Space.com article content. Returns a Space.com article by canonical `url` in any of the site's URL shapes, including older `.html` reference pages: title, description, section, authors, publication and update times, image and body `paragraphs`. `/news/live/` pages return only their introductory paragraphs, and membership-gated content returns only its public preview.
 - **Params:** `url` (string, **required**) — Canonical Space.com article URL
 
 ### `space_author`
 
 - **HTTP:** `GET /space/author`
-- **What:** Get a Space.com author profile. Returns one Space.com author's public profile: name, job title, biography, and their most recent articles.
+- **What:** Get a Space.com author profile. Returns a Space.com author's profile, looked up by `slug` (for example `elizabeth-howell`) or canonical `url`; exactly one is required. The response has the name, `job_title`, biography, image and the first batch of recent articles on the author page. That page has no URL-based pagination, so no further articles are available.
 - **Params:** `slug` (string, optional) — Author slug, e.g. elizabeth-howell; `url` (string, optional) — Canonical space.com/author/<slug> URL; alternative to slug
 
 ### `space_headlines`
 
 - **HTTP:** `GET /space/headlines`
-- **What:** Get Space.com section headlines. Returns fresh Space.com headlines from one public category hub.
+- **What:** Get Space.com section headlines. Returns the latest Space.com stories for one category. `section` is required and takes a slug from `space-sections`, which joins nested category paths with hyphens, such as `astronomy`, `astronomy-solar-system-mars` or `stargazing-meteor-showers`. Each item has its title, URL, summary, author, publication time and image. Other values return a 400.
 - **Params:** `section` (string, **required**) — Space.com category slug
 
 ### `space_news`
 
 - **HTTP:** `GET /space/news`
-- **What:** Get Space.com top stories. Returns fresh Space.com top stories (space, astronomy, and skywatching news) from the site's own latest-news hub.
+- **What:** Get Space.com top stories. Returns the latest Space.com top stories (space, astronomy and skywatching news) from the site's latest-news hub. Takes no parameters. Each item has its title, URL, summary, author, publication time and image.
 - **Params:** _none_
 
 ### `space_sections`
 
 - **HTTP:** `GET /space/sections`
-- **What:** Get Space.com sections. Returns the public Space.com category taxonomy used by the headlines endpoint.
+- **What:** Get Space.com sections. Lists the Space.com categories that `space-headlines` accepts, from `astronomy`, `entertainment`, `science`, `space-exploration`, `stargazing` and `technology` down to their subcategories. Each entry has a `slug`, a display `name` and the category `url`. Slugs join the nested path with hyphens, so `astronomy-solar-system-mars` maps to `/astronomy/solar-system/mars`.
 - **Params:** _none_
 
 ## Sporting News (5)
@@ -4617,19 +4617,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sportingnews_article`
 
 - **HTTP:** `GET /sportingnews/article`
-- **What:** Get Sporting News article content. Returns public Sporting News US article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Sporting News article content. Returns a Sporting News US article by canonical `url`, such as `https://www.sportingnews.com/us/nfl/dallas-cowboys/news/<slug>/<id>`: title, description, section (the sport or topic in the URL, for example `NFL`), authors, publication and update times, image and body `paragraphs`. Tables, embeds, ad slots and related-story lists are excluded. Non-US editions and hub pages are rejected.
 - **Params:** `url` (string, **required**) — Canonical Sporting News US article URL
 
 ### `sportingnews_author`
 
 - **HTTP:** `GET /sportingnews/author`
-- **What:** Get a Sporting News author profile. Returns one Sporting News US author's public profile: name, bio, photo, public social links, and their most recent articles.
+- **What:** Get a Sporting News author profile. Returns a Sporting News US author's profile, looked up by `slug` (for example `anne-erickson`) or canonical `url`; exactly one is required. The response has the name, `bio`, photo, social links and about 20 recent articles, each with title, URL, section, author, publication time and image. There is no pagination, and an unknown author returns not-found.
 - **Params:** `slug` (string, optional) — Author slug, e.g. anne-erickson; `url` (string, optional) — Canonical sportingnews.com/us/author/<slug> URL; alternative to slug
 
 ### `sportingnews_headlines`
 
 - **HTTP:** `GET /sportingnews/headlines`
-- **What:** Get Sporting News section headlines. Returns fresh headlines from one public Sporting News US sport, league or topic feed.
+- **What:** Get Sporting News section headlines. Returns up to 20 of the newest Sporting News US stories for one sport, league or topic. `section` is required and takes one of 44 slugs such as `nfl`, `nba`, `mlb`, `premier-league`, `formula-1`, `ufc` or `college`. Each item has its title, URL, summary, publication time, author and image. Off-season leagues may return older stories.
 - **Params:** `section` (string, **required**) — Sporting News section slug
 
 ### `sportingnews_news`
@@ -4641,7 +4641,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sportingnews_sections`
 
 - **HTTP:** `GET /sportingnews/sections`
-- **What:** Get Sporting News sections. Returns the public Sporting News US sport, league and topic feeds accepted by the headlines endpoint.
+- **What:** Get Sporting News sections. Lists the 44 Sporting News US sport, league and topic feeds that `sportingnews-headlines` accepts. Each entry has a `slug`, a display `name` and the feed `url`. Off-season leagues such as `club-world-cup` and `softball` are listed and may return older items. Team feeds and non-US editions are not covered.
 - **Params:** _none_
 
 ## Evening Standard (5)
@@ -4649,31 +4649,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `standard_article`
 
 - **HTTP:** `GET /standard/article`
-- **What:** Get Evening Standard article content. Returns public Evening Standard article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Evening Standard article content. Returns one Evening Standard article by its canonical `standard.co.uk` article `url`. The response has the title, description, publish and update times, section, authors, lead image, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical Evening Standard article URL
 
 ### `standard_author`
 
 - **HTTP:** `GET /standard/author`
-- **What:** Get an Evening Standard author profile. Returns one Evening Standard author's public profile: name, job title, bio, X/Twitter handle, and their recent articles.
+- **What:** Get an Evening Standard author profile. Returns an Evening Standard author profile, found by `slug` (for example `nicholas-cecil`) or by a canonical `url`; send exactly one of the two. The response has the name, job title, bio, X/Twitter link and the author's recent articles with their section. It is one page, with no further pagination.
 - **Params:** `slug` (string, optional) — Author slug, e.g. nicholas-cecil; `url` (string, optional) — Canonical standard.co.uk/author/<slug> URL; alternative to slug
 
 ### `standard_headlines`
 
 - **HTTP:** `GET /standard/headlines`
-- **What:** Get Evening Standard section headlines. Returns fresh headlines from one public Evening Standard RSS section.
+- **What:** Get Evening Standard section headlines. Returns the latest Evening Standard headlines for one section. `section` is required and takes a slug such as `news/london`, `news/politics`, `sport/football`, `business/markets`, `culture/theatre` or `homesandproperty/renting`. Each item has its title, URL, summary, publication time, author and image.
 - **Params:** `section` (string, **required**) — Evening Standard RSS section slug
 
 ### `standard_news`
 
 - **HTTP:** `GET /standard/news`
-- **What:** Get Evening Standard top stories. Returns fresh Evening Standard top stories from its public RSS feed.
+- **What:** Get Evening Standard top stories. Returns the current Evening Standard top stories. Each item has its title, URL, summary, publication time, author and image. Takes no parameters; use `standard-headlines` for a single section.
 - **Params:** _none_
 
 ### `standard_sections`
 
 - **HTTP:** `GET /standard/sections`
-- **What:** Get Evening Standard RSS sections. Returns the live-verified public RSS section inventory for the Evening Standard.
+- **What:** Get Evening Standard RSS sections. Lists the Evening Standard sections accepted by `standard-headlines`, as parent and child slugs such as `news`, `news/london`, `sport/rugby`, `going-out/restaurants` and `homesandproperty/gardening`. Each entry has the `slug`, display `name` and feed `url`.
 - **Params:** _none_
 
 ## Minnesota Star Tribune (1)
@@ -4695,25 +4695,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `straitstimes_author`
 
 - **HTTP:** `GET /straitstimes/author`
-- **What:** Get a The Straits Times author profile. Returns a The Straits Times author's byline metadata and their recent articles from a canonical author URL.
+- **What:** Get a The Straits Times author profile. Returns a The Straits Times author's profile by `url`, a canonical `straitstimes.com/authors/<slug>` link: name, email when the author's page publishes one, and recent articles with title, URL, summary, author, image, `type` and publication time.
 - **Params:** `url` (string, **required**) — Canonical The Straits Times author URL
 
 ### `straitstimes_headlines`
 
 - **HTTP:** `GET /straitstimes/headlines`
-- **What:** Get The Straits Times section headlines. Returns fresh headlines from one public The Straits Times section.
+- **What:** Get The Straits Times section headlines. Returns the current headlines for one The Straits Times section. `section` is required and takes a slug such as `singapore`, `singapore/housing`, `asia/se-asia`, `business/economy`, `sport/formula-one` or `breaking-news`. Items carry the title and URL. Top-level sections such as `singapore` and `business` add summary and publication time; subsection pages such as `singapore/housing` add an image when shown.
 - **Params:** `section` (string, **required**) — The Straits Times section slug
 
 ### `straitstimes_news`
 
 - **HTTP:** `GET /straitstimes/news`
-- **What:** Get The Straits Times top stories. Returns fresh The Straits Times top stories from its public top-stories page.
+- **What:** Get The Straits Times top stories. Returns the current top stories from The Straits Times. It takes no parameters. Each item has its title, URL and, where the outlet gives them, a summary, author, publication time, image URL and `type`. Use the headlines endpoint for one section.
 - **Params:** _none_
 
 ### `straitstimes_sections`
 
 - **HTTP:** `GET /straitstimes/sections`
-- **What:** Get The Straits Times sections. Returns the public The Straits Times category/section inventory used by the headlines endpoint.
+- **What:** Get The Straits Times sections. Lists The Straits Times section slugs that the headlines endpoint accepts, including nested ones such as `singapore/politics`, `asia/east-asia`, `world/europe`, `life/food`, `business/invest`, `sport/tennis`, `tech` and `breaking-news`. Each entry has a `slug`, display `name` and `url`.
 - **Params:** _none_
 
 ## Stuff (5)
@@ -4727,25 +4727,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `stuff_author`
 
 - **HTTP:** `GET /stuff/author`
-- **What:** Get a Stuff author profile. Returns one Stuff author's public profile: name, job title, location, biography, headshot, email, and their recent stories.
+- **What:** Get a Stuff author profile. Returns a Stuff (New Zealand) author's profile, looked up by `slug` (for example `damien-venuto`) or canonical `url`; exactly one is required. The response has the name, `job_title`, `location`, biography, headshot, `email` and recent stories. Fields show only what the profile has; shared team bylines usually carry just a job title. An unknown author returns not found.
 - **Params:** `slug` (string, optional) — Author slug, e.g. damien-venuto; `url` (string, optional) — Canonical stuff.co.nz/authors/<slug> URL; alternative to slug
 
 ### `stuff_headlines`
 
 - **HTTP:** `GET /stuff/headlines`
-- **What:** Get Stuff section headlines. Returns fresh Stuff headlines from one public section feed.
+- **What:** Get Stuff section headlines. Returns the latest Stuff (New Zealand) stories for one section. `section` is required and takes one of 31 slugs, including slash-separated regional and sport ones such as `nz-news/auckland` and `sport/rugby`, plus `world-news`, `business`, `politics` and `motoring`. Each item has its title, URL, summary, publication time, author and image.
 - **Params:** `section` (string, **required**) — Stuff section slug
 
 ### `stuff_news`
 
 - **HTTP:** `GET /stuff/news`
-- **What:** Get Stuff top stories. Returns fresh Stuff (New Zealand) top stories from the public site-wide feed.
+- **What:** Get Stuff top stories. Returns the latest Stuff (New Zealand) top stories from the site-wide feed. Takes no parameters. Each item has its title, URL, summary, publication time, author and image where the feed provides them.
 - **Params:** _none_
 
 ### `stuff_sections`
 
 - **HTTP:** `GET /stuff/sections`
-- **What:** Get Stuff sections. Returns the public Stuff section slugs accepted by the headlines endpoint.
+- **What:** Get Stuff sections. Lists the 31 Stuff sections that `stuff-headlines` accepts, including regional and sport slugs that contain a slash, such as `nz-news/auckland` and `sport/rugby`. Each entry has a `slug`, a display `name` and the section's Atom feed `url`.
 - **Params:** _none_
 
 ## The Sun (5)
@@ -4753,31 +4753,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sun_article`
 
 - **HTTP:** `GET /sun/article`
-- **What:** Get The Sun article content. Returns public The Sun article metadata and body paragraphs from a canonical article URL.
+- **What:** Get The Sun article content. Returns one The Sun article by `url`, a canonical HTTPS article link. The response has the title, description, section, authors, publication and update times, lead image URL, body `paragraphs` and a `paywalled` flag. Subscriber-only or blocked pages return an error instead.
 - **Params:** `url` (string, **required**) — Canonical The Sun article URL
 
 ### `sun_author`
 
 - **HTTP:** `GET /sun/author`
-- **What:** Get a Sun author profile. Returns a Sun author's byline metadata, biography, and recent articles from a canonical author URL.
+- **What:** Get a Sun author profile. Returns a Sun author's profile by `url`, a canonical `thesun.co.uk/author/<slug>/` link: name, job title, bio and recent articles with title, URL, excerpt, category and category URL. `job_title` is often empty because most Sun bylines carry only a name and bio.
 - **Params:** `url` (string, **required**) — Canonical The Sun author URL
 
 ### `sun_headlines`
 
 - **HTTP:** `GET /sun/headlines`
-- **What:** Get The Sun section headlines. Returns fresh headlines from one public The Sun section.
+- **What:** Get The Sun section headlines. Returns the current headlines for one The Sun section. `section` is required and takes one of `news`, `politics`, `royal-family`, `sport`, `showbiz`, `money`, `tech`, `fabulous`, `travel` or `health`. Every item has its title and URL. The `news` section also carries summary, author, publication time and image when the outlet provides them.
 - **Params:** `section` (string, **required**) — The Sun section slug
 
 ### `sun_news`
 
 - **HTTP:** `GET /sun/news`
-- **What:** Get The Sun top stories. Returns fresh The Sun stories from the public RSS feed.
+- **What:** Get The Sun top stories. Returns the current top stories from The Sun. It takes no parameters. Each item has its title, URL and, where available, a summary, author, publication time, image URL and `type`. Use the headlines endpoint to read one section.
 - **Params:** _none_
 
 ### `sun_sections`
 
 - **HTTP:** `GET /sun/sections`
-- **What:** Get The Sun sections. Returns the public The Sun editorial section inventory.
+- **What:** Get The Sun sections. Lists the The Sun sections that the headlines endpoint accepts, such as `news`, `politics`, `royal-family`, `sport`, `showbiz`, `money`, `tech`, `fabulous`, `travel` and `health`. Each entry has a `slug`, a display `name` and a section `url`.
 - **Params:** _none_
 
 ## TechCrunch (5)
@@ -4797,19 +4797,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `techcrunch_headlines`
 
 - **HTTP:** `GET /techcrunch/headlines`
-- **What:** Get TechCrunch category headlines. Returns fresh headlines from one public TechCrunch category feed.
+- **What:** Get TechCrunch category headlines. Returns the latest TechCrunch stories for one category. `section` is required and takes one of 22 slugs such as `artificial-intelligence`, `startups`, `venture`, `security`, `fintech`, `space` or `cryptocurrency`. Each item has its title, URL, summary, publication time and author.
 - **Params:** `section` (string, **required**) — TechCrunch category slug
 
 ### `techcrunch_news`
 
 - **HTTP:** `GET /techcrunch/news`
-- **What:** Get TechCrunch top stories. Returns fresh TechCrunch top stories from its public RSS feed.
+- **What:** Get TechCrunch top stories. Returns the latest TechCrunch top stories from its home feed. Takes no parameters. Each item has its title, URL, summary, publication time and author name.
 - **Params:** _none_
 
 ### `techcrunch_sections`
 
 - **HTTP:** `GET /techcrunch/sections`
-- **What:** Get TechCrunch categories. Returns the complete public category inventory accepted by /api/v1/techcrunch/headlines.
+- **What:** Get TechCrunch categories. Lists the 22 TechCrunch categories that `techcrunch-headlines` accepts, taken from the site's primary navigation dropdown. Each entry has a stable `slug`, a display `name` and the category's feed `url`. For example, `artificial-intelligence` is named AI.
 - **Params:** _none_
 
 ## TechRadar (5)
@@ -4817,31 +4817,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `techradar_article`
 
 - **HTTP:** `GET /techradar/article`
-- **What:** Get TechRadar article content. Returns public TechRadar article metadata and body paragraphs from a canonical article URL.
+- **What:** Get TechRadar article content. Returns a TechRadar article by canonical `url` on `techradar.com`: title, description, section, authors, publication and update times, lead image, the body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical TechRadar article URL
 
 ### `techradar_author`
 
 - **HTTP:** `GET /techradar/author`
-- **What:** Get a TechRadar author profile. Returns one TechRadar author's public profile: name, biography, social links, and one page of their recent articles.
+- **What:** Get a TechRadar author profile. Returns a TechRadar author's profile, looked up by `slug` (for example `tom-power`) or canonical `url`, which may end in `/page/<n>`; exactly one is required. `page` (1-based, default 1) overrides any page in `url`. The response has the name, `job_title`, biography, social links, one page of articles and `has_next_page`.
 - **Params:** `page` (integer, optional) — 1-based page number; overrides any page number in url; `slug` (string, optional) — Author slug, e.g. tom-power; `url` (string, optional) — Canonical techradar.com/author/<slug> URL, optionally with a /page/<n> segment; alternative to slug
 
 ### `techradar_headlines`
 
 - **HTTP:** `GET /techradar/headlines`
-- **What:** Get TechRadar section headlines. Returns fresh TechRadar headlines from one public section hub page.
+- **What:** Get TechRadar section headlines. Returns the latest TechRadar stories for one section hub. `section` is required and takes one of 25 slugs such as `computing`, `phones`, `audio`, `gaming`, `deals`, `reviews`, `news` or `vpn`. Each item has its title, URL, summary, publication time, author and image.
 - **Params:** `section` (string, **required**) — TechRadar section slug
 
 ### `techradar_news`
 
 - **HTTP:** `GET /techradar/news`
-- **What:** Get TechRadar top stories. Returns fresh TechRadar top stories from the public RSS feed.
+- **What:** Get TechRadar top stories. Returns TechRadar's latest top stories across the site. Takes no parameters, and `techradar-headlines` narrows by section instead. Each item has its title, URL, summary, publication time, author and image.
 - **Params:** _none_
 
 ### `techradar_sections`
 
 - **HTTP:** `GET /techradar/sections`
-- **What:** Get TechRadar sections. Returns the public TechRadar top-level editorial taxonomy used by the headlines endpoint.
+- **What:** Get TechRadar sections. Lists the 25 top-level TechRadar sections that `techradar-headlines` accepts, such as `computing`, `phones`, `best`, `deals` and `how-to`. Each entry has a `slug`, a display `name` and the section page `url`.
 - **Params:** _none_
 
 ## The Telegraph (5)
@@ -4849,31 +4849,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `telegraph_article`
 
 - **HTTP:** `GET /telegraph/article`
-- **What:** Get The Telegraph article content. Returns public The Telegraph article metadata and body paragraphs from a canonical article URL.
+- **What:** Get The Telegraph article content. Returns one The Telegraph article by `url`, a canonical HTTPS article link. The response has the title, description, section, authors, publication and update times, image URL, body `paragraphs` and a `paywalled` flag. Access is intermittent, and subscriber-only or blocked pages return an error.
 - **Params:** `url` (string, **required**) — Canonical The Telegraph article URL
 
 ### `telegraph_author`
 
 - **HTTP:** `GET /telegraph/author`
-- **What:** Get a Telegraph author profile. Returns a Telegraph author's byline metadata, biography, and recent articles from a canonical author URL.
+- **What:** Get a Telegraph author profile. Returns a Telegraph author's profile by `url`, a canonical `telegraph.co.uk/authors/<letter>/<range>/<name>/` link: name, job title, bio and recent articles with title, URL, excerpt and ISO-8601 `published_at`. `job_title` can be empty for contributors without a masthead credit.
 - **Params:** `url` (string, **required**) — Canonical Telegraph author URL
 
 ### `telegraph_headlines`
 
 - **HTTP:** `GET /telegraph/headlines`
-- **What:** Get The Telegraph section headlines. Returns fresh headlines from one public The Telegraph section.
+- **What:** Get The Telegraph section headlines. Returns the current headlines for one The Telegraph section. `section` is required and takes one of `uk-news`, `world-news`, `politics`, `business`, `finance`, `technology`, `sport`, `culture`, `travel`, `lifestyle`, `health`, `science` or `opinion`. Each item has its title and URL.
 - **Params:** `section` (string, **required**) — The Telegraph section slug
 
 ### `telegraph_news`
 
 - **HTTP:** `GET /telegraph/news`
-- **What:** Get The Telegraph top stories. Returns fresh public The Telegraph stories from its RSS feed when the upstream security layer permits the request.
+- **What:** Get The Telegraph top stories. Returns the current top stories from The Telegraph. It takes no parameters. Each item has its title, URL and, where available, a summary, author, publication time, image URL and `type`. It can return an error when The Telegraph declines the request.
 - **Params:** _none_
 
 ### `telegraph_sections`
 
 - **HTTP:** `GET /telegraph/sections`
-- **What:** Get The Telegraph sections. Returns the public The Telegraph editorial section inventory.
+- **What:** Get The Telegraph sections. Lists the The Telegraph sections that the headlines endpoint accepts, such as `uk-news`, `world-news`, `politics`, `finance`, `culture` and `opinion`. Each entry has a `slug`, a display `name` and a section `url`.
 - **Params:** _none_
 
 ## The Age (5)
@@ -4939,7 +4939,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `thedailybeast_article`
 
 - **HTTP:** `GET /thedailybeast/article`
-- **What:** Get The Daily Beast article content. Returns public The Daily Beast article metadata and body paragraphs from a canonical article URL.
+- **What:** Get The Daily Beast article content. Returns one The Daily Beast article by its canonical `url`, either a root-level slug or one under a single content vertical such as `obsessed`. The response has the title, description, section, authors, publication and update times, lead image URL, body `paragraphs` and a `paywalled` flag. Digest or index pages are not articles and return an error.
 - **Params:** `url` (string, **required**) — Canonical The Daily Beast article URL
 
 ### `thedailybeast_author`
@@ -4951,19 +4951,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `thedailybeast_headlines`
 
 - **HTTP:** `GET /thedailybeast/headlines`
-- **What:** Get The Daily Beast section headlines. Returns fresh headlines from one public The Daily Beast category hub.
+- **What:** Get The Daily Beast section headlines. Returns the current headlines of one The Daily Beast section. `section` is required and takes a slug such as `politics`, `politics/opinion`, `obsessed/reviews`, `scouted/home` or `world/china`. Each item can carry its title, URL, summary, author, publication time, lead image and `type`, and the response echoes the `section`.
 - **Params:** `section` (string, **required**) — The Daily Beast section slug
 
 ### `thedailybeast_news`
 
 - **HTTP:** `GET /thedailybeast/news`
-- **What:** Get The Daily Beast top stories. Returns fresh The Daily Beast stories from the public outbound RSS feed.
+- **What:** Get The Daily Beast top stories. Returns the current top stories from The Daily Beast. It takes no parameters. Each item has its title, URL, summary, publication time, author and lead image, so it is a quick front-page view; use the headlines endpoint with a `section` slug for one category.
 - **Params:** _none_
 
 ### `thedailybeast_sections`
 
 - **HTTP:** `GET /thedailybeast/sections`
-- **What:** Get The Daily Beast sections. Returns the live public The Daily Beast category inventory (parent and child sections).
+- **What:** Get The Daily Beast sections. Lists the sections of The Daily Beast that the headlines endpoint accepts, both top-level categories such as `politics` and `world` and child sub-sections such as `politics/opinion` and `world/middle-east`. Each entry has a `slug`, a display `name` and the section `url`.
 - **Params:** _none_
 
 ## The Hill (5)
@@ -4971,31 +4971,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `thehill_article`
 
 - **HTTP:** `GET /thehill/article`
-- **What:** Get The Hill article content. Returns public The Hill article metadata and body paragraphs from a canonical article URL.
+- **What:** Get The Hill article content. Returns one The Hill article by `url`, which must be a canonical HTTPS `thehill.com` article link containing a numeric article id. The response has the title, description, section, authors, publication and update times, lead image URL, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical The Hill article URL
 
 ### `thehill_author`
 
 - **HTTP:** `GET /thehill/author`
-- **What:** Get a The Hill author profile. Returns a The Hill author's byline metadata, biography, and recent articles from a canonical author URL.
+- **What:** Get a The Hill author profile. Returns a The Hill author's profile by `url`, a canonical `thehill.com/author/<slug>/` link: name, job title, bio, image URL and recent articles with title, URL, category and category URL. `job_title` and `image_url` may be missing, and each article's `published_at` is relative text such as `10 hours ago`, not a timestamp.
 - **Params:** `url` (string, **required**) — Canonical The Hill author URL
 
 ### `thehill_headlines`
 
 - **HTTP:** `GET /thehill/headlines`
-- **What:** Get The Hill section headlines. Returns fresh headlines from one public The Hill RSS section.
+- **What:** Get The Hill section headlines. Returns the current headlines for one The Hill section. `section` is required and takes one of 19 slugs, including `home`, `policy`, `business`, `senate`, `national-security` and `technology`. Each item has its title and URL, plus summary, author, publication time and image when the outlet provides them, and the response echoes the `section`.
 - **Params:** `section` (string, **required**) — The Hill RSS section slug
 
 ### `thehill_news`
 
 - **HTTP:** `GET /thehill/news`
-- **What:** Get The Hill top stories. Returns fresh The Hill top stories from its public RSS feed.
+- **What:** Get The Hill top stories. Returns the current top stories from The Hill. It takes no parameters. Each item has its title, URL and, where the outlet gives them, a summary, author, publication time, image URL and `type`. Use the headlines endpoint to read one section instead.
 - **Params:** _none_
 
 ### `thehill_sections`
 
 - **HTTP:** `GET /thehill/sections`
-- **What:** Get The Hill RSS sections. Returns the public The Hill RSS section inventory used by the headlines endpoint.
+- **What:** Get The Hill RSS sections. Lists the 19 The Hill section slugs that the headlines endpoint accepts, such as `home`, `policy`, `senate`, `defense` and `technology`. Each entry has the section `slug`, its display `name` and its `url`.
 - **Params:** _none_
 
 ## The Hindu (5)
@@ -5015,19 +5015,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `thehindu_headlines`
 
 - **HTTP:** `GET /thehindu/headlines`
-- **What:** Get The Hindu section headlines. Returns fresh headlines from one public The Hindu section.
+- **What:** Get The Hindu section headlines. Returns the current headlines for one The Hindu section. `section` is required and takes a slug such as `news-national`, `opinion-editorial`, `business-markets`, `sport-cricket` or `sci-tech-health`. Items carry the title, URL, summary, author, publication time and image, and the response echoes the `section`.
 - **Params:** `section` (string, **required**) — The Hindu section slug
 
 ### `thehindu_news`
 
 - **HTTP:** `GET /thehindu/news`
-- **What:** Get The Hindu top stories. Returns fresh The Hindu top stories from its public "Latest News" feed.
+- **What:** Get The Hindu top stories. Returns the current stories from The Hindu's Latest News listing. It takes no parameters. Each item has its title, URL and, where available, a summary, author, publication time, image URL and `type`. For a single desk such as cricket or business, use the headlines endpoint.
 - **Params:** _none_
 
 ### `thehindu_sections`
 
 - **HTTP:** `GET /thehindu/sections`
-- **What:** Get The Hindu sections. Returns the public The Hindu section inventory used by the headlines endpoint.
+- **What:** Get The Hindu sections. Lists the The Hindu section slugs that the headlines endpoint accepts, covering news, opinion, business, sport, entertainment, sci-tech, education, life and style, society, books and food, for example `news-national`, `sport-cricket` and `food-recipes`. Each entry has a `slug`, `name` and `url`.
 - **Params:** _none_
 
 ## TheJournal.ie (5)
@@ -5053,13 +5053,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `thejournal_news`
 
 - **HTTP:** `GET /thejournal/news`
-- **What:** Get TheJournal.ie top stories. Returns fresh TheJournal.ie stories from the public site-wide RSS feed, with real publish times.
+- **What:** Get TheJournal.ie top stories. Returns the latest TheJournal.ie stories across all sections. Each item has a title, canonical URL, short summary, publication time (RFC 3339, UTC) and lead image. Items carry no author byline; the article endpoint supplies it. It takes no parameters.
 - **Params:** _none_
 
 ### `thejournal_sections`
 
 - **HTTP:** `GET /thejournal/sections`
-- **What:** Get TheJournal.ie sections. Returns the public TheJournal.ie section inventory: the category pages and navigation topic pages this family serves headlines for.
+- **What:** Get TheJournal.ie sections. Lists the 22 TheJournal.ie sections that the headlines endpoint accepts, verified 2026-09-25: nine category pages such as `irish`, `politics` and `business`, plus topic pages such as `housing`, `courts`, `ukraine` and `gaza`. Each entry has a `slug`, `name` and listing page `url`. Topic pages outside the site navigation are not served.
 - **Params:** _none_
 
 ## The Star Malaysia (5)
@@ -5079,19 +5079,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `thestarmy_headlines`
 
 - **HTTP:** `GET /thestarmy/headlines`
-- **What:** Get The Star (Malaysia) section headlines. Returns the current headlines of one public The Star (Malaysia) section page.
+- **What:** Get The Star (Malaysia) section headlines. Returns the current stories of one The Star (Malaysia) section page, usually 10 and up to 100 on column-style sections. `section` is required, for example `news-nation`, `latest-business`, `sport-badminton` or `latest-food`. Items have a title and URL, and when the page shows them a `type`, summary, byline, image and publication time. Older stories are not paginated.
 - **Params:** `section` (string, **required**) — The Star (Malaysia) section slug
 
 ### `thestarmy_news`
 
 - **HTTP:** `GET /thestarmy/news`
-- **What:** Get The Star (Malaysia) top stories. Returns the current The Star (Malaysia) top stories from the public home page.
+- **What:** Get The Star (Malaysia) top stories. Returns the current top stories on The Star (Malaysia) home page. It takes no parameters. Each item has a title and canonical URL, plus a short section label in `type`, a summary and a byline when the page shows them. `published_at` is omitted here; the section headlines endpoint carries it.
 - **Params:** _none_
 
 ### `thestarmy_sections`
 
 - **HTTP:** `GET /thestarmy/sections`
-- **What:** Get The Star (Malaysia) sections. Returns the public The Star (Malaysia) story-listing sections accepted by the headlines endpoint.
+- **What:** Get The Star (Malaysia) sections. Lists the 94 The Star (Malaysia) sections that returned at least one story to an anonymous reader when checked on 2026-09-25, and that the headlines endpoint accepts. Examples are `news-latest`, `latest-nation`, `business-smebiz` and `sport-football`. Each entry has a `slug`, a `name` and the section page `url`.
 - **Params:** _none_
 
 ## The Verge (5)
@@ -5099,31 +5099,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `theverge_article`
 
 - **HTTP:** `GET /theverge/article`
-- **What:** Get The Verge article content. Returns public The Verge article metadata and body paragraphs from a canonical article URL.
+- **What:** Get The Verge article content. Returns one The Verge article by `url`, a canonical HTTPS article link. The response has the title, description, section, authors, publication and update times, lead image URL, body `paragraphs` and a `paywalled` flag. Subscriber-only or blocked pages return an error instead.
 - **Params:** `url` (string, **required**) — Canonical The Verge article URL
 
 ### `theverge_author`
 
 - **HTTP:** `GET /theverge/author`
-- **What:** Get a The Verge author profile. Returns a The Verge author's byline metadata, biography, and recent articles from a canonical author URL.
+- **What:** Get a The Verge author profile. Returns a The Verge author's profile by `url`, a canonical `theverge.com/authors/<slug>` link: name, job title such as Senior Reporter, bio and recent articles. Each article has a title, URL, excerpt, ISO-8601 `published_at` and `category`, the post's primary Verge vertical such as Tech.
 - **Params:** `url` (string, **required**) — Canonical The Verge author URL
 
 ### `theverge_headlines`
 
 - **HTTP:** `GET /theverge/headlines`
-- **What:** Get The Verge section headlines. Returns fresh headlines from one public The Verge section.
+- **What:** Get The Verge section headlines. Returns the current headlines for one The Verge section. `section` is required and takes one of `tech`, `reviews`, `science`, `entertainment`, `ai`, `policy`, `gaming`, `mobile`, `apps` or `features`. Each item has its title, URL, summary, author and publication time.
 - **Params:** `section` (string, **required**) — The Verge section slug
 
 ### `theverge_news`
 
 - **HTTP:** `GET /theverge/news`
-- **What:** Get The Verge top stories. Returns fresh public The Verge stories from its RSS feed.
+- **What:** Get The Verge top stories. Returns the current top stories from The Verge. It takes no parameters. Each item has its title, URL and, where available, a summary, author, publication time, image URL and `type`. Use the headlines endpoint to read one section.
 - **Params:** _none_
 
 ### `theverge_sections`
 
 - **HTTP:** `GET /theverge/sections`
-- **What:** Get The Verge sections. Returns the public The Verge editorial section inventory.
+- **What:** Get The Verge sections. Lists the The Verge sections that the headlines endpoint accepts: `tech`, `reviews`, `science`, `entertainment`, `ai`, `policy`, `gaming`, `mobile`, `apps` and `features`. Each entry has a `slug`, a display `name` and a section `url`.
 - **Params:** _none_
 
 ## This Is Money (5)
@@ -5131,31 +5131,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `thisismoney_article`
 
 - **HTTP:** `GET /thisismoney/article`
-- **What:** Get This Is Money article content. Returns public This Is Money article metadata and body paragraphs from a canonical article URL.
+- **What:** Get This Is Money article content. Returns one This Is Money article by `url`, a canonical HTTPS article link. The response has the title, description, section, authors, publication and update times, image URL, body `paragraphs` and a `paywalled` flag. Pages that are subscriber-only or blocked return an error.
 - **Params:** `url` (string, **required**) — Canonical This Is Money article URL
 
 ### `thisismoney_author`
 
 - **HTTP:** `GET /thisismoney/author`
-- **What:** Get a This Is Money author profile. Returns a This Is Money author's byline metadata, biography, coverage topics, and recent articles from a canonical author URL.
+- **What:** Get a This Is Money author profile. Returns a This Is Money author's profile by `url`, a canonical `thisismoney.co.uk/profile-<id>/<slug>.html` link: name, job title, bio, coverage topic tags such as Money or Bills, and recent articles with title, URL, excerpt and ISO-8601 `published_at`. `job_title` and `coverage` can be empty.
 - **Params:** `url` (string, **required**) — Canonical This Is Money author URL
 
 ### `thisismoney_headlines`
 
 - **HTTP:** `GET /thisismoney/headlines`
-- **What:** Get This Is Money section headlines. Returns fresh headlines from one public This Is Money RSS section.
+- **What:** Get This Is Money section headlines. Returns the current headlines for one This Is Money section. `section` is required and takes one of `money`, `markets`, `investing`, `savings`, `pensions`, `mortgages`, `property`, `cars`, `travel` or `consumer`. Each item has its title and URL, plus summary, author, publication time and image when the outlet provides them.
 - **Params:** `section` (string, **required**) — This Is Money section slug
 
 ### `thisismoney_news`
 
 - **HTTP:** `GET /thisismoney/news`
-- **What:** Get This Is Money top stories. Returns fresh This Is Money stories from the public RSS feed.
+- **What:** Get This Is Money top stories. Returns the current top stories from This Is Money. It takes no parameters. Each item has its title, URL and, where available, a summary, author, publication time, image URL and `type`. Use the headlines endpoint to read one section.
 - **Params:** _none_
 
 ### `thisismoney_sections`
 
 - **HTTP:** `GET /thisismoney/sections`
-- **What:** Get This Is Money sections. Returns the public This Is Money RSS section inventory.
+- **What:** Get This Is Money sections. Lists the This Is Money sections that the headlines endpoint accepts, such as `money`, `markets`, `savings`, `pensions`, `mortgages`, `property` and `cars`. Each entry has a `slug`, a display `name` and a section `url`.
 - **Params:** _none_
 
 ## TIME (5)
@@ -5163,31 +5163,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `time_article`
 
 - **HTTP:** `GET /time/article`
-- **What:** Get TIME article content. Returns public TIME article metadata and body paragraphs from a canonical article URL.
+- **What:** Get TIME article content. Returns one TIME article by `url`, which must be a canonical HTTPS dated `time.com` article link. The response has the title, description, section, authors, publication and update times, lead image URL, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical TIME article URL
 
 ### `time_author`
 
 - **HTTP:** `GET /time/author`
-- **What:** Get a TIME author profile. Returns a TIME author's byline metadata, biography, social accounts, and recent articles from a canonical author URL.
+- **What:** Get a TIME author profile. Returns a TIME author's profile by `url`, a canonical `time.com/author/<slug>/` link: name, job title, bio, image URL, social account links and recent articles with title, URL, excerpt, section, section URL and ISO-8601 `published_at`. Not every author lists a social account.
 - **Params:** `url` (string, **required**) — Canonical TIME author URL
 
 ### `time_headlines`
 
 - **HTTP:** `GET /time/headlines`
-- **What:** Get TIME section headlines. Returns fresh TIME headlines from one public RSS section.
+- **What:** Get TIME section headlines. Returns the current headlines for one TIME section. `section` is required and takes one of `news`, `politics`, `world`, `business`, `technology`, `health`, `entertainment`, `sports`, `ideas` or `climate`. Each item has its title and URL.
 - **Params:** `section` (string, **required**) — TIME RSS section slug
 
 ### `time_news`
 
 - **HTTP:** `GET /time/news`
-- **What:** Get TIME top stories. Returns fresh TIME top stories from its public RSS feed.
+- **What:** Get TIME top stories. Returns the current top stories from TIME. It takes no parameters. Each item has its title, URL and, where available, a summary, author, publication time, image URL and `type`. Use the headlines endpoint to read one section.
 - **Params:** _none_
 
 ### `time_sections`
 
 - **HTTP:** `GET /time/sections`
-- **What:** Get TIME RSS sections. Returns the public TIME RSS section inventory used by the headlines endpoint.
+- **What:** Get TIME RSS sections. Lists the 10 TIME section slugs that the headlines endpoint accepts: `news`, `politics`, `world`, `business`, `technology`, `health`, `entertainment`, `sports`, `ideas` and `climate`. Each entry has a `slug`, a display `name` and a `url`.
 - **Params:** _none_
 
 ## Times of India (5)
@@ -5201,25 +5201,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `timesofindia_author`
 
 - **HTTP:** `GET /timesofindia/author`
-- **What:** Get a Times of India author profile. Returns one Times of India reporter's public profile: name, job title, headshot, biography, and their recent articles.
+- **What:** Get a Times of India author profile. Returns a Times of India reporter's profile by `url`, a canonical `timesofindia.indiatimes.com/toireporter/author-<name>-<id>.cms` link: name, job title, organization, location, email, biography, headshot and recent articles with title and URL. Fields the profile page does not publish may be empty.
 - **Params:** `url` (string, **required**) — Canonical Times of India author URL
 
 ### `timesofindia_headlines`
 
 - **HTTP:** `GET /timesofindia/headlines`
-- **What:** Get The Times of India section headlines. Returns fresh headlines from one public Times of India section or city-edition feed.
+- **What:** Get The Times of India section headlines. Returns the current headlines for one Times of India section or city edition. `section` is required, for example `top-stories`, `india`, `world`, `business`, `cricket`, `mumbai`, `delhi` or `bangalore`. Items carry the title and URL, plus summary, author, publication time and image when the outlet provides them.
 - **Params:** `section` (string, **required**) — Times of India section slug
 
 ### `timesofindia_news`
 
 - **HTTP:** `GET /timesofindia/news`
-- **What:** Get The Times of India top stories. Returns fresh Times of India top-stories headline metadata from its public RSS feed.
+- **What:** Get The Times of India top stories. Returns the current Times of India top stories. It takes no parameters. Each item has its title, URL, summary, publication time with its UTC offset, author and image URL. Use the headlines endpoint for a section or city edition.
 - **Params:** _none_
 
 ### `timesofindia_sections`
 
 - **HTTP:** `GET /timesofindia/sections`
-- **What:** Get The Times of India sections. Returns the complete public section inventory accepted by /api/v1/timesofindia/headlines: national and international topical sections, and India city editions.
+- **What:** Get The Times of India sections. Lists the 55 Times of India sections that the headlines endpoint accepts, covering national and international topics such as `india`, `world`, `business` and `cricket`, and India city editions such as `mumbai`, `delhi` and `bangalore`. Each entry has a `slug`, a display `name` and the section feed `url`.
 - **Params:** _none_
 
 ## Times of Israel (5)
@@ -5239,19 +5239,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `timesofisrael_headlines`
 
 - **HTTP:** `GET /timesofisrael/headlines`
-- **What:** Get Times of Israel section headlines. Returns fresh headlines from one public Times of Israel section.
+- **What:** Get Times of Israel section headlines. Returns the current headlines for one Times of Israel section. `section` is required and takes one of `israel-and-the-region`, `israel-inside`, `jewish-times`, `real-estate-israel` or `tech-israel`. Each item has its title and URL.
 - **Params:** `section` (string, **required**) — Times of Israel section slug
 
 ### `timesofisrael_news`
 
 - **HTTP:** `GET /timesofisrael/news`
-- **What:** Get Times of Israel top stories. Returns fresh Times of Israel top stories from its public news sitemap.
+- **What:** Get Times of Israel top stories. Returns the latest Times of Israel stories. It takes no parameters. Each item has a title, URL and publication time. The list includes both regular story pages and individual liveblog-update pages, so expect some entries to be short updates.
 - **Params:** _none_
 
 ### `timesofisrael_sections`
 
 - **HTTP:** `GET /timesofisrael/sections`
-- **What:** Get Times of Israel sections. Returns the public Times of Israel section inventory used by the headlines endpoint.
+- **What:** Get Times of Israel sections. Lists the five Times of Israel sections that the headlines endpoint accepts: `israel-and-the-region`, `israel-inside`, `jewish-times`, `real-estate-israel` and `tech-israel`. Each entry has a `slug`, a display `name` and a section `url`.
 - **Params:** _none_
 
 ## TMZ (5)
@@ -5259,7 +5259,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tmz_article`
 
 - **HTTP:** `GET /tmz/article`
-- **What:** Get TMZ article content. Returns public TMZ article metadata and body paragraphs from a canonical article URL.
+- **What:** Get TMZ article content. Returns one TMZ article by `url`, a canonical HTTPS `tmz.com` link of the form `/<year>/<month>/<day>/<slug>/`. The response has the title, description, section, authors, publication and update times, image URL, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical TMZ article URL
 
 ### `tmz_author`
@@ -5271,13 +5271,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tmz_headlines`
 
 - **HTTP:** `GET /tmz/headlines`
-- **What:** Get TMZ section headlines. Returns fresh headlines from one TMZ section's public hub page.
+- **What:** Get TMZ section headlines. Returns the current headlines for one TMZ section. `section` is required and must be `news` or `sports`. Each item has its title, URL and, where available, a summary, author, publication time, image and `type`, and the response echoes the `section`.
 - **Params:** `section` (string, **required**) — TMZ section slug
 
 ### `tmz_news`
 
 - **HTTP:** `GET /tmz/news`
-- **What:** Get TMZ top stories. Returns fresh TMZ celebrity news top stories from the public home feed.
+- **What:** Get TMZ top stories. Returns the current TMZ celebrity news top stories. It takes no parameters. Each item has its title, URL and, where available, an author such as TMZ Staff, a summary, publication time and image URL. Use the headlines endpoint with `sports` for sports stories.
 - **Params:** _none_
 
 ### `tmz_sections`
@@ -5291,31 +5291,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tomsguide_article`
 
 - **HTTP:** `GET /tomsguide/article`
-- **What:** Get Tom's Guide article content. Returns public Tom's Guide article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Tom's Guide article content. Returns one Tom's Guide article by `url`, a canonical HTTPS `tomsguide.com` link such as `tomsguide.com/<section>/<slug>`. The response has the title, description, section, authors, publication and update times, image URL, body `paragraphs` and a `paywalled` flag. On some product reviews `authors` may be empty.
 - **Params:** `url` (string, **required**) — Canonical Tom's Guide article URL
 
 ### `tomsguide_author`
 
 - **HTTP:** `GET /tomsguide/author`
-- **What:** Get a Tom's Guide author profile. Returns one Tom's Guide author's public profile: name, biography, social links, and one page of their recent articles.
+- **What:** Get a Tom's Guide author profile. Returns a Tom's Guide author's name, job title, biography, social links and one page of recent articles. Give exactly one of `slug` or `url`; `page` is 1-based, defaults to 1 and overrides any page in `url`. The response also has `page` and `has_next_page`.
 - **Params:** `page` (integer, optional) — 1-based page number; overrides any page number in url; `slug` (string, optional) — Author slug, e.g. tom-pritchard; `url` (string, optional) — Canonical tomsguide.com/author/<slug> URL, optionally with a /page/<n> segment; alternative to slug
 
 ### `tomsguide_headlines`
 
 - **HTTP:** `GET /tomsguide/headlines`
-- **What:** Get Tom's Guide section headlines. Returns fresh Tom's Guide headlines from one public section hub page.
+- **What:** Get Tom's Guide section headlines. Returns the current headlines for one Tom's Guide section. `section` is required and takes one of 22 slugs, such as `ai`, `audio`, `deals`, `how-to`, `news`, `reviews`, `tvs` or `phones`. Each item has its title, URL, summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — Tom's Guide section slug
 
 ### `tomsguide_news`
 
 - **HTTP:** `GET /tomsguide/news`
-- **What:** Get Tom's Guide top stories. Returns fresh Tom's Guide top stories from the public RSS feed.
+- **What:** Get Tom's Guide top stories. Returns the current top stories from Tom's Guide. It takes no parameters. Each item has its title, URL and, where available, a summary, author, publication time, image URL and `type`. Use the headlines endpoint to read one section.
 - **Params:** _none_
 
 ### `tomsguide_sections`
 
 - **HTTP:** `GET /tomsguide/sections`
-- **What:** Get Tom's Guide sections. Returns the public Tom's Guide top-level content vertical taxonomy used by the headlines endpoint.
+- **What:** Get Tom's Guide sections. Lists the 22 top-level Tom's Guide content verticals that the headlines endpoint accepts, such as `ai`, `best-picks`, `how-to`, `mattresses`, `reviews`, `vehicle-tech` and `phones`. Each entry has a `slug`, a display `name` and a `url`.
 - **Params:** _none_
 
 ## Tom's Hardware (5)
@@ -5323,31 +5323,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tomshardware_article`
 
 - **HTTP:** `GET /tomshardware/article`
-- **What:** Get Tom's Hardware article content. Returns public Tom's Hardware article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Tom's Hardware article content. Returns one Tom's Hardware article by its canonical `url`, either the current `tomshardware.com/<section>/<subsection>/<slug>` form or the legacy `/reviews/<slug>,<id>.html` form. The response has the title, description, authors, section, published and updated times, lead image, the body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical Tom's Hardware article URL
 
 ### `tomshardware_author`
 
 - **HTTP:** `GET /tomshardware/author`
-- **What:** Get a Tom's Hardware author profile. Returns one Tom's Hardware author's public profile: name, biography, social links, and one page of their recent articles.
+- **What:** Get a Tom's Hardware author profile. Returns a Tom's Hardware author profile with name, job title, biography, social links and one page of recent articles. Identify the author with `slug` (such as `christian-eberle`) or an author `url`; `page` (default 1) overrides any page in the URL. `has_next_page` tells you whether more articles exist.
 - **Params:** `page` (integer, optional) — 1-based page number; overrides any page number in url; `slug` (string, optional) — Author slug, e.g. christian-eberle; `url` (string, optional) — Canonical tomshardware.com/author/<slug> URL, optionally with a /page/<n> segment; alternative to slug
 
 ### `tomshardware_headlines`
 
 - **HTTP:** `GET /tomshardware/headlines`
-- **What:** Get Tom's Hardware section headlines. Returns fresh Tom's Hardware headlines from one public section hub page.
+- **What:** Get Tom's Hardware section headlines. Lists the current headlines for one Tom's Hardware section. `section` is required and takes a slug such as `gpus`, `cpus`, `laptops`, `deals`, `reviews` or `news`; use `tomshardware-sections` for the full set. Each item has its title, URL, author, publication time and lead image, plus a summary when the section's listing provides one.
 - **Params:** `section` (string, **required**) — Tom's Hardware section slug
 
 ### `tomshardware_news`
 
 - **HTTP:** `GET /tomshardware/news`
-- **What:** Get Tom's Hardware top stories. Returns fresh Tom's Hardware top stories from the public RSS feed.
+- **What:** Get Tom's Hardware top stories. Returns the latest Tom's Hardware top stories with no parameters. Each item has its title, URL, summary, author, publication time and lead image. Use the item URLs with `tomshardware-article` to read the body.
 - **Params:** _none_
 
 ### `tomshardware_sections`
 
 - **HTTP:** `GET /tomshardware/sections`
-- **What:** Get Tom's Hardware sections. Returns the public Tom's Hardware top-level editorial taxonomy used by the headlines endpoint.
+- **What:** Get Tom's Hardware sections. Lists the 20 Tom's Hardware top-level sections that `tomshardware-headlines` accepts, including `3d-printing`, `cpus`, `gpus`, `monitors`, `news` and `reviews`. Each section carries its `slug`, display `name` and page `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Toronto Star (5)
@@ -5379,7 +5379,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `torontostar_sections`
 
 - **HTTP:** `GET /torontostar/sections`
-- **What:** Get Toronto Star sections. Returns the public Toronto Star section navigation accepted by the headlines endpoint.
+- **What:** Get Toronto Star sections. Lists the 69 Toronto Star sections accepted by the headlines endpoint, taken from thestar.com's main navigation. Each has a `slug`, a display `name` and a `url`. Nested sections use slash paths such as `news/gta`, `sports/hockey/pwhl` and `business/technology`. Takes no parameters.
 - **Params:** _none_
 
 ## Townhall (5)
@@ -5393,19 +5393,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `townhall_author`
 
 - **HTTP:** `GET /townhall/author`
-- **What:** Get a Townhall author profile. Returns one Townhall author's public profile: name, photo, bio, X profile, and their most recent stories.
+- **What:** Get a Townhall author profile. Returns a Townhall author profile by `slug` (such as `amy-curtis`) or by an author `url`; exactly one is required. The response has the name, photo, bio, X profile link and the first page of the author's archive, about 50 stories, each with its section label and a `vip` flag. Unknown authors return a not-found error.
 - **Params:** `slug` (string, optional) — Author slug, e.g. amy-curtis; `url` (string, optional) — Canonical townhall.com/author/<slug> URL; alternative to slug
 
 ### `townhall_headlines`
 
 - **HTTP:** `GET /townhall/headlines`
-- **What:** Get Townhall section headlines. Returns fresh headlines from one public Townhall section: the news feed, the columns feed, or a topic hub page.
+- **What:** Get Townhall section headlines. Lists headlines for one Townhall section. `section` is required: `news` and `columnists` return the 20 most recent stories, while the topic sections (such as `congress`, `economy` or `iran`) return up to 30 stories mixing news and columns. Items carry title, URL, image and, when available, author, time and summary.
 - **Params:** `section` (string, **required**) — Townhall section slug
 
 ### `townhall_news`
 
 - **HTTP:** `GET /townhall/news`
-- **What:** Get Townhall top stories. Returns fresh Townhall news and column stories from the public site-wide RSS feed.
+- **What:** Get Townhall top stories. Returns the latest Townhall stories, news and opinion columns mixed, newest first, about 50 items. Each has its title, URL, short summary, publication time, author byline and lead image. Video pages are left out. Takes no parameters.
 - **Params:** _none_
 
 ### `townhall_sections`
@@ -5431,7 +5431,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `usatoday_headlines`
 
 - **HTTP:** `GET /usatoday/headlines`
-- **What:** Get USA Today section headlines. Returns the newest items from one top-level USA Today section, filtered from the same public news feed as /usatoday/news.
+- **What:** Get USA Today section headlines. Returns the newest USA Today items for one top-level section, up to 100. `section` is required and takes `news`, `sports`, `entertainment`, `life`, `money`, `tech`, `travel`, `opinion`, `cars`, `shopping`, `weather`, `politics` or `grocery`. Each item has its title, URL, published and updated times, and lead image when there is one.
 - **Params:** `section` (string, **required**) — Top-level USA Today section
 
 ### `usatoday_news`
@@ -5443,7 +5443,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `usatoday_sections`
 
 - **HTTP:** `GET /usatoday/sections`
-- **What:** List USA Today sections. Lists every top-level USA Today section accepted by /usatoday/headlines, with its slug, display name, and landing-page URL.
+- **What:** List USA Today sections. Lists the 13 top-level USA Today sections accepted by `usatoday-headlines`, from `news` and `sports` to `politics` and `grocery`. Each has a `slug`, a display `name` and a landing-page `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Us Weekly (5)
@@ -5451,31 +5451,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `usmagazine_article`
 
 - **HTTP:** `GET /usmagazine/article`
-- **What:** Get Us Weekly article content. Returns public Us Weekly article metadata and body paragraphs from a canonical article URL. Photo-gallery URLs are not supported.
+- **What:** Get Us Weekly article content. Returns one Us Weekly article by its canonical `url`, in the form `/<section>/news/<slug>/`. The response has the title, description, published and updated times, section, authors, lead image and the body `paragraphs`, without sub-headings or embeds. Photo-gallery URLs and non-article pages return a 400 error.
 - **Params:** `url` (string, **required**) — Canonical Us Weekly article URL
 
 ### `usmagazine_author`
 
 - **HTTP:** `GET /usmagazine/author`
-- **What:** Get a Us Weekly author profile. Returns a Us Weekly author's biography, contact links, and recent articles from a canonical author URL.
+- **What:** Get a Us Weekly author profile. Returns a Us Weekly author's profile from their canonical `url` (`/author/<slug>/`, required): name, biography, contact links and the newest articles, about 20. Staff and desk bylines may have no biography or links. Photo galleries are skipped and `published_at` is not set on the articles.
 - **Params:** `url` (string, **required**) — Canonical Us Weekly author URL
 
 ### `usmagazine_headlines`
 
 - **HTTP:** `GET /usmagazine/headlines`
-- **What:** Get Us Weekly section headlines. Returns fresh headlines from one public Us Weekly RSS section. Photo galleries are not included.
+- **What:** Get Us Weekly section headlines. Lists recent Us Weekly headlines for one section. `section` is required and takes `celebrity-news`, `entertainment`, `sports`, `shopping`, `crime-news`, `stylish`, `celebrity-moms`, `celebrity-body`, `food`, `reviews`, `reality-tv` or `royal-family`. Returns up to about 20 items, with photo galleries excluded; `reviews` holds only a few.
 - **Params:** `section` (string, **required**) — Us Weekly RSS section slug
 
 ### `usmagazine_news`
 
 - **HTTP:** `GET /usmagazine/news`
-- **What:** Get Us Weekly top stories. Returns fresh Us Weekly top stories from its public RSS feed.
+- **What:** Get Us Weekly top stories. Returns the latest Us Weekly top stories with no parameters. Each item has its title and URL, plus summary, publication time, author and image when the outlet provides them. Only article URLs of the form `/<section>/news/<slug>/` appear; photo galleries are left out.
 - **Params:** _none_
 
 ### `usmagazine_sections`
 
 - **HTTP:** `GET /usmagazine/sections`
-- **What:** Get Us Weekly RSS sections. Returns the public Us Weekly RSS section inventory used by the headlines endpoint.
+- **What:** Get Us Weekly RSS sections. Lists the 12 Us Weekly sections accepted by `usmagazine-headlines`, from `celebrity-news` and `entertainment` to `reality-tv` and `royal-family`. Each entry has a `slug`, display `name` and section feed `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Vanguard (5)
@@ -5483,7 +5483,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `vanguardng_article`
 
 - **HTTP:** `GET /vanguardng/article`
-- **What:** Get Vanguard article content. Returns public Vanguard article metadata and body paragraphs from a canonical article URL. Vanguard has no paywall.
+- **What:** Get Vanguard article content. Returns one Vanguard (Nigeria) story by its `url`, a vanguardngr.com link in the `/YYYY/MM/<slug>/` form; section pages and feeds are rejected. The response has the title, description, times, section, authors, lead image and body `paragraphs`. Vanguard has no paywall, so `paywalled` is never set.
 - **Params:** `url` (string, **required**) — Canonical Vanguard article URL
 
 ### `vanguardng_author`
@@ -5495,19 +5495,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `vanguardng_headlines`
 
 - **HTTP:** `GET /vanguardng/headlines`
-- **What:** Get Vanguard section headlines. Returns fresh headlines from one public Vanguard section feed.
+- **What:** Get Vanguard section headlines. Lists up to 20 recent Vanguard stories from one category. `section` is required and takes one of 42 slugs such as `national-news`, `politics`, `business`, `sports`, `business/energy` or `more/metro`. Items carry title, URL, summary, author and publication time. An unknown section returns an invalid-params error.
 - **Params:** `section` (string, **required**) — Vanguard section slug
 
 ### `vanguardng_news`
 
 - **HTTP:** `GET /vanguardng/news`
-- **What:** Get Vanguard top stories. Returns fresh Vanguard (Nigeria) stories from the public site-wide RSS feed.
+- **What:** Get Vanguard top stories. Returns the latest 20 Vanguard (Nigeria) stories with no parameters. Each has a title, URL, summary, publication time and image where available. `author` is the site's account name, often a desk account such as `Nwafor`; use `vanguardng-article` for the on-page byline.
 - **Params:** _none_
 
 ### `vanguardng_sections`
 
 - **HTTP:** `GET /vanguardng/sections`
-- **What:** Get Vanguard sections. Returns the public Vanguard editorial section inventory used by vanguardng-headlines: every category with a live feed.
+- **What:** Get Vanguard sections. Lists the 42 Vanguard sections accepted by `vanguardng-headlines`. Each has a `slug` (nested categories contain a `/`, as in `business/energy`), a display `name` and a feed `url`. `national-news` is the site's News category and `promoted` is sponsored content. Takes no parameters.
 - **Params:** _none_
 
 ## Vanity Fair (5)
@@ -5521,19 +5521,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `vanityfair_author`
 
 - **HTTP:** `GET /vanityfair/author`
-- **What:** Get a Vanity Fair contributor profile. Returns a Vanity Fair contributor's byline metadata, biography, headshot, social links, and recent articles from a canonical contributor URL.
+- **What:** Get a Vanity Fair contributor profile. Returns a Vanity Fair contributor profile from their canonical `url` (`www.vanityfair.com/contributor/<slug>`, required). The response has the name, job title when present, biography, headshot, social links and recent articles with title, URL and publication time.
 - **Params:** `url` (string, **required**) — Canonical Vanity Fair contributor URL
 
 ### `vanityfair_headlines`
 
 - **HTTP:** `GET /vanityfair/headlines`
-- **What:** Get Vanity Fair section headlines. Returns fresh headlines from one Vanity Fair section's public listing page.
+- **What:** Get Vanity Fair section headlines. Lists the current headlines for one Vanity Fair section. `section` is required and takes `hollywood`, `movies`, `television`, `award-season`, `what-is-cinema`, `culture`, `politics`, `business`, `style`, `beauty`, `fashion` or `royals`. Each item has its title and URL.
 - **Params:** `section` (string, **required**) — Vanity Fair section slug
 
 ### `vanityfair_news`
 
 - **HTTP:** `GET /vanityfair/news`
-- **What:** Get Vanity Fair top stories. Returns fresh Vanity Fair top stories from its public RSS feed.
+- **What:** Get Vanity Fair top stories. Returns the latest Vanity Fair top stories and takes no parameters. Each item has its title, canonical URL, summary, author, publication time and lead image.
 - **Params:** _none_
 
 ### `vanityfair_sections`
@@ -5547,31 +5547,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `variety_article`
 
 - **HTTP:** `GET /variety/article`
-- **What:** Get Variety article content. Returns public Variety article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Variety article content. Returns one Variety article by its canonical `variety.com` `url`, in the form `/<year>/<vertical>/<subcategory>/<slug>-<id>/`. The response has the title, description, authors, section, published and updated times, lead image, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical Variety article URL
 
 ### `variety_author`
 
 - **HTTP:** `GET /variety/author`
-- **What:** Get a Variety author profile. Returns one Variety author's public profile: name, biography, social links, and one page of their recent articles.
+- **What:** Get a Variety author profile. Returns a Variety author profile with name, biography, photo, social links and one page of recent articles. Give either `slug` (such as `ellise-shafer`) or an author `url`, which may include a `/page/<n>/` segment; `page` (default 1) overrides it. `has_next_page` shows whether another page exists.
 - **Params:** `page` (integer, optional) — 1-based page number; overrides any page number in url; `slug` (string, optional) — Author slug, e.g. ellise-shafer; `url` (string, optional) — Canonical variety.com/author/<slug> URL, optionally with a /page/<n>/ segment; alternative to slug
 
 ### `variety_headlines`
 
 - **HTTP:** `GET /variety/headlines`
-- **What:** Get Variety section headlines. Returns fresh Variety headlines from one public vertical RSS feed.
+- **What:** Get Variety section headlines. Lists fresh Variety headlines for one vertical. `section` is required and takes a slug such as `film`, `music`, `tv`, `biz`, `awards`, `gaming`, `global`, `legit` or `vip`; `variety-sections` lists all 24. Each item has its title and URL, plus summary, author, publication time and image when the outlet provides them.
 - **Params:** `section` (string, **required**) — Variety vertical slug
 
 ### `variety_news`
 
 - **HTTP:** `GET /variety/news`
-- **What:** Get Variety top stories. Returns fresh Variety top stories from the public RSS feed.
+- **What:** Get Variety top stories. Returns the latest Variety top stories with no parameters. Each item has its title, URL, summary, author, publication time and image. Item URLs can be passed to `variety-article` for the body.
 - **Params:** _none_
 
 ### `variety_sections`
 
 - **HTTP:** `GET /variety/sections`
-- **What:** Get Variety sections. Returns the public Variety vertical taxonomy used by the headlines endpoint.
+- **What:** Get Variety sections. Lists the 24 Variety verticals accepted by `variety-headlines`, such as `film`, `tv`, `music`, `biz`, `awards`, `legit` and `voices`. Each has a `slug`, a display `name` and a `url`. Takes no parameters.
 - **Params:** _none_
 
 ## VICE (5)
@@ -5579,13 +5579,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `vice_article`
 
 - **HTTP:** `GET /vice/article`
-- **What:** Get VICE article content. Returns public VICE article metadata and body paragraphs from a canonical article URL.
+- **What:** Get VICE article content. Returns one VICE article by its canonical `url`, in the form `www.vice.com/en/article/<slug>`. The response has the title, description, authors, section, published and updated times, lead image and body `paragraphs`, plus a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical VICE article URL
 
 ### `vice_author`
 
 - **HTTP:** `GET /vice/author`
-- **What:** Get a VICE contributor profile. Returns a VICE contributor's byline metadata (name, headshot), biography, and recent articles from a canonical contributor URL.
+- **What:** Get a VICE contributor profile. Returns a VICE contributor profile from their canonical `url` (`www.vice.com/en/contributor/<slug>`, required). The response has the name and headshot when present, the biography paragraphs and recent articles with title, URL, summary, author, publication time and image.
 - **Params:** `url` (string, **required**) — Canonical VICE contributor URL
 
 ### `vice_headlines`
@@ -5597,7 +5597,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `vice_news`
 
 - **HTTP:** `GET /vice/news`
-- **What:** Get VICE top stories. Returns fresh VICE stories from its public RSS feed.
+- **What:** Get VICE top stories. Returns the latest VICE stories with no parameters. Each item has its title and URL, plus summary, author, publication time and lead image when the outlet provides them. Pass an item URL to `vice-article` to read the story.
 - **Params:** _none_
 
 ### `vice_sections`
@@ -5611,31 +5611,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `vox_article`
 
 - **HTTP:** `GET /vox/article`
-- **What:** Get Vox article content. Returns public Vox article metadata and body paragraphs from a canonical article URL.
+- **What:** Get Vox article content. Returns one Vox article by its canonical `url`: title, description, authors, section, published and updated times, lead image and the body `paragraphs`. Only public content is returned; a subscriber-only or blocked article comes back as an upstream error rather than a partial body.
 - **Params:** `url` (string, **required**) — Canonical Vox article URL
 
 ### `vox_author`
 
 - **HTTP:** `GET /vox/author`
-- **What:** Get a Vox author profile. Returns a Vox author's byline metadata, biography, and recent articles from a canonical author URL.
+- **What:** Get a Vox author profile. Returns a Vox author profile from their canonical `url` (`www.vox.com/authors/<slug>`, required). The response has the name, `job_title` from the masthead (such as Senior Politics Correspondent), `bio` and recent articles, each with title, URL, excerpt, category and an ISO-8601 `published_at`.
 - **Params:** `url` (string, **required**) — Canonical Vox author URL
 
 ### `vox_headlines`
 
 - **HTTP:** `GET /vox/headlines`
-- **What:** Get Vox section headlines. Returns fresh headlines from one public Vox section.
+- **What:** Get Vox section headlines. Lists the current Vox headlines for one section. `section` is required and takes `politics`, `culture`, `policy`, `world`, `money`, `technology`, `science-and-health`, `climate`, `future-perfect` or `explainers`. Each item has its title, URL, summary, author and publication time.
 - **Params:** `section` (string, **required**) — Vox section slug
 
 ### `vox_news`
 
 - **HTTP:** `GET /vox/news`
-- **What:** Get Vox top stories. Returns fresh public Vox stories from its RSS feed.
+- **What:** Get Vox top stories. Returns the latest Vox top stories with no parameters. Each item has its title, URL, summary, author and publication time. Item URLs can be passed to `vox-article` for the body.
 - **Params:** _none_
 
 ### `vox_sections`
 
 - **HTTP:** `GET /vox/sections`
-- **What:** Get Vox sections. Returns the public Vox editorial section inventory.
+- **What:** Get Vox sections. Lists the Vox editorial sections accepted by `vox-headlines`, each with a stable `slug`, a display `name` and the section `url`. Use the slugs as the `section` value. Takes no parameters.
 - **Params:** _none_
 
 ## WalesOnline (5)
@@ -5655,7 +5655,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `walesonline_headlines`
 
 - **HTTP:** `GET /walesonline/headlines`
-- **What:** Get WalesOnline section headlines. Returns fresh headlines from one public WalesOnline section. Photo galleries are omitted because they have no readable article body.
+- **What:** Get WalesOnline section headlines. Lists recent WalesOnline headlines for one section, up to about 25 items. `section` is required and takes a slug such as `news/wales-news`, `news/politics`, `sport/rugby`, `sport/football` or `whats-on`; `walesonline-sections` lists all 37. Photo galleries are omitted, and an invalid value returns a 400 error.
 - **Params:** `section` (string, **required**) — WalesOnline section slug
 
 ### `walesonline_news`
@@ -5667,7 +5667,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `walesonline_sections`
 
 - **HTTP:** `GET /walesonline/sections`
-- **What:** Get WalesOnline sections. Returns the public WalesOnline editorial section inventory used by walesonline-headlines.
+- **What:** Get WalesOnline sections. Lists the 37 WalesOnline sections accepted by `walesonline-headlines`, with nested slugs such as `news/wales-news`, `sport/rugby` and `whats-on/food-drink-news`. Each has a `slug`, a display `name` and a feed `url`. Takes no parameters.
 - **Params:** _none_
 
 ## WIRED (5)
@@ -5693,7 +5693,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `wired_news`
 
 - **HTTP:** `GET /wired/news`
-- **What:** Get the latest WIRED stories. Returns WIRED's current public top-stories RSS feed: each story's title, canonical URL, summary, author, publication time, and lead image.
+- **What:** Get the latest WIRED stories. Returns WIRED's current top stories with no parameters. Each item has its title, canonical URL, summary, author, publication time and lead image, plus a type label for the item.
 - **Params:** _none_
 
 ### `wired_sections`
@@ -5721,31 +5721,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `xda_article`
 
 - **HTTP:** `GET /xda/article`
-- **What:** Get XDA article content. Returns public XDA article metadata and body paragraphs from a canonical article URL.
+- **What:** Get XDA article content. Returns one XDA article by its `url`, which must be a `www.xda-developers.com/<slug>/` link; section hubs, author pages and the bare `xda-developers.com` host are rejected. The response has the title, description, times, section, authors, lead image and body `paragraphs`. `paywalled` is set to `true` only if the page declares the article not free.
 - **Params:** `url` (string, **required**) — Canonical XDA article URL
 
 ### `xda_author`
 
 - **HTTP:** `GET /xda/author`
-- **What:** Get an XDA author profile. Returns an XDA author's byline metadata, biography, social links, and recent articles from a canonical author URL.
+- **What:** Get an XDA author profile. Returns an XDA author profile from their `https://www.xda-developers.com/author/<slug>/` `url` (required; paginated author URLs are rejected). The response has the name, title, biography, image, social links and the profile's latest articles, about 20, with no older pages.
 - **Params:** `url` (string, **required**) — Canonical XDA author URL
 
 ### `xda_headlines`
 
 - **HTTP:** `GET /xda/headlines`
-- **What:** Get XDA section headlines. Returns fresh headlines from one public XDA RSS section.
+- **What:** Get XDA section headlines. Lists 10 recent XDA items for one section. `section` is required and takes a slug such as `news`, `reviews`, `buying-guides`, `gpu`, `laptops`, `windows`, `linux-hub` or `ai-tools`; `xda-sections` lists them all. Dormant sections such as `editorials` or `beats` return old items. Other values are rejected.
 - **Params:** `section` (string, **required**) — XDA RSS section slug
 
 ### `xda_news`
 
 - **HTTP:** `GET /xda/news`
-- **What:** Get XDA top stories. Returns fresh XDA top stories from its public RSS feed.
+- **What:** Get XDA top stories. Returns about 10 of the latest XDA top stories with no parameters. Each item has its title, canonical URL, summary, publication time, author names (co-authors joined with a comma) and lead image.
 - **Params:** _none_
 
 ### `xda_sections`
 
 - **HTTP:** `GET /xda/sections`
-- **What:** Get XDA RSS sections. Returns the public XDA RSS section inventory used by the headlines endpoint.
+- **What:** Get XDA RSS sections. Lists the XDA sections accepted by `xda-headlines`, including `news`, `reviews`, `buying-guides`, `gpu`, `laptops`, `gaming-handhelds`, `windows`, `linux-hub` and `ai-tools`. Each has a `slug`, a display `name` and a feed `url`. Takes no parameters.
 - **Params:** _none_
 
 ## ZDNet (5)
@@ -5753,7 +5753,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zdnet_article`
 
 - **HTTP:** `GET /zdnet/article`
-- **What:** Get ZDNet article or review content. Returns public ZDNet article, review or how-to metadata and body paragraphs from a canonical article URL.
+- **What:** Get ZDNet article or review content. Returns one ZDNet article, review or how-to by its canonical `zdnet.com` `url`. The response has the title, description, published and updated times, section labels, authors, lead image and body `paragraphs`. Video, topic and author pages are not supported and return an error instead of an empty article.
 - **Params:** `url` (string, **required**) — Canonical ZDNet article URL
 
 ### `zdnet_author`
@@ -5765,19 +5765,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zdnet_headlines`
 
 - **HTTP:** `GET /zdnet/headlines`
-- **What:** Get ZDNet section headlines. Returns fresh ZDNet headlines from one public topic or content-type feed.
+- **What:** Get ZDNet section headlines. Lists fresh ZDNet headlines for one topic or content type. `section` is required and takes a slug such as `artificial-intelligence`, `security`, `smartphones`, `vpn`, `how-to` or `news`; `zdnet-sections` lists all of them. Video pages are dropped, and an invalid value returns a 400 error.
 - **Params:** `section` (string, **required**) — ZDNet topic or content-type slug
 
 ### `zdnet_news`
 
 - **HTTP:** `GET /zdnet/news`
-- **What:** Get ZDNet top stories. Returns fresh ZDNet top stories from the public news feed.
+- **What:** Get ZDNet top stories. Returns the latest ZDNet top stories with no parameters. Each item has its title, canonical URL, summary, publication time and author name when available. Video pages are not included.
 - **Params:** _none_
 
 ### `zdnet_sections`
 
 - **HTTP:** `GET /zdnet/sections`
-- **What:** Get ZDNet sections. Returns the public ZDNet topic and content-type taxonomy accepted by the headlines endpoint.
+- **What:** Get ZDNet sections. Lists the ZDNet topic and content-type sections accepted by `zdnet-headlines`, such as `artificial-intelligence`, `security`, `smartphones`, `vpn`, `how-to` and `deals`. Each has a `slug`, a display `name` and a feed `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Android Police (5)
@@ -5785,31 +5785,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `androidpolice_article`
 
 - **HTTP:** `GET /androidpolice/article`
-- **What:** Get Android Police article content. Returns public Android Police article metadata and readable body paragraphs from a canonical article URL.
+- **What:** Get Android Police article content. Returns an Android Police article by `url`, a canonical address with a flat, single-slug path. The response has the title, authors, section, description, publication and update times, image and the readable body `paragraphs`.
 - **Params:** `url` (string, **required**) — Canonical Android Police article URL
 
 ### `androidpolice_author`
 
 - **HTTP:** `GET /androidpolice/author`
-- **What:** Get an Android Police author profile. Returns a public author's byline metadata, biography, social links, and recent articles from a canonical author URL. Only the first page is covered because author pagination is disallowed by robots.txt.
+- **What:** Get an Android Police author profile. Returns a public author's byline metadata, biography, social links, and recent articles from a canonical author URL. Only the first page is covered.
 - **Params:** `url` (string, **required**) — Canonical Android Police author URL
 
 ### `androidpolice_headlines`
 
 - **HTTP:** `GET /androidpolice/headlines`
-- **What:** Get Android Police section headlines. Returns recent headlines from one of the 18 live-verified primary navigation RSS feeds.
+- **What:** Get Android Police section headlines. Returns recent Android Police headlines for one of 18 sections. `section` is required and takes a slug such as `news`, `phones`, `smart-home`, `ai-machine-learning` or `deals`. Each item has a title and URL, and may also carry a summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — Android Police section slug
 
 ### `androidpolice_news`
 
 - **HTTP:** `GET /androidpolice/news`
-- **What:** Get Android Police top stories. Returns current Android Police top stories from its public RSS feed.
+- **What:** Get Android Police top stories. Returns the current Android Police top stories across the site, with no input needed. Each item has a title and URL, and may also carry the author, publication time, summary and image.
 - **Params:** _none_
 
 ### `androidpolice_sections`
 
 - **HTTP:** `GET /androidpolice/sections`
-- **What:** Get Android Police sections. Returns the complete live-verified Android Police primary navigation feed inventory.
+- **What:** Get Android Police sections. Lists the 18 feed-backed sections in Android Police's primary navigation, from `news`, `phones` and `tablets` to `deals`, `videos` and `awards`. Each entry has a `slug`, a display `name` and the feed `url`, and the slugs are accepted by `androidpolice-headlines`.
 - **Params:** _none_
 
 ## Benzinga (5)
@@ -5817,19 +5817,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `benzinga_article`
 
 - **HTTP:** `GET /benzinga/article`
-- **What:** Get a Benzinga article. Returns metadata and anonymous body paragraphs from a canonical dated Benzinga editorial article URL.
+- **What:** Get a Benzinga article. Returns a Benzinga article by `url`, a canonical dated editorial article URL: title, description, publication and update times, section, authors, image and the body `paragraphs`. Paid products, profiles, press releases, SEC pages and partner content are not accepted.
 - **Params:** `url` (string, **required**) — Canonical dated Benzinga editorial article URL
 
 ### `benzinga_headlines`
 
 - **HTTP:** `GET /benzinga/headlines`
-- **What:** Get Benzinga section headlines. Returns public story cards from one verified Benzinga news section; section must come from benzinga_sections.
+- **What:** Get Benzinga section headlines. Returns current Benzinga story cards for one section. `section` is required and is `latest`, `technology-stocks`, `politics` or `health-care`. Each item has a title and URL, and may also carry a summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — Benzinga editorial section slug
 
 ### `benzinga_news`
 
 - **HTTP:** `GET /benzinga/news`
-- **What:** Get Benzinga top stories. Returns current Benzinga stories and teaser summaries from its public RSS feed.
+- **What:** Get Benzinga top stories. Returns the current Benzinga stories, with no input needed. Each item has a title, URL and a `summary` that is the publisher's short teaser rather than article text, and may also carry the author, publication time and image.
 - **Params:** _none_
 
 ### `benzinga_search`
@@ -5841,7 +5841,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `benzinga_sections`
 
 - **HTTP:** `GET /benzinga/sections`
-- **What:** List Benzinga news sections. Returns the four menu-verified Benzinga editorial sections accepted by benzinga_headlines.
+- **What:** List Benzinga news sections. Lists the four Benzinga editorial sections accepted by `benzinga-headlines`: `latest` (named Breaking News), `technology-stocks`, `politics` and `health-care`. Each has a `slug`, a display `name` and the section's page `url`.
 - **Params:** _none_
 
 ## Brisbane Times (5)
@@ -5855,7 +5855,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `brisbanetimes_author`
 
 - **HTTP:** `GET /brisbanetimes/author`
-- **What:** Get a Brisbane Times journalist profile. Returns one public Brisbane Times `/by/<name>-<id>` profile with its name, biography, headshot, contact links, and recent story cards.
+- **What:** Get a Brisbane Times journalist profile. Returns a Brisbane Times journalist profile from `url`, a canonical `https://www.brisbanetimes.com.au/by/<name>-<id>` address: name, biography, headshot, email, social links and recent story cards with title, URL, summary and image. Fields appear only when the profile shows them; the sampled profile returned 10 stories.
 - **Params:** `url` (string, **required**) — Canonical Brisbane Times journalist URL
 
 ### `brisbanetimes_headlines`
@@ -5881,31 +5881,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `denverpost_article`
 
 - **HTTP:** `GET /denverpost/article`
-- **What:** Get a Denver Post article. Returns article metadata and paragraphs present in the public HTML response. Subscriber-only pages may expose only an anonymous preview; this service does not bypass access controls.
+- **What:** Get a Denver Post article. Returns article metadata and paragraphs present on the public page. Subscriber-only pages may expose only an anonymous preview; this service does not bypass access controls.
 - **Params:** `url` (string, **required**) — Canonical Denver Post article URL
 
 ### `denverpost_author`
 
 - **HTTP:** `GET /denverpost/author`
-- **What:** Get a Denver Post author archive. Returns one author's public profile and the articles listed on its first page.
+- **What:** Get a Denver Post author archive. Returns a Denver Post author's profile and the articles on the first page of their archive. Give exactly one of `slug` (for example `aldo-svaldi`) or `url` (a denverpost.com/author/<slug>/ link). The profile has name, job title, bio, email and Twitter handle where the page shows them; each article has a title, URL, summary and publication time.
 - **Params:** `slug` (string, optional) — Author slug, e.g. aldo-svaldi; `url` (string, optional) — Canonical denverpost.com/author/<slug>/ URL; alternative to slug
 
 ### `denverpost_headlines`
 
 - **HTTP:** `GET /denverpost/headlines`
-- **What:** Get Denver Post section headlines. Returns current headlines from one public editorial section or topic archive.
+- **What:** Get Denver Post section headlines. Returns current headlines for one Denver Post section or topic archive. `section` is required and must be a slug from the sections endpoint, such as `business`, `denver-broncos`, `colorado` or `weather`; an invalid value returns an invalid-params error. Items carry title and URL, plus summary, author, publication time and image when the card shows them. Cards without a dated Denver Post article URL are skipped.
 - **Params:** `section` (string, **required**) — Section or topic slug returned by denverpost-sections
 
 ### `denverpost_news`
 
 - **HTTP:** `GET /denverpost/news`
-- **What:** Get Denver Post top stories. Returns current top stories from the public Denver Post homepage.
+- **What:** Get Denver Post top stories. Returns the article cards on the Denver Post homepage, about 91 when last checked, though the count varies as the site updates. Each item has a title and URL and can carry a summary, author, publication time, image and `type`. It takes no parameters.
 - **Params:** _none_
 
 ### `denverpost_sections`
 
 - **HTTP:** `GET /denverpost/sections`
-- **What:** Get Denver Post section and topic inventory. Returns the live-verified public editorial section and topic archive values accepted by headlines.
+- **What:** Get Denver Post section and topic inventory. Lists the Denver Post slugs that the headlines endpoint accepts: 56 editorial sections and 19 topic archives, checked on 2026-09-30. Examples are `colorado`, `denver-broncos`, `economy` and `hiking`. Each entry has a `slug`, `name` and `url`. Branded content and cartoons are left out.
 - **Params:** _none_
 
 ## The Express Tribune (5)
@@ -5913,7 +5913,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `expresstribune_article`
 
 - **HTTP:** `GET /expresstribune/article`
-- **What:** Get The Express Tribune article content. Returns public story metadata and body paragraphs from a canonical tribune.com.pk/story/<id>/<slug> URL.
+- **What:** Get The Express Tribune article content. Returns one Express Tribune story by `url`, which must be a canonical `tribune.com.pk/story/<id>/<slug>` link. The response has the title, description, section, authors, publication and update times, lead image URL, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical Express Tribune story URL
 
 ### `expresstribune_author`
@@ -5951,7 +5951,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `houston_chronicle_author`
 
 - **HTTP:** `GET /houston-chronicle/author`
-- **What:** Get a Houston Chronicle author profile. Returns an author's public profile and recent story cards from a canonical Houston Chronicle author URL.
+- **What:** Get a Houston Chronicle author profile. Returns a Houston Chronicle author profile by `url`, a canonical `houstonchronicle.com/author/<slug>/` link. The response has the `name`, `job_title`, `biography`, `image_url`, social profile links in `same_as`, and recent article cards with title, URL and summary.
 - **Params:** `url` (string, **required**) — Canonical Houston Chronicle author URL
 
 ### `houston_chronicle_headlines`
@@ -5963,7 +5963,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `houston_chronicle_news`
 
 - **HTTP:** `GET /houston-chronicle/news`
-- **What:** Get Houston Chronicle top stories. Returns current public Houston Chronicle homepage stories. The public RSS endpoint returned no usable items; this uses the credential-free homepage and preserves publisher premium markers on article responses.
+- **What:** Get Houston Chronicle top stories. Returns current public Houston Chronicle homepage stories. Publisher premium markers are preserved on article responses.
 - **Params:** _none_
 
 ### `houston_chronicle_sections`
@@ -5983,7 +5983,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `japantimes_author`
 
 - **HTTP:** `GET /japantimes/author`
-- **What:** Get a The Japan Times author profile. Returns a public author name and linked article cards. Pagination paths are excluded because robots.txt disallows */page/*.
+- **What:** Get a The Japan Times author profile. Returns a The Japan Times author's name and the article cards linked from their profile page. `url` is required and must be a canonical HTTPS profile link in the form `/author/<numeric-id>/<slug>/`. Each article has a title, URL, summary, author, image, `type` and publication time. Paginated `/page/<n>/` URLs are not followed.
 - **Params:** `url` (string, **required**) — Canonical HTTPS /author/<numeric-id>/<slug>/ profile URL
 
 ### `japantimes_headlines`
@@ -5995,13 +5995,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `japantimes_news`
 
 - **HTTP:** `GET /japantimes/news`
-- **What:** Get The Japan Times top stories. Returns current top stories from the public RSS feed. RSS descriptions are short publisher-provided teasers.
+- **What:** Get The Japan Times top stories. Returns the current top stories from The Japan Times. It takes no parameters. Each item has its title, URL, publication time and a short publisher-written teaser in `summary`, not the article text, plus the author and image when the outlet provides them.
 - **Params:** _none_
 
 ### `japantimes_sections`
 
 - **HTTP:** `GET /japantimes/sections`
-- **What:** Get The Japan Times sections. Returns the complete 60-link editorial navigation inventory used by japantimes-headlines.
+- **What:** Get The Japan Times sections. Lists the 60 sections linked from The Japan Times main navigation, which the headlines endpoint accepts, for example `news-japan`, `business-markets`, `sports-sumo`, `culture-film` and `community-voices`. Each entry has a `slug`, a display `name` and a section `url`.
 - **Params:** _none_
 
 ## MakeUseOf (5)
@@ -6009,7 +6009,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `makeuseof_article`
 
 - **HTTP:** `GET /makeuseof/article`
-- **What:** Get MakeUseOf article content. Returns public MakeUseOf article metadata and readable body paragraphs from a canonical article URL.
+- **What:** Get MakeUseOf article content. Returns a MakeUseOf article by `url`, a canonical HTTPS article link. The response has the title, description, section, authors, lead image, publish and update times, the article body as `paragraphs`, and a `paywalled` flag. Section, author, tag, utility and video pages are not article URLs.
 - **Params:** `url` (string, **required**) — Canonical MakeUseOf article URL
 
 ### `makeuseof_author`
@@ -6021,19 +6021,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `makeuseof_headlines`
 
 - **HTTP:** `GET /makeuseof/headlines`
-- **What:** Get MakeUseOf section headlines. Returns current headlines from one of the 14 public MakeUseOf category RSS feeds. Use a slug from makeuseof_sections.
+- **What:** Get MakeUseOf section headlines. Returns current MakeUseOf headlines for one category. `section` is required and takes one of 14 slugs such as `windows`, `linux`, `google-android`, `security`, `smart-home` or `news`; tag archives are not accepted. Each item has its title, URL, summary, author, publication time and image.
 - **Params:** `section` (string, **required**) — MakeUseOf section slug
 
 ### `makeuseof_news`
 
 - **HTTP:** `GET /makeuseof/news`
-- **What:** Get MakeUseOf top stories. Returns current MakeUseOf top stories from its public RSS feed.
+- **What:** Get MakeUseOf top stories. Returns MakeUseOf's current top stories, with no parameters. Each item has its title, canonical article URL, short summary, publication time, and author and image when available.
 - **Params:** _none_
 
 ### `makeuseof_sections`
 
 - **HTTP:** `GET /makeuseof/sections`
-- **What:** Get MakeUseOf RSS sections. Returns all 14 live-verified MakeUseOf primary-navigation sections accepted by the headlines endpoint.
+- **What:** Get MakeUseOf RSS sections. Lists the 14 MakeUseOf sections accepted by `makeuseof-headlines`, including `windows`, `linux`, `apple`, `networking`, `productivity`, `streaming` and `news`. Each entry has a `slug`, display `name` and `url`. Open-ended tag archives are not sections.
 - **Params:** _none_
 
 ## The National (5)
@@ -6053,19 +6053,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `national_headlines`
 
 - **HTTP:** `GET /national/headlines`
-- **What:** Get The National section headlines. Returns current The National stories from a public Arc category RSS feed. Pass one of the editorial section slugs from national_sections. A valid category with no current stories returns an empty items list.
+- **What:** Get The National section headlines. Returns current The National stories for a category. Pass one of the editorial section slugs from national_sections. A valid category with no current stories returns an empty items list.
 - **Params:** `section` (string, **required**) — The National editorial section slug
 
 ### `national_news`
 
 - **HTTP:** `GET /national/news`
-- **What:** Get The National top stories. Returns current The National UAE stories from its public Arc RSS feed. Article and section extraction uses anonymous public responses.
+- **What:** Get The National top stories. Returns current The National UAE stories.
 - **Params:** _none_
 
 ### `national_sections`
 
 - **HTTP:** `GET /national/sections`
-- **What:** Get The National sections. Returns all 57 editorial categories in The National's Arc section sitemap taxonomy that are accepted by national_headlines. Podcast, newsletter, puzzle, partner and promotional surfaces are excluded.
+- **What:** Get The National sections. Returns all 57 editorial categories in The National's section taxonomy that are accepted by national_headlines. Podcast, newsletter, puzzle, partner and promotional surfaces are excluded.
 - **Params:** _none_
 
 ## 9to5Google (5)
@@ -6079,19 +6079,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ninetofivegoogle_author`
 
 - **HTTP:** `GET /ninetofivegoogle/author`
-- **What:** Get a 9to5Google author profile. Returns a 9to5Google author's name, avatar, biography, social links, and recent articles from a canonical author URL.
+- **What:** Get a 9to5Google author profile. Returns a 9to5Google author profile from `url`, a canonical `https://9to5google.com/author/<slug>/` address. The response has the author's `name`, avatar, `biography`, `social_links` and the first page of recent articles, each with title, URL, summary and image. Social-link types and dates are as the author's page shows them.
 - **Params:** `url` (string, **required**) — Canonical 9to5Google author URL
 
 ### `ninetofivegoogle_headlines`
 
 - **HTTP:** `GET /ninetofivegoogle/headlines`
-- **What:** Get 9to5Google section headlines. Returns current headlines from one public guide or editorial archive RSS feed.
+- **What:** Get 9to5Google section headlines. Returns recent 9to5Google headlines for one guide or editorial archive. `section` is required and takes a slug such as `gemini`, `google-pixel-9` or `wear-os`; an unknown or missing value returns an invalid-params error. There are 58 guide feeds and five editorial archives, and some hold fewer than 100 entries.
 - **Params:** `section` (string, **required**) — Slug returned by ninetofivegoogle_sections
 
 ### `ninetofivegoogle_news`
 
 - **HTTP:** `GET /ninetofivegoogle/news`
-- **What:** Get 9to5Google top stories. Returns recent 9to5Google story metadata and short summaries from its public RSS feed.
+- **What:** Get 9to5Google top stories. Returns recent 9to5Google stories with no input needed. Each item has a title, canonical URL, summary, publication time and author. Cross-network links are filtered out, so returned items use canonical 9to5Google story URLs.
 - **Params:** _none_
 
 ### `ninetofivegoogle_sections`
@@ -6105,7 +6105,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `theblaze_article`
 
 - **HTTP:** `GET /theblaze/article`
-- **What:** Get a Blaze Media article. Returns article metadata and body paragraphs from a canonical, publicly accessible editorial or show-story URL.
+- **What:** Get a Blaze Media article. Returns one TheBlaze (Blaze Media) article by `url`, a canonical HTTPS editorial or show-story link on `theblaze.com`; non-editorial paths and off-site URLs are rejected. The response has the title, description, section, authors, publication and update times, image URL, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical theblaze.com article URL
 
 ### `theblaze_author`
@@ -6117,13 +6117,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `theblaze_headlines`
 
 - **HTTP:** `GET /theblaze/headlines`
-- **What:** Get Blaze Media section headlines. Returns headlines from a public section RSS feed. Use /theblaze/sections to discover the complete accepted section list.
+- **What:** Get Blaze Media section headlines. Returns up to 30 recent stories from one TheBlaze (Blaze Media) section. `section` is required, case-sensitive and must match exactly, for example `news`, `columns/opinion`, `lifestyle/men`, `tech` or a show such as `shows/relatable`. Other values are rejected. Items have a title and URL, plus summary, author, publication time and image when the outlet provides them.
 - **Params:** `section` (string, **required**) — Exact Blaze Media section slug
 
 ### `theblaze_news`
 
 - **HTTP:** `GET /theblaze/news`
-- **What:** Get Blaze Media top stories. Returns fresh news and opinion stories from the public Blaze Media RSS feed.
+- **What:** Get Blaze Media top stories. Returns the latest site-wide stories from TheBlaze (Blaze Media), up to 30 items, covering news and opinion. Each item has a headline, canonical URL, publication time, byline, summary and image URL when published. It takes no parameters.
 - **Params:** _none_
 
 ### `theblaze_sections`
@@ -6137,25 +6137,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `thenextweb_article`
 
 - **HTTP:** `GET /thenextweb/article`
-- **What:** Get The Next Web article content. Returns public The Next Web article metadata and body paragraphs from a canonical article URL.
+- **What:** Get The Next Web article content. Returns one The Next Web article by `url`, which must be a canonical HTTPS `thenextweb.com/news/<slug>` link; off-site URLs and non-article paths are rejected. The response has the title, description, section, authors, publication and update times, image URL, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical thenextweb.com article URL
 
 ### `thenextweb_author`
 
 - **HTTP:** `GET /thenextweb/author`
-- **What:** Get a The Next Web author profile. Returns one public author profile and the story cards shown on its public author archive.
+- **What:** Get a The Next Web author profile. Returns a The Next Web author's name, image URL and the story cards on their archive page. Give `slug` or a canonical `thenextweb.com/author/<slug>` `url`; `slug` is required when `url` is omitted. Each article has a title, URL, summary, author, image, `type` and publication time.
 - **Params:** `slug` (string, optional) — Author slug from the public author sitemap or an article byline; `url` (string, optional) — Canonical thenextweb.com/author/<slug> URL; alternative to slug
 
 ### `thenextweb_headlines`
 
 - **HTTP:** `GET /thenextweb/headlines`
-- **What:** Get The Next Web section headlines. Returns article cards from the public server-rendered section page. Pagination uses a robots-disallowed JSON path and is not requested.
+- **What:** Get The Next Web section headlines. Returns the story cards of one The Next Web editorial section. `section` is required and must be one of `deep-tech`, `sustainability`, `ecosystems`, `data-security`, `fintech-ecommerce`, `future-of-work`, `startups-technology`, `investors-funding`, `government-policy` or `corporates-innovation`; other values return a 400.
 - **Params:** `section` (string, **required**) — Editorial section slug returned by thenextweb_sections
 
 ### `thenextweb_news`
 
 - **HTTP:** `GET /thenextweb/news`
-- **What:** Get The Next Web top stories. Returns current The Next Web stories from its public RSS feed.
+- **What:** Get The Next Web top stories. Returns the current top stories from The Next Web. It takes no parameters. Each item has the publisher's title, canonical URL, summary, publication time and author, plus the image URL when one is present.
 - **Params:** _none_
 
 ### `thenextweb_sections`
@@ -6169,13 +6169,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `wccftech_article`
 
 - **HTTP:** `GET /wccftech/article`
-- **What:** Get a Wccftech article. Returns metadata and body paragraphs for a canonical public Wccftech news, review, how-to, roundup, company, or best-of article URL.
+- **What:** Get a Wccftech article. Returns one Wccftech article by its canonical `url` on `wccftech.com` or `www.wccftech.com`, covering news, reviews, how-tos, roundups and best-of pages. The response has the title, description, authors, section, times, lead image and body `paragraphs` where the site serves them, plus a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical Wccftech article URL
 
 ### `wccftech_author`
 
 - **HTTP:** `GET /wccftech/author`
-- **What:** Get a Wccftech author profile. Returns one author's public profile and recent article cards. Identify the author by slug or canonical /author/<slug>/ URL.
+- **What:** Get a Wccftech author profile. Returns a Wccftech author profile with name, role, bio, photo and recent article cards (title, URL, summary, image, publication time). Identify the author with `slug` (such as `sarfraz`) or a canonical `/author/<slug>/` `url`; one of the two is required.
 - **Params:** `slug` (string, optional) — Wccftech author slug, e.g. sarfraz; `url` (string, optional) — Canonical Wccftech author page URL
 
 ### `wccftech_headlines`
@@ -6193,7 +6193,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `wccftech_sections`
 
 - **HTTP:** `GET /wccftech/sections`
-- **What:** Discover Wccftech sections. Lists all non-empty public category and topic sections, plus the Reviews, Videos, How To, and Roundups archives. Use a returned slug with wccftech-headlines; taxonomy values are refreshed from the public WordPress REST API.
+- **What:** Discover Wccftech sections. Lists all non-empty public category and topic sections, plus the Reviews, Videos, How To, and Roundups archives. Use a returned slug with wccftech-headlines.
 - **Params:** _none_
 
 ## Yardbarker (5)
@@ -6207,13 +6207,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `yardbarker_author`
 
 - **HTTP:** `GET /yardbarker/author`
-- **What:** Get a Yardbarker author profile. Returns an author's public profile name, image, and story links from a canonical Yardbarker author URL.
+- **What:** Get a Yardbarker author profile. Returns a Yardbarker author profile from a canonical author `url` of the form `https://www.yardbarker.com/authors/<slug>/<id>` (required). The response has the name, profile image when provided and linked recent stories. Biography text and pagination are not available.
 - **Params:** `url` (string, **required**) — Canonical Yardbarker author URL
 
 ### `yardbarker_headlines`
 
 - **HTTP:** `GET /yardbarker/headlines`
-- **What:** Get headlines for a Yardbarker section. Returns recent Yardbarker headlines and short RSS summaries for one section. Call /yardbarker/sections for the complete current slug list.
+- **What:** Get headlines for a Yardbarker section. Lists recent Yardbarker headlines with short summaries for one section. `section` is required and takes a typed slug from `yardbarker-sections`, such as `sport_1`, `team_18`, `school_506` or `topic_16979`. Items have title, URL, summary, author, time and image. Unknown slugs return a 400 error.
 - **Params:** `section` (string, **required**) — Section slug returned by /yardbarker/sections
 
 ### `yardbarker_news`
@@ -6225,7 +6225,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `yardbarker_sections`
 
 - **HTTP:** `GET /yardbarker/sections`
-- **What:** List Yardbarker sections. Returns the complete live-verified directory snapshot of Yardbarker sports, teams, schools, and topics. Use each returned slug in /yardbarker/headlines.
+- **What:** List Yardbarker sections. Lists the 589 Yardbarker sections as a dated snapshot: 88 sports hubs, 278 team pages, 150 school pages and 73 topics. Each has a typed `slug` (such as `sport_1` or `team_18`), a display `name` and a hub `url`. Use the slug as `section` in `yardbarker-headlines`. Takes no parameters.
 - **Params:** _none_
 
 ## Daily Kos (4)
@@ -6239,19 +6239,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dailykos_headlines`
 
 - **HTTP:** `GET /dailykos/headlines`
-- **What:** Get Daily Kos category headlines. Returns current stories from one verified Daily Kos category feed. Use dailykos-sections to discover the complete accepted category set.
+- **What:** Get Daily Kos category headlines. Returns the current stories for one Daily Kos category. `section` is required and takes one of 24 slugs such as `news/elections`, `news/courts`, `cartoon` or `announcements`; any other value returns a 400. Some categories can be empty, which comes back as an empty `items` list.
 - **Params:** `section` (string, **required**) — Daily Kos category slug
 
 ### `dailykos_news`
 
 - **HTTP:** `GET /dailykos/news`
-- **What:** Get Daily Kos top stories. Returns current staff-authored Daily Kos stories from its public RSS feed.
+- **What:** Get Daily Kos top stories. Returns the current staff-written Daily Kos stories, about 10 items, each with title, URL, summary, publication time and author. Community stories and image URLs are left out because the site licenses them separately. Takes no parameters.
 - **Params:** _none_
 
 ### `dailykos_sections`
 
 - **HTTP:** `GET /dailykos/sections`
-- **What:** List Daily Kos categories. Returns the 24 live-verified public WordPress categories accepted by dailykos-headlines.
+- **What:** List Daily Kos categories. Lists the 24 Daily Kos categories accepted by `dailykos-headlines`, including nested slugs such as `news/elections` and `news/whitehouse`. Each entry has the `slug`, display `name` and category `url`. Dynamic tag archives are not part of this set.
 - **Params:** _none_
 
 ## Daily Maverick (4)
@@ -6265,19 +6265,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dailymaverick_headlines`
 
 - **HTTP:** `GET /dailymaverick/headlines`
-- **What:** Get headlines from one Daily Maverick section. Returns up to 21 current article cards from the public category JSON endpoint. Use dailymaverick-sections to discover valid slugs.
+- **What:** Get headlines from one Daily Maverick section. Returns up to 21 current story cards for one Daily Maverick category. `section` is required and takes one of 51 slugs such as `maverick-news`, `business-maverick`, `opinionistas`, `politics` or `sport`. Each item has its title, URL and type, plus summary, publication time, author and image when the outlet provides them.
 - **Params:** `section` (string, **required**) — Daily Maverick category slug
 
 ### `dailymaverick_news`
 
 - **HTTP:** `GET /dailymaverick/news`
-- **What:** Get current Daily Maverick stories. Returns current article and opinionista links from Daily Maverick's public news sitemap.
+- **What:** Get current Daily Maverick stories. Lists recent Daily Maverick articles and opinionista pieces from a rolling set of the newest entries. Each item has its title, URL, `type`, publication time and, when available, summary, author and image. Videos, cartoons and other non-article pages are excluded.
 - **Params:** _none_
 
 ### `dailymaverick_sections`
 
 - **HTTP:** `GET /dailymaverick/sections`
-- **What:** List Daily Maverick sections. Lists all 51 live-verified article-bearing categories accepted by dailymaverick-headlines.
+- **What:** List Daily Maverick sections. Lists the 51 article-bearing Daily Maverick categories accepted by `dailymaverick-headlines`, such as `africa`, `maverick-citizen`, `op-eds` and `sci-tech`. Each entry has the `slug`, `name` and category `url`. Empty, media-only and other non-story categories are omitted; checked 2026-09-28.
 - **Params:** _none_
 
 ## Malay Mail (4)
@@ -6285,13 +6285,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `malaymail_article`
 
 - **HTTP:** `GET /malaymail/article`
-- **What:** Get a Malay Mail article. Extracts public article metadata and readable body paragraphs from a canonical Malay Mail story URL.
+- **What:** Get a Malay Mail article. Returns a Malay Mail article by `url`, an absolute canonical link in the dated form `/news/<section>/<year>/<month>/<day>/<slug>/<id>`. The response has the title, description, section, authors, lead image, publish and update times, body `paragraphs` and a `paywalled` flag.
 - **Params:** `url` (string, **required**) — Canonical Malay Mail article URL
 
 ### `malaymail_headlines`
 
 - **HTTP:** `GET /malaymail/headlines`
-- **What:** Get Malay Mail section headlines. Returns current headline cards for one of Malay Mail's public News sections.
+- **What:** Get Malay Mail section headlines. Returns current Malay Mail headline cards for one News section. `section` is required and takes one of `malaysia`, `singapore`, `money`, `world`, `life`, `eat-drink`, `showbiz`, `opinion`, `sports`, `tech-gadgets` or `what-you-think`. Each item has its title and URL; no summary, author, time or image is returned.
 - **Params:** `section` (string, **required**) — Malay Mail News section slug
 
 ### `malaymail_news`
@@ -6303,7 +6303,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `malaymail_sections`
 
 - **HTTP:** `GET /malaymail/sections`
-- **What:** Get Malay Mail sections. Returns the verified public Malay Mail News navigation sections accepted by malaymail-headlines.
+- **What:** Get Malay Mail sections. Lists the 11 Malay Mail News sections accepted by `malaymail-headlines`, from `malaysia` and `singapore` to `eat-drink`, `tech-gadgets` and `what-you-think`. Each entry has a `slug`, display `name` and section `url`. Takes no parameters.
 - **Params:** _none_
 
 ## Phys.org (4)
@@ -6317,7 +6317,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `physorg_headlines`
 
 - **HTTP:** `GET /physorg/headlines`
-- **What:** Get Phys.org section headlines. Returns current stories from one verified public Phys.org RSS feed. The accepted values are the seven Topics menu feeds plus the Breaking and Editorials feeds. Search and tag feeds are excluded because their paths are disallowed in robots.txt.
+- **What:** Get Phys.org section headlines. Returns current stories from one Phys.org feed. The accepted values are the seven Topics menu feeds plus the Breaking and Editorials feeds. Search and tag feeds are not included.
 - **Params:** `section` (string, **required**) — Phys.org RSS feed slug from physorg-sections
 
 ### `physorg_news`
@@ -6329,7 +6329,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `physorg_sections`
 
 - **HTTP:** `GET /physorg/sections`
-- **What:** List Phys.org RSS sections. Lists the seven topic feeds in Phys.org's Topics menu and its two additional public Breaking and Editorials feeds. Every returned slug is accepted by physorg-headlines. Search and tag feeds are excluded because their paths are disallowed in robots.txt.
+- **What:** List Phys.org RSS sections. Lists the seven topic feeds in Phys.org's Topics menu and its two additional public Breaking and Editorials feeds. Every returned slug is accepted by physorg-headlines. Search and tag feeds are not included.
 - **Params:** _none_
 
 ## TimesLIVE (4)
@@ -6343,13 +6343,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `timeslive_headlines`
 
 - **HTTP:** `GET /timeslive/headlines`
-- **What:** Get TimesLIVE section headlines. Returns current TimesLIVE stories from the public Arc section feed. Pass a slug from timeslive_sections; results are the first 15 items in the live section order.
+- **What:** Get TimesLIVE section headlines. Returns current TimesLIVE stories for a section. Pass a slug from timeslive_sections; results are the first 15 items in the live section order.
 - **Params:** `section` (string, **required**) — TimesLIVE editorial section slug
 
 ### `timeslive_news`
 
 - **HTTP:** `GET /timeslive/news`
-- **What:** Get TimesLIVE top stories. Returns current TimesLIVE stories from its public anonymous Arc RSS feed. Section-specific headlines use the public TimesLIVE content feed; article access can vary by story.
+- **What:** Get TimesLIVE top stories. Returns current TimesLIVE stories, including section-specific headlines. Article access can vary by story.
 - **Params:** _none_
 
 ### `timeslive_sections`

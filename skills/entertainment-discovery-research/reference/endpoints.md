@@ -13,7 +13,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `imdb_charts`
 
 - **HTTP:** `GET /imdb/charts`
-- **What:** IMDb title charts. Returns normalized rows from public IMDb title charts. Chart values: `top_rated_movies`, `top_rated_tv_shows`, `most_popular_movies`, `most_popular_tv_shows`, `top_rated_english_movies`, `lowest_rated_movies`.
+- **What:** IMDb title charts. Returns an IMDb title chart, chosen with `chart`: `top_rated_movies` (default), `top_rated_tv_shows`, `most_popular_movies`, `most_popular_tv_shows`, `top_rated_english_movies` or `lowest_rated_movies`. `limit` sets the rows (default 25, max 250). Each title has its rank, id, year, rating, rating count and credits.
 - **Params:** `chart` (string, optional) — IMDb chart; `limit` (integer, optional) — Rows to return, default 25, max 250
 
 ### `imdb_image_types`
@@ -25,19 +25,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `imdb_name`
 
 - **HTTP:** `GET /imdb/name`
-- **What:** IMDb name detail. Returns normalized public IMDb person metadata and known-for rows. Pass exactly one of `id` or `url`.
+- **What:** IMDb name detail. Returns an IMDb person's profile. Pass exactly one of `id` (such as `nm0634240`) or `url`. The response has the name, biography, birth and death dates, birth place, professions, image and a known-for list of titles with year and credit category.
 - **Params:** `id` (string, optional) — IMDb name id; `url` (string, optional) — Absolute https://www.imdb.com/name/<id>/ URL
 
 ### `imdb_name_awards`
 
 - **HTTP:** `GET /imdb/name/awards`
-- **What:** IMDb name awards. Returns normalized public IMDb award rows for a person. Pass exactly one of `id` or `url`.
+- **What:** IMDb name awards. Returns the awards IMDb lists for a person. Pass exactly one of `id` or `url`. Each row has the event, year, category, `win` or `nomination` result, award name, recipients and related titles. `total` is the count IMDb lists, and `has_more` is true when fewer rows are returned.
 - **Params:** `id` (string, optional) — IMDb name id; `url` (string, optional) — Absolute https://www.imdb.com/name/<id>/ URL
 
 ### `imdb_name_credits`
 
 - **HTTP:** `GET /imdb/name/credits`
-- **What:** IMDb name credits. Returns normalized public IMDb filmography sections for a person. Pass exactly one of `id` or `url`.
+- **What:** IMDb name credits. Returns a person's IMDb filmography, grouped into sections such as Actor, Director and Self. Pass exactly one of `id` or `url`. Each credit has its title, year, role and episode count. A section returns up to 100 credits, so `total` can exceed the rows returned.
 - **Params:** `id` (string, optional) — IMDb name id; `url` (string, optional) — Absolute https://www.imdb.com/name/<id>/ URL
 
 ### `imdb_name_images`
@@ -55,25 +55,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `imdb_search`
 
 - **HTTP:** `GET /imdb/search`
-- **What:** IMDb title search. Returns normalized IMDb title search rows from credential-free public IMDb pages. Limit defaults to 10 and clamps to 20.
+- **What:** IMDb title search. Searches IMDb titles by `query`, returning up to `limit` rows (default 10, max 20). Each result has the title id, title, URL, year, title type, image and a description holding the lead cast. A query with no matches returns an empty `results` list.
 - **Params:** `limit` (integer, optional) — Rows to return, default 10, max 20; `query` (string, **required**) — Search query
 
 ### `imdb_search_title`
 
 - **HTTP:** `GET /imdb/search/title`
-- **What:** IMDb advanced title search. Returns normalized IMDb advanced title-search results (imdb.com/search/title/) from a credential-free public IMDb page. At least one filter is required; sort/limit alone are not enough. Limit defaults to 25 and clamps to 50; only IMDb's first rendered page of results is returned (see `total`/`has_more`), there is no deeper cursor pagination. Genre/company/certificate/country/language/keyword/characters/role are include-only lists; there is no exclude support. Unsupported: genre exclude, three curated `groups` values (best-picture-nominee, best-director-nominee, national-film-registry), and the non-plot "page topic" search fields.
+- **What:** IMDb advanced title search. Returns IMDb advanced title-search results (imdb.com/search/title/). At least one filter is required; sort/limit alone are not enough. Limit defaults to 25 and clamps to 50; only IMDb's first page of results is returned (see `total`/`has_more`), there is no deeper cursor pagination. Genre/company/certificate/country/language/keyword/characters/role are include-only lists; there is no exclude support. Unsupported: genre exclude, three curated `groups` values (best-picture-nominee, best-director-nominee, national-film-registry), and the non-plot "page topic" search fields.
 - **Params:** `certificates` (string, optional) — Comma-separated `COUNTRY:RATING` certificate pairs, e.g. `US:PG-13`; `characters` (string, optional) — Comma-separated character names; `colors` (string, optional) — Comma-separated color info: `color`, `black_and_white`, `colorized`, `aces`; `companies` (string, optional) — Comma-separated IMDb company ids, format `co########`; `countries` (string, optional) — Comma-separated ISO country codes; `genres` (string, optional) — Comma-separated genres (include-only): `Action`, `Adventure`, `Animation`, `Biography`, `Comedy`, `Crime`, `Documentary`, `Drama`, `Family`, `Fantasy`, `Film-Noir`, `Game-Show`, `History`, `Horror`, `Music`, `Musical`, `Mystery`, `News`, `Reality-TV`, `Romance`, `Sci-Fi`, `Short`, `Sport`, `Talk-Show`, `Thriller`, `War`, `Western`; `groups` (string, optional) — Comma-separated awards/curated-list groups: `oscar_winner`, `oscar_nominee`, `emmy_winner`, `emmy_nominee`, `golden_globe_winner`, `golden_globe_nominee`, `best_picture_winner`, `best_director_winner`, `razzie_winner`, `razzie_nominee`, `top_100`, `top_250`, `top_1000`, `bottom_100`, `bottom_250`, `bottom_1000`; `include_adult` (boolean, optional) — Include adult titles. Defaults to excluded; `keywords` (string, optional) — Comma-separated plot keywords; `languages` (string, optional) — Comma-separated ISO language codes; `limit` (integer, optional) — Rows to return, default 25, max 50; `max_popularity` (integer, optional) — Maximum IMDb popularity rank; `max_runtime` (integer, optional) — Maximum runtime in minutes; `max_user_rating` (number, optional) — Maximum IMDb user rating, 0-10; `max_votes` (integer, optional) — Maximum number of user rating votes; `min_popularity` (integer, optional) — Minimum IMDb popularity rank (1 is most popular); `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_user_rating` (number, optional) — Minimum IMDb user rating, 0-10; `min_votes` (integer, optional) — Minimum number of user rating votes; `plot` (string, optional) — Plot text search term; `release_date_from` (string, optional) — Release date lower bound: YYYY, YYYY-MM, or YYYY-MM-DD; `release_date_to` (string, optional) — Release date upper bound: YYYY, YYYY-MM, or YYYY-MM-DD; `role` (string, optional) — Comma-separated cast/crew IMDb name ids, format `nm########`; `sort` (string, optional) — One of `moviemeter`, `alpha`, `user_rating`, `num_votes`, `boxoffice_gross_us`, `runtime`, `year`, `release_date`; `sort_order` (string, optional) — `asc` or `desc`. Defaults to `asc` when sort is set; `sound_mixes` (string, optional) — Comma-separated sound mix names: `12-Track Digital Sound`, `3 Channel Stereo`, `4-Track Stereo`, `6-Track Stereo`, `70 mm 6-Track`, `AGA Sound System`, `Auro 11.1`, `CDS`, `Chronophone`, `Cinematophone`, `Cinephone`, `Cinerama 7-Track`, `Cinesound`, `D-Cinema 48kHz 5.1`, `Datasat`, `De Forest Phonofilm`, `Digitrac Digital Audio System`, `Dolby`, `Dolby Atmos`, `Dolby Digital`, `Dolby Digital EX`, `Dolby SR`, `Dolby Stereo`, `Dolby Surround 7.1`, `DTS`, `DTS 70 mm`, `DTS Stereo`, `DTS-ES`, `IMAX 6-Track`, `Kinoplasticon`, `LC-Concept Digital Sound`, `Matrix Surround`, `Mono`, `Perspecta Stereo`, `Phono-Kinema`, `SDDS`, `Sensurround`, `Silent`, `Sonics-DDP`, `Sonix`, `Stereo`, `Ultra Stereo`, `Vitaphone`; `title` (string, optional) — Title-name substring match; `title_type` (string, optional) — Comma-separated title types: `feature`, `tvSeries`, `short`, `tvEpisode`, `tvMiniSeries`, `tvMovie`, `tvSpecial`, `tvShort`, `videoGame`, `video`, `musicVideo`, `podcastSeries`, `podcastEpisode`
 
 ### `imdb_title`
 
 - **HTTP:** `GET /imdb/title`
-- **What:** IMDb title detail. Returns normalized IMDb title metadata from a credential-free public IMDb title page. Pass exactly one of `id` or `url`.
+- **What:** IMDb title detail. Returns an IMDb title's details. Pass exactly one of `id` (such as `tt1375666`) or `url`. The response has the title, type, year, release date, runtime, genres, plot, content rating, rating and count, popularity rank, directors and up to three lead cast. Rating and cast fields appear only when present.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_awards`
 
 - **HTTP:** `GET /imdb/title/awards`
-- **What:** IMDb title awards. Returns normalized public IMDb award rows for a title. Pass exactly one of `id` or `url`.
+- **What:** IMDb title awards. Returns the awards IMDb lists for a title. Pass exactly one of `id` or `url`. Each row has the event, year, category, `win` or `nomination` result, award name, recipients and notes. `total` is the number IMDb lists and `has_more` is true when only part is returned.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_box_office`
@@ -85,7 +85,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `imdb_title_company_credits`
 
 - **HTTP:** `GET /imdb/title/company-credits`
-- **What:** IMDb title company credits. Returns normalized public IMDb company-credit sections for a title. Pass exactly one of `id` or `url`.
+- **What:** IMDb title company credits. Returns the company credits IMDb lists for a title, in sections such as production companies and distributors. Pass exactly one of `id` or `url`. Each company has its name, URL and a qualifier note. `total` is the count IMDb lists, so a short list is normal on popular titles.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_connections`
@@ -97,25 +97,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `imdb_title_credits`
 
 - **HTTP:** `GET /imdb/title/credits`
-- **What:** IMDb title credits. Returns normalized public IMDb full cast and crew sections. Pass exactly one of `id` or `url`.
+- **What:** IMDb title credits. Returns the full cast and crew IMDb lists for a title, in named sections. Pass exactly one of `id` or `url`. Each credit has a name, IMDb name URL, role and, for cast, the character. The cast returns up to 2,000 rows and other sections up to 100.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_episodes`
 
 - **HTTP:** `GET /imdb/title/episodes`
-- **What:** IMDb title episodes. Returns normalized public IMDb episode rows for a series title. Limit defaults to 10 and clamps to 20. Optional `season` filters the upstream episodes page. Pass exactly one of `id` or `url`.
+- **What:** IMDb title episodes. Returns public IMDb episode rows for a series title. Limit defaults to 10 and clamps to 20. Optional `season` filters the episodes returned. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `limit` (integer, optional) — Rows to return, default 10, max 20; `season` (integer, optional) — Season number to request; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_filming_locations`
 
 - **HTTP:** `GET /imdb/title/filming-locations`
-- **What:** IMDb title filming locations. Returns normalized public IMDb filming-location rows for a title. Pass exactly one of `id` or `url`.
+- **What:** IMDb title filming locations. Returns the filming locations IMDb lists for a title. Pass exactly one of `id` or `url`. Each location has its text and an optional note. `total` is the count IMDb lists, `has_more` shows when the list is cut short, and a title with none returns an empty list with `total` 0.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_goofs`
 
 - **HTTP:** `GET /imdb/title/goofs`
-- **What:** IMDb title goofs. Returns normalized public IMDb goof rows for a title. Pass exactly one of `id` or `url`.
+- **What:** IMDb title goofs. Returns the goofs IMDb lists for a title. Pass exactly one of `id` or `url`. Each entry in `facts` has the text, a `spoiler` flag and, when IMDb groups it, a category such as Continuity. `total` is the count IMDb lists and `has_more` is true when only part is returned.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_images`
@@ -127,13 +127,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `imdb_title_keywords`
 
 - **HTTP:** `GET /imdb/title/keywords`
-- **What:** IMDb title keywords. Returns normalized public IMDb keyword rows for a title. Pass exactly one of `id` or `url`.
+- **What:** IMDb title keywords. Returns the plot keywords IMDb lists for a title. Pass exactly one of `id` or `url`. Each keyword has its text and an IMDb search URL for that keyword. `total` is the count IMDb lists, so a short list is normal on popular titles.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_parental_guide`
 
 - **HTTP:** `GET /imdb/title/parental-guide`
-- **What:** IMDb title parental guide. Returns normalized public IMDb parental-guide categories and severity signals. Pass exactly one of `id` or `url`.
+- **What:** IMDb title parental guide. Returns the IMDb parental guide for a title. Pass exactly one of `id` or `url`. Categories such as violence, profanity and frightening scenes carry a severity of `none`, `mild`, `moderate` or `severe` and the guide text. A `summary` gives counts and the highest severity. Spoiler items are excluded.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_public_facts_analysis`
@@ -145,7 +145,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `imdb_title_quotes`
 
 - **HTTP:** `GET /imdb/title/quotes`
-- **What:** IMDb title quotes. Returns normalized public IMDb quote rows for a title. Pass exactly one of `id` or `url`.
+- **What:** IMDb title quotes. Returns the quotes IMDb lists for a title. Pass exactly one of `id` or `url`. Each entry in `facts` is a whole exchange, with lines prefixed by the speaker, plus a `spoiler` flag. `total` is the count IMDb lists, so a short list is normal on popular titles.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_ratings`
@@ -157,31 +157,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `imdb_title_release_info`
 
 - **HTTP:** `GET /imdb/title/release-info`
-- **What:** IMDb title release info. Returns normalized public IMDb release date rows and alternate titles. Pass exactly one of `id` or `url`.
+- **What:** IMDb title release info. Returns the release dates and alternate titles IMDb lists for a title. Pass exactly one of `id` or `url`. Releases have a country, date and note; alternate titles have a country, title and type. Both lists are often shorter than `total` and `alternate_titles_total`.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_reviews`
 
 - **HTTP:** `GET /imdb/title/reviews`
-- **What:** IMDb title user reviews. Returns normalized public IMDb user review rows. Limit defaults to 10 and clamps to 20. Pass exactly one of `id` or `url`.
+- **What:** IMDb title user reviews. Returns public IMDb user review rows. Limit defaults to 10 and clamps to 20. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `limit` (integer, optional) — Rows to return, default 10, max 20; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_similar`
 
 - **HTTP:** `GET /imdb/title/similar`
-- **What:** IMDb similar titles. Returns normalized titles from IMDb's public More like this recommendations. Pass exactly one of `id` or `url`.
+- **What:** IMDb similar titles. Returns the titles in IMDb's More like this recommendations for a title. Pass exactly one of `id` (such as `tt0111161`) or `url`. Each title has its id, name, URL, year, type, runtime, content rating, rating, rating count and image.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute IMDb title URL
 
 ### `imdb_title_technical_specs`
 
 - **HTTP:** `GET /imdb/title/technical-specs`
-- **What:** IMDb title technical specs. Returns normalized public IMDb technical specifications such as runtime, sound mix, color, and aspect ratio. Pass exactly one of `id` or `url`.
+- **What:** IMDb title technical specs. Returns public IMDb technical specifications such as runtime, sound mix, color, and aspect ratio. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_trivia`
 
 - **HTTP:** `GET /imdb/title/trivia`
-- **What:** IMDb title trivia. Returns normalized public IMDb trivia rows for a title. Pass exactly one of `id` or `url`.
+- **What:** IMDb title trivia. Returns the trivia IMDb lists for a title. Pass exactly one of `id` or `url`. Each entry in `facts` has the text, a `spoiler` flag and, for grouped items, a category such as Director Trademark. `total` is the count IMDb lists and `has_more` is true when only part is returned.
 - **Params:** `id` (string, optional) — IMDb title id; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
 ### `imdb_title_videos`
@@ -195,7 +195,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `justwatch_age_certifications`
 
 - **HTTP:** `GET /justwatch/age-certifications`
-- **What:** Get JustWatch age certifications. Returns JustWatch age certification technical names for a country.
+- **What:** Get JustWatch age certifications. Lists the JustWatch age certification technical names for a country, such as `PG-13` for the US. `country` is a two-letter code and defaults to `US`. An invalid country returns `400`, and an unexpectedly empty result returns `503`.
 - **Params:** `country` (string, optional) — Two-letter country code
 
 ### `justwatch_discover`
@@ -207,25 +207,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `justwatch_episode_by_id`
 
 - **HTTP:** `GET /justwatch/episode/by-id`
-- **What:** Get JustWatch episode by raw id. Looks up an episode by raw JustWatch GraphQL id such as `tse5550494` and returns normalized metadata and offers.
+- **What:** Get JustWatch episode by raw id. Looks up one JustWatch episode by its raw `id` (`tse` followed by digits, such as `tse5550494`), in the `country` (default `US`) and `language` (default `en`) you choose. Returns the title, year, episode number, description, poster, paths, and streaming offers with provider, monetization type, presentation type, price and currency. A valid id with no match returns `404`.
 - **Params:** `country` (string, optional) — Two-letter country code; `id` (string, **required**) — Raw JustWatch episode id matching tse[0-9]+; `language` (string, optional) — Two-letter language code
 
 ### `justwatch_episode_offers`
 
 - **HTTP:** `GET /justwatch/episode/offers`
-- **What:** Get JustWatch episode offers. Returns normalized offers for a raw JustWatch episode id across one to five comma-separated country codes.
+- **What:** Get JustWatch episode offers. Returns the streaming offers for one JustWatch episode `id` (`tse` followed by digits) across one to five comma-separated country codes in `countries` (default `US`), with `language` defaulting to `en`. Each country entry lists offers by provider, monetization type, presentation type, price and currency, with the episode details. An unknown id returns `404`.
 - **Params:** `countries` (string, optional) — One to five comma-separated two-letter country codes; `id` (string, **required**) — Raw JustWatch episode id matching tse[0-9]+; `language` (string, optional) — Two-letter language code
 
 ### `justwatch_genre_titles`
 
 - **HTTP:** `GET /justwatch/genre/titles`
-- **What:** Get JustWatch genre titles. Returns popular titles for one JustWatch genre short name such as `act`. Type accepts only `all`, `movie`, or `show`.
+- **What:** Get JustWatch genre titles. Lists popular JustWatch titles for one genre short name in `genre`, such as `act`. `type` is `all`, `movie` or `show` (default `all`), `limit` defaults to 20 and is capped at 50, and `country` and `language` default to `US` and `en`. Each title has its id, year, path, poster, production countries and offers. Find genre names with the genres endpoint.
 - **Params:** `country` (string, optional) — Two-letter country code; `genre` (string, **required**) — JustWatch genre short name; `language` (string, optional) — Two-letter language code; `limit` (integer, optional) — Maximum results, defaults to 20 and clamps to 50; `type` (string, optional) — Title type: all, movie, show
 
 ### `justwatch_genres`
 
 - **HTTP:** `GET /justwatch/genres`
-- **What:** Get JustWatch genres. Returns JustWatch genre short names and localized translations.
+- **What:** Get JustWatch genres. Lists the JustWatch genres, each with its `short_name` (such as `act`) and a translated name in the `language` you choose (two-letter code, default `en`). Use the short names as the `genre` input of the genre titles endpoint. An invalid language returns `400`.
 - **Params:** `language` (string, optional) — Two-letter language code
 
 ### `justwatch_monetization_titles`
@@ -237,55 +237,55 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `justwatch_new`
 
 - **HTTP:** `GET /justwatch/new`
-- **What:** Get new JustWatch titles. Returns newly available movies and shows from the public JustWatch website GraphQL endpoint. Type accepts only `all`, `movie`, or `show`; limit defaults to 20 and clamps to 50.
+- **What:** Get new JustWatch titles. Returns newly available movies and shows. Type accepts only `all`, `movie`, or `show`; limit defaults to 20 and clamps to 50.
 - **Params:** `country` (string, optional) — Two-letter country code; `language` (string, optional) — Two-letter language code; `limit` (integer, optional) — Maximum results, defaults to 20 and clamps to 50; `type` (string, optional) — Title type: all, movie, show
 
 ### `justwatch_popular`
 
 - **HTTP:** `GET /justwatch/popular`
-- **What:** Get popular JustWatch titles. Returns popular movies and shows from the public JustWatch website GraphQL endpoint. Type accepts only `all`, `movie`, or `show`; limit defaults to 20 and clamps to 50.
+- **What:** Get popular JustWatch titles. Returns popular movies and shows. Type accepts only `all`, `movie`, or `show`; limit defaults to 20 and clamps to 50.
 - **Params:** `country` (string, optional) — Two-letter country code; `cursor` (string, optional) — Opaque next_cursor from the prior response; omit for the first page; `language` (string, optional) — Two-letter language code; `limit` (integer, optional) — Maximum results, defaults to 20 and clamps to 50; `type` (string, optional) — Title type: all, movie, show
 
 ### `justwatch_provider_titles`
 
 - **HTTP:** `GET /justwatch/provider/titles`
-- **What:** Get JustWatch provider titles. Returns popular movie/show titles available through a JustWatch provider short name such as `nfx`.
+- **What:** Get JustWatch provider titles. Returns popular movies and shows available on one streaming provider, by JustWatch provider short name such as `nfx`, for a country (default `US`) and language (default `en`). Filter to movies or shows with `type` and cap results with `limit` (default 20, max 50). Each title has its name, year, type, poster, JustWatch URL and offers with price, currency and monetization type.
 - **Params:** `country` (string, optional) — Two-letter country code; `language` (string, optional) — Two-letter language code; `limit` (integer, optional) — Maximum results, defaults to 20 and clamps to 50; `provider` (string, **required**) — JustWatch provider short name; `type` (string, optional) — Title type: all, movie, show
 
 ### `justwatch_providers`
 
 - **HTTP:** `GET /justwatch/providers`
-- **What:** Get JustWatch providers. Returns the credential-free public JustWatch provider catalog for a country.
+- **What:** Get JustWatch providers. Lists the streaming providers JustWatch tracks in a country. `country` is a two-letter code and defaults to `US`. Each provider has its id, clear name, short name, technical name and an absolute icon URL. An invalid country returns `400`.
 - **Params:** `country` (string, optional) — Two-letter country code
 
 ### `justwatch_search`
 
 - **HTTP:** `GET /justwatch/search`
-- **What:** Search JustWatch titles. Searches JustWatch titles using the public credential-free website GraphQL endpoint. Country must be a two-letter ISO code such as `US`; language must be a two-letter code such as `en`.
+- **What:** Search JustWatch titles. Searches JustWatch titles. Country must be a two-letter ISO code such as `US`; language must be a two-letter code such as `en`.
 - **Params:** `country` (string, optional) — Two-letter country code; `language` (string, optional) — Two-letter language code; `limit` (integer, optional) — Maximum results, defaults to 10 and clamps to 25; `query` (string, **required**) — Search query
 
 ### `justwatch_season_by_id`
 
 - **HTTP:** `GET /justwatch/season/by-id`
-- **What:** Get JustWatch season by raw id. Looks up a season by raw JustWatch GraphQL id such as `tss297253`.
+- **What:** Get JustWatch season by raw id. Looks up one JustWatch season by its raw `id` (`tss` followed by digits, such as `tss297253`), in the `country` (default `US`) and `language` (default `en`) you choose. Returns the season title, number, year, description, path, URL and poster. A valid id with no match returns `404`.
 - **Params:** `country` (string, optional) — Two-letter country code; `id` (string, **required**) — Raw JustWatch season id matching tss[0-9]+; `language` (string, optional) — Two-letter language code
 
 ### `justwatch_season_episodes`
 
 - **HTTP:** `GET /justwatch/season/episodes`
-- **What:** Get JustWatch season episodes. Returns episodes and normalized episode offers for a raw JustWatch season id such as `tss297253`.
+- **What:** Get JustWatch season episodes. Lists the episodes of a JustWatch season given as `season_id` (`tss` followed by digits), with `country` defaulting to `US` and `language` to `en`. Each episode has its number, title, description and streaming offers with provider, price and currency. Path, URL and poster appear only when JustWatch has them for that episode. An unknown season returns `404`.
 - **Params:** `country` (string, optional) — Two-letter country code; `language` (string, optional) — Two-letter language code; `season_id` (string, **required**) — Raw JustWatch season id matching tss[0-9]+
 
 ### `justwatch_show_seasons`
 
 - **HTTP:** `GET /justwatch/show/seasons`
-- **What:** Get JustWatch show seasons. Returns seasons for a raw JustWatch show id such as `ts287292`.
+- **What:** Get JustWatch show seasons. Lists the seasons of a JustWatch show given as `show_id` (`ts` followed by digits, such as `ts287292`), with `country` defaulting to `US` and `language` to `en`. Each season has its number, title, year, description, path and poster. The show itself comes back with genres, scoring, runtime and offers. An unknown show returns `404`.
 - **Params:** `country` (string, optional) — Two-letter country code; `language` (string, optional) — Two-letter language code; `show_id` (string, **required**) — Raw JustWatch show id matching ts[0-9]+
 
 ### `justwatch_title`
 
 - **HTTP:** `GET /justwatch/title`
-- **What:** Get JustWatch title details. Fetches a JustWatch title page and returns normalized metadata and current offers. Pass exactly one of `path` or `url`.
+- **What:** Get JustWatch title details. Returns the details of a JustWatch movie or show. Pass exactly one of `path` (such as `/us/movie/inception`) or `url` (an absolute JustWatch address). The response has the title, year, genres, runtime, content rating, `scoring` (IMDb and TMDB scores, tomato meter, JustWatch rating) and current offers. Titles with no offers still return metadata; a missing page returns `404`.
 - **Params:** `path` (string, optional) — JustWatch title path; `url` (string, optional) — Absolute https://www.justwatch.com title URL
 
 ### `justwatch_title_analysis`
@@ -297,25 +297,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `justwatch_title_by_id`
 
 - **HTTP:** `GET /justwatch/title/by-id`
-- **What:** Get JustWatch title by raw id. Looks up a movie or show by raw JustWatch GraphQL id such as `tm92641` or `ts287292`.
+- **What:** Get JustWatch title by raw id. Looks up a JustWatch movie or show by its raw `id` (`tm` or `ts` followed by digits, such as `tm92641`), with `country` defaulting to `US` and `language` to `en`. Returns the title, year, genres, runtime, content rating, description, scoring, and offers with provider, monetization type, price and currency. A valid id with no match returns `404`.
 - **Params:** `country` (string, optional) — Two-letter country code; `id` (string, **required**) — Raw JustWatch movie/show id matching tm[0-9]+ or ts[0-9]+; `language` (string, optional) — Two-letter language code
 
 ### `justwatch_title_media`
 
 - **HTTP:** `GET /justwatch/title/media`
-- **What:** Get JustWatch title media. Returns normalized credits, clips, and backdrops for a raw JustWatch movie/show id such as `tm92641`.
+- **What:** Get JustWatch title media. Returns the media for a JustWatch movie or show `id` (`tm` or `ts` followed by digits): credits with role, name, character and person id, video clips with provider and URL, and backdrop image URLs. `country` defaults to `US` and `language` to `en`. YouTube clips carry a watch URL. An unknown id returns `404`.
 - **Params:** `country` (string, optional) — Two-letter country code; `id` (string, **required**) — Raw JustWatch movie/show id matching tm[0-9]+ or ts[0-9]+; `language` (string, optional) — Two-letter language code
 
 ### `justwatch_title_offers`
 
 - **HTTP:** `GET /justwatch/title/offers`
-- **What:** Get JustWatch title offers. Returns normalized offers for a raw JustWatch movie/show id across one to five comma-separated country codes.
+- **What:** Get JustWatch title offers. Returns the streaming offers for a JustWatch movie or show `id` across one to five comma-separated country codes in `countries` (default `US`), with `language` defaulting to `en`. Each country entry has its offers (provider, monetization type, presentation type, price, currency) and the title details. An unknown id returns `404`.
 - **Params:** `countries` (string, optional) — One to five comma-separated two-letter country codes; `id` (string, **required**) — Raw JustWatch movie/show id matching tm[0-9]+ or ts[0-9]+; `language` (string, optional) — Two-letter language code
 
 ### `justwatch_title_similar`
 
 - **HTTP:** `GET /justwatch/title/similar`
-- **What:** Get similar JustWatch titles. Returns similar titles for a raw JustWatch movie/show id such as `tm92641`.
+- **What:** Get similar JustWatch titles. Lists titles similar to a JustWatch movie or show `id` (`tm` or `ts` followed by digits). `limit` defaults to 10 and is capped at 25; `country` defaults to `US` and `language` to `en`. Each result has its id, type, title, year, path, poster, production countries and offers. An unknown id returns `404`.
 - **Params:** `country` (string, optional) — Two-letter country code; `id` (string, **required**) — Raw JustWatch movie/show id matching tm[0-9]+ or ts[0-9]+; `language` (string, optional) — Two-letter language code; `limit` (integer, optional) — Maximum results, defaults to 10 and clamps to 25
 
 ## TMDB (9)
@@ -323,55 +323,55 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tmdb_collection`
 
 - **HTTP:** `GET /tmdb/collection/{id}`
-- **What:** Get a TMDB collection. Returns a normalized TMDB collection (franchise grouping), including its overview and server-rendered member movies. Credential-free public TMDB data.
+- **What:** Get a TMDB collection. Returns a TMDB collection (a movie franchise grouping) by `id`, which can be the collection id or an id-slug. The response has the collection title, overview, `uri` and `source_url`, plus its member movies, each with id, title, overview, poster URL, release date and `uri`.
 - **Params:** `id` (string, **required**) — TMDB collection id or id-slug
 
 ### `tmdb_genres`
 
 - **HTTP:** `GET /tmdb/genres`
-- **What:** List TMDB browse genres. Returns every genre ID advertised by TMDB's public movie and TV browse pages. Use movie values only with movie list filters and TV values only with TV list filters. Credential-free public TMDB data.
+- **What:** List TMDB browse genres. Returns every genre ID for TMDB movie and TV browse pages. Use movie values only with movie list filters and TV values only with TV list filters.
 - **Params:** _none_
 
 ### `tmdb_movie`
 
 - **HTTP:** `GET /tmdb/movie/{id}`
-- **What:** Get a TMDB movie. Returns a normalized TMDB movie: overview, tagline, genres, countries, runtime, budget/revenue, top-billed cast, top crew (director/writer), and aggregate rating. Credential-free public TMDB data (themoviedb.org) — not the official api.themoviedb.org, which requires an API key.
+- **What:** Get a TMDB movie. Returns a TMDB movie: overview, tagline, genres, countries, runtime, budget/revenue, top-billed cast, top crew (director/writer), and aggregate rating.
 - **Params:** `id` (string, **required**) — TMDB movie id
 
 ### `tmdb_movie_list`
 
 - **HTTP:** `GET /tmdb/movie/list`
-- **What:** Get a TMDB movie chart. Returns a TMDB movie chart (popular, top rated, now playing, or upcoming). Credential-free public TMDB data.
+- **What:** Get a TMDB movie chart. Returns a page of TMDB movies from the `category` chart (`popular` by default, or `top_rated`, `now_playing`, `upcoming`), optionally refined by `sort_by`, `with_genres`, `original_language`, release dates, rating, votes and runtime. `limit` defaults to 10 (max 20). Each movie has id, title, overview, poster, release date and `uri`; `has_next_page` signals more pages.
 - **Params:** `category` (string, optional) — Movie chart, default popular; `date_from` (string, optional) — Release date lower bound (YYYY-MM-DD); `date_to` (string, optional) — Release date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max movies, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated movie genre ids: 28,12,16,35,80,99,18,10751,14,36,27,10402,9648,10749,878,10770,53,10752,37
 
 ### `tmdb_person`
 
 - **HTTP:** `GET /tmdb/person/{id}`
-- **What:** Get a TMDB person. Returns a normalized TMDB person: biography, birth date, photo, and filmography (movie and TV credits). Credential-free public TMDB data.
+- **What:** Get a TMDB person. Returns a TMDB person by `id`: name, biography, birth date, photo URL and a filmography of movie and TV credits, most prominent first. `limit` caps the credits (default 10, max 20). Each credit has its `type` (`movie` or `tv`), id, title and `uri`. The biography may include a Wikipedia CC-BY-SA attribution note.
 - **Params:** `id` (string, **required**) — TMDB person id; `limit` (integer, optional) — Max filmography credits, default 10, max 20
 
 ### `tmdb_person_list`
 
 - **HTTP:** `GET /tmdb/person/list`
-- **What:** List popular people on TMDB. Returns one page from TMDB's Popular People directory, including each person's id, name, known-for titles, profile image, and detail URL. Credential-free public TMDB data.
+- **What:** List popular people on TMDB. Returns one page from TMDB's Popular People directory, including each person's id, name, known-for titles, profile image, and detail URL.
 - **Params:** `limit` (integer, optional) — Max people, default 10, max 20; `page` (integer, optional) — 1-based page, default 1
 
 ### `tmdb_search`
 
 - **HTTP:** `GET /tmdb/search`
-- **What:** Search TMDB. Searches TMDB movies, TV shows, people, and collections. An unscoped query interleaves results across all four types rather than returning whichever type happens to rank first upstream. Credential-free public TMDB data.
+- **What:** Search TMDB. Searches TMDB movies, TV shows, people, and collections. An unscoped query interleaves results across all four types rather than returning whichever type happens to rank first.
 - **Params:** `limit` (integer, optional) — Max results, default 10, max 20; `page` (integer, optional) — 1-based results page, default 1; `query` (string, **required**) — Search query; `type` (string, optional) — Optional result type filter
 
 ### `tmdb_tv`
 
 - **HTTP:** `GET /tmdb/tv/{id}`
-- **What:** Get a TMDB TV show. Returns a normalized TMDB TV show: overview, tagline, genres, countries, episode count, first/last air year, top-billed cast, top crew (creator), and aggregate rating. Credential-free public TMDB data.
+- **What:** Get a TMDB TV show. Returns a TMDB TV show: overview, tagline, genres, countries, episode count, first/last air year, top-billed cast, top crew (creator), and aggregate rating.
 - **Params:** `id` (string, **required**) — TMDB TV show id
 
 ### `tmdb_tv_list`
 
 - **HTTP:** `GET /tmdb/tv/list`
-- **What:** Get a TMDB TV chart. Returns a TMDB TV chart (popular, top rated, airing today, or on the air). Credential-free public TMDB data.
+- **What:** Get a TMDB TV chart. Returns a page of TMDB TV shows from the `category` chart (`popular` by default, or `top_rated`, `airing_today`, `on_the_air`), optionally refined by `sort_by`, `with_genres`, `original_language`, first-air-date bounds `date_from` and `date_to`, rating, votes and runtime. `limit` defaults to 10 (max 20). A filtered page with no matches returns an empty `shows` array.
 - **Params:** `category` (string, optional) — TV chart, default popular; `date_from` (string, optional) — First-air date lower bound (YYYY-MM-DD); `date_to` (string, optional) — First-air date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max shows, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TV genre ids: 10759,16,35,80,99,18,10751,10762,9648,10763,10764,10765,10766,10767,10768,37
 
 ## Rotten Tomatoes (20)
@@ -385,13 +385,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rottentomatoes_browse_movies`
 
 - **HTTP:** `GET /rottentomatoes/browse/movies`
-- **What:** Rotten Tomatoes movie discovery rows. Returns normalized movie rows from Rotten Tomatoes' public browse JSON route. Use `/rottentomatoes/browse/filters` to discover current values for each list. Filters accept comma-separated values; pagination uses the opaque `after` cursor from the previous response.
+- **What:** Rotten Tomatoes movie discovery rows. Returns movie rows from Rotten Tomatoes' browse listing. Use `/rottentomatoes/browse/filters` to discover current values for each list. Filters accept comma-separated values; pagination uses the opaque `after` cursor from the previous response.
 - **Params:** `affiliates` (string, optional) — Comma-separated streaming/service values from browse/filters; `after` (string, optional) — Opaque next-page cursor returned in data.page_info.end_cursor; `audience` (string, optional) — Comma-separated Popcornmeter values from browse/filters; `critics` (string, optional) — Comma-separated Tomatometer values from browse/filters; `genres` (string, optional) — Comma-separated genre values from browse/filters; `limit` (integer, optional) — Rows to return, default 10, max 30; `list` (string, optional) — Movie browse list: movies_in_theaters, movies_at_home, movies_coming_soon; `ratings` (string, optional) — Comma-separated content ratings from browse/filters; `sort` (string, optional) — Sort value from the selected list's browse/filters response
 
 ### `rottentomatoes_browse_tv`
 
 - **HTTP:** `GET /rottentomatoes/browse/tv`
-- **What:** Rotten Tomatoes TV discovery rows. Returns normalized TV series rows from Rotten Tomatoes' public browse JSON route. Use `/rottentomatoes/browse/filters?list=tv_series_browse` to discover current filters; pagination uses the opaque `after` cursor from the previous response.
+- **What:** Rotten Tomatoes TV discovery rows. Returns TV series rows from Rotten Tomatoes' browse listing. Use `/rottentomatoes/browse/filters?list=tv_series_browse` to discover current filters; pagination uses the opaque `after` cursor from the previous response.
 - **Params:** `affiliates` (string, optional) — Comma-separated streaming/service values from browse/filters; `after` (string, optional) — Opaque next-page cursor returned in data.page_info.end_cursor; `audience` (string, optional) — Comma-separated Popcornmeter values from browse/filters; `critics` (string, optional) — Comma-separated Tomatometer values from browse/filters; `genres` (string, optional) — Comma-separated genre values from browse/filters; `limit` (integer, optional) — Rows to return, default 10, max 30; `list` (string, optional) — TV browse list: tv_series_browse; `ratings` (string, optional) — Comma-separated content ratings from browse/filters; `sort` (string, optional) — Sort value from browse/filters
 
 ### `rottentomatoes_critics_authors`
@@ -415,7 +415,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rottentomatoes_editorial_search`
 
 - **HTTP:** `GET /rottentomatoes/editorial/search`
-- **What:** Rotten Tomatoes editorial search. Searches public Rotten Tomatoes editorial content, including articles and guides. Results come from its anonymous WordPress REST search endpoint and include content subtype plus total-page metadata.
+- **What:** Rotten Tomatoes editorial search. Searches public Rotten Tomatoes editorial content, including articles and guides. Results include content subtype plus total-page metadata.
 - **Params:** `limit` (integer, optional) — Rows per page, default 10, range 1 to 100; `page` (integer, optional) — One-based result page from 1 to 10000; default 1; `query` (string, **required**) — Editorial search text; maximum 200 bytes
 
 ### `rottentomatoes_editorial_section`
@@ -439,49 +439,49 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rottentomatoes_editorial_types`
 
 - **HTTP:** `GET /rottentomatoes/editorial/types`
-- **What:** Rotten Tomatoes editorial content types. Returns the complete live-verified set of editorial type values accepted by the editorial content endpoint.
+- **What:** Rotten Tomatoes editorial content types. Lists the editorial content types Rotten Tomatoes accepts as `type` on its editorial content endpoint, each with a `value` and `label` (for example `article`, `guide`, `gallery`, `rt-hub` and `pages`). The set was last verified on 2026-09-26, shown in `verified_at`. The `pages` type returns metadata and permalinks, not page bodies.
 - **Params:** _none_
 
 ### `rottentomatoes_episode`
 
 - **HTTP:** `GET /rottentomatoes/episode`
-- **What:** Rotten Tomatoes episode detail. Returns normalized Rotten Tomatoes TV episode metadata, scorecard data, parent series/season metadata, and public video metadata from a credential-free public episode page. Pass exactly one of `path` or `url`.
+- **What:** Rotten Tomatoes episode detail. Returns Rotten Tomatoes TV episode metadata, scorecard data, parent series/season metadata, and public video metadata. Pass exactly one of `path` or `url`.
 - **Params:** `path` (string, optional) — Rotten Tomatoes episode path; `url` (string, optional) — Absolute https://www.rottentomatoes.com episode URL
 
 ### `rottentomatoes_movie`
 
 - **HTTP:** `GET /rottentomatoes/movie`
-- **What:** Rotten Tomatoes movie detail. Returns normalized Rotten Tomatoes movie metadata, scorecard data, and representative embedded audience reviews. Pass exactly one of `path` or `url`.
+- **What:** Rotten Tomatoes movie detail. Returns Rotten Tomatoes movie metadata, scorecard data, and representative audience reviews. Pass exactly one of `path` or `url`.
 - **Params:** `path` (string, optional) — Rotten Tomatoes movie path; `url` (string, optional) — Absolute https://www.rottentomatoes.com movie URL
 
 ### `rottentomatoes_movie_reviews`
 
 - **HTTP:** `GET /rottentomatoes/movie/reviews`
-- **What:** Rotten Tomatoes movie reviews. Returns normalized critic or audience reviews from Rotten Tomatoes public review JSON hydrated by the movie review page, including pagination metadata. Pass exactly one of `path` or `url`. Supported `type` values are `critics`, `top-critics`, `audience`, and `verified-audience`.
+- **What:** Rotten Tomatoes movie reviews. Returns critic or audience reviews from Rotten Tomatoes, including pagination metadata. Pass exactly one of `path` or `url`. Supported `type` values are `critics`, `top-critics`, `audience`, and `verified-audience`.
 - **Params:** `after` (string, optional) — Pagination cursor from data.page_info.end_cursor; `limit` (integer, optional) — Reviews to return, default 10, max 20; `path` (string, optional) — Rotten Tomatoes movie path; `type` (string, optional) — Review type: critics, top-critics, audience, verified-audience; `url` (string, optional) — Absolute https://www.rottentomatoes.com movie URL
 
 ### `rottentomatoes_person`
 
 - **HTTP:** `GET /rottentomatoes/person`
-- **What:** Rotten Tomatoes person detail and filmography. Returns normalized Rotten Tomatoes celebrity/person metadata and filmography rows from public Person JSON-LD and the credential-free filmography module. Pass exactly one of `path` or `url`.
+- **What:** Rotten Tomatoes person detail and filmography. Returns Rotten Tomatoes celebrity/person metadata and filmography rows. Pass exactly one of `path` or `url`.
 - **Params:** `path` (string, optional) — Rotten Tomatoes person path; `url` (string, optional) — Absolute https://www.rottentomatoes.com person URL
 
 ### `rottentomatoes_search`
 
 - **HTTP:** `GET /rottentomatoes/search`
-- **What:** Rotten Tomatoes movie search. Returns normalized Rotten Tomatoes movie search rows from credential-free server-rendered search HTML.
+- **What:** Rotten Tomatoes movie search. Searches Rotten Tomatoes movies by the required `query`, returning up to `limit` rows (default 10, max 20). Each row has the title, URL, release year or start and end year, `tomatometer_score` and sentiment, `certified_fresh`, cast and image. No matches returns an empty `results` array.
 - **Params:** `limit` (integer, optional) — Rows to return, default 10, max 20; `query` (string, **required**) — Search query
 
 ### `rottentomatoes_season`
 
 - **HTTP:** `GET /rottentomatoes/season`
-- **What:** Rotten Tomatoes season detail. Returns normalized Rotten Tomatoes TV season metadata, scorecard data, parent series metadata, and episode rows from a credential-free public season page. Pass exactly one of `path` or `url`.
+- **What:** Rotten Tomatoes season detail. Returns Rotten Tomatoes TV season metadata, scorecard data, parent series metadata, and episode rows. Pass exactly one of `path` or `url`.
 - **Params:** `path` (string, optional) — Rotten Tomatoes season path; `url` (string, optional) — Absolute https://www.rottentomatoes.com season URL
 
 ### `rottentomatoes_series`
 
 - **HTTP:** `GET /rottentomatoes/series`
-- **What:** Rotten Tomatoes series detail. Returns normalized Rotten Tomatoes TV series metadata and scorecard data from a credential-free public series page. Pass exactly one of `path` or `url`.
+- **What:** Rotten Tomatoes series detail. Returns Rotten Tomatoes TV series metadata and scorecard data. Pass exactly one of `path` or `url`.
 - **Params:** `path` (string, optional) — Rotten Tomatoes series path; `url` (string, optional) — Absolute https://www.rottentomatoes.com series URL
 
 ### `rottentomatoes_sitemap_urls`
@@ -501,59 +501,59 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `metacritic_browse`
 
 - **HTTP:** `GET /metacritic/browse`
-- **What:** Browse Metacritic titles. Browse Metacritic titles by content type, optionally filtered by genre and ordered by Metascore, popularity, or release date. Returns paginated title cards with Metascore and user score. Credential-free public Metacritic data.
+- **What:** Browse Metacritic titles. Browse Metacritic titles by content type, optionally filtered by genre and ordered by Metascore, popularity, or release date. Returns paginated title cards with Metascore and user score.
 - **Params:** `genre` (string, optional) — Genre filter (e.g. Action); `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 24, max 100); `sort` (string, optional) — Sort order; `type` (string, **required**) — Content type
 
 ### `metacritic_game`
 
 - **HTTP:** `GET /metacritic/game/{slug}`
-- **What:** Get a Metacritic game. Returns a normalized Metacritic game: Metascore (critic) and user score with sentiment and review counts, genres, per-platform scores, developer/publisher, rating, release date, and trailer. Credential-free public Metacritic data.
+- **What:** Get a Metacritic game. Returns a Metacritic game: Metascore (critic) and user score with sentiment and review counts, genres, per-platform scores, developer/publisher, rating, release date, and trailer.
 - **Params:** `slug` (string, **required**) — Metacritic game slug
 
 ### `metacritic_game_critic_reviews`
 
 - **HTTP:** `GET /metacritic/game/{slug}/critic-reviews`
-- **What:** List a Metacritic game's critic reviews. Returns paginated professional/publication reviews for a game: publication, score, quote, author, platform, and source URL. Credential-free public Metacritic data.
+- **What:** List a Metacritic game's critic reviews. Lists critic reviews for a Metacritic game by `slug` (such as `elden-ring`). Each review has the publication, score, quote, author, date, platform and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
 - **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic game slug; `sort` (string, optional) — Sort order
 
 ### `metacritic_game_user_reviews`
 
 - **HTTP:** `GET /metacritic/game/{slug}/user-reviews`
-- **What:** List a Metacritic game's user reviews. Returns paginated user reviews for a game: author, score (0-10), quote, date, platform, helpfulness, and spoiler flag. Credential-free public Metacritic data.
+- **What:** List a Metacritic game's user reviews. Returns paginated user reviews for a game: author, score (0-10), quote, date, platform, helpfulness, and spoiler flag.
 - **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic game slug; `sort` (string, optional) — Sort order
 
 ### `metacritic_movie`
 
 - **HTTP:** `GET /metacritic/movie/{slug}`
-- **What:** Get a Metacritic movie. Returns a normalized Metacritic movie: Metascore (critic) and user score with sentiment and review counts, genres, cast/crew, rating, runtime, release date, IMDb id, and trailer. Credential-free public Metacritic data.
+- **What:** Get a Metacritic movie. Returns a Metacritic movie: Metascore (critic) and user score with sentiment and review counts, genres, cast/crew, rating, runtime, release date, IMDb id, and trailer.
 - **Params:** `slug` (string, **required**) — Metacritic movie slug
 
 ### `metacritic_movie_critic_reviews`
 
 - **HTTP:** `GET /metacritic/movie/{slug}/critic-reviews`
-- **What:** List a Metacritic movie's critic reviews. Returns paginated professional/publication reviews for a movie: publication, score, quote, author, and source URL. Credential-free public Metacritic data.
+- **What:** List a Metacritic movie's critic reviews. Lists critic reviews for a Metacritic movie by `slug` (such as `oppenheimer`). Each review has the publication, score, quote, author, date and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
 - **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic movie slug; `sort` (string, optional) — Sort order
 
 ### `metacritic_movie_user_reviews`
 
 - **HTTP:** `GET /metacritic/movie/{slug}/user-reviews`
-- **What:** List a Metacritic movie's user reviews. Returns paginated user reviews for a movie: author, score (0-10), quote, date, helpfulness, and spoiler flag. Credential-free public Metacritic data.
+- **What:** List a Metacritic movie's user reviews. Returns paginated user reviews for a movie: author, score (0-10), quote, date, helpfulness, and spoiler flag.
 - **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic movie slug; `sort` (string, optional) — Sort order
 
 ### `metacritic_tv`
 
 - **HTTP:** `GET /metacritic/tv/{slug}`
-- **What:** Get a Metacritic TV show. Returns a normalized Metacritic TV show: Metascore (critic) and user score with sentiment and review counts, genres, networks, season count, rating, release date, IMDb id, and trailer. Credential-free public Metacritic data.
+- **What:** Get a Metacritic TV show. Returns a Metacritic TV show: Metascore (critic) and user score with sentiment and review counts, genres, networks, season count, rating, release date, IMDb id, and trailer.
 - **Params:** `slug` (string, **required**) — Metacritic TV show slug
 
 ### `metacritic_tv_critic_reviews`
 
 - **HTTP:** `GET /metacritic/tv/{slug}/critic-reviews`
-- **What:** List a Metacritic TV show's critic reviews. Returns paginated professional/publication reviews for a TV show: publication, score, quote, author, and source URL. Credential-free public Metacritic data.
+- **What:** List a Metacritic TV show's critic reviews. Lists critic reviews for a Metacritic TV show by `slug` (such as `breaking-bad`). Each review has the publication, score, quote, author, date and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
 - **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic TV show slug; `sort` (string, optional) — Sort order
 
 ### `metacritic_tv_user_reviews`
 
 - **HTTP:** `GET /metacritic/tv/{slug}/user-reviews`
-- **What:** List a Metacritic TV show's user reviews. Returns paginated user reviews for a TV show: author, score (0-10), quote, date, helpfulness, and spoiler flag. Credential-free public Metacritic data.
+- **What:** List a Metacritic TV show's user reviews. Returns paginated user reviews for a TV show: author, score (0-10), quote, date, helpfulness, and spoiler flag.
 - **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic TV show slug; `sort` (string, optional) — Sort order

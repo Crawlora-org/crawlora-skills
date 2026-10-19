@@ -25,19 +25,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `amazon_product`
 
 - **HTTP:** `GET /amazon/product/{asin}`
-- **What:** Retrieve Amazon product details. Returns normalized product details for an Amazon ASIN on `amazon.com`, including pricing, availability, overview data, inline review samples, and descriptive content.
+- **What:** Retrieve Amazon product details. Returns product details for an Amazon ASIN on `amazon.com`, including pricing, availability, overview data, inline review samples, and descriptive content.
 - **Params:** `asin` (string, **required**) — Amazon ASIN; `currency` (string, optional) — Amazon currency; `language` (string, optional) — Amazon language
 
 ### `amazon_search`
 
 - **HTTP:** `GET /amazon/search`
-- **What:** Search Amazon products. Returns normalized Amazon search result cards for `amazon.com`.
+- **What:** Search Amazon products. Searches `amazon.com` by keyword, with optional sort order and page. Each result card has the ASIN, title, link, image, price and list price, rating and review count, the bought-in-last-month figure, and flags for sponsored placement and free delivery.
 - **Params:** `k` (string, **required**) — Search keyword; `page` (integer, optional) — 1-based page number; `s` (string, optional) — Sort order
 
 ### `amazon_suggest`
 
 - **HTTP:** `GET /amazon/suggest/{keyword}`
-- **What:** Retrieve Amazon search suggestions. Returns typeahead keyword suggestions from Amazon's public suggestion API for `amazon.com`.
+- **What:** Retrieve Amazon search suggestions. Returns Amazon's search-box autocomplete suggestions for a keyword prefix on `amazon.com`, as a plain list of suggested search phrases such as `apple watch bands`.
 - **Params:** `keyword` (string, **required**) — Suggestion prefix
 
 ## eBay (10)
@@ -45,62 +45,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ebay_item`
 
 - **HTTP:** `GET /ebay/item/{item_id}`
-- **What:** Get eBay item details. Returns normalized details for a public eBay item listing.
+- **What:** Get eBay item details. Returns the details of one eBay listing by `item_id`: title, link, images, price and price text, condition, availability, item specifics, description, location and shipping. It also carries the seller's name, store, feedback score, followers and items sold, along with the listing's rating and rating count.
 - **Params:** `item_id` (string, **required**) — eBay item ID
 
 ### `ebay_live_stream`
 
 - **HTTP:** `GET /ebay/live/streams/{id}`
-- **What:** Get an eBay Live stream. Returns normalized detail for a single eBay Live stream/event, including each host's feedback summary for the last 365 days.
+- **What:** Get an eBay Live stream. Returns one eBay Live stream or event by `id`, taken from the `streams[].id` of the stream list. The response has title, description, state, start and end times, viewer, watch and like counts, tags, channels and the live, preview and replay URLs. Each host carries a 365-day feedback summary and four average ratings. An unknown id returns `404`.
 - **Params:** `id` (string, **required**) — eBay Live stream/event id
 
 ### `ebay_live_stream_items`
 
 - **HTTP:** `GET /ebay/live/streams/{id}/items`
-- **What:** List an eBay Live stream's featured items. Returns the currently featured/auction items for an eBay Live stream, including live bidding state.
+- **What:** List an eBay Live stream's featured items. Lists the items currently featured in an eBay Live stream, identified by the required event `id`. Each item has its listing id, title, price and currency, bid count, sale type, leader and winner usernames, and `auction_status` (`READY`, `LIVE` or `ENDED`). A stream with no featured items, or an unknown id, returns an empty `items` array.
 - **Params:** `id` (string, **required**) — eBay Live stream/event id
 
 ### `ebay_live_streams`
 
 - **HTTP:** `GET /ebay/live/streams`
-- **What:** List eBay Live streams. Returns currently live and upcoming eBay Live streams for a category channel.
+- **What:** List eBay Live streams. Lists live and upcoming eBay Live streams for one category channel, set with `category` (default `explore`; other values are channel ids such as `IPqZx79LNuwFcSVt` for Sports Singles). Each stream has its title, state, start time, watch count, hosts, tags and preview media. Host feedback is not included. Page on with `next_request_number` and `session_id`, passed back as `request_number` and `session_id`.
 - **Params:** `category` (string, optional) — eBay Live category channel, defaults to explore; `request_number` (integer, optional) — Pagination cursor from a previous response's next_request_number, defaults to 0; `session_id` (string, optional) — Pagination session id from a previous response's session_id
 
 ### `ebay_live_streams_batch`
 
 - **HTTP:** `GET /ebay/live/streams/batch`
-- **What:** Get multiple eBay Live streams. Returns normalized summaries for multiple eBay Live streams/events in one call, up to 9 ids per request.
+- **What:** Get multiple eBay Live streams. Returns summaries for several eBay Live streams in one call. `ids` is required and takes up to 9 stream ids, comma-separated or repeated. Each stream has its title, state, watch count, hosts, tags and preview media, without the per-host feedback summary. Ids that do not resolve are silently omitted, and the order may differ from the request.
 - **Params:** `ids` (string, **required**) — One or more eBay Live stream/event ids, up to 9. Comma-separated or repeated query values are both accepted.
 
 ### `ebay_search`
 
 - **HTTP:** `POST /ebay/search`
-- **What:** Search eBay listings. Returns normalized eBay search results.
+- **What:** Search eBay listings. Searches eBay listings by keyword from a JSON body, with page, page size (60, 120 or 240) and a listing-status filter (`active`, `sold`, `completed` or `sold_completed`). Each result has the item id, title, link, image, price or price range, bid count, seller and rating, location, shipping information, and sold and watcher counts.
 - **Params:** `option` (object, **required**) — eBay search payload
 - **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.
 
 ### `ebay_seller`
 
 - **HTTP:** `GET /ebay/seller/{seller}`
-- **What:** Get eBay seller profile. Returns normalized details for a public eBay seller profile.
+- **What:** Get eBay seller profile. Returns the public profile of an eBay seller by the required `seller` username: display name, store name and URL, profile URL, description, location, member-since date, positive feedback percentage, feedback count, items sold, followers, and detailed seller ratings. Feedback details are included when eBay provides them.
 - **Params:** `seller` (string, **required**) — eBay seller username
 
 ### `ebay_seller_about`
 
 - **HTTP:** `GET /ebay/seller/{seller}/about`
-- **What:** Get eBay seller about details. Returns normalized seller about information from the public eBay store about tab, including seller stats, top-rated status, optional location/member-since fields, and cleaned store categories.
+- **What:** Get eBay seller about details. Returns seller about information from the eBay store about tab, including seller stats, top-rated status, optional location/member-since fields, and cleaned store categories.
 - **Params:** `seller` (string, **required**) — eBay seller username
 
 ### `ebay_seller_feedback`
 
 - **HTTP:** `GET /ebay/seller/{seller}/feedback`
-- **What:** Get eBay seller feedback. Returns normalized seller feedback summary, detailed ratings, and recent review cards from the public eBay seller feedback tab.
+- **What:** Get eBay seller feedback. Returns the feedback eBay shows for a seller, identified by the required `seller` username. The response has the total feedback count, positive feedback percentage, overall rating summary, detailed seller ratings, and review cards with buyer, comment, rating, period and verified-purchase flag. Page with `page` (default 1) and `per_page` (24, 48 or 72; default 48), using `has_more` and `next_page`.
 - **Params:** `page` (integer, optional) — Feedback page number; `per_page` (integer, optional) — Reviews per page; `seller` (string, **required**) — eBay seller username
 
 ### `ebay_seller_shop`
 
 - **HTTP:** `GET /ebay/seller/{seller}/shop`
-- **What:** Get eBay seller shop listings. Returns normalized listings from the public eBay seller shop tab, with pagination backed by the store odtRefresh response.
+- **What:** Get eBay seller shop listings. Lists the items in an eBay seller's shop, identified by the required `seller` username, one page at a time with `page` (default 1). Each result has its item id, title, link, image, price or price range, shipping note, location, bid count and watcher count. The response gives the `total` and a `has_more` flag.
 - **Params:** `page` (integer, optional) — Shop page number; `seller` (string, **required**) — eBay seller username
 
 ## Shopify (11)
@@ -108,67 +108,67 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `shopify_collection_products`
 
 - **HTTP:** `GET /shopify/collections/{handle}/products`
-- **What:** List Shopify collection products. Returns normalized products from a public Shopify collection `/products.json` endpoint. `sortBy` and dynamic facet-filter query params (e.g. `fit`, `canonicalColour`) only take effect for headless storefronts served via the embedded-SSR-JSON fallback transport (`transport_mode: "ssr_embedded"`) and return an invalid-param error if supplied against a classic-transport store, since Shopify's classic public catalog JSON has no server-side sort or filter support. `sort_by`, `min_price`, `max_price`, `product_type`, `in_stock_only`, and `option_`-prefixed params (e.g. `option_size=Small,Medium`) drive a separate, independent mechanism -- Shopify's own native Storefront Filtering collection-page feature (`transport_mode: "storefront_filtered"`) -- which works for both classic- and SSR-fallback-transport stores; supplying any of these takes precedence over sortBy/dynamic facet filters.
+- **What:** List Shopify collection products. Returns products from a Shopify collection. `sortBy` and dynamic facet-filter query params (e.g. `fit`, `canonicalColour`) only take effect for headless storefronts (`transport_mode: "ssr_embedded"`) and return an invalid-param error if supplied against a classic store, since classic Shopify storefronts have no server-side sort or filter support. `sort_by`, `min_price`, `max_price`, `product_type`, `in_stock_only`, and `option_`-prefixed params (e.g. `option_size=Small,Medium`) drive a separate, independent mechanism -- Shopify's own native Storefront Filtering collection-page feature (`transport_mode: "storefront_filtered"`) -- which works for both classic and headless stores; supplying any of these takes precedence over sortBy/dynamic facet filters.
 - **Params:** `handle` (string, **required**) — Collection handle; `in_stock_only` (boolean, optional) — Storefront-filtering transport. true restricts to currently in-stock items only.; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `max_price` (number, optional) — Storefront-filtering transport. Maximum price (inclusive), in the storefront's display currency's major unit.; `min_price` (number, optional) — Storefront-filtering transport. Minimum price (inclusive), in the storefront's display currency's major unit.; `option_size` (string, optional) — Storefront-filtering transport. Example dynamic variant-option filter: comma-separated exact display values for the storefront's own size option (e.g. option_size=Small,Medium). Any variant option name is accepted the same way (option_color, ...) -- see facets in an unfiltered response for the live option names/values per store.; `page` (integer, optional) — 1-based page, defaults to 1; `product_type` (string, optional) — Storefront-filtering transport, comma-separated. Exact product-type display strings from the storefront's own Product Type facet -- see facets.product_type in an unfiltered response for the live value set.; `sortBy` (string, optional) — SSR-fallback transport only (transport_mode ssr_embedded). Allowed values: sortLTH, sortHTL, newest. Omit for the storefront's default relevancy order. Rejected as an invalid param for classic-transport stores.; `sort_by` (string, optional) — Storefront-filtering transport. Allowed values: manual, best-selling, title-ascending, title-descending, price-ascending, price-descending, created-ascending, created-descending. Omit for the collection's own default order.; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_collections`
 
 - **HTTP:** `GET /shopify/collections`
-- **What:** List Shopify collections. Returns normalized collections from a public Shopify `/collections.json` endpoint. Valid empty result pages return `200` with an empty collections array.
+- **What:** List Shopify collections. Returns collections from a public Shopify storefront. Valid empty result pages return `200` with an empty collections array.
 - **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_page`
 
 - **HTTP:** `GET /shopify/pages/{handle}`
-- **What:** Get Shopify page. Returns normalized page detail from Shopify's credential-free `/pages/{handle}.json` endpoint. Page body HTML is returned as cleaned text only.
+- **What:** Get Shopify page. Returns one static page from any public Shopify storefront, by path `handle` and the required `url` of the store. The response has the page's title, URL, times and its `content` as plain text. Unknown handles return 404. Localhost, private-network and credentialed URLs are rejected.
 - **Params:** `handle` (string, **required**) — Page handle; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_pages`
 
 - **HTTP:** `GET /shopify/pages`
-- **What:** List Shopify pages. Returns normalized static pages from a public Shopify `/pages.json` endpoint. Page body HTML is returned as cleaned text only.
+- **What:** List Shopify pages. Lists static pages from a Shopify storefront given by the required `url`, paged with `page` (from 1) and `limit` (default 50, max 250). Each has `handle`, `title`, `url`, plain-text `content` and dates. If `transport_mode` is `ssr_embedded`, items hold only `handle`, `url` and `updated_at`.
 - **Params:** `limit` (integer, optional) — Maximum pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_product`
 
 - **HTTP:** `GET /shopify/products/{handle}`
-- **What:** Get Shopify product. Returns normalized product detail from Shopify's credential-free product handle `.js` endpoint.
+- **What:** Get Shopify product. Returns one product from any Shopify storefront, given the store URL and the product handle: title, description, product type, tags, price and compare-at price, availability, options, images, and each variant with its own price, availability and barcode. Prices are in decimal currency units; an unknown handle returns `404`.
 - **Params:** `handle` (string, **required**) — Product handle; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_product_recommendations`
 
 - **HTTP:** `GET /shopify/products/{handle}/recommendations`
-- **What:** List Shopify product recommendations. Returns normalized recommended products from Shopify's credential-free recommendations Ajax endpoint. The route handle is resolved to a Shopify product id before fetching recommendations.
+- **What:** List Shopify product recommendations. Returns recommended products from Shopify's product recommendations.
 - **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_products`
 
 - **HTTP:** `GET /shopify/products`
-- **What:** List Shopify products. Returns normalized products from a public Shopify `/products.json` endpoint. Valid empty result pages return `200` with an empty products array. `sortBy` and dynamic facet-filter query params (e.g. `fit`, `canonicalColour`) only take effect for headless storefronts served via the embedded-SSR-JSON fallback transport (`transport_mode: "ssr_embedded"`) and return an invalid-param error if supplied against a classic-transport store, since Shopify's classic public catalog JSON has no server-side sort or filter support. `sort_by`, `min_price`, `max_price`, `product_type`, `in_stock_only`, and `option_`-prefixed params (e.g. `option_size=Small,Medium`) drive a separate, independent mechanism -- Shopify's own native Storefront Filtering collection-page feature (`transport_mode: "storefront_filtered"`) -- which works for both classic- and SSR-fallback-transport stores; supplying any of these takes precedence over sortBy/dynamic facet filters.
+- **What:** List Shopify products. Returns products from a public Shopify storefront. Valid empty result pages return `200` with an empty products array. `sortBy` and dynamic facet-filter query params (e.g. `fit`, `canonicalColour`) only take effect for headless storefronts (`transport_mode: "ssr_embedded"`) and return an invalid-param error if supplied against a classic store, since classic Shopify storefronts have no server-side sort or filter support. `sort_by`, `min_price`, `max_price`, `product_type`, `in_stock_only`, and `option_`-prefixed params (e.g. `option_size=Small,Medium`) drive a separate, independent mechanism -- Shopify's own native Storefront Filtering collection-page feature (`transport_mode: "storefront_filtered"`) -- which works for both classic and headless stores; supplying any of these takes precedence over sortBy/dynamic facet filters.
 - **Params:** `in_stock_only` (boolean, optional) — Storefront-filtering transport. true restricts to currently in-stock items only.; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `max_price` (number, optional) — Storefront-filtering transport. Maximum price (inclusive), in the storefront's display currency's major unit.; `min_price` (number, optional) — Storefront-filtering transport. Minimum price (inclusive), in the storefront's display currency's major unit.; `option_size` (string, optional) — Storefront-filtering transport. Example dynamic variant-option filter: comma-separated exact display values for the storefront's own size option (e.g. option_size=Small,Medium). Any variant option name is accepted the same way (option_color, ...) -- see facets in an unfiltered response for the live option names/values per store.; `page` (integer, optional) — 1-based page, defaults to 1; `product_type` (string, optional) — Storefront-filtering transport, comma-separated. Exact product-type display strings from the storefront's own Product Type facet -- see facets.product_type in an unfiltered response for the live value set.; `sortBy` (string, optional) — SSR-fallback transport only (transport_mode ssr_embedded). Allowed values: sortLTH, sortHTL, newest. Omit for the storefront's default relevancy order. Rejected as an invalid param for classic-transport stores.; `sort_by` (string, optional) — Storefront-filtering transport. Allowed values: manual, best-selling, title-ascending, title-descending, price-ascending, price-descending, created-ascending, created-descending. Omit for the collection's own default order.; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_search_suggest`
 
 - **HTTP:** `GET /shopify/search/suggest`
-- **What:** Get Shopify search suggestions. Returns products, collections, and query suggestions from Shopify's credential-free predictive search Ajax endpoint.
+- **What:** Get Shopify search suggestions. Returns predictive search suggestions from any Shopify storefront for a query: matching products, collections and suggested queries. Choose which with `types` (default all three) and cap results per type with `limit` (default 10, max 20). Products carry price, availability, images and options; collections carry title, handle, description and product count.
 - **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_sitemap_urls`
 
 - **HTTP:** `GET /shopify/sitemap/urls`
-- **What:** List Shopify sitemap URLs. Fetches capped URL entries from Shopify child sitemaps matching the requested type.
+- **What:** List Shopify sitemap URLs. Lists URL entries from a Shopify storefront's sitemaps, for the required `url`. `type` filters (`all` by default, `products`, `collections`, `pages`, `blogs`, `agentic_discovery`, `other`) and `limit` caps entries (default 50, max 250). Each has `loc`, `type`, `handle`, `lastmod`, `changefreq` and optional `images`.
 - **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other; `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_sitemaps`
 
 - **HTTP:** `GET /shopify/sitemaps`
-- **What:** List Shopify sitemaps. Returns child sitemap URLs from a public Shopify `/sitemap.xml` index with inferred sitemap types.
+- **What:** List Shopify sitemaps. Lists the child sitemaps in a Shopify storefront's sitemap index, for the required `url`. Each has a `loc` and a `type` (`products`, `collections`, `pages`, `blogs`, `agentic_discovery` or `other`) inferred from its URL. Localhost, private-network and credentialed URLs are rejected.
 - **Params:** `url` (string, **required**) — Shopify storefront URL
 
 ### `shopify_store`
 
 - **HTTP:** `GET /shopify/store`
-- **What:** Get Shopify store metadata. Resolves a public Shopify storefront and returns normalized metadata from credential-free storefront JSON. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page.
+- **What:** Get Shopify store metadata. Resolves a public Shopify storefront and returns its metadata.
 - **Params:** `url` (string, **required**) — Shopify storefront URL
 
 ## Shop.app (16)
@@ -182,37 +182,37 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `shop_app_categories`
 
 - **HTTP:** `GET /shop-app/categories`
-- **What:** List Shop.app categories. Returns public Shop.app product categories.
+- **What:** List Shop.app categories. Returns the Shop.app product category tree, with no parameters. Each category has its `id`, `gid`, `name`, `slug`, `image`, `has_children`, nested `children` and a `path` of ancestors. Ids are taken from Shopify product category GIDs where present.
 - **Params:** _none_
 
 ### `shop_app_collection_products`
 
 - **HTTP:** `GET /shop-app/shops/{handle}/collections/{collection_id}/products`
-- **What:** List Shop.app collection products. Returns public product cards from a Shop.app merchant collection. sort_by allowed values: MOST_SALES, PRICE_LOW_TO_HIGH, PRICE_HIGH_TO_LOW, RELEVANCE.
+- **What:** List Shop.app collection products. Lists products in one collection of a Shop.app merchant, by shop `handle` and `collection_id`. `limit` defaults to 30 (max 60), `sort_by` is `MOST_SALES` (default), `PRICE_LOW_TO_HIGH`, `PRICE_HIGH_TO_LOW` or `RELEVANCE`, and `in_stock` defaults to true. Each card has its title, price, original price, image and URL.
 - **Params:** `collection_id` (string, **required**) — Collection id; `handle` (string, **required**) — Shop handle; `in_stock` (boolean, optional) — Request in-stock products; `limit` (integer, optional) — Maximum products, defaults to 30 and supports up to 60; `sort_by` (string, optional) — Sort mode
 
 ### `shop_app_product`
 
 - **HTTP:** `GET /shop-app/products/{id}`
-- **What:** Get Shop.app product. Returns normalized public product details from Shop.app.
+- **What:** Get Shop.app product. Returns a Shop.app product by `id`: title, description, price and original price, currency, availability, images, option groups, rating, review count with reviews, related products and the selling shop. Pass `variant_id` to mark a variant as selected. Missing products return an error.
 - **Params:** `id` (string, **required**) — Product id; `variant_id` (string, optional) — Variant id
 
 ### `shop_app_product_related`
 
 - **HTTP:** `GET /shop-app/products/{id}/related`
-- **What:** List Shop.app related products. Returns related product cards from a public Shop.app product page.
+- **What:** List Shop.app related products. Lists products related to a Shop.app product, by `id`. `limit` defaults to 20 and is capped at 50. Each card has the product's id, title, price, original price, currency, `on_sale` flag, image, shop name and URL. A product page with no related items returns an error.
 - **Params:** `id` (string, **required**) — Product id; `limit` (integer, optional) — Maximum products, defaults to 20 and supports up to 50
 
 ### `shop_app_product_reviews`
 
 - **HTTP:** `GET /shop-app/products/{id}/reviews`
-- **What:** List Shop.app product reviews. Returns public product reviews from a Shop.app product page.
+- **What:** List Shop.app product reviews. Lists customer reviews for a Shop.app product, by `id`, up to `limit` (default 20, max 50). Each review has its rating, title, body, author, date, helpful count and variant label, where present. A product with no reviews returns an error.
 - **Params:** `id` (string, **required**) — Product id; `limit` (integer, optional) — Maximum reviews, defaults to 20 and supports up to 50
 
 ### `shop_app_product_shop`
 
 - **HTTP:** `GET /shop-app/products/{id}/shop`
-- **What:** Get the Shop.app shop for a product. Resolves the public Shop.app merchant profile for a product id.
+- **What:** Get the Shop.app shop for a product. Finds the Shop.app merchant that sells a product, by the product `id`. Returns the shop's handle, name, description, logo, banner, rating, review count, storefront URL, and its collections. Unknown products, or ones with no public shop, return not found.
 - **Params:** `id` (string, **required**) — Product id
 
 ### `shop_app_product_variant`
@@ -230,43 +230,43 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `shop_app_search`
 
 - **HTTP:** `GET /shop-app/search`
-- **What:** Search Shop.app products. Searches Shop.app product results using the credential-free public web search flow. Limit defaults to 20 and accepts values up to 50.
+- **What:** Search Shop.app products. Searches Shop.app product results. Limit defaults to 20 and accepts values up to 50.
 - **Params:** `deep_search` (boolean, optional) — Accepted for compatibility; Shop.app no longer offers a separate deep search mode, so results are unchanged; `in_stock` (boolean, optional) — Request in-stock products; `limit` (integer, optional) — Maximum products, defaults to 20 and supports up to 50; `on_sale` (boolean, optional) — Request sale products; `query` (string, **required**) — Search query
 
 ### `shop_app_shop`
 
 - **HTTP:** `GET /shop-app/shops/{handle}`
-- **What:** Get Shop.app shop. Returns public Shop.app merchant profile details.
+- **What:** Get Shop.app shop. Returns a Shop.app merchant profile by shop `handle`: name, description, logo, banner, rating, review count, storefront and Shop.app URLs, and collection summaries when the shop page lists them. Unknown handles return an error.
 - **Params:** `handle` (string, **required**) — Shop handle
 
 ### `shop_app_shop_locations`
 
 - **HTTP:** `GET /shop-app/shops/{handle}/locations`
-- **What:** List Shop.app shop locations. Returns public retail locations for a Shop.app merchant profile.
+- **What:** List Shop.app shop locations. Returns the public retail locations of a Shop.app merchant by shop handle, up to `limit` (default 10, max 50). Each location has its id, name, latitude and longitude, and street address; the response also carries the total count and a cursor for the next page. A shop with no public retail locations returns an error.
 - **Params:** `handle` (string, **required**) — Shop handle; `limit` (integer, optional) — Maximum locations, defaults to 10 and supports up to 50
 
 ### `shop_app_shop_products`
 
 - **HTTP:** `GET /shop-app/shops/{handle}/products`
-- **What:** List Shop.app shop products. Returns public product cards from a Shop.app merchant profile. sort_by allowed values: MOST_SALES, PRICE_LOW_TO_HIGH, PRICE_HIGH_TO_LOW, RELEVANCE.
+- **What:** List Shop.app shop products. Lists products from a Shop.app merchant, by shop `handle`. `limit` defaults to 30 (max 60), `sort_by` is `MOST_SALES` (default), `PRICE_LOW_TO_HIGH`, `PRICE_HIGH_TO_LOW` or `RELEVANCE`, and `in_stock` defaults to true. Each card has its id, title, price, original price, image and URL. An invalid `sort_by` is rejected.
 - **Params:** `handle` (string, **required**) — Shop handle; `in_stock` (boolean, optional) — Request in-stock products; `limit` (integer, optional) — Maximum products, defaults to 30 and supports up to 60; `sort_by` (string, optional) — Sort mode
 
 ### `shop_app_shop_reviews`
 
 - **HTTP:** `GET /shop-app/shops/{handle}/reviews`
-- **What:** List Shop.app shop reviews. Returns public reviews for a Shop.app merchant profile.
+- **What:** List Shop.app shop reviews. Lists customer reviews for a Shop.app merchant, by shop `handle`, up to `limit` (default 20, max 50). Each review has its rating, body, author, date, helpful count and the product reviewed. Also returns `total_count` and `next_cursor`. Unknown shops return not found.
 - **Params:** `handle` (string, **required**) — Shop handle; `limit` (integer, optional) — Maximum reviews, defaults to 20 and supports up to 50
 
 ### `shop_app_shop_typeahead`
 
 - **HTTP:** `GET /shop-app/shops/{handle}/typeahead`
-- **What:** Suggest products and collections inside a Shop.app shop. Returns public store typeahead suggestions for a Shop.app merchant profile.
+- **What:** Suggest products and collections inside a Shop.app shop. Returns search suggestions inside one Shop.app shop, for the shop `handle` and required `query`. `limit` defaults to 20, which is also the maximum. Suggestions are `type` term, product or collection, with text, position and a product or collection object where relevant. Unknown shops return not found.
 - **Params:** `handle` (string, **required**) — Shop handle; `limit` (integer, optional) — Maximum suggestions, defaults to 20 and supports up to 20; `query` (string, **required**) — Typeahead query
 
 ### `shop_app_suggestions`
 
 - **HTTP:** `GET /shop-app/suggestions`
-- **What:** Suggest Shop.app searches. Returns Shop.app autocomplete suggestions. Limit defaults to 10 and supports up to 20.
+- **What:** Suggest Shop.app searches. Returns Shop.app autocomplete suggestions for the required `query`. `limit` defaults to 10 and is capped at 20. Each suggestion is either a search query or a shop, with its `text`, `type`, URL and, for shops, the shop handle, name, rating and image.
 - **Params:** `limit` (integer, optional) — Maximum suggestions, defaults to 10 and supports up to 20; `query` (string, **required**) — Search query
 
 ## Target (8)
@@ -274,7 +274,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `target_categories`
 
 - **HTTP:** `GET /target/categories`
-- **What:** List all Target categories. Returns Target's current top-level category menu and the complete grouped shop-all directory, including category ids and canonical URLs.
+- **What:** List all Target categories. Lists Target's top-level category menu in `categories`, plus the grouped shop-all directory in `groups`. Each category has an `id` (the one used by `/target/category-products`), name, canonical URL and, when Target supplies one, an image URL. The response also gives `count` and `group_count`. Takes no parameters.
 - **Params:** _none_
 
 ### `target_category_products`
@@ -292,25 +292,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `target_product`
 
 - **HTTP:** `GET /target/product`
-- **What:** Get a Target product. Returns normalized product details for one Target item, including product content, images, price, rating, category, and availability flags for the selected store.
+- **What:** Get a Target product. Returns product details for one Target item, including product content, images, price, rating, category, and availability flags for the selected store.
 - **Params:** `store_id` (integer, optional) — Target store id used for pricing and availability; `tcin` (string, **required**) — Numeric Target item id (TCIN)
 
 ### `target_questions`
 
 - **HTTP:** `GET /target/questions`
-- **What:** List Target product questions and answers. Returns paginated product questions with their nested answers.
+- **What:** List Target product questions and answers. Lists customer questions for a Target item given by its numeric `tcin`, each with its text, author, submission time, helpful votes and nested answers. `page` is zero-based and `per_page` runs 1 to 25. The response gives `total_pages` and `count` for paging.
 - **Params:** `page` (integer, optional) — Zero-based page; `per_page` (integer, optional) — Questions per page; `tcin` (string, **required**) — Numeric Target item id
 
 ### `target_reviews`
 
 - **HTTP:** `GET /target/reviews`
-- **What:** List Target product reviews. Returns paginated written reviews for a Target item. Pagination is zero-based and page 50 is the upstream maximum.
+- **What:** List Target product reviews. Lists written reviews for a Target item given by its numeric `tcin`. Each review has its rating, title, text, author, submission time, helpful votes, and verified and syndicated flags. `page` is zero-based and stops at 50; `per_page` runs 1 to 25. The response gives `total` and `total_pages`.
 - **Params:** `page` (integer, optional) — Zero-based page; `per_page` (integer, optional) — Reviews per page; `tcin` (string, **required**) — Numeric Target item id
 
 ### `target_search`
 
 - **HTTP:** `GET /target/search`
-- **What:** Search Target products. Searches Target products and returns normalized products plus every filter group and option available for the current result set. Pass option ids back through filter_ids as a comma-separated list. A zero total with an empty products list is a valid no-results response. The sort enum accepts `relevance`, `featured`, `price-low`, `price-high`, `rating`, `bestselling`, and `newest`.
+- **What:** Search Target products. Searches Target products and returns products plus every filter group and option available for the current result set. Pass option ids back through filter_ids as a comma-separated list. A zero total with an empty products list is a valid no-results response. The sort enum accepts `relevance`, `featured`, `price-low`, `price-high`, `rating`, `bestselling`, and `newest`.
 - **Params:** `filter_ids` (string, optional) — Comma-separated Target filter option ids; `page` (integer, optional) — One-based page (1-50); `q` (string, **required**) — Product search query; `sort` (string, optional) — Result order; `store_id` (integer, optional) — Target store id used for pricing
 
 ### `target_stores`
@@ -362,31 +362,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zalando_categories`
 
 - **HTTP:** `GET /zalando/categories`
-- **What:** List a Zalando market's top-level category navigation. Returns a Zalando country storefront's live top-level category navigation, department by department, scraped directly from that department's own storefront nav tab bar. This is the discovery source for zalando-category's category parameter — category slugs are market-specific (each storefront uses its own local-language slug), so there is no fixed value space to hardcode; this endpoint asks the upstream live instead. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains. department optionally restricts the response to one of women, men, or kids; omitting it returns all three. Scope note: only the top-level nav tabs (e.g. Clothing, Shoes, Sports) are returned, not each tab's own hover-revealed mega-menu of sub-categories — that panel is not present in the page's initial HTML and cannot be reached without executing JavaScript, which this endpoint's transport does not do.
+- **What:** List a Zalando market's top-level category navigation. Returns a Zalando country storefront's live top-level category navigation, department by department. This is the discovery source for zalando-category's category parameter — category slugs are market-specific (each storefront uses its own local-language slug), so there is no fixed value space to hardcode; this endpoint returns the live values instead. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains. department optionally restricts the response to one of women, men, or kids; omitting it returns all three. Scope note: only the top-level nav tabs (e.g. Clothing, Shoes, Sports) are returned, not each tab's own hover-revealed mega-menu of sub-categories.
 - **Params:** `department` (string, optional) — Restrict to one Zalando shopping department. Omit to return all three.; `market` (string, **required**) — Zalando country storefront
 
 ### `zalando_category`
 
 - **HTTP:** `GET /zalando/category`
-- **What:** Browse a Zalando category or brand. Browses a Zalando category or brand listing by URL slug (e.g. shoes, womens-dresses, on-running) and returns the same normalized result cards as zalando-search, plus the category's upstream total_count. Category slugs are market-specific (each storefront uses its own local-language slug, e.g. "shoes" on de/gb, "chaussures" on fr, "scarpe" on it) — use zalando-categories to discover a market's live top-level slugs, or take one from a product's url field. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains.
+- **What:** Browse a Zalando category or brand. Browses a Zalando category or brand listing by URL slug (e.g. shoes, womens-dresses, on-running) and returns the same result cards as zalando-search, plus the category's upstream total_count. Category slugs are market-specific (each storefront uses its own local-language slug, e.g. "shoes" on de/gb, "chaussures" on fr, "scarpe" on it) — use zalando-categories to discover a market's live top-level slugs, or take one from a product's url field. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains.
 - **Params:** `category` (string, **required**) — Zalando category or brand URL slug, in the target market's own language; `market` (string, **required**) — Zalando country storefront
 
 ### `zalando_markets`
 
 - **HTTP:** `GET /zalando/markets`
-- **What:** List supported Zalando country storefronts. Returns the Zalando country storefronts currently supported by the required market parameter on zalando-search, zalando-category, and zalando-product, with each market's domain. Static, credential-free metadata with no upstream request.
+- **What:** List supported Zalando country storefronts. Returns the Zalando country storefronts currently supported by the required market parameter on zalando-search, zalando-category, and zalando-product, with each market's domain. Static metadata.
 - **Params:** _none_
 
 ### `zalando_product`
 
 - **HTTP:** `GET /zalando/product`
-- **What:** Get a Zalando product. Returns normalized product details for one Zalando product, including brand, description, images, and per-size price/availability/GTIN. Pass the sku returned by zalando-search or zalando-category; Zalando's own site search resolves the sku to its canonical product page. market is required and must match the storefront the sku was found in (there is no default, and a sku is generally only listed for sale on the market(s) that carry it) — see zalando-markets for the full reference list.
+- **What:** Get a Zalando product. Returns product details for one Zalando product, including brand, description, images, and per-size price/availability/GTIN. Pass the sku returned by zalando-search or zalando-category; market is required and must match the storefront the sku was found in (there is no default, and a sku is generally only listed for sale on the market(s) that carry it) — see zalando-markets for the full reference list.
 - **Params:** `market` (string, **required**) — Zalando country storefront the sku was found in; `sku` (string, **required**) — Zalando product SKU (article number) from zalando-search or zalando-category
 
 ### `zalando_search`
 
 - **HTTP:** `GET /zalando/search`
-- **What:** Search Zalando products. Searches a Zalando country storefront by keyword and returns normalized result cards with price, brand, and image. Returns the first page of results as rendered by Zalando plus the upstream total_count; deeper pagination is not yet supported. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains.
+- **What:** Search Zalando products. Searches a Zalando country storefront by keyword and returns result cards with price, brand, and image. Returns the first page of results plus the upstream total_count; deeper pagination is not yet supported. market is required (there is no default storefront) and accepts 25 country storefronts — see zalando-markets for the full current list with domains.
 - **Params:** `market` (string, **required**) — Zalando country storefront; `q` (string, **required**) — Product search keyword
 
 ### `zalando_suggest`
@@ -400,19 +400,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `walmart_product`
 
 - **HTTP:** `GET /walmart/product/{item_id}`
-- **What:** Get a Walmart product. Returns a normalized Walmart product: price, availability, brand, images, rating, seller, description, highlights, specifications, and variants. Credential-free public Walmart data, rendered from the product page through proxied browser renderers.
+- **What:** Get a Walmart product. Returns a Walmart product: price, availability, brand, images, rating, seller, description, highlights, specifications, and variants.
 - **Params:** `item_id` (string, **required**) — Walmart item id (the numeric id in a /ip/{id} URL)
 
 ### `walmart_product_reviews`
 
 - **HTTP:** `GET /walmart/product/{item_id}/reviews`
-- **What:** Get Walmart product reviews. Returns the reviews snapshot embedded in a Walmart product page: average rating, total review count, the per-star rating breakdown, the recommended percentage, the top positive and top negative review, and a sample of recent reviews. This is a single on-page snapshot, not a full paginated feed. A product that exists but has no reviews returns zero counts and an empty reviews list. Credential-free public Walmart data, rendered from the product page through proxied browser renderers.
+- **What:** Get Walmart product reviews. Returns the reviews snapshot embedded in a Walmart product page: average rating, total review count, the per-star rating breakdown, the recommended percentage, the top positive and top negative review, and a sample of recent reviews. This is a single on-page snapshot, not a full paginated feed. A product that exists but has no reviews returns zero counts and an empty reviews list.
 - **Params:** `item_id` (string, **required**) — Walmart item id (the numeric id in a /ip/{id} URL)
 
 ### `walmart_search`
 
 - **HTTP:** `GET /walmart/search`
-- **What:** Search Walmart products. Returns Walmart search results: item id, title, brand, price, image, availability, seller, and rating per product. Credential-free public Walmart data, rendered from the search page through proxied browser renderers.
+- **What:** Search Walmart products. Returns Walmart search results: item id, title, brand, price, image, availability, seller, and rating per product.
 - **Params:** `page` (integer, optional) — 1-based page number (default 1); `q` (string, **required**) — Search query; `sort` (string, optional) — Sort order
 
 ## H&M (7)
@@ -426,7 +426,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `hm_listing`
 
 - **HTTP:** `GET /hm/listing`
-- **What:** Browse an H&M category's product listing. Returns one H&M category's product listing page: normalized products with pricing, images, colors, and per-size stock, sourced from H&M's own app-backend listing data. category_id is an H&M category slug (e.g. ladies_newarrivals_all, men_newarrivals_all, ladies_jeans) -- this build does not expose a category/nav-tree discovery endpoint, so category_id values are currently sourced from known H&M storefront paths rather than a lookup call. Pagination is page-based and real: requesting a page beyond the category's real last page returns a normal response with an empty products array rather than an error.
+- **What:** Browse an H&M category's product listing. Returns one H&M category's product listing page: products with pricing, images, colors, and per-size stock. category_id is an H&M category slug (e.g. ladies_newarrivals_all, men_newarrivals_all, ladies_jeans) -- there is no category/nav-tree discovery endpoint, so category_id values come from known H&M storefront paths rather than a lookup call. Pagination is page-based and real: requesting a page beyond the category's real last page returns a normal response with an empty products array rather than an error.
 - **Params:** `category_id` (string, **required**) — H&M category slug; `is_new` (boolean, optional) — Optional filter for newly added items only; `page` (integer, optional) — Page number, one-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 72, defaults to 36; `sort` (string, optional) — Sort order, defaults to RELEVANCE
 
 ### `hm_product`
@@ -444,13 +444,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `hm_search`
 
 - **HTTP:** `GET /hm/search`
-- **What:** Search H&M product listings by free-text keyword. Runs a free-text keyword search against H&M's own app-backend search data and returns normalized products with pricing, images, colors, and per-size stock, plus search-quality metadata (a spelling-correction suggestion, related searches, and a content-filter flag). Unlike category browsing, an obscure or nonsense keyword returns a genuine empty result (zero products) rather than a fallback set. Pagination is page-based and real: requesting a page beyond the real last page returns a normal response with an empty products array rather than an error.
+- **What:** Search H&M product listings by free-text keyword. Runs a free-text keyword search on H&M and returns products with pricing, images, colors, and per-size stock, plus search-quality metadata (a spelling-correction suggestion, related searches, and a content-filter flag). Unlike category browsing, an obscure or nonsense keyword returns a genuine empty result (zero products) rather than a fallback set. Pagination is page-based and real: requesting a page beyond the real last page returns a normal response with an empty products array rather than an error.
 - **Params:** `page` (integer, optional) — Page number, one-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 72, defaults to 36; `query` (string, **required**) — Free-text search keyword
 
 ### `hm_search_suggestions`
 
 - **HTTP:** `GET /hm/search/suggestions`
-- **What:** Get H&M search-box suggestions. Returns H&M's own search-box typeahead suggestions, sourced from the same credential-free app-backend host as hm-listing/hm-search. When query is given, returns spelling-complete phrase suggestions and merchandised content results. When query is omitted or empty, instead returns trending searches and popular-search shortcuts (phrase/content suggestions are both empty in that mode). search_history is part of the real upstream response but confirmed NOT session-scoped -- it returned the identical list across separate cookie-free requests, so treat it as fixed default content rather than a real per-caller history.
+- **What:** Get H&M search-box suggestions. Returns H&M's own search-box typeahead suggestions. When query is given, returns spelling-complete phrase suggestions and merchandised content results. When query is omitted or empty, instead returns trending searches and popular-search shortcuts (phrase/content suggestions are both empty in that mode). search_history is not session-scoped -- it returns the identical list for every request, so treat it as fixed default content rather than a real per-caller history.
 - **Params:** `query` (string, optional) — Free-text search-box input; omit or leave empty for trending/popular searches instead
 
 ### `hm_stores`
@@ -464,13 +464,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `kohls_category`
 
 - **HTTP:** `GET /kohls/category`
-- **What:** Browse a Kohl's category or curated campaign page. Returns a Kohl's category or curated campaign page's product grid (page 1 only), with normalized products (title, image, colors, pricing, rating, availability) and facets for discovering further category values. category is Kohl's own catalog taxonomy string, e.g. "Room:Dorm" or "Department:Kitchen & Dining" -- combine multiple dimensions with a literal "+", percent-encoded as "%2B" so it survives as "+" rather than being decoded to a space (e.g. "Room%3ADorm%2BDepartment%3ABedding"). Every facets[].options[].category value in a response is a ready-to-use category string for a follow-up call, so a caller can discover the full taxonomy by starting from a known category (e.g. "Room:Dorm") and following facets. A category value Kohl's does not recognize returns a 404 rather than an unfiltered listing; a recognized dimension with no matching products returns a genuine zero-result response instead.
+- **What:** Browse a Kohl's category or curated campaign page. Returns a Kohl's category or curated campaign page's product grid (page 1 only), with products (title, image, colors, pricing, rating, availability) and facets for discovering further category values. category is Kohl's own catalog taxonomy string, e.g. "Room:Dorm" or "Department:Kitchen & Dining" -- combine multiple dimensions with a literal "+", percent-encoded as "%2B" so it survives as "+" rather than being decoded to a space (e.g. "Room%3ADorm%2BDepartment%3ABedding"). Every facets[].options[].category value in a response is a ready-to-use category string for a follow-up call, so a caller can discover the full taxonomy by starting from a known category (e.g. "Room:Dorm") and following facets. A category value Kohl's does not recognize returns a 404 rather than an unfiltered listing; a recognized dimension with no matching products returns a genuine zero-result response instead.
 - **Params:** `category` (string, **required**) — Kohl's catalog taxonomy string, e.g. \
 
 ### `kohls_product_reviews`
 
 - **HTTP:** `GET /kohls/product/reviews`
-- **What:** Browse a Kohl's product's customer reviews. Returns one page of a Kohl's product's normalized customer reviews (title, text, rating, secondary ratings such as quality/durability/value/style, reviewer name and location, submission date, and photo URLs). web_id is the same identifier a GET /kohls/category response's products[].web_id field carries. A web_id with zero reviews returns a genuine zero-result response rather than an error.
+- **What:** Browse a Kohl's product's customer reviews. Returns one page of a Kohl's product's customer reviews (title, text, rating, secondary ratings such as quality/durability/value/style, reviewer name and location, submission date, and photo URLs). web_id is the same identifier a GET /kohls/category response's products[].web_id field carries. A web_id with zero reviews returns a genuine zero-result response rather than an error.
 - **Params:** `page` (integer, optional) — Page number, 10 reviews per page (default 1); `web_id` (string, **required**) — Kohl's product web id, e.g. from a GET /kohls/category response's products[].web_id
 
 ### `kohls_stores`
@@ -496,7 +496,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `lululemon_category`
 
 - **HTTP:** `GET /lululemon/category`
-- **What:** Browse a lululemon category's product listing. Returns one lululemon category's product listing page: normalized products with pricing, sale detection, sizes, colors, and style numbers, sourced from lululemon's own app-backend category data. category and cdp_hash are the two path segments of a lululemon category URL (https://shop.lululemon.com/c/{category}/{cdp_hash}), e.g. women-new-styles and n14f1wz6o10 -- both are also available from lululemon-categories's own category and cdp_hash fields. Pagination is page-based and real: requesting a page beyond the category's real last page returns a normal response with an empty products array rather than an error. An unrecognized category/cdp_hash pair returns 404.
+- **What:** Browse a lululemon category's product listing. Returns one lululemon category's product listing page: products with pricing, sale detection, sizes, colors, and style numbers. category and cdp_hash are the two path segments of a lululemon category URL (https://shop.lululemon.com/c/{category}/{cdp_hash}), e.g. women-new-styles and n14f1wz6o10 -- both are also available from lululemon-categories's own category and cdp_hash fields. Pagination is page-based and real: requesting a page beyond the category's real last page returns a normal response with an empty products array rather than an error. An unrecognized category/cdp_hash pair returns 404.
 - **Params:** `category` (string, **required**) — lululemon category slug, from a category URL's first path segment; `cdp_hash` (string, **required**) — lululemon category id, from a category URL's second path segment; `page` (integer, optional) — Page number, one-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 100, defaults to 24
 
 ### `lululemon_outfit`
@@ -514,7 +514,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `lululemon_stores`
 
 - **HTTP:** `GET /lululemon/stores`
-- **What:** Browse lululemon's physical store directory. Returns lululemon's own complete physical store directory (480 US and 86 Canada locations as of this endpoint's own research), including regular weekly hours and in-store amenities. All filters are optional and applied locally after fetching the full directory -- there is no live geo-search API on a credential-free host for this platform. country and state are free-text equality filters against the values this directory actually carries (2-letter codes, e.g. US/CA, NY/CA), not an enforced enum. lat and lng (both required together) filter to stores within radius_miles (1 to 500, defaults to 50), sorted nearest-first.
+- **What:** Browse lululemon's physical store directory. Returns lululemon's own complete physical store directory (480 US and 86 Canada locations), including regular weekly hours and in-store amenities. All filters are optional and applied to the full directory. country and state are free-text equality filters against the values this directory actually carries (2-letter codes, e.g. US/CA, NY/CA), not an enforced enum. lat and lng (both required together) filter to stores within radius_miles (1 to 500, defaults to 50), sorted nearest-first.
 - **Params:** `country` (string, optional) — Filter to one country by its 2-letter code; `lat` (number, optional) — Latitude, requires lng; `lng` (number, optional) — Longitude, requires lat; `radius_miles` (number, optional) — Search radius in miles, 1 to 500, defaults to 50; `state` (string, optional) — Filter to one state/province by its 2-letter code
 
 ## Macy's (3)
@@ -528,7 +528,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `macys_product_reviews`
 
 - **HTTP:** `GET /macys/product/reviews`
-- **What:** Get a Macy's product's customer reviews. Returns one page of a Macy's product's normalized customer reviews, plus a site-wide rating summary (rating count, average rating, recommended ratio, rating histogram) for the product. Sourced from a separate review platform Macy's own product pages embed, distinct from the product catalog itself. product_id is a numeric id, the same one used by GET /macys/product/{productId}. A product with zero reviews, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
+- **What:** Get a Macy's product's customer reviews. Returns one page of a Macy's product's customer reviews, plus a site-wide rating summary (rating count, average rating, recommended ratio, rating histogram) for the product. product_id is a numeric id, the same one used by GET /macys/product/{productId}. A product with zero reviews, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
 - **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Numeric Macy's product id, from a product page's ?ID= query parameter
 
 ### `macys_suggest`
@@ -548,7 +548,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `nike_product`
 
 - **HTTP:** `GET /nike/product`
-- **What:** Get a Nike product. Returns normalized product-detail data for one color variant: title, description, pricing, images, every offered size, and every other available color. slug and style_color together reproduce Nike's own product page URL (nike.com/t/<slug>/<style_color>) and are both returned by nike-search's product colors[].slug and colors[].style_color fields.
+- **What:** Get a Nike product. Returns product-detail data for one color variant: title, description, pricing, images, every offered size, and every other available color. slug and style_color together reproduce Nike's own product page URL (nike.com/t/<slug>/<style_color>) and are both returned by nike-search's product colors[].slug and colors[].style_color fields.
 - **Params:** `slug` (string, **required**) — Product-detail URL slug, from a search result's colors[].slug field; `style_color` (string, **required**) — Style-color id, from a search result's colors[].style_color field
 
 ### `nike_product_availability`
@@ -572,13 +572,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `nike_product_reviews`
 
 - **HTTP:** `GET /nike/product/reviews`
-- **What:** Get Nike product reviews. Returns one page of a Nike product's normalized customer reviews, plus an aggregate rating summary (average rating and a per-star rating breakdown) that Nike's own product-detail endpoint does not otherwise expose. slug and style_color are the same values nike-product accepts (from a search result's colors[].slug/colors[].style_color fields). A product with no reviews yet returns a well-formed empty result rather than an error. Requesting a page beyond the available result pages returns a not-found error.
+- **What:** Get Nike product reviews. Returns one page of a Nike product's customer reviews, plus an aggregate rating summary (average rating and a per-star rating breakdown) that Nike's own product-detail endpoint does not otherwise expose. slug and style_color are the same values nike-product accepts (from a search result's colors[].slug/colors[].style_color fields). A product with no reviews yet returns a well-formed empty result rather than an error. Requesting a page beyond the available result pages returns a not-found error.
 - **Params:** `page` (integer, optional) — One-based page number, defaults to 1; `slug` (string, **required**) — Product-detail URL slug, from a search result's colors[].slug field; `style_color` (string, **required**) — Style-color id, from a search result's colors[].style_color field
 
 ### `nike_search`
 
 - **HTTP:** `GET /nike/search`
-- **What:** Search or browse Nike products. Searches Nike.com product listings by keyword, or browses a category/subcategory listing by slug, with real pagination. Exactly one of keyword or category is required. Returns normalized product groups with pricing, colorway images, and every purchasable color variant, plus filter and subcategory navigation data (facet_nav) already present on the same response -- both keyword search and a category listing's first page include filter groups (Gender, Color, Price, Size, and similar); only a category listing includes a breadcrumb trail and subcategory drill-down options, and only its first page (a category listing's later pages do not repeat navigation data). Keyword search is best-effort relevance, not a guaranteed keyword match: for an obscure or nonsense keyword, Nike's own search index falls back to its own recommended results instead of returning an empty list, and there is currently no reliable signal in the response to distinguish a true keyword match from that fallback behavior. A keyword Nike's own search router treats as structurally empty (for example a punctuation-only query) does return a genuine empty result. Category values come from nike-categories' own slug field, or from a prior response's own facet_nav navigation paths (with the leading /w/ stripped). Requesting a page beyond the available result pages returns a not-found error.
+- **What:** Search or browse Nike products. Searches Nike.com product listings by keyword, or browses a category/subcategory listing by slug, with real pagination. Exactly one of keyword or category is required. Returns product groups with pricing, colorway images, and every purchasable color variant, plus filter and subcategory navigation data (facet_nav) already present on the same response -- both keyword search and a category listing's first page include filter groups (Gender, Color, Price, Size, and similar); only a category listing includes a breadcrumb trail and subcategory drill-down options, and only its first page (a category listing's later pages do not repeat navigation data). Keyword search is best-effort relevance, not a guaranteed keyword match: for an obscure or nonsense keyword, Nike's own search index falls back to its own recommended results instead of returning an empty list, and there is currently no reliable signal in the response to distinguish a true keyword match from that fallback behavior. A keyword Nike's own search router treats as structurally empty (for example a punctuation-only query) does return a genuine empty result. Category values come from nike-categories' own slug field, or from a prior response's own facet_nav navigation paths (with the leading /w/ stripped). Requesting a page beyond the available result pages returns a not-found error.
 - **Params:** `category` (string, optional) — Category/subcategory browse slug, from nike-categories' own slug field or a prior response's facet_nav navigation. Exactly one of keyword or category is required.; `keyword` (string, optional) — Search keyword. Exactly one of keyword or category is required.; `page` (integer, optional) — One-based page number, defaults to 1
 
 ### `nike_stores`
@@ -598,19 +598,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `oldnavy_categories`
 
 - **HTTP:** `GET /oldnavy/categories`
-- **What:** List Old Navy storefront categories. Lists Old Navy's own storefront navigation as name/cid pairs, resolving the cid-discovery gap oldnavy-search, oldnavy-product, and oldnavy-category all document. Omit cid to list Old Navy's top-level divisions (e.g. Women, Men, Boys, Toddler). Pass a cid (a division's own, or any deeper category's) to list the related categories for that part of the storefront instead, in the same order the live storefront menu shows them -- this is section-level, not necessarily unique per leaf category. Currently only available for brand=on (Old Navy) -- Gap, Banana Republic, and Athleta render their storefront navigation as client-side-only JavaScript with no server-rendered category id to scrape.
+- **What:** List Old Navy storefront categories. Lists Old Navy's own storefront navigation as name/cid pairs, resolving the cid-discovery gap oldnavy-search, oldnavy-product, and oldnavy-category all document. Omit cid to list Old Navy's top-level divisions (e.g. Women, Men, Boys, Toddler). Pass a cid (a division's own, or any deeper category's) to list the related categories for that part of the storefront instead, in the same order the live storefront menu shows them -- this is section-level, not necessarily unique per leaf category. Currently only available for brand=on (Old Navy).
 - **Params:** `brand` (string, optional) — Storefront to list -- only on (Old Navy) is currently supported; `cid` (string, optional) — Category id to list related categories for; omit to list the top-level divisions
 
 ### `oldnavy_category`
 
 - **HTTP:** `GET /oldnavy/category`
-- **What:** Browse an Old Navy, Gap, Banana Republic, or Athleta category. Returns a category/browse listing for one storefront category id (cid). cid is an opaque Gap Inc category id assigned by the storefront's own navigation -- neither oldnavy-search nor oldnavy-category currently surface a category-id list, so find one from the storefront's own category page URLs (the cid query parameter on a /browse/... page) for now. Select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`) -- it must match the brand the cid was found under. Returns the category's subcategory breakdown, normalized product summaries with per-color inventory data, and available search facets with live counts.
+- **What:** Browse an Old Navy, Gap, Banana Republic, or Athleta category. Returns a category/browse listing for one storefront category id (cid). cid is an opaque Gap Inc category id assigned by the storefront's own navigation -- neither oldnavy-search nor oldnavy-category currently surface a category-id list, so find one from the storefront's own category page URLs (the cid query parameter on a /browse/... page) for now. Select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`) -- it must match the brand the cid was found under. Returns the category's subcategory breakdown, product summaries with per-color inventory data, and available search facets with live counts.
 - **Params:** `brand` (string, optional) — Storefront to browse; `cid` (string, **required**) — Category id, from a storefront category page's own cid query parameter; `page` (integer, optional) — One-based page
 
 ### `oldnavy_product`
 
 - **HTTP:** `GET /oldnavy/product`
-- **What:** Get an Old Navy, Gap, Banana Republic, or Athleta product. Returns normalized product-detail data for one color variant: name, description, images, aggregate rating, and every size offered in that color as a separate priced offer. pid is a color-specific product id, as returned by oldnavy-search's product colors[].id field (not the bare base product id). Select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`) -- it must match the brand the pid was found under.
+- **What:** Get an Old Navy, Gap, Banana Republic, or Athleta product. Returns product-detail data for one color variant: name, description, images, aggregate rating, and every size offered in that color as a separate priced offer. pid is a color-specific product id, as returned by oldnavy-search's product colors[].id field (not the bare base product id). Select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`) -- it must match the brand the pid was found under.
 - **Params:** `brand` (string, optional) — Storefront the pid belongs to; `pid` (string, **required**) — Color-specific product id, from a search result's colors[].id field
 
 ### `oldnavy_product_availability`
@@ -628,7 +628,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `oldnavy_search`
 
 - **HTTP:** `GET /oldnavy/search`
-- **What:** Search Old Navy, Gap, Banana Republic, or Athleta products. Searches product listings across Old Navy, Gap, Banana Republic, and Athleta -- select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`). Returns normalized product summaries with pricing, review scores, and every purchasable color variant. This search is best-effort relevance, not a guaranteed keyword match: for an obscure or nonsense keyword the upstream search index falls back to its own recommended results instead of returning an empty list, and there is currently no reliable signal in the response to distinguish a true keyword match from that fallback behavior.
+- **What:** Search Old Navy, Gap, Banana Republic, or Athleta products. Searches product listings across Old Navy, Gap, Banana Republic, and Athleta -- select the storefront with the brand parameter (`on` for Old Navy, `gap` for Gap, `br` for Banana Republic, `at` for Athleta; defaults to `on`). Returns product summaries with pricing, review scores, and every purchasable color variant. This search is best-effort relevance, not a guaranteed keyword match: for an obscure or nonsense keyword the upstream search index falls back to its own recommended results instead of returning an empty list, and there is currently no reliable signal in the response to distinguish a true keyword match from that fallback behavior.
 - **Params:** `brand` (string, optional) — Storefront to search; `keyword` (string, **required**) — Search keyword; `page` (integer, optional) — One-based page
 
 ### `oldnavy_stores`
@@ -642,7 +642,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `samsclub_category`
 
 - **HTTP:** `GET /samsclub/category`
-- **What:** Browse a Sam's Club category or collection. Returns a Sam's Club category or collection page's product grid, with real page-based pagination. id accepts a bare numeric category id (from a nav link's /browse/{id} URL) or a full /browse/{slug}/{id} URL copied from samsclub.com -- only the trailing id is used. Returns normalized products with name, brand, pricing, availability, rating, and image. An id samsclub.com does not recognize returns a genuine zero-result response rather than an error, matching upstream's own behavior.
+- **What:** Browse a Sam's Club category or collection. Returns a Sam's Club category or collection page's product grid, with real page-based pagination. id accepts a bare numeric category id (from a nav link's /browse/{id} URL) or a full /browse/{slug}/{id} URL copied from samsclub.com -- only the trailing id is used. Returns products with name, brand, pricing, availability, rating, and image. An id samsclub.com does not recognize returns a genuine zero-result response rather than an error.
 - **Params:** `id` (string, **required**) — Sam's Club category id, or a /browse/{slug}/{id} URL; `page` (integer, optional) — Result page, 1-based, defaults to 1
 
 ### `samsclub_content`
@@ -666,7 +666,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `samsclub_product_related`
 
 - **HTTP:** `GET /samsclub/product/{id}/related`
-- **What:** Get a Sam's Club product's related items. Returns the related-item carousels shown on a Sam's Club product page, each a named shelf (e.g. "Members also considered", "Items you may like") of normalized products with pricing, rating, and image. id is the numeric product id from a Sam's Club product page's /ip/ URL. This upstream source does not distinguish an unrecognized id from a known one -- an unrecognized id still returns generic fallback shelves rather than an error.
+- **What:** Get a Sam's Club product's related items. Returns the related-item carousels shown on a Sam's Club product page, each a named shelf (e.g. "Members also considered", "Items you may like") of products with pricing, rating, and image. id is the numeric product id from a Sam's Club product page's /ip/ URL. An unrecognized id is not distinguished from a known one -- it still returns generic fallback shelves rather than an error.
 - **Params:** `id` (string, **required**) — Numeric Sam's Club product id, from a product page's /ip/{slug}/{id} URL
 
 ## Ulta Beauty (8)
@@ -692,19 +692,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ulta_product_questions`
 
 - **HTTP:** `GET /ulta/product/questions`
-- **What:** Get an Ulta Beauty product's customer questions and answers. Returns one page of an Ulta Beauty product's normalized customer questions, each with every answer it received. product_id is taken from a search result's product_id field or a product page's URL. A product with zero questions, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
+- **What:** Get an Ulta Beauty product's customer questions and answers. Returns one page of an Ulta Beauty product's customer questions, each with every answer it received. product_id is taken from a search result's product_id field or a product page's URL. A product with zero questions, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
 - **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Ulta product id, from a search result's product_id field
 
 ### `ulta_product_reviews`
 
 - **HTTP:** `GET /ulta/product/reviews`
-- **What:** Get an Ulta Beauty product's customer reviews. Returns one page of an Ulta Beauty product's normalized customer reviews, plus the retailer's own site-wide rating summary (rating count, average rating, recommended ratio, rating histogram) for the product. product_id is taken from a search result's product_id field or a product page's URL. A product with zero reviews, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
+- **What:** Get an Ulta Beauty product's customer reviews. Returns one page of an Ulta Beauty product's customer reviews, plus the retailer's own site-wide rating summary (rating count, average rating, recommended ratio, rating histogram) for the product. product_id is taken from a search result's product_id field or a product page's URL. A product with zero reviews, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
 - **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Ulta product id, from a search result's product_id field
 
 ### `ulta_search`
 
 - **HTTP:** `GET /ulta/search`
-- **What:** Search Ulta Beauty products. Searches Ulta Beauty's product catalog by keyword, with real page-based pagination. Returns normalized products with brand, pricing, rating, and review count. An unrecognized/nonsense keyword returns a genuine empty result rather than a fallback set. Requesting a page beyond the available results returns a normal, empty result rather than an error.
+- **What:** Search Ulta Beauty products. Searches Ulta Beauty's product catalog by keyword, with real page-based pagination. Returns products with brand, pricing, rating, and review count. An unrecognized/nonsense keyword returns a genuine empty result rather than a fallback set. Requesting a page beyond the available results returns a normal, empty result rather than an error.
 - **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `query` (string, **required**) — Search keyword
 
 ### `ulta_stores`
@@ -730,7 +730,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `wayfair_category`
 
 - **HTTP:** `GET /wayfair/category`
-- **What:** Browse a Wayfair category. Returns a Wayfair category page's product grid, with real page-based pagination. category accepts a bare Wayfair category id ("478390"), a "c"-prefixed id ("c478390"), a category slug ("office-chairs-c478390"), or a full category URL copied from wayfair.com. The trailing category id is resolved to Wayfair's current canonical URL through its published sitemap. Returns normalized products with name, brand, pricing, and image.
+- **What:** Browse a Wayfair category. Returns a Wayfair category page's product grid, with real page-based pagination. category accepts a bare Wayfair category id ("478390"), a "c"-prefixed id ("c478390"), a category slug ("office-chairs-c478390"), or a full category URL copied from wayfair.com. Returns products with name, brand, pricing, and image.
 - **Params:** `category` (string, **required**) — Wayfair category id, slug, or URL; `page` (integer, optional) — Result page, 1-based, defaults to 1
 
 ### `wayfair_product`
@@ -762,13 +762,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `wish_product_reviews`
 
 - **HTTP:** `GET /wish/product/{id}/reviews`
-- **What:** Get a Wish product's customer reviews. Returns a Wish product's normalized customer reviews. id is taken from a search result's product_id field or a product page's URL. A product with zero reviews returns a normal, empty result rather than an error. A caller wanting more reviews should re-request with a larger count -- this endpoint does not support an offset/cursor parameter, since the upstream source does not support one.
+- **What:** Get a Wish product's customer reviews. Returns a Wish product's customer reviews. id is taken from a search result's product_id field or a product page's URL. A product with zero reviews returns a normal, empty result rather than an error. A caller wanting more reviews should re-request with a larger count -- this endpoint does not support an offset/cursor parameter.
 - **Params:** `count` (integer, optional) — Number of reviews to return, 1 to 200, defaults to 10; `id` (string, **required**) — Wish product id, a 24-character hex id from a search result's product_id field
 
 ### `wish_search`
 
 - **HTTP:** `GET /wish/search`
-- **What:** Search Wish products. Searches Wish's product catalog by keyword, with real offset-based pagination. Returns normalized products with price, currency, rating, review count, and merchant id. A query with no matches returns a normal, empty result rather than an error.
+- **What:** Search Wish products. Searches Wish's product catalog by keyword, with real offset-based pagination. Returns products with price, currency, rating, review count, and merchant id. A query with no matches returns a normal, empty result rather than an error.
 - **Params:** `count` (integer, optional) — Number of results per page, 1 to 70, defaults to 30; `offset` (integer, optional) — Result offset, 0-based, defaults to 0, must be an exact multiple of count up to 3 * count; `query` (string, **required**) — Search keyword
 
 ### `wish_suggest`
@@ -800,7 +800,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zappos_search`
 
 - **HTTP:** `GET /zappos/search`
-- **What:** Search Zappos products. Searches Zappos's product catalog by keyword, with real page-based pagination. Returns normalized products with brand, pricing, sale status, rating, and review count, plus filterable facets (gender, department, shoe size, and more) each with a live result count and its own drill-down URL. Requesting a page beyond the available results returns a normal, empty result rather than an error.
+- **What:** Search Zappos products. Searches Zappos's product catalog by keyword, with real page-based pagination. Returns products with brand, pricing, sale status, rating, and review count, plus filterable facets (gender, department, shoe size, and more) each with a live result count and its own drill-down URL. Requesting a page beyond the available results returns a normal, empty result rather than an error.
 - **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `term` (string, **required**) — Search keyword
 
 ### `zappos_suggest`
@@ -820,7 +820,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zara_category_products`
 
 - **HTTP:** `GET /zara/category/{categoryId}/products`
-- **What:** Browse a Zara category's product listing. Returns a Zara category's full product listing: normalized products with pricing, images, and availability, sourced from Zara's own category browse data. categoryId is a numeric id from zara-categories. Zara does not paginate this data -- the response always contains the category's complete listing in one call, not one page of it. Each entry represents one purchasable color variant rather than a color-grouped product family, matching how Zara's own category data is structured.
+- **What:** Browse a Zara category's product listing. Returns a Zara category's full product listing: products with pricing, images, and availability. categoryId is a numeric id from zara-categories. Zara does not paginate this data -- the response always contains the category's complete listing in one call, not one page of it. Each entry represents one purchasable color variant rather than a color-grouped product family.
 - **Params:** `categoryId` (string, **required**) — Numeric Zara category id, from zara-categories' id field
 
 ### `zara_product`
@@ -832,7 +832,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zara_search`
 
 - **HTTP:** `GET /zara/search`
-- **What:** Search Zara products. Searches Zara product listings by keyword within one department section, with real offset-based pagination. Returns normalized products with pricing, images, availability, and every purchasable color variant, plus the upstream's own search facets. This search is best-effort relevance, not a guaranteed keyword match: for an obscure or nonsense keyword, Zara's own search falls back to a broader recommended result set instead of returning an empty list, and there is no reliable field in the response to distinguish a true keyword match from that fallback behavior. Requesting an offset beyond the available results returns a normal, empty result with is_last_page true rather than an error.
+- **What:** Search Zara products. Searches Zara product listings by keyword within one department section, with real offset-based pagination. Returns products with pricing, images, availability, and every purchasable color variant, plus the search facets. This search is best-effort relevance, not a guaranteed keyword match: for an obscure or nonsense keyword, Zara's own search falls back to a broader recommended result set instead of returning an empty list, and there is no reliable field in the response to distinguish a true keyword match from that fallback behavior. Requesting an offset beyond the available results returns a normal, empty result with is_last_page true rather than an error.
 - **Params:** `limit` (integer, optional) — Results per request, 1 to 100, defaults to 24; `offset` (integer, optional) — Zero-based result offset, defaults to 0; `query` (string, **required**) — Search keyword; `section` (string, **required**) — Department section to search
 
 ### `zara_stores`
@@ -852,7 +852,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `adidas_product`
 
 - **HTTP:** `GET /adidas/product`
-- **What:** Get an Adidas product. Returns normalized product-detail data for one Adidas SKU: name, brand, category, description, pricing (current/standard/sale), images, and every purchasable size variant. product_id is the Adidas SKU (e.g. JI0397), taken from a search result's products[].id field or the trailing segment of an Adidas product page URL. An unknown product_id returns a not-found error.
+- **What:** Get an Adidas product. Returns product-detail data for one Adidas SKU: name, brand, category, description, pricing (current/standard/sale), images, and every purchasable size variant. product_id is the Adidas SKU (e.g. JI0397), taken from a search result's products[].id field or the trailing segment of an Adidas product page URL. An unknown product_id returns a not-found error.
 - **Params:** `product_id` (string, **required**) — Adidas SKU/product id, from a search result's products[].id field
 
 ### `adidas_product_review_topics`
@@ -870,13 +870,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `adidas_search`
 
 - **HTTP:** `GET /adidas/search`
-- **What:** Search or browse Adidas products. Searches Adidas.com product listings by keyword, or browses a category listing by taxonomy slug, with real pagination and sort options. Exactly one of query or category is required. Returns normalized product summaries (title, price, rating, images, color variants) plus facet filter groups, sort options, and (for category browse) a breadcrumb trail. Keyword search is best-effort relevance, not a guaranteed match: an obscure keyword returns whatever Adidas's own search index surfaces. A genuinely empty keyword search returns an empty product list, and requesting a page beyond the available result pages (or an unknown category) returns a not-found error. Category values are the path segment after /us/ in an Adidas category URL (e.g. women-athletic_sneakers); they can also be read from the url fields of a search/category response's own filters and breadcrumbs. Facets are applied by composing them into the category slug rather than by a separate parameter: each filters[].values[].slug is a token you splice into the category value (e.g. category=women-black-athletic_sneakers applies the Color=Black facet, and category=women-athletic_sneakers-prime applies Shipping=PRIME). Use filters[].key (the facet's stable name, e.g. searchcolor) rather than filters[].id, which is an opaque per-deployment UUID that cannot be used to build a request. Note the token's position within the slug varies by facet, so compose from a slug you have seen rather than assuming a fixed order.
+- **What:** Search or browse Adidas products. Searches Adidas.com product listings by keyword, or browses a category listing by taxonomy slug, with real pagination and sort options. Exactly one of query or category is required. Returns product summaries (title, price, rating, images, color variants) plus facet filter groups, sort options, and (for category browse) a breadcrumb trail. Keyword search is best-effort relevance, not a guaranteed match: an obscure keyword returns whatever Adidas's own search index surfaces. A genuinely empty keyword search returns an empty product list, and requesting a page beyond the available result pages (or an unknown category) returns a not-found error. Category values are the path segment after /us/ in an Adidas category URL (e.g. women-athletic_sneakers); they can also be read from the url fields of a search/category response's own filters and breadcrumbs. Facets are applied by composing them into the category slug rather than by a separate parameter: each filters[].values[].slug is a token you splice into the category value (e.g. category=women-black-athletic_sneakers applies the Color=Black facet, and category=women-athletic_sneakers-prime applies Shipping=PRIME). Use filters[].key (the facet's stable name, e.g. searchcolor) rather than filters[].id, which is an opaque per-deployment UUID that cannot be used to build a request. Note the token's position within the slug varies by facet, so compose from a slug you have seen rather than assuming a fixed order.
 - **Params:** `category` (string, optional) — Category/taxonomy slug, the path segment after /us/ in an Adidas category URL. Exactly one of query or category is required.; `page` (integer, optional) — One-based page number, defaults to 1; `query` (string, optional) — Search keyword. Exactly one of query or category is required.; `sort` (string, optional) — Sort order. Allowed values: price-low-to-high, newest-to-oldest, top-sellers, price-high-to-low. Omitted means relevance.
 
 ### `adidas_store`
 
 - **HTTP:** `GET /adidas/store`
-- **What:** Get an Adidas store. Returns normalized detail for one Adidas retail store: name, status, phone, description, full address, coordinates, opening hours, and in-store services (e.g. Click and Collect, Free Wi-Fi). store_id is the numeric Adidas store id, taken from an adidas-stores response's stores[].id field. An unknown store_id returns a not-found error.
+- **What:** Get an Adidas store. Returns detail for one Adidas retail store: name, status, phone, description, full address, coordinates, opening hours, and in-store services (e.g. Click and Collect, Free Wi-Fi). store_id is the numeric Adidas store id, taken from an adidas-stores response's stores[].id field. An unknown store_id returns a not-found error.
 - **Params:** `store_id` (string, **required**) — Adidas store id, from a stores response's stores[].id field
 
 ### `adidas_stores`
@@ -902,19 +902,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bestbuy_categories`
 
 - **HTTP:** `GET /bestbuy/categories`
-- **What:** Get Best Buy's top-level shopping departments. Returns Best Buy's top-level shopping departments (name, category id, url), sourced from the homepage's own category carousel. Each id is directly usable as bestbuy_category's category_id input.
+- **What:** Get Best Buy's top-level shopping departments. Returns Best Buy's current top-level Shop departments (name, category id, url). Each id is directly usable as bestbuy_category's category_id input; this is not the full category tree.
 - **Params:** _none_
 
 ### `bestbuy_categories_trending`
 
 - **HTTP:** `GET /bestbuy/categories/trending`
-- **What:** Get Best Buy's fine-grained trending product-type categories. Returns Best Buy's fine-grained, often deeply-nested product-type categories (e.g. "Windows Laptops", "55-Inch TVs (55 - 64 in)", "PS5 Consoles") sourced from the homepage's own "Best Selling" section -- much more specific than bestbuy_categories' ~25 top-level departments. Each id is directly usable as bestbuy_category's category_id input.
+- **What:** Get Best Buy's fine-grained trending product-type categories. Returns Best Buy's fine-grained, often deeply-nested product-type categories (e.g. "Windows Laptops", "55-Inch TVs (55 - 64 in)", "PS5 Consoles") sourced from the homepage's own "Best Selling" section -- much more specific than bestbuy_categories' 21 current top-level departments. Each id is directly usable as bestbuy_category's category_id input.
 - **Params:** _none_
 
 ### `bestbuy_category`
 
 - **HTTP:** `GET /bestbuy/category`
-- **What:** Get a Best Buy category's product listing. Returns one page (up to 24) of one Best Buy category's normalized product listing (sku, title, url, image, price, rating, review count). category_id is a Best Buy category id, e.g. pcmcat138500050001, found in a category page URL's trailing <id>.c?id=<id> segment. page is the optional 1-indexed page number (defaults to 1); requesting a page past the last one returns an empty products list, not an error.
+- **What:** Get a Best Buy category's product listing. Returns one page (up to 24) of one Best Buy category's product listing (sku, title, url, image, price, rating, review count). category_id is a Best Buy category id, e.g. pcmcat138500050001, found in a category page URL's trailing <id>.c?id=<id> segment. page is the optional 1-indexed page number (defaults to 1); requesting a page past the last one returns an empty products list, not an error.
 - **Params:** `category_id` (string, **required**) — Best Buy category id; `page` (integer, optional) — 1-indexed page number, defaults to 1
 
 ### `bestbuy_category_subcategories`
@@ -926,7 +926,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bestbuy_product`
 
 - **HTTP:** `GET /bestbuy/product`
-- **What:** Get a Best Buy product's detail. Returns one Best Buy product's normalized detail (name, brand, model, color, price, availability, rating, images, breadcrumbs), sourced from the product page's own schema.org Product structured-data block. sku is the numeric Best Buy SKU shown on bestbuy.com product pages and URLs.
+- **What:** Get a Best Buy product's detail. Returns one Best Buy product's detail (name, brand, model, color, price, availability, rating, images, breadcrumbs). sku is the numeric Best Buy SKU shown on bestbuy.com product pages and URLs.
 - **Params:** `sku` (string, **required**) — Numeric Best Buy SKU
 
 ### `bestbuy_product_questions`
@@ -944,13 +944,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bestbuy_product_reviews`
 
 - **HTTP:** `GET /bestbuy/product/reviews`
-- **What:** Get a Best Buy product's customer reviews. Returns page 1 (up to 20) of one Best Buy product's normalized customer reviews (rating, title, text, author, posted date, tags such as Verified Purchaser, recommended flag, helpful/unhelpful counts), sourced from the product's dedicated reviews page. sku is the numeric Best Buy SKU shown on bestbuy.com product pages and URLs.
+- **What:** Get a Best Buy product's customer reviews. Returns page 1 (up to 20) of one Best Buy product's customer reviews (rating, title, text, author, posted date, tags such as Verified Purchaser, recommended flag, helpful/unhelpful counts). sku is the numeric Best Buy SKU shown on bestbuy.com product pages and URLs.
 - **Params:** `sku` (string, **required**) — Numeric Best Buy SKU
 
 ### `bestbuy_search`
 
 - **HTTP:** `GET /bestbuy/search`
-- **What:** Search Best Buy's product catalog. Returns one page (up to 24) of one Best Buy keyword search's normalized product listing (sku, title, url, image, price, rating, review count). q is free-text search keywords, e.g. "laptop". page is the optional 1-indexed page number (defaults to 1); requesting a page past the last one returns an empty products list, not an error.
+- **What:** Search Best Buy's product catalog. Returns one page (up to 24) of one Best Buy keyword search's product listing (sku, title, url, image, price, rating, review count). q is free-text search keywords, e.g. "laptop". page is the optional 1-indexed page number (defaults to 1); requesting a page past the last one returns an empty products list, not an error.
 - **Params:** `page` (integer, optional) — 1-indexed page number, defaults to 1; `q` (string, **required**) — Search keywords
 
 ### `bestbuy_stores`
@@ -970,7 +970,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `homedepot_category`
 
 - **HTTP:** `GET /homedepot/category`
-- **What:** Browse a Home Depot category or brand page. Returns one page of a Home Depot category or brand browse page's product grid: normalized products with title, image, model, current/original price, and rating/review count, plus the category's total result count and the refinement facets the page offers. path is the segment of a /b/ URL after "/b/", e.g. "Tools-Power-Tools-Drills-Impact-Drivers/N-5yc1vZc29x"; a full https://www.homedepot.com/b/... URL or a "/b/..." path is also accepted. sort selects the result ordering and is one of best_match, top_sellers, top_rated, price_low_to_high, price_high_to_low, most_popular, delivery_date; omit it to keep the site's default ordering. page is a 1-indexed page number (default 1, maximum 42), 24 products per page. Each returned facet's path is directly usable as this endpoint's own path parameter to drill down. An unrecognized or blocked path returns an upstream error rather than an empty result.
+- **What:** Browse a Home Depot category or brand page. Returns one page of a Home Depot category or brand browse page's product grid: products with title, image, model, current/original price, and rating/review count, plus the category's total result count and the refinement facets the page offers. path is the segment of a /b/ URL after "/b/", e.g. "Tools-Power-Tools-Drills-Impact-Drivers/N-5yc1vZc29x"; a full https://www.homedepot.com/b/... URL or a "/b/..." path is also accepted. sort selects the result ordering and is one of best_match, top_sellers, top_rated, price_low_to_high, price_high_to_low, most_popular, delivery_date; omit it to keep the site's default ordering. page is a 1-indexed page number (default 1, maximum 42), 24 products per page. Each returned facet's path is directly usable as this endpoint's own path parameter to drill down. An unrecognized or blocked path returns an upstream error rather than an empty result.
 - **Params:** `page` (integer, optional) — 1-indexed page number, default 1, maximum 42 (12 products per page); `path` (string, **required**) — Home Depot category/brand browse path, e.g. \; `sort` (string, optional) — Result ordering. One of: best_match, top_sellers, top_rated, price_low_to_high, price_high_to_low, most_popular, delivery_date. Omit for the site's default ordering
 
 ### `homedepot_product`
@@ -988,7 +988,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `homedepot_search`
 
 - **HTTP:** `GET /homedepot/search`
-- **What:** Home Depot keyword search. Returns one page of a Home Depot keyword search's product listing: normalized products with title, image, model, current/original price, and rating/review count, plus the search's total result count. A page carries up to 24 products, or up to 12 when Home Depot answers the query with a category page. q is free-text search keywords, e.g. "impact driver". page is a 1-indexed page number (default 1). An unrecognized/blocked query returns an upstream error rather than an empty result.
+- **What:** Home Depot keyword search. Returns one page of a Home Depot keyword search's product listing: products with title, image, model, current/original price, and rating/review count, plus the search's total result count. A page carries up to 24 products, or up to 12 when Home Depot answers the query with a category page. q is free-text search keywords, e.g. "impact driver". page is a 1-indexed page number (default 1). An unrecognized/blocked query returns an upstream error rather than an empty result.
 - **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `q` (string, **required**) — Free-text search keywords, e.g. \
 
 ### `homedepot_suggest`
@@ -1020,7 +1020,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sephora_product`
 
 - **HTTP:** `GET /sephora/product`
-- **What:** Sephora product detail. Returns one Sephora product's full detail (every color/shade variant with its own price and availability, rating, review count, and a sample of recent reviews), from Sephora's credential-free public JSON-LD. `product_id` is the full product-page slug, e.g. `lip-sleeping-mask-P420652` -- copy it from the path segment after sephora.com/product/ on any product page; unlike some other retailers, an arbitrary or partial slug does not resolve.
+- **What:** Sephora product detail. Returns one Sephora product's full detail (every color/shade variant with its own price and availability, rating, review count, and a sample of recent reviews). `product_id` is the full product-page slug, e.g. `lip-sleeping-mask-P420652` -- copy it from the path segment after sephora.com/product/ on any product page; unlike some other retailers, an arbitrary or partial slug does not resolve.
 - **Params:** `product_id` (string, **required**) — Full Sephora product-page slug
 
 ### `sephora_product_questions`
@@ -1038,7 +1038,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sephora_search`
 
 - **HTTP:** `GET /sephora/search`
-- **What:** Sephora product search. Searches Sephora's product catalog by keyword, with real page-based pagination. Returns normalized products with brand, pricing, rating, and review count. Sephora's own search never returns a genuine zero-result state for a nonempty keyword -- an unrecognized/nonsense keyword still returns a full, unrelated fallback result set rather than an empty one. price_min/price_max must be provided together (whole dollars) -- upstream silently ignores a one-sided price range rather than filtering or erroring, so this endpoint rejects a one-sided range as invalid instead of passing it through. brand and filter each accept multiple values (OR'd together within the same facet); brand/rating_min/is_new/filter/price_min/price_max can all be combined with each other (AND'd together across different facets).
+- **What:** Sephora product search. Searches Sephora's product catalog by keyword, with real page-based pagination. Returns products with brand, pricing, rating, and review count. Sephora's own search never returns a genuine zero-result state for a nonempty keyword -- an unrecognized/nonsense keyword still returns a full, unrelated fallback result set rather than an empty one. price_min/price_max must be provided together (whole dollars) -- upstream silently ignores a one-sided price range rather than filtering or erroring, so this endpoint rejects a one-sided range as invalid instead of passing it through. brand and filter each accept multiple values (OR'd together within the same facet); brand/rating_min/is_new/filter/price_min/price_max can all be combined with each other (AND'd together across different facets).
 - **Params:** `brand` (array, optional) — One or more exact brand names to filter to (OR'd together); repeat the param for multiple values; `filter` (array, optional) — Additional facet:value filters, repeat the param for multiple; facet must be one of: benefits, ingredientpreferences, colorfamily, formulation, size, shoppingpreferences, agerange, skintype, finish, skinconcerns, coverage, hairtype, hairconcerns, hairtexture; `is_new` (boolean, optional) — When true, filters to products flagged New; `page` (integer, optional) — Result page, 1-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 100, defaults to 60; `price_max` (integer, optional) — Maximum price in whole dollars; must be set together with price_min; `price_min` (integer, optional) — Minimum price in whole dollars; must be set together with price_max; `query` (string, **required**) — Search keyword; `rating_min` (integer, optional) — Minimum star rating, 1 to 4; `sort_by` (string, optional) — Sort order, defaults to featured
 
 ### `sephora_stores`
@@ -1058,49 +1058,49 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `shein_category_filters`
 
 - **HTTP:** `GET /shein/category/filters`
-- **What:** SHEIN category filter facets. Returns the filter facets (sizes, colors, materials, …) and price range for a SHEIN category.
+- **What:** SHEIN category filter facets. Returns the filter facets for a SHEIN category by the required numeric `cat_id`, such as sizes, colours and composition. Each group has a `node_id`, `node_name` and a list of options with their own ids and names. Also returns `min_price`, `max_price` and the `currency`.
 - **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id
 
 ### `shein_category_goods`
 
 - **HTTP:** `GET /shein/category/goods`
-- **What:** SHEIN category product listing. Returns SHEIN's product listing for a category, with the same normalized product-card fields as product search.
+- **What:** SHEIN category product listing. Lists products in a SHEIN category, by the required numeric `cat_id`. `page` starts at 1 and `page_size` defaults to 20; `sort` is a non-negative integer, `0` by default. Each product has its id, name, images, sale, retail and USD prices, rating, review count, and `on_sale` and `sold_out` flags. `total` is the category's listing count.
 - **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page; `sort` (string, optional) — SHEIN sort code: a non-negative integer. `0` is the default (recommended). Other codes are accepted and forwarded as-is; the full code-to-meaning mapping has not been live-verified yet (see the endpoint markdown), so callers relying on a specific ordering should confirm behavior empirically.
 
 ### `shein_category_nav`
 
 - **HTTP:** `GET /shein/category/nav`
-- **What:** SHEIN category nav tabs. Returns the subcategory navigation tabs for a SHEIN category, each with a representative product.
+- **What:** SHEIN category nav tabs. Returns the subcategory navigation tabs for a SHEIN category, by the required numeric `cat_id`. Each tab has its `nav_id`, `nav_name`, `nav_type`, `nav_img` and the `goods_id` of a representative product.
 - **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id
 
 ### `shein_products_aggregation_filters`
 
 - **HTTP:** `POST /shein/products/aggregation-filters`
-- **What:** SHEIN search aggregation filters. Returns the selectable category/brand/size/color filter facets and price range for a SHEIN search query.
+- **What:** SHEIN search aggregation filters. Returns the filter facets for a SHEIN search, given the required `keyword` and an optional `cat_id` that narrows them. The response has filter groups (id, name, options), a recursive `category` drill-down with `children`, and the `min_price` and `max_price` for the query.
 - **Params:** `cat_id` (string, optional) — Numeric SHEIN category id, narrows the facets; `keyword` (string, **required**) — Free-text search query
 
 ### `shein_products_detail`
 
 - **HTTP:** `GET /shein/products/detail`
-- **What:** SHEIN product detail. Returns a SHEIN product's detail: identity, copy, price, images, sizes/stock, color variants, and category/brand.
+- **What:** SHEIN product detail. Returns a SHEIN product by the required numeric `goods_id`; `goods_sn` is optional and narrows the lookup. The response has the name, description, category, brand code, sale, retail and USD prices, images, video URL, size options, per-SKU stock and prices, and colour variants.
 - **Params:** `goods_id` (string, **required**) — Numeric SHEIN goods id (from a search result's goods_id); `goods_sn` (string, optional) — SHEIN goods serial number, narrows the lookup
 
 ### `shein_products_search`
 
 - **HTTP:** `POST /shein/products/search`
-- **What:** SHEIN product search. Returns SHEIN's product search results for a free-text keyword, with normalized name/price/rating/image fields per card.
+- **What:** SHEIN product search. Searches SHEIN products for the required `keyword`. `page` starts at 1, `page_size` defaults to 20 and `sort` is a non-negative integer, `0` by default. Each product card has its id, name, images, prices, rating, review count and stock flags. Also returns `total` and spelling suggestions in `suggest_words`.
 - **Params:** `keyword` (string, **required**) — Free-text search query; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page; `sort` (string, optional) — SHEIN sort code: a non-negative integer. `0` is the default (recommended). Other codes are accepted and forwarded as-is; the full code-to-meaning mapping has not been live-verified yet (see the endpoint markdown), so callers relying on a specific ordering should confirm behavior empirically.
 
 ### `shein_search_autocomplete`
 
 - **HTTP:** `POST /shein/search/autocomplete`
-- **What:** SHEIN search autocomplete. Returns SHEIN's search typeahead suggestions for a partial search query.
+- **What:** SHEIN search autocomplete. Returns SHEIN search suggestions for a partial query in the required `word`. Each suggestion has its `word`, `word_id` and `type`. A word with no matching phrase returns an empty list, not an error.
 - **Params:** `word` (string, **required**) — Partial search query
 
 ### `shein_search_keywords`
 
 - **HTTP:** `POST /shein/search/keywords`
-- **What:** SHEIN trending search keywords. Returns the trending search keywords SHEIN's app surfaces in its search box.
+- **What:** SHEIN trending search keywords. Returns the trending search keywords SHEIN shows in its search box. `scene` defaults to `trendStoreChannel` and `word_type` to `1`. Each keyword has its `word`, `word_id`, `type` and `from`.
 - **Params:** `scene` (string, optional) — Keyword scene (trendStoreChannel); `word_type` (string, optional) — Keyword type (1)
 
 ## Walgreens (1)
@@ -1134,7 +1134,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ikea_product`
 
 - **HTTP:** `GET /ikea/product`
-- **What:** Get an IKEA product's detail. Returns one IKEA item's full normalized detail: name, price, rating, every product image, quick facts, and category breadcrumb path. item_no is IKEA's own item number (8 digits, optionally prefixed with "s" for a combination/set article), taken from a search result's item_no field or an ikea.com product page's own URL.
+- **What:** Get an IKEA product's detail. Returns one IKEA item's full detail: name, price, rating, every product image, quick facts, and category breadcrumb path. item_no is IKEA's own item number (8 digits, optionally prefixed with "s" for a combination/set article), taken from a search result's item_no field or an ikea.com product page's own URL.
 - **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `item_no` (string, **required**) — IKEA item number; `language` (string, optional) — Lowercase 2-letter IKEA site language code
 
 ### `ikea_reviews`
@@ -1146,7 +1146,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ikea_search`
 
 - **HTTP:** `GET /ikea/search`
-- **What:** Search IKEA products. Searches IKEA products and returns normalized name, price, rating, images, colors, and variant data. q is a free-text query; an IKEA item number also resolves as its own single result. country and language select IKEA's per-country site (default us/en). A zero total with an empty products list is a valid no-results response.
+- **What:** Search IKEA products. Searches IKEA products and returns name, price, rating, images, colors, and variant data. q is a free-text query; an IKEA item number also resolves as its own single result. country and language select IKEA's per-country site (default us/en). A zero total with an empty products list is a valid no-results response.
 - **Params:** `country` (string, optional) — Lowercase 2-letter IKEA site country code; `language` (string, optional) — Lowercase 2-letter IKEA site language code; `q` (string, **required**) — Free-text product search query; `size` (integer, optional) — Result count (1-100)
 
 ### `ikea_store`
@@ -1214,7 +1214,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `chewy_product`
 
 - **HTTP:** `GET /chewy/product`
-- **What:** Get a Chewy product's detail. Returns one Chewy product's full normalized detail: name, brand, description, images, price, stock, rating and its star-count breakdown, category breadcrumbs, customer questions and answers, and customer reviews. id is the numeric id from a chewy.com PDP URL, e.g. 185468 from https://www.chewy.com/frisco-lion-mane-dog-cat-costume/dp/185468 -- also the same value a chewy_category response's products[].part_number field carries for that product's own default variant. The response also carries the item's shipping weight and package dimensions as Chewy states them, its per-order purchase limit, and any promotions currently attached to it (each with a type such as "Spend $X" or "BOGO", plus short and long descriptions).
+- **What:** Get a Chewy product's detail. Returns one Chewy product's full detail: name, brand, description, images, price, stock, rating and its star-count breakdown, category breadcrumbs, customer questions and answers, and customer reviews. id is the numeric id from a chewy.com PDP URL, e.g. 185468 from https://www.chewy.com/frisco-lion-mane-dog-cat-costume/dp/185468 -- also the same value a chewy_category response's products[].part_number field carries for that product's own default variant. The response also carries the item's shipping weight and package dimensions as Chewy states them, its per-order purchase limit, and any promotions currently attached to it (each with a type such as "Spend $X" or "BOGO", plus short and long descriptions).
 - **Params:** `id` (string, **required**) — Numeric id from a chewy.com PDP URL
 
 ### `chewy_product_questions`
@@ -1238,7 +1238,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `chewy_search`
 
 - **HTTP:** `GET /chewy/search`
-- **What:** Search Chewy by keyword. Returns one page of a Chewy keyword search's normalized product listing (price, autoship price/discount, stock, rating, images), plus embedded facets. q is free-text search keywords, e.g. "salmon dog food". A generic query that strongly matches one of Chewy's own categories (e.g. "dog food", "cat litter", "leash") is transparently redirected to that category's listing, the same real results a chewy.com visitor would see -- source_url reflects the actual listing fetched. sort and filter narrow/reorder the listing; every facets[].value paired with one of that facet's options[].value from any prior response is a valid filter key:value pair.
+- **What:** Search Chewy by keyword. Returns one page of a Chewy keyword search's product listing (price, autoship price/discount, stock, rating, images), plus embedded facets. q is free-text search keywords, e.g. "salmon dog food". A generic query that strongly matches one of Chewy's own categories (e.g. "dog food", "cat litter", "leash") is transparently redirected to that category's listing, the same real results a chewy.com visitor would see -- source_url reflects the actual listing fetched. sort and filter narrow/reorder the listing; every facets[].value paired with one of that facet's options[].value from any prior response is a valid filter key:value pair.
 - **Params:** `filter` (array, optional) — Repeatable, up to 10. Each value is \; `page` (integer, optional) — Page number, 36 products per page (default 1); `q` (string, **required**) — Free-text search keywords; `sort` (string, optional) — Sort order. One of byRelevance, byNewest, byPopularity, byLowestPrice, byHighestPrice, byRating, byRatingCount. Defaults to Chewy's own relevance ordering when omitted.
 
 ### `chewy_suggest`
@@ -1258,19 +1258,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bigcommerce_category`
 
 - **HTTP:** `GET /bigcommerce/category`
-- **What:** Browse a BigCommerce storefront category. Returns one normalized product-listing page from a public BigCommerce storefront category page. url must be the full public category-page URL. page is 1-indexed and defaults to 1.
+- **What:** Browse a BigCommerce storefront category. Returns one product-listing page from a public BigCommerce storefront category page. url must be the full public category-page URL. page is 1-indexed and defaults to 1.
 - **Params:** `page` (integer, optional) — 1-indexed category page, defaults to 1; `url` (string, **required**) — Full public BigCommerce category page URL
 
 ### `bigcommerce_product`
 
 - **HTTP:** `GET /bigcommerce/product`
-- **What:** Get a BigCommerce storefront product. Returns normalized product detail from a public BigCommerce storefront product page. url must be the full public product-page URL for a BigCommerce Stencil storefront.
+- **What:** Get a BigCommerce storefront product. Returns product detail from a public BigCommerce storefront product page. url must be the full public product-page URL for a BigCommerce Stencil storefront.
 - **Params:** `url` (string, **required**) — Full public BigCommerce product page URL
 
 ### `bigcommerce_search`
 
 - **HTTP:** `GET /bigcommerce/search`
-- **What:** Search a BigCommerce storefront. Returns one normalized product-search page from a public BigCommerce storefront. url must be the public storefront origin; an optional caller path or query is ignored. q is required search text. page is 1-indexed and defaults to 1.
+- **What:** Search a BigCommerce storefront. Returns one product-search page from a public BigCommerce storefront. url must be the public storefront origin; an optional caller path or query is ignored. q is required search text. page is 1-indexed and defaults to 1.
 - **Params:** `page` (integer, optional) — 1-indexed search page, defaults to 1; `q` (string, **required**) — Search text; `url` (string, **required**) — Public BigCommerce storefront origin
 
 ## Boots (2)
@@ -1304,7 +1304,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cvs_category`
 
 - **HTTP:** `GET /cvs/category`
-- **What:** Browse a CVS OTC category page. Returns one page of a CVS.com OTC (over-the-counter) retail category, subcategory, or brand page's product grid: normalized products with title, brand, image, current/original price, and sponsored/featured/new-product flags; the total result count; and the facets (brand, color, size, price range, and other category-specific attributes, each with its selectable values and result counts) available to filter the page further. Covers the non-prescription retail catalog only. path is the segment of a page URL after "/shop/", e.g. "beauty" (top-level category), "health-medicine/allergy-sinus" (subcategory), or "brand-shop/s/safe-home" (brand page); a full https://www.cvs.com/shop/... URL or a "/shop/..." path is also accepted. Any of these can also carry an optional facet-filter suffix in the site's own URL shape, e.g. "beauty/makeup/eyes/q/CoverGirl/Black/brpc" to filter to brand CoverGirl and color Black -- see the response's facets field for which values/type codes a given category supports; filter values are case-sensitive exactly as the site renders them. page is a 1-indexed page number (default 1). sort is an optional result order matching the site's own Sort By control. CVS.com is only available from US/US-territory egress; a request from an unsupported region returns an upstream error rather than an empty result.
+- **What:** Browse a CVS OTC category page. Returns one page of a CVS.com OTC (over-the-counter) retail category, subcategory, or brand page's product grid: products with title, brand, image, current/original price, and sponsored/featured/new-product flags; the total result count; and the facets (brand, color, size, price range, and other category-specific attributes, each with its selectable values and result counts) available to filter the page further. Covers the non-prescription retail catalog only. path is the segment of a page URL after "/shop/", e.g. "beauty" (top-level category), "health-medicine/allergy-sinus" (subcategory), or "brand-shop/s/safe-home" (brand page); a full https://www.cvs.com/shop/... URL or a "/shop/..." path is also accepted. Any of these can also carry an optional facet-filter suffix in the site's own URL shape, e.g. "beauty/makeup/eyes/q/CoverGirl/Black/brpc" to filter to brand CoverGirl and color Black -- see the response's facets field for which values/type codes a given category supports; filter values are case-sensitive exactly as the site renders them. page is a 1-indexed page number (default 1). sort is an optional result order matching the site's own Sort By control. CVS.com is only available from US and US-territory locations; a request served from an unsupported region returns an upstream error rather than an empty result.
 - **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `path` (string, **required**) — CVS category, subcategory, or brand-page URL path, optionally with a /q/{value}/{typeCode} facet-filter suffix, e.g. \; `sort` (string, optional) — Result sort order, default the site's own relevance order. One of pa (Price Low to High), pd (Price High to Low), tr (Top Rated), rc (Most Reviewed), az (Name A-Z), za (Name Z-A)
 
 ### `cvs_product`
@@ -1322,7 +1322,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `cvs_search`
 
 - **HTTP:** `GET /cvs/search`
-- **What:** Search CVS OTC products by keyword. Performs a keyword search across CVS.com's non-prescription retail/OTC catalog and returns one page of results: normalized products with title, brand, image, current/original price, and sponsored/featured/new-product flags; the total result count; and the facets (brand, color, size, price range, and other attributes, each with its selectable values and result counts) available to filter the results further. This is the same product-search backend cvs-category reads, just reached by keyword instead of by category/brand path. Covers the non-prescription retail catalog only. q is the search keyword or phrase, required. page is a 1-indexed page number (default 1). sort is an optional result order matching cvs-category's own Sort By values. CVS.com is only available from US/US-territory egress; a request from an unsupported region returns an upstream error rather than an empty result.
+- **What:** Search CVS OTC products by keyword. Performs a keyword search across CVS.com's non-prescription retail/OTC catalog and returns one page of results: products with title, brand, image, current/original price, and sponsored/featured/new-product flags; the total result count; and the facets (brand, color, size, price range, and other attributes, each with its selectable values and result counts) available to filter the results further. Covers the non-prescription retail catalog only. q is the search keyword or phrase, required. page is a 1-indexed page number (default 1). sort is an optional result order matching cvs-category's own Sort By values. CVS.com is only available from US and US-territory locations; a request served from an unsupported region returns an upstream error rather than an empty result.
 - **Params:** `page` (integer, optional) — 1-indexed page number, default 1; `q` (string, **required**) — Search keyword or phrase; `sort` (string, optional) — Result sort order, default relevance. One of pa (Price Low to High), pd (Price High to Low), tr (Top Rated), rc (Most Reviewed), az (Name A-Z), za (Name Z-A)
 
 ### `cvs_store_locator`
@@ -1368,7 +1368,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `otto_categories`
 
 - **HTTP:** `GET /otto/categories`
-- **What:** Get Otto.de's top-level categories. Returns the public top-level category navigation from Otto.de's server-rendered homepage. Each entry includes its canonical browsing URL.
+- **What:** Get Otto.de's top-level categories. Lists the top-level categories shown in Otto.de's homepage navigation, each with its name and its canonical browse URL. The response also gives the `count` of categories and a `fetched_at` time. It takes no parameters.
 - **Params:** _none_
 
 ### `otto_product`
@@ -1406,7 +1406,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tokopedia_home_tabs`
 
 - **HTTP:** `GET /tokopedia/home/tabs`
-- **What:** List Tokopedia home recommendation tabs. Returns the current public home-recommendation tabs. Use a returned `id` as `tab_id` with `/tokopedia/home`.
+- **What:** List Tokopedia home recommendation tabs. Lists the current Tokopedia home recommendation tabs, each with its `id`, `name` and an optional image URL, plus a `fetched_at` timestamp. It takes no parameters. Pass a returned `id` as `tab_id` to `/tokopedia/home` to load that tab.
 - **Params:** _none_
 
 ### `tokopedia_product`
@@ -1438,7 +1438,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sparkfun_categories`
 
 - **HTTP:** `GET /sparkfun/categories`
-- **What:** List SparkFun categories. Lists public SparkFun top-level browse categories with URL keys for sparkfun-category.
+- **What:** List SparkFun categories. Lists SparkFun's top-level browse categories. Each has an id, name, `url_key` and `url_path`. Pass a category's `url_key` to `sparkfun-category` to browse it. Takes no parameters, and the set follows the live storefront catalogue.
 - **Params:** _none_
 
 ### `sparkfun_category`
@@ -1450,7 +1450,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `sparkfun_product`
 
 - **HTTP:** `GET /sparkfun/product`
-- **What:** Get a SparkFun product. Returns public product metadata, price, stock status, images, categories, a cleaned description, and SparkFun-related product recommendations for one SKU.
+- **What:** Get a SparkFun product. Returns one SparkFun product by `sku`, for example `DEV-18158`: name, URL, stock status, current minimum price and currency, main image and media gallery, categories, and a cleaned short description. `recommendations` lists related, upsell or crosssell products when available. An unknown SKU returns 404.
 - **Params:** `sku` (string, **required**) — SparkFun product SKU
 
 ### `sparkfun_search`

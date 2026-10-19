@@ -82,6 +82,14 @@ case "$path" in
   /poshmark/brands) route_allowed=true ;;
   /poshmark/categories) route_allowed=true ;;
   /poshmark/search) route_allowed=true ;;
+  /reverb/categories) route_allowed=true ;;
+  /reverb/listing) route_allowed=true ;;
+  /reverb/makes) route_allowed=true ;;
+  /reverb/price-guide) route_allowed=true ;;
+  /reverb/price-guide-search) route_allowed=true ;;
+  /reverb/search) route_allowed=true ;;
+  /reverb/shop) route_allowed=true ;;
+  /reverb/shop-feedback) route_allowed=true ;;
   /stockx/brands) route_allowed=true ;;
   /stockx/categories) route_allowed=true ;;
   /stockx/releases) route_allowed=true ;;

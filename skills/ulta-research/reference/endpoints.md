@@ -31,19 +31,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ulta_product_questions`
 
 - **HTTP:** `GET /ulta/product/questions`
-- **What:** Get an Ulta Beauty product's customer questions and answers. Returns one page of an Ulta Beauty product's normalized customer questions, each with every answer it received. product_id is taken from a search result's product_id field or a product page's URL. A product with zero questions, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
+- **What:** Get an Ulta Beauty product's customer questions and answers. Returns one page of an Ulta Beauty product's customer questions, each with every answer it received. product_id is taken from a search result's product_id field or a product page's URL. A product with zero questions, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
 - **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Ulta product id, from a search result's product_id field
 
 ### `ulta_product_reviews`
 
 - **HTTP:** `GET /ulta/product/reviews`
-- **What:** Get an Ulta Beauty product's customer reviews. Returns one page of an Ulta Beauty product's normalized customer reviews, plus the retailer's own site-wide rating summary (rating count, average rating, recommended ratio, rating histogram) for the product. product_id is taken from a search result's product_id field or a product page's URL. A product with zero reviews, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
+- **What:** Get an Ulta Beauty product's customer reviews. Returns one page of an Ulta Beauty product's customer reviews, plus the retailer's own site-wide rating summary (rating count, average rating, recommended ratio, rating histogram) for the product. product_id is taken from a search result's product_id field or a product page's URL. A product with zero reviews, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
 - **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Ulta product id, from a search result's product_id field
 
 ### `ulta_search`
 
 - **HTTP:** `GET /ulta/search`
-- **What:** Search Ulta Beauty products. Searches Ulta Beauty's product catalog by keyword, with real page-based pagination. Returns normalized products with brand, pricing, rating, and review count. An unrecognized/nonsense keyword returns a genuine empty result rather than a fallback set. Requesting a page beyond the available results returns a normal, empty result rather than an error.
+- **What:** Search Ulta Beauty products. Searches Ulta Beauty's product catalog by keyword, with real page-based pagination. Returns products with brand, pricing, rating, and review count. An unrecognized/nonsense keyword returns a genuine empty result rather than a fallback set. Requesting a page beyond the available results returns a normal, empty result rather than an error.
 - **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `query` (string, **required**) — Search keyword
 
 ### `ulta_stores`

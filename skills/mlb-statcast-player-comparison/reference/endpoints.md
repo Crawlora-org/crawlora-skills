@@ -19,13 +19,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `mlb_player`
 
 - **HTTP:** `GET /mlb/player`
-- **What:** Get an MLB player. Returns an MLB player's identity, biographical information, position, handedness, active status, and current team.
+- **What:** Get an MLB player. Returns an MLB player by numeric `id`. The response has the full name, position, bats and throws sides, birth date, city and country, current age, height, weight, jersey number, MLB debut date, active flag and current team. Unknown players return `404`.
 - **Params:** `id` (string, **required**) — Numeric MLB player id
 
 ### `mlb_player_stats`
 
 - **HTTP:** `GET /mlb/player-stats`
-- **What:** Get MLB player season statistics. Returns one player's MLB season statistics. The group enum accepts every value returned by mlb_discovery.
+- **What:** Get MLB player season statistics. Returns one MLB player's statistics. `id` and `group` (`hitting`, `pitching`, `fielding`, `catching`, `running`, `game`, `team` or `streak`) are required. `season` defaults to the current year and `stat_type` to `season`. Other `stat_type` values cover career, game logs and splits. Use `start_date` with `end_date` for date ranges.
 - **Params:** `end_date` (string, optional) — End date for byDateRange stat types; requires start_date; `game_type` (string, optional) — MLB game type; `group` (string, **required**) — Stat group; `id` (string, **required**) — Numeric MLB player id; `opponent_player_id` (string, optional) — Required by vsPlayer stat types; `opponent_team_id` (string, optional) — Required by vsTeam stat types; `season` (integer, optional) — Four-digit season; defaults to current year; `start_date` (string, optional) — Start date for byDateRange stat types; requires end_date; `stat_type` (string, optional) — Stats API stat type; defaults to season
 
 ### `mlb_search`
@@ -79,5 +79,5 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `mlb_teams`
 
 - **HTTP:** `GET /mlb/teams`
-- **What:** List MLB teams. Returns the 30 MLB clubs for a season with league, division, venue, and abbreviation metadata.
+- **What:** List MLB teams. Lists the 30 MLB clubs for a `season` (four-digit year, default the current year). Each team has its id, name, club name, location, abbreviation, league, division, venue, first year of play and active flag.
 - **Params:** `season` (integer, optional) — Four-digit season; defaults to current year

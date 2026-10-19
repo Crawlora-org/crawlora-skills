@@ -13,13 +13,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `linkedin_company`
 
 - **HTTP:** `GET /linkedin/company/{id}`
-- **What:** Get LinkedIn Company info by ID. Returns detailed company information by LinkedIn ID.
+- **What:** Get LinkedIn Company info by ID. Returns a LinkedIn company page by its company `id`. The response has the name, headline, about text, industry, company size, employee count on LinkedIn, follower count, founding year, headquarters, locations, specialties, website, logo, affiliated and similar pages, and recent updates with reactions and comment counts.
 - **Params:** `id` (string, **required**) — LinkedIn Company ID
 
 ### `linkedin_product`
 
 - **HTTP:** `GET /linkedin/product/{id}`
-- **What:** Get LinkedIn Product info by ID. Returns detailed product information from LinkedIn by product ID.
+- **What:** Get LinkedIn Product info by ID. Returns a LinkedIn product page by its product `id`. The response has the name, about text, category, owning organization, external link, logo, cover image, media items, featured customers with industry and follower count, and lists of other and similar products.
 - **Params:** `id` (string, **required**) — LinkedIn Product ID
 
 ### `linkedin_product_categories`
@@ -37,5 +37,5 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `linkedin_showcase`
 
 - **HTTP:** `GET /linkedin/showcase/{id}`
-- **What:** Get Linkedin Showcase Page Info. Returns detailed information about a LinkedIn showcase page by ID.
+- **What:** Get Linkedin Showcase Page Info. Returns a LinkedIn showcase page by its showcase page `id`. The response has the name, headline, about text, industry, follower count, employees on LinkedIn, headquarters, locations, specialties, website, logo, affiliated and similar pages, and recent updates with reactions and comment counts.
 - **Params:** `id` (string, **required**) — LinkedIn Showcase Page ID

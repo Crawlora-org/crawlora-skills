@@ -13,7 +13,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bing_search`
 
 - **HTTP:** `GET /bing/search`
-- **What:** Search Bing web results. Returns normalized Bing web search results for a query string, including organic results, optional context panel data, related queries, people-also-ask questions, news modules, video modules, and page-based pagination. Empty optional blocks are omitted from the JSON response. Locale defaults to country=us and lang=en-us. Results are fetched with a Chrome-impersonated request client and return 503 on a genuine transport failure or challenge page. Bing occasionally serves a well-formed page whose results share no significant term with the query; when every hedged attempt hits this, the response is still returned as 200 with data.low_confidence set to true (and the X-Low-Confidence header) instead of being withheld, so callers get Bing's real answer plus an honest signal to double-check it rather than nothing. Queries that use the site: operator (for example site:gov.hu) are not supported: Bing serves a bot-verification challenge for them, so they are rejected with 400 before any request is made. Use the DuckDuckGo (/api/v1/duckduckgo/search), Brave (/api/v1/brave/search), or Yahoo (/api/v1/yahoo-search/search) search endpoints for domain-restricted searches instead.
+- **What:** Search Bing web results. Returns Bing web search results for a query string, including organic results, optional context panel data, related queries, people-also-ask questions, news modules, video modules, and page-based pagination. Empty optional blocks are omitted from the JSON response. Locale defaults to country=us and lang=en-us. Returns 503 on a genuine transport failure or challenge page. Bing occasionally serves a well-formed page whose results share no significant term with the query; when every attempt hits this, the response is still returned as 200 with data.low_confidence set to true (and the X-Low-Confidence header) instead of being withheld, so callers get Bing's real answer plus an honest signal to double-check it rather than nothing. Queries that use the site: operator (for example site:gov.hu) are not supported: Bing serves a bot-verification challenge for them, so they are rejected with 400 before any request is made. Use the DuckDuckGo (/api/v1/duckduckgo/search), Brave (/api/v1/brave/search), or Yahoo (/api/v1/yahoo-search/search) search endpoints for domain-restricted searches instead.
 - **Params:** `count` (integer, optional) — Results per page; defaults to 10, clamped to 1..50; `country` (string, optional) — Two-letter country code; defaults to us; `lang` (string, optional) — Bing UI language; defaults to en-us; `page` (integer, optional) — 1-based page number; defaults to 1; `q` (string, **required**) — Search query
 
 ## Web (2)
@@ -21,14 +21,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `extract`
 
 - **HTTP:** `POST /extract`
-- **What:** Extract schema-conforming JSON from a URL. Scrapes a public URL into clean Markdown, then returns data that strictly conforms to the supplied bounded JSON Schema. The response includes `truncated`, which is true when the page was too long and only its first part was used.
+- **What:** Extract schema-conforming JSON from a URL. Reads a public URL as clean Markdown, then returns data that strictly conforms to the supplied bounded JSON Schema. The response includes `truncated`, which is true when the page was too long and only its first part was used.
 - **Params:** `extractOption` (object, **required**) — Extraction options
 - **REST body:** Send the value of the MCP argument `extractOption` directly as the JSON body; do not wrap it in a `extractOption` property.
 
 ### `web_scrape`
 
 - **HTTP:** `POST /web/scrape`
-- **What:** Scrape a URL into markdown, HTML, links or metadata. Fetches a single public URL and returns clean content in the requested formats (markdown, html, raw_html, links, metadata). The request body IS the ScrapeOption object itself — e.g. {"url": "https://example.com"} — do not wrap it in an extra key. With render=auto the request starts as a fast HTTP fetch and escalates to a real browser when the page is blocked or rendered with JavaScript; backend only pins a specific headless-browser engine for the browser tier and is not a render mode. only_main_content (default true) strips navigation, headers, footers and other boilerplate before conversion. Only public pages are supported; respect each site's terms of use and robots directives. A handful of popular sites (Amazon, Reddit, Yelp, LinkedIn, and others) already have a dedicated, more reliable endpoint elsewhere in this API — a failed scrape against one of them names it. A Reddit URL that maps onto a dedicated Reddit endpoint (listings, search, comment threads, user and domain pages) is answered by that endpoint instead, and its response is returned as-is in data with an X-Routed-To header; send dedicated=false to always get the scraped page.
+- **What:** Scrape a URL into markdown, HTML, links or metadata. Fetches a single public URL and returns clean content in the requested formats (markdown, html, raw_html, links, metadata). The request body IS the ScrapeOption object itself — e.g. {"url": "https://example.com"} — do not wrap it in an extra key. With render=auto the request starts as a fast HTTP fetch and escalates to a real browser when the page is blocked or rendered with JavaScript. only_main_content (default true) strips navigation, headers, footers and other boilerplate before conversion. Only public pages are supported; respect each site's terms of use and robots directives. A handful of popular sites (Amazon, Reddit, Yelp, LinkedIn, and others) already have a dedicated, more reliable endpoint elsewhere in this API — a failed scrape against one of them names it. A Reddit URL that maps onto a dedicated Reddit endpoint (listings, search, comment threads, user and domain pages) is answered by that endpoint instead, and its response is returned as-is in data with an X-Routed-To header; send dedicated=false to always get the scraped page.
 - **Params:** `scrapeOption` (object, **required**) — Scrape options
 - **REST body:** Send the value of the MCP argument `scrapeOption` directly as the JSON body; do not wrap it in a `scrapeOption` property.
 
@@ -37,13 +37,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `similarweb_search`
 
 - **HTTP:** `GET /similarweb/search`
-- **What:** Search SimilarWeb Info. Returns SimilarWeb data for a given query (typically a domain).
+- **What:** Search SimilarWeb Info. Looks up a domain or keyword on SimilarWeb and returns the matching websites, companies (name, domain and logo) and apps on the App Store and Google Play.
 - **Params:** `q` (string, **required**) — Domain or keyword to search
 
 ### `similarweb_web`
 
 - **HTTP:** `GET /similarweb/web/{domain}`
-- **What:** Get SimilarWeb Web Info. Returns traffic and engagement data from SimilarWeb for a specific domain.
+- **What:** Get SimilarWeb Web Info. Returns SimilarWeb's traffic profile for one domain: global, country and category rank, estimated monthly visits, engagement (bounce rate, pages per visit, time on site), top countries, traffic sources, top keywords and similar sites. `DataSource` shows whether the full source or the narrower public-page fallback answered; the fallback omits several fields.
 - **Params:** `domain` (string, **required**) — Domain to fetch SimilarWeb data for
 
 ## ProductHunt (4)
@@ -51,13 +51,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `producthunt_alternatives`
 
 - **HTTP:** `GET /producthunt/product/{id}/alternatives`
-- **What:** Retrieve Product Hunt product alternatives. Returns paginated alternatives, tags, and related discussions for a Product Hunt product.
+- **What:** Retrieve Product Hunt product alternatives. Lists alternatives to a Product Hunt product, looked up by its slug in `id`. `first` sets the page size (default 10), `order` defaults to `most_relevant`, and `tags` takes comma-separated tag slugs. Returns alternative items with ratings, badges and scores, alternative tags with counts, and related discussions. Use `end_cursor` as `cursor` for the next page.
 - **Params:** `cursor` (string, optional) — Pagination cursor; `first` (integer, optional) — Page size; `id` (string, **required**) — Product Hunt slug; `order` (string, optional) — Sort order; `tags` (string, optional) — Comma-separated tag slugs
 
 ### `producthunt_launches`
 
 - **HTTP:** `GET /producthunt/product/{id}/launches`
-- **What:** Retrieve Product Hunt product launches. Returns paginated launch posts for a Product Hunt product using Product Hunt's ProductPageLaunches GraphQL operation.
+- **What:** Retrieve Product Hunt product launches. Lists the launch posts of a Product Hunt product, looked up by its slug in `id`. `order` defaults to `DATE`; pass the returned `end_cursor` as `cursor` for the next page. Each launch has its name, tagline, ranks, scores, comment count, badges and dates. An unknown slug returns 404.
 - **Params:** `cursor` (string, optional) — Pagination cursor; `id` (string, **required**) — Product Hunt slug; `order` (string, optional) — Product Hunt launch order
 
 ### `producthunt_product`
@@ -69,7 +69,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `producthunt_search`
 
 - **HTTP:** `GET /producthunt/search`
-- **What:** Search for products, users, or launches on Product Hunt. Performs a full-text Product Hunt search and returns matching products, users, or launches.
+- **What:** Search for products, users, or launches on Product Hunt. Searches Product Hunt for the required `query`. `type` is `product` (default), `user` or `launch`, and `page` starts at 1. `featured` and `topics` apply to launch search only. Results come as `edges` with `pageInfo` and `pagesCount`; launch search also returns topic aggregations.
 - **Params:** `featured` (boolean, optional) — Launch search only: featured launches only; `page` (integer, optional) — Page number (1-based); `query` (string, **required**) — Search keywords; `topics` (string, optional) — Launch search only: comma-separated topic slugs; `type` (string, optional) — Result type: **product** (default), **user**, or **launch**
 
 ## Trustpilot (3)
@@ -77,19 +77,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `trustpilot_business`
 
 - **HTTP:** `GET /trustpilot/business/{slug}`
-- **What:** Get Trustpilot business profile. Returns a summary Trustpilot business profile parsed from the public business page.
+- **What:** Get Trustpilot business profile. Returns a Trustpilot business profile by `slug`, such as `openai.com`. The profile has the name, `trust_score`, `review_count`, rating histogram, review summary and topics, categories, claimed status, website URL, reply metrics, company activity and verification flags, and an about section with description and contact details.
 - **Params:** `slug` (string, **required**) — Trustpilot business slug
 
 ### `trustpilot_business_reviews`
 
 - **HTTP:** `GET /trustpilot/business/{slug}/reviews`
-- **What:** Get Trustpilot business reviews. Returns paginated Trustpilot business reviews parsed from the public review page.
+- **What:** Get Trustpilot business reviews. Returns one page of Trustpilot reviews for a business slug such as `openai.com`, with filters for star rating, verified reviews, reviews with a company reply, language and text search. Each review has its rating, title, body, author name, country and review count, dates, and any company reply; the response also carries the business summary and pagination totals.
 - **Params:** `date_from` (string, optional) — Date range start in YYYY-MM-DD; currently rejected by upstream; `date_to` (string, optional) — Date range end in YYYY-MM-DD; currently rejected by upstream; `language` (string, optional) — Review language code used by Trustpilot; `page` (integer, optional) — 1-based page number; defaults to 1; `q` (string, optional) — Text search within reviews; `replied` (boolean, optional) — Filter to reviews with business replies; `slug` (string, **required**) — Trustpilot business slug; `stars` (integer, optional) — Filter by star rating from 1 to 5; `verified` (boolean, optional) — Filter to verified reviews
 
 ### `trustpilot_business_search`
 
 - **HTTP:** `GET /trustpilot/business-units/search`
-- **What:** Search Trustpilot business units. Returns normalized business-unit search results from Trustpilot's JSON business-unit search API.
+- **What:** Search Trustpilot business units. Searches Trustpilot for businesses matching a query, for a country (default `US`), with `page` and `page_size` (default 20, max 100). Each result has the display name, identifying name, TrustScore, star rating, review count, categories, website, email, phone, address and Trustpilot URL; `total_hits` gives the full match count.
 - **Params:** `country` (string, optional) — Two-letter country code; defaults to US; `page` (integer, optional) — 1-based page number; defaults to 1; `page_size` (integer, optional) — Results per page; defaults to 20, maximum 100; `q` (string, **required**) — Search query
 
 ## Capterra (3)
@@ -97,19 +97,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `capterra_product`
 
 - **HTTP:** `GET /capterra/product`
-- **What:** Get a Capterra product. Returns a normalized Capterra product profile: name, description, category, and aggregate rating. Credential-free public Capterra data, rendered from the product page through proxied browser renderers.
+- **What:** Get a Capterra product. Returns a Capterra product profile: name, description, category, and aggregate rating.
 - **Params:** `product_id` (string, **required**) — Capterra product id (the numeric id in a /p/{id}/{slug}/ URL)
 
 ### `capterra_reviews`
 
 - **HTTP:** `GET /capterra/product/reviews`
-- **What:** Get Capterra product reviews. Returns a page of normalized Capterra reviews (author, headline, rating) plus the product's aggregate rating. Credential-free public Capterra data, rendered from the reviews page through proxied browser renderers.
+- **What:** Get Capterra product reviews. Returns a page of Capterra reviews (author, headline, rating) plus the product's aggregate rating.
 - **Params:** `page` (integer, optional) — Page number (default 1); `product_id` (string, **required**) — Capterra product id (the numeric id in a /p/{id}/{slug}/ URL)
 
 ### `capterra_search`
 
 - **HTTP:** `GET /capterra/search`
-- **What:** Search Capterra products. Returns Capterra search-result products (id, name, url, description, rating). Credential-free public Capterra data, rendered from the search page through proxied browser renderers. Note: Capterra renders a fallback product list even for queries with no genuine match, rather than a distinct empty-results page, so callers should treat low-relevance results as an upstream characteristic, not a bug.
+- **What:** Search Capterra products. Returns Capterra search-result products (id, name, url, description, rating). Note: Capterra renders a fallback product list even for queries with no genuine match, rather than a distinct empty-results page, so callers should treat low-relevance results as an upstream characteristic, not a bug.
 - **Params:** `q` (string, **required**) — Search query
 
 ## Datasets (2)

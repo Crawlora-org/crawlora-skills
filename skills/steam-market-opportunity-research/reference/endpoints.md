@@ -25,7 +25,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_steam_games_item`
 
 - **HTTP:** `GET /datasets/steam-games/items/{appid}`
-- **What:** Get a Steam game from the dataset. Returns one enriched Steam catalog record by appid from dataset id enum value `steam-games`.
+- **What:** Get a Steam game from the dataset. Returns one Steam game from the `steam-games` dataset by numeric appid: name, developers and publishers, genres and categories, price and discount, supported platforms, positive and negative review counts, owner estimates, average and median playtime, concurrent players, Metacritic score and language count. It reads the stored dataset and does not trigger a live scrape; an appid that is not in the dataset returns `404`.
 - **Params:** `appid` (integer, **required**) — Steam app id
 
 ### `datasets_steam_games_search`
@@ -57,71 +57,71 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `steam_app`
 
 - **HTTP:** `GET /steam/app`
-- **What:** Get Steam store details for an app. Returns normalized store metadata for a single Steam app (title, type, price, developers/publishers, platforms, genres, categories, release date, metacritic, recommendation and achievement counts). cc selects the store region (and price currency) and l the text language. filters is a comma-separated subset of allowed fields to shrink the payload. Credential-free public Steam storefront JSON.
+- **What:** Get Steam store details for an app. Returns store metadata for a single Steam app (title, type, price, developers/publishers, platforms, genres, categories, release date, metacritic, recommendation and achievement counts). cc selects the store region (and price currency) and l the text language. filters is a comma-separated subset of allowed fields to shrink the payload.
 - **Params:** `appid` (string, **required**) — Numeric Steam app id; `cc` (string, optional) — Store country code (ISO, selects currency); `filters` (string, optional) — Comma-separated fields: basic, price_overview, developers, publishers, categories, genres, release_date, platforms, metacritic, achievements, screenshots, movies, recommendations, controller_support, dlc, short_description, supported_languages, packages, package_groups, ratings, content_descriptors, background; `l` (string, optional) — Language code
 
 ### `steam_category`
 
 - **HTTP:** `GET /steam/category/{slug}`
-- **What:** Browse a store category (tag) with weighted community tags. Returns a catalog slice for a community tag / category via Steam's keyless IStoreQueryService, carrying each item's WEIGHTED community tags, review-score breakdown, developer/publisher credits, release date, platforms and price. The slug is a numeric tag id or a tag name (case- and separator-insensitive, e.g. rogue_like); resolve ids via /steam/tags/list. Ordering is Steam's default relevance — for sorted or os/price-faceted browse use /steam/tags. Credential-free public Steam store query API.
+- **What:** Browse a store category (tag) with weighted community tags. Returns a catalog slice for a community tag / category, carrying each item's WEIGHTED community tags, review-score breakdown, developer/publisher credits, release date, platforms and price. The slug is a numeric tag id or a tag name (case- and separator-insensitive, e.g. rogue_like); resolve ids via /steam/tags/list. Ordering is Steam's default relevance — for sorted or os/price-faceted browse use /steam/tags.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `coming_soon_only` (boolean, optional) — Only unreleased / coming-soon titles; `count` (integer, optional) — Results per page (max 100); `free` (boolean, optional) — Only free titles; `l` (string, optional) — Steam store language name; `released_only` (boolean, optional) — Only already-released titles; `slug` (string, **required**) — Community tag id (numeric) or tag name slug; `start` (integer, optional) — Result offset for pagination
 
 ### `steam_items`
 
 - **HTTP:** `GET /steam/items`
-- **What:** Resolve a batch of app ids to store items with weighted tags. Resolves up to 100 Steam app ids in one call to normalized store items via Steam's keyless IStoreBrowseService, each carrying its WEIGHTED community tags, review-score breakdown, developer/publisher credits, release date, platforms and price. The batch enrichment primitive for the community-tag taxonomy. Credential-free public Steam store query API.
+- **What:** Resolve a batch of app ids to store items with weighted tags. Resolves up to 100 Steam app ids in one call to store items, each carrying its WEIGHTED community tags, review-score breakdown, developer/publisher credits, release date, platforms and price. The batch enrichment primitive for the community-tag taxonomy.
 - **Params:** `appids` (string, **required**) — Comma-separated numeric app ids (max 100); `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Steam store language name
 
 ### `steam_news`
 
 - **HTTP:** `GET /steam/news`
-- **What:** Get recent news posts for a Steam app. Returns recent news/announcement posts for an app (title, author, contents, feed, date). Credential-free public Steam WebAPI JSON.
+- **What:** Get recent news posts for a Steam app. Returns recent news and announcement posts for a Steam app by numeric `appid` (for example `570`). `count` sets the number of posts (default 10, max 50) and `maxlength` caps each post body in characters (default 300, `-1` for the full body). Each post has `gid`, title, URL, author, contents, feed label and name, `date`, `is_external_url` and `tags`.
 - **Params:** `appid` (string, **required**) — Numeric Steam app id; `count` (integer, optional) — Number of posts (max 50); `maxlength` (integer, optional) — Max characters of each post body; default 300, set -1 for full content
 
 ### `steam_players`
 
 - **HTTP:** `GET /steam/players`
-- **What:** Get the current concurrent-player count for a Steam app. Returns the official current concurrent-players count for an app. Credential-free public Steam WebAPI JSON.
+- **What:** Get the current concurrent-player count for a Steam app. Returns the current number of concurrent players for a Steam app, given its numeric `appid` such as `570`. The response has `appid`, `player_count` and a `source_url`. An app with no player-count data returns 404.
 - **Params:** `appid` (string, **required**) — Numeric Steam app id
 
 ### `steam_reviews`
 
 - **HTTP:** `GET /steam/reviews`
-- **What:** List reviews for a Steam app. Returns a page of user reviews for an app with cursor pagination and an aggregate query_summary (score, positive/negative totals). Aggregate totals populate only on the first page (cursor=*). Pass the returned cursor back to page. Credential-free public Steam storefront JSON.
+- **What:** List reviews for a Steam app. Returns a page of user reviews for an app with cursor pagination and an aggregate query_summary (score, positive/negative totals). Aggregate totals populate only on the first page (cursor=*). Pass the returned cursor back to page.
 - **Params:** `appid` (string, **required**) — Numeric Steam app id; `cursor` (string, optional) — Pagination cursor from the previous page; `day_range` (integer, optional) — Look-back window in days (filter=all only, max 365); `filter` (string, optional) — Sort order; `language` (string, optional) — Steam language name or 'all'; `num_per_page` (integer, optional) — Reviews per page (max 100); `purchase_type` (string, optional) — Purchase source filter; `review_type` (string, optional) — Review sentiment filter
 
 ### `steam_reviews_histogram`
 
 - **HTTP:** `GET /steam/reviews/histogram`
-- **What:** Get the review up/down histogram for a Steam app. Returns the positive/negative recommendation counts over time (the store review graph): weekly/monthly rollups plus recent daily buckets. Credential-free public Steam storefront JSON.
+- **What:** Get the review up/down histogram for a Steam app. Returns the positive/negative recommendation counts over time (the store review graph): weekly/monthly rollups plus recent daily buckets.
 - **Params:** `appid` (string, **required**) — Numeric Steam app id; `language` (string, optional) — Steam language name or 'all'
 
 ### `steam_search`
 
 - **HTTP:** `GET /steam/search`
-- **What:** Search the Steam store by title. Resolves a search term to Steam apps via the store typeahead JSON (title, appid, price, platforms, metascore). Best for title -> appid lookup; returns roughly ten results. For faceted, paginated search use /steam/search/results. Credential-free public Steam storefront JSON.
+- **What:** Search the Steam store by title. Resolves a search term to Steam apps via the store typeahead (title, appid, price, platforms, metascore). Best for title -> appid lookup; returns roughly ten results. For faceted, paginated search use /steam/search/results.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `term` (string, **required**) — Search term
 
 ### `steam_search_results`
 
 - **HTTP:** `GET /steam/search/results`
-- **What:** Faceted, paginated Steam store search. Runs the Steam store search with pagination and sorting and returns the result rows (appid, title, release date, review summary, price, platforms). Supports start/count paging and sort_by. Credential-free public Steam storefront JSON.
+- **What:** Faceted, paginated Steam store search. Runs the Steam store search with pagination and sorting and returns the result rows (appid, title, release date, review summary, price, platforms). Supports start/count paging and sort_by.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `count` (integer, optional) — Results per page (max 100); `l` (string, optional) — Language code; `sort_by` (string, optional) — Sort order; `start` (integer, optional) — Result offset for pagination; `term` (string, **required**) — Search term
 
 ### `steam_steamspy`
 
 - **HTTP:** `GET /steam/steamspy`
-- **What:** Get SteamSpy third-party ownership and playtime estimates. Returns third-party ownership, concurrent-user, playtime, and review estimates for an app from SteamSpy. These are SteamSpy estimates, not official Steam figures. Credential-free public third-party JSON.
+- **What:** Get SteamSpy third-party ownership and playtime estimates. Returns third-party ownership, concurrent-user, playtime, and review estimates for an app from SteamSpy. These are SteamSpy estimates, not official Steam figures.
 - **Params:** `appid` (string, **required**) — Numeric Steam app id
 
 ### `steam_tags`
 
 - **HTTP:** `GET /steam/tags`
-- **What:** Browse the Steam store by community tag and store facets. Browses the store by the community-tag taxonomy (Roguelike, Metroidvania, Cozy...) and the store filter facets, with no free-text term. Filter by one or more tag ids, a store category id, platform (os), a maximum price, specials-only, and hide-free-to-play; sort and page the browse-rank rows. Each row includes its community tag ids (resolve names via /steam/tags/list). Pagination runs the full result set (total is the real, fully-pageable match count); paging past total returns an empty page. Credential-free public Steam storefront JSON.
+- **What:** Browse the Steam store by community tag and store facets. Browses the store by the community-tag taxonomy (Roguelike, Metroidvania, Cozy...) and the store filter facets, with no free-text term. Filter by one or more tag ids, a store category id, platform (os), a maximum price, specials-only, and hide-free-to-play; sort and page the browse-rank rows. Each row includes its community tag ids (resolve names via /steam/tags/list). Pagination runs the full result set (total is the real, fully-pageable match count); paging past total returns an empty page.
 - **Params:** `category1` (string, optional) — Numeric Steam store category id (e.g. 998 games, 21 dlc); `category2` (string, optional) — Additional numeric store category id (feature); `category3` (string, optional) — Additional numeric store category id (feature); `cc` (string, optional) — Store country code (ISO, selects currency); `count` (integer, optional) — Results per page (max 100); `deck_compatibility` (string, optional) — Steam Deck compatibility filter: 1 unsupported, 2 playable, 3 verified; `filter` (string, optional) — Curated preset applied within the other facets; `hidef2p` (boolean, optional) — Hide free-to-play titles; `l` (string, optional) — Language code; `maxprice` (string, optional) — Maximum price as whole cents in the cc currency, or the literal 'free'; `os` (string, optional) — Comma-separated platform filter subset of: win, mac, linux; `sort_by` (string, optional) — Sort order; `specials` (boolean, optional) — Only discounted titles; `start` (integer, optional) — Result offset for pagination; `supportedlang` (string, optional) — Only titles supporting this Steam language name; `tags` (string, optional) — Comma-separated numeric community tag ids (all must match); resolve ids via /steam/tags/list; `untags` (string, optional) — Comma-separated numeric community tag ids to EXCLUDE; `vrsupport` (string, optional) — Comma-separated VR-support filter ids (e.g. 401 seated, 402 standing, 403 roomscale)
 
 ### `steam_tags_list`
 
 - **HTTP:** `GET /steam/tags/list`
-- **What:** List Steam community tag ids and names. Returns Steam's popular community tags (numeric id + localized name) so callers can map a tag name to the id that /steam/tags and /steam/category expect. Credential-free public Steam storefront JSON.
+- **What:** List Steam community tag ids and names. Returns Steam's popular community tags (numeric id + localized name) so callers can map a tag name to the id that /steam/tags and /steam/category expect.
 - **Params:** `l` (string, optional) — Steam store language name for the tag labels

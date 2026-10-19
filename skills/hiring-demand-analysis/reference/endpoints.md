@@ -31,7 +31,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_jobs_item`
 
 - **HTTP:** `GET /datasets/jobs/items/{id}`
-- **What:** Get a single posting from the jobs dataset. Returns one crawled job posting by its dataset posting id. Returns 404 when absent.
+- **What:** Get a single posting from the jobs dataset. Returns one crawled job posting by its dataset posting id, the `posting_id` of a search result. Alongside the posting itself, `seniority_level` is `entry`, `mid` or `senior`, and occupation fields appear only when title and skills support a reliable match. An id not in the index returns 404.
 - **Params:** `id` (string, **required**) — Dataset posting id
 
 ### `datasets_jobs_search`
@@ -45,6 +45,6 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_jobs`
 
 - **HTTP:** `POST /google/jobs`
-- **What:** Search Google Jobs. Returns normalized Google Jobs results parsed from public Google web responses.
+- **What:** Search Google Jobs. Searches Google Jobs for the `query` in the request body, optionally narrowed by `location` and paged with `page`. Each result has the job title, company, location, employment type, posting time, snippet, source and URL. The response echoes the query, location and page.
 - **Params:** `option` (object, **required**) — Google Jobs search payload
 - **REST body:** Send the value of the MCP argument `option` directly as the JSON body; do not wrap it in a `option` property.

@@ -13,67 +13,67 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `github_org`
 
 - **HTTP:** `GET /github/org/{org}`
-- **What:** Retrieve a GitHub organization profile. Returns a public GitHub organization profile (company-side enrichment).
+- **What:** Retrieve a GitHub organization profile. Returns the public profile of a GitHub organization by its required `org` login, with fields such as name, description, blog URL, location, public repository count, followers and whether the organization is verified.
 - **Params:** `org` (string, **required**) — GitHub organization login
 
 ### `github_org_repos`
 
 - **HTTP:** `GET /github/org/{org}/repos`
-- **What:** List a GitHub organization's public repositories. Returns a page of an organization's public repositories (company tech stack).
+- **What:** List a GitHub organization's public repositories. Lists the public repositories of a GitHub organization, identified by the required `org` login. Filter with `type` (`all`, `public`, `forks`, `sources` or `member`), order with `sort` (`created`, `updated`, `pushed` or `full_name`) and `direction`, and page with `page` and `per_page` (max 100). Each repository has its name, description, language, stars and forks.
 - **Params:** `direction` (string, optional) — Sort direction; `org` (string, **required**) — GitHub organization login; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `sort` (string, optional) — Sort field; `type` (string, optional) — Repository type
 
 ### `github_repo`
 
 - **HTTP:** `GET /github/repo/{owner}/{repo}`
-- **What:** Retrieve a GitHub repository. Returns public detail for a single repository (the core project object).
+- **What:** Retrieve a GitHub repository. Returns the public details of one GitHub repository, identified by the required `owner` and `repo`. Fields include the full name, description, main language, topics, stars, forks, watchers, open issues, license, default branch and last push time.
 - **Params:** `owner` (string, **required**) — Repository owner (user or org login); `repo` (string, **required**) — Repository name
 
 ### `github_repo_contributors`
 
 - **HTTP:** `GET /github/repo/{owner}/{repo}/contributors`
-- **What:** List a repository's contributors. Returns a page of a repository's contributors (who builds a project).
+- **What:** List a repository's contributors. Lists the contributors to a GitHub repository, identified by the required `owner` and `repo`, ordered by number of contributions. Page with `page` and `per_page` (max 100). Each contributor has their login, id, contribution count, profile URL and account type.
 - **Params:** `owner` (string, **required**) — Repository owner (user or org login); `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `repo` (string, **required**) — Repository name
 
 ### `github_repo_forks`
 
 - **HTTP:** `GET /github/repo/{owner}/{repo}/forks`
-- **What:** List a repository's public forks. Returns a page of a repository's public forks (adopter signal).
+- **What:** List a repository's public forks. Lists the public forks of a GitHub repository, identified by the required `owner` and `repo`. Order with `sort` (`newest`, `oldest`, `stargazers` or `watchers`) and page with `page` and `per_page` (max 100). Each fork has its full name, owner, stars, language and creation time.
 - **Params:** `owner` (string, **required**) — Repository owner (user or org login); `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `repo` (string, **required**) — Repository name; `sort` (string, optional) — Sort order
 
 ### `github_repo_languages`
 
 - **HTTP:** `GET /github/repo/{owner}/{repo}/languages`
-- **What:** Retrieve a repository's language breakdown. Returns the language byte breakdown for a repository, sorted by bytes descending (tech fingerprint).
+- **What:** Retrieve a repository's language breakdown. Returns the languages detected in a GitHub repository, identified by the required `owner` and `repo`, as language and byte-count pairs sorted by bytes, largest first.
 - **Params:** `owner` (string, **required**) — Repository owner (user or org login); `repo` (string, **required**) — Repository name
 
 ### `github_repo_releases`
 
 - **HTTP:** `GET /github/repo/{owner}/{repo}/releases`
-- **What:** List a repository's releases. Returns a page of a repository's releases (momentum/health signal).
+- **What:** List a repository's releases. Lists the published releases of a GitHub repository, identified by the required `owner` and `repo`. Page with `page` and `per_page` (max 100). Each release has its tag name, title, URL, prerelease flag, publication time and author.
 - **Params:** `owner` (string, **required**) — Repository owner (user or org login); `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `repo` (string, **required**) — Repository name
 
 ### `github_search_repositories`
 
 - **HTTP:** `GET /github/search/repositories`
-- **What:** Search public GitHub repositories. Searches public GitHub repositories (market/competitive discovery). Unauthenticated search is rate limited to roughly 10 requests per minute.
+- **What:** Search public GitHub repositories. Searches public GitHub repositories with the required GitHub search query `q`. Order with `sort` (`stars`, `forks`, `help-wanted-issues` or `updated`) and `order`, and page with `page` and `per_page` (max 100). The response has `total_count` and items with full name, owner, description, language, stars, forks, topics and license.
 - **Params:** `order` (string, optional) — Sort order; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `q` (string, **required**) — GitHub repository search query; `sort` (string, optional) — Sort field
 
 ### `github_search_users`
 
 - **HTTP:** `GET /github/search/users`
-- **What:** Search public GitHub users. Searches public GitHub users (developer discovery). Unauthenticated search is rate limited to roughly 10 requests per minute.
+- **What:** Search public GitHub users. Searches public GitHub user accounts with the required GitHub search query `q`. Order with `sort` (`followers`, `repositories` or `joined`) and `order`, and page with `page` and `per_page` (max 100). The response has `total_count` and items with login, id, profile URL, account type and match score.
 - **Params:** `order` (string, optional) — Sort order; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `q` (string, **required**) — GitHub user search query; `sort` (string, optional) — Sort field
 
 ### `github_trending`
 
 - **HTTP:** `GET /github/trending`
-- **What:** List trending GitHub repositories. Returns the repositories on GitHub's trending page (market discovery).
+- **What:** List trending GitHub repositories. Lists the repositories currently trending on GitHub. Filter by programming `language` (such as `go` or `python`) and choose the window with `since` (`daily`, `weekly` or `monthly`). Each repository has its owner, name, URL, description, language, stars, forks and stars gained today.
 - **Params:** `language` (string, optional) — Programming language filter (e.g. go, python); `since` (string, optional) — Time window
 
 ### `github_trending_developers`
 
 - **HTTP:** `GET /github/trending/developers`
-- **What:** List trending GitHub developers. Returns the developers on GitHub's trending developers page (market discovery).
+- **What:** List trending GitHub developers. Lists the developers currently trending on GitHub. Filter by programming `language` (such as `go` or `python`) and choose the window with `since` (`daily`, `weekly` or `monthly`). Each developer has a username, display name, profile URL and their popular repository.
 - **Params:** `language` (string, optional) — Programming language filter (e.g. go, python); `since` (string, optional) — Time window
 
 ### `github_user`
@@ -85,31 +85,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `github_user_events`
 
 - **HTTP:** `GET /github/user/{username}/events`
-- **What:** List a GitHub user's recent public activity. Returns a page of a user's recent public events, normalized to type, repository, and timestamp (freshness signal).
+- **What:** List a GitHub user's recent public activity. Lists a GitHub user's recent public events, identified by the required `username`. Page with `page` and `per_page` (max 100). Each event has its id, event type such as `PushEvent`, repository name, timestamp and public flag.
 - **Params:** `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `username` (string, **required**) — GitHub username
 
 ### `github_user_followers`
 
 - **HTTP:** `GET /github/user/{username}/followers`
-- **What:** List a GitHub user's followers. Returns a page of the public accounts following a GitHub user.
+- **What:** List a GitHub user's followers. Lists the public accounts that follow a GitHub user, identified by the required `username`. Page with `page` and `per_page` (max 100). Each follower has their login, id, avatar URL, profile URL and account type.
 - **Params:** `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `username` (string, **required**) — GitHub username
 
 ### `github_user_following`
 
 - **HTTP:** `GET /github/user/{username}/following`
-- **What:** List who a GitHub user follows. Returns a page of the public accounts a GitHub user follows.
+- **What:** List who a GitHub user follows. Lists the public accounts a GitHub user follows, identified by the required `username`. Page with `page` and `per_page` (max 100). Each account has its login, id, avatar URL, profile URL and account type.
 - **Params:** `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `username` (string, **required**) — GitHub username
 
 ### `github_user_pinned`
 
 - **HTTP:** `GET /github/user/{username}/pinned`
-- **What:** List a GitHub user's pinned repositories. Returns the repositories a user pinned on their public profile (showcase signal). Empty when the user pinned nothing.
+- **What:** List a GitHub user's pinned repositories. Returns the repositories a GitHub user has pinned on their profile, identified by the required `username`. Each has its owner, name, URL, description, language, stars and forks. The list is empty when the user has pinned nothing.
 - **Params:** `username` (string, **required**) — GitHub username
 
 ### `github_user_repos`
 
 - **HTTP:** `GET /github/user/{username}/repos`
-- **What:** List a GitHub user's public repositories. Returns a page of a user's public repositories (tech-stack signal).
+- **What:** List a GitHub user's public repositories. Lists the public repositories of a GitHub user, identified by the required `username`. Filter with `type` (`all`, `owner` or `member`), order with `sort` (`created`, `updated`, `pushed` or `full_name`) and `direction`, and page with `page` and `per_page` (max 100). Each repository has its name, description, language, stars, forks, topics, fork flag and last push time.
 - **Params:** `direction` (string, optional) — Sort direction; `page` (integer, optional) — Page number; `per_page` (integer, optional) — Results per page (max 100); `sort` (string, optional) — Sort field; `type` (string, optional) — Repository type; `username` (string, **required**) — GitHub username
 
 ## ChromeWebStore (12)
@@ -147,7 +147,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `chromewebstore_item`
 
 - **HTTP:** `GET /chromewebstore/item`
-- **What:** Retrieve Chrome Web Store item details. Returns normalized detail for a Chrome Web Store extension or theme, including name, rating, rating count, user count, version, last-updated date, size, supported languages, developer, category, screenshots, and privacy links. Defaults: `country=us`, `lang=en`.
+- **What:** Retrieve Chrome Web Store item details. Returns detail for a Chrome Web Store extension or theme, including name, rating, rating count, user count, version, last-updated date, size, supported languages, developer, category, screenshots, and privacy links. Defaults: `country=us`, `lang=en`.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Chrome Web Store item id (32-character extension/theme id); `lang` (string, optional) — Two-letter language code
 
 ### `chromewebstore_permissions`
@@ -177,11 +177,11 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `chromewebstore_similar`
 
 - **HTTP:** `GET /chromewebstore/similar`
-- **What:** Retrieve related Chrome Web Store items. Returns the related-items shelf the store renders on an item's detail page. Defaults: `country=us`, `lang=en`.
+- **What:** Retrieve related Chrome Web Store items. Returns the related-items shelf shown on a Chrome Web Store item's page. `id` is the required 32-character item id; `country` and `lang` default to `us` and `en`. Each card has name, publisher, category, rating, rating count, users, summary, icon and URL. An unknown or removed id returns 404.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Chrome Web Store item id (32-character extension/theme id); `lang` (string, optional) — Two-letter language code
 
 ### `chromewebstore_suggest`
 
 - **HTTP:** `GET /chromewebstore/suggest`
-- **What:** Suggest Chrome Web Store search terms. Returns item-name suggestions for a search prefix, drawn from the top store-search results. Defaults: `num=8`, `country=us`, `lang=en`.
+- **What:** Suggest Chrome Web Store search terms. Returns search-term suggestions for a Chrome Web Store prefix given in `term`, up to `num` (default 8), with `country` and `lang` defaulting to `us` and `en`. Suggestions are the distinct item names of the top store-search results for that prefix, each returned as a `term`.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Two-letter language code; `num` (integer, optional) — Maximum number of suggestions; `term` (string, **required**) — Search prefix to autocomplete

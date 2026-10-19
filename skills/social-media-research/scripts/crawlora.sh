@@ -91,7 +91,9 @@ case "$path" in
   /threads/search) route_allowed=true ;;
   /tiktok/category) route_allowed=true ;;
   /tiktok/comments) route_allowed=true ;;
+  /tiktok/creative-center/filters) route_allowed=true ;;
   /tiktok/creative-center/hashtags) route_allowed=true ;;
+  /tiktok/creative-center/top-content) route_allowed=true ;;
   /tiktok/creative-center/videos) route_allowed=true ;;
   /tiktok/hashtags) route_allowed=true ;;
   /tiktok/popular-trend/country-industry-meta) route_allowed=true ;;

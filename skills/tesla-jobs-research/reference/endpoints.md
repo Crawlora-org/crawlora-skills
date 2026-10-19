@@ -13,7 +13,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tesla_jobs_job`
 
 - **HTTP:** `GET /tesla-jobs/job`
-- **What:** Tesla Jobs single posting. Returns one Tesla Careers posting by its numeric job id (the `id` field returned by the list endpoint). Parsed from tesla.com's own job detail JSON endpoint.
+- **What:** Tesla Jobs single posting. Returns one Tesla Careers posting by its numeric job id (the `id` field returned by the list endpoint).
 - **Params:** `id` (string, **required**) — Tesla job id
 
 ### `tesla_jobs_list`

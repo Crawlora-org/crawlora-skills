@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `flashscore_calendar_categories`
 
 - **HTTP:** `GET /flashscore/calendar-categories`
-- **What:** Flashscore season calendar categories. Lists the current ATP, WTA, golf, badminton, and Formula 1 calendar pages.
+- **What:** Flashscore season calendar categories. Lists the Flashscore season calendar sections currently available, covering ATP, WTA, golf, badminton and Formula 1. Each category has its `key`, name, sport and canonical path. Use a `key` with the Flashscore calendar endpoint. It takes no parameters.
 - **Params:** _none_
 
 ### `flashscore_competitions`
@@ -97,7 +97,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `flashscore_ranking_categories`
 
 - **HTTP:** `GET /flashscore/ranking-categories`
-- **What:** Flashscore ranking categories. Lists the live-verified public ranking categories, including tennis live rankings.
+- **What:** Flashscore ranking categories. Lists the Flashscore ranking categories currently available, including the tennis live-rankings pages. Each category has its `key`, name, sport, page path and a `live` flag. Use a `key` with the Flashscore rankings endpoint. It takes no parameters.
 - **Params:** _none_
 
 ### `flashscore_rankings`
@@ -183,13 +183,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `livescore_match_stats`
 
 - **HTTP:** `GET /livescore/match-stats`
-- **What:** LiveScore match statistics. Returns the statistics section for a LiveScore match when the source exposes it. The current Next.js build id is resolved from the public match page at request time.
+- **What:** LiveScore match statistics. Returns the statistics section for a LiveScore match when the source exposes it.
 - **Params:** `path` (string, **required**) — Five-segment path after /en/ from a LiveScore match URL
 
 ### `livescore_news`
 
 - **HTTP:** `GET /livescore/news`
-- **What:** LiveScore news by category or topic. Returns public article-card metadata for a LiveScore news route. Discover sport, competition, team, tips, and daily-feed paths from /livescore/news-categories.
+- **What:** LiveScore news by category or topic. Returns the article cards for one LiveScore news route. `category` is required: `all` for the home feed, or a lowercase route path of up to six segments, such as `football/premier-league`, found via `livescore-news-categories`. The response carries `source_url` and the page `data`. Some articles link to third-party publishers, article bodies are not returned, and unknown paths return not found or an upstream error.
 - **Params:** `category` (string, **required**) — all or a lowercase path from /livescore/news-categories; up to six segments
 
 ### `livescore_news_article`
@@ -243,7 +243,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `livescore_sports`
 
 - **HTTP:** `GET /livescore/sports`
-- **What:** LiveScore supported sports. Returns the complete five-sport set shown in LiveScore's fixture navigation. Use a sport id with /livescore/scores.
+- **What:** LiveScore supported sports. Lists the five sports in LiveScore's fixture navigation, with no inputs. The ids are `soccer` (shown as Football on the site), `hockey`, `basketball`, `tennis` and `cricket`. Use an id as the sport input of the LiveScore scores endpoint.
 - **Params:** _none_
 
 ### `livescore_team`
