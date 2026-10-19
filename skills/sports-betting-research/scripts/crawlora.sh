@@ -77,6 +77,10 @@ case "$path" in
   /espn/team) route_allowed=true ;;
   /espn/team-roster) route_allowed=true ;;
   /espn/teams) route_allowed=true ;;
+  /flashscore/match-odds) route_allowed=true ;;
+  /flashscore/odds-geos) route_allowed=true ;;
+  /flashscore/team-outright-odds) route_allowed=true ;;
+  /flashscore/tournament-outright-odds) route_allowed=true ;;
   /sofascore/categories) route_allowed=true ;;
   /sofascore/category-tournaments) route_allowed=true ;;
   /sofascore/draft) route_allowed=true ;;

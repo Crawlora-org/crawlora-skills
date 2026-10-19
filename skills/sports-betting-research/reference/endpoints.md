@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**130 endpoints across 3 platform group(s).**
+**134 endpoints across 4 platform group(s).**
 
 ## DraftKings Sportsbook (12)
 
@@ -793,3 +793,29 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sofascore/venue-events`
 - **What:** SofaScore matches at a venue. Returns one page (up to 30) of the matches played (`direction` `last`, newest page first) or scheduled (`next`) at a venue, as match summaries. Without `tournament` and `season` it lists every match at the venue, optionally narrowed by `sport` (`all`, or any key listed in the venue's `sports`, such as `football`, `rugby`, `basketball`, `mma`); with both it lists that competition season's matches at the venue and `sport` must be omitted. Hidden venues (see venue) have no venue-wide list and answer 404 without `tournament` and `season`. A direction with no matches, a sport the venue never hosted and a page past the last one also answer 404; follow `has_next_page`.
 - **Params:** `direction` (string, **required**) — Upcoming matches or finished matches; `id` (string, **required**) — Numeric SofaScore venue id; `page` (integer, optional) — Zero-based page number. Defaults to 0; `season` (string, optional) — Numeric season id; with tournament, lists that competition season's matches at the venue; `sport` (string, optional) — Sport filter for the venue-wide list. Defaults to all; `tournament` (string, optional) — Numeric unique-tournament id; with season, lists that competition season's matches at the venue
+
+## Flashscore (4)
+
+### `flashscore_match_odds`
+
+- **HTTP:** `GET /flashscore/match-odds`
+- **What:** Flashscore match bookmaker odds comparison. Returns bookmaker odds for a match in one viewer market, grouped by betting type and scope with every bookmaker's priced outcomes, opening odds, handicap or total lines, and a selection label. Bookmakers and prices depend on the market, so pick geo (and subdivision for US or CA) from flashscore-odds-geos. A market with no licensed bookmakers returns empty lists. Promotional bonus text is not included.
+- **Params:** `betting_type` (string, optional) — Optional filter to one betting type; `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `id` (string, **required**) — Eight-character Flashscore match id; `scope` (string, optional) — Optional filter to one scope; `subdivision` (string, optional) — US state (with geo US) or Canadian province (with geo CA) code from flashscore-odds-geos; rejected with any other geo
+
+### `flashscore_odds_geos`
+
+- **HTTP:** `GET /flashscore/odds-geos`
+- **What:** Flashscore odds markets, subdivisions and odds enums. Lists every country code accepted by flashscore-match-odds and flashscore-match-tv (with whether bookmakers were found for it when verified), the US states and Canadian provinces that change the bookmaker list, and every betting type, scope and handicap type that can appear in odds responses.
+- **Params:** _none_
+
+### `flashscore_team_outright_odds`
+
+- **HTTP:** `GET /flashscore/team-outright-odds`
+- **What:** Flashscore team title odds. Returns the title odds bookmakers list for a team in one viewer market, grouped by the competitions it is priced in (league, cup, European competition) with every bookmaker's price and last movement. Pick geo (and subdivision for US or CA) from flashscore-odds-geos. A team with no listed title odds returns empty lists; a player id returns not found.
+- **Params:** `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `id` (string, **required**) — Eight-character Flashscore team id; `subdivision` (string, optional) — US state (with geo US) or Canadian province (with geo CA) code from flashscore-odds-geos; rejected with any other geo
+
+### `flashscore_tournament_outright_odds`
+
+- **HTTP:** `GET /flashscore/tournament-outright-odds`
+- **What:** Flashscore competition winner odds. Returns the title odds bookmakers list for one competition season in one viewer market, grouped by participant with every bookmaker's price and last movement. The provider lists only the top favourites (three in every competition checked), so this is a favourites market, not the full field. Bookmakers depend on the market: pick geo (and subdivision for US or CA) from flashscore-odds-geos. A market with no listed odds returns empty lists. Use the season-level tournament_id from event competition blocks or flashscore-tournament-archive-seasons.
+- **Params:** `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `subdivision` (string, optional) — US state (with geo US) or Canadian province (with geo CA) code from flashscore-odds-geos; rejected with any other geo; `tournament_id` (string, **required**) — Eight-character season-level tournament id (tournament_id of an event competition block or of a season)

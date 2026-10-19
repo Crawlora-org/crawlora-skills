@@ -50,6 +50,10 @@ done
 # development, productivity, communication, creative, knowledge, agents,
 # operations, security, finance, lifestyle, other.
 CATS[crawlora]="research,integrations,automation"
+CATS[cross-corpus-research]="research,knowledge,integrations"
+CATS[flashscore-match-analysis]="research,lifestyle,integrations"
+CATS[medication-information-research]="research,lifestyle,integrations"
+CATS[sports-team-player-research]="research,lifestyle,integrations"
 CATS[finance-markets-research]="research,finance,integrations"
 CATS[prediction-markets-research]="research,finance,integrations"
 CATS[developer-oss-research]="research,development,integrations"

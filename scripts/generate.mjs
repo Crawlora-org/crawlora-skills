@@ -69,7 +69,10 @@ const SKILLS = {
   ],
   "youtube-research": ["YouTube"],
   "app-review-mining": ["AppStore", "GooglePlay"],
-  "serp-keyword-research": ["Google", "Bing", "Brave", "Google Trends", "DuckDuckGo Search", "Yahoo Search"],
+  "serp-keyword-research": [
+    "Google", "Bing", "Brave", "Google Trends", "DuckDuckGo Search", "Yahoo Search",
+    "Baidu", "Yandex", "Qwant", "Startpage",
+  ],
   "crawlora-datasets": ["Datasets"],
   "finance-markets-research": ["Yahoo Finance", "SEC EDGAR", "Congress", "CoinGecko", "PitchBook"],
   "prediction-markets-research": ["Polymarket", "Kalshi", "Metaculus"],
@@ -489,7 +492,7 @@ const SKILLS = {
   "entertainment-discovery-research": ["IMDb", "JustWatch", "TMDB", "Rotten Tomatoes", "Metacritic"],
   "crypto-market-research": ["CoinGecko"],
   "local-business-reputation-research": ["Yelp", "BBB", "Trustpilot", "OpenTable"],
-  "sports-betting-research": ["DraftKings Sportsbook", "ESPN", "SofaScore"],
+  "sports-betting-research": ["DraftKings Sportsbook", "ESPN", "SofaScore", "Flashscore"],
   "news-briefing-research": ["GDELT", "BBC", "CNN", "Guardian", "Yahoo News"],
   "startup-launch-research": ["ProductHunt", "TrustMRR", "Kickstarter"],
   "podcast-discovery-research": ["ApplePodcasts", "SpotifyPodcasts"],
@@ -512,6 +515,12 @@ const SKILL_ROUTE_EXCLUDES = {
     /^\/google\/finance(?:\/|$)/,
     /^\/google\/jobs$/,
     /^\/google\/map(?:\/|$)/,
+  ],
+  // Flashscore has match, team, player, news, TV, and odds tools in one
+  // group. Keep the betting skill limited to its odds and market-discovery
+  // routes when it borrows that group.
+  "sports-betting-research": [
+    /^\/flashscore\/(?!match-odds$|odds-geos$|team-outright-odds$|tournament-outright-odds$).+$/,
   ],
 };
 

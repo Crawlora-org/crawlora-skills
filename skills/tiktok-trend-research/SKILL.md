@@ -20,8 +20,11 @@ run the helper bundled with this skill. It sends `x-api-key` to
 ```sh
 Set `CRAWLORA_API_KEY` in the environment before running the helper.
 scripts/crawlora.sh /tiktok/creative-center/hashtags country_code=US period=7 | jq '.'
-scripts/crawlora.sh /tiktok/creative-center/videos \
-  country_code=US period=7 sort_by=engagement organic_only=true | jq '.'
+scripts/crawlora.sh /tiktok/creative-center/videos country_code=US period=7 sort_by=engagement organic_only=true | jq '.'
+scripts/crawlora.sh /tiktok/mobile/trending/categories count=10
+scripts/crawlora.sh /tiktok/mobile/music/trending count=10
+scripts/crawlora.sh /tiktok/mobile/music/beats
+scripts/crawlora.sh /tiktok/mobile/music/collections
 ```
 
 Inspect both HTTP success and the JSON envelope, including nested upstream
@@ -48,6 +51,19 @@ successful trend observation.
      inspect its listed videos.
    - `/tiktok/category` followed by `/tiktok/explore/{id}` for a category feed.
      Do not describe an Explore feed as a global trend ranking.
+   - `/tiktok/mobile/feed` for a personalized, region-dependent For You sample;
+     it has no country or historical-period filter and is not a global ranking.
+   - `/tiktok/mobile/music/trending` or `/tiktok/mobile/music/pick` for current
+     mobile sound charts; use a returned `music_id` with `/tiktok/mobile/music/posts`
+     to inspect a bounded video sample. That route ignores `count` upstream, so
+     continue with its returned cursor.
+   - `/tiktok/mobile/music/beats` for a one-page beats/songs chart and
+     `/tiktok/mobile/music/collections` for the app's sound-collection feed.
+     The beats route has no paging fields; collections' cursor is not a verified
+     continuation token, so report both as bounded page samples.
+   - `/tiktok/mobile/trending/categories` and `/tiktok/mobile/trending/effects`
+     for current app discovery feeds. These are not Creative Center rankings,
+     fixed topic taxonomies, or cross-market comparable counts.
 3. For a topic brief, use search/hashtag discovery first, then validate a
    bounded set of returned video ids with `/tiktok/post/{id}`. Use identifiers
    returned by the API; do not invent ids from captions or display names.
@@ -57,6 +73,11 @@ successful trend observation.
 5. Report the observed ranking/activity, source links or ids, filters, sample
    size, and retrieval time. Separate the measured signal from explanations or
    content recommendations.
+
+For mobile-only surfaces, preserve any returned host/region context and the
+cursor. They have no explicit country or date-window selector, so don't compare
+them with a country/period-specific Creative Center sample as if the scope
+matched.
 
 ## Interpretation and limits
 

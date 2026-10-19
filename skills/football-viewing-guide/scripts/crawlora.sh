@@ -56,6 +56,9 @@ esac
 # segment; unlike a case '*', [^/]+ cannot consume another slash.
 route_allowed=false
 case "$path" in
+  /flashscore/match-tv) route_allowed=true ;;
+  /flashscore/odds-geos) route_allowed=true ;;
+  /flashscore/search) route_allowed=true ;;
   /fotmob/match) route_allowed=true ;;
   /fotmob/matches) route_allowed=true ;;
   /fotmob/search) route_allowed=true ;;

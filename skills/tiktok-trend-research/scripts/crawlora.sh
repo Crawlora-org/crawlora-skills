@@ -60,6 +60,16 @@ case "$path" in
   /tiktok/creative-center/hashtags) route_allowed=true ;;
   /tiktok/creative-center/videos) route_allowed=true ;;
   /tiktok/hashtags) route_allowed=true ;;
+  /tiktok/mobile/feed) route_allowed=true ;;
+  /tiktok/mobile/music/beats) route_allowed=true ;;
+  /tiktok/mobile/music/collections) route_allowed=true ;;
+  /tiktok/mobile/music/pick) route_allowed=true ;;
+  /tiktok/mobile/music/posts) route_allowed=true ;;
+  /tiktok/mobile/music/related) route_allowed=true ;;
+  /tiktok/mobile/music/trending) route_allowed=true ;;
+  /tiktok/mobile/search/music) route_allowed=true ;;
+  /tiktok/mobile/trending/categories) route_allowed=true ;;
+  /tiktok/mobile/trending/effects) route_allowed=true ;;
   /tiktok/popular-trend/country-industry-meta) route_allowed=true ;;
   /tiktok/search) route_allowed=true ;;
   /tiktok/search/hashtag) route_allowed=true ;;

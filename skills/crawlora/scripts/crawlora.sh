@@ -2760,6 +2760,24 @@ case "$path" in
   /tiktok/creative-center/top-content) route_allowed=true ;;
   /tiktok/creative-center/videos) route_allowed=true ;;
   /tiktok/hashtags) route_allowed=true ;;
+  /tiktok/mobile/feed) route_allowed=true ;;
+  /tiktok/mobile/hashtag) route_allowed=true ;;
+  /tiktok/mobile/hashtag/posts) route_allowed=true ;;
+  /tiktok/mobile/hashtags) route_allowed=true ;;
+  /tiktok/mobile/live/effects) route_allowed=true ;;
+  /tiktok/mobile/live/gifts) route_allowed=true ;;
+  /tiktok/mobile/live/search) route_allowed=true ;;
+  /tiktok/mobile/music/beats) route_allowed=true ;;
+  /tiktok/mobile/music/collections) route_allowed=true ;;
+  /tiktok/mobile/music/pick) route_allowed=true ;;
+  /tiktok/mobile/music/posts) route_allowed=true ;;
+  /tiktok/mobile/music/related) route_allowed=true ;;
+  /tiktok/mobile/music/trending) route_allowed=true ;;
+  /tiktok/mobile/search) route_allowed=true ;;
+  /tiktok/mobile/search/music) route_allowed=true ;;
+  /tiktok/mobile/search/user) route_allowed=true ;;
+  /tiktok/mobile/trending/categories) route_allowed=true ;;
+  /tiktok/mobile/trending/effects) route_allowed=true ;;
   /tiktok/popular-trend/country-industry-meta) route_allowed=true ;;
   /tiktok/posts) route_allowed=true ;;
   /tiktok/search) route_allowed=true ;;
@@ -6589,6 +6607,24 @@ route_method_regexes=(
   '^GET:/tiktok/explore/[^/]+$'
   '^GET:/tiktok/hashtag/[^/]+$'
   '^GET:/tiktok/hashtags$'
+  '^GET:/tiktok/mobile/feed$'
+  '^GET:/tiktok/mobile/hashtag$'
+  '^GET:/tiktok/mobile/hashtag/posts$'
+  '^GET:/tiktok/mobile/hashtags$'
+  '^GET:/tiktok/mobile/live/effects$'
+  '^GET:/tiktok/mobile/live/gifts$'
+  '^GET:/tiktok/mobile/live/search$'
+  '^GET:/tiktok/mobile/music/beats$'
+  '^GET:/tiktok/mobile/music/collections$'
+  '^GET:/tiktok/mobile/music/pick$'
+  '^GET:/tiktok/mobile/music/posts$'
+  '^GET:/tiktok/mobile/music/related$'
+  '^GET:/tiktok/mobile/music/trending$'
+  '^GET:/tiktok/mobile/search$'
+  '^GET:/tiktok/mobile/search/music$'
+  '^GET:/tiktok/mobile/search/user$'
+  '^GET:/tiktok/mobile/trending/categories$'
+  '^GET:/tiktok/mobile/trending/effects$'
   '^GET:/tiktok/popular-trend/country-industry-meta$'
   '^GET:/tiktok/post/[^/]+$'
   '^GET:/tiktok/posts$'

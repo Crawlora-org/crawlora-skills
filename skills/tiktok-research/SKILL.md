@@ -74,6 +74,52 @@ Always report country, period, sort/filter choices, retrieval time, and sample
 size. “Trending” is surface- and time-dependent; do not present it as a global
 or historical ranking.
 
+### Mobile-app discovery
+
+The `/tiktok/mobile/*` routes expose separate TikTok app surfaces alongside the
+web/Creative Center routes:
+
+- `/tiktok/mobile/feed` is a personalized, region-dependent For You sample. It
+  has no country or historical-period filter and is not a global trend ranking.
+- `/tiktok/mobile/search`, `/search/music`, and `/search/user` search the mobile
+  app's video, sound, and user surfaces. Keep the mobile result identity and
+  cursor separate from the corresponding web search results.
+- `/tiktok/mobile/music/trending` and `/music/pick` return sound-chart surfaces;
+  use a returned `music_id` with `/music/posts` for videos using that sound.
+  `music/posts` accepts `count` for compatibility but upstream chooses its page
+  size, so continue with the returned cursor. `/music/related` starts from a
+  video `aweme_id`.
+- `/tiktok/mobile/music/beats` returns one measured sound-chart page without
+  paging fields; `count` is not a verified page-size control. `/music/collections`
+  returns a first-page collection feed; its advertised cursor is not reusable,
+  so do not claim exhaustive collection coverage.
+- `/tiktok/mobile/trending/categories` and `/trending/effects` are current app
+  discovery feeds with cursor pagination, not fixed category taxonomies or
+  cross-market rankings. Preserve the returned region/host context and retrieval
+  time; do not equate their counts with Creative Center metrics.
+- `/tiktok/mobile/live/search` requires a keyword and returns LIVE room anchors
+  for search discovery. It is not a live-stream directory or a guaranteed
+  availability check; preserve returned room IDs and observed viewer fields.
+- `/tiktok/mobile/live/gifts` returns the complete LIVE gift catalogue and
+  configuration/resource maps; `/tiktok/mobile/live/effects` returns the full
+  effects/sticker asset catalogue. Both are large, unpaged snapshots with no
+  filters. Use them for catalogue metadata, not trend ranking, current usage,
+  or real-world price claims from `diamond_count`.
+- Mobile hashtag detail requires a configured app session. Without a session,
+  popular hashtag posts are only populated through US egress; use `fresh` for
+  newest posts and treat an empty out-of-region popular page as unavailable
+  coverage rather than zero hashtag activity.
+
+```sh
+scripts/crawlora.sh /tiktok/mobile/music/trending count=10
+scripts/crawlora.sh /tiktok/mobile/music/collections
+scripts/crawlora.sh /tiktok/mobile/live/search keyword="lofi" count=10
+scripts/crawlora.sh /tiktok/mobile/live/gifts
+scripts/crawlora.sh /tiktok/mobile/live/effects
+scripts/crawlora.sh /tiktok/mobile/trending/categories count=10
+scripts/crawlora.sh /tiktok/mobile/trending/effects count=5
+```
+
 ### Top Ads intelligence
 
 For a matched ad study, first call `/tiktok/top-ads/filters` to discover current

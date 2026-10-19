@@ -128,7 +128,7 @@ function main() {
     `- Focused tool coverage: **${baseline.focused_tools} → ${coverage.size}**. ` +
       `Installable skills: **${baseline.installable_skills} → ${Object.keys(references).length + 1}**.`,
     `- Source tools pending catalog sync: **${missing.length}**; existing definitions changed: **${changed.length}**.`,
-    `- At the initial baseline, ${baseline.initial_missing_catalog_tools} source additions and ${baseline.initial_changed_definitions} changed definitions awaited synchronization. Companion release \`${baseline.catalog_sync_revision}\` landed during this audit; the final comparison uses that published catalog.`,
+    `- The initial October 5 baseline had ${baseline.initial_missing_catalog_tools} source additions and ${baseline.initial_changed_definitions} changed definitions awaiting MCP publication. Companion release \`${baseline.catalog_sync_revision}\` subsequently closed that earlier catalog gap.`,
     "- Account Usage tools remain intentionally outside public-data research skills.", "",
     "The endpoint TSV uses method + path, preserves multiple tool aliases, and covers every Swagger " +
       "operation. `pending-catalog-sync` means the source export has a route absent from the vendored " +

@@ -90,3 +90,43 @@ test("new workflows cover their intended surfaces without importing mixed-group 
   }
   assert.deepEqual([...selections["google-finance-research"]].sort(), catalog.filter(tool => tool._http.path.startsWith("/google/finance/")).map(tool => tool.name).sort());
 });
+
+test("Flashscore match, team/player, odds, and viewing surfaces stay in distinct workflows", () => {
+  const selections = JSON.parse(readFileSync(new URL("./skill-tools.json", import.meta.url)));
+  const matchAnalysis = selections["flashscore-match-analysis"];
+  assert.ok(matchAnalysis.includes("flashscore_match_player_stats"));
+  assert.ok(matchAnalysis.includes("flashscore_match_box_score"));
+  assert.ok(matchAnalysis.includes("flashscore_match_report"));
+  assert.ok(!matchAnalysis.some(name => name.startsWith("flashscore_player_")));
+  assert.ok(!matchAnalysis.some(name => name.startsWith("flashscore_team_")));
+
+  const teamPlayers = selections["sports-team-player-research"];
+  assert.ok(teamPlayers.includes("flashscore_team_squad"));
+  assert.ok(teamPlayers.includes("flashscore_player_transfers"));
+  assert.ok(teamPlayers.includes("flashscore_player_injuries"));
+
+  const viewing = selections["football-viewing-guide"];
+  assert.ok(viewing.includes("flashscore_match_tv"));
+  assert.ok(viewing.includes("flashscore_odds_geos"));
+  const bettingReference = readFileSync(new URL("../skills/sports-betting-research/reference/endpoints.md", import.meta.url), "utf8");
+  const bettingFlashscoreTools = [...bettingReference.matchAll(/^### `(flashscore_[^`]+)`$/gm)].map(match => match[1]).sort();
+  assert.deepEqual(bettingFlashscoreTools, [
+    "flashscore_match_odds", "flashscore_odds_geos", "flashscore_team_outright_odds",
+    "flashscore_tournament_outright_odds",
+  ]);
+});
+
+test("TikTok mobile trend feeds and sound surfaces are routed to trend research", () => {
+  const selections = JSON.parse(readFileSync(new URL("./skill-tools.json", import.meta.url)));
+  const trendTools = selections["tiktok-trend-research"];
+  for (const name of [
+    "tiktok_mobile_feed", "tiktok_mobile_music_beats", "tiktok_mobile_music_collections",
+    "tiktok_mobile_music_pick", "tiktok_mobile_music_posts", "tiktok_mobile_music_related",
+    "tiktok_mobile_music_trending", "tiktok_mobile_search_music",
+    "tiktok_mobile_trending_categories", "tiktok_mobile_trending_effects",
+  ]) {
+    assert.ok(trendTools.includes(name), `tiktok-trend-research must include ${name}`);
+  }
+  assert.ok(!trendTools.includes("tiktok_mobile_live_search"),
+    "LIVE stream discovery belongs to the broader TikTok research skill");
+});

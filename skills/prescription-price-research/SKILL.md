@@ -22,6 +22,11 @@ requests can consume credits. Check application `code` as well as HTTP status,
 stop on authentication errors, back off on `429`, and retry a transient
 upstream failure once. Preserve source URLs, identifiers, and collection times.
 
+GoodRx can return a retained price response when the upstream refuses a live
+fetch. The standard helper prints the JSON body but not `X-Availability` headers,
+so keep the Crawlora retrieval time separate from any source timestamp and do
+not call the result a live checkout quote.
+
 Compare posted pharmacy prices for the user's specified medication and package.
 A price comparison does not select a medication, dose, or clinical substitute.
 
