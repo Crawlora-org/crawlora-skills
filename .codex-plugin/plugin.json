@@ -1,6 +1,6 @@
 {
   "name": "crawlora",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "165 Crawlora Agent Skills for structured public web data (search, e-commerce, social, finance, maps, app stores, media, reviews). Skills call the Crawlora REST API with your CRAWLORA_API_KEY.",
   "author": { "name": "Crawlora", "url": "https://crawlora.net" },
   "homepage": "https://crawlora.net",
