@@ -19,11 +19,11 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `amazon_jobs_job`
 
 - **HTTP:** `GET /amazon-jobs/job`
-- **What:** Amazon Jobs single posting. Returns one Amazon.jobs posting by its numeric job id (the `id` field returned by search). Parsed from amazon.jobs's stable server-rendered job detail page — there is no separate JSON detail endpoint upstream.
+- **What:** Amazon Jobs single posting. Returns one Amazon.jobs posting by its numeric job id (the `id` field returned by search).
 - **Params:** `id` (string, **required**) — Numeric Amazon job id
 
 ### `amazon_jobs_search`
 
 - **HTTP:** `GET /amazon-jobs/search`
-- **What:** Amazon Jobs search. Searches Amazon's public careers site (amazon.jobs) via its credential-free search JSON. Each result includes the full description and qualifications inline. `sort` accepts `relevant` (default, upstream relevance ranking) or `recent` (newest posted first). Either `q` or `category` (or both) must be given -- `category` filters by Amazon's own job-category taxonomy and works with no text query at all. See `amazon-jobs-categories` for the full, live-verified list of accepted `category` values.
+- **What:** Amazon Jobs search. Searches Amazon's public careers site (amazon.jobs). Each result includes the full description and qualifications inline. `sort` accepts `relevant` (default, relevance ranking) or `recent` (newest posted first). Either `q` or `category` (or both) must be given -- `category` filters by Amazon's own job-category taxonomy and works with no text query at all. See `amazon-jobs-categories` for the full, live-verified list of accepted `category` values.
 - **Params:** `category` (string, optional) — Amazon's own job-category taxonomy slug, case-insensitive. Either q or category is required; `country` (string, optional) — ISO 3166-1 alpha-3 country code filter; `limit` (integer, optional) — Results per page, max 100 (default 20); `page` (integer, optional) — Page number, 1-based; `q` (string, optional) — Search query. Either q or category is required; `sort` (string, optional) — Sort order

@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zara_category_products`
 
 - **HTTP:** `GET /zara/category/{categoryId}/products`
-- **What:** Browse a Zara category's product listing. Returns a Zara category's full product listing: normalized products with pricing, images, and availability, sourced from Zara's own category browse data. categoryId is a numeric id from zara-categories. Zara does not paginate this data -- the response always contains the category's complete listing in one call, not one page of it. Each entry represents one purchasable color variant rather than a color-grouped product family, matching how Zara's own category data is structured.
+- **What:** Browse a Zara category's product listing. Returns a Zara category's full product listing: products with pricing, images, and availability. categoryId is a numeric id from zara-categories. Zara does not paginate this data -- the response always contains the category's complete listing in one call, not one page of it. Each entry represents one purchasable color variant rather than a color-grouped product family.
 - **Params:** `categoryId` (string, **required**) — Numeric Zara category id, from zara-categories' id field
 
 ### `zara_product`
@@ -31,7 +31,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zara_search`
 
 - **HTTP:** `GET /zara/search`
-- **What:** Search Zara products. Searches Zara product listings by keyword within one department section, with real offset-based pagination. Returns normalized products with pricing, images, availability, and every purchasable color variant, plus the upstream's own search facets. This search is best-effort relevance, not a guaranteed keyword match: for an obscure or nonsense keyword, Zara's own search falls back to a broader recommended result set instead of returning an empty list, and there is no reliable field in the response to distinguish a true keyword match from that fallback behavior. Requesting an offset beyond the available results returns a normal, empty result with is_last_page true rather than an error.
+- **What:** Search Zara products. Searches Zara product listings by keyword within one department section, with real offset-based pagination. Returns products with pricing, images, availability, and every purchasable color variant, plus the search facets. This search is best-effort relevance, not a guaranteed keyword match: for an obscure or nonsense keyword, Zara's own search falls back to a broader recommended result set instead of returning an empty list, and there is no reliable field in the response to distinguish a true keyword match from that fallback behavior. Requesting an offset beyond the available results returns a normal, empty result with is_last_page true rather than an error.
 - **Params:** `limit` (integer, optional) — Results per request, 1 to 100, defaults to 24; `offset` (integer, optional) — Zero-based result offset, defaults to 0; `query` (string, **required**) — Search keyword; `section` (string, **required**) — Department section to search
 
 ### `zara_stores`

@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `instagram_profile`
 
 - **HTTP:** `GET /instagram/profile/{username}`
-- **What:** Retrieve an Instagram user profile by username. Returns public profile details for a specified Instagram username.
+- **What:** Retrieve an Instagram user profile by username. Returns the public profile of an Instagram account by `username`. The response has the user id, full name, biography, bio links, external URL, category, follower, following and post counts, verified and private flags, location, profile picture, recent posts with captions and like counts, and related profiles.
 - **Params:** `username` (string, **required**) — Instagram username
 
 ### `instagram_reels`

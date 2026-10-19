@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_playstation_games_item`
 
 - **HTTP:** `GET /datasets/playstation-games/items/{product_id}`
-- **What:** Get a PlayStation game from dataset. Returns one crawled PlayStation Store record by product_id from dataset id enum value `playstation-games`.
+- **What:** Get a PlayStation game from dataset. Returns one PlayStation Store game from the `playstation-games` dataset by product id such as `UP0001-PPSA01491_00-GAME000000000000`: name, publisher, genres, platforms, region, release date, base and discounted price with currency and discount end time, star rating and rating count, content rating, and edition and add-on counts. An id that is not in the dataset returns `404`.
 - **Params:** `product_id` (string, **required**) — PlayStation product id (e.g. UP0001-PPSA01491_00-GAME000000000000)
 
 ### `datasets_playstation_games_search`
@@ -37,7 +37,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_steam_games_item`
 
 - **HTTP:** `GET /datasets/steam-games/items/{appid}`
-- **What:** Get a Steam game from the dataset. Returns one enriched Steam catalog record by appid from dataset id enum value `steam-games`.
+- **What:** Get a Steam game from the dataset. Returns one Steam game from the `steam-games` dataset by numeric appid: name, developers and publishers, genres and categories, price and discount, supported platforms, positive and negative review counts, owner estimates, average and median playtime, concurrent players, Metacritic score and language count. It reads the stored dataset and does not trigger a live scrape; an appid that is not in the dataset returns `404`.
 - **Params:** `appid` (integer, **required**) — Steam app id
 
 ### `datasets_steam_games_search`
@@ -57,13 +57,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `steam_app`
 
 - **HTTP:** `GET /steam/app`
-- **What:** Get Steam store details for an app. Returns normalized store metadata for a single Steam app (title, type, price, developers/publishers, platforms, genres, categories, release date, metacritic, recommendation and achievement counts). cc selects the store region (and price currency) and l the text language. filters is a comma-separated subset of allowed fields to shrink the payload. Credential-free public Steam storefront JSON.
+- **What:** Get Steam store details for an app. Returns store metadata for a single Steam app (title, type, price, developers/publishers, platforms, genres, categories, release date, metacritic, recommendation and achievement counts). cc selects the store region (and price currency) and l the text language. filters is a comma-separated subset of allowed fields to shrink the payload.
 - **Params:** `appid` (string, **required**) — Numeric Steam app id; `cc` (string, optional) — Store country code (ISO, selects currency); `filters` (string, optional) — Comma-separated fields: basic, price_overview, developers, publishers, categories, genres, release_date, platforms, metacritic, achievements, screenshots, movies, recommendations, controller_support, dlc, short_description, supported_languages, packages, package_groups, ratings, content_descriptors, background; `l` (string, optional) — Language code
 
 ### `steam_items`
 
 - **HTTP:** `GET /steam/items`
-- **What:** Resolve a batch of app ids to store items with weighted tags. Resolves up to 100 Steam app ids in one call to normalized store items via Steam's keyless IStoreBrowseService, each carrying its WEIGHTED community tags, review-score breakdown, developer/publisher credits, release date, platforms and price. The batch enrichment primitive for the community-tag taxonomy. Credential-free public Steam store query API.
+- **What:** Resolve a batch of app ids to store items with weighted tags. Resolves up to 100 Steam app ids in one call to store items, each carrying its WEIGHTED community tags, review-score breakdown, developer/publisher credits, release date, platforms and price. The batch enrichment primitive for the community-tag taxonomy.
 - **Params:** `appids` (string, **required**) — Comma-separated numeric app ids (max 100); `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Steam store language name
 
 ## PlayStation (3)
@@ -71,17 +71,17 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `playstation_concept`
 
 - **HTTP:** `GET /playstation/concept`
-- **What:** Get PlayStation Store details for a concept (game hub). Returns normalized store metadata for a PlayStation concept: title, publisher, release date, platforms, genres, description, content rating, aggregate star rating, the default product's purchase price, media, and the full lists of purchasable editions and add-ons. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
+- **What:** Get PlayStation Store details for a concept (game hub). Returns store metadata for a PlayStation concept: title, publisher, release date, platforms, genres, description, content rating, aggregate star rating, the default product's purchase price, media, and the full lists of purchasable editions and add-ons. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `id` (string, **required**) — Numeric PlayStation concept id; `l` (string, optional) — Language code
 
 ### `playstation_product`
 
 - **HTTP:** `GET /playstation/product`
-- **What:** Get PlayStation Store details for a single product. Returns normalized store metadata for a single PlayStation product/edition: title, np title id, parent concept id, product type and store classification, edition name, publisher, release date, platforms, genres, spoken/screen languages, content rating, aggregate star rating, purchase price, and media. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
+- **What:** Get PlayStation Store details for a single product. Returns store metadata for a single PlayStation product/edition: title, np title id, parent concept id, product type and store classification, edition name, publisher, release date, platforms, genres, spoken/screen languages, content rating, aggregate star rating, purchase price, and media. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `id` (string, **required**) — PlayStation product id; `l` (string, optional) — Language code
 
 ### `playstation_search`
 
 - **HTTP:** `GET /playstation/search`
-- **What:** Search the PlayStation Store. Returns a page of PlayStation Store search results (concepts and products) for a term, with pagination and per-item price, platforms, classification, and media. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text. Credential-free public PlayStation Store data.
+- **What:** Search the PlayStation Store. Returns a page of PlayStation Store search results (concepts and products) for a term, with pagination and per-item price, platforms, classification, and media. Pass page to advance; next_page is set when more results exist. cc selects the store region (and price currency); l accepts a language code or locale such as en or en-US, with the locale's primary language used for text.
 - **Params:** `cc` (string, optional) — Store country code (ISO, selects currency); `l` (string, optional) — Language code; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page (max 48); `term` (string, **required**) — Search term

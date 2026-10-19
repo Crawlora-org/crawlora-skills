@@ -81,7 +81,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `streeteasy_areas`
 
 - **HTTP:** `GET /streeteasy/areas`
-- **What:** List StreetEasy search areas. Returns the complete area hierarchy exposed by StreetEasy's public homepage location picker. Use area IDs with streeteasy-rentals-search.
+- **What:** List StreetEasy search areas. Lists StreetEasy's search area hierarchy: NYC and NJ roots, boroughs, neighborhoods and sub-neighborhoods. Each area has an `id`, `parentId`, `level`, `name` and `short` name. Use an `id` as a repeated `area_id` in `/streeteasy/rentals/search`. The list was 349 options on 2026-09-29 and can change.
 - **Params:** _none_
 
 ### `streeteasy_building`
@@ -93,7 +93,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `streeteasy_market_data_catalog`
 
 - **HTTP:** `GET /streeteasy/market-data/catalog`
-- **What:** List StreetEasy dashboard metric datasets. Returns every selectable public dashboard dataset, including supported bedroom and property-type variants. Use a returned dataset ID with streeteasy-market-data-series.
+- **What:** List StreetEasy dashboard metric datasets. Lists the 63 monthly metrics selectable in StreetEasy's Data Dashboard. Each has an `id`, display `label`, a sales or rentals `type`, a `bedrooms` segment and a `property_type`. Pass an `id` to `streeteasy-market-data-series` to get that metric's data. Takes no parameters.
 - **Params:** _none_
 
 ### `streeteasy_market_data_series`

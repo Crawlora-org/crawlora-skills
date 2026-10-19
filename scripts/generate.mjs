@@ -145,6 +145,7 @@ const SKILLS = {
     "Whatnot",
     "GOAT",
     "Leboncoin",
+    "Reverb",
   ],
   "real-estate-autos-research": ["CarMax", "Redfin", "Autotrader", "Zillow", "Cars.com", "Rightmove"],
   "pet-services-research": ["Rover"],

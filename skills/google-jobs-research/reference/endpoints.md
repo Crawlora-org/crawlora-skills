@@ -13,7 +13,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_jobs_job`
 
 - **HTTP:** `GET /google-jobs/job`
-- **What:** Google Jobs single posting. Returns one Google Careers posting by its numeric job id (the `id` field returned by search). Parsed from careers.google.com's server-rendered job detail page.
+- **What:** Google Jobs single posting. Returns one Google Careers posting by its numeric job id (the `id` field returned by search).
 - **Params:** `id` (string, **required**) — Numeric Google job id
 
 ### `google_jobs_search`

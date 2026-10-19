@@ -31,13 +31,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `wish_product_reviews`
 
 - **HTTP:** `GET /wish/product/{id}/reviews`
-- **What:** Get a Wish product's customer reviews. Returns a Wish product's normalized customer reviews. id is taken from a search result's product_id field or a product page's URL. A product with zero reviews returns a normal, empty result rather than an error. A caller wanting more reviews should re-request with a larger count -- this endpoint does not support an offset/cursor parameter, since the upstream source does not support one.
+- **What:** Get a Wish product's customer reviews. Returns a Wish product's customer reviews. id is taken from a search result's product_id field or a product page's URL. A product with zero reviews returns a normal, empty result rather than an error. A caller wanting more reviews should re-request with a larger count -- this endpoint does not support an offset/cursor parameter.
 - **Params:** `count` (integer, optional) — Number of reviews to return, 1 to 200, defaults to 10; `id` (string, **required**) — Wish product id, a 24-character hex id from a search result's product_id field
 
 ### `wish_search`
 
 - **HTTP:** `GET /wish/search`
-- **What:** Search Wish products. Searches Wish's product catalog by keyword, with real offset-based pagination. Returns normalized products with price, currency, rating, review count, and merchant id. A query with no matches returns a normal, empty result rather than an error.
+- **What:** Search Wish products. Searches Wish's product catalog by keyword, with real offset-based pagination. Returns products with price, currency, rating, review count, and merchant id. A query with no matches returns a normal, empty result rather than an error.
 - **Params:** `count` (integer, optional) — Number of results per page, 1 to 70, defaults to 30; `offset` (integer, optional) — Result offset, 0-based, defaults to 0, must be an exact multiple of count up to 3 * count; `query` (string, **required**) — Search keyword
 
 ### `wish_suggest`

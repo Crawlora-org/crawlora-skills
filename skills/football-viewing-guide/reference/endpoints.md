@@ -43,5 +43,5 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fotmob_tv_guide_countries`
 
 - **HTTP:** `GET /fotmob/tv-guide-countries`
-- **What:** FotMob TV guide country directory. Lists all country codes exposed by FotMob's public football TV guide country selector.
+- **What:** FotMob TV guide country directory. Lists the countries in FotMob's football TV guide country selector, each with a country `code` (such as `us`, `gb`, `de` or `jp`) and a name. Use a code with the FotMob TV guide and TV guide channels endpoints. It takes no parameters.
 - **Params:** _none_

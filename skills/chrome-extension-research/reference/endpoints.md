@@ -43,7 +43,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `chromewebstore_item`
 
 - **HTTP:** `GET /chromewebstore/item`
-- **What:** Retrieve Chrome Web Store item details. Returns normalized detail for a Chrome Web Store extension or theme, including name, rating, rating count, user count, version, last-updated date, size, supported languages, developer, category, screenshots, and privacy links. Defaults: `country=us`, `lang=en`.
+- **What:** Retrieve Chrome Web Store item details. Returns detail for a Chrome Web Store extension or theme, including name, rating, rating count, user count, version, last-updated date, size, supported languages, developer, category, screenshots, and privacy links. Defaults: `country=us`, `lang=en`.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Chrome Web Store item id (32-character extension/theme id); `lang` (string, optional) — Two-letter language code
 
 ### `chromewebstore_permissions`
@@ -73,13 +73,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `chromewebstore_similar`
 
 - **HTTP:** `GET /chromewebstore/similar`
-- **What:** Retrieve related Chrome Web Store items. Returns the related-items shelf the store renders on an item's detail page. Defaults: `country=us`, `lang=en`.
+- **What:** Retrieve related Chrome Web Store items. Returns the related-items shelf shown on a Chrome Web Store item's page. `id` is the required 32-character item id; `country` and `lang` default to `us` and `en`. Each card has name, publisher, category, rating, rating count, users, summary, icon and URL. An unknown or removed id returns 404.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Chrome Web Store item id (32-character extension/theme id); `lang` (string, optional) — Two-letter language code
 
 ### `chromewebstore_suggest`
 
 - **HTTP:** `GET /chromewebstore/suggest`
-- **What:** Suggest Chrome Web Store search terms. Returns item-name suggestions for a search prefix, drawn from the top store-search results. Defaults: `num=8`, `country=us`, `lang=en`.
+- **What:** Suggest Chrome Web Store search terms. Returns search-term suggestions for a Chrome Web Store prefix given in `term`, up to `num` (default 8), with `country` and `lang` defaulting to `us` and `en`. Suggestions are the distinct item names of the top store-search results for that prefix, each returned as a `term`.
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `lang` (string, optional) — Two-letter language code; `num` (integer, optional) — Maximum number of suggestions; `term` (string, **required**) — Search prefix to autocomplete
 
 ## Datasets (7)
@@ -87,7 +87,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_chrome_extensions_changes`
 
 - **HTTP:** `GET /datasets/chrome-extensions/changes`
-- **What:** Get recent Chrome Web Store item changes. Returns recent change observations. Change type enum: `users`, `rating`, `rating_count`, `version`, `developer`, `permissions`, `privacy`, `status`.
+- **What:** Get recent Chrome Web Store item changes. Lists recent change observations across Chrome Web Store items in the dataset, optionally for one `change_type`: `users`, `rating`, `rating_count`, `version`, `developer`, `permissions`, `privacy` or `status`. Returns up to `limit` (default 100, max 500), each with the item's name, category, developer, observed time and the figures that changed.
 - **Params:** `change_type` (string, optional) — Change type enum: users, rating, rating_count, version, developer, permissions, privacy, status; `limit` (integer, optional) — Maximum observations, default 100, max 500
 
 ### `datasets_chrome_extensions_facets`
@@ -99,13 +99,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_chrome_extensions_history`
 
 - **HTTP:** `GET /datasets/chrome-extensions/history/{id}`
-- **What:** Get Chrome Web Store item history. Returns chronological change-only observations for a Chrome Web Store item.
+- **What:** Get Chrome Web Store item history. Returns the change history of one Chrome Web Store item by `id`. A point is recorded only when a tracked field changed, with users, rating, version, permissions and the list of `change_types`. Narrow with `from` and `to` (YYYY-MM-DD); `limit` defaults to 365, max 1000.
 - **Params:** `from` (string, optional) — Inclusive start date, YYYY-MM-DD; `id` (string, **required**) — Chrome Web Store item id; `limit` (integer, optional) — Maximum points, default 365, max 1000; `to` (string, optional) — Inclusive end date, YYYY-MM-DD
 
 ### `datasets_chrome_extensions_item`
 
 - **HTTP:** `GET /datasets/chrome-extensions/items/{id}`
-- **What:** Get a Chrome Web Store dataset item. Returns one stored extension, theme or legacy app snapshot by its 32-character Chrome Web Store id.
+- **What:** Get a Chrome Web Store dataset item. Returns the stored record of one Chrome Web Store extension, theme or app by its 32-character `id`. It has name, `item_type`, category, users, rating, version, developer and disclosed email, declared permissions, host access flags, privacy disclosures and screenshots, taken from the latest observation.
 - **Params:** `id` (string, **required**) — Chrome Web Store item id
 
 ### `datasets_chrome_extensions_metrics`

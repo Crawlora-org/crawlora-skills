@@ -250,6 +250,7 @@ case "$path" in
   /bbb/local-bbbs) route_allowed=true ;;
   /bbb/news) route_allowed=true ;;
   /bbb/news/topics) route_allowed=true ;;
+  /bbb/page) route_allowed=true ;;
   /bbb/regions) route_allowed=true ;;
   /bbb/scamtracker/search) route_allowed=true ;;
   /bbb/scamtracker/state-stats) route_allowed=true ;;
@@ -2080,6 +2081,14 @@ case "$path" in
   /reuters/news) route_allowed=true ;;
   /reuters/section) route_allowed=true ;;
   /reuters/sections) route_allowed=true ;;
+  /reverb/categories) route_allowed=true ;;
+  /reverb/listing) route_allowed=true ;;
+  /reverb/makes) route_allowed=true ;;
+  /reverb/price-guide) route_allowed=true ;;
+  /reverb/price-guide-search) route_allowed=true ;;
+  /reverb/search) route_allowed=true ;;
+  /reverb/shop) route_allowed=true ;;
+  /reverb/shop-feedback) route_allowed=true ;;
   /rightmove/agents) route_allowed=true ;;
   /rightmove/autocomplete) route_allowed=true ;;
   /rightmove/commercial/search) route_allowed=true ;;
@@ -2746,7 +2755,9 @@ case "$path" in
   /tiffany/suggest) route_allowed=true ;;
   /tiktok/category) route_allowed=true ;;
   /tiktok/comments) route_allowed=true ;;
+  /tiktok/creative-center/filters) route_allowed=true ;;
   /tiktok/creative-center/hashtags) route_allowed=true ;;
+  /tiktok/creative-center/top-content) route_allowed=true ;;
   /tiktok/creative-center/videos) route_allowed=true ;;
   /tiktok/hashtags) route_allowed=true ;;
   /tiktok/popular-trend/country-industry-meta) route_allowed=true ;;
@@ -3785,6 +3796,7 @@ route_method_regexes=(
   '^GET:/bbb/local-bbbs$'
   '^GET:/bbb/news$'
   '^GET:/bbb/news/topics$'
+  '^GET:/bbb/page$'
   '^GET:/bbb/regions$'
   '^GET:/bbb/scamtracker/[^/]+$'
   '^GET:/bbb/scamtracker/search$'
@@ -5849,6 +5861,14 @@ route_method_regexes=(
   '^GET:/reuters/news$'
   '^GET:/reuters/section$'
   '^GET:/reuters/sections$'
+  '^GET:/reverb/categories$'
+  '^GET:/reverb/listing$'
+  '^GET:/reverb/makes$'
+  '^GET:/reverb/price-guide$'
+  '^GET:/reverb/price-guide-search$'
+  '^GET:/reverb/search$'
+  '^GET:/reverb/shop$'
+  '^GET:/reverb/shop-feedback$'
   '^GET:/rightmove/agents$'
   '^GET:/rightmove/agents/[^/]+$'
   '^GET:/rightmove/autocomplete$'
@@ -6562,7 +6582,9 @@ route_method_regexes=(
   '^GET:/tiffany/suggest$'
   '^GET:/tiktok/category$'
   '^GET:/tiktok/comments$'
+  '^GET:/tiktok/creative-center/filters$'
   '^GET:/tiktok/creative-center/hashtags$'
+  '^GET:/tiktok/creative-center/top-content$'
   '^GET:/tiktok/creative-center/videos$'
   '^GET:/tiktok/explore/[^/]+$'
   '^GET:/tiktok/hashtag/[^/]+$'

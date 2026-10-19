@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `hm_listing`
 
 - **HTTP:** `GET /hm/listing`
-- **What:** Browse an H&M category's product listing. Returns one H&M category's product listing page: normalized products with pricing, images, colors, and per-size stock, sourced from H&M's own app-backend listing data. category_id is an H&M category slug (e.g. ladies_newarrivals_all, men_newarrivals_all, ladies_jeans) -- this build does not expose a category/nav-tree discovery endpoint, so category_id values are currently sourced from known H&M storefront paths rather than a lookup call. Pagination is page-based and real: requesting a page beyond the category's real last page returns a normal response with an empty products array rather than an error.
+- **What:** Browse an H&M category's product listing. Returns one H&M category's product listing page: products with pricing, images, colors, and per-size stock. category_id is an H&M category slug (e.g. ladies_newarrivals_all, men_newarrivals_all, ladies_jeans) -- there is no category/nav-tree discovery endpoint, so category_id values come from known H&M storefront paths rather than a lookup call. Pagination is page-based and real: requesting a page beyond the category's real last page returns a normal response with an empty products array rather than an error.
 - **Params:** `category_id` (string, **required**) — H&M category slug; `is_new` (boolean, optional) — Optional filter for newly added items only; `page` (integer, optional) — Page number, one-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 72, defaults to 36; `sort` (string, optional) — Sort order, defaults to RELEVANCE
 
 ### `hm_product`
@@ -37,13 +37,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `hm_search`
 
 - **HTTP:** `GET /hm/search`
-- **What:** Search H&M product listings by free-text keyword. Runs a free-text keyword search against H&M's own app-backend search data and returns normalized products with pricing, images, colors, and per-size stock, plus search-quality metadata (a spelling-correction suggestion, related searches, and a content-filter flag). Unlike category browsing, an obscure or nonsense keyword returns a genuine empty result (zero products) rather than a fallback set. Pagination is page-based and real: requesting a page beyond the real last page returns a normal response with an empty products array rather than an error.
+- **What:** Search H&M product listings by free-text keyword. Runs a free-text keyword search on H&M and returns products with pricing, images, colors, and per-size stock, plus search-quality metadata (a spelling-correction suggestion, related searches, and a content-filter flag). Unlike category browsing, an obscure or nonsense keyword returns a genuine empty result (zero products) rather than a fallback set. Pagination is page-based and real: requesting a page beyond the real last page returns a normal response with an empty products array rather than an error.
 - **Params:** `page` (integer, optional) — Page number, one-based, defaults to 1; `page_size` (integer, optional) — Results per page, 1 to 72, defaults to 36; `query` (string, **required**) — Free-text search keyword
 
 ### `hm_search_suggestions`
 
 - **HTTP:** `GET /hm/search/suggestions`
-- **What:** Get H&M search-box suggestions. Returns H&M's own search-box typeahead suggestions, sourced from the same credential-free app-backend host as hm-listing/hm-search. When query is given, returns spelling-complete phrase suggestions and merchandised content results. When query is omitted or empty, instead returns trending searches and popular-search shortcuts (phrase/content suggestions are both empty in that mode). search_history is part of the real upstream response but confirmed NOT session-scoped -- it returned the identical list across separate cookie-free requests, so treat it as fixed default content rather than a real per-caller history.
+- **What:** Get H&M search-box suggestions. Returns H&M's own search-box typeahead suggestions. When query is given, returns spelling-complete phrase suggestions and merchandised content results. When query is omitted or empty, instead returns trending searches and popular-search shortcuts (phrase/content suggestions are both empty in that mode). search_history is not session-scoped -- it returns the identical list for every request, so treat it as fixed default content rather than a real per-caller history.
 - **Params:** `query` (string, optional) — Free-text search-box input; omit or leave empty for trending/popular searches instead
 
 ### `hm_stores`

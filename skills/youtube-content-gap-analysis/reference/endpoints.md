@@ -13,31 +13,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `youtube_channel_search`
 
 - **HTTP:** `GET /youtube/channel/{id}/search`
-- **What:** Search within a YouTube channel. Returns normalized video search items scoped to a specific channel, including the resolved top-level `query`.
+- **What:** Search within a YouTube channel. Searches the videos of one YouTube channel for the required `q`. `id` accepts a channel id, `@handle`, `/c` or `/user` path, or a full channel URL. Items carry the video id, title, URL, duration, view count, published text and thumbnail, and the response echoes the resolved `query`. Page with `continuation_token`.
 - **Params:** `continuation_token` (string, optional) — Pagination token returned by a previous request; `id` (string, **required**) — Channel ID, @handle, /c path, /user path, or full YouTube channel URL; `q` (string, **required**) — Search query
 
 ### `youtube_channel_shorts`
 
 - **HTTP:** `GET /youtube/channel/{id}/shorts`
-- **What:** Retrieve the shorts tab for a YouTube channel. Returns normalized short-form video entries from a channel's Shorts tab.
+- **What:** Retrieve the shorts tab for a YouTube channel. Returns the first page of Shorts from a YouTube channel's Shorts tab. `id` accepts a channel id, `@handle`, `/c` or `/user` path, or a full channel URL. Each short has its position, video id, title, URL, thumbnail and view count text.
 - **Params:** `id` (string, **required**) — Channel ID, @handle, /c path, /user path, or full YouTube channel URL
 
 ### `youtube_channel_videos`
 
 - **HTTP:** `GET /youtube/channel/{id}/videos`
-- **What:** Retrieve the videos tab for a YouTube channel. Returns normalized video items from a channel's Videos tab and an optional continuation token.
+- **What:** Retrieve the videos tab for a YouTube channel. Lists the videos on a YouTube channel's Videos tab. `id` accepts a channel id, `@handle`, `/c` or `/user` path, or a full channel URL. Each item has its video id, title, URL, duration, view count, published text, thumbnail, badges and live flag. Pass the returned `continuation_token` to fetch the next page.
 - **Params:** `continuation_token` (string, optional) — Pagination token returned by a previous request; `id` (string, **required**) — Channel ID, @handle, /c path, /user path, or full YouTube channel URL
 
 ### `youtube_comments`
 
 - **HTTP:** `GET /youtube/comments/{id}`
-- **What:** Retrieve video comments (top-level & replies). Returns a page of comments for a specific YouTube video.
+- **What:** Retrieve video comments (top-level & replies). Returns one page of comments for a YouTube video by its 11-character `id`. Each comment has its id, content, author `user_name` and `channel_id`, `likes_count`, `reply_count` and `published_time`. Pass the previous response's `continuation_token` to get the next page; leave it empty for the first.
 - **Params:** `continuation_token` (string, optional) — Pagination token returned by a previous request, first page if empty; `id` (string, **required**) — YouTube video ID (11-character code)
 
 ### `youtube_profile`
 
 - **HTTP:** `GET /youtube/profile/{id}`
-- **What:** Retrieve channel profile. Returns full profile details for a YouTube channel.
+- **What:** Retrieve channel profile. Returns the profile of a YouTube channel by `id`, which can be a channel id, `@handle`, `/c` or `/user` path, bare username or full channel URL. The profile has channel id, name and URL, bio, join date, region, profile picture, links, and `stats` with `followers_count`, `videos_count` and `views_count`.
 - **Params:** `id` (string, **required**) — Channel ID, @handle, /c path, /user path, bare username, or full YouTube channel URL
 
 ### `youtube_search`
@@ -55,11 +55,11 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `youtube_transcript_languages`
 
 - **HTTP:** `GET /youtube/transcript/{id}/languages`
-- **What:** List transcript languages for a YouTube video. Returns the transcript languages exposed by YouTube for a specific video.
+- **What:** List transcript languages for a YouTube video. Lists the transcript languages available for a YouTube video by its 11-character video id. Each entry has the language name and code, whether the track is auto-generated, and whether it can be translated. Use it to pick a language before requesting a transcript.
 - **Params:** `id` (string, **required**) — YouTube video ID (11-character code)
 
 ### `youtube_video`
 
 - **HTTP:** `GET /youtube/video/{id}`
-- **What:** Retrieve video metadata & captions. Returns title, description, stats, and captions for a YouTube video ID.
+- **What:** Retrieve video metadata & captions. Returns the metadata of a YouTube video by its 11-character `id`: title, description, channel id and title, publication time, duration in seconds, and view, like and comment counts. Some fields are best-effort.
 - **Params:** `id` (string, **required**) — YouTube video ID (11-char code)

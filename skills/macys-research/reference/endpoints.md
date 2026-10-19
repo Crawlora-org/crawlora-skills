@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `macys_product_reviews`
 
 - **HTTP:** `GET /macys/product/reviews`
-- **What:** Get a Macy's product's customer reviews. Returns one page of a Macy's product's normalized customer reviews, plus a site-wide rating summary (rating count, average rating, recommended ratio, rating histogram) for the product. Sourced from a separate review platform Macy's own product pages embed, distinct from the product catalog itself. product_id is a numeric id, the same one used by GET /macys/product/{productId}. A product with zero reviews, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
+- **What:** Get a Macy's product's customer reviews. Returns one page of a Macy's product's customer reviews, plus a site-wide rating summary (rating count, average rating, recommended ratio, rating histogram) for the product. product_id is a numeric id, the same one used by GET /macys/product/{productId}. A product with zero reviews, or a well-formed but unrecognized product_id, returns a normal, empty result rather than an error.
 - **Params:** `page` (integer, optional) — Result page, 1-based, defaults to 1; `product_id` (string, **required**) — Numeric Macy's product id, from a product page's ?ID= query parameter
 
 ### `macys_suggest`

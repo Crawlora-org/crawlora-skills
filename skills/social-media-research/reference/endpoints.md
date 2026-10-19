@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**86 endpoints across 11 platform group(s).**
+**88 endpoints across 11 platform group(s).**
 
 ## Instagram (3)
 
@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `instagram_profile`
 
 - **HTTP:** `GET /instagram/profile/{username}`
-- **What:** Retrieve an Instagram user profile by username. Returns public profile details for a specified Instagram username.
+- **What:** Retrieve an Instagram user profile by username. Returns the public profile of an Instagram account by `username`. The response has the user id, full name, biography, bio links, external URL, category, follower, following and post counts, verified and private flags, location, profile picture, recent posts with captions and like counts, and related profiles.
 - **Params:** `username` (string, **required**) — Instagram username
 
 ### `instagram_reels`
@@ -28,90 +28,102 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve Instagram Reels for a user. Returns up to 12 public Reels via anonymous proxied HTTP for the numeric Instagram user ID. Supports opaque `max_id` pagination. Captions, timestamps and original image dimensions are omitted when the public source does not expose them.
 - **Params:** `id` (string, **required**) — Numeric Instagram user ID (not a username); `max_id` (string, optional) — Pagination cursor for fetching the next page of Reels
 
-## TikTok (25)
+## TikTok (27)
 
 ### `tiktok_category`
 
 - **HTTP:** `GET /tiktok/category`
-- **What:** List TikTok explore categories. Returns the category list exposed by the TikTok Explore page.
+- **What:** List TikTok explore categories. Returns the content categories shown on TikTok's Explore page. Each entry has the category name and its numeric type code. Takes no parameters.
 - **Params:** _none_
 
 ### `tiktok_challenge`
 
 - **HTTP:** `GET /tiktok/hashtag/{name}`
-- **What:** Retrieve TikTok hashtag details. Returns the metadata payload for a TikTok hashtag page.
+- **What:** Retrieve TikTok hashtag details. Returns the details of a TikTok hashtag page by `name`, for example `christmas`. The response carries `challengeInfo` with the hashtag's metadata, such as cover images, and `shareMeta` with the share title and description. The hashtag id found here feeds `tiktok-challenge-list`.
 - **Params:** `name` (string, **required**) — Hashtag name (e.g., 'christmas')
 
 ### `tiktok_challenge_list`
 
 - **HTTP:** `GET /tiktok/hashtags`
-- **What:** Retrieve TikTok hashtag posts. Returns the videos listed for a TikTok hashtag id with cursor-based pagination.
+- **What:** Retrieve TikTok hashtag posts. Lists the videos posted under a TikTok hashtag, identified by the hashtag `id` from the hashtag detail endpoint. `cursor` defaults to 0. The response has `itemList`, `hasMore` and a `cursor`; pass that cursor back to fetch the next page.
 - **Params:** `cursor` (integer, optional) — Pagination cursor; `id` (string, **required**) — Hashtag id returned by the hashtag detail endpoint
 
 ### `tiktok_comments`
 
 - **HTTP:** `GET /tiktok/comments`
-- **What:** Retrieve TikTok video comments. Returns top-level TikTok video comments with cursor-based pagination.
+- **What:** Retrieve TikTok video comments. Returns the top-level comments on a TikTok video, by the video id from its URL (`aweme_id`). Results are paged by cursor: pass the `cursor` from one response to get the next page, and read `has_more` to see whether more remain. The response also carries the total comment count.
 - **Params:** `aweme_id` (string, **required**) — TikTok video id from the video URL; `cursor` (integer, optional) — Pagination cursor
+
+### `tiktok_creative_center_filters`
+
+- **HTTP:** `GET /tiktok/creative-center/filters`
+- **What:** Retrieve TikTok Creative Center filter taxonomy. Returns the complete filter taxonomy for the Creative Center trend endpoints: the countries each trend tab reports, the industry ids and video content tags the filters accept, the supported lookback periods, and the video sort metrics. Use it to discover valid values for the hashtags endpoint's country_code, period, and industry_id parameters and the videos endpoint's country_code, period, sort_by, and content_label_ids parameters. This endpoint performs no upstream request and has no parameters.
+- **Params:** _none_
 
 ### `tiktok_creative_center_hashtags`
 
 - **HTTP:** `GET /tiktok/creative-center/hashtags`
-- **What:** Retrieve TikTok Creative Center trending hashtags. Returns TikTok Creative Center's ranked trending hashtags for a country and period. TikTok gates this endpoint's full result set behind a logged-in TikTok One account: an anonymous request always receives at most 3 hashtags regardless of country or period.
-- **Params:** `country_code` (string, **required**) — ISO-2 country code; `period` (integer, optional) — Lookback window in days
+- **What:** Retrieve TikTok Creative Center trending hashtags. Returns TikTok Creative Center's ranked trending hashtags for a country, period, and optional industry. TikTok gates this endpoint's full result set behind a logged-in TikTok One account: an anonymous request always receives at most 3 hashtags per filter combination regardless of country, period, or industry, so selecting an industry returns that industry's own ranked top three. See the filters endpoint for the complete country, period, and industry value lists.
+- **Params:** `country_code` (string, **required**) — ISO-2 country code; `industry_id` (string, optional) — Creative Center industry id to restrict the ranking to; `period` (integer, optional) — Lookback window in days
+
+### `tiktok_creative_center_top_content`
+
+- **HTTP:** `GET /tiktok/creative-center/top-content`
+- **What:** Retrieve TikTok Creative Center top content. Returns TikTok Creative Center's current Top Content set: four top-performing branded videos, each with the video object (anonymous MP4 and cover URLs), engagement metrics, the author profile and follower count, and (by default) the video's top comments plus keyword mention counts derived from them. The set is a daily snapshot and there is no pagination or historical query; the four titles rotate when the snapshot changes. Set include_comments=false for a smaller response with only video, author, and metrics.
+- **Params:** `include_comments` (boolean, optional) — Include each object's top comments and comment-keyword counts
 
 ### `tiktok_creative_center_videos`
 
 - **HTTP:** `GET /tiktok/creative-center/videos`
-- **What:** Retrieve TikTok Creative Center trending videos. Returns TikTok Creative Center's ranked trending videos for a country, period, and sort order. TikTok reports the true result-set size (see total_count/page_count in the response) but gates access to it behind a logged-in TikTok One account: an anonymous request always receives page 1 (4 videos) regardless of sort order or period. Country coverage is uneven: US, JP, ID, VN, and TH reliably return populated results; other countries have been observed to return an empty videos array (a genuine no-data response, not an error).
-- **Params:** `content_label_id` (string, optional) — Content tag id to filter by; `country_code` (string, **required**) — ISO-2 country code; `organic_only` (boolean, optional) — Restrict to organic (non-paid) videos only; `period` (integer, optional) — Lookback window in days; `sort_by` (string, optional) — Sort order
+- **What:** Retrieve TikTok Creative Center trending videos. Returns TikTok Creative Center's ranked trending videos for a country, period, sort order, and optional content tags. TikTok reports the true result-set size (see total_count/page_count in the response) but gates access to it behind a logged-in TikTok One account: an anonymous request always receives page 1 (4 videos) regardless of sort order or period. Country coverage is uneven: only US, JP, ID, VN, and TH have a regional edge host that returns populated results; other countries return an empty videos array (a genuine no-data response, not an error). See the filters endpoint for the complete country, period, sort, and content tag value lists.
+- **Params:** `content_label_id` (string, optional) — Deprecated: single content tag id; use content_label_ids instead; `content_label_ids` (array, optional) — Content tag ids to filter by, repeatable; matches videos carrying any selected tag; `country_code` (string, **required**) — ISO-2 country code; `organic_only` (boolean, optional) — Restrict to organic (non-paid) videos only; `period` (integer, optional) — Lookback window in days; `sort_by` (string, optional) — Sort order
 
 ### `tiktok_explore`
 
 - **HTTP:** `GET /tiktok/explore/{id}`
-- **What:** Retrieve the TikTok explore feed for a category. Returns explore videos for a TikTok category id from the category endpoint.
+- **What:** Retrieve the TikTok explore feed for a category. Returns the TikTok explore feed for a category, given its category type `id` from the category endpoint. The response has `itemList` with the videos, `hasMore` and a `cursor`. A feed that comes back empty is reported as an upstream error, not as an empty list.
 - **Params:** `id` (integer, **required**) — Category type id returned by the category endpoint
 
 ### `tiktok_popular_trend_country_industry_meta`
 
 - **HTTP:** `GET /tiktok/popular-trend/country-industry-meta`
-- **What:** Retrieve TikTok popular-trend country and industry metadata. Returns the country and industry metadata used by the TikTok Creative Center popular-trend endpoints.
+- **What:** Retrieve TikTok popular-trend country and industry metadata. Lists the country and industry filter values used by the TikTok Creative Center popular-trend endpoints. Countries have an `id` such as `AR` and a name; industries have a numeric `id` and a name such as Apparel & Accessories. A maintained fallback list is returned if TikTok's own metadata is unavailable.
 - **Params:** _none_
 
 ### `tiktok_post`
 
 - **HTTP:** `GET /tiktok/post/{id}`
-- **What:** Retrieve TikTok video details. Returns the TikTok video detail payload for a video id.
+- **What:** Retrieve TikTok video details. Returns TikTok's detail record for one video by video id. `itemInfo.itemStruct` holds the video's description, the author's profile and the author's statistics (such as followers, following and hearts) along with the rest of TikTok's video object; `shareMeta` holds the share title and description.
 - **Params:** `id` (string, **required**) — TikTok video id
 
 ### `tiktok_posts`
 
 - **HTTP:** `GET /tiktok/posts`
-- **What:** Retrieve posts from a TikTok profile. Returns posts from a TikTok profile by `secUid`, with optional cursor pagination and sort mode.
+- **What:** Retrieve posts from a TikTok profile. Lists posts from a TikTok profile identified by `secUid`. `sort_type` is `0` latest (default), `1` popular or `2` oldest. `cursor` defaults to 0. The response has `itemList`, `hasMore` and a `cursor` to pass back to fetch the next page.
 - **Params:** `cursor` (integer, optional) — Pagination cursor; `secUid` (string, **required**) — TikTok secUid for the profile; `sort_type` (integer, optional) — Sort mode: 0 latest, 1 popular, 2 oldest
 
 ### `tiktok_profile`
 
 - **HTTP:** `GET /tiktok/profile/{handler}`
-- **What:** Retrieve a TikTok profile. Returns the TikTok profile payload for a public handle.
+- **What:** Retrieve a TikTok profile. Returns a public TikTok profile by `handler`, the username without the leading `@`. The `user` object has the id, `uniqueId`, nickname, signature, verified and private flags, region, language, avatar, bio link and `secUid`; `stats` has follower, following, heart, video and friend counts. A missing, deleted or banned handle returns 404.
 - **Params:** `handler` (string, **required**) — TikTok handle without the leading @
 
 ### `tiktok_search`
 
 - **HTTP:** `GET /tiktok/search`
-- **What:** Search TikTok videos. Searches TikTok videos by keyword with cursor-based pagination.
+- **What:** Search TikTok videos. Searches TikTok videos for `keyword`. `cursor` defaults to 0 and `count` defaults to 20, capped at 50. The response has the matching video items, a `cursor` and `has_more` for paging. An empty, blocked or malformed result from TikTok returns an upstream error.
 - **Params:** `count` (integer, optional) — Result count, clamped to 50; `cursor` (integer, optional) — Pagination cursor; `keyword` (string, **required**) — Search keyword
 
 ### `tiktok_search_hashtag`
 
 - **HTTP:** `GET /tiktok/search/hashtag`
-- **What:** Search TikTok hashtags. Searches TikTok hashtags/challenges by keyword with cursor-based pagination.
+- **What:** Search TikTok hashtags. Searches TikTok hashtags (challenges) for `keyword`. `cursor` defaults to 0 and `count` defaults to 20, capped at 50. The response has `challenge_list` with each hashtag's name and id, plus a `cursor` and `has_more` for paging. An empty, blocked or malformed result returns an upstream error.
 - **Params:** `count` (integer, optional) — Result count, clamped to 50; `cursor` (integer, optional) — Pagination cursor; `keyword` (string, **required**) — Search keyword
 
 ### `tiktok_search_user`
 
 - **HTTP:** `GET /tiktok/search/user`
-- **What:** Search TikTok users. Searches TikTok users by keyword with cursor-based pagination.
+- **What:** Search TikTok users. Searches TikTok users for `keyword`, with `cursor` (default 0) for paging. The response has `user_list` with the matching accounts, plus a `cursor` and `has_more` to continue. Pass the returned `cursor` back to fetch the next page.
 - **Params:** `cursor` (integer, optional) — Pagination cursor; `keyword` (string, **required**) — Search keyword
 
 ### `tiktok_top_ads_analysis`
@@ -147,37 +159,37 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tiktok_top_ads_locations`
 
 - **HTTP:** `GET /tiktok/top-ads/locations`
-- **What:** Retrieve TikTok Top Ads locations. Returns available Top Ads location filters from TikTok Creative Center.
+- **What:** Retrieve TikTok Top Ads locations. Lists the country filters offered by TikTok Creative Center Top Ads. Each country has an `id` such as `US`, a `value` (the country name), a `label` and a `has_conversion` flag. Takes no parameters.
 - **Params:** _none_
 
 ### `tiktok_top_ads_recommend`
 
 - **HTTP:** `GET /tiktok/top-ads/recommend`
-- **What:** Retrieve TikTok Top Ads recommendations. Returns recommended Top Ads materials related to a material id.
+- **What:** Retrieve TikTok Top Ads recommendations. Lists Top Ads materials that TikTok Creative Center recommends as related to the ad with `material_id`. `page` starts at 1; `limit` defaults to 20 and is capped at 100. Each ad has its title, brand, likes, comments, shares, CTR, objectives and video info. The list can be empty for a valid id.
 - **Params:** `limit` (integer, optional) — Maximum number of ads to return; `material_id` (string, **required**) — Top Ads material id; `page` (integer, optional) — Page number
 
 ### `tiktok_top_ads_safety`
 
 - **HTTP:** `GET /tiktok/top-ads/safety`
-- **What:** Retrieve TikTok Top Ads safety configuration. Returns public Creative Center safety configuration flags related to search surfaces.
+- **What:** Retrieve TikTok Top Ads safety configuration. Returns the Creative Center safety configuration flags for search: `top_ads_search`, `keyword_search`, `hashtag_search`, `creator_search`, `sound_search` and `cc_banner_key`. It carries feature flags only, not ad materials. Takes no parameters.
 - **Params:** _none_
 
 ### `tiktok_top_ads_spotlight`
 
 - **HTTP:** `GET /tiktok/top-ads/spotlight`
-- **What:** Retrieve TikTok Top Ads Spotlight. Returns Top Ads Spotlight materials handpicked by TikTok Creative Center.
+- **What:** Retrieve TikTok Top Ads Spotlight. Lists the Top Ads Spotlight materials that TikTok Creative Center hand-picks. `page` starts at 1; `limit` defaults to 20 and is capped at 100. Each ad has its title, brand, likes, comments, shares, CTR, objectives and video info. `data.pagination` gives the page, size, total and `has_more`.
 - **Params:** `limit` (integer, optional) — Maximum number of ads to return; `page` (integer, optional) — Page number
 
 ### `tiktok_top_ads_suggestions`
 
 - **HTTP:** `GET /tiktok/top-ads/suggestions`
-- **What:** Retrieve TikTok Top Ads suggestions. Returns Top Ads search suggestions from TikTok Creative Center.
+- **What:** Retrieve TikTok Top Ads suggestions. Returns Top Ads search suggestions from TikTok Creative Center. `count` is the maximum number of suggestions (default 50) and `scenario` picks the suggestion scenario id (default 1). The `query` list can be empty for the default scenario.
 - **Params:** `count` (integer, optional) — Maximum number of suggestions to return; `scenario` (integer, optional) — Suggestion scenario id
 
 ### `tiktok_trending`
 
 - **HTTP:** `GET /tiktok/trending`
-- **What:** Retrieve TikTok trending posts. Returns the current TikTok trending feed.
+- **What:** Retrieve TikTok trending posts. Returns the current TikTok trending feed: `itemList` holds the videos, and `hasMore` and `cursor` describe paging. The response also has a `trendingTopics` field. Takes no parameters.
 - **Params:** _none_
 
 ## Threads (5)
@@ -185,7 +197,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `threads_post`
 
 - **HTTP:** `GET /threads/post/{username}/{code}`
-- **What:** Retrieve a public Threads post. Returns the public text, author, canonical URL, and preview image for a Threads post.
+- **What:** Retrieve a public Threads post. Returns one public Threads post by `username` (with or without a leading `@`) and the post `code` from its URL. The response has the post text, canonical URL, preview image URL, and the author's id, name and username. Replies and logged-in fields are not included. An unavailable post returns 404.
 - **Params:** `code` (string, **required**) — Threads post code; `username` (string, **required**) — Threads username
 
 ### `threads_post_replies`
@@ -197,13 +209,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `threads_profile`
 
 - **HTTP:** `GET /threads/profile/{username}`
-- **What:** Retrieve a public Threads profile. Returns public profile metadata for a Threads username, including the visible biography and counts.
+- **What:** Retrieve a public Threads profile. Returns a public Threads profile by `username` (with or without a leading `@`): name, profile URL, biography, avatar URL, `followers_count` and `threads_count`. Counts are derived from the compact figures shown on the profile page. An unavailable profile returns 404.
 - **Params:** `username` (string, **required**) — Threads username
 
 ### `threads_profile_posts`
 
 - **HTTP:** `GET /threads/profile/{username}/posts`
-- **What:** Retrieve public posts from a Threads profile. Returns public profile posts with an opaque continuation cursor when more posts are available.
+- **What:** Retrieve public posts from a Threads profile. Lists public posts from a Threads profile by `username`. Each item has its code, URL, text, creation time, image and video URLs, like, reply, repost and quote counts, reply flag and author. When `has_more` is true, pass `next_cursor` unchanged as `cursor` to fetch the next page.
 - **Params:** `cursor` (string, optional) — Opaque cursor returned by the previous response; `username` (string, **required**) — Threads username
 
 ### `threads_search`
@@ -217,43 +229,43 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bluesky_author_feed`
 
 - **HTTP:** `GET /bluesky/author-feed`
-- **What:** A Bluesky account's posts. Returns a page of a Bluesky account's posts, newest first, including text, engagement counts, and any attached images/link card/quoted post. Public data, sourced from the AT Protocol's public, credential-free AppView API.
+- **What:** A Bluesky account's posts. Returns a page of a Bluesky account's posts, newest first, including text, engagement counts, and any attached images/link card/quoted post.
 - **Params:** `actor` (string, **required**) — A handle (e.g. bsky.app) or DID; `cursor` (string, optional) — Pagination cursor from a previous response's cursor field; `limit` (integer, optional) — Page size, 1-100
 
 ### `bluesky_followers`
 
 - **HTTP:** `GET /bluesky/followers`
-- **What:** A Bluesky account's followers. Returns a page of a Bluesky account's followers. Public data, sourced from the AT Protocol's public, credential-free AppView API.
+- **What:** A Bluesky account's followers. Returns a page of a Bluesky account's followers. `actor` is required and is a handle such as `bsky.app` or a DID. `limit` is 1 to 100 (default 25); pass the returned `cursor` back to continue. Each follower has `did`, `handle`, `display_name`, `description`, `avatar_url` and `created_at`, and `subject` describes the account itself.
 - **Params:** `actor` (string, **required**) — A handle (e.g. bsky.app) or DID; `cursor` (string, optional) — Pagination cursor from a previous response's cursor field; `limit` (integer, optional) — Page size, 1-100
 
 ### `bluesky_follows`
 
 - **HTTP:** `GET /bluesky/follows`
-- **What:** Accounts a Bluesky account follows. Returns a page of the accounts a Bluesky account follows. Public data, sourced from the AT Protocol's public, credential-free AppView API.
+- **What:** Accounts a Bluesky account follows. Returns a page of the accounts a Bluesky account follows.
 - **Params:** `actor` (string, **required**) — A handle (e.g. bsky.app) or DID; `cursor` (string, optional) — Pagination cursor from a previous response's cursor field; `limit` (integer, optional) — Page size, 1-100
 
 ### `bluesky_post_likes`
 
 - **HTTP:** `GET /bluesky/post-likes`
-- **What:** List actors who liked a Bluesky post. Returns public actors who liked a post, with an optional cursor for pagination.
+- **What:** List actors who liked a Bluesky post. Lists the accounts that liked a Bluesky post, identified by its `at://` post `uri`, which is required. `limit` defaults to 25 and is capped at 100; pass the returned `cursor` back for the next page. Each actor has `did`, `handle`, `display_name`, `description`, `avatar_url` and `created_at`.
 - **Params:** `cursor` (string, optional) — Pagination cursor; `limit` (integer, optional) — Page size, 1-100; `uri` (string, **required**) — The post's at:// URI
 
 ### `bluesky_post_quotes`
 
 - **HTTP:** `GET /bluesky/post-quotes`
-- **What:** List quotes of a Bluesky post. Returns public posts that quote the specified post, with an optional cursor for pagination.
+- **What:** List quotes of a Bluesky post. Lists the Bluesky posts that quote a given post, identified by its `at://` post `uri`, which is required. `limit` defaults to 25 and is capped at 100; pass the returned `cursor` back for the next page. Each post has its `text`, `author`, `created_at`, `langs`, like, quote, reply and repost counts, `images` and `external` link card.
 - **Params:** `cursor` (string, optional) — Pagination cursor; `limit` (integer, optional) — Page size, 1-100; `uri` (string, **required**) — The quoted post's at:// URI
 
 ### `bluesky_post_reposted_by`
 
 - **HTTP:** `GET /bluesky/post-reposted-by`
-- **What:** List actors who reposted a Bluesky post. Returns public actors who reposted a post, with an optional cursor for pagination.
+- **What:** List actors who reposted a Bluesky post. Lists the accounts that reposted a Bluesky post, identified by its `at://` post `uri`, which is required. `limit` defaults to 25 and is capped at 100; pass the returned `cursor` back for the next page. Each actor has `did`, `handle`, `display_name`, `description`, `avatar_url` and `created_at`.
 - **Params:** `cursor` (string, optional) — Pagination cursor; `limit` (integer, optional) — Page size, 1-100; `uri` (string, **required**) — The post's at:// URI
 
 ### `bluesky_post_thread`
 
 - **HTTP:** `GET /bluesky/post-thread`
-- **What:** A Bluesky post and its reply tree. Returns a Bluesky post along with its nested replies (and, when the post is itself a reply, its parent chain), up to `depth` levels deep. Public data, sourced from the AT Protocol's public, credential-free AppView API.
+- **What:** A Bluesky post and its reply tree. Returns a Bluesky post along with its nested replies (and, when the post is itself a reply, its parent chain), up to `depth` levels deep.
 - **Params:** `depth` (integer, optional) — Reply-tree depth, 1-10; `uri` (string, **required**) — The post's at:// URI, e.g. from an author-feed or search-actors result's post uri field
 
 ### `bluesky_posts`
@@ -265,19 +277,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bluesky_profile`
 
 - **HTTP:** `GET /bluesky/profile`
-- **What:** A Bluesky account's full public profile. Returns a Bluesky account's public profile: display name, description, avatar/banner images, and follower/follows/posts counts. Public data, sourced from the AT Protocol's public, credential-free AppView API.
+- **What:** A Bluesky account's full public profile. Returns a Bluesky account's public profile: display name, description, avatar/banner images, and follower/follows/posts counts.
 - **Params:** `actor` (string, **required**) — A handle (e.g. bsky.app) or DID (e.g. did:plc:z72i7hdynmk6r22z27h6tvur)
 
 ### `bluesky_search_actors`
 
 - **HTTP:** `GET /bluesky/search-actors`
-- **What:** Search Bluesky accounts. Returns Bluesky accounts matching a query against display name, handle, and profile description. Public data, sourced from the AT Protocol's public, credential-free AppView API.
+- **What:** Search Bluesky accounts. Returns Bluesky accounts matching a query against display name, handle, and profile description.
 - **Params:** `cursor` (string, optional) — Pagination cursor from a previous response's cursor field; `limit` (integer, optional) — Page size, 1-100; `q` (string, **required**) — Search text
 
 ### `bluesky_trending_topics`
 
 - **HTTP:** `GET /bluesky/trending-topics`
-- **What:** Bluesky's current trending topics. Returns Bluesky's current trending topics and suggested feeds, each with a link to its feed. Public data, sourced from the AT Protocol's public, credential-free AppView API. This surface is less stable than the rest of this family -- Bluesky may change its shape without notice.
+- **What:** Bluesky's current trending topics. Returns Bluesky's current trending topics and suggested feeds, each with a link to its feed. This surface is less stable than the rest of this family -- Bluesky may change its shape without notice.
 - **Params:** _none_
 
 ## X (3)
@@ -291,7 +303,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `x_profile`
 
 - **HTTP:** `GET /x/profile/{username}`
-- **What:** Retrieve an X profile. Returns public profile details for an X username, including visible counts and profile media when available.
+- **What:** Retrieve an X profile. Returns the public profile of an X account by `username`, with or without a leading `@`: name, description, location, avatar and banner images, creation date, verification flags, and `metrics` for followers, following, posts, likes, listed and media. `verified_type` and `affiliate_label` appear only when the account has them. Returns 404 when the profile is not public.
 - **Params:** `username` (string, **required**) — X username
 
 ### `x_profile_posts`
@@ -355,13 +367,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `linkedin_company`
 
 - **HTTP:** `GET /linkedin/company/{id}`
-- **What:** Get LinkedIn Company info by ID. Returns detailed company information by LinkedIn ID.
+- **What:** Get LinkedIn Company info by ID. Returns a LinkedIn company page by its company `id`. The response has the name, headline, about text, industry, company size, employee count on LinkedIn, follower count, founding year, headquarters, locations, specialties, website, logo, affiliated and similar pages, and recent updates with reactions and comment counts.
 - **Params:** `id` (string, **required**) — LinkedIn Company ID
 
 ### `linkedin_product`
 
 - **HTTP:** `GET /linkedin/product/{id}`
-- **What:** Get LinkedIn Product info by ID. Returns detailed product information from LinkedIn by product ID.
+- **What:** Get LinkedIn Product info by ID. Returns a LinkedIn product page by its product `id`. The response has the name, about text, category, owning organization, external link, logo, cover image, media items, featured customers with industry and follower count, and lists of other and similar products.
 - **Params:** `id` (string, **required**) — LinkedIn Product ID
 
 ### `linkedin_product_categories`
@@ -379,7 +391,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `linkedin_showcase`
 
 - **HTTP:** `GET /linkedin/showcase/{id}`
-- **What:** Get Linkedin Showcase Page Info. Returns detailed information about a LinkedIn showcase page by ID.
+- **What:** Get Linkedin Showcase Page Info. Returns a LinkedIn showcase page by its showcase page `id`. The response has the name, headline, about text, industry, follower count, employees on LinkedIn, headquarters, locations, specialties, website, logo, affiliated and similar pages, and recent updates with reactions and comment counts.
 - **Params:** `id` (string, **required**) — LinkedIn Showcase Page ID
 
 ## Facebook (2)
@@ -401,73 +413,73 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `reddit_comments`
 
 - **HTTP:** `GET /reddit/comments/{id}`
-- **What:** Get Reddit post comments. Returns a Reddit post with its public comments. The default 1-credit mode uses RSS. Set `include_metrics=true` to use the anonymous HTML post page as the sole content request and return the server-rendered comments with public net score and award count plus post engagement metrics for 3 credits. Large threads may expose only an initial comment subset in anonymous HTML. Reddit does not expose per-comment upvote ratios or exact upvote/downvote totals anonymously. A post that exists but has no comments yet returns a 200 response with an empty comments list; a post that does not exist returns 404, and a temporary block or upstream failure returns 503 (retryable) rather than 404. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
+- **What:** Get Reddit post comments. Returns a Reddit post with its public comments. The default mode is 1 credit. Set `include_metrics=true` to return the comments with public net score and award count plus post engagement metrics for 3 credits. Large threads may expose only an initial comment subset. Reddit does not expose per-comment upvote ratios or exact upvote/downvote totals anonymously. A post that exists but has no comments yet returns a 200 response with an empty comments list; a post that does not exist returns 404, and a temporary block or upstream failure returns 503 (retryable) rather than 404. If source.type is redlib, public fields and credit weights are preserved.
 - **Params:** `depth` (integer, optional) — Maximum flat comment depth returned in metrics mode.; `id` (string, **required**) — Reddit post id or t3_ id; `include_metrics` (boolean, optional) — Include public post and per-comment engagement metrics; costs 3 credits instead of 1; `limit` (integer, optional) — Maximum comments returned, defaults to 25 and clamps to 100; `sort` (string, optional) — Comment order: confidence, top, new, controversial, old, or qa. Applied to the anonymous HTML request when metrics are enabled.
 
 ### `reddit_domain_posts`
 
 - **HTTP:** `GET /reddit/domain/{domain}/posts`
-- **What:** List Reddit domain posts. Returns normalized public posts submitted from a linked domain. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
+- **What:** List Reddit domain posts. Returns public posts submitted from a linked domain. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. If source.type is redlib, public fields and credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `domain` (string, **required**) — Domain hostname, without scheme or path; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
 
 ### `reddit_leads`
 
 - **HTTP:** `GET /reddit/leads`
-- **What:** Find Reddit buying-intent leads. Scans a Reddit search page for people actively asking for a product or service, scores each post 0-10 for buying intent, and returns them ranked highest-first with the signals that fired. Self-promotion, hiring posts, freelancer service adverts, revenue-milestone posts, duplicate reposts, and Title Case article headlines are filtered out before scoring. A deterministic prefilter always runs; when `classifier` resolves to `llm` the surviving candidates are additionally refined in one batched model call. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native Reddit search failures can use the internal Redlib provider while the existing lead-response fields and credit weights are preserved.
+- **What:** Find Reddit buying-intent leads. Scans a Reddit search page for people actively asking for a product or service, scores each post 0-10 for buying intent, and returns them ranked highest-first with the signals that fired. Self-promotion, hiring posts, freelancer service adverts, revenue-milestone posts, duplicate reposts, and Title Case article headlines are filtered out before scoring. A deterministic prefilter always runs; when `classifier` resolves to `llm` the surviving candidates are additionally refined in one batched model call. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. The lead-response fields and credit weights are preserved regardless of the underlying Reddit data source.
 - **Params:** `classifier` (string, optional) — Classifier: auto uses the model when configured, heuristic skips it, llm requires it; `limit` (integer, optional) — Maximum leads returned, defaults to 25 and clamps to 100; `min_score` (integer, optional) — Minimum buying-intent score to return, 0-10, defaults to 4; `q` (string, **required**) — What you offer, in plain language; `sort` (string, optional) — Sort: relevance, hot, new, top, or comments; `subreddit` (string, optional) — Restrict the search to a subreddit name, without r/; `time` (string, optional) — Time window: hour, day, week, month, year, or all
 
 ### `reddit_post`
 
 - **HTTP:** `GET /reddit/post/{id}`
-- **What:** Get Reddit post. Returns a normalized public Reddit post. The default 1-credit mode uses RSS. Set `include_metrics=true` to use the anonymous HTML post page as the sole content request and return public net score, upvote ratio, comment count, award count, and estimated upvote/downvote totals for 3 credits. Reddit fuzzes voting data, so estimates are approximate; share, repost/crosspost, and view counts are not exposed anonymously. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
+- **What:** Get Reddit post. Returns a public Reddit post. The default mode is 1 credit. Set `include_metrics=true` to return public net score, upvote ratio, comment count, award count, and estimated upvote/downvote totals for 3 credits. Reddit fuzzes voting data, so estimates are approximate; share, repost/crosspost, and view counts are not exposed anonymously. If source.type is redlib, public fields and credit weights are preserved.
 - **Params:** `id` (string, **required**) — Reddit post id or t3_ id; `include_metrics` (boolean, optional) — Include public engagement metrics; costs 3 credits instead of 1
 
 ### `reddit_search`
 
 - **HTTP:** `GET /reddit/search`
-- **What:** Search Reddit posts. Searches public Reddit content and returns normalized public post entries. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
+- **What:** Search Reddit posts. Searches public Reddit content and returns public post entries. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. If source.type is redlib, public fields and credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `q` (string, **required**) — Search keywords; `sort` (string, optional) — Sort: relevance, hot, new, top, or comments; `subreddit` (string, optional) — Restrict search to a subreddit name, without r/; `time` (string, optional) — Time window for top/comments sorts: hour, day, week, month, year, or all
 
 ### `reddit_subreddit_about`
 
 - **HTTP:** `GET /reddit/subreddit/{subreddit}/about`
-- **What:** Get Reddit subreddit metadata. Returns public metadata and sample posts for a subreddit. Subscriber counts, icons, and banners are omitted because they are not available on anonymous Reddit pages. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
+- **What:** Get Reddit subreddit metadata. Returns public metadata and sample posts for a subreddit. Subscriber counts, icons, and banners are omitted because they are not available on anonymous Reddit pages. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. If source.type is redlib, public fields and credit weights are preserved.
 - **Params:** `limit` (integer, optional) — Maximum sample posts inspected, defaults to 25 and clamps to 100; `subreddit` (string, **required**) — Subreddit name, without r/
 
 ### `reddit_subreddit_comments`
 
 - **HTTP:** `GET /reddit/subreddit/{subreddit}/comments`
-- **What:** List Reddit subreddit comments. Returns flat public comment entries from a subreddit latest-comments feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
+- **What:** List Reddit subreddit comments. Returns flat public comment entries from a subreddit latest-comments feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. If source.type is redlib, public fields and credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `subreddit` (string, **required**) — Subreddit name, without r/
 
 ### `reddit_subreddit_posts`
 
 - **HTTP:** `GET /reddit/subreddit/{subreddit}/posts`
-- **What:** List Reddit subreddit posts. Returns normalized public posts from a subreddit. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
+- **What:** List Reddit subreddit posts. Returns public posts from a subreddit. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. If source.type is redlib, public fields and credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `subreddit` (string, **required**) — Subreddit name, without r/; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
 
 ### `reddit_subreddits_posts`
 
 - **HTTP:** `GET /reddit/subreddits/posts`
-- **What:** List Reddit multi-subreddit posts. Returns normalized public posts from a combined multi-subreddit feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
+- **What:** List Reddit multi-subreddit posts. Returns public posts from a combined multi-subreddit feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. If source.type is redlib, public fields and credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, top, or rising; `subreddits` (string, **required**) — Comma-separated subreddit names, without r/, maximum 10; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
 
 ### `reddit_trends`
 
 - **HTTP:** `GET /reddit/trends`
-- **What:** List Reddit trends. Returns normalized public posts from broad Reddit hot, new, rising, or top feeds. For subreddit-specific trends, use `/reddit/subreddit/{subreddit}/posts` with `sort=hot`, `sort=new`, `sort=rising`, or `sort=top`. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
+- **What:** List Reddit trends. Returns public posts from broad Reddit hot, new, rising, or top feeds. For subreddit-specific trends, use `/reddit/subreddit/{subreddit}/posts` with `sort=hot`, `sort=new`, `sort=rising`, or `sort=top`. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. If source.type is redlib, public fields and credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `sort` (string, optional) — Sort: hot, new, rising, or top; `time` (string, optional) — Time window for top sort: hour, day, week, month, year, or all
 
 ### `reddit_user_comments`
 
 - **HTTP:** `GET /reddit/user/{username}/comments`
-- **What:** List Reddit user comments. Returns flat public comment entries from a public Reddit user's comments feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
+- **What:** List Reddit user comments. Returns flat public comment entries from a public Reddit user's comments feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. If source.type is redlib, public fields and credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/
 
 ### `reddit_user_posts`
 
 - **HTTP:** `GET /reddit/user/{username}/posts`
-- **What:** List Reddit user posts. Returns normalized public posts from a public Reddit user's submitted feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. Native-source failures can use the internal Redlib fallback; source.type is redlib and public fields/credit weights are preserved.
+- **What:** List Reddit user posts. Returns public posts from a public Reddit user's submitted feed. A `503` with a `Retry-After` header means Reddit is temporarily throttling the request; wait that many seconds and retry. If source.type is redlib, public fields and credit weights are preserved.
 - **Params:** `after` (string, optional) — Reddit pagination token; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `username` (string, **required**) — Public Reddit username, without u/
 
 ## Bilibili (8)
@@ -481,7 +493,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bilibili_autocomplete`
 
 - **HTTP:** `GET /bilibili/autocomplete`
-- **What:** Get Bilibili search suggestions. Returns Bilibili search-box query suggestions for partial text. An empty suggestion list is a valid response when nothing matches.
+- **What:** Get Bilibili search suggestions. Returns Bilibili search-box suggestions for the partial text in `q`, which is required (up to 100 characters). The response has the `query`, a `count` and deduplicated `suggestions` in Bilibili's order. A query with no matches returns an empty `suggestions` array; invalid input returns 400.
 - **Params:** `q` (string, **required**) — Partial search text
 
 ### `bilibili_guochuang_home`
@@ -493,19 +505,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bilibili_must_watch`
 
 - **HTTP:** `GET /bilibili/must-watch`
-- **What:** Get Bilibili's curated must-watch videos. Returns Bilibili's curated must-watch collection, separated into established classics and the latest additions.
+- **What:** Get Bilibili's curated must-watch videos. Returns Bilibili's curated must-watch collection, split into `classic_videos` and `latest_videos` with their counts, plus the collection `title`, `subtitle` and `explanation`. Each video has `bvid`, `aid`, `title`, `url`, `cover`, `uploader`, `published`, `stats` and `achievement`. Takes no parameters.
 - **Params:** _none_
 
 ### `bilibili_popular`
 
 - **HTTP:** `GET /bilibili/popular`
-- **What:** Get current popular Bilibili videos. Returns Bilibili's current popular-video feed in upstream order. Pass next_cursor back as cursor to continue to the next batch.
+- **What:** Get current popular Bilibili videos. Returns Bilibili's current popular videos in Bilibili's own order. Start with `cursor` 0 (the default; max 10000000) and pass back `next_cursor` for the next batch. Each video has `bvid`, `aid`, `title`, `url`, `cover`, `duration`, `uploader`, `views_and_age` and an optional `reason`. At the end of the feed `no_more` is `true` and `videos` is empty.
 - **Params:** `cursor` (integer, optional) — Upstream cursor from the previous response; defaults to 0
 
 ### `bilibili_ranking`
 
 - **HTTP:** `GET /bilibili/ranking`
-- **What:** Get the current Bilibili all-site ranking. Returns the current official all-site ranking with video engagement, category, and creator metadata in rank order.
+- **What:** Get the current Bilibili all-site ranking. Returns the current Bilibili all-site video ranking in rank order. Each video has its `rank`, `aid`, `title`, `url`, `cover`, `views`, `danmaku`, `replies`, `favorites`, `likes`, `duration_seconds`, `published_at`, `category` and `creator` (name, `mid`, `followers`). Takes no parameters.
 - **Params:** _none_
 
 ### `bilibili_vertical_home`
@@ -517,7 +529,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `bilibili_weekly`
 
 - **HTTP:** `GET /bilibili/weekly`
-- **What:** Get a Bilibili weekly selected-video issue. Returns one issue from Bilibili's weekly selected-video archive. Omit number to resolve and return the latest issue.
+- **What:** Get a Bilibili weekly selected-video issue. Returns one issue of Bilibili's weekly selected-video series: `number` (1 to 1000000) picks the issue, and omitting it returns the latest. The issue has `subject`, `label`, `description` and `reminder`, and each video has `bvid`, `title`, `uploader`, `duration_seconds`, `recommendation` and `stats_text`. An unknown issue number returns 404.
 - **Params:** `number` (integer, optional) — Positive issue number; omit for the latest issue
 
 ## Patreon (4)

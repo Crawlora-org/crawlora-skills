@@ -49,7 +49,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `doordash_store`
 
 - **HTTP:** `GET /doordash/store/{store_id}`
-- **What:** Get a DoorDash store. Returns location-aware DoorDash store metadata through the Android mobile guest flow. No DoorDash account or caller-supplied token is required.
+- **What:** Get a DoorDash store. Returns public metadata for a DoorDash store by its numeric `store_id`, as seen from the delivery location given by the required `latitude` and `longitude`. The response has the name, URL, images, average rating, rating count, and menu section and item counts. Address, coordinates and price range appear only when DoorDash supplies them. Missing or out-of-range coordinates return `400`.
 - **Params:** `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
 
 ### `doordash_store_fulfillment`
@@ -87,49 +87,49 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `yelp_business`
 
 - **HTTP:** `GET /yelp/business/{id}`
-- **What:** Get Yelp business detail. Looks up a single Yelp business by alias or encoded id via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller.
+- **What:** Get Yelp business detail. Looks up a single Yelp business by alias or encoded id.
 - **Params:** `id` (string, **required**) — Yelp business alias or encoded id
 
 ### `yelp_business_menu`
 
 - **HTTP:** `GET /yelp/business/{id}/menu`
-- **What:** Get Yelp business menu. Fetches menu items for a Yelp business via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller.
+- **What:** Get Yelp business menu. Fetches menu items for a Yelp business.
 - **Params:** `id` (string, **required**) — Yelp business alias or encoded id
 
 ### `yelp_business_photos`
 
 - **HTTP:** `GET /yelp/business/{id}/photos`
-- **What:** Get Yelp business photos. Fetches the photo gallery for a Yelp business via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller.
+- **What:** Get Yelp business photos. Fetches the photo gallery for a Yelp business.
 - **Params:** `id` (string, **required**) — Yelp business alias or encoded id; `limit` (integer, optional) — Max photos to return, 1-50; `offset` (integer, optional) — Pagination offset
 
 ### `yelp_business_review_highlights`
 
 - **HTTP:** `GET /yelp/business/{id}/reviews/highlights`
-- **What:** Get Yelp business review highlights. Fetches thematic review snippets (extracted talking points with a supporting quote) for a Yelp business via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller.
+- **What:** Get Yelp business review highlights. Fetches thematic review snippets (extracted talking points with a supporting quote) for a Yelp business.
 - **Params:** `id` (string, **required**) — Yelp business alias or encoded id
 
 ### `yelp_business_reviews`
 
 - **HTTP:** `GET /yelp/business/{id}/reviews`
-- **What:** Get Yelp business reviews. Fetches reviews for a Yelp business via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller.
+- **What:** Get Yelp business reviews. Fetches reviews for a Yelp business.
 - **Params:** `id` (string, **required**) — Yelp business alias or encoded id; `limit` (integer, optional) — Max reviews to return, 1-50; `offset` (integer, optional) — Pagination offset
 
 ### `yelp_business_reviews_search`
 
 - **HTTP:** `GET /yelp/business/{id}/reviews/search`
-- **What:** Search Yelp business reviews by keyword. Searches a Yelp business's reviews for a keyword via Yelp's real Android app backend, returning a highlighted excerpt per match. Credential-free: no login, no API key, no cookie required from the caller.
+- **What:** Search Yelp business reviews by keyword. Searches a Yelp business's reviews for a keyword, returning a highlighted excerpt per match.
 - **Params:** `id` (string, **required**) — Yelp business alias or encoded id; `term` (string, **required**) — Keyword to search reviews for
 
 ### `yelp_geocode`
 
 - **HTTP:** `GET /yelp/geocode`
-- **What:** Geocode a free-form address. Resolves a free-form address into structured location data (coordinates, city, state, zip, county) via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller. Not business-scoped.
+- **What:** Geocode a free-form address. Resolves a free-form address into structured location data (coordinates, city, state, zip, county). Not business-scoped.
 - **Params:** `address` (string, **required**) — Free-form address to geocode
 
 ### `yelp_search`
 
 - **HTTP:** `GET /yelp/search`
-- **What:** Search Yelp businesses. Searches Yelp's real Android app business-search backend for a term and location. Credential-free: no login, no API key, no cookie required from the caller.
+- **What:** Search Yelp businesses. Searches Yelp businesses for a term and location.
 - **Params:** `limit` (integer, optional) — Max results to return, 1-50; `location` (string, **required**) — Neighborhood, city, state, or zip code; `offset` (integer, optional) — Pagination offset; `term` (string, **required**) — Search term
 
 ## UberEats (5)
@@ -137,31 +137,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `ubereats_feed`
 
 - **HTTP:** `GET /ubereats/feed`
-- **What:** Browse UberEats location feed. Returns restaurants delivering to a specific location: name, rating, review count, delivery estimate, cuisine tags, and cover image. Credential-free public UberEats data.
+- **What:** Browse UberEats location feed. Returns restaurants delivering to a specific location: name, rating, review count, delivery estimate, cuisine tags, and cover image.
 - **Params:** `latitude` (number, **required**) — Delivery search center latitude; `limit` (integer, optional) — Number of restaurants to return, clamped to 50. Default 20; `longitude` (number, **required**) — Delivery search center longitude; `offset` (integer, optional) — Result offset for the location feed. Default 0
 
 ### `ubereats_search`
 
 - **HTTP:** `GET /ubereats/search`
-- **What:** Search UberEats restaurants. Returns restaurants delivering to a location: name, rating, review count, delivery estimate, cuisine tags, and image. Pass a keyword to search by name/cuisine/dish, or omit it to browse the general feed for that location. Credential-free public UberEats data.
+- **What:** Search UberEats restaurants. Returns restaurants delivering to a location: name, rating, review count, delivery estimate, cuisine tags, and image. Pass a keyword to search by name/cuisine/dish, or omit it to browse the general feed for that location.
 - **Params:** `cursor` (string, optional) — Opaque pagination cursor from a previous keyword-search response; `latitude` (number, **required**) — Delivery search center latitude; `limit` (integer, optional) — Number of restaurants to return, clamped to 50. Default 20; `longitude` (number, **required**) — Delivery search center longitude; `offset` (integer, optional) — Result offset for the location feed (used only when query is omitted). Default 0; `query` (string, optional) — Keyword — restaurant name, cuisine, or dish
 
 ### `ubereats_store`
 
 - **HTTP:** `GET /ubereats/store/{store_id}`
-- **What:** Get an UberEats store. Returns a normalized UberEats store: address, phone, rating, cuisine tags, hours tagline, and the full menu (sections with items, descriptions, and prices). Credential-free public UberEats data.
+- **What:** Get an UberEats store. Returns an UberEats store: address, phone, rating, cuisine tags, hours tagline, and the full menu (sections with items, descriptions, and prices).
 - **Params:** `store_id` (string, **required**) — UberEats store UUID, as returned by the search endpoint's storeUuid field
 
 ### `ubereats_store_menu`
 
 - **HTTP:** `GET /ubereats/store/{store_id}/menu`
-- **What:** Get an UberEats store menu. Returns the full menu for an UberEats store: section titles, items, item descriptions, prices, and availability status. Credential-free public UberEats data.
+- **What:** Get an UberEats store menu. Returns the full menu for an UberEats store: section titles, items, item descriptions, prices, and availability status.
 - **Params:** `store_id` (string, **required**) — UberEats store UUID, as returned by the search endpoint's storeUuid field
 
 ### `ubereats_store_reviews`
 
 - **HTTP:** `GET /ubereats/store/{store_id}/reviews`
-- **What:** Get UberEats store reviews. Returns the reviews snapshot embedded in an UberEats store page: aggregate rating, review count, and a sample of recent reviews (reviewer name, text, and relative/absolute date). This is a single on-page snapshot, not a full paginated feed. A store with no written reviews returns an empty reviews list. Credential-free public UberEats data.
+- **What:** Get UberEats store reviews. Returns the reviews snapshot embedded in an UberEats store page: aggregate rating, review count, and a sample of recent reviews (reviewer name, text, and relative/absolute date). This is a single on-page snapshot, not a full paginated feed. A store with no written reviews returns an empty reviews list.
 - **Params:** `store_id` (string, **required**) — UberEats store UUID, as returned by the search endpoint's storeUuid field
 
 ## Instacart (6)
@@ -207,25 +207,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `opentable_restaurant`
 
 - **HTTP:** `GET /opentable/restaurant`
-- **What:** Get an OpenTable restaurant's profile and live availability. Returns a restaurant's profile (location, cuisines, hours, price band, review summary) plus real-time bookable timeslots for the given date/time and party size. Credential-free.
+- **What:** Get an OpenTable restaurant's profile and live availability. Returns a restaurant's profile (location, cuisines, hours, price band, review summary) plus real-time bookable timeslots for the given date/time and party size.
 - **Params:** `date_time` (string, optional) — Reservation date/time, RFC3339-minute local format; defaults to now; `party_size` (integer, optional) — Party size, default 2; `restaurant_id` (string, **required**) — OpenTable restaurant id
 
 ### `opentable_restaurant_menus`
 
 - **HTTP:** `GET /opentable/restaurant/menus`
-- **What:** Get an OpenTable restaurant's menus. Returns a restaurant's menus (sections, items, prices). Credential-free.
+- **What:** Get an OpenTable restaurant's menus. Returns the menus of one OpenTable restaurant, identified by the required `restaurant_id`. Each menu has a title, a currency and sections, and each section lists items with title, price and description. The price is returned as a string in the menu's currency, for example HK$.
 - **Params:** `restaurant_id` (string, **required**) — OpenTable restaurant id
 
 ### `opentable_restaurant_reviews`
 
 - **HTTP:** `GET /opentable/restaurant/reviews`
-- **What:** Get a page of an OpenTable restaurant's diner reviews. Returns a page of diner reviews (author, text, per-category ratings) for a restaurant. Credential-free.
+- **What:** Get a page of an OpenTable restaurant's diner reviews. Returns one page of diner reviews for an OpenTable restaurant, identified by the required `restaurant_id`. `page` defaults to 1 and `size` to 20. Each review has its id, author and author's metro area, reservation and posted dates, text, a recommended flag, and ratings for overall, food, service, ambience, value and noise.
 - **Params:** `page` (integer, optional) — Page number, default 1; `restaurant_id` (string, **required**) — OpenTable restaurant id; `size` (integer, optional) — Reviews per page, default 20
 
 ### `opentable_search`
 
 - **HTTP:** `GET /opentable/search`
-- **What:** Search OpenTable restaurants near a location. Searches restaurants by free-text term (cuisine, name, neighborhood) near a latitude/longitude, for a given date/time and party size, including inline live availability per result. Credential-free.
+- **What:** Search OpenTable restaurants near a location. Searches restaurants by free-text term (cuisine, name, neighborhood) near a latitude/longitude, for a given date/time and party size, including inline live availability per result.
 - **Params:** `date_time` (string, optional) — Reservation date/time, RFC3339-minute local format; defaults to now; `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude; `party_size` (integer, optional) — Party size, default 2; `size` (integer, optional) — Max results, default 10; `term` (string, **required**) — Free-text search term
 
 ## 7NOW (13)
@@ -483,7 +483,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `culvers_directory`
 
 - **HTTP:** `GET /culvers/directory`
-- **What:** Browse Culver's restaurant-URL index. Returns one page of Culver's own restaurant-URL sitemap (~1,121 restaurants). Each entry's slug is the value GET /culvers/store takes.
+- **What:** Browse Culver's restaurant-URL index. Returns one page of Culver's restaurant index, which covers about 1,121 restaurants. `page` starts at 1 and `page_size` runs 1 to 500 (default 100). Each entry has a `slug`, the value the `/culvers/store` endpoint takes, and the restaurant's URL. The total and page counts are included.
 - **Params:** `page` (integer, optional) — Optional. 1-based page, default 1.; `page_size` (integer, optional) — Optional. Entries per page, 1-500, default 100.
 
 ### `culvers_flavor`
@@ -501,7 +501,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `culvers_menu`
 
 - **HTTP:** `GET /culvers/menu`
-- **What:** List one Culver's menu category's items. Returns the items in one Culver's menu category, each with name, description, image, and a link to Culver's nutrition guide. Category slugs come from GET /culvers/categories. Prices are not published on the national catalog -- Culver's only prices items once a specific restaurant is selected client-side, and no credential-free per-restaurant pricing source was found; see GET /culvers/item for full modifier/topping detail.
+- **What:** List one Culver's menu category's items. Returns the items in one Culver's menu category, each with name, description, image, and a link to Culver's nutrition guide. Category slugs come from GET /culvers/categories. Prices are not published on the national catalog -- Culver's only prices items once a specific restaurant is selected; see GET /culvers/item for full modifier/topping detail.
 - **Params:** `category` (string, **required**) — Category slug from /culvers/categories
 
 ### `culvers_store`
@@ -553,13 +553,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `dominos_customization`
 
 - **HTTP:** `GET /dominos/customization`
-- **What:** Get one Domino's store's full build-your-own customization catalog. Returns one Domino's US store's full build-your-own customization catalog, grouped by product category (Domino's own internal names, e.g. "BuildYourOwnDomino" for pizza, "GSalad" for garden salads): every selectable size, crust/flavor style, topping, and side, each with its own code, name, description, dietary/placement flags (e.g. Meat, Vege, Sauce, WholeOnly), and any other attributes Domino's attaches (e.g. ExclusiveGroup for mutually-exclusive options). Also returns cooking instructions (bake level, cut style, seasoning), grouped. Reads the same structured menu response as GET /dominos/menu, so it costs no additional upstream request. Store ids come from GET /dominos/store-locator. An unknown store id returns 404.
+- **What:** Get one Domino's store's full build-your-own customization catalog. Returns one Domino's US store's full build-your-own customization catalog, grouped by product category (Domino's own names, e.g. "BuildYourOwnDomino" for pizza, "GSalad" for garden salads): every selectable size, crust/flavor style, topping, and side, each with its own code, name, description, dietary/placement flags (e.g. Meat, Vege, Sauce, WholeOnly), and any other attributes Domino's attaches (e.g. ExclusiveGroup for mutually-exclusive options). Also returns cooking instructions (bake level, cut style, seasoning), grouped. Store ids come from GET /dominos/store-locator. An unknown store id returns 404.
 - **Params:** `store_id` (string, **required**) — Domino's store id, from /dominos/store-locator
 
 ### `dominos_menu`
 
 - **HTTP:** `GET /dominos/menu`
-- **What:** Get one Domino's store's full structured menu. Returns one Domino's US store's full menu, normalized into a flat list of categories (each with a stable code/name path, e.g. "Pizza > Specialty Pizzas") and their items. Each item carries its code, name, description, and product type, plus every purchasable variant (size/style) with its own code, name, and price. Store ids come from GET /dominos/store-locator. An unknown store id returns 404.
+- **What:** Get one Domino's store's full structured menu. Returns one Domino's US store's full menu, as a flat list of categories (each with a stable code/name path, e.g. "Pizza > Specialty Pizzas") and their items. Each item carries its code, name, description, and product type, plus every purchasable variant (size/style) with its own code, name, and price. Store ids come from GET /dominos/store-locator. An unknown store id returns 404.
 - **Params:** `store_id` (string, **required**) — Domino's store id, from /dominos/store-locator
 
 ### `dominos_nutrition`
@@ -781,7 +781,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `justeat_restaurant`
 
 - **HTTP:** `GET /justeat/restaurant`
-- **What:** Get one Just Eat restaurant's detail. Returns one Just Eat restaurant's detail by unique_name: name, address, primary cuisine, rating, and whether it currently accepts orders.
+- **What:** Get one Just Eat restaurant's detail. Returns one Just Eat restaurant by `unique_name`, the slug found in a search result. The response has the restaurant id, name, address, city, postal code, country, image, primary cuisine, rating and rating count, and `is_active`, which says whether it currently accepts orders. `rating` can read `0` even when the site shows one. An unknown `unique_name` returns `404`.
 - **Params:** `unique_name` (string, **required**) — Restaurant slug, from a search response's unique_name field
 
 ### `justeat_restaurant_menu`
@@ -843,7 +843,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `kfc_stores`
 
 - **HTTP:** `GET /kfc/stores`
-- **What:** Search KFC restaurants by city, state, postal code, name, franchise code, or store number. Returns KFC restaurants matching a city/state/postal code/name/franchise code/store number filter. At least one filter is required -- an unfiltered call would enumerate every US restaurant in one response, which this endpoint intentionally does not expose. Each restaurant carries its store number (the value /kfc/menu and /kfc/promotions take), full address with coordinates, phone, whether it currently accepts online orders, and its timezone. appear_in_store_results (default true) excludes internal/test records KFC's own storefront does not surface in customer-facing search -- confirmed live that a raw filter can otherwise return non-orderable administrative entries alongside real restaurants.
+- **What:** Search KFC restaurants by city, state, postal code, name, franchise code, or store number. Returns KFC restaurants matching a city/state/postal code/name/franchise code/store number filter. At least one filter is required -- an unfiltered call would enumerate every US restaurant in one response, which this endpoint intentionally does not expose. Each restaurant carries its store number (the value /kfc/menu and /kfc/promotions take), full address with coordinates, phone, whether it currently accepts online orders, and its timezone. appear_in_store_results (default true) excludes internal/test records KFC's own storefront does not surface in customer-facing search -- a raw filter can otherwise return non-orderable administrative entries alongside real restaurants.
 - **Params:** `appear_in_store_results` (boolean, optional) — Restrict to restaurants shown in customer-facing search, excluding internal/test entries (default true); `city` (string, optional) — Restaurant city; `franchise_code` (string, optional) — Exact franchise/operator code; `max_results` (integer, optional) — Maximum restaurants to return, 1-50 (default 20); `name` (string, optional) — Restaurant name, partial match; `postal_code` (string, optional) — Restaurant postal code; `sort` (string, optional) — Sort order; `state` (string, optional) — Restaurant state, two-letter code; `store_number` (string, optional) — Exact store number
 
 ## Kroger (10)
@@ -857,7 +857,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `kroger_category`
 
 - **HTTP:** `GET /kroger/category`
-- **What:** Browse a Kroger category. Browses a Kroger product category and returns normalized product cards plus facet groups, in the same shape as kroger-search. slug and category_id together identify the category (e.g. "pet" and "27" for kroger.com/pl/pet/27) -- call kroger-categories to discover every valid slug/category_id pair. Served from Kroger's own search JSON API using category_id as a taxonomy filter, with real upstream pagination; it falls back to parsing the rendered category page if that path is unavailable, and the source field reports which path answered. Facet filters and sort apply to the JSON path only: when any of them is set, a JSON-path failure returns an error rather than silently falling back to unfiltered results.
+- **What:** Browse a Kroger category. Browses a Kroger product category and returns product cards plus facet groups, in the same shape as kroger-search. slug and category_id together identify the category (e.g. "pet" and "27" for kroger.com/pl/pet/27) -- call kroger-categories to discover every valid slug/category_id pair. It uses category_id as a taxonomy filter, with real pagination, and the source field reports which path answered. Facet filters and sort apply to the primary path only: when any of them is set, a failure of that path returns an error rather than silently falling back to unfiltered results.
 - **Params:** `brands` (string, optional) — Comma-separated brand names to filter by, taken verbatim from a previous response's facets; `category_id` (string, **required**) — Category numeric taxonomy id. Obtain valid slug/category_id pairs from kroger-categories; `flavor` (string, optional) — Comma-separated flavor facet values; `more_options` (string, optional) — Comma-separated more-options facet values; `nutrition` (string, optional) — Comma-separated nutrition/dietary facet values; `page` (integer, optional) — One-based result page; `price_max` (number, optional) — Upper bound of the price filter; required to filter on price; `price_min` (number, optional) — Lower bound of the price filter; defaults to 0; `savings` (string, optional) — Comma-separated savings facet values; `scent` (string, optional) — Comma-separated scent facet values; `slug` (string, **required**) — Category URL slug segment. Obtain valid slug/category_id pairs from kroger-categories; `sort` (string, optional) — Result order. One of: relevance, name_asc, popularity_desc
 
 ### `kroger_coupons`
@@ -869,7 +869,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `kroger_product`
 
 - **HTTP:** `GET /kroger/product`
-- **What:** Get a Kroger product. Returns normalized product detail for one Kroger item: title, description, image, brand, category trail, price/availability, and rating, sourced from the product page's own schema.org structured data.
+- **What:** Get a Kroger product. Returns product detail for one Kroger item: title, description, image, brand, category trail, price/availability, and rating.
 - **Params:** `upc` (string, **required**) — Kroger product UPC/id (the last path segment of the product page URL)
 
 ### `kroger_product_reviews`
@@ -881,7 +881,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `kroger_products`
 
 - **HTTP:** `GET /kroger/products`
-- **What:** Get full Kroger product detail in bulk. Returns full normalized detail for up to 50 Kroger products in one call, from Kroger's own product API. Carries materially more than kroger-product: a nutrition-facts panel with ingredients, allergens and dietary flags; store-specific price and stock level; a full star-rating histogram; the merchandising hierarchy; and every image perspective. location_id scopes price and stock to one store.
+- **What:** Get full Kroger product detail in bulk. Returns full detail for up to 50 Kroger products in one call. Carries materially more than kroger-product: a nutrition-facts panel with ingredients, allergens and dietary flags; store-specific price and stock level; a full star-rating histogram; the merchandising hierarchy; and every image perspective. location_id scopes price and stock to one store.
 - **Params:** `location_id` (string, optional) — Kroger store/location id that scopes price and stock; `upcs` (string, **required**) — Comma-separated Kroger product UPCs, up to 50
 
 ### `kroger_related_tags`
@@ -893,7 +893,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `kroger_search`
 
 - **HTTP:** `GET /kroger/search`
-- **What:** Search Kroger products. Searches Kroger products by keyword and returns normalized product cards (price, unit price, brand, size, stock level) plus the facet groups Kroger offers for the query (brands, nutrition, savings, price range and more). Served from Kroger's own search JSON API with real upstream pagination; if that path is unavailable it falls back to parsing the rendered search page, and the source field reports which path answered. Facet filters and sort apply to the JSON path only: when any of them is set, a JSON-path failure returns an error rather than silently falling back to unfiltered results.
+- **What:** Search Kroger products. Searches Kroger products by keyword and returns product cards (price, unit price, brand, size, stock level) plus the facet groups Kroger offers for the query (brands, nutrition, savings, price range and more). It supports real pagination, and the source field reports which path answered. Facet filters and sort apply to the primary path only: when any of them is set, a failure of that path returns an error rather than silently falling back to unfiltered results.
 - **Params:** `brands` (string, optional) — Comma-separated brand names to filter by, taken verbatim from a previous response's facets; `flavor` (string, optional) — Comma-separated flavor facet values; `more_options` (string, optional) — Comma-separated more-options facet values; `nutrition` (string, optional) — Comma-separated nutrition/dietary facet values; `page` (integer, optional) — One-based result page; `price_max` (number, optional) — Upper bound of the price filter; required to filter on price; `price_min` (number, optional) — Lower bound of the price filter; defaults to 0; `query` (string, **required**) — Search keyword; `savings` (string, optional) — Comma-separated savings facet values; `scent` (string, optional) — Comma-separated scent facet values; `sort` (string, optional) — Result order. One of: relevance, name_asc, popularity_desc
 
 ### `kroger_store`
@@ -999,7 +999,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `panera_menu`
 
 - **HTTP:** `GET /panera/menu`
-- **What:** Get one Panera Bread cafe's full menu with prices, nutrition and allergens. Returns one cafe's full category tree (with subcategories) and its complete item catalog, priced for that specific cafe -- Panera's prices are genuinely per-cafe, not a national list (the same salad has been confirmed live at different prices in Chicago and New York). Each item carries its price, product type, whether it is customizable, its published nutrients (Panera's placard API only ever publishes Calories and Caffeine on this surface -- a fuller macro/micronutrient breakdown is not available credential-free), its allergen statement (contains / may-contain, each with an id and display name), Panera's own wellness/dietary labels (for example Vegan, Vegetarian, Gluten Conscious), and a live in_stock flag from this cafe's current stockout feed. Cafe ids come from GET /panera/locations. An unknown cafe id returns a 404.
+- **What:** Get one Panera Bread cafe's full menu with prices, nutrition and allergens. Returns one cafe's full category tree (with subcategories) and its complete item catalog, priced for that specific cafe -- Panera's prices are genuinely per-cafe, not a national list (the same salad has been confirmed live at different prices in Chicago and New York). Each item carries its price, product type, whether it is customizable, its published nutrients (only Calories and Caffeine are published -- a fuller macro/micronutrient breakdown is not available), its allergen statement (contains / may-contain, each with an id and display name), Panera's own wellness/dietary labels (for example Vegan, Vegetarian, Gluten Conscious), and a live in_stock flag reflecting this cafe's current stockouts. Cafe ids come from GET /panera/locations. An unknown cafe id returns a 404.
 - **Params:** `cafe_id` (integer, **required**) — Panera cafe id, from /panera/locations
 
 ### `panera_quantity_rules`
@@ -1043,7 +1043,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `pandamart_store_categories`
 
 - **HTTP:** `GET /pandamart/store/categories`
-- **What:** Get one pandamart darkstore's category tree. Returns one darkstore's full category tree: every category and sub-category, each with the upstream-reported product count and (for top-level categories) an image. Sourced from the same page /pandamart/store/products reads, so it costs no extra request beyond a plain store lookup. This lists what categories exist and how large they are -- it does not fetch the items inside any one category, which still requires a resolved delivery-address session this repo could not reproduce. Sub-category product counts are frequently 0 upstream; only top-level counts are reliably populated.
+- **What:** Get one pandamart darkstore's category tree. Returns one darkstore's full category tree: every category and sub-category, each with the upstream-reported product count and (for top-level categories) an image. This lists what categories exist and how large they are -- it does not fetch the items inside any one category. Sub-category product counts are frequently 0 upstream; only top-level counts are reliably populated.
 - **Params:** `code` (string, **required**) — Darkstore code, from /pandamart/search's code field; `market` (string, optional) — Delivery Hero market the store belongs to. One of sg, pk, bd, hk, my, ph. Defaults to sg.
 
 ### `pandamart_store_product`
@@ -1055,7 +1055,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `pandamart_store_products`
 
 - **HTTP:** `GET /pandamart/store/products`
-- **What:** Get one pandamart darkstore's product showcase. Returns one darkstore's product showcase: every named shelf its own home page displays (deals, new arrivals, category highlights, etc.), each with real prices, stock, and availability. This is the curated set of shelves the store's home page surfaces, not the full category-browsable catalog -- browsing into a specific category page requires a resolved delivery-address session this repo could not reproduce server-side.
+- **What:** Get one pandamart darkstore's product showcase. Returns one darkstore's product showcase: every named shelf its own home page displays (deals, new arrivals, category highlights, etc.), each with real prices, stock, and availability. This is the curated set of shelves the store's home page surfaces, not the full category-browsable catalog.
 - **Params:** `code` (string, **required**) — Darkstore code, from /pandamart/search's code field; `market` (string, optional) — Delivery Hero market the store belongs to. One of sg, pk, bd, hk, my, ph. Defaults to sg.
 
 ### `pandamart_store_search`
@@ -1215,7 +1215,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `pizzahut_delivery_estimate`
 
 - **HTTP:** `GET /pizzahut/delivery-estimate`
-- **What:** Check Pizza Hut delivery serviceability and estimated fee for one store and address. Checks whether a Pizza Hut restaurant's delivery integration can deliver to a given address and, when it can, the estimated delivery fee (broken down by fee line item) and pickup/dropoff time. This reads the same checkout-time estimate Pizza Hut's own site calls -- it does not add an item to a cart or place an order, and takes no payment or account information. serviceable is true only when the upstream returned a real estimate; a false value with reason populated covers every other case seen live, such as the requested delivery_provider not being enabled at that store. For the default INTERNAL provider, a serviceable result does not by itself confirm the address is within a real deliverable radius -- see this endpoint's markdown doc for the caveat. order_subtotal materially affects the fee estimate, so it is required rather than defaulted. pickup_at defaults to 30 minutes from now (an "order now" style estimate) when omitted.
+- **What:** Check Pizza Hut delivery serviceability and estimated fee for one store and address. Checks whether a Pizza Hut restaurant's delivery integration can deliver to a given address and, when it can, the estimated delivery fee (broken down by fee line item) and pickup/dropoff time. This is a checkout-time estimate -- it does not add an item to a cart or place an order, and takes no payment or account information. serviceable is true only when the upstream returned a real estimate; a false value with reason populated covers every other case seen live, such as the requested delivery_provider not being enabled at that store. For the default INTERNAL provider, a serviceable result does not by itself confirm the address is within a real deliverable radius -- see this endpoint's markdown doc for the caveat. order_subtotal materially affects the fee estimate, so it is required rather than defaulted. pickup_at defaults to 30 minutes from now (an "order now" style estimate) when omitted.
 - **Params:** `address1` (string, **required**) — Delivery address line 1; `address2` (string, optional) — Delivery address line 2; `city` (string, **required**) — Delivery address city; `country_code` (string, optional) — Delivery address country code (default US); `delivery_provider` (string, optional) — Delivery provider to check (default INTERNAL); `latitude` (number, **required**) — Delivery address latitude; `longitude` (number, **required**) — Delivery address longitude; `order_subtotal` (number, **required**) — Order subtotal before fees, in dollars; `pickup_at` (string, optional) — RFC3339 pickup time (default 30 minutes from now); `postal_code` (string, **required**) — Delivery address postal code; `state` (string, **required**) — Delivery address state, two-letter code; `store_number` (string, **required**) — Pizza Hut's store number, from /pizzahut/stores
 
 ### `pizzahut_menu`
@@ -1435,7 +1435,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `starbucks_menu`
 
 - **HTTP:** `GET /starbucks/menu`
-- **What:** Browse the full Starbucks menu. Returns Starbucks' full menu as a category tree: top-level categories, their child categories, and every product with its product number, form, product type, sizes, default size, availability, and image. Pair a product's product_number and form with /starbucks/product to fetch full detail including nutrition. store_number optionally scopes the menu to one store, using a store number from /starbucks/stores; a store-scoped menu marks items that store does not carry with availability NotAvailableHere, while the unscoped menu reports everything as Available. market selects which country catalog to return, one of us or ca, defaulting to us; the two differ substantially (roughly 282 US products vs 253 CA, with exclusives on both sides). Only these two markets are available: every other Starbucks country site runs a different platform, and the European ones disallow API access in robots.txt.
+- **What:** Browse the full Starbucks menu. Returns Starbucks' full menu as a category tree: top-level categories, their child categories, and every product with its product number, form, product type, sizes, default size, availability, and image. Pair a product's product_number and form with /starbucks/product to fetch full detail including nutrition. store_number optionally scopes the menu to one store, using a store number from /starbucks/stores; a store-scoped menu marks items that store does not carry with availability NotAvailableHere, while the unscoped menu reports everything as Available. market selects which country catalog to return, one of us or ca, defaulting to us; the two differ substantially (roughly 282 US products vs 253 CA, with exclusives on both sides). Only these two markets are available.
 - **Params:** `market` (string, optional) — Starbucks country site to read. One of: us, ca. Defaults to us; `store_number` (string, optional) — Starbucks store number to scope availability to, e.g. 101-54
 
 ### `starbucks_nearest_store`
@@ -1480,7 +1480,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `subway_menu`
 
 - **HTTP:** `GET /subway/menu`
-- **What:** Get one Subway store's full menu. Returns one Subway store's complete menu: every category, every product, and for each purchasable size (Footlong, 6-inch, etc.) its price, full nutrition panel (calories, fat, sodium, protein and more) and allergen disclosures. Store IDs come from a GET /subway/store result's store_id field. This endpoint currently covers US stores only: the upstream menu route it reads is not served for non-US stores, which return 404 -- see GET /subway/combos for the bundle/combo categories that are available in other markets. Categories carry is_main_category: true for human-browsable menu sections (Sandwiches, Drinks, Salads, ...) and false for Subway's own internal build/customization groupings, which are included for completeness but are not meant to be shown as menu sections on their own.
+- **What:** Get one Subway store's full menu. Returns one Subway store's complete menu: every category, every product, and for each purchasable size (Footlong, 6-inch, etc.) its price, full nutrition panel (calories, fat, sodium, protein and more) and allergen disclosures. Store IDs come from a GET /subway/store result's store_id field. This endpoint currently covers US stores only: the menu is not available for non-US stores, which return 404 -- see GET /subway/combos for the bundle/combo categories that are available in other markets. Categories carry is_main_category: true for human-browsable menu sections (Sandwiches, Drinks, Salads, ...) and false for Subway's own internal build/customization groupings, which are included for completeness but are not meant to be shown as menu sections on their own.
 - **Params:** `store_id` (string, **required**) — Store ID from a /subway/store result's store_id
 
 ### `subway_nearby`
@@ -1492,7 +1492,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `subway_sitemap`
 
 - **HTTP:** `GET /subway/sitemap`
-- **What:** Browse Subway's global store-URL index. Returns one page of Subway's sitemap-declared store index -- 22,700+ URLs across 2 shards at time of writing, covering a country/region/city/street tree worldwide. This is the cheapest way to enumerate Subway locations, and it is the entry point Subway's own robots.txt declares. Each entry carries its URL, the locator path GET /subway/store takes, and a depth: the deepest entries are store pages, shallower ones are country, region and city directory pages listed in the same sitemap. A page past the end returns an empty list rather than an error, so a caller can walk to exhaustion.
+- **What:** Browse Subway's global store-URL index. Returns one page of Subway's sitemap-declared store index -- 22,700+ URLs across 2 shards at time of writing, covering a country/region/city/street tree worldwide. This is the cheapest way to enumerate Subway locations. Each entry carries its URL, the locator path GET /subway/store takes, and a depth: the deepest entries are store pages, shallower ones are country, region and city directory pages listed in the same sitemap. A page past the end returns an empty list rather than an error, so a caller can walk to exhaustion.
 - **Params:** `page` (integer, optional) — 1-based page within the shard (default 1); `page_size` (integer, optional) — Entries per page, 1-500 (default 100); `shard` (integer, optional) — Sitemap shard index (default 0). shard_count in the response says how many exist.
 
 ### `subway_store`
@@ -1532,7 +1532,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `taco_bell_app_menu`
 
 - **HTTP:** `GET /taco-bell/app-menu`
-- **What:** Get one Taco Bell restaurant's full app-ordering catalog, combos included. Returns one Taco Bell US restaurant's complete app-ordering catalog by store number: every category, every individually orderable product, AND every combo (kind "bundle") it carries. This is the only endpoint in this family that publishes combos at all -- each one resolved down to its full slot composition (choices[], each with min/max selections and the product codes it defaults to when not customized), not just a name and price. Also returns the store's named ordering windows (dayparts) and, per item, which dayparts it is orderable in. Comes from a different, credential-free backend than every other endpoint in this family -- no cookie, session, or account is required. Store numbers come from GET /taco-bell/stores.
+- **What:** Get one Taco Bell restaurant's full app-ordering catalog, combos included. Returns one Taco Bell US restaurant's complete app-ordering catalog by store number: every category, every individually orderable product, AND every combo (kind "bundle") it carries. This is the only endpoint in this family that publishes combos at all -- each one resolved down to its full slot composition (choices[], each with min/max selections and the product codes it defaults to when not customized), not just a name and price. Also returns the store's named ordering windows (dayparts) and, per item, which dayparts it is orderable in. Store numbers come from GET /taco-bell/stores.
 - **Params:** `store_number` (string, **required**) — Taco Bell store number, from /taco-bell/stores
 
 ### `taco_bell_categories`
@@ -1588,7 +1588,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `whataburger_store`
 
 - **HTTP:** `GET /whataburger/store`
-- **What:** Get one Whataburger store's detail. Returns one Whataburger store: postal address, coordinates, phone, published week of opening hours, the restaurant services (curbside, delivery) Whataburger lists for it, and a per-channel hours breakdown (dine-in, drive-thru, curbside, delivery) where the channel's hours genuinely differ from the store's top-level hours. Store paths come from GET /whataburger/sitemap -- a store's canonical, curbside and delivery page paths all describe the same physical restaurant and return the same address; the response's own path field always reports the canonical page. Passing a state or city directory path returns a 404 rather than a hollow record. Note Whataburger's ordering/menu site returns no usable response for automated requests, so there is no credential-free menu source and this family is a locator only.
+- **What:** Get one Whataburger store's detail. Returns one Whataburger store: postal address, coordinates, phone, published week of opening hours, the restaurant services (curbside, delivery) Whataburger lists for it, and a per-channel hours breakdown (dine-in, drive-thru, curbside, delivery) where the channel's hours genuinely differ from the store's top-level hours. Store paths come from GET /whataburger/sitemap -- a store's canonical, curbside and delivery page paths all describe the same physical restaurant and return the same address; the response's own path field always reports the canonical page. Passing a state or city directory path returns a 404 rather than a hollow record. Note there is no menu source, so this family is a locator only.
 - **Params:** `path` (string, **required**) — Store path from a /whataburger/sitemap entry
 
 ## Wingstop (6)
@@ -1684,7 +1684,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `zomato_cities`
 
 - **HTTP:** `GET /zomato/cities`
-- **What:** List Zomato's curated directory of major cities. Returns Zomato's own curated directory of major Indian cities -- the discovery source for the city value used by zomato-search, zomato-restaurant, zomato-restaurant-menu, zomato-collections, and zomato-collection. This is Zomato's own "popular locations" directory, not an exhaustive list of every city Zomato serves -- some smaller markets resolve to a real Zomato city page without appearing here. A city slug from a caller's own prior knowledge (a restaurant URL's first path segment) can still be valid even if this endpoint does not return it. Credential-free.
+- **What:** List Zomato's curated directory of major cities. Returns Zomato's own curated directory of major Indian cities -- the discovery source for the city value used by zomato-search, zomato-restaurant, zomato-restaurant-menu, zomato-collections, and zomato-collection. This is Zomato's own "popular locations" directory, not an exhaustive list of every city Zomato serves -- some smaller markets resolve to a real Zomato city page without appearing here. A city slug from a caller's own prior knowledge (a restaurant URL's first path segment) can still be valid even if this endpoint does not return it.
 - **Params:** `q` (string, optional) — Case-insensitive substring match against a city's name or slug. Omit to list every city in the directory.
 
 ### `zomato_collection`
@@ -1770,13 +1770,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `wendys_store_menu`
 
 - **HTTP:** `GET /wendys/store-menu`
-- **What:** Get one Wendy's restaurant's full priced/offered menu. Returns one restaurant's own priced, offered item list -- real local pricing (including full combo bundle prices, which GET /wendys/item deliberately does not compute, since a combo's own price varies by what's chosen in each slot) and any store-specific promotional items, rather than Wendy's own generic/average national-menu listing (GET /wendys/menu, /wendys/item). Found via static analysis of Wendy's official Android app and confirmed credential-free: a cold, cookie-less request with just a store id returns real data, no session or account required.
+- **What:** Get one Wendy's restaurant's full priced/offered menu. Returns one restaurant's own priced, offered item list -- real local pricing (including full combo bundle prices, which GET /wendys/item deliberately does not compute, since a combo's own price varies by what's chosen in each slot) and any store-specific promotional items, rather than Wendy's own generic/average national-menu listing (GET /wendys/menu, /wendys/item). A request with just a store id returns real data, no session or account required.
 - **Params:** `store_id` (string, **required**) — Numeric store id, e.g. from /wendys/nearby's stores[].store_id or /wendys/restaurant's store_id
 
 ### `wendys_time_slots`
 
 - **HTTP:** `GET /wendys/time-slots`
-- **What:** Get one Wendy's restaurant's available mobile-order time slots. Returns one restaurant's available mobile-order arrival ("check-in") time slots -- the times a caller can schedule a mobile pickup order for, distinct from the restaurant's general open/close hours (GET /wendys/restaurant, /wendys/store). Found via static analysis of Wendy's official Android app and confirmed credential-free: a cold, cookie-less request with just a store id returns real available slots, no session or account required.
+- **What:** Get one Wendy's restaurant's available mobile-order time slots. Returns one restaurant's available mobile-order arrival ("check-in") time slots -- the times a caller can schedule a mobile pickup order for, distinct from the restaurant's general open/close hours (GET /wendys/restaurant, /wendys/store). A request with just a store id returns real available slots, no session or account required.
 - **Params:** `store_id` (string, **required**) — Numeric store id, e.g. from /wendys/nearby's stores[].store_id or /wendys/restaurant's store_id
 
 ## Zaxbys (3)

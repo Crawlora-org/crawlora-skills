@@ -13,55 +13,55 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `alt_asset`
 
 - **HTTP:** `GET /alt/asset`
-- **What:** Get one card design's population report and recent sales. Returns one card design's identity, full population report (across every grading company and grade Alt tracks), and a recent raw sales feed -- the "is this card actually rare, and what does it sell for" data for a specific card design, independent of any single listing. asset_id comes from a prior alt-search/alt-sold-listings/alt-card-search result's asset_id field. recent_sales has no per-transaction grade breakdown -- Alt's own API does not expose one; see alt-sold-listings for per-grade sold prices on specific listings. Credential-free public data from Alt's own GraphQL API.
+- **What:** Get one card design's population report and recent sales. Returns one card design's identity, full population report (across every grading company and grade Alt tracks), and a recent raw sales feed -- the "is this card actually rare, and what does it sell for" data for a specific card design, independent of any single listing. asset_id comes from a prior alt-search/alt-sold-listings/alt-card-search result's asset_id field. recent_sales has no per-transaction grade breakdown -- Alt does not expose one; see alt-sold-listings for per-grade sold prices on specific listings.
 - **Params:** `asset_id` (string, **required**) — The card design's asset id, from a Search/SoldListings/CardSearch result's asset_id field
 
 ### `alt_auctions`
 
 - **HTTP:** `GET /alt/auctions`
-- **What:** Search Alt's own live 24/7 auctions. Searches Alt's own currently live auctions -- the same pool shown on alt.xyz/browse's "Auctions" tab filtered to the Alt source. Unlike alt-search, this never returns another source auction house's listings or Alt's own fixed-price items: it always uses a search key scoped server-side to Alt's own live auction pool. Credential-free public data from Alt's own search backend. See alt-categories for the accepted category/grading_company/sort values.
+- **What:** Search Alt's own live 24/7 auctions. Searches Alt's own currently live auctions -- the same pool shown on alt.xyz/browse's "Auctions" tab filtered to the Alt source. Unlike alt-search, this never returns another source auction house's listings or Alt's own fixed-price items. See alt-categories for the accepted category/grading_company/sort values.
 - **Params:** `category` (string, optional) — Comma-separated card category filter; `grading_company` (string, optional) — Comma-separated grading company filter; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 24, max 100; `q` (string, optional) — Free-text search across item name, subject, brand, and variety. Omit or pass * to browse every current Alt auction.; `sort` (string, optional) — Result order. Default recommended.
 
 ### `alt_card_search`
 
 - **HTTP:** `GET /alt/card-search`
-- **What:** Search Alt's reference card-design catalog. Searches Alt's reference card-design catalog -- a canonical catalog of card designs (one entry per year/brand/subject/card-number/variety combination), separate from live listings or sales. Useful for finding a card design's asset_id (to feed into alt-asset for a population report and recent sales) without already having a live listing or sale that references it. Credential-free public data from Alt's own search backend.
+- **What:** Search Alt's reference card-design catalog. Searches Alt's reference card-design catalog -- a canonical catalog of card designs (one entry per year/brand/subject/card-number/variety combination), separate from live listings or sales. Useful for finding a card design's asset_id (to feed into alt-asset for a population report and recent sales) without already having a live listing or sale that references it.
 - **Params:** `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 24, max 100; `q` (string, optional) — Free-text search across card name, subject, brand, and variety
 
 ### `alt_categories`
 
 - **HTTP:** `GET /alt/categories`
-- **What:** List Alt search filter values. Returns every accepted value for alt-search/alt-auctions/alt-sold-listings' category, auction_house, grading_company, and listing_type params, plus the sort enum. category/auction_house/grading_company/listing_type are read live from Alt's own current search index via a facets-only query on every call, not a fixed taxonomy -- so this endpoint self-corrects if Alt's aggregator adds a new source auction house, grading company, or category. Credential-free public data from Alt's own search backend.
+- **What:** List Alt search filter values. Returns every accepted value for alt-search/alt-auctions/alt-sold-listings' category, auction_house, grading_company, and listing_type params, plus the sort enum. category/auction_house/grading_company/listing_type are read live from Alt's own current search index on every call, not a fixed taxonomy -- so this endpoint self-corrects if Alt's aggregator adds a new source auction house, grading company, or category.
 - **Params:** _none_
 
 ### `alt_listing`
 
 - **HTTP:** `GET /alt/listing`
-- **What:** Get one Alt listing's full public detail. One listing's full public detail -- title, description, price/bid state, grading info, and images -- normalized across Alt's own native listings and its aggregated external listings. id and listing_type come from a prior alt-search/alt-auctions result, or from an alt-sold-listings result's listing_id and listing_type for a completed sale on Alt itself. Not every response field applies to every listing_type -- see the field-level notes in this endpoint's markdown doc.
+- **What:** Get one Alt listing's full public detail. One listing's full public detail -- title, description, price/bid state, grading info, and images -- across Alt's own native listings and its aggregated external listings. id and listing_type come from a prior alt-search/alt-auctions result, or from an alt-sold-listings result's listing_id and listing_type for a completed sale on Alt itself. Not every response field applies to every listing_type -- see the field-level notes in this endpoint's markdown doc.
 - **Params:** `id` (string, **required**) — The listing's id, from a Search/Auctions result's id field, or a sold-listings result's listing_id for a completed sale on Alt itself; `listing_type` (string, **required**) — The listing's listing_type from the same Search/Auctions result
 
 ### `alt_market_trends`
 
 - **HTTP:** `GET /alt/market-trends`
-- **What:** Get Alt's card-market price-trend index. Returns Alt's own category-level price-trend index -- the same data alt.xyz's "Market Trends" page shows: a weekly/monthly/90-day change and a current index value per card category, built from Alt's own sold/valuation data. Credential-free public data from Alt's own GraphQL API.
+- **What:** Get Alt's card-market price-trend index. Returns Alt's own category-level price-trend index -- the same data alt.xyz's "Market Trends" page shows: a weekly/monthly/90-day change and a current index value per card category, built from Alt's own sold/valuation data.
 - **Params:** `category` (string, optional) — Optional exact category filter -- must match one of the categories present in the live response (a subset of alt-categories' category list; Alt only publishes a trend index for its own tracked sports categories). Omit to get every tracked category.
 
 ### `alt_search`
 
 - **HTTP:** `GET /alt/search`
-- **What:** Search Alt's aggregated card marketplace. Searches Alt's universal aggregator index -- live auction and fixed-price listings from Alt itself and every other source auction house its search carries (eBay, Fanatics Collect, Pristine Auction, Goldin, CardHobby, Memory Lane) -- by free-text query, category, source auction house, grading company, and listing type, in a caller-selected sort order. Only currently-live listings are returned; see alt-sold-listings for completed sales. Credential-free public data from Alt's own search backend. See alt-categories for the accepted category/auction_house/grading_company/listing_type/sort values.
+- **What:** Search Alt's aggregated card marketplace. Searches Alt's universal aggregator index -- live auction and fixed-price listings from Alt itself and every other source auction house its search carries (eBay, Fanatics Collect, Pristine Auction, Goldin, CardHobby, Memory Lane) -- by free-text query, category, source auction house, grading company, and listing type, in a caller-selected sort order. Only currently-live listings are returned; see alt-sold-listings for completed sales. See alt-categories for the accepted category/auction_house/grading_company/listing_type/sort values.
 - **Params:** `auction_house` (string, optional) — Comma-separated source auction house filter; `category` (string, optional) — Comma-separated card category filter; `grading_company` (string, optional) — Comma-separated grading company filter; `listing_type` (string, optional) — Comma-separated listing type filter. Omit to search auctions and fixed-price listings from every source together.; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 24, max 100; `q` (string, optional) — Free-text search across item name, subject, brand, and variety. Omit or pass * to browse everything.; `sort` (string, optional) — Result order. Default recommended.
 
 ### `alt_sold_listings`
 
 - **HTTP:** `GET /alt/sold-listings`
-- **What:** Search Alt's completed sales archive. Searches Alt's global archive of completed card sales, aggregated across every source auction house its search carries -- the "market data" side of Alt's card-investment-marketplace positioning. This is a separate index from alt-search/alt-auctions, scoped to a rolling recent time window, not a filtered view of live listings. Pass auction_house=Alt to see only Alt's own completed sales. Each of Alt's own sales carries listing_id and listing_type -- pass both to alt-listing to get that item's certificate number -- and its url is the alt.xyz item page; a sale aggregated from another auction house carries that source site's own url instead. Credential-free public data from Alt's own search backend. See alt-categories for the accepted category/auction_house/grading_company values.
+- **What:** Search Alt's completed sales archive. Searches Alt's global archive of completed card sales, aggregated across every source auction house its search carries -- the "market data" side of Alt's card-investment-marketplace positioning. This is a separate index from alt-search/alt-auctions, scoped to a rolling recent time window, not a filtered view of live listings. Pass auction_house=Alt to see only Alt's own completed sales. Each of Alt's own sales carries listing_id and listing_type -- pass both to alt-listing to get that item's certificate number -- and its url is the alt.xyz item page; a sale aggregated from another auction house carries that source site's own url instead. See alt-categories for the accepted category/auction_house/grading_company values.
 - **Params:** `auction_house` (string, optional) — Comma-separated source auction house filter. Pass Alt to see only Alt's own completed auctions.; `category` (string, optional) — Comma-separated card category filter; `grading_company` (string, optional) — Comma-separated grading company filter; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 24, max 100; `q` (string, optional) — Free-text search across item name, subject, brand, and variety. Omit or pass * to browse the most recent sales.
 
 ### `alt_top_movers`
 
 - **HTTP:** `GET /alt/top-movers`
-- **What:** Get Alt's biggest card-market price movers. Returns Alt's biggest price-index movers -- either a cross-subject leaderboard (optionally scoped to one category) or, when subject is set, that one player/character's own trend broken out per category it appears in. category is not strictly validated against alt-categories' list -- this trend index's own category set is broader (e.g. it includes MULTI-SPORT_CARDS). Credential-free public data from Alt's own GraphQL API.
+- **What:** Get Alt's biggest card-market price movers. Returns Alt's biggest price-index movers -- either a cross-subject leaderboard (optionally scoped to one category) or, when subject is set, that one player/character's own trend broken out per category it appears in. category is not strictly validated against alt-categories' list -- this trend index's own category set is broader (e.g. it includes MULTI-SPORT_CARDS).
 - **Params:** `category` (string, optional) — Optional category filter for the leaderboard. Ignored when subject is set. Omit to rank movers across every category.; `limit` (integer, optional) — Max results, default 10, max 50; `subject` (string, optional) — Optional exact player/subject name. Returns that subject's own trend per category instead of a leaderboard, and category is ignored.
 
 ## COMC (3)
@@ -89,7 +89,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fanaticscollect_auctions`
 
 - **HTTP:** `GET /fanaticscollect/auctions`
-- **What:** List Fanatics Collect auction events. Returns Fanatics Collect's current and recent weekly and premier auction events -- the same short list the site's own header auction switcher and countdown banner show. This is the discovery endpoint for Search's auction_urn param: copy an event's urn value to browse every lot in that auction. A small, current/recent set (observed live: around 6 events), not a full historical archive -- older auctions' urn values found on a Search result or a GetListing response remain valid for Search even once they no longer appear here. Credential-free public data from Fanatics Collect's own GraphQL API.
+- **What:** List Fanatics Collect auction events. Returns Fanatics Collect's current and recent weekly and premier auction events -- the same short list the site's own header auction switcher and countdown banner show. This is the discovery endpoint for Search's auction_urn param: copy an event's urn value to browse every lot in that auction. A small, current/recent set (observed live: around 6 events), not a full historical archive -- older auctions' urn values found on a Search result or a GetListing response remain valid for Search even once they no longer appear here.
 - **Params:** _none_
 
 ### `fanaticscollect_categories`
@@ -101,31 +101,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fanaticscollect_instant_rips_categories`
 
 - **HTTP:** `GET /fanaticscollect/instant-rips/categories`
-- **What:** Get Fanatics Collect Instant Rips categories. Returns every category Fanatics Collect's "Instant Rips" mystery-pack product (fanaticscollect.com/instant-rips) currently advertises on its homepage: id, name, and price range. Instant Rips is a "buy a randomized pack, a real graded card is revealed" product; each category's id is a real listing id, fetchable through GetListing with type=FIXED for that entry point's own full detail. This does not cover the individual pack-tier tiles within a category or the homepage's "Recently ripped" live feed -- both are hydrated client-side in a form this repo cannot reliably parse. Credential-free public data, server-rendered on Fanatics Collect's own page.
+- **What:** Get Fanatics Collect Instant Rips categories. Returns every category Fanatics Collect's "Instant Rips" mystery-pack product (fanaticscollect.com/instant-rips) currently advertises on its homepage: id, name, and price range. Instant Rips is a "buy a randomized pack, a real graded card is revealed" product; each category's id is a real listing id, fetchable through GetListing with type=FIXED for that entry point's own full detail. This does not cover the individual pack-tier tiles within a category or the homepage's "Recently ripped" live feed.
 - **Params:** _none_
 
 ### `fanaticscollect_listing`
 
 - **HTTP:** `GET /fanaticscollect/listing/{id}`
-- **What:** Get Fanatics Collect listing detail. Returns full detail for a single Fanatics Collect listing: a weekly-auction lot, a premier-auction lot, or a fixed-price "buy now" item (including an Instant Rips pack). Fields include title, current bid/starting/asking price, bid count, auction window and status, images, description, completed sale history, and -- when the card is stored in Fanatics' vault -- grading/authentication metadata including a direct PSA cert-verification link. Credential-free public data from Fanatics Collect's own GraphQL API.
+- **What:** Get Fanatics Collect listing detail. Returns full detail for a single Fanatics Collect listing: a weekly-auction lot, a premier-auction lot, or a fixed-price "buy now" item (including an Instant Rips pack). Fields include title, current bid/starting/asking price, bid count, auction window and status, images, description, completed sale history, and -- when the card is stored in Fanatics' vault -- grading/authentication metadata including a direct PSA cert-verification link.
 - **Params:** `id` (string, **required**) — Listing UUID; `type` (string, optional) — Listing type. Default: WEEKLY
 
 ### `fanaticscollect_search`
 
 - **HTTP:** `GET /fanaticscollect/search`
-- **What:** Search Fanatics Collect listings. Searches Fanatics Collect's full marketplace -- weekly auctions, premier auctions, and the fixed-price "Buy Now" marketplace -- by free-text query, category, grading service, price/year/grade range, and listing status, in a caller-selected sort order. Credential-free public data from Fanatics Collect's own public search index. See GetCategories for the accepted category, grading-service, status, and sort values.
+- **What:** Search Fanatics Collect listings. Searches Fanatics Collect's full marketplace -- weekly auctions, premier auctions, and the fixed-price "Buy Now" marketplace -- by free-text query, category, grading service, price/year/grade range, and listing status, in a caller-selected sort order. See GetCategories for the accepted category, grading-service, status, and sort values.
 - **Params:** `allow_offers` (boolean, optional) — Filter for listings the seller accepts offers on; `auction_urn` (string, optional) — Browse every lot in one specific weekly or premier auction event. Not a fixed enum; copy the exact value from a prior Search result's auction_urn field. Only WEEKLY/PREMIER listings carry one.; `brand` (string, optional) — Exact brand/subject facet value (case-insensitive), e.g. a player, character, or set name. Not a fixed enum; match a prior Search result's brand field.; `category_parent` (string, optional) — Top-level category; `certified_seller` (string, optional) — Exact seller/shop name (case-insensitive). Not a fixed enum -- match a name from a prior Search result's certified_seller field.; `grading_service` (string, optional) — Grading/authentication service; `great_price` (boolean, optional) — Filter for listings Fanatics Collect itself flags as a great price vs. guide value; `has_offers` (boolean, optional) — Filter for listings with at least one active offer pending; `marketplace` (string, optional) — Listing type. Omit to search all three.; `max_grade` (number, optional) — Maximum numeric grade, inclusive; `max_price` (number, optional) — Maximum current price/bid, inclusive; `max_year` (integer, optional) — Maximum card/item year, inclusive; `min_grade` (number, optional) — Minimum numeric grade, inclusive; `min_price` (number, optional) — Minimum current price/bid, inclusive; `min_year` (integer, optional) — Minimum card/item year, inclusive; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 24, max 100; `q` (string, optional) — Free-text search across title, brand, subject, and set; `seller_id` (string, optional) — Exact seller id (UUID) -- browse everything one seller has listed. Not a fixed enum; match a prior Search result's seller_id field.; `sort` (string, optional) — Result order. Default best_value.; `status` (string, optional) — Listing status. Default LIVE.; `sub_category` (string, optional) — A parent > child category path (or just the child name), e.g. \
 
 ### `fanaticscollect_sold_items`
 
 - **HTTP:** `GET /fanaticscollect/sold-items`
-- **What:** Search Fanatics Collect sold items. Searches Fanatics Collect's sales-history archive -- every completed sale across every marketplace, not just what the live search index currently surfaces. A separate product from Search, reached from the "View all sold items" link on every marketplace search page. purchase_price is what the buyer paid in US dollars: for WEEKLY and PREMIER auction sales it includes the buyer's premium, so it is higher than the listing's final bid; for FIXED sales it equals the asking price. Credential-free public data from Fanatics Collect's own public sales-history API. See GetCategories for the accepted category, grading-service, eye-appeal-grade, and sort values.
+- **What:** Search Fanatics Collect sold items. Searches Fanatics Collect's sales-history archive -- every completed sale across every marketplace, not just what the live search index currently surfaces. A separate product from Search, reached from the "View all sold items" link on every marketplace search page. purchase_price is what the buyer paid in US dollars: for WEEKLY and PREMIER auction sales it includes the buyer's premium, so it is higher than the listing's final bid; for FIXED sales it equals the asking price. See GetCategories for the accepted category, grading-service, eye-appeal-grade, and sort values.
 - **Params:** `category` (string, optional) — Item category; `eye_appeal_grade` (string, optional) — Eye-appeal grade; `grading_service` (string, optional) — Grading/authentication service, including ungraded for raw items; `max_price` (number, optional) — Maximum sold price, inclusive; `max_year` (integer, optional) — Maximum card/item year, inclusive; `min_price` (number, optional) — Minimum sold price, inclusive; `min_year` (integer, optional) — Minimum card/item year, inclusive; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 20, max 100; `sort` (string, optional) — Result order. Default sold_date_desc.; `title` (string, optional) — Free-text search across item title
 
 ### `fanaticscollect_trending_searches`
 
 - **HTTP:** `GET /fanaticscollect/trending-searches`
-- **What:** Get Fanatics Collect trending search terms. Returns Fanatics Collect's own currently trending search terms -- the same list shown in the site's own header search box before the visitor types anything. Credential-free public data from Fanatics Collect's own GraphQL API.
+- **What:** Get Fanatics Collect trending search terms. Returns Fanatics Collect's own currently trending search terms -- the same list shown in the site's own header search box before the visitor types anything.
 - **Params:** `limit` (integer, optional) — Number of terms to return, 1-50, default 8
 
 ## Fanatics Live (8)
@@ -133,49 +133,49 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fanaticslive_browse`
 
 - **HTTP:** `GET /fanaticslive/browse`
-- **What:** Browse Fanatics Live shows by league. Returns the live and upcoming shows currently listed under a Fanatics Live league: name, status, cover image, viewers, and the hosting channel/shop. Public data sourced from Fanatics Live's own GraphQL API.
+- **What:** Browse Fanatics Live shows by league. Returns the live and upcoming shows currently listed under a Fanatics Live league: name, status, cover image, viewers, and the hosting channel/shop.
 - **Params:** `league` (string, **required**) — Fanatics Live league type code. See GET /fanaticslive/leagues for the full list.
 
 ### `fanaticslive_channel`
 
 - **HTTP:** `GET /fanaticslive/channel/{id}`
-- **What:** Get a Fanatics Live channel's detail page. Returns a Fanatics Live channel's own detail page: its parent shop, and a first page of its live/upcoming and past/replay shows. A shop can run several channels (e.g. a league-specific sub-feed) -- see /fanaticslive/shop/{slug} for a shop's full channel list and /fanaticslive/shop/{slug}/shows for cursor-paginated access to a full show history. Public data sourced from Fanatics Live's own GraphQL API.
+- **What:** Get a Fanatics Live channel's detail page. Returns a Fanatics Live channel's own detail page: its parent shop, and a first page of its live/upcoming and past/replay shows. A shop can run several channels (e.g. a league-specific sub-feed) -- see /fanaticslive/shop/{slug} for a shop's full channel list and /fanaticslive/shop/{slug}/shows for cursor-paginated access to a full show history.
 - **Params:** `id` (string, **required**) — Fanatics Live channel id (a UUID), e.g. from a shop or show result's channel.id field
 
 ### `fanaticslive_instant_rips`
 
 - **HTTP:** `GET /fanaticslive/show/{id}/instant-rips`
-- **What:** Get a Fanatics Live show's current instant-rip state. Returns a Fanatics Live show's current break's digital-instant-rip state: spot claim/rip progress and the currently revealing item, when a rip is actively in progress. current_break is omitted when the show has no active break at request time. Public data sourced from Fanatics Live's own GraphQL API.
+- **What:** Get a Fanatics Live show's current instant-rip state. Returns a Fanatics Live show's current break's digital-instant-rip state: spot claim/rip progress and the currently revealing item, when a rip is actively in progress. current_break is omitted when the show has no active break at request time.
 - **Params:** `id` (string, **required**) — Fanatics Live show id, the same id GET /fanaticslive/show/{id} takes
 
 ### `fanaticslive_leagues`
 
 - **HTTP:** `GET /fanaticslive/leagues`
-- **What:** Get Fanatics Live's league taxonomy. Returns Fanatics Live's full league/category list (e.g. "Pokemon", "NFL", "MTG"). Each entry's type is usable directly with /fanaticslive/browse's league filter. Public data sourced from Fanatics Live's own GraphQL API.
+- **What:** Get Fanatics Live's league taxonomy. Returns Fanatics Live's full league/category list (e.g. "Pokemon", "NFL", "MTG"). Each entry's type is usable directly with /fanaticslive/browse's league filter.
 - **Params:** _none_
 
 ### `fanaticslive_shop`
 
 - **HTTP:** `GET /fanaticslive/shop/{slug}`
-- **What:** Get a Fanatics Live shop's public profile. Returns a Fanatics Live shop's public profile page: description, social links, follower count, and its channels and staffers. Public data sourced from Fanatics Live's own GraphQL API.
+- **What:** Get a Fanatics Live shop's public profile. Returns a Fanatics Live shop's public profile page: description, social links, follower count, and its channels and staffers.
 - **Params:** `slug` (string, **required**) — Fanatics Live shop slug, e.g. from a shops-list result's slug field
 
 ### `fanaticslive_shop_shows`
 
 - **HTTP:** `GET /fanaticslive/shop/{slug}/shows`
-- **What:** Get a Fanatics Live shop's own live or replay show list. Returns a Fanatics Live shop's own live/upcoming or past/replay show list -- distinct from /fanaticslive/browse, which lists shows across all shops filtered by league. status=replay is the only credential-free way to observe a COMPLETE-status show. Public data sourced from Fanatics Live's own GraphQL API.
+- **What:** Get a Fanatics Live shop's own live or replay show list. Returns a Fanatics Live shop's own live/upcoming or past/replay show list -- distinct from /fanaticslive/browse, which lists shows across all shops filtered by league. status=replay is the only way to observe a COMPLETE-status show.
 - **Params:** `after` (string, optional) — Pagination cursor from a previous response's next_cursor; `limit` (integer, optional) — Max shows to return (default 24); `slug` (string, **required**) — Fanatics Live shop slug, e.g. from a shops-list result's slug field; `status` (string, **required**) — Which show list to return
 
 ### `fanaticslive_shops`
 
 - **HTTP:** `GET /fanaticslive/shops`
-- **What:** Get Fanatics Live's shop directory. Returns Fanatics Live's full public shop directory: every shop's id, name, slug, logo, and follower count. Each entry's slug is usable directly with /fanaticslive/shop/{slug}. Public data sourced from Fanatics Live's own GraphQL API.
+- **What:** Get Fanatics Live's shop directory. Returns Fanatics Live's full public shop directory: every shop's id, name, slug, logo, and follower count. Each entry's slug is usable directly with /fanaticslive/shop/{slug}.
 - **Params:** _none_
 
 ### `fanaticslive_show`
 
 - **HTTP:** `GET /fanaticslive/show/{id}`
-- **What:** Get a Fanatics Live show's detail page. Returns a Fanatics Live live show's detail page: status, viewers, hosting channel/shop, its currently active break/lot, and its full break/lot list. Public data sourced from Fanatics Live's own GraphQL API.
+- **What:** Get a Fanatics Live show's detail page. Returns a Fanatics Live live show's detail page: status, viewers, hosting channel/shop, its currently active break/lot, and its full break/lot list.
 - **Params:** `id` (string, **required**) — Fanatics Live show id, e.g. from a browse result's id field
 
 ## Goldin (5)
@@ -337,13 +337,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `pristine_auction_lot`
 
 - **HTTP:** `GET /pristine-auction/lot/{lot_number}`
-- **What:** Get a Pristine Auction lot's full detail. Returns one pristineauction.com lot's full detail: title, description, image gallery, price (current high bid, or realized/sold price once the auction has ended), auction end time, sport/collectible category, auction type, no-reserve flag, and view/watch/bid counts. lot_number comes from pristine-auction-search's results[].lot_number. Credential-free public data -- see the endpoint markdown for the transport used.
+- **What:** Get a Pristine Auction lot's full detail. Returns one pristineauction.com lot's full detail: title, description, image gallery, price (current high bid, or realized/sold price once the auction has ended), auction end time, sport/collectible category, auction type, no-reserve flag, and view/watch/bid counts. lot_number comes from pristine-auction-search's results[].lot_number.
 - **Params:** `lot_number` (integer, **required**) — A lot_number from pristine-auction-search's results
 
 ### `pristine_auction_search`
 
 - **HTTP:** `GET /pristine-auction/search`
-- **What:** Search Pristine Auction's live auction inventory. Browses or searches pristineauction.com's current sports card and memorabilia auction lots. term or category is required, matching pristineauction.com's own search form. All enum values (category, auction_type, sort, status) come from pristine-auction-categories. status=completed browses ended/sold lots (a prices-realized view); the default (all statuses) mirrors the site's own default. Every filter is optional and combines with AND semantics. Credential-free public data -- see the endpoint markdown for the transport used.
+- **What:** Search Pristine Auction's live auction inventory. Browses or searches pristineauction.com's current sports card and memorabilia auction lots. term or category is required, matching pristineauction.com's own search form. All enum values (category, auction_type, sort, status) come from pristine-auction-categories. status=completed browses ended/sold lots (a prices-realized view); the default (all statuses) mirrors the site's own default. Every filter is optional and combines with AND semantics.
 - **Params:** `auction_type` (string, optional) — Comma-separated auction-type filter. Omit to include every auction type.; `category` (string, optional) — One value from pristine-auction-categories' categories[].slug. term or category is required.; `max_price` (number, optional) — Maximum current bid price in USD, inclusive. Omit or 0 for no maximum.; `min_price` (number, optional) — Minimum current bid price in USD, inclusive. Omit or 0 for no minimum.; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page. pristineauction.com only accepts 15, 30, or 60; any other value is rejected. Default 30.; `sort` (string, optional) — Result order, default newly-listed.; `status` (string, optional) — Comma-separated auction-status filter. status=completed browses ended/sold lots. Omit to include every status.; `term` (string, optional) — Free-text search across lot titles. term or category is required.
 
 ## PristineMarketplace (13)
@@ -351,43 +351,43 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `pristine_marketplace_collection_products`
 
 - **HTTP:** `GET /pristine-marketplace/collections/{handle}/products`
-- **What:** List Pristine Marketplace collection products. Returns normalized products from one Pristine Marketplace (https://www.pristinemarketplace.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug (typically a player, team, or memorabilia-type collection, e.g. `pop-culture`).
+- **What:** List Pristine Marketplace collection products. Returns products from one Pristine Marketplace (https://www.pristinemarketplace.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug (typically a player, team, or memorabilia-type collection, e.g. `pop-culture`).
 - **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `pristine_marketplace_collections`
 
 - **HTTP:** `GET /pristine-marketplace/collections`
-- **What:** List Pristine Marketplace collections. Returns normalized collections from Pristine Marketplace (https://www.pristinemarketplace.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **What:** List Pristine Marketplace collections. Returns collections from Pristine Marketplace (https://www.pristinemarketplace.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
 - **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `pristine_marketplace_page`
 
 - **HTTP:** `GET /pristine-marketplace/pages/{handle}`
-- **What:** Get a Pristine Marketplace static page. Returns normalized static page detail for one Pristine Marketplace (https://www.pristinemarketplace.com) page handle. The storefront URL is fixed server-side. The "Shop by Sport" nav landing pages are reachable here as handles `nfl`, `mlb`, `nba`, `nhl`, and `nascar`.
+- **What:** Get a Pristine Marketplace static page. Returns static page detail for one Pristine Marketplace (https://www.pristinemarketplace.com) page handle. The storefront URL is fixed server-side. The "Shop by Sport" nav landing pages are reachable here as handles `nfl`, `mlb`, `nba`, `nhl`, and `nascar`.
 - **Params:** `handle` (string, **required**) — Page handle
 
 ### `pristine_marketplace_pages`
 
 - **HTTP:** `GET /pristine-marketplace/pages`
-- **What:** List Pristine Marketplace static pages. Returns normalized static pages from Pristine Marketplace (https://www.pristinemarketplace.com). The storefront URL is fixed server-side. The storefront's "Shop by Sport" navigation (NFL, MLB, NBA, NHL, NASCAR) resolves to pages here (handles `nfl`, `mlb`, `nba`, `nhl`, `nascar`), not to a separate collections-style resource -- each is a landing page linking into many player/team collections.
+- **What:** List Pristine Marketplace static pages. Returns static pages from Pristine Marketplace (https://www.pristinemarketplace.com). The storefront URL is fixed server-side. The storefront's "Shop by Sport" navigation (NFL, MLB, NBA, NHL, NASCAR) resolves to pages here (handles `nfl`, `mlb`, `nba`, `nhl`, `nascar`), not to a separate collections-style resource -- each is a landing page linking into many player/team collections.
 - **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `pristine_marketplace_product`
 
 - **HTTP:** `GET /pristine-marketplace/products/{handle}`
-- **What:** Get a Pristine Marketplace product. Returns normalized product detail for one Pristine Marketplace (https://www.pristinemarketplace.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **What:** Get a Pristine Marketplace product. Returns product detail for one Pristine Marketplace (https://www.pristinemarketplace.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
 - **Params:** `handle` (string, **required**) — Product handle
 
 ### `pristine_marketplace_product_recommendations`
 
 - **HTTP:** `GET /pristine-marketplace/products/{handle}/recommendations`
-- **What:** List Pristine Marketplace product recommendations. Returns normalized recommended products for one Pristine Marketplace (https://www.pristinemarketplace.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **What:** List Pristine Marketplace product recommendations. Returns recommended products for one Pristine Marketplace (https://www.pristinemarketplace.com) product handle. The storefront URL is fixed server-side.
 - **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
 
 ### `pristine_marketplace_products`
 
 - **HTTP:** `GET /pristine-marketplace/products`
-- **What:** List Pristine Marketplace products. Returns normalized products from Pristine Marketplace's (https://www.pristinemarketplace.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **What:** List Pristine Marketplace products. Returns products from Pristine Marketplace's (https://www.pristinemarketplace.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
 - **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `pristine_marketplace_reviews`
@@ -399,13 +399,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `pristine_marketplace_search`
 
 - **HTTP:** `GET /pristine-marketplace/search`
-- **What:** Search Pristine Marketplace products. Returns normalized products from Pristine Marketplace's (https://www.pristinemarketplace.com) own native full-text search results page, distinct from `/pristine-marketplace/search/suggest`'s predictive suggestions. The storefront URL is fixed server-side. Per-page size is fixed by the storefront's own theme (16 products per page) and is not adjustable; `limit` is honored only as an upper bound on the returned page.
+- **What:** Search Pristine Marketplace products. Returns products from Pristine Marketplace's (https://www.pristinemarketplace.com) own full-text search, distinct from `/pristine-marketplace/search/suggest`'s predictive suggestions. The storefront URL is fixed server-side. Per-page size is fixed (16 products per page) and is not adjustable; `limit` is honored only as an upper bound on the returned page.
 - **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250, but never exceeds the storefront's own fixed 16-per-page grid; `page` (integer, optional) — 1-based page, defaults to 1; `q` (string, **required**) — Search query text
 
 ### `pristine_marketplace_search_suggest`
 
 - **HTTP:** `GET /pristine-marketplace/search/suggest`
-- **What:** Get Pristine Marketplace search suggestions. Returns products, collections, and query suggestions from Pristine Marketplace's (https://www.pristinemarketplace.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **What:** Get Pristine Marketplace search suggestions. Returns products, collections, and query suggestions from Pristine Marketplace's (https://www.pristinemarketplace.com) predictive search. The storefront URL is fixed server-side.
 - **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
 
 ### `pristine_marketplace_sitemap_urls`
@@ -423,7 +423,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `pristine_marketplace_store`
 
 - **HTTP:** `GET /pristine-marketplace/store`
-- **What:** Get Pristine Marketplace store metadata. Returns normalized storefront metadata for Pristine Marketplace (https://www.pristinemarketplace.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **What:** Get Pristine Marketplace store metadata. Returns storefront metadata for Pristine Marketplace (https://www.pristinemarketplace.com). The storefront URL is fixed server-side, so no `url` parameter is accepted.
 - **Params:** _none_
 
 ## PSAStore (11)
@@ -431,49 +431,49 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `psastore_collection_products`
 
 - **HTTP:** `GET /psastore/collections/{handle}/products`
-- **What:** List PSA Store collection products. Returns normalized products from one PSA Team Store (https://store.psacard.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **What:** List PSA Store collection products. Returns products from one PSA Team Store (https://store.psacard.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
 - **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `psastore_collections`
 
 - **HTTP:** `GET /psastore/collections`
-- **What:** List PSA Store collections. Returns normalized collections from the PSA Team Store (https://store.psacard.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **What:** List PSA Store collections. Returns collections from the PSA Team Store (https://store.psacard.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
 - **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `psastore_page`
 
 - **HTTP:** `GET /psastore/pages/{handle}`
-- **What:** Get a PSA Store static page. Returns normalized static page detail for one PSA Team Store (https://store.psacard.com) page handle. The storefront URL is fixed server-side.
+- **What:** Get a PSA Store static page. Returns one PSA Team Store static page by its `handle`: title, URL, plain-text `content` (HTML is stripped), and created, published and updated times. An unknown handle returns 404. When the store's standard page data is unavailable, `transport_mode` is `ssr_embedded` and `id` is omitted.
 - **Params:** `handle` (string, **required**) — Page handle
 
 ### `psastore_pages`
 
 - **HTTP:** `GET /psastore/pages`
-- **What:** List PSA Store static pages. Returns normalized static pages from the PSA Team Store (https://store.psacard.com). The storefront URL is fixed server-side.
+- **What:** List PSA Store static pages. Lists static pages from the PSA Team Store, 50 per page by default (`limit` up to 250, `page` starts at 1). Each page has its `handle`, `title`, `url`, plain-text `content` and timestamps. When `transport_mode` is `ssr_embedded`, items carry only `handle`, `url` and `updated_at`.
 - **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `psastore_product`
 
 - **HTTP:** `GET /psastore/products/{handle}`
-- **What:** Get a PSA Store product. Returns normalized product detail for one PSA Team Store (https://store.psacard.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **What:** Get a PSA Store product. Returns product detail for one PSA Team Store (https://store.psacard.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
 - **Params:** `handle` (string, **required**) — Product handle
 
 ### `psastore_product_recommendations`
 
 - **HTTP:** `GET /psastore/products/{handle}/recommendations`
-- **What:** List PSA Store product recommendations. Returns normalized recommended products for one PSA Team Store (https://store.psacard.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **What:** List PSA Store product recommendations. Returns recommended products for one PSA Team Store (https://store.psacard.com) product handle. The storefront URL is fixed server-side.
 - **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
 
 ### `psastore_products`
 
 - **HTTP:** `GET /psastore/products`
-- **What:** List PSA Store products. Returns normalized products from the PSA Team Store's (https://store.psacard.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **What:** List PSA Store products. Returns products from the PSA Team Store's (https://store.psacard.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
 - **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `psastore_search_suggest`
 
 - **HTTP:** `GET /psastore/search/suggest`
-- **What:** Get PSA Store search suggestions. Returns products, collections, and query suggestions from the PSA Team Store's (https://store.psacard.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **What:** Get PSA Store search suggestions. Returns products, collections, and query suggestions from the PSA Team Store's (https://store.psacard.com) predictive search. The storefront URL is fixed server-side.
 - **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
 
 ### `psastore_sitemap_urls`
@@ -491,7 +491,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `psastore_store`
 
 - **HTTP:** `GET /psastore/store`
-- **What:** Get PSA Store store metadata. Returns normalized storefront metadata for the PSA Team Store (https://store.psacard.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **What:** Get PSA Store store metadata. Returns storefront metadata for the PSA Team Store (https://store.psacard.com). The storefront URL is fixed server-side, so no `url` parameter is accepted.
 - **Params:** _none_
 
 ## Fanatics (4)
@@ -517,5 +517,5 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fanatics_search`
 
 - **HTTP:** `GET /fanatics/search`
-- **What:** Search Fanatics' product catalog. Returns one page of Fanatics' own keyword search results (name, brand, price, availability, image, url).
+- **What:** Search Fanatics' product catalog. Searches Fanatics products by the required `query`. Choose `page_size` (24, 48 or 72; default 24), `page_number` (default 1) and `sort` (`TopSellers`, `LowestPrice`, `HighestPrice` or `NewestArrivals`; default `TopSellers`). Each item has product id, name, brand, category, price, currency, availability, image and URL. Also returns `total_items` and `has_next_page`. An invalid `page_size` or `sort` returns `400`.
 - **Params:** `page_number` (integer, optional) — 1-based result page. Defaults to 1.; `page_size` (integer, optional) — Results per page. One of 24, 48, 72. Defaults to 24.; `query` (string, **required**) — Free-text search keywords.; `sort` (string, optional) — One of TopSellers, LowestPrice, HighestPrice, NewestArrivals. Defaults to TopSellers.

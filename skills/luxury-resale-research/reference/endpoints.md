@@ -19,13 +19,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `firstdibs_designers`
 
 - **HTTP:** `GET /1stdibs/designers`
-- **What:** List 1stDibs designers. Returns designer values discovered from the selected 1stDibs category page. Each slug is valid for firstdibs-search's designer filter.
+- **What:** List 1stDibs designers. Lists the designer filter values found on a 1stDibs category page, with a `count` and, for each designer, its `name`, `slug` and `url`. `category` is optional and comes from `firstdibs-categories`. Each `slug` can be used as the designer filter in `firstdibs-search`.
 - **Params:** `category` (string, optional) — Category slug from firstdibs-categories
 
 ### `firstdibs_product`
 
 - **HTTP:** `GET /1stdibs/product`
-- **What:** Get a 1stDibs product. Returns public product detail, pricing, availability, brand, category, description, and images for a 1stDibs product URL.
+- **What:** Get a 1stDibs product. Returns the details of one 1stDibs product, identified by its product `url`: `name`, `brand`, `category`, `description`, `images`, `price` with `currency`, and the `in_stock` flag. The price is in USD and is present only when 1stDibs shows one.
 - **Params:** `url` (string, **required**) — 1stDibs product URL
 
 ### `firstdibs_search`
@@ -39,7 +39,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `balenciaga_categories`
 
 - **HTTP:** `GET /balenciaga/categories`
-- **What:** List Balenciaga categories. Returns Balenciaga's live storefront navigation/category taxonomy. Each categories[].path is the exact value accepted by balenciaga-category's path parameter.
+- **What:** List Balenciaga categories. Lists Balenciaga's storefront categories with `count`, and for each its `id`, `name`, `department`, `path` and `url`. Each `path` is the value `balenciaga-category` accepts. The response reports `country` (`ZW`) and `language` (`en`).
 - **Params:** _none_
 
 ### `balenciaga_category`
@@ -69,7 +69,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `balenciaga_store_countries`
 
 - **HTTP:** `GET /balenciaga/store-countries`
-- **What:** List Balenciaga store-locator countries. Returns every country code accepted by balenciaga-stores, discovered from Balenciaga's own public store-locator form.
+- **What:** List Balenciaga store-locator countries. Lists the countries Balenciaga's store locator offers, each with a country `code` and `name`, plus a `count`. Each code is accepted by `balenciaga-stores`. The response also reports the storefront `country` and `language`.
 - **Params:** _none_
 
 ### `balenciaga_stores`
@@ -107,7 +107,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `burberry_search`
 
 - **HTTP:** `GET /burberry/search`
-- **What:** Search Burberry products. Searches Burberry's product catalog by keyword. Returns normalized product summaries plus the upstream's own available filters (facets) with live per-option result counts. offset paginates in increments of 20 (the upstream's own fixed page size). sort selects the result order. facets applies a facet selection back, a comma-separated list of property:value pairs taken from this same response's facets field (e.g. benefit:bags,dotcomreportingcolour:black). A query with no matches, or a facet combination with no matches, returns a well-formed empty result, not an error. Unlike burberry-category, this response has no true grand-total result count -- only the current page's own count.
+- **What:** Search Burberry products. Searches Burberry's product catalog by keyword. Returns product summaries plus the upstream's own available filters (facets) with live per-option result counts. offset paginates in increments of 20 (the upstream's own fixed page size). sort selects the result order. facets applies a facet selection back, a comma-separated list of property:value pairs taken from this same response's facets field (e.g. benefit:bags,dotcomreportingcolour:black). A query with no matches, or a facet combination with no matches, returns a well-formed empty result, not an error. Unlike burberry-category, this response has no true grand-total result count -- only the current page's own count.
 - **Params:** `facets` (string, optional) — Comma-separated property:value facet filters, taken from this same response's own facets field, e.g. benefit:bags,dotcomreportingcolour:black -- at most one value per property; `offset` (integer, optional) — Zero-based result offset, in increments of 20; `query` (string, **required**) — Search keyword; `sort` (string, optional) — Sort order
 
 ### `burberry_suggest`
@@ -163,7 +163,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `chrono24_search`
 
 - **HTTP:** `GET /chrono24/search`
-- **What:** Search Chrono24 watch listings. Searches Chrono24's luxury-watch marketplace by free-text keyword, or browses one brand's (optionally narrowed to one model's) current listings, returning normalized result cards: title, price with currency, seller type, seller country, promotional badge, image, and the listing URL to pass to chrono24-listing. At least one of query or brand is required. Optional advanced-search filters (condition, used_or_new, case_material, dial_color, bracelet_material, movement_type, gender, watch_type, stock_info) narrow results further; each filter's accepted values are discoverable from chrono24-facets and echoed back in the response's filters field.
+- **What:** Search Chrono24 watch listings. Searches Chrono24's luxury-watch marketplace by free-text keyword, or browses one brand's (optionally narrowed to one model's) current listings, returning result cards: title, price with currency, seller type, seller country, promotional badge, image, and the listing URL to pass to chrono24-listing. At least one of query or brand is required. Optional advanced-search filters (condition, used_or_new, case_material, dial_color, bracelet_material, movement_type, gender, watch_type, stock_info) narrow results further; each filter's accepted values are discoverable from chrono24-facets and echoed back in the response's filters field.
 - **Params:** `bracelet_material` (string, optional) — Advanced-search filter, values from chrono24-facets group=braceletMaterial; `brand` (string, optional) — Brand slug from chrono24-brands. At least one of query or brand is required; `case_material` (string, optional) — Advanced-search filter, values from chrono24-facets group=caseMaterial; `condition` (string, optional) — Advanced-search filter, values from chrono24-facets group=condition; `dial_color` (string, optional) — Advanced-search filter, values from chrono24-facets group=dialColor; `gender` (string, optional) — Advanced-search filter, values from chrono24-facets group=gender; `model` (string, optional) — Model slug from chrono24-models (requires brand); `movement_type` (string, optional) — Advanced-search filter, values from chrono24-facets group=movementType; `page` (integer, optional) — One-based result page; `page_size` (integer, optional) — Results per page. Chrono24's own UI offers 30, 60 or 120; defaults to Chrono24's own default; `query` (string, optional) — Free-text keyword search, e.g. \; `sort` (string, optional) — Result order. One of: relevance, price_asc, price_desc, newest, popularity; `stock_info` (string, optional) — Advanced-search filter, values from chrono24-facets group=stockInfo; `used_or_new` (string, optional) — Advanced-search filter, values from chrono24-facets group=usedOrNew; `watch_type` (string, optional) — Advanced-search filter, values from chrono24-facets group=watchType
 
 ## Farfetch (4)
@@ -189,7 +189,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `farfetch_search`
 
 - **HTTP:** `GET /farfetch/search`
-- **What:** Search Farfetch listings. Browses Farfetch's luxury multi-brand marketplace by department plus a designer and/or category filter (at least one is required), returning normalized listing summaries (name, brand, price, image, availability) and the upstream page count. Public data sourced from Farfetch's own listing pages.
+- **What:** Search Farfetch listings. Browses Farfetch's luxury multi-brand marketplace by department plus a designer and/or category filter (at least one is required), returning listing summaries (name, brand, price, image, availability) and the upstream page count.
 - **Params:** `category` (string, optional) — Category slug from GET /farfetch/categories; designer or category is required; `designer` (string, optional) — Designer slug from GET /farfetch/designers; designer or category is required; `gender` (string, **required**) — Department: women, men, kids; `page` (integer, optional) — 1-based page number; defaults to 1
 
 ## Fashionphile (12)
@@ -197,73 +197,73 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fashionphile_collection_products`
 
 - **HTTP:** `GET /fashionphile/collections/{handle}/products`
-- **What:** List Fashionphile collection products. Returns normalized products from one Fashionphile (https://www.fashionphile.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **What:** List Fashionphile collection products. Returns products from one Fashionphile (https://www.fashionphile.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
 - **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `fashionphile_collections`
 
 - **HTTP:** `GET /fashionphile/collections`
-- **What:** List Fashionphile collections. Returns normalized collections from Fashionphile (https://www.fashionphile.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **What:** List Fashionphile collections. Returns collections from Fashionphile (https://www.fashionphile.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
 - **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `fashionphile_page`
 
 - **HTTP:** `GET /fashionphile/pages/{handle}`
-- **What:** Get a Fashionphile static page. Returns normalized static page detail for one Fashionphile (https://www.fashionphile.com) page handle. The storefront URL is fixed server-side.
+- **What:** Get a Fashionphile static page. Returns one Fashionphile static page by its required `handle`, such as `about`: title, URL, plain-text content, and created, updated and published dates. An unknown handle returns `404`. In a fallback mode flagged by `transport_mode: "ssr_embedded"`, the response omits `id`.
 - **Params:** `handle` (string, **required**) — Page handle
 
 ### `fashionphile_pages`
 
 - **HTTP:** `GET /fashionphile/pages`
-- **What:** List Fashionphile static pages. Returns normalized static pages from Fashionphile (https://www.fashionphile.com). The storefront URL is fixed server-side.
+- **What:** List Fashionphile static pages. Lists Fashionphile static pages, 50 per page by default (`limit`, max 250), with `page` starting at 1. Each page has its handle, title, URL, plain-text content, and created, updated and published dates. When `transport_mode` is `ssr_embedded`, items carry only `handle`, `url` and `updated_at`. Fetch a single page for its full content.
 - **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `fashionphile_product`
 
 - **HTTP:** `GET /fashionphile/products/{handle}`
-- **What:** Get a Fashionphile product. Returns normalized product detail for one Fashionphile (https://www.fashionphile.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **What:** Get a Fashionphile product. Returns product detail for one Fashionphile (https://www.fashionphile.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
 - **Params:** `handle` (string, **required**) — Product handle
 
 ### `fashionphile_product_recommendations`
 
 - **HTTP:** `GET /fashionphile/products/{handle}/recommendations`
-- **What:** List Fashionphile product recommendations. Returns normalized recommended products for one Fashionphile (https://www.fashionphile.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **What:** List Fashionphile product recommendations. Returns recommended products for one Fashionphile (https://www.fashionphile.com) product handle. The storefront URL is fixed server-side.
 - **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
 
 ### `fashionphile_products`
 
 - **HTTP:** `GET /fashionphile/products`
-- **What:** List Fashionphile products. Returns normalized products from Fashionphile's (https://www.fashionphile.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **What:** List Fashionphile products. Returns products from Fashionphile's (https://www.fashionphile.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
 - **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `fashionphile_search`
 
 - **HTTP:** `GET /fashionphile/search`
-- **What:** Search Fashionphile products. Returns normalized, ranked products from Fashionphile's (https://www.fashionphile.com) own full-text and faceted product search, including condition grade, discount percentage, and other filter attributes not available from the classic catalog JSON endpoints in this family. The storefront URL is fixed server-side. Omitting `q` browses the full catalog subject to any condition/vendor/availability filters and the chosen sort. By default only in-stock listings are searched, matching the storefront; `availability=sold` searches the sold archive instead. `total_items` is the exact number of products matching the query and all filters.
+- **What:** Search Fashionphile products. Returns ranked products from Fashionphile's (https://www.fashionphile.com) own full-text and faceted product search, including condition grade, discount percentage, and other filter attributes not available from the classic catalog endpoints in this family. The storefront URL is fixed server-side. Omitting `q` browses the full catalog subject to any condition/vendor/availability filters and the chosen sort. By default only in-stock listings are searched, matching the storefront; `availability=sold` searches the sold archive instead. `total_items` is the exact number of products matching the query and all filters.
 - **Params:** `availability` (string, optional) — Which listings to search. Allowed values: available (in-stock only, default), sold (sold archive only), all; `condition` (string, optional) — Filter by condition grade. Allowed values: New, Excellent, Giftable, Shows Wear, Worn, Flawed, Fair; `limit` (integer, optional) — Maximum products, defaults to 20 and supports up to 50; `page` (integer, optional) — 1-based page, defaults to 1; `q` (string, optional) — Search query text; `sort` (string, optional) — Sort order. Allowed values: relevance, newest, price_asc, price_desc; `vendor` (string, optional) — Filter by exact designer/vendor name, e.g. Chanel
 
 ### `fashionphile_search_suggest`
 
 - **HTTP:** `GET /fashionphile/search/suggest`
-- **What:** Get Fashionphile search suggestions. Returns products, collections, and query suggestions from Fashionphile's (https://www.fashionphile.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **What:** Get Fashionphile search suggestions. Returns products, collections, and query suggestions from Fashionphile's (https://www.fashionphile.com) predictive search. The storefront URL is fixed server-side.
 - **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
 
 ### `fashionphile_sitemap_urls`
 
 - **HTTP:** `GET /fashionphile/sitemap/urls`
-- **What:** List Fashionphile sitemap URLs. Returns capped URL entries from Fashionphile's (https://www.fashionphile.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **What:** List Fashionphile sitemap URLs. Lists URL entries from Fashionphile's sitemaps, filtered by `type` (`all` by default, or `products`, `collections`, `pages`, `blogs`, `agentic_discovery`, `other`) and capped by `limit` (default 50, max 250). Each entry has its `loc`, inferred type, handle, last modified date, change frequency, and optional images.
 - **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
 
 ### `fashionphile_sitemaps`
 
 - **HTTP:** `GET /fashionphile/sitemaps`
-- **What:** List Fashionphile sitemaps. Returns child sitemap URLs from Fashionphile's (https://www.fashionphile.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **What:** List Fashionphile sitemaps. Lists the child sitemaps in Fashionphile's sitemap index, with no parameters. Each entry has its `loc` URL and an inferred `type`: `products`, `collections`, `pages`, `blogs`, `agentic_discovery` or `other`. Product sitemap URLs may carry `from` and `to` query values.
 - **Params:** _none_
 
 ### `fashionphile_store`
 
 - **HTTP:** `GET /fashionphile/store`
-- **What:** Get Fashionphile store metadata. Returns normalized storefront metadata for Fashionphile (https://www.fashionphile.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **What:** Get Fashionphile store metadata. Returns storefront metadata for Fashionphile (https://www.fashionphile.com). The storefront URL is fixed server-side, so no `url` parameter is accepted.
 - **Params:** _none_
 
 ## Grailed (11)
@@ -295,13 +295,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `grailed_listing`
 
 - **HTTP:** `GET /grailed/listing`
-- **What:** Get a Grailed listing. Returns full normalized listing-detail data for one Grailed listing: description, every photo, measurements, designers, and the seller's full profile -- richer than the flattened summary grailed-search/grailed-sold-listings return per listing. id is the listing's numeric id, from a search or sold-listings result's own listings[].id field.
+- **What:** Get a Grailed listing. Returns full listing-detail data for one Grailed listing: description, every photo, measurements, designers, and the seller's full profile -- richer than the flattened summary grailed-search/grailed-sold-listings return per listing. id is the listing's numeric id, from a search or sold-listings result's own listings[].id field.
 - **Params:** `id` (integer, **required**) — Listing id, from a search or sold-listings result's own listings[].id field
 
 ### `grailed_search`
 
 - **HTTP:** `GET /grailed/search`
-- **What:** Search or browse Grailed active listings. Searches or browses Grailed's (grailed.com) peer-to-peer resale marketplace for currently-active listings. q, designer, department, category, size, color, condition, min_price, and max_price are all optional and combine as an AND -- a free-text q can be combined with any of the facet filters in the same request, or every field can be omitted to browse the full active catalog by Grailed's own "heat" relevance ranking. designer accepts one of the values grailed-designers' own designers[].name field returns; department, category, size, and color accept values from grailed-categories' own departments[].value/categories[].value/sizes[].value/colors[].value fields. condition and sort are fixed, closed enums (listed below). Keyword search is Algolia's own typo-tolerant relevance ranking, not a guaranteed exact match. A query with genuinely zero matches returns a well-formed empty result rather than an error.
+- **What:** Search or browse Grailed active listings. Searches or browses Grailed's (grailed.com) peer-to-peer resale marketplace for currently-active listings. q, designer, department, category, size, color, condition, min_price, and max_price are all optional and combine as an AND -- a free-text q can be combined with any of the facet filters in the same request, or every field can be omitted to browse the full active catalog by Grailed's own "heat" relevance ranking. designer accepts one of the values grailed-designers' own designers[].name field returns; department, category, size, and color accept values from grailed-categories' own departments[].value/categories[].value/sizes[].value/colors[].value fields. condition and sort are fixed, closed enums (listed below). Keyword search uses typo-tolerant relevance ranking, not a guaranteed exact match. A query with genuinely zero matches returns a well-formed empty result rather than an error.
 - **Params:** `category` (string, optional) — Category facet filter, from grailed-categories' own categories[].value field; `color` (string, optional) — Color facet filter, from grailed-categories' own colors[].value field; `condition` (string, optional) — Condition filter; `department` (string, optional) — Department filter; `designer` (string, optional) — Designer/brand name filter, from grailed-designers' own designers[].name field; `limit` (integer, optional) — Results per page, defaults to 24, maximum 100; `max_price` (number, optional) — Maximum price (inclusive), in USD; `min_price` (number, optional) — Minimum price (inclusive), in USD; `page` (integer, optional) — One-based page number, defaults to 1; `q` (string, optional) — Free-text search query; `size` (string, optional) — Size facet filter, from grailed-categories' own sizes[].value field; `sort` (string, optional) — Sort order, defaults to heat
 
 ### `grailed_seller`
@@ -345,7 +345,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gucci_category`
 
 - **HTTP:** `GET /gucci/category`
-- **What:** Browse a Gucci category listing. Returns one Gucci category/browse listing: normalized products (name, price, colors, images, stock) plus the upstream's own product count, page count, sibling-category counts, and sort options. category comes from gucci-categories' own category field. page selects how many of the upstream's own batches to accumulate -- Gucci's own category pages page this way: requesting page=N returns every product from page 1 through page N combined (its own "Load All" button simply requests the last page), not a single page's worth. Defaults to 1 (the upstream's own first batch, 36 products); request page equal to the response's own pages_count to fetch a category's complete listing in one call.
+- **What:** Browse a Gucci category listing. Returns one Gucci category/browse listing: products (name, price, colors, images, stock) plus the upstream's own product count, page count, sibling-category counts, and sort options. category comes from gucci-categories' own category field. page selects how many of the upstream's own batches to accumulate -- Gucci's own category pages page this way: requesting page=N returns every product from page 1 through page N combined (its own "Load All" button simply requests the last page), not a single page's worth. Defaults to 1 (the upstream's own first batch, 36 products); request page equal to the response's own pages_count to fetch a category's complete listing in one call.
 - **Params:** `category` (string, **required**) — Category path from gucci-categories' own category field; `page` (integer, optional) — How many of the upstream's own batches to accumulate, defaults to 1 (see description)
 
 ### `gucci_product`
@@ -357,7 +357,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `gucci_recommendations`
 
 - **HTTP:** `GET /gucci/recommendations`
-- **What:** Gucci product recommendations. Returns one Gucci recommendations shelf: normalized product summaries (name, price, image, stock) from either a given product's own "You May Also Like" carousel (style_code set) or the site's general trending-items shelf (style_code omitted). style_code comes from gucci-search's or gucci-category's own style_code field.
+- **What:** Gucci product recommendations. Returns one Gucci recommendations shelf: product summaries (name, price, image, stock) from either a given product's own "You May Also Like" carousel (style_code set) or the site's general trending-items shelf (style_code omitted). style_code comes from gucci-search's or gucci-category's own style_code field.
 - **Params:** `max` (integer, optional) — Maximum products to return, defaults to 10, maximum 20; `style_code` (string, optional) — Product style code to get related items for; omit for the site's general trending-items shelf instead
 
 ### `gucci_search`
@@ -407,7 +407,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `hermes_category`
 
 - **HTTP:** `GET /hermes/category`
-- **What:** Browse a Hermès category. Browses one Hermès product category and returns a page of normalized products (SKU, title, price with currency, colour, size, stock, images) plus the facet groups Hermès offers for that category, and the category's own title and description. The category parameter takes a category code from hermes-categories, which is the discovery endpoint for every accepted value. Page size is fixed at 48 by Hermès and cannot be changed. Prices are returned with the ISO-4217 currency for the selected market, since Hermès itself publishes bare numbers.
+- **What:** Browse a Hermès category. Browses one Hermès product category and returns a page of products (SKU, title, price with currency, colour, size, stock, images) plus the facet groups Hermès offers for that category, and the category's own title and description. The category parameter takes a category code from hermes-categories, which is the discovery endpoint for every accepted value. Page size is fixed at 48 by Hermès and cannot be changed. Prices are returned with the ISO-4217 currency for the selected market, since Hermès itself publishes bare numbers.
 - **Params:** `category` (string, **required**) — Hermès category code, from hermes-categories; `locale` (string, optional) — Market and language. One of: at_de, au_en, be_en, be_fr, br_pt, ca_en, ca_fr, ch_de, ch_fr, cz_en, de_de, dh_en, dk_en, es_es, fi_en, fr_fr, gr_en, hk_en, ie_en, it_it, jp_ja, kr_ko, lu_fr, mo_en, mx_es, my_en, nl_en, no_en, pl_en, pt_en, ri_en, se_en, sg_en, th_en, tw_zh, uk_en, us_en; `page` (integer, optional) — One-based result page; page size is fixed at 48. Page 1 is fully validated; pages beyond 1 are best-effort and provisional; `sort` (string, optional) — Result order. One of: relevance, priceasc, pricedsc. Non-default sorts are best-effort
 
 ### `hermes_product`
@@ -419,7 +419,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `hermes_product_recommendations`
 
 - **HTTP:** `GET /hermes/product/recommendations`
-- **What:** Get a Hermès product's recommended items. Returns the cross-sell shelves Hermès shows on a product page: "keep exploring" (similar items) and "perfect partner" (items styled with it), each a list of normalized products with price, stock and image. Takes the same sku forms as hermes-product. A product Hermès offers no recommendations for returns an empty shelves list rather than an error.
+- **What:** Get a Hermès product's recommended items. Returns the cross-sell shelves Hermès shows on a product page: "keep exploring" (similar items) and "perfect partner" (items styled with it), each a list of products with price, stock and image. Takes the same sku forms as hermes-product. A product Hermès offers no recommendations for returns an empty shelves list rather than an error.
 - **Params:** `locale` (string, optional) — Market and language. One of: at_de, au_en, be_en, be_fr, br_pt, ca_en, ca_fr, ch_de, ch_fr, cz_en, de_de, dh_en, dk_en, es_es, fi_en, fr_fr, gr_en, hk_en, ie_en, it_it, jp_ja, kr_ko, lu_fr, mo_en, mx_es, my_en, nl_en, no_en, pl_en, pt_en, ri_en, se_en, sg_en, th_en, tw_zh, uk_en, us_en; `sku` (string, **required**) — Hermès product sku, in any of the forms hermes-product accepts
 
 ### `hermes_products`
@@ -431,7 +431,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `hermes_search`
 
 - **HTTP:** `GET /hermes/search`
-- **What:** Search the Hermès catalogue. Searches the Hermès catalogue by keyword and returns a page of normalized products in the same shape as hermes-category. A query Hermès has no match for returns total 0 with an empty products array: Hermès itself renders unrelated fallback recommendations on a no-results page, and those are deliberately not returned as results. When Hermès applies its own spelling correction the corrected term is reported in results_for. Page size is fixed at 48 by Hermès and cannot be changed.
+- **What:** Search the Hermès catalogue. Searches the Hermès catalogue by keyword and returns a page of products in the same shape as hermes-category. A query Hermès has no match for returns total 0 with an empty products array: Hermès itself renders unrelated fallback recommendations on a no-results page, and those are deliberately not returned as results. When Hermès applies its own spelling correction the corrected term is reported in results_for. Page size is fixed at 48 by Hermès and cannot be changed.
 - **Params:** `locale` (string, optional) — Market and language. One of: at_de, au_en, be_en, be_fr, br_pt, ca_en, ca_fr, ch_de, ch_fr, cz_en, de_de, dh_en, dk_en, es_es, fi_en, fr_fr, gr_en, hk_en, ie_en, it_it, jp_ja, kr_ko, lu_fr, mo_en, mx_es, my_en, nl_en, no_en, pl_en, pt_en, ri_en, se_en, sg_en, th_en, tw_zh, uk_en, us_en; `page` (integer, optional) — One-based result page; page size is fixed at 48. Page 1 is fully validated; pages beyond 1 are best-effort and provisional; `query` (string, **required**) — Search keyword
 
 ### `hermes_stores`
@@ -457,19 +457,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `modaoperandi_designers`
 
 - **HTTP:** `GET /modaoperandi/designers`
-- **What:** List Moda Operandi designers. Returns the live designer facet for one department. Every returned slug is valid for modaoperandi-search.
+- **What:** List Moda Operandi designers. Lists the designers currently available in one Moda Operandi department, chosen with the required `gender` (`women` or `men`). Each designer has its name, slug and item count, and each slug can be passed as `designer` to `modaoperandi-search`. The response also carries the `count` of designers.
 - **Params:** `gender` (string, **required**) — Department
 
 ### `modaoperandi_product`
 
 - **HTTP:** `GET /modaoperandi/product`
-- **What:** Get a Moda Operandi product. Returns public product detail, price, availability, size inventory, description, designer, color, and images for a Moda Operandi product URL.
+- **What:** Get a Moda Operandi product. Returns one Moda Operandi product by its product page `url`: id, name, designer, color, price and currency, description, details, images, and the available sizes. It also reports `availability` and an `in_stock` flag for the product.
 - **Params:** `url` (string, **required**) — Moda Operandi product URL
 
 ### `modaoperandi_search`
 
 - **HTTP:** `GET /modaoperandi/search`
-- **What:** Search Moda Operandi products. Searches or browses Moda Operandi's public catalog with category, designer, color, size, availability, price, sale, sort, and page filters.
+- **What:** Search Moda Operandi products. Searches or browses the Moda Operandi catalogue for one department, with `gender` (`women` or `men`) required and either `q` or `category` needed as well. Filter by `designer`, `color`, `size`, `availability`, price range or `on_sale`, and sort with `sort`. `limit` is 1 to 180 per page. Returns products plus facet counts and the `total`.
 - **Params:** `attribute` (string, optional) — Attribute facet value; `availability` (string, optional) — Availability; `category` (string, optional) — Category slug from modaoperandi-categories; `color` (string, optional) — Color facet value; `designer` (string, optional) — Designer slug from modaoperandi-designers; `gender` (string, **required**) — Department; `limit` (integer, optional) — Results per page; `on_sale` (boolean, optional) — Sale items only; `page` (integer, optional) — 1-based page; `price_max` (number, optional) — Maximum price; `price_min` (number, optional) — Minimum price; `q` (string, optional) — Free-text search; `size` (string, optional) — Size facet value; `sort` (string, optional) — Sort
 
 ## Moncler (6)
@@ -483,7 +483,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `moncler_category`
 
 - **HTTP:** `GET /moncler/category`
-- **What:** Browse a Moncler category. Lists products within one category. category_id must be a value returned by moncler-categories' own category_id field -- a closed set the upstream defines. Returns the same normalized result and facet shape as moncler-search. Narrow the same results with the filter param below.
+- **What:** Browse a Moncler category. Lists products within one category. category_id must be a value returned by moncler-categories' own category_id field -- a closed set the upstream defines. Returns the same result and facet shape as moncler-search. Narrow the same results with the filter param below.
 - **Params:** `category_id` (string, **required**) — Category id, from moncler-categories; `filter` (array, optional) — Repeatable, up to 10. Each value is \; `limit` (integer, optional) — Max results to return; `offset` (integer, optional) — Result offset for pagination; `sort` (string, optional) — Sort order
 
 ### `moncler_product`
@@ -495,7 +495,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `moncler_search`
 
 - **HTTP:** `GET /moncler/search`
-- **What:** Search Moncler products. Searches Moncler's product catalog by keyword. Returns normalized product results (name, price, image, orderable color/size variant ids, and live stock level) plus the search index's own sort options and facets (gender, category, color, size, and others) with live per-option result counts. Narrow the same results with the filter param below.
+- **What:** Search Moncler products. Searches Moncler's product catalog by keyword. Returns product results (name, price, image, orderable color/size variant ids, and live stock level) plus the search index's own sort options and facets (gender, category, color, size, and others) with live per-option result counts. Narrow the same results with the filter param below.
 - **Params:** `filter` (array, optional) — Repeatable, up to 10. Each value is \; `limit` (integer, optional) — Max results to return; `offset` (integer, optional) — Result offset for pagination; `q` (string, **required**) — Search keyword; `sort` (string, optional) — Sort order
 
 ### `moncler_stores`
@@ -527,7 +527,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `prada_product`
 
 - **HTTP:** `GET /prada/product`
-- **What:** Get a Prada product. Returns normalized product-detail data for one Prada product/color variant: name, price, stock, available sizes, breadcrumb, alternate colors, and images. pv is the product/color identifier, returned by prada-search's, prada-category's, and this endpoint's own products[].pv/other_colors[] fields (also the trailing path segment of a Prada product URL). description and the full image gallery are populated on a best-effort basis from the product's own page and may be briefly absent even for a valid pv; every other field is always populated. An unknown pv returns a not-found error.
+- **What:** Get a Prada product. Returns product-detail data for one Prada product/color variant: name, price, stock, available sizes, breadcrumb, alternate colors, and images. pv is the product/color identifier, returned by prada-search's, prada-category's, and this endpoint's own products[].pv/other_colors[] fields (also the trailing path segment of a Prada product URL). description and the full image gallery are populated on a best-effort basis and may be briefly absent even for a valid pv; every other field is always populated. An unknown pv returns a not-found error.
 - **Params:** `pv` (string, **required**) — Product/color identifier, from a search, category, or product result's own pv field
 
 ### `prada_search`
@@ -553,73 +553,73 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rebag_collection_products`
 
 - **HTTP:** `GET /rebag/collections/{handle}/products`
-- **What:** List Rebag collection products. Returns normalized products from one Rebag (https://shop.rebag.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
+- **What:** List Rebag collection products. Returns products from one Rebag (https://shop.rebag.com) collection. The storefront URL is fixed server-side; `handle` is the collection's URL slug.
 - **Params:** `handle` (string, **required**) — Collection handle; `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `rebag_collections`
 
 - **HTTP:** `GET /rebag/collections`
-- **What:** List Rebag collections. Returns normalized collections from Rebag (https://shop.rebag.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
+- **What:** List Rebag collections. Returns collections from Rebag (https://shop.rebag.com). The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty collections array.
 - **Params:** `limit` (integer, optional) — Maximum collections, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `rebag_page`
 
 - **HTTP:** `GET /rebag/pages/{handle}`
-- **What:** Get a Rebag static page. Returns normalized static page detail for one Rebag (https://shop.rebag.com) page handle. The storefront URL is fixed server-side.
+- **What:** Get a Rebag static page. Looks up a single Rebag static page by `handle`, for example `welcome-trendlee`. The response has the page's id, title, URL, publication and update times, and its `content` as plain text. Unknown handles return 404. If `transport_mode` is `ssr_embedded`, `id` is left out.
 - **Params:** `handle` (string, **required**) — Page handle
 
 ### `rebag_pages`
 
 - **HTTP:** `GET /rebag/pages`
-- **What:** List Rebag static pages. Returns normalized static pages from Rebag (https://shop.rebag.com). The storefront URL is fixed server-side.
+- **What:** List Rebag static pages. Lists the static pages on Rebag's storefront, paged with `page` (from 1) and `limit` (default 50, max 250). Each entry has `handle`, `title`, `url`, plain-text `content` and its dates. An empty page of results returns an empty `pages` array. In `ssr_embedded` mode only `handle`, `url` and `updated_at` are filled.
 - **Params:** `limit` (integer, optional) — Maximum static pages, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `rebag_product`
 
 - **HTTP:** `GET /rebag/products/{handle}`
-- **What:** Get a Rebag product. Returns normalized product detail for one Rebag (https://shop.rebag.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
+- **What:** Get a Rebag product. Returns product detail for one Rebag (https://shop.rebag.com) product handle. The storefront URL is fixed server-side; `handle` is the product's URL slug.
 - **Params:** `handle` (string, **required**) — Product handle
 
 ### `rebag_product_recommendations`
 
 - **HTTP:** `GET /rebag/products/{handle}/recommendations`
-- **What:** List Rebag product recommendations. Returns normalized recommended products for one Rebag (https://shop.rebag.com) product handle. The route handle is resolved to a Shopify product id before fetching recommendations. The storefront URL is fixed server-side.
+- **What:** List Rebag product recommendations. Returns recommended products for one Rebag (https://shop.rebag.com) product handle. The storefront URL is fixed server-side.
 - **Params:** `handle` (string, **required**) — Product handle; `intent` (string, optional) — Recommendation intent. Allowed values: related, complementary; `limit` (integer, optional) — Maximum products, defaults to 10 and supports up to 20
 
 ### `rebag_products`
 
 - **HTTP:** `GET /rebag/products`
-- **What:** List Rebag products. Returns normalized products from Rebag's (https://shop.rebag.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
+- **What:** List Rebag products. Returns products from Rebag's (https://shop.rebag.com) public product catalog. The storefront URL is fixed server-side. Valid empty result pages return `200` with an empty products array.
 - **Params:** `limit` (integer, optional) — Maximum products, defaults to 50 and supports up to 250; `page` (integer, optional) — 1-based page, defaults to 1
 
 ### `rebag_search`
 
 - **HTTP:** `GET /rebag/search`
-- **What:** Search Rebag products. Returns normalized, ranked products from Rebag's (https://shop.rebag.com) own full-text product search (Shopify's Storefront API), including a best-effort condition grade and colour derived from the product's own catalog tags -- attributes not available from the classic catalog JSON endpoints in this family. The storefront URL is fixed server-side.
+- **What:** Search Rebag products. Returns ranked products from Rebag's (https://shop.rebag.com) own full-text product search, including a best-effort condition grade and colour derived from the product's own catalog tags -- attributes not available from the other catalog endpoints in this family. The storefront URL is fixed server-side.
 - **Params:** `limit` (integer, optional) — Maximum products, defaults to 20 and supports up to 50; `page` (integer, optional) — 1-based page, defaults to 1; `q` (string, **required**) — Search query text; `sort` (string, optional) — Sort order. Allowed values: relevance, price_asc, price_desc
 
 ### `rebag_search_suggest`
 
 - **HTTP:** `GET /rebag/search/suggest`
-- **What:** Get Rebag search suggestions. Returns products, collections, and query suggestions from Rebag's (https://shop.rebag.com) credential-free predictive search Ajax endpoint. The storefront URL is fixed server-side.
+- **What:** Get Rebag search suggestions. Returns products, collections, and query suggestions from Rebag's (https://shop.rebag.com) predictive search. The storefront URL is fixed server-side.
 - **Params:** `limit` (integer, optional) — Maximum results per type, defaults to 10 and supports up to 20; `q` (string, **required**) — Search query; `types` (string, optional) — Comma-separated suggestion types. Allowed values: product, collection, query
 
 ### `rebag_sitemap_urls`
 
 - **HTTP:** `GET /rebag/sitemap/urls`
-- **What:** List Rebag sitemap URLs. Returns capped URL entries from Rebag's (https://shop.rebag.com) child sitemaps matching the requested type. The storefront URL is fixed server-side.
+- **What:** List Rebag sitemap URLs. Lists URL entries from Rebag's sitemaps, filtered by `type` (`all`, `products`, `collections`, `pages`, `blogs`, `agentic_discovery` or `other`; default `all`). Collection stops at `limit` entries (default 50, max 250). Each entry has `loc`, `type`, `handle`, `lastmod`, `changefreq` and, where present, `images` with caption, title and URL.
 - **Params:** `limit` (integer, optional) — Maximum URL entries, defaults to 50 and supports up to 250; `type` (string, optional) — Sitemap type. Allowed values: all, products, collections, pages, blogs, agentic_discovery, other
 
 ### `rebag_sitemaps`
 
 - **HTTP:** `GET /rebag/sitemaps`
-- **What:** List Rebag sitemaps. Returns child sitemap URLs from Rebag's (https://shop.rebag.com) `/sitemap.xml` index with inferred sitemap types. The storefront URL is fixed server-side.
+- **What:** List Rebag sitemaps. Lists the child sitemaps in Rebag's sitemap index. Each entry has its `loc` and a `type` of `products`, `collections`, `pages`, `blogs`, `agentic_discovery` or `other`, worked out from the sitemap URL. The endpoint takes no parameters.
 - **Params:** _none_
 
 ### `rebag_store`
 
 - **HTTP:** `GET /rebag/store`
-- **What:** Get Rebag store metadata. Returns normalized storefront metadata for Rebag (https://shop.rebag.com), sourced from credential-free storefront JSON. This endpoint is a brand-pinned wrapper around the generic Shopify store family: the storefront URL is fixed server-side, so no `url` parameter is accepted. If the vanity domain blocks `/products.json`, the service may fall back to a public `*.myshopify.com` domain discovered from the storefront page, or to the storefront's own embedded page data for storefronts that expose neither.
+- **What:** Get Rebag store metadata. Returns storefront metadata for Rebag (https://shop.rebag.com). The storefront URL is fixed server-side, so no `url` parameter is accepted.
 - **Params:** _none_
 
 ## The RealReal (11)
@@ -627,67 +627,67 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `therealreal_autocomplete`
 
 - **HTTP:** `GET /therealreal/autocomplete`
-- **What:** Get The RealReal search-box suggestions. Returns The RealReal's own search-box typeahead suggestions for a partial query. Credential-free public data sourced from The RealReal's own first-party catalog API.
+- **What:** Get The RealReal search-box suggestions. Returns The RealReal's own search-box typeahead suggestions for a partial query.
 - **Params:** `term` (string, **required**) — Partial free-text query to get search-box suggestions for
 
 ### `therealreal_categories`
 
 - **HTTP:** `GET /therealreal/categories`
-- **What:** Get The RealReal category browse taxonomy. Returns The RealReal's full category (taxon) browse taxonomy: every department, category, and subcategory, nested, with each entry's id (usable directly against search's category_id), permalink (usable directly against the category endpoint's path), and live matching item count. This is reference data that changes rarely, so responses are cached. Credential-free public data sourced from The RealReal's own server-rendered category page.
+- **What:** Get The RealReal category browse taxonomy. Returns The RealReal's full category (taxon) browse taxonomy: every department, category, and subcategory, nested, with each entry's id (usable directly against search's category_id), permalink (usable directly against the category endpoint's path), and live matching item count. This is reference data that changes rarely, so responses are cached.
 - **Params:** _none_
 
 ### `therealreal_category`
 
 - **HTTP:** `GET /therealreal/category`
-- **What:** Browse The RealReal listings by category. Returns a page of normalized The RealReal listings browsed by category (taxon) permalink path, e.g. women/handbags. Pass a previous response's next_after back as after to fetch the next page. Credential-free public data sourced from The RealReal's own server-rendered category page.
+- **What:** Browse The RealReal listings by category. Returns a page of The RealReal listings browsed by category (taxon) permalink path, e.g. women/handbags. Pass a previous response's next_after back as after to fetch the next page.
 - **Params:** `after` (string, optional) — Opaque pagination cursor from a previous response's next_after. Omit for the first page; `available` (boolean, optional) — Only return items currently available to purchase (excludes sold and waitlisted items); `on_sale` (boolean, optional) — Only return items currently marked down from their original price; `path` (string, **required**) — Category permalink path, from the categories endpoint's permalink field
 
 ### `therealreal_collection`
 
 - **HTTP:** `GET /therealreal/collection`
-- **What:** Browse The RealReal listings by curated collection. Returns a page of normalized The RealReal listings browsed by curated collection slug, e.g. on-sale-now -- sale campaigns, editor's picks, and similar merchandising collections distinct from category/designer browsing. Pass a previous response's next_after back as after to fetch the next page. Credential-free public data sourced from The RealReal's own server-rendered collection page.
+- **What:** Browse The RealReal listings by curated collection. Returns a page of The RealReal listings browsed by curated collection slug, e.g. on-sale-now -- sale campaigns, editor's picks, and similar merchandising collections distinct from category/designer browsing. Pass a previous response's next_after back as after to fetch the next page.
 - **Params:** `after` (string, optional) — Opaque pagination cursor from a previous response's next_after. Omit for the first page; `slug` (string, **required**) — Collection slug, from the collections endpoint's slug field
 
 ### `therealreal_collections`
 
 - **HTTP:** `GET /therealreal/collections`
-- **What:** Get The RealReal curated collection slugs. Returns The RealReal's full published set of curated editorial and sale-campaign collection slugs (e.g. on-sale-now, hermes-birkin-bag), each usable directly against the collection endpoint's own slug field. This is reference data that changes rarely, so responses are cached. Credential-free public data sourced from The RealReal's own published sitemap.
+- **What:** Get The RealReal curated collection slugs. Returns The RealReal's full published set of curated editorial and sale-campaign collection slugs (e.g. on-sale-now, hermes-birkin-bag), each usable directly against the collection endpoint's own slug field. This is reference data that changes rarely, so responses are cached.
 - **Params:** _none_
 
 ### `therealreal_conditions`
 
 - **HTTP:** `GET /therealreal/conditions`
-- **What:** Get The RealReal condition-grading value space. Returns The RealReal's full authentication condition-grading scale: the closed 6-tier set (Pristine, Excellent, Very Good, Good, Fair, As Is) it defines, each with an id (usable directly against search's condition_id) and live matching item count. This is reference data that changes rarely, so responses are cached. Credential-free public data sourced from The RealReal's own server-rendered category page.
+- **What:** Get The RealReal condition-grading value space. Returns The RealReal's full authentication condition-grading scale: the closed 6-tier set (Pristine, Excellent, Very Good, Good, Fair, As Is) it defines, each with an id (usable directly against search's condition_id) and live matching item count. This is reference data that changes rarely, so responses are cached.
 - **Params:** _none_
 
 ### `therealreal_designer`
 
 - **HTTP:** `GET /therealreal/designer`
-- **What:** Browse The RealReal listings by designer. Returns a page of normalized The RealReal listings browsed by designer slug, e.g. gucci. Pass a previous response's next_after back as after to fetch the next page. Credential-free public data sourced from The RealReal's own server-rendered designer page.
+- **What:** Browse The RealReal listings by designer. Returns a page of The RealReal listings browsed by designer slug, e.g. gucci. Pass a previous response's next_after back as after to fetch the next page.
 - **Params:** `after` (string, optional) — Opaque pagination cursor from a previous response's next_after. Omit for the first page; `available` (boolean, optional) — Only return items currently available to purchase (excludes sold and waitlisted items); `on_sale` (boolean, optional) — Only return items currently marked down from their original price; `slug` (string, **required**) — Designer slug, from the designers endpoint's slug field
 
 ### `therealreal_designers`
 
 - **HTTP:** `GET /therealreal/designers`
-- **What:** Get The RealReal designer directory. Returns every designer The RealReal recognizes in one department (not just designers with currently active listings), each with an id (usable directly against search's designer_id) and slug (usable directly against the designer endpoint). The directory is segmented by department -- pass category to select one; the response's categories field lists every accepted value. This is reference data that changes rarely, so responses are cached. Credential-free public data sourced from The RealReal's own server-rendered designer directory page.
+- **What:** Get The RealReal designer directory. Returns every designer The RealReal recognizes in one department (not just designers with currently active listings), each with an id (usable directly against search's designer_id) and slug (usable directly against the designer endpoint). The directory is segmented by department -- pass category to select one; the response's categories field lists every accepted value. This is reference data that changes rarely, so responses are cached.
 - **Params:** `category` (string, optional) — Designer-directory department. One of: women, men, fine-jewelry, watches, art, home, kids. Defaults to women
 
 ### `therealreal_listing`
 
 - **HTTP:** `GET /therealreal/listing`
-- **What:** Get a The RealReal listing detail. Returns a single normalized The RealReal listing: description, condition detail, category context, and measurements, plus the shared summary fields (name, designer, condition, price, images). Looked up by the listing's full product URL, as returned in a search/category/designer response's url field. Credential-free public data sourced from The RealReal's own server-rendered listing page.
+- **What:** Get a The RealReal listing detail. Returns a single The RealReal listing: description, condition detail, category context, and measurements, plus the shared summary fields (name, designer, condition, price, images). Looked up by the listing's full product URL, as returned in a search/category/designer response's url field.
 - **Params:** `url` (string, **required**) — Full product URL, as returned in a search/category/designer response's url field
 
 ### `therealreal_search`
 
 - **HTTP:** `GET /therealreal/search`
-- **What:** Search The RealReal luxury consignment listings. Searches The RealReal's authenticated luxury resale catalog by keyword, optionally combined with category, designer, condition-grade, and price-range filters, returning normalized listing summaries (name, designer, condition, price, images) plus the total matching count and an opaque pagination cursor. Pass a previous response's next_after back as after to fetch the next page. Credential-free public data sourced from The RealReal's own server-rendered search page.
+- **What:** Search The RealReal luxury consignment listings. Searches The RealReal's authenticated luxury resale catalog by keyword, optionally combined with category, designer, condition-grade, and price-range filters, returning listing summaries (name, designer, condition, price, images) plus the total matching count and an opaque pagination cursor. Pass a previous response's next_after back as after to fetch the next page.
 - **Params:** `after` (string, optional) — Opaque pagination cursor from a previous response's next_after. Omit for the first page; `available` (boolean, optional) — Only return items currently available to purchase (excludes sold and waitlisted items); `category_id` (string, optional) — Category (taxon) id, from the categories endpoint's id field; `condition_id` (string, optional) — Condition grade id, from the conditions endpoint's id field; `designer_id` (string, optional) — Designer id, from the designers endpoint's id field; `on_sale` (boolean, optional) — Only return items currently marked down from their original price; `price_from` (number, optional) — Minimum price in USD; `price_to` (number, optional) — Maximum price in USD; `query` (string, **required**) — Free-text keyword search
 
 ### `therealreal_similar`
 
 - **HTTP:** `GET /therealreal/similar`
-- **What:** Get The RealReal similar-item recommendations. Returns The RealReal's own "Similar Items" visual-similarity recommendations for one product, looked up by the product's numeric id (from any other The RealReal endpoint's listing response id field). Credential-free public data sourced from The RealReal's own first-party catalog API.
+- **What:** Get The RealReal similar-item recommendations. Returns The RealReal's own "Similar Items" visual-similarity recommendations for one product, looked up by the product's numeric id (from any other The RealReal endpoint's listing response id field).
 - **Params:** `product_id` (string, **required**) — The RealReal numeric product id, from a search/category/designer/listing/collection response's id field
 
 ## Tiffany & Co. (8)
@@ -725,7 +725,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tiffany_search`
 
 - **HTTP:** `GET /tiffany/search`
-- **What:** Search Tiffany & Co. products. Searches Tiffany & Co.'s product catalog by free-text keyword. Returns normalized product summaries with USD pricing, live stock status, material, gemstone, collection, and designer. sort selects recommended (default), price_asc, price_desc, or newest. material, gemstone, color, product_type, gender, and designer are optional single-value filters -- see tiffany-filters for the live covered value space for each. A genuine non-matching keyword, or a filter combination with no matches, returns a well-formed empty result (zero total_products).
+- **What:** Search Tiffany & Co. products. Searches Tiffany & Co.'s product catalog by free-text keyword. Returns product summaries with USD pricing, live stock status, material, gemstone, collection, and designer. sort selects recommended (default), price_asc, price_desc, or newest. material, gemstone, color, product_type, gender, and designer are optional single-value filters -- see tiffany-filters for the live covered value space for each. A genuine non-matching keyword, or a filter combination with no matches, returns a well-formed empty result (zero total_products).
 - **Params:** `color` (string, optional) — Color filter -- see tiffany-filters; `designer` (string, optional) — Designer/collection filter -- see tiffany-filters; `gemstone` (string, optional) — Gemstone filter -- see tiffany-filters; `gender` (string, optional) — Gender filter -- see tiffany-filters; `keyword` (string, **required**) — Search keyword; `material` (string, optional) — Material filter -- see tiffany-filters; `page` (integer, optional) — One-based page; `per_page` (integer, optional) — Results per page; `product_type` (string, optional) — Product type filter -- see tiffany-filters; `sort` (string, optional) — Sort order
 
 ### `tiffany_stores`
@@ -795,25 +795,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `yoox_categories`
 
 - **HTTP:** `GET /yoox/categories`
-- **What:** List YOOX categories. Returns department-scoped category slugs discovered from YOOX navigation. Every returned slug is valid for yoox-search.
+- **What:** List YOOX categories. Lists YOOX categories grouped by department (`women`, `men` and `kids`), each with its name, slug and URL. Every category slug is valid as `category` in YOOX search. Calls can take up to about 80 seconds, and a call that cannot finish, or one made while YOOX shows its maintenance page, returns `503`.
 - **Params:** _none_
 
 ### `yoox_designers`
 
 - **HTTP:** `GET /yoox/designers`
-- **What:** List YOOX designers. Returns the department-scoped designer slugs discovered from YOOX navigation. Every returned slug is valid for yoox-search.
+- **What:** List YOOX designers. Lists YOOX designers for the required `department` (`women`, `men` or `kids`), with the `count` and each designer's name, slug and URL. Every designer slug is valid as `designer` in YOOX search. A call that cannot finish within about 80 seconds returns `503`, as does one made during YOOX maintenance.
 - **Params:** `department` (string, **required**) — Department
 
 ### `yoox_product`
 
 - **HTTP:** `GET /yoox/product`
-- **What:** Get a YOOX product. Returns the public product detail identified by a YOOX item id. The legacy product URL form remains accepted.
+- **What:** Get a YOOX product. Returns a YOOX product by item `id`, the path segment before `/item` in a product URL, for example `17734181OO`. The older `url` parameter still works instead. The response has name, brand, price, currency, `in_stock`, description, images and category. Calls can take up to about 80 seconds and return `503` if they cannot finish.
 - **Params:** `id` (string, optional) — YOOX item id, for example 17734181OO; `url` (string, optional) — Legacy YOOX product URL
 
 ### `yoox_search`
 
 - **HTTP:** `GET /yoox/search`
-- **What:** Search YOOX products. Searches or browses YOOX's public catalog with department, category, designer, color, size, price, sale, sort, and page filters.
+- **What:** Search YOOX products. Searches or browses YOOX products in the required `department`. Optional filters are `q`, `category`, `designer`, `color`, `size`, `price_min`, `price_max` and `on_sale`; `sort` takes `relevance`, `newest`, `price_asc`, `price_desc` or `discount`; `limit` is 1 to 100. Each product has brand, name, price, currency, stock status, image and URL, with `facets` for colors, sizes and sorts. May return `503`.
 - **Params:** `category` (string, optional) — Category slug from yoox-categories; `color` (string, optional) — Color filter; `department` (string, **required**) — Department; `designer` (string, optional) — Designer slug from yoox-designers; `limit` (integer, optional) — Results per page; `on_sale` (boolean, optional) — Sale items only; `page` (integer, optional) — 1-based page; `price_max` (number, optional) — Maximum price; `price_min` (number, optional) — Minimum price; `q` (string, optional) — Free-text search; `size` (string, optional) — Size filter; `sort` (string, optional) — Sort
 
 ## Depop (10)
@@ -833,7 +833,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `depop_item`
 
 - **HTTP:** `GET /depop/item/{slug}`
-- **What:** Get Depop item detail. Returns a normalized Depop item-detail page: description, all photos, price, condition, brand, size, seller info, and a "similar items" carousel when the page has one. Public data sourced from Depop's own item pages.
+- **What:** Get Depop item detail. Returns a Depop item-detail page: description, all photos, price, condition, brand, size, seller info, and a "similar items" carousel when the page has one.
 - **Params:** `slug` (string, **required**) — Depop item URL slug, e.g. from a search result's id field
 
 ### `depop_item_similar`
@@ -845,7 +845,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `depop_search`
 
 - **HTTP:** `GET /depop/search`
-- **What:** Search Depop listings. Searches Depop's resale-fashion marketplace by free-text keyword, with optional price, condition, colour, category, subcategory, gender, kids-department, brand, discount, and sort filters, returning normalized listing summaries (title, price, brand, condition, like count, photos, sizes), a pagination cursor, and the total matching count. Public data sourced from Depop's own search API.
+- **What:** Search Depop listings. Searches Depop's resale-fashion marketplace by free-text keyword, with optional price, condition, colour, category, subcategory, gender, kids-department, brand, discount, and sort filters, returning listing summaries (title, price, brand, condition, like count, photos, sizes), a pagination cursor, and the total matching count.
 - **Params:** `after` (string, optional) — Opaque pagination cursor from a previous response's next_cursor field. Omit for the first page.; `brand_ids` (string, optional) — Comma-separated Depop internal numeric brand ids. Not documented by Depop -- find a brand's id by browsing its depop.com/brands/<slug>/ page.; `category` (string, optional) — Depop category slug: tops, bottoms, dresses, coats-jackets, jumpsuit-and-playsuit, suits, footwear, accessories, nightwear, underwear, swim-beach-wear, fancy-dress, sleepsuits-and-bodysuits, bundles, beauty, face-masks, home, tech-accessories, film, art, books-and-magazine, music, party-supplies, sports-equipment-accesories, toys, umbrella. See GET /depop/categories for a machine-readable enumeration with names and subcategories.; `colours` (string, optional) — Comma-separated colour filter: black, grey, white, brown, tan, cream, yellow, red, burgundy, orange, pink, purple, blue, navy, green, khaki, multi; `condition` (string, optional) — Comma-separated condition filter: brand_new, used_like_new, used_excellent, used_good, used_fair; `gender` (string, optional) — Department filter: female, male; `is_kids` (boolean, optional) — Kids-department filter: true restricts results to kids items only, false excludes them, omitted returns both.; `on_sale` (boolean, optional) — Restrict results to discounted listings; `price_max` (number, optional) — Maximum listing price in USD; `price_min` (number, optional) — Minimum listing price in USD; `query` (string, **required**) — Free-text keyword search; `sizes` (string, optional) — Comma-separated Depop size composite ids (format {size_set_id}.{id}, e.g. \; `sort` (string, optional) — Sort order: relevance, price_low_to_high, price_high_to_low; `subcategory` (string, optional) — Comma-separated Depop subcategory slug(s), scoped within category. See GET /depop/categories for the full list per category.
 
 ### `depop_search_facets`
@@ -883,61 +883,61 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `goat_collection`
 
 - **HTTP:** `GET /goat/collection`
-- **What:** Get a GOAT curated product collection. Returns a page of one of GOAT's curated product collections (an editorial rail like "top trending" or "new arrivals"), the same call GOAT's own product-page "you may also like" rails and homepage modules use. Collection slugs are not enumerable by this API -- capture one from a live GOAT page. Credential-free public data.
+- **What:** Get a GOAT curated product collection. Returns a page of one of GOAT's curated product collections (an editorial rail like "top trending" or "new arrivals"), as shown in GOAT's own product-page "you may also like" rails and homepage modules. Collection slugs are not enumerable by this API -- capture one from a live GOAT page.
 - **Params:** `exclude_product_ids` (string, optional) — Omit specific products by id, comma-separated; `limit` (integer, optional) — Results per page, defaults to 12, maximum 100; `page` (integer, optional) — 1-indexed result page, defaults to 1; `slug` (string, **required**) — GOAT collection slug, e.g. as seen in a curated rail on GOAT's own site
 
 ### `goat_countries`
 
 - **HTTP:** `GET /goat/countries`
-- **What:** Get GOAT countries. Returns every country GOAT recognizes -- the accepted values for GET /goat/product/{slug}'s country_code parameter -- with the currency and size unit (us, uk, eu) GOAT localizes to for each, plus whether GOAT ships and accepts returns there. Every country is listed, not only the shippable ones, because country_code localizes pricing and is accepted for all of them; filter on ships_to if you want only GOAT's shipping destinations. Credential-free public data.
+- **What:** Get GOAT countries. Returns every country GOAT recognizes -- the accepted values for GET /goat/product/{slug}'s country_code parameter -- with the currency and size unit (us, uk, eu) GOAT localizes to for each, plus whether GOAT ships and accepts returns there. Every country is listed, not only the shippable ones, because country_code localizes pricing and is accepted for all of them; filter on ships_to if you want only GOAT's shipping destinations.
 - **Params:** _none_
 
 ### `goat_curated`
 
 - **HTTP:** `GET /goat/curated`
-- **What:** Get GOAT curated links. Returns the shelf of editorially curated links GOAT is currently promoting in its own search box: seasonal collections, specific product searches, and browse-all entry points. Every link is actionable against this API -- a collection link carries a value for GET /goat/collection, a search link carries a query for GET /goat/search. Credential-free public data.
+- **What:** Get GOAT curated links. Returns the shelf of editorially curated links GOAT is currently promoting in its own search box: seasonal collections, specific product searches, and browse-all entry points. Every link is actionable against this API -- a collection link carries a value for GET /goat/collection, a search link carries a query for GET /goat/search.
 - **Params:** _none_
 
 ### `goat_listings_count`
 
 - **HTTP:** `GET /goat/listings/count`
-- **What:** Get GOAT live listing count. Returns how many listings GOAT currently has live across its whole marketplace. This is the only way to see GOAT's true catalog size, because GET /goat/search's total_results saturates at 10000 on a broad query and cannot report a total above that ceiling. Credential-free public data.
+- **What:** Get GOAT live listing count. Returns how many listings GOAT currently has live across its whole marketplace. This is the only way to see GOAT's true catalog size, because GET /goat/search's total_results saturates at 10000 on a broad query and cannot report a total above that ceiling.
 - **Params:** _none_
 
 ### `goat_product`
 
 - **HTTP:** `GET /goat/product/{slug}`
-- **What:** Get GOAT product detail. Returns a normalized GOAT product: identity/descriptive metadata (name, brand, SKU, colorway, designer, silhouette, taxonomy, materials, release date, retail price, editorial story, images, full size range, other products featured alongside it), plus live per-size/condition pricing and stock status (lowest price, GOAT Instant Ship price, last sold price, highest current buyer offer). Credential-free public data combining GOAT's own product-page payload with its live pricing and offers APIs.
+- **What:** Get GOAT product detail. Returns a GOAT product: identity/descriptive metadata (name, brand, SKU, colorway, designer, silhouette, taxonomy, materials, release date, retail price, editorial story, images, full size range, other products featured alongside it), plus live per-size/condition pricing and stock status (lowest price, GOAT Instant Ship price, last sold price, highest current buyer offer).
 - **Params:** `country_code` (string, optional) — ISO 3166-1 alpha-2 country code used to localize per-size pricing, defaults to US; `slug` (string, **required**) — GOAT product URL slug, the path segment of a https://www.goat.com/sneakers/{slug} product page
 
 ### `goat_product_recommended`
 
 - **HTTP:** `GET /goat/product/{slug}/recommended`
-- **What:** Get GOAT recommended products for a product. Returns the recommended/related products GOAT's own product page shows for a given product (other colorways, similar products) -- descriptive metadata only, no live pricing. Credential-free public data from GOAT's own product-page recommendation API.
+- **What:** Get GOAT recommended products for a product. Returns the recommended/related products GOAT's own product page shows for a given product (other colorways, similar products) -- descriptive metadata only, no live pricing.
 - **Params:** `count` (integer, optional) — Number of recommended products to return, defaults to 8, maximum 24; `slug` (string, **required**) — GOAT product URL slug to find related products for
 
 ### `goat_search`
 
 - **HTTP:** `GET /goat/search`
-- **What:** Search GOAT products. Searches or browses GOAT's sneaker/streetwear/collectibles catalog by free-text query and/or facet filters (category, footwear sub-type, activity, color, gender, condition, brand, release year, price range, release-date range, silhouette, designer, in-stock/under-retail/instant-ship, curated collection), returning normalized product summaries (brand, silhouette, category, image, stock status, headline pricing across all sizes) plus the total matching count. Query is optional -- a facet filter alone browses the catalog the same way GOAT's own category/brand pages do. Credential-free public data from the same JSON API backing GOAT's own search page.
+- **What:** Search GOAT products. Searches or browses GOAT's sneaker/streetwear/collectibles catalog by free-text query and/or facet filters (category, footwear sub-type, activity, color, gender, condition, brand, release year, price range, release-date range, silhouette, designer, in-stock/under-retail/instant-ship, curated collection), returning product summaries (brand, silhouette, category, image, stock status, headline pricing across all sizes) plus the total matching count. Query is optional -- a facet filter alone browses the catalog the same way GOAT's own category/brand pages do.
 - **Params:** `activities` (string, optional) — Filter by activity (sneakers only), comma-separated for multiple values; `brands` (string, optional) — Filter by one or more brand slugs, comma-separated, e.g. air-jordan,nike. GET /goat/search/facets lists GOAT's top brands; long-tail brands are valid here even when absent from that list; `categories` (string, optional) — Filter by category, comma-separated for multiple values. See GET /goat/search/facets for the current live list; `collection_slug` (string, optional) — Scope results to a GOAT curated collection (see GET /goat/collection), combinable with query, every other filter, and sort; `colors` (string, optional) — Filter by color, comma-separated for multiple values; `conditions` (string, optional) — Filter by item condition, comma-separated for multiple values; `designers` (string, optional) — Filter by one or more designers, comma-separated, matching GOAT's own naming (see a product's designer field); `genders` (string, optional) — Filter by gender, comma-separated for multiple values; `in_stock` (boolean, optional) — Only include products currently in stock; `instant_ship` (boolean, optional) — Only include products with GOAT Instant Ship availability; `limit` (integer, optional) — Results per page, defaults to 12, maximum 100; `page` (integer, optional) — 1-indexed result page, defaults to 1; `price_cents_max` (integer, optional) — Only include results priced at or below this amount, in cents; `price_cents_min` (integer, optional) — Only include results priced at or above this amount, in cents; `product_types` (string, optional) — Filter by footwear sub-type, comma-separated for multiple values; `query` (string, optional) — Free-text search query, e.g. a model name, colorway, or style code. Optional -- omit to browse by facet filters alone; `released_after` (string, optional) — Only include products released on or after this date (YYYY-MM-DD, UTC); `released_before` (string, optional) — Only include products released on or before this date (YYYY-MM-DD, UTC); `silhouettes` (string, optional) — Filter by one or more silhouettes, comma-separated, matching GOAT's own naming (see a product's silhouette field); `sort` (string, optional) — Result sort order, defaults to relevance; `under_retail` (boolean, optional) — Only include products currently trading below original retail price; `years` (string, optional) — Filter by season year(s), comma-separated, e.g. 2025,2026. See GET /goat/search/facets for the current live list
 
 ### `goat_search_facets`
 
 - **HTTP:** `GET /goat/search/facets`
-- **What:** Get GOAT search facet values. Returns the accepted values for goat_search's filter parameters: categories, colors, genders, conditions, brands, and years are read live from GOAT's own search API so a value GOAT adds is discoverable without any client-side change, while product_types and activities are served from a maintained list because GOAT exposes no live facet for them. brands is GOAT's top brands ordered by product count, not the complete brand list -- when brands_truncated is true, brands beyond the ones listed exist and remain valid goat_search values. Credential-free public data.
+- **What:** Get GOAT search facet values. Returns the accepted values for goat_search's filter parameters: categories, colors, genders, conditions, brands, and years are returned live so a value GOAT adds is discoverable without any client-side change, while product_types and activities are served from a maintained list because GOAT exposes no live facet for them. brands is GOAT's top brands ordered by product count, not the complete brand list -- when brands_truncated is true, brands beyond the ones listed exist and remain valid goat_search values.
 - **Params:** _none_
 
 ### `goat_suggest`
 
 - **HTTP:** `GET /goat/suggest`
-- **What:** Autocomplete a GOAT search. Returns GOAT's own search-box autocomplete for a partial query: matching curated collections and matching products. The collections carry the slug values accepted by GET /goat/collection and by GET /goat/search's collection_slug parameter, making this the way to discover collection slugs. Credential-free public data.
+- **What:** Autocomplete a GOAT search. Returns GOAT's own search-box autocomplete for a partial query: matching curated collections and matching products. The collections carry the slug values accepted by GET /goat/collection and by GET /goat/search's collection_slug parameter, making this the way to discover collection slugs.
 - **Params:** `limit` (integer, optional) — Maximum curated collections to return. Defaults to 8, maximum 20. Does not affect the product count, which upstream fixes at 25; `query` (string, **required**) — Partial search text to autocomplete
 
 ### `goat_trending_searches`
 
 - **HTTP:** `GET /goat/searches/trending`
-- **What:** Get GOAT trending searches. Returns the search terms GOAT is currently surfacing as popular, in GOAT's own ranking order -- the same list its own search box shows. Each term is free text ready to pass to GET /goat/search's query parameter. Credential-free public data.
+- **What:** Get GOAT trending searches. Returns the search terms GOAT is currently surfacing as popular, in GOAT's own ranking order -- the same list its own search box shows. Each term is free text ready to pass to GET /goat/search's query parameter.
 - **Params:** _none_
 
 ## Poshmark (8)
@@ -945,49 +945,49 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `poshmark_brand`
 
 - **HTTP:** `GET /poshmark/brand/{name}`
-- **What:** Browse Poshmark listings by brand. Returns a page of normalized Poshmark listings for a given brand name (e.g. Nike), the same browsing view as Poshmark's own brand pages. Pass a previous response's next_max_id back as max_id to fetch the next page. Credential-free public data sourced from Poshmark's own server-rendered brand page and, for pages past the first, Poshmark's own JSON pagination API.
+- **What:** Browse Poshmark listings by brand. Returns a page of Poshmark listings for a given brand name (e.g. Nike), the same browsing view as Poshmark's own brand pages. Pass a previous response's next_max_id back as max_id to fetch the next page.
 - **Params:** `max_id` (string, optional) — Opaque pagination cursor from a previous response's next_max_id. Omit for the first page; `name` (string, **required**) — Poshmark brand name, matching the path segment of a /brand/{name} URL
 
 ### `poshmark_brands`
 
 - **HTTP:** `GET /poshmark/brands`
-- **What:** Get the full Poshmark brand directory. Returns Poshmark's full brand directory: every brand Poshmark recognizes (name, slug, logo, known aliases), not just brands with active listings for a given search or category filter. Useful for resolving a brand name to the exact value the brand/search filters expect. Credential-free public data sourced from Poshmark's own server-rendered brand directory page.
+- **What:** Get the full Poshmark brand directory. Returns Poshmark's full brand directory: every brand Poshmark recognizes (name, slug, logo, known aliases), not just brands with active listings for a given search or category filter. Useful for resolving a brand name to the exact value the brand/search filters expect.
 - **Params:** _none_
 
 ### `poshmark_categories`
 
 - **HTTP:** `GET /poshmark/categories`
-- **What:** Get the Poshmark department/category browse taxonomy. Returns Poshmark's full department/category browse taxonomy (e.g. Women > Shoes, Men > Jackets & Coats). Each entry's path resolves directly against the category endpoint. This is reference data that changes rarely, so responses are cached. Credential-free public data sourced from Poshmark's own server-rendered category pages.
+- **What:** Get the Poshmark department/category browse taxonomy. Returns Poshmark's full department/category browse taxonomy (e.g. Women > Shoes, Men > Jackets & Coats). Each entry's path resolves directly against the category endpoint. This is reference data that changes rarely, so responses are cached.
 - **Params:** _none_
 
 ### `poshmark_category`
 
 - **HTTP:** `GET /poshmark/category/{path}`
-- **What:** Browse Poshmark listings by category. Returns a page of normalized Poshmark listings for a given category path (e.g. Women-Shoes, Men-Shirts), the same browsing view as Poshmark's own category pages. Pass a previous response's next_max_id back as max_id to fetch the next page. Credential-free public data sourced from Poshmark's own server-rendered category page and, for pages past the first, Poshmark's own JSON pagination API.
+- **What:** Browse Poshmark listings by category. Returns a page of Poshmark listings for a given category path (e.g. Women-Shoes, Men-Shirts), the same browsing view as Poshmark's own category pages. Pass a previous response's next_max_id back as max_id to fetch the next page.
 - **Params:** `max_id` (string, optional) — Opaque pagination cursor from a previous response's next_max_id. Omit for the first page; `path` (string, **required**) — Poshmark category path segment, e.g. Women-Shoes, Men-Shirts
 
 ### `poshmark_closet`
 
 - **HTTP:** `GET /poshmark/closet/{username}`
-- **What:** Get Poshmark seller closet (storefront). Returns a normalized Poshmark closet (seller storefront) page: the seller's public profile and reputation stats (followers, ratings, items sold) plus a first page of their currently available listings and total listing count. Pass a previous response's next_max_id back as max_id to fetch the next page of listings; paginated responses omit the seller profile to avoid a second upstream fetch, so fetch without max_id first to get seller fields. Credential-free public data sourced from Poshmark's own server-rendered closet page and, for pages past the first, Poshmark's own JSON pagination API.
+- **What:** Get Poshmark seller closet (storefront). Returns a Poshmark closet (seller storefront) page: the seller's public profile and reputation stats (followers, ratings, items sold) plus a first page of their currently available listings and total listing count. Pass a previous response's next_max_id back as max_id to fetch the next page of listings; paginated responses omit the seller profile, so fetch without max_id first to get seller fields.
 - **Params:** `max_id` (string, optional) — Opaque pagination cursor from a previous response's next_max_id. Omit for the first page; `username` (string, **required**) — Poshmark seller username, the path segment of a /closet/{username} URL
 
 ### `poshmark_listing`
 
 - **HTTP:** `GET /poshmark/listing/{id}`
-- **What:** Get Poshmark listing detail. Returns a normalized Poshmark item-detail page: the full listing (description, all photos, size/brand/condition, inventory), its seller's profile, public comments, and similar listings Poshmark itself surfaces on the same page. Credential-free public data sourced from Poshmark's own server-rendered listing page.
+- **What:** Get Poshmark listing detail. Returns a Poshmark item-detail page: the full listing (description, all photos, size/brand/condition, inventory), its seller's profile, public comments, and similar listings Poshmark itself surfaces on the same page.
 - **Params:** `id` (string, **required**) — Poshmark listing id, the trailing id segment of a /listing/{slug}-{id} URL
 
 ### `poshmark_search`
 
 - **HTTP:** `GET /poshmark/search`
-- **What:** Search Poshmark listings. Searches Poshmark for clothing, shoes, and accessory listings, returning normalized listing summaries (title, price, brand, size, condition, seller, images) plus the total matching count and an opaque pagination cursor. Pass a previous response's next_max_id back as max_id to fetch the next page. Credential-free public data sourced from Poshmark's own server-rendered search page and, for pages past the first, Poshmark's own JSON pagination API.
+- **What:** Search Poshmark listings. Searches Poshmark for clothing, shoes, and accessory listings, returning listing summaries (title, price, brand, size, condition, seller, images) plus the total matching count and an opaque pagination cursor. Pass a previous response's next_max_id back as max_id to fetch the next page.
 - **Params:** `department` (string, optional) — Department filter, e.g. Women, Men, Kids; `max_id` (string, optional) — Opaque pagination cursor from a previous response's next_max_id. Omit for the first page; `query` (string, **required**) — Free-text keyword search
 
 ### `poshmark_trend`
 
 - **HTTP:** `GET /poshmark/trend/{id}`
-- **What:** Browse a Poshmark trend/showroom collection. Returns a page of normalized Poshmark listings for a curated trend/showroom collection (e.g. "Vintage Celine Handbags"), the same browsing view as Poshmark's own trend pages. Pass a previous response's next_max_id back as max_id to fetch the next page. Credential-free public data sourced from Poshmark's own server-rendered trend page and, for pages past the first, Poshmark's own JSON pagination API.
+- **What:** Browse a Poshmark trend/showroom collection. Returns a page of Poshmark listings for a curated trend/showroom collection (e.g. "Vintage Celine Handbags"), the same browsing view as Poshmark's own trend pages. Pass a previous response's next_max_id back as max_id to fetch the next page.
 - **Params:** `id` (string, **required**) — Poshmark trend/showroom id, the trailing id segment of a /trend/{slug}-{id} URL; `max_id` (string, optional) — Opaque pagination cursor from a previous response's next_max_id. Omit for the first page
 
 ## StockX (5)
@@ -995,29 +995,29 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `stockx_brands`
 
 - **HTTP:** `GET /stockx/brands`
-- **What:** Get StockX brand catalog. Returns StockX's full brand catalog (name and URL slug for every brand in its own brand directory), suitable for building GET /stockx/search's brand parameter or GET /stockx/search's model parameter's required single-brand context. Credential-free public data from the same navigation API backing StockX's own site menu.
+- **What:** Get StockX brand catalog. Returns StockX's full brand catalog (name and URL slug for every brand in its own brand directory), suitable for building GET /stockx/search's brand parameter or GET /stockx/search's model parameter's required single-brand context.
 - **Params:** _none_
 
 ### `stockx_categories`
 
 - **HTTP:** `GET /stockx/categories`
-- **What:** Get StockX category/subcategory taxonomy. Returns StockX's full category/subcategory reference: the 7 top-level categories accepted by GET /stockx/search's category parameter, each with its subcategories (e.g. Shoes -> Boots, Cleats, Clogs). Credential-free public data from the same navigation API backing StockX's own site menu.
+- **What:** Get StockX category/subcategory taxonomy. Returns StockX's full category/subcategory reference: the 7 top-level categories accepted by GET /stockx/search's category parameter, each with its subcategories (e.g. Shoes -> Boots, Cleats, Clogs).
 - **Params:** _none_
 
 ### `stockx_product`
 
 - **HTTP:** `GET /stockx/product/{slug}`
-- **What:** Get StockX product detail. Returns a normalized StockX product: identity (title, brand, model, colorway, style id, retail price, release date, description, image), current market data (lowest ask, highest bid, last sale, trailing average price/sales count, delivery-speed ask tiers), individual seller listings (price, condition, size), related-product recommendations (other colorways/siblings StockX surfaces on the product page), and any promotional badges. Credential-free public data from StockX's own product-page GraphQL API.
+- **What:** Get StockX product detail. Returns a StockX product: identity (title, brand, model, colorway, style id, retail price, release date, description, image), current market data (lowest ask, highest bid, last sale, trailing average price/sales count, delivery-speed ask tiers), individual seller listings (price, condition, size), related-product recommendations (other colorways/siblings StockX surfaces on the product page), and any promotional badges.
 - **Params:** `slug` (string, **required**) — StockX product URL slug (the urlKey), the path segment of a https://stockx.com/{slug} product page
 
 ### `stockx_releases`
 
 - **HTTP:** `GET /stockx/releases`
-- **What:** Get StockX upcoming release calendar. Returns a date-ordered page (release date ascending) of StockX's upcoming release calendar: new and restocked products releasing on or after the given date, with normalized product summaries, headline pricing, and each item's published release date. Credential-free public data from the same GraphQL API backing StockX's own releases page.
+- **What:** Get StockX upcoming release calendar. Returns a date-ordered page (release date ascending) of StockX's upcoming release calendar: new and restocked products releasing on or after the given date, with product summaries, headline pricing, and each item's published release date.
 - **Params:** `from` (string, optional) — Only include releases on or after this date (YYYY-MM-DD, UTC). Defaults to today; `limit` (integer, optional) — Results per page, defaults to 20, maximum 100; `page` (integer, optional) — 1-indexed result page, defaults to 1
 
 ### `stockx_search`
 
 - **HTTP:** `GET /stockx/search`
-- **What:** Search/browse StockX products. Browses StockX's product catalog by category with optional free-text keyword search and facet filters (gender, brand, color, shoe height, activity, availability), returning normalized product summaries with headline pricing plus the total matching count. Credential-free public data from the same GraphQL API backing StockX's own category browse pages.
+- **What:** Search/browse StockX products. Browses StockX's product catalog by category with optional free-text keyword search and facet filters (gender, brand, color, shoe height, activity, availability), returning product summaries with headline pricing plus the total matching count.
 - **Params:** `activity` (string, optional) — Filter by activity, comma-separated for multiple values; `available_now` (boolean, optional) — Only include products with at least one active ask; `below_retail` (boolean, optional) — Only include products currently trading below original retail price; `brand` (string, optional) — Filter by one or more brand slugs, comma-separated, e.g. jordan,nike; `category` (string, **required**) — StockX top-level category; `color` (string, optional) — Filter by color, comma-separated for multiple values; `gender` (string, optional) — Filter by gender, comma-separated for multiple values; `limit` (integer, optional) — Results per page, defaults to 20, maximum 100; `model` (string, optional) — Filter by a single model slug, e.g. air-force-1. Requires exactly one value in brand; `page` (integer, optional) — 1-indexed result page, defaults to 1; `query` (string, optional) — Free-text keyword search within the category, e.g. a model name or colorway; `shoe_height` (string, optional) — Filter by shoe height, comma-separated for multiple values; `sort` (string, optional) — Result sort order, defaults to featured; `xpress_ship` (boolean, optional) — Only include products with StockX Xpress Ship availability

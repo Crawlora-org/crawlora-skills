@@ -13,7 +13,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_trends_categories`
 
 - **HTTP:** `GET /google/trends/categories`
-- **What:** Google Trends categories. Returns supported top-level Google Trends category ids and labels for Trending Now category filters.
+- **What:** Google Trends categories. Returns the top-level Google Trends categories as id and name pairs, such as 0 for All and 20 for Sports. These are the ids accepted by the Trending Now category filter.
 - **Params:** _none_
 
 ### `google_trends_enums`
@@ -25,7 +25,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_trends_explore`
 
 - **HTTP:** `POST /google/trends/explore`
-- **What:** Google Trends explore data. Returns normalized Google Trends keyword analytics from internal Trends widget requests: interest over time, interest by region, related queries, and related topics when available.
+- **What:** Google Trends explore data. Returns Google Trends keyword analytics: interest over time, interest by region, related queries, and related topics when available.
 - **Params:** `request` (object, **required**) — Explore request
 - **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
@@ -39,7 +39,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_trends_explore_interest_over_time`
 
 - **HTTP:** `POST /google/trends/explore/interest-over-time`
-- **What:** Google Trends interest over time. Returns only the interest-over-time timeline from the Google Trends Explore widget flow. Supports multiple comparison terms.
+- **What:** Google Trends interest over time. Returns Google Trends interest over time for 1 to 5 `keywords`. Optional inputs are `geo` (default worldwide), `time_range` (default `today 12-m`), `hl`, `tz`, `category` and `type` (`web`, `image`, `news`, `youtube` or `shopping`). Each time point carries a value per keyword, with a `has_data` flag.
 - **Params:** `request` (object, **required**) — Explore request
 - **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
@@ -67,13 +67,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_trends_locations`
 
 - **HTTP:** `GET /google/trends/locations`
-- **What:** Google Trends locations. Returns supported Google Trends location codes. Explore endpoints also accept WORLDWIDE.
+- **What:** Google Trends locations. Returns the list of location codes that Google Trends supports, such as `US`, `HK` and `GB`, in `locations`. The Explore endpoints also accept `WORLDWIDE`, which appears in the list. It takes no parameters.
 - **Params:** _none_
 
 ### `google_trends_trending`
 
 - **HTTP:** `GET /google/trends/trending`
-- **What:** Google Trends trending now data. Returns normalized Google Trends Trending Now rows from the internal TrendsUi batch RPC replay.
+- **What:** Google Trends trending now data. Returns Google Trends Trending Now for a country or territory (`geo`, default `US`): each trend's query, rank, search traffic, status, start and update time, related terms and news articles, with explore and share links. Filter by time window, category and status, and choose the sort order.
 - **Params:** `category` (integer, optional) — Trending category id; `geo` (string, optional) — Country/territory location code; `hl` (string, optional) — Google Trends UI locale; `limit` (integer, optional) — Maximum rows to return; `sort_by` (string, optional) — Sort mode; `status` (string, optional) — Trend status filter; `time_range` (string, optional) — Alias for window; `tz` (integer, optional) — Timezone offset minutes; `window` (string, optional) — Trend window
 
 ### `google_trends_trending_detail`

@@ -66,6 +66,7 @@ case "$path" in
   /bbb/local-bbbs) route_allowed=true ;;
   /bbb/news) route_allowed=true ;;
   /bbb/news/topics) route_allowed=true ;;
+  /bbb/page) route_allowed=true ;;
   /bbb/regions) route_allowed=true ;;
   /bbb/scamtracker/search) route_allowed=true ;;
   /bbb/scamtracker/state-stats) route_allowed=true ;;

@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fotmob_fifa_ranking_periods`
 
 - **HTTP:** `GET /fotmob/fifa-ranking-periods`
-- **What:** FotMob FIFA ranking period directory. Returns every ranking period currently offered by FotMob for the selected gender. Use a returned periodId with /fotmob/fifa-rankings.
+- **What:** FotMob FIFA ranking period directory. Lists the FIFA ranking periods FotMob currently offers for the required `gender` (`men` or `women`). Each period has a `periodId` and a `periodName` date label. Pass a `periodId` to the FotMob FIFA rankings endpoint; the ids change over time and are not a fixed set.
 - **Params:** `gender` (string, **required**) — Ranking gender
 
 ### `fotmob_fifa_rankings`
@@ -121,7 +121,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fotmob_seasons`
 
 - **HTTP:** `GET /fotmob/seasons`
-- **What:** FotMob league season discovery. Returns the complete list of season values accepted by the FotMob league endpoint for one competition.
+- **What:** FotMob league season discovery. Lists the season values FotMob offers for one league, identified by the required numeric `league_id` (from the FotMob leagues endpoint). The response has the league id, name and a `seasons` list such as `2026/2027`. Pass a season to the FotMob league endpoint; the list varies by league.
 - **Params:** `league_id` (integer, **required**) — Numeric FotMob league id from /fotmob/leagues
 
 ### `fotmob_stats`
@@ -193,5 +193,5 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `fotmob_tv_guide_countries`
 
 - **HTTP:** `GET /fotmob/tv-guide-countries`
-- **What:** FotMob TV guide country directory. Lists all country codes exposed by FotMob's public football TV guide country selector.
+- **What:** FotMob TV guide country directory. Lists the countries in FotMob's football TV guide country selector, each with a country `code` (such as `us`, `gb`, `de` or `jp`) and a name. Use a code with the FotMob TV guide and TV guide channels endpoints. It takes no parameters.
 - **Params:** _none_

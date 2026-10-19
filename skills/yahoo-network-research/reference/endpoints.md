@@ -123,7 +123,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `yahoo_news_suggest`
 
 - **HTTP:** `GET /yahoo-news/suggest`
-- **What:** Yahoo News search autocomplete suggestions. Returns Yahoo News's own search-box autocomplete suggestions for a partial query: a flat list of suggested news search terms.
+- **What:** Yahoo News search autocomplete suggestions. Returns Yahoo News search-box autocomplete suggestions for the required partial query `q`, as a flat list of suggested news search terms in `suggestions`. `count` sets how many (default 10, clamped to 1 to 20). A query with no matches returns an empty array, not an error. The response also has `query` and `fetched_at`.
 - **Params:** `count` (integer, optional) — Number of suggestions to return, default 10, clamped to 1..20; `q` (string, **required**) — Partial search query to autocomplete
 
 ## Yahoo Shopping (7)

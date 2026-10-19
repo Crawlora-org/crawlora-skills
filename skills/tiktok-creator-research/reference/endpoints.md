@@ -13,29 +13,29 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `tiktok_comments`
 
 - **HTTP:** `GET /tiktok/comments`
-- **What:** Retrieve TikTok video comments. Returns top-level TikTok video comments with cursor-based pagination.
+- **What:** Retrieve TikTok video comments. Returns the top-level comments on a TikTok video, by the video id from its URL (`aweme_id`). Results are paged by cursor: pass the `cursor` from one response to get the next page, and read `has_more` to see whether more remain. The response also carries the total comment count.
 - **Params:** `aweme_id` (string, **required**) — TikTok video id from the video URL; `cursor` (integer, optional) — Pagination cursor
 
 ### `tiktok_post`
 
 - **HTTP:** `GET /tiktok/post/{id}`
-- **What:** Retrieve TikTok video details. Returns the TikTok video detail payload for a video id.
+- **What:** Retrieve TikTok video details. Returns TikTok's detail record for one video by video id. `itemInfo.itemStruct` holds the video's description, the author's profile and the author's statistics (such as followers, following and hearts) along with the rest of TikTok's video object; `shareMeta` holds the share title and description.
 - **Params:** `id` (string, **required**) — TikTok video id
 
 ### `tiktok_posts`
 
 - **HTTP:** `GET /tiktok/posts`
-- **What:** Retrieve posts from a TikTok profile. Returns posts from a TikTok profile by `secUid`, with optional cursor pagination and sort mode.
+- **What:** Retrieve posts from a TikTok profile. Lists posts from a TikTok profile identified by `secUid`. `sort_type` is `0` latest (default), `1` popular or `2` oldest. `cursor` defaults to 0. The response has `itemList`, `hasMore` and a `cursor` to pass back to fetch the next page.
 - **Params:** `cursor` (integer, optional) — Pagination cursor; `secUid` (string, **required**) — TikTok secUid for the profile; `sort_type` (integer, optional) — Sort mode: 0 latest, 1 popular, 2 oldest
 
 ### `tiktok_profile`
 
 - **HTTP:** `GET /tiktok/profile/{handler}`
-- **What:** Retrieve a TikTok profile. Returns the TikTok profile payload for a public handle.
+- **What:** Retrieve a TikTok profile. Returns a public TikTok profile by `handler`, the username without the leading `@`. The `user` object has the id, `uniqueId`, nickname, signature, verified and private flags, region, language, avatar, bio link and `secUid`; `stats` has follower, following, heart, video and friend counts. A missing, deleted or banned handle returns 404.
 - **Params:** `handler` (string, **required**) — TikTok handle without the leading @
 
 ### `tiktok_search_user`
 
 - **HTTP:** `GET /tiktok/search/user`
-- **What:** Search TikTok users. Searches TikTok users by keyword with cursor-based pagination.
+- **What:** Search TikTok users. Searches TikTok users for `keyword`, with `cursor` (default 0) for paging. The response has `user_list` with the matching accounts, plus a `cursor` and `has_more` to continue. Pass the returned `cursor` back to fetch the next page.
 - **Params:** `cursor` (integer, optional) — Pagination cursor; `keyword` (string, **required**) — Search keyword

@@ -39,7 +39,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_map_place`
 
 - **HTTP:** `GET /google/map/place/{place_id}`
-- **What:** Google Maps place details API. Returns detailed information for a specified place_id. Rate limit is enforced at 1 request per second.
+- **What:** Google Maps place details API. Returns the Google Maps details of one place by its Google `place_id`: name, categories, address, coordinates, phone, website, description, image, amenities, rating and review count. `rating` is `null` when the place has no aggregate rating on Google.
 - **Params:** `place_id` (string, **required**) — Google Place ID
 
 ### `google_map_place_reviews`
@@ -51,7 +51,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_map_search`
 
 - **HTTP:** `POST /google/map/search`
-- **What:** Google Maps search API. Returns results from Google Maps based on search options. Rate limit is enforced at 1 request per second.
+- **What:** Google Maps search API. Searches Google Maps with a request body of `keyword`, `language` and `country` (an ISO-2 code such as `us`), all required. Each place has its name, place id, categories, address, coordinates, phone, website, rating and review count. `rating` is `null` when Google has no aggregate rating.
 - **Params:** `mapSearchOption` (object, **required**) — Search options
 - **REST body:** Send the value of the MCP argument `mapSearchOption` directly as the JSON body; do not wrap it in a `mapSearchOption` property.
 
@@ -74,13 +74,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `yelp_business`
 
 - **HTTP:** `GET /yelp/business/{id}`
-- **What:** Get Yelp business detail. Looks up a single Yelp business by alias or encoded id via Yelp's real Android app backend. Credential-free: no login, no API key, no cookie required from the caller.
+- **What:** Get Yelp business detail. Looks up a single Yelp business by alias or encoded id.
 - **Params:** `id` (string, **required**) — Yelp business alias or encoded id
 
 ### `yelp_search`
 
 - **HTTP:** `GET /yelp/search`
-- **What:** Search Yelp businesses. Searches Yelp's real Android app business-search backend for a term and location. Credential-free: no login, no API key, no cookie required from the caller.
+- **What:** Search Yelp businesses. Searches Yelp businesses for a term and location.
 - **Params:** `limit` (integer, optional) — Max results to return, 1-50; `location` (string, **required**) — Neighborhood, city, state, or zip code; `offset` (integer, optional) — Pagination offset; `term` (string, **required**) — Search term
 
 ## Web (2)
@@ -88,13 +88,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `extract`
 
 - **HTTP:** `POST /extract`
-- **What:** Extract schema-conforming JSON from a URL. Scrapes a public URL into clean Markdown, then returns data that strictly conforms to the supplied bounded JSON Schema. The response includes `truncated`, which is true when the page was too long and only its first part was used.
+- **What:** Extract schema-conforming JSON from a URL. Reads a public URL as clean Markdown, then returns data that strictly conforms to the supplied bounded JSON Schema. The response includes `truncated`, which is true when the page was too long and only its first part was used.
 - **Params:** `extractOption` (object, **required**) — Extraction options
 - **REST body:** Send the value of the MCP argument `extractOption` directly as the JSON body; do not wrap it in a `extractOption` property.
 
 ### `web_scrape`
 
 - **HTTP:** `POST /web/scrape`
-- **What:** Scrape a URL into markdown, HTML, links or metadata. Fetches a single public URL and returns clean content in the requested formats (markdown, html, raw_html, links, metadata). The request body IS the ScrapeOption object itself — e.g. {"url": "https://example.com"} — do not wrap it in an extra key. With render=auto the request starts as a fast HTTP fetch and escalates to a real browser when the page is blocked or rendered with JavaScript; backend only pins a specific headless-browser engine for the browser tier and is not a render mode. only_main_content (default true) strips navigation, headers, footers and other boilerplate before conversion. Only public pages are supported; respect each site's terms of use and robots directives. A handful of popular sites (Amazon, Reddit, Yelp, LinkedIn, and others) already have a dedicated, more reliable endpoint elsewhere in this API — a failed scrape against one of them names it. A Reddit URL that maps onto a dedicated Reddit endpoint (listings, search, comment threads, user and domain pages) is answered by that endpoint instead, and its response is returned as-is in data with an X-Routed-To header; send dedicated=false to always get the scraped page.
+- **What:** Scrape a URL into markdown, HTML, links or metadata. Fetches a single public URL and returns clean content in the requested formats (markdown, html, raw_html, links, metadata). The request body IS the ScrapeOption object itself — e.g. {"url": "https://example.com"} — do not wrap it in an extra key. With render=auto the request starts as a fast HTTP fetch and escalates to a real browser when the page is blocked or rendered with JavaScript. only_main_content (default true) strips navigation, headers, footers and other boilerplate before conversion. Only public pages are supported; respect each site's terms of use and robots directives. A handful of popular sites (Amazon, Reddit, Yelp, LinkedIn, and others) already have a dedicated, more reliable endpoint elsewhere in this API — a failed scrape against one of them names it. A Reddit URL that maps onto a dedicated Reddit endpoint (listings, search, comment threads, user and domain pages) is answered by that endpoint instead, and its response is returned as-is in data with an X-Routed-To header; send dedicated=false to always get the scraped page.
 - **Params:** `scrapeOption` (object, **required**) — Scrape options
 - **REST body:** Send the value of the MCP argument `scrapeOption` directly as the JSON body; do not wrap it in a `scrapeOption` property.

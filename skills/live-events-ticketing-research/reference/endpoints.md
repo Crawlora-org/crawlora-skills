@@ -61,7 +61,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `seatgeek_trending`
 
 - **HTTP:** `GET /seatgeek/trending`
-- **What:** Get SeatGeek's trending-near-you events. Returns SeatGeek's own geo-personalized "trending near you" event feed for a coordinate -- the same list its homepage renders.
+- **What:** Get SeatGeek's trending-near-you events. Returns SeatGeek's ranked "trending near you" events for the required `lat` and `lon`. Each item has the event name, URL and image, local and UTC start times, `lowest_price` on the secondary market where available, current `rank` and `rank_change`. The list is identified by `list_id`, `list_type` and `list_display_name`.
 - **Params:** `lat` (number, **required**) — Latitude; `lon` (number, **required**) — Longitude
 
 ### `seatgeek_venue`
@@ -81,7 +81,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `stubhub_carousel`
 
 - **HTTP:** `GET /stubhub/carousel`
-- **What:** List StubHub performer discovery carousels. Returns the anonymous performer-page alternative, recently viewed, maybe-interested, and trending-event carousel sections. Obtain performer_slug and performer_id from a real StubHub performer URL or another StubHub result. The upstream request uses browser impersonation and requires no cookies or CSRF state.
+- **What:** List StubHub performer discovery carousels. Returns the performer-page alternative, recently viewed, maybe-interested, and trending-event carousel sections. Obtain performer_slug and performer_id from a real StubHub performer URL or another StubHub result.
 - **Params:** `category_id` (integer, **required**) — StubHub category id; `lat` (number, **required**) — Latitude; `lon` (number, **required**) — Longitude; `max` (integer, optional) — Maximum items per carousel section; defaults to 10; `performer_id` (integer, **required**) — StubHub performer numeric id; `performer_slug` (string, **required**) — StubHub performer URL slug; `top_level_category_id` (integer, **required**) — Top-level category: 1 (Theater), 2 (Sports), or 3 (Concerts)
 
 ### `stubhub_categories`
@@ -111,7 +111,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `stubhub_performer_events`
 
 - **HTTP:** `GET /stubhub/performer-events`
-- **What:** List a StubHub performer or team's upcoming events. Lists a performer or team's own upcoming schedule (event name, date, venue, starting price) scraped from their StubHub page. Obtain a real performer_slug+performer_id pair from stubhub-trending's url field (e.g. https://www.stubhub.com/kansas-city-chiefs-tickets/performer/6063 -- slug "kansas-city-chiefs-tickets", id 6063). A zero count with an empty events list is a valid no-upcoming-events response.
+- **What:** List a StubHub performer or team's upcoming events. Lists a performer or team's own upcoming schedule (event name, date, venue, starting price) from their StubHub page. Obtain a real performer_slug+performer_id pair from stubhub-trending's url field (e.g. https://www.stubhub.com/kansas-city-chiefs-tickets/performer/6063 -- slug "kansas-city-chiefs-tickets", id 6063). A zero count with an empty events list is a valid no-upcoming-events response.
 - **Params:** `performer_id` (integer, **required**) — The performer's numeric id; `performer_slug` (string, **required**) — The performer's URL slug, e.g. kansas-city-chiefs-tickets
 
 ### `stubhub_search`
@@ -123,7 +123,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `stubhub_suggested_searches`
 
 - **HTTP:** `GET /stubhub/suggested-searches`
-- **What:** List StubHub's current search suggestions. Returns StubHub's short, changing list of performers, groupings, and categories currently suggested by its search UI. The upstream endpoint is a cookie-free GET with no query parameters.
+- **What:** List StubHub's current search suggestions. Returns StubHub's short, changing list of performers, groupings, and categories currently suggested by its search UI. It takes no query parameters.
 - **Params:** _none_
 
 ### `stubhub_trending`
@@ -141,5 +141,5 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `stubhub_venue_events`
 
 - **HTTP:** `GET /stubhub/venue-events`
-- **What:** List a StubHub venue's upcoming events. Lists a venue's own upcoming event calendar (event name, date, starting price) scraped from its StubHub page. Obtain a real venue_slug+venue_id pair from another endpoint's event url field (e.g. https://www.stubhub.com/geha-field-at-arrowhead-stadium-tickets/venue/4467/ -- slug "geha-field-at-arrowhead-stadium-tickets", id 4467). A zero count with an empty events list is a valid no-upcoming-events response.
+- **What:** List a StubHub venue's upcoming events. Lists a venue's own upcoming event calendar (event name, date, starting price) from its StubHub page. Obtain a real venue_slug+venue_id pair from another endpoint's event url field (e.g. https://www.stubhub.com/geha-field-at-arrowhead-stadium-tickets/venue/4467/ -- slug "geha-field-at-arrowhead-stadium-tickets", id 4467). A zero count with an empty events list is a valid no-upcoming-events response.
 - **Params:** `venue_id` (integer, **required**) — The venue's numeric id; `venue_slug` (string, **required**) — The venue's URL slug, e.g. geha-field-at-arrowhead-stadium-tickets

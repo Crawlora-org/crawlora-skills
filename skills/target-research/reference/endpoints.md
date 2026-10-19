@@ -13,7 +13,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `target_categories`
 
 - **HTTP:** `GET /target/categories`
-- **What:** List all Target categories. Returns Target's current top-level category menu and the complete grouped shop-all directory, including category ids and canonical URLs.
+- **What:** List all Target categories. Lists Target's top-level category menu in `categories`, plus the grouped shop-all directory in `groups`. Each category has an `id` (the one used by `/target/category-products`), name, canonical URL and, when Target supplies one, an image URL. The response also gives `count` and `group_count`. Takes no parameters.
 - **Params:** _none_
 
 ### `target_category_products`
@@ -31,25 +31,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `target_product`
 
 - **HTTP:** `GET /target/product`
-- **What:** Get a Target product. Returns normalized product details for one Target item, including product content, images, price, rating, category, and availability flags for the selected store.
+- **What:** Get a Target product. Returns product details for one Target item, including product content, images, price, rating, category, and availability flags for the selected store.
 - **Params:** `store_id` (integer, optional) — Target store id used for pricing and availability; `tcin` (string, **required**) — Numeric Target item id (TCIN)
 
 ### `target_questions`
 
 - **HTTP:** `GET /target/questions`
-- **What:** List Target product questions and answers. Returns paginated product questions with their nested answers.
+- **What:** List Target product questions and answers. Lists customer questions for a Target item given by its numeric `tcin`, each with its text, author, submission time, helpful votes and nested answers. `page` is zero-based and `per_page` runs 1 to 25. The response gives `total_pages` and `count` for paging.
 - **Params:** `page` (integer, optional) — Zero-based page; `per_page` (integer, optional) — Questions per page; `tcin` (string, **required**) — Numeric Target item id
 
 ### `target_reviews`
 
 - **HTTP:** `GET /target/reviews`
-- **What:** List Target product reviews. Returns paginated written reviews for a Target item. Pagination is zero-based and page 50 is the upstream maximum.
+- **What:** List Target product reviews. Lists written reviews for a Target item given by its numeric `tcin`. Each review has its rating, title, text, author, submission time, helpful votes, and verified and syndicated flags. `page` is zero-based and stops at 50; `per_page` runs 1 to 25. The response gives `total` and `total_pages`.
 - **Params:** `page` (integer, optional) — Zero-based page; `per_page` (integer, optional) — Reviews per page; `tcin` (string, **required**) — Numeric Target item id
 
 ### `target_search`
 
 - **HTTP:** `GET /target/search`
-- **What:** Search Target products. Searches Target products and returns normalized products plus every filter group and option available for the current result set. Pass option ids back through filter_ids as a comma-separated list. A zero total with an empty products list is a valid no-results response. The sort enum accepts `relevance`, `featured`, `price-low`, `price-high`, `rating`, `bestselling`, and `newest`.
+- **What:** Search Target products. Searches Target products and returns products plus every filter group and option available for the current result set. Pass option ids back through filter_ids as a comma-separated list. A zero total with an empty products list is a valid no-results response. The sort enum accepts `relevance`, `featured`, `price-low`, `price-high`, `rating`, `bestselling`, and `newest`.
 - **Params:** `filter_ids` (string, optional) — Comma-separated Target filter option ids; `page` (integer, optional) — One-based page (1-50); `q` (string, **required**) — Product search query; `sort` (string, optional) — Result order; `store_id` (integer, optional) — Target store id used for pricing
 
 ### `target_stores`
