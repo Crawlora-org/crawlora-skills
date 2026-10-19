@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**37 endpoints across 5 platform group(s).**
+**43 endpoints across 9 platform group(s).**
 
 ## Google (15)
 
@@ -247,3 +247,47 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /yahoo-search/videos`
 - **What:** Search Yahoo video results. Returns Yahoo's video-search results for a query: title, destination page URL, source domain, description, thumbnail, and duration. Results are fetched from Yahoo's own server-rendered video-search page.
 - **Params:** `q` (string, **required**) — Search query
+
+## Baidu (2)
+
+### `baidu_search`
+
+- **HTTP:** `GET /baidu/search`
+- **What:** Search Baidu web results. Returns Baidu result cards for a query: title, destination URL, snippet, publisher, and date, with page-based pagination. Each result's `type` is `web` (standard pages), `video` (video cards), or `baike` (Baidu Baike encyclopedia entries); answer widgets such as weather, entity panels, and recommendation lists are not returned. Baidu challenges a portion of requests with a security verification page; the service retries and returns 503 if every attempt is challenged, so callers should retry on 503.
+- **Params:** `page` (integer, optional) — 1-based result page; defaults to 1, maximum 10; `q` (string, **required**) — Search query
+
+### `baidu_suggest`
+
+- **HTTP:** `GET /baidu/suggest`
+- **What:** Suggest Baidu search queries. Returns Baidu search-box autocomplete completions for a query prefix, in Baidu's own ranking order. Baidu never returns more than 10 suggestions per prefix; Chinese prefixes are supported.
+- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 10, clamped to 1..10; `q` (string, **required**) — Search query prefix
+
+## Yandex (2)
+
+### `yandex_search`
+
+- **HTTP:** `GET /yandex/search`
+- **What:** Search Yandex web results. Returns organic Yandex web results for a query: title, destination URL, display URL, and snippet, with page-based pagination. Advertisements are not returned. Yandex challenges a portion of requests with a captcha; the service retries and returns 503 if every attempt is challenged, so callers should retry on 503. Results are localized by Yandex to the location the request is made from.
+- **Params:** `page` (integer, optional) — 1-based result page; defaults to 1, maximum 10; `q` (string, **required**) — Search query
+
+### `yandex_suggest`
+
+- **HTTP:** `GET /yandex/suggest`
+- **What:** Suggest Yandex search queries. Returns Yandex search-box autocomplete completions for a query prefix, in Yandex's own ranking order. `lang` is the two-letter Yandex UI language (en, ru, tr, ...) and re-ranks the list; Yandex ignores codes it does not support.
+- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 10, clamped to 1..20; `lang` (string, optional) — Two-letter Yandex UI language, such as en, ru, or tr; defaults to en; `q` (string, **required**) — Search query prefix
+
+## Qwant (1)
+
+### `qwant_suggest`
+
+- **HTTP:** `GET /qwant/suggest`
+- **What:** Suggest Qwant search queries. Returns Qwant search-box autocomplete completions for a query prefix, in Qwant's own ranking order. `locale` selects the Qwant market (en_US, fr_FR, de_DE, en_GB, ...); Qwant ignores locale codes it does not support and uses its default market.
+- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 10, clamped to 1..10; `locale` (string, optional) — Qwant market locale in ll_CC form, such as en_US, fr_FR, de_DE, or en_GB; defaults to en_US; `q` (string, **required**) — Search query prefix
+
+## Startpage (1)
+
+### `startpage_suggest`
+
+- **HTTP:** `GET /startpage/suggest`
+- **What:** Suggest Startpage search queries. Returns Startpage search-box autocomplete completions for a query prefix, in Startpage's own ranking order. Startpage never returns more than 10 suggestions per prefix.
+- **Params:** `count` (integer, optional) — Suggestions to return; defaults to 10, clamped to 1..10; `q` (string, **required**) — Search query prefix

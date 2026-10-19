@@ -1,13 +1,13 @@
 ---
 name: serp-keyword-research
-description: Runs SERP and keyword research via the Crawlora API — Google, Bing, Brave, DuckDuckGo, and Yahoo search results plus Google Trends interest-over-time and related/rising queries — returning clean JSON. Use when the user wants search-engine rankings, SERP snapshots, autocomplete/keyword suggestions, or trend data instead of scraping result pages.
+description: Runs SERP and keyword research via Crawlora — Google, Bing, Brave, DuckDuckGo, Yahoo, Baidu, Yandex, selected Qwant/Startpage suggestions, and Google Trends. Use for localized search snapshots, autocomplete ideas, or trend context; it does not provide universal keyword volume.
 ---
 
 # SERP & keyword research
 
-Capture search-engine results (Google, Bing, Brave, DuckDuckGo, Yahoo) and
-keyword/trend signals (Google autosuggest, Google Trends) as normalized
-JSON from the Crawlora API.
+Capture search-engine result samples and keyword/trend signals as normalized
+JSON from the Crawlora API. Baidu and Yandex add localized result surfaces;
+Qwant and Startpage currently contribute autocomplete suggestions only.
 
 ## When to use this skill
 
@@ -25,14 +25,19 @@ JSON from the Crawlora API.
 
 ## How it works
 
-1. **SERP** — Google search is `POST /google/search` with flat `keyword`, `language`, and `country` fields;
-   Bing, Brave, DuckDuckGo, and Yahoo are plain `GET` with `q`:
-   `/bing/search`, `/brave/search`, `/duckduckgo/search`, `/yahoo-search/search`.
-   Cross-check engines for coverage; on a `503` challenge, fall back to another engine.
+1. **SERP** — Google search is `POST /google/search` with flat `keyword`,
+   `language`, and `country` fields. Bing, Brave, DuckDuckGo, Yahoo, Baidu,
+   and Yandex use `GET` with `q`. Search results are provider-specific samples:
+   preserve each engine's market/language settings, result order, and retrieval
+   time; do not treat ranks from different engines as a common position metric.
+   On a `503` challenge, record the failure and use another engine only when it
+   fits the requested market.
 2. **Verticals** — news/videos/images per engine (`/google/news`, `/bing/videos`,
    `/duckduckgo/news`, `/duckduckgo/image`, `/duckduckgo/video`, `/duckduckgo/shopping`, …).
-3. **Keyword ideas** — autosuggest: `GET /google/suggest?q=...` (and `/bing/suggest`,
-   `/brave/suggest`).
+3. **Keyword ideas** — autosuggest: `GET /google/suggest?q=...`, `/bing/suggest`,
+   `/brave/suggest`, `/baidu/suggest`, `/yandex/suggest`, `/qwant/suggest`, and
+   `/startpage/suggest`. Suggestions are query ideas in the source's ranking
+   order, not search-volume estimates or proof of audience demand.
 4. **Trends** — Google Trends `POST` endpoints:
    `/google/trends/explore/interest-over-time`, `/interest-by-region`,
    `/related-topics`, `/rising-queries`, `/top-queries` (body: `{"keywords":[...]}`),
@@ -48,7 +53,11 @@ scripts/crawlora.sh /bing/search q="web scraping api" | jq '.'
 scripts/crawlora.sh /brave/search q="web scraping api" | jq '.'
 scripts/crawlora.sh /duckduckgo/search q="web scraping api" | jq '.'
 scripts/crawlora.sh /yahoo-search/search q="web scraping api" | jq '.'
+scripts/crawlora.sh /baidu/search q="web scraping api"
+scripts/crawlora.sh /yandex/search q="web scraping api"
 scripts/crawlora.sh /google/suggest q="web scraping" | jq '.'
+scripts/crawlora.sh /qwant/suggest q="web scraping"
+scripts/crawlora.sh /startpage/suggest q="web scraping"
 
 # POST endpoints take a JSON body (note -X POST):
 scripts/crawlora.sh -X POST /google/search '{"keyword":"web scraping api","language":"en","country":"us"}' | jq '.'
@@ -60,9 +69,8 @@ Use `scripts/crawlora.sh` for all requests; it keeps the API key out of command-
 
 ## Endpoint reference
 
-See [`reference/endpoints.md`](reference/endpoints.md) for every Google, Bing,
-Brave, DuckDuckGo, Yahoo, and Google Trends endpoint this skill uses (method,
-path, params, description).
+See [`reference/endpoints.md`](reference/endpoints.md) for every search and
+suggestion endpoint this skill uses (method, path, params, and description).
 
 ## Examples
 
@@ -78,6 +86,9 @@ path, params, description).
 - **Credits / pay-on-success:** billed only on `2xx`; free tier 2,000 credits/mo.
   Key at [https://crawlora.net](https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills).
 - **Public data only** — public search results; respect each engine's terms.
+- Search result lists are not full-index exports. Baidu/Yandex, Qwant/Startpage,
+  and English-language providers have different locale and result semantics;
+  keep samples separate and do not infer universal rank, traffic, or demand.
 - **Security:** key lives in `CRAWLORA_API_KEY` only — never hardcode, query-param, or commit it.
 - Search endpoints may return `503` when the engine serves a challenge page —
   retry or switch engines (Google ↔ Bing ↔ Brave). Google search is rate-limited

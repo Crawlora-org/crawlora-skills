@@ -66,6 +66,8 @@ esac
 # segment; unlike a case '*', [^/]+ cannot consume another slash.
 route_allowed=false
 case "$path" in
+  /baidu/search) route_allowed=true ;;
+  /baidu/suggest) route_allowed=true ;;
   /bing/images) route_allowed=true ;;
   /bing/news) route_allowed=true ;;
   /bing/search) route_allowed=true ;;
@@ -96,12 +98,16 @@ case "$path" in
   /google/trends/trending) route_allowed=true ;;
   /google/trends/trending/detail) route_allowed=true ;;
   /google/videos) route_allowed=true ;;
+  /qwant/suggest) route_allowed=true ;;
+  /startpage/suggest) route_allowed=true ;;
   /yahoo-search/images) route_allowed=true ;;
   /yahoo-search/local) route_allowed=true ;;
   /yahoo-search/news) route_allowed=true ;;
   /yahoo-search/search) route_allowed=true ;;
   /yahoo-search/suggest) route_allowed=true ;;
   /yahoo-search/videos) route_allowed=true ;;
+  /yandex/search) route_allowed=true ;;
+  /yandex/suggest) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
@@ -122,6 +128,8 @@ fi
 # Enforce the documented HTTP method for each route, not just the global method set.
 route_method_allowed=false
 route_method_regexes=(
+  '^GET:/baidu/search$'
+  '^GET:/baidu/suggest$'
   '^GET:/bing/images$'
   '^GET:/bing/news$'
   '^GET:/bing/search$'
@@ -145,12 +153,16 @@ route_method_regexes=(
   '^GET:/google/trends/locations$'
   '^GET:/google/trends/trending$'
   '^GET:/google/videos$'
+  '^GET:/qwant/suggest$'
+  '^GET:/startpage/suggest$'
   '^GET:/yahoo-search/images$'
   '^GET:/yahoo-search/local$'
   '^GET:/yahoo-search/news$'
   '^GET:/yahoo-search/search$'
   '^GET:/yahoo-search/suggest$'
   '^GET:/yahoo-search/videos$'
+  '^GET:/yandex/search$'
+  '^GET:/yandex/suggest$'
   '^POST:/google/news$'
   '^POST:/google/trends/explore$'
   '^POST:/google/trends/explore/interest-by-region$'

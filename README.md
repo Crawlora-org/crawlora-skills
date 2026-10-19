@@ -24,14 +24,14 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 
 | Skill | What it does | Platforms |
 |---|---|---|
-| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured public data from **3,486** Crawlora MCP tools; explains hosted API scope, credit use, and durable crawl/research jobs. | 467 public-data platform groups |
+| [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured public data from **3,504** Crawlora MCP tools; explains hosted API scope, credit use, and durable crawl/research jobs. | 467 public-data platform groups |
 | [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (130 tools) |
 | [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, AliExpress, Shopify and DTC brands, BigCommerce, Boots, CVS, Lazada, Otto, SparkFun, Tokopedia, Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, Walgreens (stores only), IKEA, Chewy |
 | [`youtube-research`](skills/youtube-research) | Timestamped transcript evidence, comments, video/channel metadata, and search — no `yt-dlp`. | YouTube |
 | [`app-review-mining`](skills/app-review-mining) | App details, reviews, ratings, rankings, similar apps (ASO). | App Store, Google Play |
 | [`app-store-research`](skills/app-store-research) | Cross-store app and extension discovery, ratings, reviews, permissions, privacy, and release history. | Apple App Store, Google Play, Chrome Web Store |
-| [`sports-betting-research`](skills/sports-betting-research) | Time-stamped public sportsbook odds with schedule and game-status context. | DraftKings Sportsbook, ESPN, SofaScore |
-| [`serp-keyword-research`](skills/serp-keyword-research) | SERP snapshots, autocomplete keyword ideas, Google Trends. | Google, Bing, Brave, DuckDuckGo, Yahoo, Google Trends |
+| [`sports-betting-research`](skills/sports-betting-research) | Time-stamped public sportsbook and viewer-market odds with schedule and game-status context. | DraftKings Sportsbook, ESPN, SofaScore, Flashscore |
+| [`serp-keyword-research`](skills/serp-keyword-research) | Localized SERP samples, autocomplete ideas, and Google Trends, with provider-specific coverage limits. | Google, Bing, Brave, DuckDuckGo, Yahoo, Baidu, Yandex, Qwant/Startpage suggestions, Google Trends |
 | [`topic-demand-validation`](skills/topic-demand-validation) | Cross-check query phrasing, search trends, SERP competition, and a bounded social sample before testing a topic. | Google Suggest/Trends, Bing, Brave, Reddit, TikTok, YouTube |
 | [`finance-markets-research`](skills/finance-markets-research) | Stock quotes/financials, SEC filings & insider trades, congressional stock disclosures, crypto markets, VC/PE profiles. | Yahoo Finance, SEC EDGAR, Congress, CoinGecko, PitchBook |
 | [`crypto-market-research`](skills/crypto-market-research) | Coin discovery, market comparisons, global metrics, exchanges, categories, news, unlocks, and treasuries. | CoinGecko |
@@ -96,13 +96,17 @@ self-contained and do not require the broader bundles to be installed.
 
 | Skill | What it delivers | Sources |
 |---|---|---|
+| [`cross-corpus-research`](skills/cross-corpus-research) | Bounded cited briefs across public web, papers, and indexed developer documentation with source revisions and partial-coverage reporting. | Public web, arXiv, Europe PMC, registered developer-document sources |
+| [`flashscore-match-analysis`](skills/flashscore-match-analysis) | Detailed match reports from covered Flashscore player statistics, lineups, sport-specific score feeds, and editorial evidence. | Flashscore |
+| [`medication-information-research`](skills/medication-information-research) | Source-attributed medication and health information with review dates and official-source cross-checks; no personalized treatment advice. | GoodRx, FDA, DailyMed, MedlinePlus |
+| [`sports-team-player-research`](skills/sports-team-player-research) | Player and team dossiers with roster, career, match-log, transfer, and injury-history evidence kept source-qualified. | Flashscore |
 | [`google-maps-research`](skills/google-maps-research) | Current place lookups and comparisons, review samples, and photos. | Google Maps (four live tools) |
 | [`local-business-prospecting`](skills/local-business-prospecting) | Deduplicated business shortlists with public contacts and qualification evidence. | Google Maps live + dataset, Apple Maps, Yelp, business websites |
 | [`local-competitive-landscape`](skills/local-competitive-landscape) | Matched-area comparisons of observed local business supply, categories, attributes, and review-sample themes. | Google Maps live + dataset, Apple Maps, Yelp |
 | [`influencer-discovery`](skills/influencer-discovery) | Campaign-fit creator shortlists with selected live profile/content checks, now including newsletter writers and publications. | TikTok, Instagram, YouTube live + datasets; Substack public discovery |
 | [`journalist-media-research`](skills/journalist-media-research) | Relevant media lists with verified coverage, beat-fit evidence, and public work contact channels. | Journalists dataset, Bing search/news, author and article pages |
 | [`tiktok-ad-research`](skills/tiktok-ad-research) | Matched Top Ads comparisons and evidence-backed creative hypotheses. | TikTok Creative Center Top Ads (ten tools) |
-| [`tiktok-trend-research`](skills/tiktok-trend-research) | Country-, period-, and surface-aware TikTok trend briefs. | TikTok feeds, Creative Center, hashtags, Explore |
+| [`tiktok-trend-research`](skills/tiktok-trend-research) | Country-, period-, and surface-aware TikTok trend briefs across Creative Center, hashtags, Explore, mobile feeds, sounds, and effects. | TikTok web, Creative Center, mobile API |
 | [`tiktok-creator-research`](skills/tiktok-creator-research) | TikTok-only public creator vetting with bounded content samples. | TikTok profiles, posts, videos, comments |
 | [`competitor-intelligence`](skills/competitor-intelligence) | Sourced competitor briefs and comparisons of positioning, pricing, reviews, and hiring signals. | Company websites, Product Hunt, Similarweb, Trustpilot, Capterra, jobs dataset |
 | [`techstack-prospecting`](skills/techstack-prospecting) | Technology-qualified domain shortlists with freshness and live validation evidence. | Techstack dataset, website technology detection, brand and web tools |
@@ -131,7 +135,7 @@ self-contained and do not require the broader bundles to be installed.
 | [`congressional-disclosure-research`](skills/congressional-disclosure-research) | Filing inventories and supported Senate transaction evidence with dates, owners, and ranges preserved. | House/Senate disclosure index; Senate HTML reports |
 | [`newsletter-topic-landscape`](skills/newsletter-topic-landscape) | Publication-by-topic comparisons from bounded public editorial samples. | Substack |
 | [`football-player-comparison`](skills/football-player-comparison) | Role/competition/season-aware player statistics with minutes and metric denominators. | FotMob |
-| [`football-viewing-guide`](skills/football-viewing-guide) | Current seven-day broadcasts by market, fixture, timezone, and listed channel. | FotMob |
+| [`football-viewing-guide`](skills/football-viewing-guide) | Current seven-day FotMob schedules plus Flashscore match-level broadcaster listings by market. | FotMob, Flashscore |
 | [`used-car-price-history-analysis`](skills/used-car-price-history-analysis) | Observed listing-price events and matched vehicles with temporal and crawl coverage limits. | Vehicle listing dataset; CarMax, Autotrader, Cars.com |
 | [`investor-fit-research`](skills/investor-fit-research) | Conditional firm/fund shortlists from public strategy and visible investment evidence. | PitchBook investor/fund/company datasets and public profiles |
 | [`developer-talent-discovery`](skills/developer-talent-discovery) | Role-specific developer shortlists with public repository and contribution evidence. | GitHub live tools and user dataset |
@@ -163,8 +167,8 @@ self-contained and do not require the broader bundles to be installed.
 | [`company-identity-reconciliation`](skills/company-identity-reconciliation) | Scoped company/brand/registrant ID crosswalks with provenance, relationships, and unresolved matches. | Public domains, LinkedIn, SEC, employer records |
 | [`pet-care-provider-shortlisting`](skills/pet-care-provider-shortlisting) | Provider/service fit with starting-rate units, public experience evidence and unverified availability. | Rover sitters/walkers and dog trainers |
 
-The repository contains **165 installable skills**. The Claude Code marketplace
-bundle includes **127 skills**; the narrower per-platform alternatives below remain
+The repository contains **169 installable skills**. The Claude Code marketplace
+bundle includes **131 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -314,12 +318,17 @@ comparisons, and flight offer matching over the existing catalog.
 The [six workflow additions](audits/workflow-additions-2026-10-05.md) build on
 existing endpoints with focused tool selections and source-specific interpretation.
 
+The [2026-10-19 workflow expansion](audits/workflow-expansion-2026-10-19.md)
+adds cross-corpus research, Flashscore match analysis, medication information,
+and sports team/player research, plus focused SERP, betting, viewing, and TikTok
+trend coverage.
 
-The [2026-10-05 audit](audits/coverage-2026-10-05.md) maps every catalog group
-and compares source API routes with the published skill contract. The
-[endpoint matrix](audits/endpoints-2026-10-05.tsv) records every source API
+The [2026-10-19 audit](audits/coverage-2026-10-19.md) maps every catalog group
+and compares source API routes with the published skill contract. Its
+[endpoint matrix](audits/endpoints-2026-10-19.tsv) records every source API
 operation, its publication status, and focused skill coverage. Counts measure
-routing coverage, not endpoint uptime or workflow quality.
+routing coverage, not endpoint uptime or workflow quality. The
+[2026-10-05 audit](audits/coverage-2026-10-05.md) remains an earlier snapshot.
 
 ## Links
 

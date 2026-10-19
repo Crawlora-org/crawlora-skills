@@ -1,12 +1,20 @@
 {
   "name": "crawlora",
-  "version": "1.0.1",
-  "description": "165 Crawlora Agent Skills for structured public web data (search, e-commerce, social, finance, maps, app stores, media, reviews). Skills call the Crawlora REST API with your CRAWLORA_API_KEY.",
-  "author": { "name": "Crawlora", "url": "https://crawlora.net" },
+  "version": "1.0.2",
+  "description": "169 Crawlora Agent Skills for structured public web data (search, e-commerce, social, finance, maps, app stores, media, reviews). Skills call the Crawlora REST API with your CRAWLORA_API_KEY.",
+  "author": {
+    "name": "Crawlora",
+    "url": "https://crawlora.net"
+  },
   "homepage": "https://crawlora.net",
   "repository": "https://github.com/Crawlora-org/crawlora-skills",
   "license": "MIT",
-  "keywords": ["crawlora", "web-data", "web-scraping", "agent-skills"],
+  "keywords": [
+    "crawlora",
+    "web-data",
+    "web-scraping",
+    "agent-skills"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Crawlora",

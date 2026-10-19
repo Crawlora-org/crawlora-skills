@@ -1,6 +1,6 @@
 ---
 name: football-viewing-guide
-description: Build a dated, country-specific football broadcast guide using Crawlora FotMob market, channel, schedule, and match discovery. Use to find listed channels for a match or shortlist football broadcasts in the current seven-day window, without promising streaming access.
+description: Build a dated, country-specific football broadcast guide using FotMob schedules or Flashscore match-level TV listings. Use for listed channels and market comparisons without promising streaming access.
 ---
 
 # Football viewing guide
@@ -37,12 +37,21 @@ establish that the user can watch it with their subscriptions or device.
    Preserve match IDs, UTC time, returned local times, competition, teams, and
    all returned channel names. Channels are not interchangeable across markets.
    Verify a same-named team/fixture via search, matches, or match detail if needed.
+5. For a specific Flashscore fixture, resolve the exact match with
+   `/flashscore/search` or a previously verified Flashscore ID. Discover the
+   viewer market with `/flashscore/odds-geos`, then call
+   `/flashscore/match-tv` with that event ID and geo. Flashscore provides a
+   match-level snapshot, not the FotMob seven-day schedule; keep the provider
+   and its market code explicit.
 
 ```sh
 scripts/crawlora.sh /fotmob/tv-guide-countries
 # Select a discovered market code and the viewer's timezone:
 scripts/crawlora.sh /fotmob/tv-guide country=gb timezone=Europe/London
 scripts/crawlora.sh /fotmob/tv-guide-channels country=gb
+scripts/crawlora.sh /flashscore/search q="Arsenal"
+scripts/crawlora.sh /flashscore/odds-geos
+scripts/crawlora.sh /flashscore/match-tv id=example-match-id geo=GB
 ```
 
 ## Deliver a practical schedule with boundaries

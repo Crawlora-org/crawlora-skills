@@ -1,6 +1,6 @@
 ---
 name: sports-betting-research
-description: Researches public sportsbook markets, event schedules, live status, and game context using DraftKings Sportsbook, ESPN, and SofaScore through the Crawlora API. Use for odds snapshots and event comparisons, not wagering, account actions, or financial advice.
+description: Research public sportsbook and match-market snapshots with event context from DraftKings Sportsbook, ESPN, SofaScore, and Flashscore. Use for time-stamped odds comparisons, not wagering, account actions, or financial advice.
 ---
 
 # Sports betting research
@@ -27,6 +27,14 @@ lines, game status, and schedules timestamped and separate from predictions.
    date, league, and start time. Similar names are not proof of identity.
 4. Compare snapshots only when collection time, locale, league, and market
    type are aligned. A price movement is observed change, not an explanation.
+5. For Flashscore, first discover accepted viewer markets with
+   `/flashscore/odds-geos`; keep its `geo` and optional subdivision separate
+   from other providers' locale codes. Use `/flashscore/match-odds` for a
+   matched event and `/flashscore/team-outright-odds` or
+   `/flashscore/tournament-outright-odds` for source-reported outright markets.
+   The outright feed is a limited displayed shortlist with no known continuation;
+   do not present it as a complete futures book. Empty markets can mean no
+   licensed bookmakers in that viewer market.
 
 ## Examples
 
@@ -36,6 +44,11 @@ scripts/crawlora.sh /draftkings/sportsbook/featured-leagues | jq '.'
 scripts/crawlora.sh /draftkings/sportsbook/league-events league_id=<id> | jq '.'
 scripts/crawlora.sh /draftkings/sportsbook/event-markets event_id=<id> | jq '.'
 scripts/crawlora.sh /espn/scoreboard sport=football league=nfl | jq '.'
+scripts/crawlora.sh /flashscore/odds-geos
+# Resolve the event and geo from Flashscore before calling its market route.
+scripts/crawlora.sh /flashscore/match-odds id=example-match-id geo=GB | jq '.'
+scripts/crawlora.sh /flashscore/tournament-outright-odds tournament_id=example-season-id geo=GB | jq '.'
+scripts/crawlora.sh /flashscore/match-odds id=example-match-id geo=GB
 ```
 
 ## Notes and limits
