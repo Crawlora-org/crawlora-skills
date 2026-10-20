@@ -57,13 +57,18 @@ esac
 route_allowed=false
 case "$path" in
   /threads/search) route_allowed=true ;;
+  /threads/search/topics) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
   '^/threads/post/[^/]+/[^/]+$'
   '^/threads/post/[^/]+/[^/]+/replies$'
   '^/threads/profile/[^/]+$'
+  '^/threads/profile/[^/]+/media$'
   '^/threads/profile/[^/]+/posts$'
+  '^/threads/profile/[^/]+/replies$'
+  '^/threads/profile/[^/]+/reposts$'
+  '^/threads/profile/[^/]+/topics$'
   )
   for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
     if [[ "$path" =~ $route_regex ]]; then
