@@ -69,7 +69,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `POST /yahoo-finance/screener`
 - **What:** Yahoo Finance custom screener. Runs a custom Yahoo Finance screen from a JSON body. `query` is a tree of `operator` and `operands`: combine conditions with `AND` or `OR`, and compare a field to a value with operators such as `EQ` or `GT`. Screen equities (default), ETFs or mutual funds with `quote_type`, and page and sort with `count`, `offset`, `sort_field` and `sort_asc`. Returns the matching quotes and the total.
-- **Params:** `request` (object, **required**) — Custom screener request
+- **Params:** `request` (object, **required**) — JSON body for a custom screen. The query field is required; quote_type, count, offset, sort_field, and sort_asc are optional.
 - **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
 
 ### `yahoo_finance_screeners`
