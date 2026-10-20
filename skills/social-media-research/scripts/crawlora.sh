@@ -89,6 +89,7 @@ case "$path" in
   /reddit/subreddits/posts) route_allowed=true ;;
   /reddit/trends) route_allowed=true ;;
   /threads/search) route_allowed=true ;;
+  /threads/search/topics) route_allowed=true ;;
   /tiktok/category) route_allowed=true ;;
   /tiktok/comments) route_allowed=true ;;
   /tiktok/creative-center/filters) route_allowed=true ;;
@@ -157,7 +158,11 @@ if [ "$route_allowed" = false ]; then
   '^/threads/post/[^/]+/[^/]+$'
   '^/threads/post/[^/]+/[^/]+/replies$'
   '^/threads/profile/[^/]+$'
+  '^/threads/profile/[^/]+/media$'
   '^/threads/profile/[^/]+/posts$'
+  '^/threads/profile/[^/]+/replies$'
+  '^/threads/profile/[^/]+/reposts$'
+  '^/threads/profile/[^/]+/topics$'
   '^/tiktok/explore/[^/]+$'
   '^/tiktok/hashtag/[^/]+$'
   '^/tiktok/post/[^/]+$'

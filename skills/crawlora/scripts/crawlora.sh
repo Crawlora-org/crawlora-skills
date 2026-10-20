@@ -2727,6 +2727,7 @@ case "$path" in
   /thisismoney/news) route_allowed=true ;;
   /thisismoney/sections) route_allowed=true ;;
   /threads/search) route_allowed=true ;;
+  /threads/search/topics) route_allowed=true ;;
   /ticketmaster/attraction) route_allowed=true ;;
   /ticketmaster/attraction-events) route_allowed=true ;;
   /ticketmaster/attraction-related) route_allowed=true ;;
@@ -3479,7 +3480,11 @@ if [ "$route_allowed" = false ]; then
   '^/threads/post/[^/]+/[^/]+$'
   '^/threads/post/[^/]+/[^/]+/replies$'
   '^/threads/profile/[^/]+$'
+  '^/threads/profile/[^/]+/media$'
   '^/threads/profile/[^/]+/posts$'
+  '^/threads/profile/[^/]+/replies$'
+  '^/threads/profile/[^/]+/reposts$'
+  '^/threads/profile/[^/]+/topics$'
   '^/tiktok/explore/[^/]+$'
   '^/tiktok/hashtag/[^/]+$'
   '^/tiktok/post/[^/]+$'
@@ -6570,8 +6575,13 @@ route_method_regexes=(
   '^GET:/threads/post/[^/]+/[^/]+$'
   '^GET:/threads/post/[^/]+/[^/]+/replies$'
   '^GET:/threads/profile/[^/]+$'
+  '^GET:/threads/profile/[^/]+/media$'
   '^GET:/threads/profile/[^/]+/posts$'
+  '^GET:/threads/profile/[^/]+/replies$'
+  '^GET:/threads/profile/[^/]+/reposts$'
+  '^GET:/threads/profile/[^/]+/topics$'
   '^GET:/threads/search$'
+  '^GET:/threads/search/topics$'
   '^GET:/ticketmaster/attraction$'
   '^GET:/ticketmaster/attraction-events$'
   '^GET:/ticketmaster/attraction-related$'
