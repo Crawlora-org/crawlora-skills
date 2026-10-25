@@ -6,9 +6,51 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**12 endpoints across 1 platform group(s).**
+**19 endpoints across 1 platform group(s).**
 
-## Reddit (12)
+## Reddit (19)
+
+### `reddit_archive_comments_ids`
+
+- **HTTP:** `GET /reddit/archive/comments/ids`
+- **What:** Look up archived Reddit comments by ids. Looks up known Reddit comment ids in Arctic Shift's historical archive. Supply 1 to 1,000 comma-separated ids; duplicates are removed, results follow input order, and missing ids are listed separately. The service sends at most two upstream requests of up to 500 ids each. Archived scores are snapshots, and removed_by_category is included when available.
+- **Params:** `ids` (string, **required**) — Comma-separated Reddit comment ids (1-1,000); optional t1_ prefixes are accepted
+
+### `reddit_archive_comments_search`
+
+- **HTTP:** `GET /reddit/archive/comments/search`
+- **What:** Search archived Reddit comments. Searches Arctic Shift's public historical comment archive. Supply at least one of query, author, subreddit, link_id, or parent_id; date bounds can further narrow that search. query searches comment body text and must be combined with author, subreddit, link_id, or parent_id; it maps to Arctic Shift's body parameter. Arctic Shift may time out or throttle broad searches, which return 503 with Retry-After. created_after/created_before are time boundaries, not Reddit listing cursors. Each comment includes created_utc and retrieved_on; archived scores can lag changes for roughly 36 hours. A valid query with no matches returns an empty comments array.
+- **Params:** `author` (string, optional) — Public Reddit username filter; `created_after` (string, optional) — Creation-time lower bound; accepts epoch seconds or milliseconds, ISO 8601 dates, or relative offsets such as 1year, 2d, or 5min; `created_before` (string, optional) — Creation-time upper bound; accepts epoch seconds or milliseconds, ISO 8601 dates, or relative offsets such as 1year, 2d, or 5min; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `link_id` (string, optional) — Reddit post id to scope comments; `parent_id` (string, optional) — Parent comment id; an explicitly empty value selects top-level comments; `query` (string, optional) — Full-text search within comment bodies; requires author, subreddit, link_id, or parent_id; `sort` (string, optional) — Sort by creation time; `subreddit` (string, optional) — Subreddit name filter
+
+### `reddit_archive_comments_tree`
+
+- **HTTP:** `GET /reddit/archive/comments/{id}/tree`
+- **What:** Get an archived Reddit comment tree. Returns a bounded nested comment tree from Arctic Shift's public archive. `t1` entries contain comments and their replies; `more` entries mark collapsed branches and include child ids/counts. Omitted parent_id requests the whole tree, while an explicitly empty parent_id requests top-level comments only. Empty archived trees return 200 with an empty comments array. Archived scores can lag changes for roughly 36 hours; slow or throttled upstream requests return 503 with Retry-After.
+- **Params:** `id` (string, **required**) — Reddit post id or t3_ id; `limit` (integer, optional) — Maximum archive comment nodes to expand, defaults to 50 and clamps to 100; `parent_id` (string, optional) — Parent comment id; an explicitly empty value selects top-level comments; `start_breadth` (integer, optional) — Initial breadth, defaults to 2 and must be between 0 and 8; `start_depth` (integer, optional) — Initial depth, defaults to 3 and must be between 0 and 8
+
+### `reddit_archive_posts_ids`
+
+- **HTTP:** `GET /reddit/archive/posts/ids`
+- **What:** Look up archived Reddit posts by ids. Looks up known Reddit post ids in Arctic Shift's historical archive. Supply 1 to 1,000 comma-separated ids; duplicates are removed, results follow input order, and missing ids are listed separately. The service sends at most two upstream requests of up to 500 ids each. Archived scores and comment counts are snapshots, and removed_by_category is included when available.
+- **Params:** `ids` (string, **required**) — Comma-separated Reddit post ids (1-1,000); optional t3_ prefixes are accepted
+
+### `reddit_archive_posts_search`
+
+- **HTTP:** `GET /reddit/archive/posts/search`
+- **What:** Search archived Reddit posts. Searches Arctic Shift's public historical post archive. Supply at least one of query, author, subreddit, or url; date bounds can further narrow that search. This is separate from the live Reddit search endpoint. created_after/created_before are time boundaries, not Reddit listing cursors; posts include created_utc and retrieved_on so callers can see when the archive captured each record. Archived scores and comment counts can lag changes for roughly 36 hours. A valid query with no matches returns an empty posts array. Slow or throttled upstream searches return 503 with Retry-After.
+- **Params:** `author` (string, optional) — Public Reddit username filter; `created_after` (string, optional) — Creation-time lower bound; accepts epoch seconds or milliseconds, ISO 8601 dates, or relative offsets such as 1year, 2d, or 5min; `created_before` (string, optional) — Creation-time upper bound; accepts epoch seconds or milliseconds, ISO 8601 dates, or relative offsets such as 1year, 2d, or 5min; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `query` (string, optional) — Text search across archived post titles and selftext; `sort` (string, optional) — Sort by creation time; `subreddit` (string, optional) — Subreddit name filter; `url` (string, optional) — Linked URL prefix filter; `url_exact` (boolean, optional) — Require an exact URL match; requires url
+
+### `reddit_archive_subreddits_search`
+
+- **HTTP:** `GET /reddit/archive/subreddits/search`
+- **What:** Search Reddit's archived subreddit directory. Searches Arctic Shift's native subreddit directory by name prefix. Directory metadata is updated infrequently; subscriber counts are archived snapshots and retrieved_on indicates when the source captured the entry. The selectable fields are limited to the verified public directory fields.
+- **Params:** `limit` (integer, optional) — Maximum subreddits, defaults to 25 and clamps to 100; `max_subscribers` (integer, optional) — Maximum archived subscriber count; `min_subscribers` (integer, optional) — Minimum archived subscriber count; `over_18` (boolean, optional) — Filter by archived NSFW status; `query` (string, **required**) — Subreddit name prefix, with or without r/; `sort` (string, optional) — Sort direction; `sort_by` (string, optional) — Sort field
+
+### `reddit_archive_time_series`
+
+- **HTTP:** `GET /reddit/archive/time-series`
+- **What:** Get historical Reddit archive time series. Returns Arctic Shift's native time-series values. Supply an absolute creation-time range and a precision; ranges that could exceed 1,000 points are rejected. Counts, score sums, and retrieval-delay sums are archive metrics, not current Reddit totals. Arctic Shift says time-series data may be approximate and take hours or days to update.
+- **Params:** `created_after` (string, **required**) — Absolute start time: epoch seconds/milliseconds or ISO 8601; `created_before` (string, **required**) — Absolute end time: epoch seconds/milliseconds or ISO 8601; `metric` (string, **required**) — Archive metric; `precision` (string, **required**) — Time bucket precision; `subreddit` (string, optional) — Optional subreddit scope; required for subreddit_subscribers, and unsupported for retrieval-delay metrics
 
 ### `reddit_comments`
 

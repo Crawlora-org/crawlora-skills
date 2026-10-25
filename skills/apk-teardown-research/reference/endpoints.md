@@ -14,25 +14,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /apk-teardown/compare-ownership`
 - **What:** Compare two apk-teardown jobs for evidence of common ownership. Compares two DIFFERENT completed jobs (not versions of the same app) for signals of common ownership -- shared signing certificate, SDK/analytics identifiers, and more.
-- **Params:** `job_id_a` (string, **required**) — First job ID; `job_id_b` (string, **required**) — Second job ID
+- **Params:** `job_id_a` (string, **required**) — First completed job ID; copy data.job_id returned by POST /apk-teardown/jobs; `job_id_b` (string, **required**) — Second completed job ID; copy data.job_id returned by another POST /apk-teardown/jobs
 
 ### `apk_teardown_delete_job`
 
 - **HTTP:** `DELETE /apk-teardown/jobs/{job_id}`
 - **What:** Delete an apk-teardown job. Purges a job's metadata/result before its normal retention window expires. The uploaded binary is already gone by the time any job reaches a terminal state, so this only ever deletes job metadata, never a binary.
-- **Params:** `job_id` (string, **required**) — Job ID to delete
+- **Params:** `job_id` (string, **required**) — Caller-owned job ID from data.job_id returned by POST /apk-teardown/jobs
 
 ### `apk_teardown_diff`
 
 - **HTTP:** `GET /apk-teardown/diff`
 - **What:** Diff two completed apk-teardown jobs. Compares two already-completed jobs -- typically two versions of the same app -- and returns what changed (permissions, signing, SDKs, size, and more).
-- **Params:** `job_id_a` (string, **required**) — First job ID; `job_id_b` (string, **required**) — Second job ID
+- **Params:** `job_id_a` (string, **required**) — First completed job ID; copy data.job_id returned by POST /apk-teardown/jobs; `job_id_b` (string, **required**) — Second completed job ID; copy data.job_id returned by another POST /apk-teardown/jobs
 
 ### `apk_teardown_job_status`
 
 - **HTTP:** `GET /apk-teardown/jobs/{job_id}`
 - **What:** Poll an apk-teardown job's status/result. Returns the current status (queued, processing, done, failed, or lost) of a submitted job, and its full result once done.
-- **Params:** `job_id` (string, **required**) — Job ID returned by Submit
+- **Params:** `job_id` (string, **required**) — Job ID from data.job_id returned by POST /apk-teardown/jobs; the response also supplies poll_path
 
 ### `apk_teardown_submit`
 
@@ -44,4 +44,4 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /apk-teardown/timeline`
 - **What:** Build a version timeline across 2+ apk-teardown jobs. Compares 2+ completed jobs the caller asserts are versions of the same app and returns the consecutive pairwise diff for each version transition, sorted by version code.
-- **Params:** `job_ids` (string, **required**) — Comma-separated list of 2+ completed job ids, any order
+- **Params:** `job_ids` (string, **required**) — Comma-separated list of 2+ completed job IDs copied from data.job_id values returned by POST /apk-teardown/jobs

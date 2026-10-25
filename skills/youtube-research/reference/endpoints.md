@@ -6,9 +6,9 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**14 endpoints across 1 platform group(s).**
+**15 endpoints across 1 platform group(s).**
 
-## YouTube (14)
+## YouTube (15)
 
 ### `youtube_captions`
 
@@ -31,8 +31,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `youtube_channel_shorts`
 
 - **HTTP:** `GET /youtube/channel/{id}/shorts`
-- **What:** Retrieve the shorts tab for a YouTube channel. Returns the first page of Shorts from a YouTube channel's Shorts tab. `id` accepts a channel id, `@handle`, `/c` or `/user` path, or a full channel URL. Each short has its position, video id, title, URL, thumbnail and view count text.
-- **Params:** `id` (string, **required**) — Channel ID, @handle, /c path, /user path, or full YouTube channel URL
+- **What:** Retrieve the shorts tab for a YouTube channel. Returns one page of Shorts from a YouTube channel's Shorts tab. `id` accepts a channel id, `@handle`, `/c` or `/user` path, or a full channel URL. Each short has its position within this page, video id, title, URL, thumbnail and view count text. Pass `continuation_token` from the response to fetch the next page.
+- **Params:** `continuation_token` (string, optional) — Opaque pagination token returned by the previous response; `id` (string, **required**) — Channel ID, @handle, /c path, /user path, or full YouTube channel URL
 
 ### `youtube_channel_videos`
 
@@ -40,11 +40,17 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve the videos tab for a YouTube channel. Lists the videos on a YouTube channel's Videos tab. `id` accepts a channel id, `@handle`, `/c` or `/user` path, or a full channel URL. Each item has its video id, title, URL, duration, view count, published text, thumbnail, badges and live flag. Pass the returned `continuation_token` to fetch the next page.
 - **Params:** `continuation_token` (string, optional) — Pagination token returned by a previous request; `id` (string, **required**) — Channel ID, @handle, /c path, /user path, or full YouTube channel URL
 
+### `youtube_comment_replies`
+
+- **HTTP:** `GET /youtube/comments/{id}/replies`
+- **What:** Retrieve replies to one YouTube comment. Returns one page of replies using the opaque `continuation_token` on a comment from `/youtube/comments/{id}`. The path `id` is the 11-character video ID that provides the YouTube watch-page context. Pass the response-level `continuation_token` to fetch another replies page.
+- **Params:** `continuation_token` (string, **required**) — Opaque per-comment reply token from a comment object; `id` (string, **required**) — YouTube video ID (11-character code)
+
 ### `youtube_comments`
 
 - **HTTP:** `GET /youtube/comments/{id}`
-- **What:** Retrieve video comments (top-level & replies). Returns one page of comments for a YouTube video by its 11-character `id`. Each comment has its id, content, author `user_name` and `channel_id`, `likes_count`, `reply_count` and `published_time`. Pass the previous response's `continuation_token` to get the next page; leave it empty for the first.
-- **Params:** `continuation_token` (string, optional) — Pagination token returned by a previous request, first page if empty; `id` (string, **required**) — YouTube video ID (11-character code)
+- **What:** Retrieve top-level video comments. Returns one page of top-level comments for a YouTube video by its 11-character `id`. Each comment has its id, content, author `user_name` and `channel_id`, `likes_count`, `reply_count` and `published_time`. Comments with replies may include their own `continuation_token`; pass that token to `/youtube/comments/{id}/replies`. Pass the response-level `continuation_token` here for deterministic pagination. If omitted, the service discovers an initial cursor or may resume the most recently cached cursor for this video.
+- **Params:** `continuation_token` (string, optional) — Opaque pagination token returned by a previous request; pass it for deterministic pagination; `id` (string, **required**) — YouTube video ID (11-character code)
 
 ### `youtube_playlist`
 

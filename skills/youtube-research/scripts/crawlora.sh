@@ -67,6 +67,7 @@ if [ "$route_allowed" = false ]; then
   '^/youtube/channel/[^/]+/shorts$'
   '^/youtube/channel/[^/]+/videos$'
   '^/youtube/comments/[^/]+$'
+  '^/youtube/comments/[^/]+/replies$'
   '^/youtube/playlist/[^/]+$'
   '^/youtube/profile/[^/]+$'
   '^/youtube/tag/[^/]+$'

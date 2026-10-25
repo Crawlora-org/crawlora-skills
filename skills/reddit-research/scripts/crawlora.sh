@@ -56,6 +56,12 @@ esac
 # segment; unlike a case '*', [^/]+ cannot consume another slash.
 route_allowed=false
 case "$path" in
+  /reddit/archive/comments/ids) route_allowed=true ;;
+  /reddit/archive/comments/search) route_allowed=true ;;
+  /reddit/archive/posts/ids) route_allowed=true ;;
+  /reddit/archive/posts/search) route_allowed=true ;;
+  /reddit/archive/subreddits/search) route_allowed=true ;;
+  /reddit/archive/time-series) route_allowed=true ;;
   /reddit/leads) route_allowed=true ;;
   /reddit/search) route_allowed=true ;;
   /reddit/subreddits/posts) route_allowed=true ;;
@@ -63,6 +69,7 @@ case "$path" in
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
+  '^/reddit/archive/comments/[^/]+/tree$'
   '^/reddit/comments/[^/]+$'
   '^/reddit/domain/[^/]+/posts$'
   '^/reddit/post/[^/]+$'

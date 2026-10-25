@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**3509 endpoints across 467 platform group(s).**
+**3673 endpoints across 475 platform group(s).**
 
 ## 1stDibs (4)
 
@@ -3506,7 +3506,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `costco_search`
 
 - **HTTP:** `GET /costco/search`
-- **What:** Search Costco products. Returns public Costco products matching a text query and/or a category slug: title, brand, model, image, and rating for each result. Public data sourced from Costco's own search backend.
+- **What:** Search Costco products. Returns public Costco products matching a text query and/or a category slug: title, brand, model, image, and rating for each result. GDX is primary; if GDX is blocked, query-only searches may return explicitly partial product-sitemap results.
 - **Params:** `category` (string, optional) — Costco category slug, e.g. the last path segment of a category page URL; `query` (string, optional) — Search text
 
 ### `costco_warehouses`
@@ -4315,6 +4315,130 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get DoorDash store reviews. Returns store ratings and customer reviews from the Android mobile guest experience for a location. No DoorDash account or caller-supplied token is required.
 - **Params:** `latitude` (number, **required**) — Delivery latitude; `longitude` (number, **required**) — Delivery longitude; `store_id` (string, **required**) — Numeric DoorDash store ID
 
+## DraftKings Casino (5)
+
+### `draftkings_casino_cleopatra_guide`
+
+- **HTTP:** `GET /draftkings/casino/slots/cleopatra-guide`
+- **What:** DraftKings Cleopatra slot guide. Returns written gameplay sections from DraftKings Casino's public Cleopatra tutorial. The image-only payout table and promotional recommendation/CTA sections are omitted. This is informational page content, not wagering advice.
+- **Params:** _none_
+
+### `draftkings_casino_directory`
+
+- **HTTP:** `GET /draftkings/casino/directory`
+- **What:** DraftKings Casino slots directory. Returns the public Online Slots and How to Play Slots links from the DraftKings Casino homepage. Fetch the guide sections with draftkings_casino_slots_guide. It does not fetch game catalogs, promotions, winners, jackpots, or account data.
+- **Params:** _none_
+
+### `draftkings_casino_slots_categories`
+
+- **HTTP:** `GET /draftkings/casino/slots/categories`
+- **What:** DraftKings Casino slot categories. Lists public slot-category sections from the logged-out Casino configuration. It returns category labels and upstream IDs only; it does not return game listings, winners, jackpots, promotions, personal data, or jurisdiction eligibility.
+- **Params:** _none_
+
+### `draftkings_casino_slots_guide`
+
+- **HTTP:** `GET /draftkings/casino/slots-guide`
+- **What:** DraftKings Casino slots guide. Returns the public slots guide's basic rules and responsible-play sections. Account setup, payments, promotions, and strategy sections are omitted. This is informational page content, not gambling advice.
+- **Params:** _none_
+
+### `draftkings_casino_wheel_of_fortune_guide`
+
+- **HTTP:** `GET /draftkings/casino/slots/wheel-of-fortune-guide`
+- **What:** DraftKings Wheel of Fortune slot guide. Returns written gameplay instructions from DraftKings Casino's public Wheel of Fortune: Triple Extreme Spin tutorial. The video embed, demo-mode call to action, and jurisdiction-specific footer are omitted. This is informational content, not wagering advice.
+- **Params:** _none_
+
+## DraftKings Daily Fantasy Sports (5)
+
+### `draftkings_dfs_glossary`
+
+- **HTTP:** `GET /draftkings/dfs/glossary`
+- **What:** DraftKings Daily Fantasy glossary. Returns the public Daily Fantasy glossary terms and definitions from DraftKings' How to Play page. It does not access the contest lobby, player pool, or account data.
+- **Params:** _none_
+
+### `draftkings_dfs_guide`
+
+- **HTTP:** `GET /draftkings/dfs/guide`
+- **What:** DraftKings Daily Fantasy guide. Returns public contest-type summaries and sport landing-page links from DraftKings' Daily Fantasy Sports guide. Use draftkings_dfs_glossary for the page's public terminology definitions. This is a read-only guide directory; it does not access contests, lineups, player pools, or accounts. Availability and age limits vary by location.
+- **Params:** _none_
+
+### `draftkings_dfs_nfl_best_ball_featured_contests`
+
+- **HTTP:** `GET /draftkings/dfs/nfl-best-ball/featured-contests`
+- **What:** DraftKings NFL Best Ball featured contests. Lists the contest cards currently shown in DraftKings' public NFL Best Ball Featured Contests section, including displayed entry-fee and top-prize amounts and maximum entries. This is the landing-page selection, not the full contest lobby or a guarantee that a contest remains open. It does not follow tournament-detail links or return promotions, entries, lineups, or account data.
+- **Params:** _none_
+
+### `draftkings_dfs_rules_and_scoring`
+
+- **HTTP:** `GET /draftkings/dfs/rules-and-scoring`
+- **What:** DraftKings DFS Rules & Scoring. Returns the public Daily Fantasy rules and scoring overview plus visible sports and contest-style rules. Each rule includes upstream game-type IDs and sanitized scoring content. Hidden records, including XFL rules, are omitted; contests, players, prizes, lineups, and account data are not returned.
+- **Params:** _none_
+
+### `draftkings_dfs_sports`
+
+- **HTTP:** `GET /draftkings/dfs/sports`
+- **What:** DraftKings Daily Fantasy sports catalog. Returns the public US-DK sport catalog with exact sport codes and DraftKings' enabled/public-contests flags. The flags describe the source catalog, not caller-specific location eligibility. This endpoint does not access contests, lineups, prizes, or account data.
+- **Params:** _none_
+
+## DraftKings Pick6 (3)
+
+### `draftkings_pick6_rule_page`
+
+- **HTTP:** `GET /draftkings/pick6/rules/{slug}`
+- **What:** DraftKings Pick6 sport-specific rules. Returns public scoring and rule sections for one supported Pick6 sport/format page. Discover supported slugs with draftkings_pick6_rules. This endpoint does not return player picks, projections, user entries, or location tokens.
+- **Params:** `slug` (string, **required**) — Sport/format slug listed by draftkings_pick6_rules
+
+### `draftkings_pick6_rules`
+
+- **HTTP:** `GET /draftkings/pick6/rules`
+- **What:** DraftKings Pick6 rules. Returns public rule sections from the DraftKings Pick6 Rules and Scoring page plus child pages with verified detail routes. Unverified upstream links are omitted from the slug directory. It does not return player picks, projections, user entries, or location tokens.
+- **Params:** _none_
+
+### `draftkings_pick6_sports`
+
+- **HTTP:** `GET /draftkings/pick6/sports`
+- **What:** DraftKings Pick6 sport directory. Returns the dated public Help Center snapshot of Pick6 sports and contest formats, with exact sport codes and links published by the Help Center, plus the CFB/CBB jurisdiction restriction. Product-page reachability is not verified. This directory does not return picks or projections and does not imply availability in the caller's location.
+- **Params:** _none_
+
+## DraftKings Predictions (3)
+
+### `draftkings_predictions_availability`
+
+- **HTTP:** `GET /draftkings/predictions/availability`
+- **What:** DraftKings Predictions availability map. Returns the 52 region/status mappings shown on DraftKings Predictions' public availability map. Allowed `status` values: `all_markets_available`, `financial_markets_only`, `sports_markets_unavailable`, `no_markets_available`. This source map is not a complete legal eligibility matrix and does not separately classify all territories or tribal land. It does not read caller location or trading/account state.
+- **Params:** _none_
+
+### `draftkings_predictions_categories`
+
+- **HTTP:** `GET /draftkings/predictions/categories`
+- **What:** DraftKings Predictions categories. Returns the public category and league navigation from the DraftKings Predictions homepage. It excludes market quotes, trade-slip selections, accounts, balances, promotions, and location data. Market availability varies by location and time; this endpoint is a navigation directory, not trading advice.
+- **Params:** _none_
+
+### `draftkings_predictions_rules`
+
+- **HTTP:** `GET /draftkings/predictions/rules`
+- **What:** DraftKings Predictions rules and settlement sources. Lists public rulebook and settlement-source links from the DraftKings Predictions Rules and Settlements page. It does not fetch market data, quotes, trades, user state, or location context.
+- **Params:** _none_
+
+## DraftKings Racing (3)
+
+### `draftkings_racing_race_info`
+
+- **HTTP:** `GET /draftkings/racing/race/{race_id}`
+- **What:** DraftKings Racing race card and results. Returns public race-card details for one race ID from DraftKings Racing, including entries, horse identifiers, morning-line and live odds, and finish positions when posted. It excludes pools, probable payouts, bet-form IDs, real-time WebSocket requests, favorites, and participant personal names.
+- **Params:** `race_id` (integer, **required**) — Race ID from the public Racing schedule
+
+### `draftkings_racing_schedule`
+
+- **HTTP:** `GET /draftkings/racing/schedule`
+- **What:** DraftKings Racing schedule. Returns public race-card metadata from the DraftKings Racing homepage, including track, race number, scheduled post time, and status. Favorite-track and wager data are excluded.
+- **Params:** _none_
+
+### `draftkings_racing_tracks`
+
+- **HTTP:** `GET /draftkings/racing/tracks`
+- **What:** DraftKings Racing tracks. Returns the public All Tracks directory with track type, status, schedule count, and country metadata. Favorite IDs, runner details, and wagering controls are excluded.
+- **Params:** _none_
+
 ## DraftKings Sportsbook (12)
 
 ### `draftkings_event`
@@ -5093,6 +5217,440 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get a Fanatics Live show's detail page. Returns a Fanatics Live live show's detail page: status, viewers, hosting channel/shop, its currently active break/lot, and its full break/lot list.
 - **Params:** `id` (string, **required**) — Fanatics Live show id, e.g. from a browse result's id field
 
+## FanDuel (72)
+
+### `fanduel_casino_categories`
+
+- **HTTP:** `GET /fanduel/casino/categories`
+- **What:** FanDuel Casino categories. Lists the FanDuel Casino lobby's public categories (slots, jackpots, blackjack, roulette, live dealer, exclusives and more) with the slug the `category` route takes. `region` picks the lobby: `mi` (default) is the Michigan lobby at casino.fanduel.com, which includes the Michigan-only MotorCity Favorites collection, and `on` is the Ontario lobby at casino.fanduel.ca, which has three Ontario-only collections and lacks Hot Slots, Classic Reels and Bonus Buy. The casino site serves one state's lobby to every address tried, so no other state is offered. The signed-in player's own favorites list is not a public category and is not included.
+- **Params:** `region` (string, optional) — Lobby: `mi` Michigan (default) or `on` Ontario
+
+### `fanduel_casino_category`
+
+- **HTTP:** `GET /fanduel/casino/category`
+- **What:** FanDuel Casino category games. Returns a page of a casino category's games in the lobby's own order, with each game's slug, name, studio, badge (`Exclusive`, `Jackpot`), whether it is flagged as a site-wide jackpot game, and a link to its page. `providers` and `badges` count the whole category so the values the `provider` and `badge` filters accept are always visible; `q` matches every word against the game name. `all-games`, `slots` and `double-your-bet-category` hold the whole catalog (about 3,800 games) in one 30MB page, so their first call is slow and the parsed list is then cached for 15 minutes.
+- **Params:** `badge` (string, optional) — Keep only games with this badge, exactly as listed in the response `badges` (for example `Exclusive`, `Jackpot`); `category` (string, **required**) — Category slug from the `categories` route for the same `region`. Michigan has `all-games`, `new`, `slots`, `double-your-bet-category`, `jackpots`, `daily-jackpots`, `hot-slots`, `classic-reels-category`, `bonus-buy-category`, `high-limit-category`, `spooky-slots-category`, `exclusives`, `pick-play`, `arcade`, `blackjack`, `baccarat`, `roulette`, `table`, `livecasino`, `online-casino-favorites`, `explore-videos`, `motorcity-favorites`; Ontario has the same list without `hot-slots`, `classic-reels-category`, `bonus-buy-category`, `online-casino-favorites` and `motorcity-favorites`, and adds `fallsview-favourites-category`, `the-wolf-den-category`, `sports-central`. A slug the lobby lacks returns `400`; `limit` (integer, optional) — Games per page, 1 to 200; default 50; `offset` (integer, optional) — Games to skip; default 0; `provider` (string, optional) — Keep only games from this studio, exactly as listed in the response `providers` (for example `NYX`, `Evolution`, `IGT`); a value the category does not have returns `400`; `q` (string, optional) — Words to find in the game name, such as `huff puff`; every word must match; `region` (string, optional) — Lobby: `mi` Michigan (default) or `on` Ontario
+
+### `fanduel_casino_game`
+
+- **HTTP:** `GET /fanduel/casino/game`
+- **What:** FanDuel Casino game detail. Returns a casino game's detail page: category, minimum and maximum bet, studio, volatility, themes, features, how many players are in it right now, its badge and description, and the identifiers its play link carries (provider, provider reference, game id and the lobby region). Slugs come from the `category` route; an unknown game returns 404.
+- **Params:** `game` (string, **required**) — Game slug from the `category` route (`games[].slug`), lower-case, such as `huff-n-even-more-puff-hard-hat-edition`; `region` (string, optional) — Lobby of the game: `mi` Michigan (default) or `on` Ontario
+
+### `fanduel_racing_carryover_pools`
+
+- **HTTP:** `GET /fanduel/racing/carryover-pools`
+- **What:** FanDuel Racing carry-over pools. Lists the multi-race pools that carried over (Pick 3 to Pick 6, Super High Five, Superfecta, Daily Double) with the amount, the track, the race the pool pays on and that race's minutes to post and status. Largest pool first. `status` filters by the status of the race the pool pays on.
+- **Params:** `limit` (integer, optional) — Items per page, 1 to 200; default 50; `page` (integer, optional) — Page number, from 1; default 1, at most 10000; `status` (string, optional) — Keep only pools whose race has these statuses (repeat the parameter or comma-separate): `O` Open, `IC` Up Next, `SK` Race Off, `RO` Race Official; `track` (string, optional) — Keep only these track codes (repeat the parameter or comma-separate), such as `LRL`; list codes with the `tracks` route
+
+### `fanduel_racing_filters`
+
+- **HTTP:** `GET /fanduel/racing/filters`
+- **What:** FanDuel Racing filter values. Counts today's races by country, race type, status, surface and class, and lists the sort names, so every value the other racing routes accept is discoverable. Statuses, race types, surfaces, classes and countries are data-driven sets, so the counts are today's live inventory; a country appears here only while it is racing.
+- **Params:** _none_
+
+### `fanduel_racing_horse`
+
+- **HTTP:** `GET /fanduel/racing/horse`
+- **What:** FanDuel Racing horse career. Returns a horse's career record (starts, wins, top-three finishes, win percentage) and its past races newest first, each with the race conditions and the horse's own result line: finish position, post-race report, beaten lengths and starting price when the track reports them. Needs the horse's `id` from the `search` route; an unknown id returns 404.
+- **Params:** `id` (string, **required**) — Horse id (`id` of a `runner` result of the `search` route), such as `1002257`; `limit` (integer, optional) — Races per page, 1 to 200; default 50; `page` (integer, optional) — Page of races, from 1; default 1, at most 10000
+
+### `fanduel_racing_past_race`
+
+- **HTTP:** `GET /fanduel/racing/past-race`
+- **What:** FanDuel Racing past race result. Returns one past race in full: conditions, the finish order with win, place and show payoffs, beaten lengths, starting price and the post-race report of each runner, the payoff of every wager type, and every entry with its morning-line and final odds and its horse, jockey, trainer, owner and pedigree. Needs a date, a track code and a race number from the `past-races` route; a race that did not run returns 404. A race whose results the service no longer holds returns no `results`.
+- **Params:** `date` (string, **required**) — Day as `YYYY-MM-DD`, from `2008-01-01`; `number` (string, **required**) — Race number, 1 to 99; `track` (string, **required**) — Track code such as `BEL`
+
+### `fanduel_racing_past_races`
+
+- **HTTP:** `GET /fanduel/racing/past-races`
+- **What:** FanDuel Racing past races of a day. Lists the races that ran on a date, at one track or at every track (558 races on 2026-10-02), with number, post time, conditions, distance, purse, surface and runner count; it has no results, so read a race with the `past-race` route. Results go back to 2008. A date with no races returns an empty list; today's date is empty until a race is official.
+- **Params:** `date` (string, **required**) — Day as `YYYY-MM-DD`, from `2008-01-01`; `limit` (integer, optional) — Races per page, 1 to 200; default 50; `page` (integer, optional) — Page number, from 1; default 1, at most 10000; `track` (string, optional) — Track code such as `BEL`; omit for every track
+
+### `fanduel_racing_past_tracks`
+
+- **HTTP:** `GET /fanduel/racing/past-tracks`
+- **What:** FanDuel Racing tracks with past results. Lists the tracks that have past results. With `date` it returns the tracks that ran that day with their race count and race types; with `track` it returns that track and the dates it ran (newest first, paged by `page` and `limit`, back to 2008); with neither it returns every track (786 on 2026-10-24). An unknown track returns 404.
+- **Params:** `date` (string, optional) — Day as `YYYY-MM-DD`, from `2008-01-01`; `limit` (integer, optional) — Items per page, 1 to 200; default 50; `page` (integer, optional) — Page number, from 1; default 1, at most 10000; `track` (string, optional) — Track code such as `BEL`; adds the dates the track ran
+
+### `fanduel_racing_race`
+
+- **HTTP:** `GET /fanduel/racing/race`
+- **What:** FanDuel Racing race detail. Returns one race in full: its conditions, every entry with morning-line and current odds (fractional and decimal), recent price history, runners (jockey, trainer, owner, pedigree, weight, age, scratch and jockey-change flags, win probability), pool totals, probable payouts, will-pays for multi-race bets, the wagers it accepts with their limits, and, once it is official, the finish order and payoffs. Pools, probables and will-pays appear only when the track reports them (mostly official and Up Next races). Pass `include` to add optional groups: `handicapping` (speed, class, pace, jockey-trainer record, power rating, career record and the favorite rank of every runner), `timeform` (Timeform analyst and production comments, tissue price, flags and, once official, how each finisher was beaten, its starting price and a post-race report) and `pool_grids` (the money bet on each entry's pairings in every pool, mostly once the race is official). A race that is not on today's card returns 404.
+- **Params:** `include` (string, optional) — Optional groups to add (repeat the parameter or comma-separate): `handicapping` per-runner handicapping figures and favorite rank, `timeform` Timeform comments, tissue price, flags and finisher timing, `pool_grids` per-entry pool pairings. Other values return `400`; `number` (string, **required**) — Race number, 1 to 99, such as `2`; `track` (string, **required**) — Track code from the `tracks` route, such as `LRL`
+
+### `fanduel_racing_races`
+
+- **HTTP:** `GET /fanduel/racing/races`
+- **What:** FanDuel Racing races. Lists today's races (about 500 across all tracks) with track, number, post time, minutes to post, status, race type, surface, class, distance, purse and runner count. Filter by track, country, race type, status, open or closed, or the next N minutes; sort by minutes to post, post time or race number. `total` counts every match so `page` and `limit` page through them.
+- **Params:** `country` (string, optional) — Keep only races or tracks in these countries (repeat the parameter or comma-separate): upper-case three-letter codes such as `USA`, `GBR`, `AUS`. Today's codes are listed in the `filters` route's `countries`; lower-case or two-letter values return `400`; `exclude_country` (string, optional) — Drop these countries (repeat the parameter or comma-separate), same codes as `country`; `limit` (integer, optional) — Items per page, 1 to 200; default 50; `open` (boolean, optional) — `true` for races still open for betting (`O` and `IC`), `false` for off or official races; omit for both; `order` (string, optional) — `asc` or `desc`; default `asc`. Only valid together with `sort`; `page` (integer, optional) — Page number, from 1; default 1, at most 10000; `race_type` (string, optional) — Keep only these race types (repeat the parameter or comma-separate): `T` Thoroughbred, `H` Harness, `Q` QuarterHorse, `L` Thoroughbred LARC; `sort` (string, optional) — Sort: `mtp` (minutes to post), `post_time`, `race_number`; default is the service's own order; `status` (string, optional) — Keep only these race statuses (repeat the parameter or comma-separate): `O` Open, `IC` Up Next, `SK` Race Off, `RO` Race Official; `track` (string, optional) — Keep only these track codes (repeat the parameter or comma-separate), such as `LRL`; list codes with the `tracks` route; `within_minutes` (integer, optional) — Keep races that post within this many minutes, 1 to 1440
+
+### `fanduel_racing_results`
+
+- **HTTP:** `GET /fanduel/racing/results`
+- **What:** FanDuel Racing results. Returns today's official races with their results: winning time, finish order with win, place and show payoffs, and the payoff of every wager type. A race the service reports as refunded has no finishers and one payoff whose selection is `Refund`. Filter by track, country and race type.
+- **Params:** `country` (string, optional) — Keep only races or tracks in these countries (repeat the parameter or comma-separate): upper-case three-letter codes such as `USA`, `GBR`, `AUS`. Today's codes are listed in the `filters` route's `countries`; lower-case or two-letter values return `400`; `exclude_country` (string, optional) — Drop these countries (repeat the parameter or comma-separate), same codes as `country`; `limit` (integer, optional) — Items per page, 1 to 200; default 50; `page` (integer, optional) — Page number, from 1; default 1, at most 10000; `race_type` (string, optional) — Keep only these race types (repeat the parameter or comma-separate): `T` Thoroughbred, `H` Harness, `Q` QuarterHorse, `L` Thoroughbred LARC; `track` (string, optional) — Keep only these track codes (repeat the parameter or comma-separate), such as `LRL`; list codes with the `tracks` route
+
+### `fanduel_racing_search`
+
+- **HTTP:** `GET /fanduel/racing/search`
+- **What:** FanDuel Racing search by name. Finds horses, jockeys, trainers and owners whose name contains the text (3 to 64 characters), with a horse's `id` and birth year and the date, race and track of each one's last start. Use a horse's `id` with the `horse` route. The service returns every match (several hundred owners for a common surname), so the list is paged here: horses first, then jockeys, trainers and owners, each group sorted by `sort` and `order`. Jockeys, trainers and owners have no id.
+- **Params:** `limit` (integer, optional) — Items per page, 1 to 200; default 50; `order` (string, optional) — `asc` or `desc`; default `asc`; `page` (integer, optional) — Page number, from 1; default 1, at most 10000; `q` (string, **required**) — Name text, 3 to 64 characters; matching is case-insensitive; `sort` (string, optional) — Sort within each kind; default `name`; `type` (string, optional) — Keep one kind (any other value silently finds nothing upstream, so it returns `400`)
+
+### `fanduel_racing_track`
+
+- **HTTP:** `GET /fanduel/racing/track`
+- **What:** FanDuel Racing track and its races. Returns one track on today's card with every race it runs: number, post time, minutes to post, status, race type, surface, class, distance, purse and runner count. A code that is not racing today returns 404.
+- **Params:** `code` (string, **required**) — Track code from the `tracks` route (`tracks[].code`), such as `LRL`
+
+### `fanduel_racing_tracks`
+
+- **HTTP:** `GET /fanduel/racing/tracks`
+- **What:** FanDuel Racing tracks today. Returns the tracks racing today (Australia, Canada, France, Great Britain, Ireland, Sweden, the U.S. and more) with country, state, race count, race types, whether the card is finished, and the race each track is on (number, minutes to post, post time, status). Filter by country, race type, track code, finished and featured; sort by name, minutes to post, minutes to post of the next wagerable race, or IVR code.
+- **Params:** `code` (string, optional) — Keep only these track codes (repeat the parameter or comma-separate), such as `LRL`; `country` (string, optional) — Keep only races or tracks in these countries (repeat the parameter or comma-separate): upper-case three-letter codes such as `USA`, `GBR`, `AUS`. Today's codes are listed in the `filters` route's `countries`; lower-case or two-letter values return `400`; `exclude_country` (string, optional) — Drop these countries (repeat the parameter or comma-separate), same codes as `country`; `featured` (boolean, optional) — `true` for the Sportsbook's featured tracks only, `false` for the others; omit for both; `finished` (boolean, optional) — `true` for tracks whose card is over, `false` for tracks still racing; omit for both; `limit` (integer, optional) — Items per page, 1 to 200; default 50; `order` (string, optional) — `asc` or `desc`; default `asc`. Only valid together with `sort`; `page` (integer, optional) — Page number, from 1; default 1, at most 10000; `race_type` (string, optional) — Keep only these race types (repeat the parameter or comma-separate): `T` Thoroughbred, `H` Harness, `Q` QuarterHorse, `L` Thoroughbred LARC; `sort` (string, optional) — Sort: `name`, `mtp` (minutes to post of the current race), `wagerable_mtp`, `ivr`; default is the service's own order
+
+### `fanduel_racing_wager_types`
+
+- **HTTP:** `GET /fanduel/racing/wager-types`
+- **What:** FanDuel Racing wager types. Lists every wager type the racing service offers (71 on 2026-10-24: Win, Place, Show, Exacta, Trifecta, Superfecta, Daily Double, the Pick bets, Quinella and the international Tote bets) with its code, name, description, group, and structure: legs, columns, positions, and whether it is a box, key or wheel.
+- **Params:** _none_
+
+### `fanduel_research`
+
+- **HTTP:** `GET /fanduel/research`
+- **What:** FanDuel Research recent RSS items. Returns channel metadata and the recent item summaries from FanDuel Research's official RSS feed. `summary` is the feed description, not a full article body; this endpoint does not fetch linked article pages.
+- **Params:** _none_
+
+### `fanduel_research_article`
+
+- **HTTP:** `GET /fanduel/research/article`
+- **What:** FanDuel Research article. Returns one FanDuel Research article in full: its details plus the body rendered as `blocks` (paragraphs, headings, list items, tables, and embedded Sportsbook markets with their event, market and selection ids) and as plain `text`. Content the renderer cannot show, such as embedded HTML, is counted in `omitted_blocks` instead of being dropped silently. An unknown slug returns 404.
+- **Params:** `article` (string, **required**) — Article slug from the `articles` route (`articles[].slug`)
+
+### `fanduel_research_articles`
+
+- **HTTP:** `GET /fanduel/research/articles`
+- **What:** FanDuel Research articles. Returns a page of FanDuel Research articles (predictions, picks, prop bets, guides), newest first, without their bodies: title, description, sport, author, publish time, link, thumbnail and tags. Filter by sport, sub-category (needs a sport; cannot be combined with a date window), team (needs a sport), author, hero type and publish window. Page with `cursor` while `has_more` is true; the service reports no total.
+- **Params:** `author` (string, optional) — Author id (a UUID) from the `authors` route; `cursor` (string, optional) — Continue from the previous response's `next_cursor`; `exclude_sport` (string, optional) — Drop these sports (repeat the parameter or comma-separate), same slugs as `sport`; `hero_type` (string, optional) — Hero media: `IMAGE` or `JWPLAYER` (video); `hide_deprioritized` (boolean, optional) — `true` to hide content the site ranks down; it also reorders the list; `limit` (integer, optional) — Articles per page, 1 to 50; default 20; `player` (integer, optional) — A player's `number_fire_id` (`subject.number_fire_id` of the `player-news` route); keeps articles about that player. An unknown id, or one of a different `sport`, returns `400`; `published_after` (string, optional) — Earliest publish time, RFC 3339 or `YYYY-MM-DD`; `published_before` (string, optional) — Latest publish time, RFC 3339 or `YYYY-MM-DD`; not earlier than `published_after`; `sport` (string, optional) — Sport or topic slug from the `sports` route; default all sports; `sub_category` (string, optional) — Topic slug from the `sub-categories` route; needs `sport` and must belong to it; `team` (integer, optional) — A team's `number_fire_id` from the `sports` route (`sport` selects the list); needs `sport`. An id of another sport returns `400`
+
+### `fanduel_research_author`
+
+- **HTTP:** `GET /fanduel/research/author`
+- **What:** FanDuel Research author. Returns one FanDuel Research author: id, slug, bio, images, social accounts, and the sports and topics they write for. An unknown slug returns 404.
+- **Params:** `author` (string, **required**) — Author slug from the `authors` route, such as `fanduel-staff`
+
+### `fanduel_research_authors`
+
+- **HTTP:** `GET /fanduel/research/authors`
+- **What:** FanDuel Research authors. Returns a page of FanDuel Research authors with their id, slug, bio, social accounts and the sports and topics they write for. Filter by sport; page with `cursor` while `has_more` is true. The author `id` filters the `articles` route.
+- **Params:** `cursor` (string, optional) — Continue from the previous response's `next_cursor`; `limit` (integer, optional) — Authors per page, 1 to 50; default 20; `sport` (string, optional) — Sport or topic slug from the `sports` route
+
+### `fanduel_research_featured_articles`
+
+- **HTTP:** `GET /fanduel/research/featured-articles`
+- **What:** FanDuel Research featured articles. Returns the articles the FanDuel Research editors feature on a sport's page (about ten per sport, such as the week's best bets for the NFL), each with title, description, author, publish time, link and tags. It is a curated list, not the newest-first feed of the `articles` route: for most sports it differs from the latest articles. A sport with nothing featured (Women's Soccer and Sports Betting 101 on 2026-10-24) returns an empty list. The service has no homepage variant, so `sport` is required.
+- **Params:** `sport` (string, **required**) — Sport or topic slug from the `sports` route
+
+### `fanduel_research_fixtures`
+
+- **HTTP:** `GET /fanduel/research/fixtures`
+- **What:** FanDuel Research live fixtures. Returns the games on today's slate and in progress for the NBA, NFL, NHL and MLB with status (`SCHEDULED`, `IN_PROGRESS`, `FINAL`), the game clock, each team's score and win probability, the TV network, the Sportsbook event link and the money line, spread and total prices with their market and selection ids. A team's `side` is `home` or `away` when it can be read from the event link. Pass `sport` to keep one league; a league with no games returns an empty list.
+- **Params:** `sport` (string, optional) — Keep one league
+
+### `fanduel_research_nfl_schedule`
+
+- **HTTP:** `GET /fanduel/research/nfl-schedule`
+- **What:** FanDuel Research NFL schedule. Returns one week of NFL games with kickoff time, stadium and roof type, weather, TV network, closing spread and total, status and game clock, and for each team its record, win probability, rankings, average yards, the game's box totals and its passing, rushing and receiving leaders. Games that have not finished also carry the Sportsbook event id, link and the money line, spread and total with the market and selection ids. `season_type` is `PRE`, `REGULAR` or `POST`; `week` is `0` to `4` for `PRE`, `1` to `18` for `REGULAR` and `1` to `5` for `POST`. A week with no games returns an empty list.
+- **Params:** `season_type` (string, optional) — Season phase; default `REGULAR`; `week` (integer, **required**) — Week number; `0` to `4` for PRE (`0` is the Hall of Fame game), `1` to `18` for REGULAR, `1` to `5` for POST
+
+### `fanduel_research_player_news`
+
+- **HTTP:** `GET /fanduel/research/player-news`
+- **What:** FanDuel Research player news and injuries. Returns short player and team updates, newest first: the fact, the analysis, the news type and the player (name, position, team, `number_fire_id`, and the Sportsbook roster page, whose slug ends in the same id). With `news_type=INJURY` it is a league-wide injury feed. Available for the NFL, NBA, MLB and NHL; the news types each sport has are listed by the `sports` route (the NFL has no `LINEUP`, MLB no `OUTLOOK`, the NHL only `INJURY`, `TRANSACTION` and `GAME_UPDATE`). Filter by team, or by player (id and position together).
+- **Params:** `cursor` (string, optional) — Continue from the previous response's `next_cursor`; `include_non_primary` (boolean, optional) — `true` to include updates where the subject is not the main player; `limit` (integer, optional) — Updates per page, 1 to 100; default 25; `news_type` (string, optional) — Update type: `INJURY`, `RECAP`, `TRANSACTION`, `LINEUP`, `GAME_UPDATE`, `OUTLOOK`; a type the sport lacks returns `400` and lists the ones it has; `player` (integer, optional) — A player's `number_fire_id`; needs `position`; `position` (string, optional) — The player's position code; needs `player`; `sport` (string, **required**) — Sport slug; `team` (integer, optional) — A team's `number_fire_id` from the `sports` route
+
+### `fanduel_research_projection_slates`
+
+- **HTTP:** `GET /fanduel/research/projection-slates`
+- **What:** FanDuel Research projection slates. Lists the daily-fantasy slates (the contest pools such as `Main`, `All Day` or a single game) of a sport, which the DAILY projections need as `slate_id`. Defaults to today; pass `date` for MLB, NBA and NHL, or `week` and `season` for the NFL, to read another day (past days list their slates too; a day with no games returns an empty list). Golf also returns the current events whose `id` is the projections' `event_id`.
+- **Params:** `date` (string, optional) — Day as `YYYY-MM-DD`; MLB, NBA and NHL only; cannot be combined with `week` or `season`; `season` (integer, optional) — NFL season year such as `2026`; NFL only; `sport` (string, **required**) — Sport; `week` (integer, optional) — NFL week, 1 to 30; NFL only, usually with `season`
+
+### `fanduel_research_projection_tables`
+
+- **HTTP:** `GET /fanduel/research/projection-tables`
+- **What:** FanDuel Research projection tables. Lists the 17 fantasy projection tables of FanDuel Research (numberFire) for MLB, NBA, NFL, NHL and golf: each table's sport, projection type, the position tabs it offers (with the player positions each tab keeps), whether it takes a scope, a slate or a golf event. Use it to find the valid `type`, `position` and `scope` values for the projections route.
+- **Params:** `sport` (string, optional) — Keep only this sport's tables
+
+### `fanduel_research_projections`
+
+- **HTTP:** `GET /fanduel/research/projections`
+- **What:** FanDuel Research fantasy projections. Returns numberFire's fantasy projections for MLB, NBA, NFL, NHL and golf in the service's rank order: each row has the player, team, game, FanDuel DFS salary and value (daily projections), and the stat columns of the player kind (points, rebounds and assists for the NBA; passing, rushing and receiving for NFL skill players; kicker, defense and individual defensive player columns; skater, goalie, batter and pitcher columns; golf finish odds). `type` picks the table: `DAILY` (needs `slate_id`), `WEEKLY`, `YEARLY`, `REMAINING`, `PPR` or `SEASON_STATS`; not every sport has every type, and `position` and `scope` depend on the table, so read them from the projection-tables route. An unknown slate is refused instead of silently returning other projections. Weekly NBA and MLB tables are empty outside their weeks. A player id can appear more than once in a yearly table.
+- **Params:** `date` (string, optional) — Day of the slate as `YYYY-MM-DD` when `slate_id` is not from today; MLB, NBA and NHL DAILY only; `event_id` (string, optional) — Golf event id from the projection-slates route; golf only, defaults to the only current event; `limit` (integer, optional) — Rows per page, 1 to 200; default 50; `page` (integer, optional) — Page number, from 1; default 1, at most 10000; `position` (string, optional) — Position tab of the table; default is the table's default tab. Allowed values: `batters`, `pitchers`, `c`, `1b`, `2b`, `3b`, `ss`, `of`, `sp`, `rp` (MLB); `qb`, `rb`, `wr`, `te`, `flex`, `k`, `defense`, `idp` (NFL); `all`, `pg`, `sg`, `guards`, `sf`, `pf`, `forwards`, `centers` (NBA); `skaters`, `goalies`, `forwards`, `wingers`, `centers`, `d` (NHL); `all` (golf). Which of them a table offers is listed by projection-tables; `scope` (string, optional) — `TOTAL` or `PER_GAME`; only NBA WEEKLY, YEARLY, REMAINING and SEASON_STATS take it, default `TOTAL`; other tables return `400`; `season` (integer, optional) — NFL season of the slate; NFL DAILY only; `slate_id` (string, optional) — Slate id from the projection-slates route; required for DAILY (golf defaults to its only slate); other types return `400`; `sport` (string, **required**) — Sport; `type` (string, **required**) — Projection type; `week` (integer, optional) — NFL week of the slate when `slate_id` is not from this week; NFL DAILY only
+
+### `fanduel_research_quick_picks_daily`
+
+- **HTTP:** `GET /fanduel/research/podcasts/quick-picks-daily`
+- **What:** FanDuel Research Quick Picks Daily episode archive. Returns one page of public Quick Picks Daily program clip metadata from Omny Studio's read-only Consumer API. Follow `next_cursor` to continue; use `in_rss_playlist` to distinguish clips in the default podcast feed and `published_at` to judge freshness. The endpoint returns listening-page links and metadata, not audio files.
+- **Params:** `cursor` (string, optional) — Cursor from a previous response's `data.next_cursor`; omit for the first page
+
+### `fanduel_research_sports`
+
+- **HTTP:** `GET /fanduel/research/sports`
+- **What:** FanDuel Research sports and topics. Lists the 23 sports and topics of the FanDuel Research site (NFL, NBA, MLB, NHL, college football and basketball, golf, tennis, soccer, MMA, horse racing, casino, FanDuel Predicts and more) with the slug the other research routes take, the position codes, the team count and the player-news types each has. Pass `sport` to also get that sport's teams with the `number_fire_id` values the team filters take.
+- **Params:** `sport` (string, optional) — Sport or topic slug; adds the sport's teams
+
+### `fanduel_research_sub_categories`
+
+- **HTTP:** `GET /fanduel/research/sub-categories`
+- **What:** FanDuel Research topics. Lists the topics articles can be filtered by (predictions, best prop bets today, FanDuel picks, fantasy football, NFL draft, Kentucky Derby, Breeders' Cup, World Cup and more), each with the sport it belongs to. A topic only filters articles of its own sport.
+- **Params:** _none_
+
+### `fanduel_sportsbook_autocomplete`
+
+- **HTTP:** `GET /fanduel/sportsbook/autocomplete`
+- **What:** FanDuel Sportsbook search suggestions. Returns the suggestions the Sportsbook's search box offers while a user types: players, teams and competitions that match the prefix. Each suggestion has its plain `text` and a `highlighted` form that wraps the matched characters in `<em>` tags. Use `search/tabs` for the full results of a chosen suggestion.
+- **Params:** `limit` (integer, optional) — Suggestions to return, 1 to 50; default 5; `q` (string, **required**) — Prefix to complete, 2 to 100 characters, without `<` or `>`
+
+### `fanduel_sportsbook_builder`
+
+- **HTTP:** `GET /fanduel/sportsbook/builder`
+- **What:** FanDuel Sportsbook bet builder. Returns the Sportsbook's bet-builder content for one event: the `groups` and `cards` (bet templates such as who will win, player lines, bullseye ranges, player podium, either-player and head-to-head groups) with their selectable options, the `players` and `teams` on offer, the `periods` and every priceable `choice` with its `choice_id` and description. Choices carry no odds here; price them with `builder/quotes` using this response's `ramp_event_id`. `head-to-head` and `player-combos` return `404` when the event has no cards for that experience.
+- **Params:** `event_id` (integer, **required**) — Event id from the `builder/events` route (`events[].event_id`); `experience` (string, optional) — Builder experience: `yourway` (default), `head-to-head`, `player-combos`, `bullseye`, `player-podium`, `or-bets`; `state` (string, optional) — Market code, including `on` for Ontario; default `nj`
+
+### `fanduel_sportsbook_builder_events`
+
+- **HTTP:** `GET /fanduel/sportsbook/builder/events`
+- **What:** FanDuel Sportsbook bet builder events. Lists the events a bet-builder experience covers (currently NFL and NBA games), grouped by competition, with start times and team logos. Use an `event_id` from here with the `builder` route.
+- **Params:** `experience` (string, optional) — Builder experience: `yourway` (default), `head-to-head`, `player-combos`, `bullseye`, `player-podium`, `or-bets`; `state` (string, optional) — Market code, including `on` for Ontario; default `nj`
+
+### `fanduel_sportsbook_builder_quotes`
+
+- **HTTP:** `GET /fanduel/sportsbook/builder/quotes`
+- **What:** FanDuel Sportsbook bet builder quotes. Prices bet-builder choices as single bets and returns, for each, the live decimal, American and fractional odds. A choice the pricing service does not know is returned in `failures` (for example `CHOICE_NOT_FOUND`) instead of failing the request. This is the price of each choice on its own: the combined price of several choices is a separate call that requires an account and is not available.
+- **Params:** `choice_id` (array, **required**) — Choice ids from the builder response (`choices[].choice_id`); 1 to 25, repeated or comma-separated; `ramp_event_id` (integer, **required**) — The builder response's `ramp_event_id` (not its `event_id`); `state` (string, optional) — Market code, including `on` for Ontario; default `nj`
+
+### `fanduel_sportsbook_competition`
+
+- **HTTP:** `GET /fanduel/sportsbook/competition`
+- **What:** FanDuel Sportsbook competition schedule and futures. Returns one competition's schedule and futures (tabs `schedule` and `futures`) with markets and odds. Get `competition_id` from the `competitions` of a league or sport response.
+- **Params:** `competition_id` (integer, **required**) — Competition id from a league, sport or home response `competitions`; `event_type_id` (string, **required**) — Sport id: 6423 American Football; 1 Soccer; 7522 Basketball; 3 Golf; 7511 Baseball; 7524 Ice Hockey; 2 Tennis; 26420387 Mixed Martial Arts; 2593174 Table Tennis; 3503 Darts; 6 Boxing; 5 Rugby Union; 4 Cricket; 8 Motor Sport; 1477 Rugby League; 6422 Snooker; 468328 Handball; 28608997 Lacrosse; 998917 Volleyball, 4726642 Surfing, 10 Special Bets and 2378961 Politics; availability differs by market (Volleyball is also offered in NJ, PA, CO and AZ), and a sport a market does not offer returns 404; `exclude_markets` (boolean, optional) — Return events without their markets (a cheap event listing); `market_types` is still returned; `market_type` (string, optional) — Keep only these market types (repeat the parameter or comma-separate), for example `MONEY_LINE`. Valid values are listed in the response `market_types`; unmatched types return no markets; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj; `tab` (string, optional) — Show only one tab of this page: a tab slug from the response `tabs[].slug` (the lowercase-hyphenated tab title, such as `games` or `player-props`). An unknown slug returns 400 listing the page's tabs
+
+### `fanduel_sportsbook_event`
+
+- **HTTP:** `GET /fanduel/sportsbook/event`
+- **What:** FanDuel Sportsbook event markets. Returns one event with the markets and odds of one tab (game lines, player props, quarters, same-game-parlay markets and more). `tabs` lists every tab the event offers, each with the `slug` accepted by `tab`; the default is `popular`, which holds the most markets. An unknown tab returns 400 listing the valid slugs; an ended event returns 404.
+- **Params:** `event_id` (integer, **required**) — Event id from any Sportsbook events listing; `market_type` (string, optional) — Keep only these market types (repeat the parameter or comma-separate), for example `MONEY_LINE`. Valid values are listed in the response `market_types`; unmatched types return no markets; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj; `tab` (string, optional) — Tab slug from the response `tabs[].slug` (for example `popular`, `passing-props`, `1st-half`, `td-scorer-props`); default `popular`. Tabs differ by sport
+
+### `fanduel_sportsbook_event_box_score`
+
+- **HTTP:** `GET /fanduel/sportsbook/event/box-score`
+- **What:** FanDuel Sportsbook live box score. Returns an event's box score grouped by stat category (for football passing, rushing, receiving, kicking, defense) with column labels and player names joined in. `available` is false until the provider has a box score.
+- **Params:** `event_id` (integer, **required**) — Event id from any Sportsbook events listing
+
+### `fanduel_sportsbook_event_play_by_play`
+
+- **HTTP:** `GET /fanduel/sportsbook/event/play-by-play`
+- **What:** FanDuel Sportsbook live play-by-play. Returns an event's play-by-play feed. The `feed` object keeps the provider's sport-specific structure (drives and plays for football). `available` is false until play-by-play exists for the event.
+- **Params:** `current` (boolean, optional) — Return only the play in progress (a much smaller payload for polling a live game); default false; `event_id` (integer, **required**) — Event id from any Sportsbook events listing
+
+### `fanduel_sportsbook_event_players`
+
+- **HTTP:** `GET /fanduel/sportsbook/event/players`
+- **What:** FanDuel Sportsbook event teams and player roster. Returns the teams (names, abbreviations, colors, logos) and player roster (name, team, jersey number, position) the live-data provider holds for an event.
+- **Params:** `event_id` (integer, **required**) — Event id from any Sportsbook events listing
+
+### `fanduel_sportsbook_event_score`
+
+- **HTTP:** `GET /fanduel/sportsbook/event/score`
+- **What:** FanDuel Sportsbook live score and status. Returns an event's live status (`scheduled`, `inprogress`, ...), the data-availability flags for box score, play-by-play and quick bets, and the live score with the period breakdown and game clock once play has started.
+- **Params:** `event_id` (integer, **required**) — Event id from any Sportsbook events listing
+
+### `fanduel_sportsbook_event_stats`
+
+- **HTTP:** `GET /fanduel/sportsbook/event/stats`
+- **What:** FanDuel Sportsbook event betting splits and form. Returns one event's public betting split (share of bets and of money on each side of the spread) and each team's last five results, with team colors. Events without published stats return 404.
+- **Params:** `event_id` (integer, **required**) — Event id from any Sportsbook events listing
+
+### `fanduel_sportsbook_events_status`
+
+- **HTTP:** `GET /fanduel/sportsbook/events/status`
+- **What:** FanDuel Sportsbook events status. Returns the live state of up to 30 events in one call: `status` (for example `ACTIVE`), `game_phase` (for example `PRE_PLAY`) and the three logical clocks that change when prices, status or structure change, which makes it a cheap way to poll many events. Ids the Sportsbook does not know are listed in `not_found` instead of failing the call.
+- **Params:** `event_id` (array, **required**) — Event ids, 1 to 30, repeated or comma-separated; `state` (string, optional) — Market code, including `on` for Ontario; default `nj`
+
+### `fanduel_sportsbook_home`
+
+- **HTTP:** `GET /fanduel/sportsbook/home`
+- **What:** FanDuel Sportsbook homepage odds. Returns the Sportsbook homepage's featured events with their markets and current American, decimal and fractional odds, grouped by the homepage's tabs. Filter with `tab`, `competition_id` and `market_type`.
+- **Params:** `competition_id` (integer, optional) — Keep only events of this competition id (from the response `competitions`); `exclude_markets` (boolean, optional) — Return events without their markets (a cheap event listing); `market_types` is still returned; `market_type` (string, optional) — Keep only these market types (repeat the parameter or comma-separate), for example `MONEY_LINE`. Valid values are listed in the response `market_types`; unmatched types return no markets; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj; `tab` (string, optional) — Show only one tab of this page: a tab slug from the response `tabs[].slug` (the lowercase-hyphenated tab title, such as `games` or `player-props`). An unknown slug returns 400 listing the page's tabs
+
+### `fanduel_sportsbook_league`
+
+- **HTTP:** `GET /fanduel/sportsbook/league`
+- **What:** FanDuel Sportsbook league page odds. Returns a featured league page (for example nfl, nba, mlb) with its events, markets and odds, grouped by the page's tabs such as Games, Player Props, Win Totals or Super Bowl. `custom_page_id` values come from the sports route's `popular_links`; an unknown id returns 404.
+- **Params:** `competition_id` (integer, optional) — Keep only events of this competition id (from the response `competitions`); `custom_page_id` (string, **required**) — League page id such as `nfl`, `nba`, `mlb`, `ncaaf`, `ncaab`, `nhl`, `wnba`, `pga`, `ncaaw`. Tournament and event pages appear and disappear during the year, and a retired page returns 404; list the current ones with the sports route; `exclude_markets` (boolean, optional) — Return events without their markets (a cheap event listing); `market_types` is still returned; `market_type` (string, optional) — Keep only these market types (repeat the parameter or comma-separate), for example `MONEY_LINE`. Valid values are listed in the response `market_types`; unmatched types return no markets; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj; `tab` (string, optional) — Show only one tab of this page: a tab slug from the response `tabs[].slug` (the lowercase-hyphenated tab title, such as `games` or `player-props`). An unknown slug returns 400 listing the page's tabs
+
+### `fanduel_sportsbook_live`
+
+- **HTTP:** `GET /fanduel/sportsbook/live`
+- **What:** FanDuel Sportsbook live betting events. Returns events that are in play now for one sport, with their live markets and odds. `tabs` lists every sport with its live-event count (`live_count`); pass `event_type_id` to load another sport. Without it the Sportsbook's default sport is returned and reported in `event_type_id`.
+- **Params:** `event_type_id` (string, optional) — Sport id: 6423 American Football; 1 Soccer; 7522 Basketball; 3 Golf; 7511 Baseball; 7524 Ice Hockey; 2 Tennis; 26420387 Mixed Martial Arts; 2593174 Table Tennis; 3503 Darts; 6 Boxing; 5 Rugby Union; 4 Cricket; 8 Motor Sport; 1477 Rugby League; 6422 Snooker; 468328 Handball; 28608997 Lacrosse; 998917 Volleyball, 4726642 Surfing, 10 Special Bets and 2378961 Politics; availability differs by market (Volleyball is also offered in NJ, PA, CO and AZ), and a sport a market does not offer returns 404; `exclude_markets` (boolean, optional) — Return events without their markets (a cheap event listing); `market_types` is still returned; `market_type` (string, optional) — Keep only these market types (repeat the parameter or comma-separate), for example `MONEY_LINE`. Valid values are listed in the response `market_types`; unmatched types return no markets; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj
+
+### `fanduel_sportsbook_live_count`
+
+- **HTTP:** `GET /fanduel/sportsbook/live-count`
+- **What:** FanDuel Sportsbook live event count. Returns the number of events in play in a market, the figure the Sportsbook's homepage shows beside its Live link. It differs by market (for example about 130 in NJ, 107 in PA, 36 in NY and 185 in Ontario on one afternoon) and moves as games start and end, which makes it a cheap way to watch activity. Use the `live` route to list the events.
+- **Params:** `state` (string, optional) — Market code, including `on` for Ontario; default `nj`
+
+### `fanduel_sportsbook_live_data`
+
+- **HTTP:** `GET /fanduel/sportsbook/live-data`
+- **What:** FanDuel Sportsbook live state for any sport. Returns live state for up to 20 events from the Sportsbook's in-play service, which covers every sport: tennis sets, games, points and server; soccer score, cards and corners; basketball and hockey period scores and remaining time, with live progress of player-prop markets where the sport has them. `details` keeps the provider's sport-specific structure; `home_score` and `away_score` are filled when the sport reports a single score. Scheduled events return `live: false`; ids with no entry are listed in `missing`.
+- **Params:** `event_id` (string, **required**) — Event id from any Sportsbook events listing; repeat the parameter or comma-separate, 1 to 20 ids
+
+### `fanduel_sportsbook_live_scores`
+
+- **HTTP:** `GET /fanduel/sportsbook/live-scores`
+- **What:** FanDuel Sportsbook live scores and stats for many events. Returns the live score and stats of up to 100 events in one call, from the Sportsbook's game-state service. Each event has `home_score` and `away_score`, the `period` and `current_period`, the time left in the period (`period_remaining_milliseconds`, basketball), the available `media_types` (for example `LIVE_VIDEO`, `MATCH_STATS`) and a sport-specific `details` block with per-period points, cards, corners or a timeline. `sport` is the Sportsbook's own name for the details block, in which `football` is soccer and `americanFootball` is the NFL and college football. An event the service has no live state for is listed in `not_found` instead of failing the call; use `event/score`, `event/box-score` and `event/play-by-play` for one event in depth.
+- **Params:** `event_id` (array, **required**) — Event ids, 1 to 100, repeated or comma-separated; `state` (string, optional) — Market code, including `on` for Ontario; default `nj`
+
+### `fanduel_sportsbook_market_prices`
+
+- **HTTP:** `GET /fanduel/sportsbook/market-prices`
+- **What:** FanDuel Sportsbook current market prices. Refreshes the current prices of up to 70 markets by market id, using the price feed the Sportsbook itself polls. Returns each market's status and every selection's American, decimal and fractional odds in the order requested; market ids the Sportsbook returns nothing for are listed in `missing`. Get market ids from the event and page routes (`markets[].market_id`).
+- **Params:** `market_id` (string, **required**) — Market id such as `734.191539418`; repeat the parameter or comma-separate, 1 to 70 ids; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj
+
+### `fanduel_sportsbook_parlays`
+
+- **HTTP:** `GET /fanduel/sportsbook/parlays`
+- **What:** FanDuel Sportsbook Parlay Hub. Returns the Sportsbook's Parlay Hub: popular parlays, same-game parlays (SGP) and SGP+ combinations, each with the number of tickets placed on it (`total_bets`), combined odds, the legs and an editor's narrative when there is one. `view` picks the list: `popular` (the homepage list), `all` (every card, filterable by `type`), `next-to-start` (grouped by the events starting soonest) or `event` (popular cards for one event). The Sportsbook returns at most 50 cards per request. `filters` lists the competition groups its own filter bar offers. A request returns at most 50 cards (`card_cap`); `truncated` is true when it filled that cap, and narrower `type`, sport, competition or decimal-odds filters reveal the cards beyond it.
+- **Params:** `competition_id` (string, optional) — Competition filter for `view=all` and `view=next-to-start` (repeat or comma-separate, up to 20 ids); the groups in the response `filters` list valid ids; `event_id` (integer, optional) — Event id, required for `view=event` and rejected otherwise; `event_type_id` (string, optional) — Sport filter for `view=all` and `view=next-to-start`: 6423 American Football; 1 Soccer; 7522 Basketball; 3 Golf; 7511 Baseball; 7524 Ice Hockey; 2 Tennis; 26420387 Mixed Martial Arts; 2593174 Table Tennis; 3503 Darts; 6 Boxing; 5 Rugby Union; 4 Cricket; 8 Motor Sport; 1477 Rugby League; 6422 Snooker; 468328 Handball; 28608997 Lacrosse; 998917 Volleyball, 4726642 Surfing, 10 Special Bets and 2378961 Politics; availability differs by market (Volleyball is also offered in NJ, PA, CO and AZ), and a sport a market does not offer returns 404; `max_odds` (number, optional) — Maximum combined decimal odds (1.01 to 10000) for `view=all` and `view=next-to-start`; `min_odds` (number, optional) — Minimum combined decimal odds (1.01 to 10000) for `view=all` and `view=next-to-start`; `state` (string, optional) — Market to query; default nj; `type` (string, optional) — Card type filter for `view=all` (repeat or comma-separate): `PARLAY` (multi-event parlay), `SGP` (same-game parlay), `SGP_PLUS` (SGP combined across games); `view` (string, optional) — Which list: `popular` (default), `all`, `next-to-start` or `event`
+
+### `fanduel_sportsbook_player`
+
+- **HTTP:** `GET /fanduel/sportsbook/player`
+- **What:** FanDuel Sportsbook player overview. Returns a player's overview page: name, position, team, the season, and recent news with the player's updates. NFL players also carry `season_totals` and a `game_log`; NBA players carry `stats` (career and per-season lines) and `projections`. Available for NFL and NBA players; an unknown player id, or a player newly added to a roster whose page is still empty, returns 404.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`; `player` (string, **required**) — Player slug ending in its id, such as `josh-allen-53775`; take it from the `players` route (`players[].slug`) or `team/roster` (`players[].slug`)
+
+### `fanduel_sportsbook_player_news`
+
+- **HTTP:** `GET /fanduel/sportsbook/player/news`
+- **What:** FanDuel Sportsbook player news. Returns a page of a player's news (title, summary, author, time, link). Without `cursor` it is the player page's own first 15 articles; while `has_more` is true, pass `next_cursor` as `cursor` to continue, 1 to 50 articles at a time (default 25). Available for NFL and NBA players; a player with no coverage returns an empty list.
+- **Params:** `cursor` (string, optional) — Continue from the previous response's `next_cursor`; omit for the first page; `league` (string, **required**) — League: `nfl`, `nba`; `limit` (integer, optional) — Articles per page after the first, 1 to 50; default 25. Only valid together with `cursor`; `player` (string, **required**) — Player slug ending in its id, such as `josh-allen-53775`; take it from the `players` route (`players[].slug`) or `team/roster` (`players[].slug`)
+
+### `fanduel_sportsbook_player_props`
+
+- **HTTP:** `GET /fanduel/sportsbook/player/props`
+- **What:** FanDuel Sportsbook player props. Returns a player's prop markets for upcoming games, with event, market and selection ids and the current odds of each selection. A player with no listed props returns an empty `events` list. Available for NFL and NBA players.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`; `player` (string, **required**) — Player slug ending in its id, such as `josh-allen-53775`; take it from the `players` route (`players[].slug`) or `team/roster` (`players[].slug`)
+
+### `fanduel_sportsbook_player_stats`
+
+- **HTTP:** `GET /fanduel/sportsbook/player/stats`
+- **What:** FanDuel Sportsbook player statistics. Returns a player's career and per-season statistics. The groups differ by sport (NFL: career rows plus regular-season and post-season weeks; NBA: regular-season and playoff careers plus preseason, regular-season and play-in seasons) and are passed through with snake_case keys. Available for NFL and NBA players.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`; `player` (string, **required**) — Player slug ending in its id, such as `josh-allen-53775`; take it from the `players` route (`players[].slug`) or `team/roster` (`players[].slug`)
+
+### `fanduel_sportsbook_players`
+
+- **HTTP:** `GET /fanduel/sportsbook/players`
+- **What:** FanDuel Sportsbook player directory. Searches the players that have Sportsbook player pages: about 2,400 in the NFL and 480 in the NBA. Each entry has the `slug` that the player routes take, the numeric `player_id` and a `name` spelled from the slug (without punctuation or accents; `team/roster` has the exact spelling). `q` matches every word against the slug, results are in slug order, and `total` counts all matches so `limit` and `offset` can page through them.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`; `limit` (integer, optional) — Players per page, 1 to 200; default 50; `offset` (integer, optional) — Players to skip; default 0; `q` (string, optional) — Words to find in the player name, such as `josh allen`; omit to list everyone
+
+### `fanduel_sportsbook_promotions`
+
+- **HTTP:** `GET /fanduel/sportsbook/promotions`
+- **What:** FanDuel Sportsbook promotions. Lists the public promotions the Sportsbook shows to an anonymous visitor on its homepage, a league page or a sport page, with each promotion's tags, offer link, end time and artwork, and the carousel placement that orders them. Offers differ by `state` and by page. `tags` is the census of promotion tags on the page and is always unfiltered, so valid `tag` values are discoverable.
+- **Params:** `context` (string, optional) — Which page's promotions: `home` (default), `league` or `sport`; `custom_page_id` (string, optional) — League page id, required for `context=league` (for example `nfl`); `event_type_id` (string, optional) — Sport id, required for `context=sport`: 6423 American Football; 1 Soccer; 7522 Basketball; 3 Golf; 7511 Baseball; 7524 Ice Hockey; 2 Tennis; 26420387 Mixed Martial Arts; 2593174 Table Tennis; 3503 Darts; 6 Boxing; 5 Rugby Union; 4 Cricket; 8 Motor Sport; 1477 Rugby League; 6422 Snooker; 468328 Handball; 28608997 Lacrosse; 998917 Volleyball, 4726642 Surfing, 10 Special Bets and 2378961 Politics; availability differs by market (Volleyball is also offered in NJ, PA, CO and AZ), and a sport a market does not offer returns 404; `state` (string, optional) — Market to query (offers differ by state); default nj; `tag` (string, optional) — Keep only promotions with one of these tags (repeat the parameter or comma-separate), for example `nfl` or `basketball`; valid tags are listed in the response `tags`
+
+### `fanduel_sportsbook_schedule`
+
+- **HTTP:** `GET /fanduel/sportsbook/schedule`
+- **What:** FanDuel Sportsbook league schedule. Returns a league's games with teams, start time, status, venue, broadcast network and scores. The NFL is selected by `week` (default: the current week; the response lists every week id in `weeks`) or by `date` and `end_date`; college football by `date` and `end_date` (default: today, UTC); the NBA and MLB by `date` (default: today, UTC). Available for the NFL, NBA, MLB and college football.
+- **Params:** `date` (string, optional) — First day as `YYYY-MM-DD`. Required form for the NBA and MLB (default today, UTC); optional for the NFL and college football; `end_date` (string, optional) — NFL and college football only: last day as `YYYY-MM-DD`, at most 31 days after `date`; default is `date` alone; `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`; `week` (string, optional) — NFL only: week id from the response `weeks` list, such as `7`; default is the current week. Cannot be combined with `date`
+
+### `fanduel_sportsbook_search`
+
+- **HTTP:** `GET /fanduel/sportsbook/search`
+- **What:** FanDuel Sportsbook search. Searches the Sportsbook's events and competitions by text (team, player-event or league names such as `lakers` or `nfl`). Events come back in the search index's relevance order with the sport, competition and start time; competitions come back with a match count. Use the returned `event_id` and `competition_id` with the event and competition routes.
+- **Params:** `event_type_id` (string, optional) — Limit results to one sport: 6423 American Football; 1 Soccer; 7522 Basketball; 3 Golf; 7511 Baseball; 7524 Ice Hockey; 2 Tennis; 26420387 Mixed Martial Arts; 2593174 Table Tennis; 3503 Darts; 6 Boxing; 5 Rugby Union; 4 Cricket; 8 Motor Sport; 1477 Rugby League; 6422 Snooker; 468328 Handball; 28608997 Lacrosse; 998917 Volleyball, 4726642 Surfing, 10 Special Bets and 2378961 Politics; availability differs by market (Volleyball is also offered in NJ, PA, CO and AZ), and a sport a market does not offer returns 404; `limit` (integer, optional) — Maximum events returned, 1 to 50; default 20; `q` (string, **required**) — Search text, 2 to 100 characters; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj; `type` (string, optional) — What to search: `all` (events and competitions), `event` or `competition`; default all
+
+### `fanduel_sportsbook_search_tabs`
+
+- **HTTP:** `GET /fanduel/sportsbook/search/tabs`
+- **What:** FanDuel Sportsbook grouped search. Returns the Sportsbook's own search results, grouped into sport tabs (for example `Basketball`, `Ice Hockey`, `American Football`) and 20 per page. `tabs` lists the sports that have matches and the selected one is returned in `tab`; pass a tab title as `tab` to read another sport. A query without `tab` also lists competition `pills` for the selected sport, and passing `pill` with `tab` keeps only that competition. `found` counts the matches in the selected tab (and pill), `total_results` the matches across the whole query, and `next_start_index` is the `start_index` of the next page while more remain. Events and competitions are returned without markets; use the `search` route for markets.
+- **Params:** `pill` (string, optional) — Competition title from the response `pills[].title`, such as `NBA`; needs `tab`; `q` (string, **required**) — Search text, 3 to 100 characters, without `<` or `>`; `start_index` (integer, optional) — Index of the first result, 0 to 9999, in steps of 20; default 0; `state` (string, optional) — Market code, including `on` for Ontario; default `nj`; `tab` (string, optional) — Sport tab title from a previous response's `tabs[].title`, such as `Basketball`; default is the tab with the most relevant matches; `timezone` (string, optional) — IANA time zone for result times, such as `America/New_York`; default `UTC`
+
+### `fanduel_sportsbook_sport`
+
+- **HTTP:** `GET /fanduel/sportsbook/sport`
+- **What:** FanDuel Sportsbook sport page odds. Returns every league, event and market the Sportsbook shows for one sport, with current odds, grouped by the sport page's tabs. Get `event_type_id` from the sports route.
+- **Params:** `competition_id` (integer, optional) — Keep only events of this competition id (from the response `competitions`); `event_type_id` (string, **required**) — Sport id: 6423 American Football; 1 Soccer; 7522 Basketball; 3 Golf; 7511 Baseball; 7524 Ice Hockey; 2 Tennis; 26420387 Mixed Martial Arts; 2593174 Table Tennis; 3503 Darts; 6 Boxing; 5 Rugby Union; 4 Cricket; 8 Motor Sport; 1477 Rugby League; 6422 Snooker; 468328 Handball; 28608997 Lacrosse; 998917 Volleyball, 4726642 Surfing, 10 Special Bets and 2378961 Politics; availability differs by market (Volleyball is also offered in NJ, PA, CO and AZ), and a sport a market does not offer returns 404; `exclude_markets` (boolean, optional) — Return events without their markets (a cheap event listing); `market_types` is still returned; `market_type` (string, optional) — Keep only these market types (repeat the parameter or comma-separate), for example `MONEY_LINE`. Valid values are listed in the response `market_types`; unmatched types return no markets; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj; `tab` (string, optional) — Show only one tab of this page: a tab slug from the response `tabs[].slug` (the lowercase-hyphenated tab title, such as `games` or `player-props`). An unknown slug returns 400 listing the page's tabs
+
+### `fanduel_sportsbook_sports`
+
+- **HTTP:** `GET /fanduel/sportsbook/sports`
+- **What:** FanDuel Sportsbook sports and league pages. Returns the Sportsbook's navigation: the sports with their `event_type_id` (the set a market offers changes: on 2026-10-24 NJ and CO listed 19, PA and AZ 18, NY only 12, and Ontario 22 on 2026-10-23), the featured league pages (each with the `custom_page_id` accepted by the league route), quick links, teaser-bet competitions, and the 28 supported markets (27 U.S. states and Ontario, `state`) the other routes can query. Use it to discover valid `event_type_id` and `custom_page_id` values.
+- **Params:** `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj
+
+### `fanduel_sportsbook_standings`
+
+- **HTTP:** `GET /fanduel/sportsbook/standings`
+- **What:** FanDuel Sportsbook league standings. Returns a league's standings, one row per team with the team's identity and the record groups the Sportsbook shows for that league: conference, division and league rankings with home, road and streak records (NFL and NBA), games back, last ten and home and away records (MLB), or conference record, points and AP ranking (college football). Available for the NFL, NBA, MLB and college football.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`
+
+### `fanduel_sportsbook_stats`
+
+- **HTTP:** `GET /fanduel/sportsbook/stats`
+- **What:** FanDuel Sportsbook betting splits and form for upcoming events. Lists every event the Sportsbook currently publishes stats for: the share of bets and of money wagered on each side of the spread, and each team's last five results. Filter to one competition with `competition_id`.
+- **Params:** `competition_id` (integer, optional) — Keep only this competition id (for example 12282733 for the NFL)
+
+### `fanduel_sportsbook_team_depth_chart`
+
+- **HTTP:** `GET /fanduel/sportsbook/team/depth-chart`
+- **What:** FanDuel Sportsbook team depth chart. Returns a team's depth chart (rank, position, college, age and draft details) and its statistical leaders. Available for the NFL only; other leagues return 400 listing their pages.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`, `college-basketball`; `team` (string, **required**) — Team slug from the `teams` route (`groups[].teams[].slug`), such as `arizona-cardinals`
+
+### `fanduel_sportsbook_team_news`
+
+- **HTTP:** `GET /fanduel/sportsbook/team/news`
+- **What:** FanDuel Sportsbook team news. Returns a page of a team's news (title, summary, author, time, link) and player updates. Without `cursor` it is the team page's own first 15 articles. While `has_more` is true, pass the response's `next_cursor` as `cursor` to continue through the archive, 1 to 50 articles at a time (default 25); an NFL team has more than 1,000. Teams in MLB and the college leagues currently have no news, which returns an empty list.
+- **Params:** `cursor` (string, optional) — Continue from the previous response's `next_cursor`; omit for the first page; `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`, `college-basketball`; `limit` (integer, optional) — Articles per page after the first, 1 to 50; default 25. Only valid together with `cursor`; `team` (string, **required**) — Team slug from the `teams` route (`groups[].teams[].slug`), such as `arizona-cardinals`
+
+### `fanduel_sportsbook_team_odds`
+
+- **HTTP:** `GET /fanduel/sportsbook/team/odds`
+- **What:** FanDuel Sportsbook team odds page. Returns a team's odds page: futures prices for its league's championship (Super Bowl, NBA Finals, World Series, national championship), its upcoming games with money line, spread and total for both sides, and player props with selection ids and odds. Available for every league; props appear for the NFL and NBA only.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`, `college-basketball`; `team` (string, **required**) — Team slug from the `teams` route (`groups[].teams[].slug`), such as `arizona-cardinals`
+
+### `fanduel_sportsbook_team_roster`
+
+- **HTTP:** `GET /fanduel/sportsbook/team/roster`
+- **What:** FanDuel Sportsbook team roster and injuries. Returns a team's roster with each player's roster `status` (for example `ACT`, `PRA`, `IR`, `IRD`, `UFA`, `TWO-WAY`) and `injury_status` (observed `Q` and `O`; empty when healthy). `statuses`, `injury_statuses` and `positions` count the whole roster so valid filter values are discoverable. Available for the NFL and NBA only.
+- **Params:** `injured_only` (boolean, optional) — Return only players with an injury designation; default false; `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`, `college-basketball`; `position` (string, optional) — Keep only this position code, such as `QB`; valid codes are listed in the response `positions`; `status` (string, optional) — Keep only this roster status code, such as `IR`; valid codes are listed in the response `statuses`; `team` (string, **required**) — Team slug from the `teams` route (`groups[].teams[].slug`), such as `arizona-cardinals`
+
+### `fanduel_sportsbook_team_schedule`
+
+- **HTTP:** `GET /fanduel/sportsbook/team/schedule`
+- **What:** FanDuel Sportsbook team schedule and results. Returns a team's schedule by season block (preseason, regular season) with opponent, venue, home/away, result and opponent record, plus its previous and next game. Available for the NFL and NBA only.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`, `college-basketball`; `team` (string, **required**) — Team slug from the `teams` route (`groups[].teams[].slug`), such as `arizona-cardinals`
+
+### `fanduel_sportsbook_team_stats`
+
+- **HTTP:** `GET /fanduel/sportsbook/team/stats`
+- **What:** FanDuel Sportsbook team statistics. Returns a team's season statistics. The groups differ by sport (scoring, offense, defense and special teams for the NFL; totals and averages for the NBA), so `stats` is an object with snake_case keys. Available for the NFL and NBA only.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`, `college-basketball`; `team` (string, **required**) — Team slug from the `teams` route (`groups[].teams[].slug`), such as `arizona-cardinals`
+
+### `fanduel_sportsbook_teams`
+
+- **HTTP:** `GET /fanduel/sportsbook/teams`
+- **What:** FanDuel Sportsbook team index. Lists a league's teams grouped by conference or division, each with its season record against the spread, on the money line and on the over/under, its colors, head coach where published, and its next game. `sections` lists the team pages the league has (all six for the NFL; odds and news only for MLB and the college leagues). Team `slug` values feed the other team routes.
+- **Params:** `league` (string, optional) — League: `nfl` (default), `nba`, `mlb`, `college-football`, `college-basketball`
+
+### `fanduel_sportsbook_trending`
+
+- **HTTP:** `GET /fanduel/sportsbook/trending`
+- **What:** FanDuel Sportsbook trending searches. Returns the terms the Sportsbook's search box shows as trending (about ten players, teams and clubs). With `enriched=true` each term is resolved to the event it points at, with the competition, event name and id, entity type (for example `PLAYER`), image and the time the entry expires. The list was identical in every market tested, so the route takes no state.
+- **Params:** `enriched` (boolean, optional) — Resolve each term to its event, competition and entity; default false
+
 ## Farfetch (4)
 
 ### `farfetch_categories`
@@ -5410,7 +5968,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `flashscore_match_darts`
 
 - **HTTP:** `GET /flashscore/match-darts`
-- **What:** Flashscore darts throw-by-throw and statistics. Returns a darts match leg by leg: who started and won each leg, the leg score, every visit with the points scored, the score remaining and 180 or 140-plus highlights, and the score the winner finished from, plus the statistics comparison (three-dart average, 180s, 140+ and 100+ visits, checkout percentage, highest checkout). Streamed events whose scoring is not tracked and non-darts matches return not found.
+- **What:** Flashscore darts throw-by-throw and statistics. Returns a darts match leg by leg: who started and won each leg, the leg score, every visit with the points scored, the score remaining and 180 or 140-plus highlights, and the score the winner finished from, plus the statistics comparison (three-dart average, 180s, 140+ and 100+ visits, checkout percentage, highest checkout). Set-play matches add the set of each leg, the leg score within the set and the statistics of every set; a live match includes the leg being played. Streamed events whose scoring is not tracked and non-darts matches return not found.
 - **Params:** `id` (string, **required**) — Eight-character Flashscore match id
 
 ### `flashscore_match_h2h`
@@ -6262,6 +6820,170 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /ft/search`
 - **What:** Search Financial Times articles. Returns one page of Financial Times search results: each story's title, canonical URL, summary, section tag, publication time, and lead image. Results can be ordered by relevance or date and filtered by publication window.
 - **Params:** `date_range` (string, optional) — Publication-window filter; `page` (integer, optional) — Results page; `q` (string, **required**) — Search keywords; `sort` (string, optional) — Result ordering
+
+## FUSSBALL.DE (27)
+
+### `fussballde_amateur_stats`
+
+- **HTTP:** `GET /fussballde/amateur-stats`
+- **What:** Get FUSSBALL.DE amateur top statistics. Returns a page of one of the ten Top-Amateurstatistiken rankings (Kreisklasse to Regionalliga, championship matches): top teams by goals, goal ratio, goals against and points average, highest-scoring matches, biggest draws, and top scorers by goals, ratio and goals in one match per week or season. Filter by season, team type and federation and page with `limit` and `offset`. A ranking is bounded to roughly its top 200 entries; `final` marks the last page.
+- **Params:** `federation_id` (string, optional) — Federation id; omit for all federations; `limit` (integer, optional) — Rows per call, 1 to 100, default 30; `offset` (integer, optional) — Number of rows to skip, 0 to 1000, default 0; `season` (string, optional) — Four-digit season code, 2627 for 2026/27; the site offers the current and previous season; `stat` (string, **required**) — Ranking id; `team_type` (string, optional) — Team type id; omit for all
+
+### `fussballde_club`
+
+- **HTTP:** `GET /fussballde/club`
+- **What:** Get a FUSSBALL.DE club. Returns one club: name, federation, team counts, profile facts (founding year, address, website) and the club's teams with their competitions and team type. Teams are those of the current season; set `season` for an earlier one and `competition_kind` to keep only teams in championships, cups, friendlies and so on. Club ids appear as `club_id` on teams and matches.
+- **Params:** `club_id` (string, **required**) — Club id from a team or match, e.g. 00ES8GN8N400008VVV0AG08LVUPGND5I; `competition_kind` (string, optional) — Competition kind id; omit for all kinds; `season` (string, optional) — Four-digit season code such as 2526; default current season
+
+### `fussballde_club_matches`
+
+- **HTTP:** `GET /fussballde/club-matches`
+- **What:** Get FUSSBALL.DE fixtures and results of a club. Returns the fixtures and results across all of a club's teams (senior and youth). `all` (default) is the club match plan for a date window (default the current season) optionally for one competition kind and paged with `limit` and `offset`; `next` is the next fixtures and `previous` the latest results. Each match names its competition and team type.
+- **Params:** `club_id` (string, **required**) — Club id from fussballde-club or fussballde-club-search; `competition_kind` (string, optional) — kind all only: competition kind id; omit for all kinds; `date_from` (string, optional) — kind all only: first day as YYYY-MM-DD, default 1 July of the current season; `date_to` (string, optional) — kind all only: last day as YYYY-MM-DD, default 30 June of the season; `kind` (string, optional) — Match list kind, default all; `limit` (integer, optional) — Matches (kind all only) per call, 1 to 50, default 10; `offset` (integer, optional) — Number of matches to skip, 0 to 1000, default 0
+
+### `fussballde_club_search`
+
+- **HTTP:** `GET /fussballde/club-search`
+- **What:** Search FUSSBALL.DE clubs by name or place. Searches FUSSBALL.DE clubs by club name, postcode or place, or both (both must match), and returns each club's id, name, postal code, city and logo. The first page reports the `total` hit count; page with `limit` (1 to 100, default 20) and `offset`, and `final` marks the last page. Zero results is a valid response. The site's search is not fuzzy and matches a club's official name (for example `RasenBallsport Leipzig`, `SC Freiburg`), so a looser display name such as `RB Leipzig` can return nothing: search by place or one distinctive word, or use the `club_id` that every team, table and match row already carries.
+- **Params:** `limit` (integer, optional) — Clubs per call, 1 to 100, default 20; `offset` (integer, optional) — Number of clubs to skip, 0 to 2000, default 0; `place` (string, optional) — Postcode or place name; text or place is required; `text` (string, optional) — Club name or part of it; text or place is required
+
+### `fussballde_competition_options`
+
+- **HTTP:** `GET /fussballde/competition-options`
+- **What:** List FUSSBALL.DE team types, leagues and areas. Returns the team types (Herren, Frauen, A-Junioren, ...), the leagues (Spielklassen) of each team type and the areas (Gebiete) of each league for one federation, season and competition type. Team type, league and area ids are federation-specific, so take them from this response and pass them to `fussballde-competitions`.
+- **Params:** `competition_type` (string, optional) — Competition type id, default 1; `federation_id` (string, **required**) — Federation id; `season` (string, **required**) — Four-digit season code, 2627 for 2026/27
+
+### `fussballde_competitions`
+
+- **HTTP:** `GET /fussballde/competitions`
+- **What:** List FUSSBALL.DE competitions for a league and area. Returns the competitions (Staffeln) at one selector path: a federation, season, competition type, team type, league and area. Each competition `id` (for example `031BFREJC800001BVS5489BUVUR5FS5A-G` for the 2026/27 Bundesliga) is the key used by the matchday, match plan, table and top-scorer endpoints. An empty list is a valid result for a path with no competitions.
+- **Params:** `area` (string, **required**) — Area id from fussballde-competition-options; `competition_type` (string, optional) — Competition type id, default 1; `federation_id` (string, **required**) — Federation id; `league` (string, **required**) — League id from fussballde-competition-options; `season` (string, **required**) — Four-digit season code; `team_type` (string, **required**) — Team type id from fussballde-competition-options
+
+### `fussballde_federation`
+
+- **HTTP:** `GET /fussballde/federation`
+- **What:** Get a FUSSBALL.DE federation or regional association. Returns the profile of one of the 22 federations (the DFB and the regional and state associations) or of one of the five regional associations (Norddeutscher, Nordostdeutscher, Süddeutscher, Südwest and Westdeutscher): name, address, website, president, club, member and team counts, and the latest news items. Provide exactly one of `federation_id` and `regional_association`.
+- **Params:** `federation_id` (string, optional) — Federation id; provide exactly one of federation_id and regional_association; `regional_association` (string, optional) — Regional association; provide exactly one of federation_id and regional_association
+
+### `fussballde_filters`
+
+- **HTTP:** `GET /fussballde/filters`
+- **What:** List FUSSBALL.DE federations, seasons and competition types. Returns the competition selector base data of FUSSBALL.DE, the German amateur-football portal: the 22 federations (DFB plus regional associations), the available seasons per federation, and the competition types per federation and season. Use it first to get valid `federation_id`, `season` and `competition_type` values for the competition discovery endpoints.
+- **Params:** `federation_id` (string, optional) — Optional federation id that narrows seasons and competition types to one federation
+
+### `fussballde_match`
+
+- **HTTP:** `GET /fussballde/match`
+- **What:** Get a FUSSBALL.DE match. Returns one match: teams, competition, date, kick-off time, venue, score and half-time score, match number and matchday, officials, goals with minutes and timeline events such as substitutions. Fields the match has not published (for example a future match's score) are omitted.
+- **Params:** `match_id` (string, **required**) — Match id from fussballde-matchday or fussballde-match-plan
+
+### `fussballde_match_calendar`
+
+- **HTTP:** `GET /fussballde/match-calendar`
+- **What:** Get FUSSBALL.DE matches near a postcode. Returns the matches FUSSBALL.DE's Matchkalender lists around a five-digit postcode within a date range (default today plus six days, at most 92 days), optionally filtered by team types and competition kind. Each match includes its team type (for example D-Junioren) and league. The upstream returns at most 10 matches per request and has no paging: `truncated` is true when the page is full, so narrow the dates or filters to see the rest. Zero matches is a valid response.
+- **Params:** `competition_kind` (string, optional) — Competition kind id; omit for all kinds; `date_from` (string, optional) — First day as YYYY-MM-DD, default today (Europe/Berlin); `date_to` (string, optional) — Last day as YYYY-MM-DD, at most 92 days after date_from, default six days after date_from; `postal_code` (string, **required**) — Five-digit German postcode; look one up with fussballde-postal-codes; `team_types` (string, optional) — Comma-separated team type ids such as 1,3; omit for all team types
+
+### `fussballde_match_comparison`
+
+- **HTTP:** `GET /fussballde/match-comparison`
+- **What:** Compare the two teams of a FUSSBALL.DE match. Returns a pre-match comparison for one match: `history` is the all-time head-to-head record (duels, wins, draws, defeats, goals), `meetings` lists the other fixtures and results between the two teams, and `season` compares both teams' current standing, points, goals, form, top scorer and cards.
+- **Params:** `match_id` (string, **required**) — Match id from fussballde-matchday or fussballde-match-plan; `view` (string, optional) — Comparison view, default history
+
+### `fussballde_match_plan`
+
+- **HTTP:** `GET /fussballde/match-plan`
+- **What:** Get the full FUSSBALL.DE match plan of a competition. Returns every match of a competition's season (fixtures and results), including the earliest matchdays, optionally filtered to one team and a date window; the date window is applied by the site, so a narrow window is cheaper than filtering a full season. Cups and tournaments are assembled round by round: every match carries its `round` and the response lists the `rounds` with their ids. Use it for a complete schedule; use `fussballde-matchday` for one matchday.
+- **Params:** `competition_id` (string, **required**) — Competition id from fussballde-competitions; `date_from` (string, optional) — Earliest match date as YYYY-MM-DD; default is the whole season; `date_to` (string, optional) — Latest match date as YYYY-MM-DD; default is the whole season; `team_id` (string, optional) — Team id to keep only that team's matches
+
+### `fussballde_matchday`
+
+- **HTTP:** `GET /fussballde/matchday`
+- **What:** Get FUSSBALL.DE matches of a competition matchday. Returns the matches of a competition's current matchday, of a numbered matchday (`matchday`, 1 to the competition's matchday count, reported as `matchday_count`) or of the matchday around a date. Each match has teams, date, kick-off time, score and status (`finished`, `scheduled`, `cancelled` and the other values listed below). Cups and tournaments have no numbered matchdays; for them the response lists the competition's `rounds` (each round id works as `competition_id` to read that round) and labels every match with its `round`. Dates, times and scores are decoded from the site's obfuscated glyph fonts.
+- **Params:** `competition_id` (string, **required**) — Competition id from fussballde-competitions; `date` (string, optional) — Matchday date as YYYY-MM-DD; omit for the current matchday; cannot be combined with matchday; `matchday` (integer, optional) — Matchday number, 1 to the competition's matchday count (34 for the Bundesliga); cannot be combined with date
+
+### `fussballde_national_top_scorers`
+
+- **HTTP:** `GET /fussballde/national-top-scorers`
+- **What:** Get the nationwide FUSSBALL.DE top scorers by league level. Returns the top 10 scorers of every league level across Germany for men or women (the site's Torjägerkanone), with goals, matches played and club. Only championship matches count and the upstream refreshes the ranking once a day; the response `note` carries its last-update time. Adult teams only.
+- **Params:** `team_type` (string, optional) — Ranking to return, default men
+
+### `fussballde_news`
+
+- **HTTP:** `GET /fussballde/news`
+- **What:** List FUSSBALL.DE news. Returns news teasers of one FUSSBALL.DE stream (all news, magazine, Regionalliga, federations, service, campaigns or help center) with title, category, publication date and time, and excerpt, paged with `limit` (1 to 50, default 10) and `offset`; `final` is true on the last page. Use `regional_league` or `help_category` to narrow the Regionalliga and help-center streams to one league or category. Use the article id with `fussballde-news-article` for the full text.
+- **Params:** `help_category` (string, optional) — Only help-center articles of one category (implies stream helpcenter); `limit` (integer, optional) — Articles per call, 1 to 50, default 10; `offset` (integer, optional) — Number of articles to skip, 0 to 5000, default 0; `regional_league` (string, optional) — Only Regionalliga news of one league (implies stream regionalliga); `stream` (string, optional) — News stream, default all_news
+
+### `fussballde_news_article`
+
+- **HTTP:** `GET /fussballde/news-article`
+- **What:** Get a FUSSBALL.DE news article. Returns one FUSSBALL.DE news article: title, category, publication date and time, lead image and caption, and the body paragraphs as plain text.
+- **Params:** `article_id` (string, **required**) — Numeric article id from fussballde-news
+
+### `fussballde_news_search`
+
+- **HTTP:** `GET /fussballde/news-search`
+- **What:** Search FUSSBALL.DE news. Searches FUSSBALL.DE editorial news (`news`) or the Profi-Newsflash (`pro_news`) by keyword and returns teasers with title, category, date and excerpt. The first page (offset 0) also reports the total hit count; page with `limit` (1 to 50) and `offset`. No hits is a valid empty result.
+- **Params:** `channel` (string, optional) — News channel, default news; `limit` (integer, optional) — Articles per call, 1 to 50, default 10; `offset` (integer, optional) — Number of hits to skip, 0 to 10000, default 0; `q` (string, **required**) — Search text, 2 to 80 characters
+
+### `fussballde_player`
+
+- **HTTP:** `GET /fussballde/player`
+- **What:** Get a FUSSBALL.DE player profile. Returns a player's public profile: name, team, team type, birth date and, for registered players (`profile_type` full), the current-season statistics such as appearances, minutes played, goals, goals against and cards. Players without a registered profile (`profile_type` basic) only have name, team and team type. Player ids come from `fussballde-player-search`, scorer lists, squads and amateur statistics.
+- **Params:** `player_id` (string, **required**) — Player id from fussballde-player-search, fussballde-top-scorers, fussballde-team-squad or fussballde-amateur-stats
+
+### `fussballde_player_matches`
+
+- **HTTP:** `GET /fussballde/player-matches`
+- **What:** Get a FUSSBALL.DE player's match-by-match record. Returns a registered player's matches for one season and team: date, teams, result and per match the goals, the minute they were substituted in or out, and minutes played. Also lists the player's teams and competitions for the season so another team can be selected with `team_id`. Basic profiles without registration have no match data.
+- **Params:** `player_id` (string, **required**) — Player id of a full profile, see fussballde-player; `season` (string, optional) — Four-digit season code, default current season; `team_id` (string, optional) — Team id from the teams list of a previous response; default the player's main team
+
+### `fussballde_player_search`
+
+- **HTTP:** `GET /fussballde/player-search`
+- **What:** Search FUSSBALL.DE players by name. Searches players registered on FUSSBALL.DE by first and/or last name, optionally narrowed by postcode or place, and returns each player's id, name, birth date, team and team type. The first page reports the `total` hit count; page with `limit` (1 to 100, default 20) and `offset`, and `final` marks the last page. At least one of `first_name` and `last_name` is required. No match is a valid empty result.
+- **Params:** `first_name` (string, optional) — First name; first_name or last_name is required; `last_name` (string, optional) — Last name; first_name or last_name is required; `limit` (integer, optional) — Players per call, 1 to 100, default 20; `offset` (integer, optional) — Number of players to skip, 0 to 2000, default 0; `place` (string, optional) — Postcode or place name to narrow the result; cannot be used alone
+
+### `fussballde_position_history`
+
+- **HTTP:** `GET /fussballde/position-history`
+- **What:** Get the FUSSBALL.DE fever curve of a competition. Returns every team's table position after each played matchday of a competition (the site's Fieberkurve), as one ordered list of positions per team. Position 1 is the leader; the list index is the matchday.
+- **Params:** `competition_id` (string, **required**) — Competition id from fussballde-competitions
+
+### `fussballde_postal_codes`
+
+- **HTTP:** `GET /fussballde/postal-codes`
+- **What:** Look up German postcodes by place name. Returns the German postcodes (with city and district) that FUSSBALL.DE's own location search suggests for a place name or postcode prefix. Use it to turn a place such as Dortmund into the five-digit `postal_code` that `fussballde-match-calendar` requires. No match is a valid empty list.
+- **Params:** `q` (string, **required**) — Place name or postcode prefix, 2 to 40 characters
+
+### `fussballde_table`
+
+- **HTTP:** `GET /fussballde/table`
+- **What:** Get a FUSSBALL.DE competition standings table. Returns a competition's standings in one view: `overall`, `home_away` (home and away tables), `rounds` (first and second half-season tables), `fairness` (fair-play table) or `cross` (cross table of results between every pair of teams). Set `matchday` to get the standings as they were after that matchday (not available for `fairness`). Rows carry position, team, played, won, drawn, lost, goals and points where the view has them, plus the raw cells.
+- **Params:** `competition_id` (string, **required**) — Competition id from fussballde-competitions; `matchday` (integer, optional) — Return the standings after this matchday, 1 to the competition's matchday count; not available for the fairness view; `view` (string, optional) — Standings view, default overall
+
+### `fussballde_team`
+
+- **HTTP:** `GET /fussballde/team`
+- **What:** Get a FUSSBALL.DE team. Returns one team page: name, team type, federation, standing summary (competition, table position, points, goal ratio), current competitions, home venues, the club profile (founding year, address, contact) and the team's season-by-season history with final placings and the highest league reached. Use `fussballde-team-matches` and `fussballde-team-squad` for fixtures and players.
+- **Params:** `team_id` (string, **required**) — Team id from fussballde-matchday, fussballde-table or fussballde-club
+
+### `fussballde_team_matches`
+
+- **HTTP:** `GET /fussballde/team-matches`
+- **What:** Get FUSSBALL.DE fixtures and results of a team. Returns a team's matches across its competitions. `all` (default) is the match plan for a date window (default the current season, 1 July to 30 June), optionally for one competition kind and paged with `limit` and `offset`; `next` is the next 10 fixtures, `previous` the latest 10 results, and `wins`, `draws` and `losses` the latest 10 finished matches with that outcome.
+- **Params:** `competition_kind` (string, optional) — kind all only: competition kind id; omit for all kinds; `date_from` (string, optional) — kind all only: first day as YYYY-MM-DD, default 1 July of the current season; `date_to` (string, optional) — kind all only: last day as YYYY-MM-DD, default 30 June of the season; `kind` (string, optional) — Match list kind, default all; `limit` (integer, optional) — Matches (kind all only) per call, 1 to 50, default 10; `offset` (integer, optional) — Number of matches to skip, 0 to 1000, default 0; `team_id` (string, **required**) — Team id, see fussballde-team
+
+### `fussballde_team_squad`
+
+- **HTTP:** `GET /fussballde/team-squad`
+- **What:** Get a FUSSBALL.DE team squad. Returns a team's players for a season: the `squad` (appearances, minutes, goals), `arrivals` or `departures` with the columns the site publishes for each. Player names come in the site's `Surname, Forename` order.
+- **Params:** `kind` (string, optional) — Player list kind, default squad; `season` (string, optional) — Four-digit season code, default current season; `team_id` (string, **required**) — Team id, see fussballde-team
+
+### `fussballde_top_scorers`
+
+- **HTTP:** `GET /fussballde/top-scorers`
+- **What:** Get the FUSSBALL.DE top scorers of a competition. Returns a page of a competition's top-scorer list with position, player, team and goals; page through it with `limit` (1 to 100, default 30) and `offset`. Tied scorers share a position. A competition without recorded scorers returns an empty list; cups and tournaments have no scorer list at all and return 404.
+- **Params:** `competition_id` (string, **required**) — Competition id from fussballde-competitions; `limit` (integer, optional) — Scorers per call, 1 to 100, default 30; `offset` (integer, optional) — Number of scorers to skip, 0 to 1000, default 0
 
 ## Game Rant (5)
 
@@ -8659,7 +9381,13 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Instacart trending search terms near a postal code. Returns Instacart's own popular/trending search terms across every retailer serving a postal code -- the same blank-state suggestions shown before a user types anything into the search box. Public data sourced from Instacart's own cross-retailer search.
 - **Params:** `postal_code` (string, **required**) — US postal/ZIP code to search near
 
-## Instagram (3)
+## Instagram (5)
+
+### `instagram_comments`
+
+- **HTTP:** `GET /instagram/post/comments`
+- **What:** Retrieve paginated Instagram comments. Returns top-level comments for a public Instagram post or Reel. `reply_count` is included when the logged-out source exposes it; reply bodies are not available on this anonymous surface. Pass `paging_info.max_id` back as `max_id` for the next comment page.
+- **Params:** `max_id` (string, optional) — Opaque cursor from the previous response's paging_info.max_id; `url` (string, **required**) — Public Instagram post or Reel URL
 
 ### `instagram_post`
 
@@ -8678,6 +9406,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /instagram/reels/{id}`
 - **What:** Retrieve Instagram Reels for a user. Returns up to 12 public Reels via anonymous proxied HTTP for the numeric Instagram user ID. Supports opaque `max_id` pagination. Captions, timestamps and original image dimensions are omitted when the public source does not expose them.
 - **Params:** `id` (string, **required**) — Numeric Instagram user ID (not a username); `max_id` (string, optional) — Pagination cursor for fetching the next page of Reels
+
+### `instagram_user_posts`
+
+- **HTTP:** `GET /instagram/user/{username}/posts`
+- **What:** Retrieve paginated Instagram user posts. Returns public posts and Reels from the logged-out Posts tab for an Instagram username. Each item exposes the fields available in Instagram's public grid; source-omitted metrics and dimensions are not inferred. Pass `paging_info.max_id` back as `max_id` for the next page.
+- **Params:** `max_id` (string, optional) — Opaque cursor from the previous response's paging_info.max_id; `username` (string, **required**) — Instagram username, optionally prefixed with @
 
 ## Investopedia (5)
 
@@ -9108,6 +9842,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /jobs/workday/job`
 - **What:** Get a single Workday job. Returns a single Workday posting's full detail (description, location, req id). path is the externalPath from a board listing. tenant/datacenter/site as in the board endpoint.
 - **Params:** `datacenter` (string, **required**) — Workday datacenter shard; `path` (string, **required**) — Job externalPath from a board listing; `site` (string, **required**) — Workday career site; `tenant` (string, **required**) — Workday tenant
+
+## Jumia (5)
+
+### `jumia_categories`
+
+- **HTTP:** `GET /jumia/categories`
+- **What:** List Jumia categories. Lists the category slugs that jumia-category accepts. Without category it returns the storefront's top-level departments; with category it returns that category's direct sub-categories, each with its numeric id. Walk the tree by passing a returned slug back as category. country is required; see jumia-countries. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it.
+- **Params:** `category` (string, optional) — Category slug whose sub-categories to list; omit for top-level departments; `country` (string, **required**) — Jumia country storefront
+
+### `jumia_category`
+
+- **HTTP:** `GET /jumia/category`
+- **What:** Browse a Jumia category. Browses one Jumia category listing by slug and returns the same product cards as jumia-search, plus the category's upstream total_count and a has_next flag. Take the slug from jumia-categories (top-level departments, or a department's sub-categories). Jumia serves at most 50 pages. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it. country is required; see jumia-countries.
+- **Params:** `category` (string, **required**) — Category slug from jumia-categories; `country` (string, **required**) — Jumia country storefront; `page` (integer, optional) — 1-based result page, 1 to 50
+
+### `jumia_countries`
+
+- **HTTP:** `GET /jumia/countries`
+- **What:** List supported Jumia country storefronts. Returns the Jumia country storefronts accepted by the country parameter on jumia-search, jumia-category and jumia-categories, with each storefront's domain and currency. Static metadata.
+- **Params:** _none_
+
+### `jumia_product`
+
+- **HTTP:** `GET /jumia/product`
+- **What:** Get a Jumia product. Returns one Jumia product: name, brand, sku, images, price in the storefront's currency with original price and discount, availability, rating and rating count, category path, seller (name, id, score, followers, shipping speed), description, key features and the specification table. Pass the url returned by jumia-search or jumia-category; the storefront country is taken from the URL host. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it. A product id Jumia no longer serves returns 404.
+- **Params:** `url` (string, **required**) — Absolute Jumia product URL from a search or category result
+
+### `jumia_search`
+
+- **HTTP:** `GET /jumia/search`
+- **What:** Search Jumia products. Searches a Jumia country storefront by keyword and returns one page of product cards with price in the storefront's currency, original price and discount, rating, brand, categories and badges, plus the upstream total_count and a has_next flag. Jumia serves at most 50 pages. A search with no matches returns an empty products list. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it. country is required (there is no default storefront); see jumia-countries.
+- **Params:** `country` (string, **required**) — Jumia country storefront; `page` (integer, optional) — 1-based result page, 1 to 50; `q` (string, **required**) — Product search keyword
 
 ## Just Eat (4)
 
@@ -14087,7 +14853,49 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Rebag store metadata. Returns storefront metadata for Rebag (https://shop.rebag.com). The storefront URL is fixed server-side, so no `url` parameter is accepted.
 - **Params:** _none_
 
-## Reddit (12)
+## Reddit (19)
+
+### `reddit_archive_comments_ids`
+
+- **HTTP:** `GET /reddit/archive/comments/ids`
+- **What:** Look up archived Reddit comments by ids. Looks up known Reddit comment ids in Arctic Shift's historical archive. Supply 1 to 1,000 comma-separated ids; duplicates are removed, results follow input order, and missing ids are listed separately. The service sends at most two upstream requests of up to 500 ids each. Archived scores are snapshots, and removed_by_category is included when available.
+- **Params:** `ids` (string, **required**) — Comma-separated Reddit comment ids (1-1,000); optional t1_ prefixes are accepted
+
+### `reddit_archive_comments_search`
+
+- **HTTP:** `GET /reddit/archive/comments/search`
+- **What:** Search archived Reddit comments. Searches Arctic Shift's public historical comment archive. Supply at least one of query, author, subreddit, link_id, or parent_id; date bounds can further narrow that search. query searches comment body text and must be combined with author, subreddit, link_id, or parent_id; it maps to Arctic Shift's body parameter. Arctic Shift may time out or throttle broad searches, which return 503 with Retry-After. created_after/created_before are time boundaries, not Reddit listing cursors. Each comment includes created_utc and retrieved_on; archived scores can lag changes for roughly 36 hours. A valid query with no matches returns an empty comments array.
+- **Params:** `author` (string, optional) — Public Reddit username filter; `created_after` (string, optional) — Creation-time lower bound; accepts epoch seconds or milliseconds, ISO 8601 dates, or relative offsets such as 1year, 2d, or 5min; `created_before` (string, optional) — Creation-time upper bound; accepts epoch seconds or milliseconds, ISO 8601 dates, or relative offsets such as 1year, 2d, or 5min; `limit` (integer, optional) — Maximum comments, defaults to 25 and clamps to 100; `link_id` (string, optional) — Reddit post id to scope comments; `parent_id` (string, optional) — Parent comment id; an explicitly empty value selects top-level comments; `query` (string, optional) — Full-text search within comment bodies; requires author, subreddit, link_id, or parent_id; `sort` (string, optional) — Sort by creation time; `subreddit` (string, optional) — Subreddit name filter
+
+### `reddit_archive_comments_tree`
+
+- **HTTP:** `GET /reddit/archive/comments/{id}/tree`
+- **What:** Get an archived Reddit comment tree. Returns a bounded nested comment tree from Arctic Shift's public archive. `t1` entries contain comments and their replies; `more` entries mark collapsed branches and include child ids/counts. Omitted parent_id requests the whole tree, while an explicitly empty parent_id requests top-level comments only. Empty archived trees return 200 with an empty comments array. Archived scores can lag changes for roughly 36 hours; slow or throttled upstream requests return 503 with Retry-After.
+- **Params:** `id` (string, **required**) — Reddit post id or t3_ id; `limit` (integer, optional) — Maximum archive comment nodes to expand, defaults to 50 and clamps to 100; `parent_id` (string, optional) — Parent comment id; an explicitly empty value selects top-level comments; `start_breadth` (integer, optional) — Initial breadth, defaults to 2 and must be between 0 and 8; `start_depth` (integer, optional) — Initial depth, defaults to 3 and must be between 0 and 8
+
+### `reddit_archive_posts_ids`
+
+- **HTTP:** `GET /reddit/archive/posts/ids`
+- **What:** Look up archived Reddit posts by ids. Looks up known Reddit post ids in Arctic Shift's historical archive. Supply 1 to 1,000 comma-separated ids; duplicates are removed, results follow input order, and missing ids are listed separately. The service sends at most two upstream requests of up to 500 ids each. Archived scores and comment counts are snapshots, and removed_by_category is included when available.
+- **Params:** `ids` (string, **required**) — Comma-separated Reddit post ids (1-1,000); optional t3_ prefixes are accepted
+
+### `reddit_archive_posts_search`
+
+- **HTTP:** `GET /reddit/archive/posts/search`
+- **What:** Search archived Reddit posts. Searches Arctic Shift's public historical post archive. Supply at least one of query, author, subreddit, or url; date bounds can further narrow that search. This is separate from the live Reddit search endpoint. created_after/created_before are time boundaries, not Reddit listing cursors; posts include created_utc and retrieved_on so callers can see when the archive captured each record. Archived scores and comment counts can lag changes for roughly 36 hours. A valid query with no matches returns an empty posts array. Slow or throttled upstream searches return 503 with Retry-After.
+- **Params:** `author` (string, optional) — Public Reddit username filter; `created_after` (string, optional) — Creation-time lower bound; accepts epoch seconds or milliseconds, ISO 8601 dates, or relative offsets such as 1year, 2d, or 5min; `created_before` (string, optional) — Creation-time upper bound; accepts epoch seconds or milliseconds, ISO 8601 dates, or relative offsets such as 1year, 2d, or 5min; `limit` (integer, optional) — Maximum posts, defaults to 25 and clamps to 100; `query` (string, optional) — Text search across archived post titles and selftext; `sort` (string, optional) — Sort by creation time; `subreddit` (string, optional) — Subreddit name filter; `url` (string, optional) — Linked URL prefix filter; `url_exact` (boolean, optional) — Require an exact URL match; requires url
+
+### `reddit_archive_subreddits_search`
+
+- **HTTP:** `GET /reddit/archive/subreddits/search`
+- **What:** Search Reddit's archived subreddit directory. Searches Arctic Shift's native subreddit directory by name prefix. Directory metadata is updated infrequently; subscriber counts are archived snapshots and retrieved_on indicates when the source captured the entry. The selectable fields are limited to the verified public directory fields.
+- **Params:** `limit` (integer, optional) — Maximum subreddits, defaults to 25 and clamps to 100; `max_subscribers` (integer, optional) — Maximum archived subscriber count; `min_subscribers` (integer, optional) — Minimum archived subscriber count; `over_18` (boolean, optional) — Filter by archived NSFW status; `query` (string, **required**) — Subreddit name prefix, with or without r/; `sort` (string, optional) — Sort direction; `sort_by` (string, optional) — Sort field
+
+### `reddit_archive_time_series`
+
+- **HTTP:** `GET /reddit/archive/time-series`
+- **What:** Get historical Reddit archive time series. Returns Arctic Shift's native time-series values. Supply an absolute creation-time range and a precision; ranges that could exceed 1,000 points are rejected. Counts, score sums, and retrieval-delay sums are archive metrics, not current Reddit totals. Arctic Shift says time-series data may be approximate and take hours or days to update.
+- **Params:** `created_after` (string, **required**) — Absolute start time: epoch seconds/milliseconds or ISO 8601; `created_before` (string, **required**) — Absolute end time: epoch seconds/milliseconds or ISO 8601; `metric` (string, **required**) — Archive metric; `precision` (string, **required**) — Time bucket precision; `subreddit` (string, optional) — Optional subreddit scope; required for subreddit_subscribers, and unsupported for retrieval-delay metrics
 
 ### `reddit_comments`
 
@@ -15382,7 +16190,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get one Shake Shack store's detail. Returns one Shake Shack store: postal address, coordinates, phone (when published), a Monday-first week of opening hours (omitted for a location that publishes no schedule, seen on venue/kiosk-shaped locations such as inside a stadium), and the order types Shake Shack publishes for it, e.g. "Dine In", "Delivery". Store paths come from GET /shakeshack/locations, either the aliased "location/<slug>" form or the legacy "node/<id>" form -- both resolve to the same record, and the response's own path field always reports the canonical alias. A path with neither shape, or one that does not resolve to a real store page, returns a 404.
 - **Params:** `path` (string, **required**) — Store path from a /shakeshack/locations entry
 
-## SHEIN (8)
+## SHEIN (16)
+
+### `shein_brands`
+
+- **HTTP:** `GET /shein/brands`
+- **What:** SHEIN brand channel categories. Returns the brand channel's category tabs with ids usable with `/shein/category/goods` and `/shein/products/search`.
+- **Params:** _none_
+
+### `shein_categories`
+
+- **HTTP:** `GET /shein/categories`
+- **What:** SHEIN category tree and global filters. Returns SHEIN's root category tree (11 top-level categories, nested to leaf ids) plus the global attribute filter taxonomy (sizes, colors, materials, …). Use the returned `cat_id` values with `/shein/category/nav`, `/shein/category/filters` and `/shein/category/goods`.
+- **Params:** _none_
 
 ### `shein_category_filters`
 
@@ -15401,6 +16221,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /shein/category/nav`
 - **What:** SHEIN category nav tabs. Returns the subcategory navigation tabs for a SHEIN category, by the required numeric `cat_id`. Each tab has its `nav_id`, `nav_name`, `nav_type`, `nav_img` and the `goods_id` of a representative product.
 - **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id
+
+### `shein_deals_products`
+
+- **HTTP:** `GET /shein/deals/products`
+- **What:** SHEIN coupon and deal products. Returns one page of SHEIN's coupon/deal product pool (≈3,000 items at the time of writing), with the same normalized product-card fields as product search plus an `is_new_coupon` flag. Paging is 1-based; `page_size` is capped at 20 by the upstream.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `page_size` (integer, optional) — Products per page, 1-20 (default 10)
+
+### `shein_deals_tabs`
+
+- **HTTP:** `GET /shein/deals/tabs`
+- **What:** SHEIN deal category tabs. Returns the deal-landing tabs and categories (ids usable with `/shein/category/goods` and `/shein/deals/products`).
+- **Params:** _none_
 
 ### `shein_products_aggregation_filters`
 
@@ -15431,6 +16263,30 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /shein/search/keywords`
 - **What:** SHEIN trending search keywords. Returns the trending search keywords SHEIN shows in its search box. `scene` defaults to `trendStoreChannel` and `word_type` to `1`. Each keyword has its `word`, `word_id`, `type` and `from`.
 - **Params:** `scene` (string, optional) — Keyword scene (trendStoreChannel); `word_type` (string, optional) — Keyword type (1)
+
+### `shein_store`
+
+- **HTTP:** `GET /shein/store`
+- **What:** SHEIN store profile and categories. Returns a SHEIN store/seller profile — name, logo, follower count, seller label, store-type flags — plus the categories the store sells into, by the numeric `store_code` that product search/category/detail results already return. Use the returned `category_id` with `/shein/store/products` to list that category's products.
+- **Params:** `store_code` (string, **required**) — Numeric SHEIN store code, as returned in product cards
+
+### `shein_store_products`
+
+- **HTTP:** `GET /shein/store/products`
+- **What:** SHEIN store category products. Returns the product listing for one category of a SHEIN store. `store_code` comes from a product card or `/shein/store`; `category_id` from `/shein/store`. `page_size` is capped at 20 (the upstream limit). Product cards use the same normalized fields as product search.
+- **Params:** `category_id` (string, **required**) — Numeric store category id from /shein/store; `page` (integer, optional) — 1-based page number (default 1); `page_size` (integer, optional) — Products per page, 1-20 (default 20); `store_code` (string, **required**) — Numeric SHEIN store code
+
+### `shein_trending_categories`
+
+- **HTTP:** `GET /shein/trending/categories`
+- **What:** SHEIN trending categories. Returns SHEIN's trending-category cards: the category id/name list with a representative `store_code` and `goods_id` per category. Pair with `/shein/category/goods` (by `cat_id`) or `/shein/store` (by `store_code`).
+- **Params:** _none_
+
+### `shein_trending_filters`
+
+- **HTTP:** `GET /shein/trending/filters`
+- **What:** SHEIN trending filters. Returns the trending channel's collection tabs (e.g. "#Dot Charm") and the category filters available on the trending surface. Pair with `/shein/trending/categories` and `/shein/category/goods`.
+- **Params:** _none_
 
 ## Shop.app (16)
 
@@ -19205,7 +20061,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Tiffany & Co. search-box suggestions. Returns Tiffany & Co.'s own search-box suggestions (typeahead) for a partial query -- a flat list of suggested search phrases, each with its own live total result count on the product catalog. Not product data.
 - **Params:** `query` (string, **required**) — Partial search query
 
-## TikTok (45)
+## TikTok (68)
 
 ### `tiktok_category`
 
@@ -19261,11 +20117,35 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve the TikTok explore feed for a category. Returns the TikTok explore feed for a category, given its category type `id` from the category endpoint. The response has `itemList` with the videos, `hasMore` and a `cursor`. A feed that comes back empty is reported as an upstream error, not as an empty list.
 - **Params:** `id` (integer, **required**) — Category type id returned by the category endpoint
 
+### `tiktok_mobile_anchor_list`
+
+- **HTTP:** `GET /tiktok/mobile/anchor/list`
+- **What:** Anchor catalogue used by the video composer. Returns the anchor catalogue TikTok exposes for attaching a tag, product or place to a video. Entry shapes vary by anchor type, so each entry is returned as raw JSON rather than coerced into one schema.
+- **Params:** _none_
+
+### `tiktok_mobile_comment_replies`
+
+- **HTTP:** `GET /tiktok/mobile/comment/replies`
+- **What:** Retrieve replies to a TikTok comment. Returns the replies to one comment as the mobile app returns them, with `cursor`, `has_more` and `total`. The measured call sends both the video id and the comment id; this route answers even in windows where the top-level comment list is degraded.
+- **Params:** `aweme_id` (string, **required**) — Video id the comment belongs to; `comment_id` (string, **required**) — Comment id to list replies for; `count` (integer, optional) — Replies per page (max 50); `cursor` (integer, optional) — Pagination cursor
+
+### `tiktok_mobile_comments`
+
+- **HTTP:** `GET /tiktok/mobile/comments`
+- **What:** Retrieve comments for a TikTok video. Returns the top-level comments of one video as the mobile app returns them: each comment has its full `user` projection, `text`, `digg_count` and `reply_comment_total`, plus `cursor`, `has_more` and `total`. This route needs a signed-in app session and throttles independently of the replies route. A page with no comments (including an empty body) is returned as an empty result, because that is the documented degraded shape in a throttle window.
+- **Params:** `aweme_id` (string, **required**) — Video id to list comments for; `count` (integer, optional) — Comments per page (max 50); `cursor` (integer, optional) — Pagination cursor
+
 ### `tiktok_mobile_feed`
 
 - **HTTP:** `GET /tiktok/mobile/feed`
 - **What:** Retrieve the TikTok mobile For You feed. Returns one page of videos from TikTok's mobile For You feed, signed with well-formed mobile signature headers (no device or account needed). Each item carries `aweme_id`, `create_time`, `author_id`, `share_url` and the verified statistics block (`play_count`, `digg_count`, `comment_count`, `share_count`, `collect_count`, `download_count`, `forward_count`, `lose_count`, `lose_comment_count`, `whatsapp_share_count`, `repost_count`). A zero `count` uses the app's default page size; `count` is capped at 50.
 - **Params:** `count` (integer, optional) — Videos to request (0 = app default, max 50); `cursor` (integer, optional) — Pagination cursor
+
+### `tiktok_mobile_feed_post`
+
+- **HTTP:** `GET /tiktok/mobile/feed/post`
+- **What:** Fetch the app's primary feed call (POST, protobuf) decoded without a schema. Calls the app's primary feed route - `POST /aweme/v2/feed/`, which the Android client sends with a protobuf request body and answers with protobuf - and returns a schema-free decode: field numbers become keys, length-delimited fields become strings when printable, nested messages when they parse and base64 otherwise, plus a flat list of every string leaf. Field numbering is inferred because TikTok publishes no schema for this message; use the JSON `GET /tiktok/mobile/feed` route when you need the stable structured contract.
+- **Params:** _none_
 
 ### `tiktok_mobile_hashtag`
 
@@ -19297,17 +20177,53 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve TikTok LIVE gifts. Returns the complete LIVE gift catalogue in one call: `data.gifts` (771 gift objects with `diamond_count`, `describe`, `duration`, `gift_resources`, `gift_skins`, `batch_gift_info` and `combo`) plus the gift config and resource maps (`gift_configs`, `gifts_info`, `doodle_templates`, `gift_name_group_map`, `gift_resource_group_map`). There are no request parameters and no paging: the response is a single complete catalogue.
 - **Params:** _none_
 
+### `tiktok_mobile_live_hashtags`
+
+- **HTTP:** `GET /tiktok/mobile/live/hashtags`
+- **What:** LIVE category/game reference catalogue (hashtags, live-studio/voice/third-party tags, game tags). Returns the reference set the app's "go LIVE" flow uses to tag a stream: the general LIVE hashtags (`hashtags`, measured 18 entries of `{id, image, namespace, title}`, where `id` 0 is the "None" tag), the live-studio/live-voice/third-party hashtag subsets (`live_studio_hashtags` 16, `live_voice_hashtags` 16, `third_party_hashtags` 9), the single `game_hashtag`, and a 1,500-entry game catalogue (`game_tag_list`, `game_tag_count`) where every entry carries the same 12 keys: `id`, `short_name`, `show_name`, `full_name`, `bundle_id`, `package_name`, `game_category` (`[{game_type, title}]` with PC games/Mobile games/Console games/Others), `hashtag_id`, `hashtag_list`, `gar`, `landscape` (0/1/2) and `is_new_game`. The upstream is `/webcast/room/hashtag/list/` on the webcast edge host (no origin header); the measured body is 539,361 B and byte-identical on both working webcast hosts, `language`/`count` do not change it, and there is no cursor/has_more, so it is a one-shot reference dump. Measured 2026-10-22 with the pure-Go (device-free) signer, so it does not need the device-backed signer.
+- **Params:** _none_
+
+### `tiktok_mobile_live_room`
+
+- **HTTP:** `GET /tiktok/mobile/live/room`
+- **What:** LIVE room detail: status, viewers, owner, stream URLs, cover. Returns one LIVE room's detail, keyed by `room_id` — the numeric id that `/api/v1/tiktok/mobile/live/search` returns under `data[].lives.author.room_id`. The upstream is `/webcast/room/info/` on the webcast edge host (no origin header), captured from the running 47.4.3 app's LIVE surface and reproduced against the live gateway. The response projects the fields callers key on — `title`, `status` (2 = live), `user_count` (concurrent viewers), `create_time`, `owner` (user id, nickname, avatar), `stats` (cumulative `enter_count`/`total_user`, `watch_user_count`, `like_count`, `comment_count`, `share_count`, `follow_count`, `replay_viewers`), `stream` (playable `flv_pull_url` per resolution plus `default_resolution`/`candidate_resolution` and the HLS/RTMP URLs) and `cover` — and keeps the upstream room object unmodified in `data` (it has ~500 keys, so a partial struct would drop fields). Measured 2026-10-22 with the pure-Go (device-free) signer: one room returned 193-198 KB with 1,595-1,600 concurrent viewers, 27,916 cumulative viewers, 27,096 enters and FLV URLs for FULL_HD1/HD1/SD1/SD2. `anchor_id` is deliberately NOT forwarded: it was measured to suppress the audience-only `stats.total_user` (27,916 -> 0 on the same room). A missing, non-numeric or unknown room id answers the webcast envelope's status 10011 and is surfaced as a 400; a finished room (status 30003) is a 400 too. The route is not signature-gated, so it does not need the device-backed signer.
+- **Params:** `room_id` (string, **required**) — Numeric LIVE room id from /api/v1/tiktok/mobile/live/search (data[].lives.author.room_id)
+
+### `tiktok_mobile_live_room_by_user`
+
+- **HTTP:** `GET /tiktok/mobile/live/room-by-user`
+- **What:** LIVE room by user: the room a user is currently streaming. Returns the LIVE room a TikTok user is currently streaming, keyed by `user_id`. The upstream is `/webcast/room/info_by_user/` on the webcast edge host (no origin header) and returns the same room payload as `/api/v1/tiktok/mobile/live/room` (title, status, concurrent viewers, owner, cumulative stats, per-resolution FLV URLs, cover and the ~500-key room object in `data`), except that the caller addresses a user and the room id is filled from the payload (both `user_id` and `room_id` are echoed). Measured 2026-10-22 with the pure-Go (device-free) signer: `user_id=6707748031095751686` answered 184,575 B (195,220 B on the second webcast host); `anchor_id` alone answers a 57-byte empty payload, so `user_id` is the address. A user with no live room answers status 30003 "room has finished" and is surfaced as a 400; a non-numeric user id is a 400 (status 10011); a bare call answers a 57-byte empty success envelope, which is why this endpoint requires `user_id`. The route is not signature-gated, so it does not need the device-backed signer.
+- **Params:** `user_id` (string, **required**) — Numeric TikTok user id (e.g. the owner id from a profile, video author or live search row)
+
 ### `tiktok_mobile_live_search`
 
 - **HTTP:** `GET /tiktok/mobile/live/search`
 - **What:** Search TikTok LIVE streams. Searches the mobile app's LIVE surface by keyword: `data` of `{type, anchor}` entries with `feedback_type` set to `live`, plus `cursor` and `has_more`. `keyword` is required; without it the gateway answers a valid but empty envelope. This is the API's first LIVE endpoint.
 - **Params:** `count` (integer, optional) — Results to request (0 = app default, max 50); `keyword` (string, **required**) — Search keyword
 
+### `tiktok_mobile_live_tabs`
+
+- **HTTP:** `GET /tiktok/mobile/live/tabs`
+- **What:** Fetch the LIVE tab catalogue. Returns the app's LIVE tab catalogue: `data[]` holds one entry per tab with the tab's `id`, `name`, `style`, `enable`/`event` flags and the exact `url`/`inter_url` feed template the client calls for that tab. The measured tab 1 ("live") points at `/webcast/feed/?content_type=0&style=2&channel_id=21&sub_channel_id=0&tab_id=1&type=live&sub_type=live&req_type=0&cate_id=0` on `webcast.tiktokv.com`. This closes the route round 553 could not find a host for; it is served by the webcast edge hosts (non-webcast hosts answer 403) and is one of the few LIVE routes that answers device-free: measured with the pure-Go placeholder signer as well as the real device signer, so it does not need the device-backed signing service.
+- **Params:** _none_
+
 ### `tiktok_mobile_music_beats`
 
 - **HTTP:** `GET /tiktok/mobile/music/beats`
 - **What:** Retrieve TikTok music beats. Returns the mobile app's beats/songs chart unmodified: `music_list` of the same full sound objects the pick chart returns (`id_str`, `title`, `user_count`, `album`, `artists`, `cover_*`), ordered as the app's beats list. The measured envelope carries no paging fields.
 - **Params:** `count` (integer, optional) — Accepted for compatibility; not measured to change the page (max 50)
+
+### `tiktok_mobile_music_choices`
+
+- **HTTP:** `GET /tiktok/mobile/music/choices`
+- **What:** Recommended sounds for video creation. Returns the app's "music choices" list: the recommended sounds it offers on the video-creation page. The upstream is `/aweme/v1/music/choices/`; each `music_list` entry is the same full sound object the chart routes return (title, album, artists, covers, play URL, duration, ...). Measured 2026-10-21 with the pure-Go (device-free) signer: 56,078 B / 6 full sound objects on one call and 7 on later calls (the same six at the front), and the payload carries NO paging fields (no cursor/has_more), so this is a one-shot recommendation list. The measured `item_id`, `music_id`, `count` and `scene` parameters did not deterministically change the list — the recommendations rotate — so none is exposed. The route is not signature-gated, so it does not need the device-backed signer.
+- **Params:** _none_
+
+### `tiktok_mobile_music_collection_list`
+
+- **HTTP:** `GET /tiktok/mobile/music/collection-list`
+- **What:** Music collection list (paged browse). Returns the app's music-collection LIST (`mc_list` of collection objects with covers), the browse list of curated music collections. This is a different route from `/api/v1/tiktok/mobile/music/collections`, which is the collection FEED (`mcf_list`, with each entry's music inline). The upstream is `/aweme/v1/music/collection/`. Unlike the feed, this route PAGES for real: `count` is honoured (measured 1 -> 1 item with `cursor: 1, has_more: 1`; 5 -> 5 items with `cursor: 5`; 10/100 -> all 8 collections) and `cursor` advances (measured `count=5&cursor=5` -> the remaining 3 with `has_more: 0`). A negative count answers upstream status 5, which is rejected locally. Measured 2026-10-21 with the pure-Go (device-free) signer: 8 collections total. The route is not signature-gated, so it does not need the device-backed signer.
+- **Params:** `count` (integer, optional) — Page size: honoured (1-50 measured, capped by the collection set); `cursor` (integer, optional) — Next-page token from the previous response (0 = first page)
 
 ### `tiktok_mobile_music_collections`
 
@@ -19325,7 +20241,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /tiktok/mobile/music/posts`
 - **What:** Retrieve videos for a TikTok sound. Lists the videos that use one sound, as the mobile app returns them: `aweme_list` of full video objects (with `author`, `statistics` and `added_sound_music_info`), plus `cursor` and `has_more`. `music_id` is required. `count` is accepted but ignored upstream - the server returns its own default page, so page with `cursor`.
-- **Params:** `count` (integer, optional) — Accepted for compatibility; the server ignores it (max 50); `cursor` (integer, optional) — Pagination cursor; `music_id` (string, **required**) — Sound (music) id
+- **Params:** `count` (integer, optional) — Accepted for compatibility; the server ignores it (max 50); `cursor` (integer, optional) — Pagination cursor; `music_id` (string, **required**) — Sound (music) id; `sort` (string, optional) — Listing: fresh (newest, default) or popular (app canonical music.posts list; requires the device-backed signer)
 
 ### `tiktok_mobile_music_related`
 
@@ -19339,11 +20255,53 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve TikTok trending sounds. Returns the mobile app's trending sound chart: `music_list` of full sound objects (`id_str`, `title`, `user_count`, `album`, `artists`, `cover_large`/`cover_medium`/`cover_thumb`, `binded_challenge_id`, `collect_stat`, `audition_duration`) unmodified, plus `cursor` and `has_more` for paging. This is the chart behind `music.trending`.
 - **Params:** `count` (integer, optional) — Sounds per page (max 50); `cursor` (integer, optional) — Pagination cursor
 
+### `tiktok_mobile_mv_videos`
+
+- **HTTP:** `GET /tiktok/mobile/mv/videos`
+- **What:** MV channel feed: the app's music-video tab, paged. Returns one page of an MV channel feed, the app's music-video ("MV") tab. The upstream is `/aweme/v1/mv/aweme/`; `mv_id` is a small numeric CHANNEL index, NOT a video id — measured ids 0-10 each returned a 15-video page of full aweme objects (1.05-1.24 MB), while 100 returned a valid empty page and a real aweme id returned an empty list. The server's page size is 15 and `count` was measured IGNORED (`count=5` and `count=10` both returned 15 items), so `count` is not exposed; page with `cursor`. The returned `cursor` is a reusable next-page token (measured page 1 `cursor: 18, has_more: 1`; `cursor=18` returned a fresh page with `cursor: 38, has_more: 1`). The envelope's `top_awemes` (pinned entries), `original_aweme_id`, `page_extra` and `extra`/`log_pb` are kept as measured. Measured 2026-10-22 with the pure-Go (device-free) signer, so it does not need the device-backed signer. A missing or non-numeric `mv_id` is a 400; an unknown numeric channel is a valid empty page.
+- **Params:** `cursor` (integer, optional) — Next-page token from the previous response (0 = first page); `mv_id` (string, **required**) — MV channel index (small integer; measured 0-10 populated, 100 empty)
+
+### `tiktok_mobile_place_detail`
+
+- **HTTP:** `GET /tiktok/mobile/place/detail`
+- **What:** Place (POI) detail from the mobile app's Places surface. Returns one place detail page, keyed by the `poi_id` that the place search endpoint returns. The upstream is TikTok's server-driven UI (`/tiktok/poi/slash/v1`) frame stream, assembled here into the component map of the place-detail screen: `food_head_info` (place name, formatted address, category, phone, coordinates, opening hours, rating/score with mention count, price range, tags and photo album), `poi_top_videos` (top videos strip), `poi_limited_post` (posts about the place: full video items plus `aweme_cursor`/`has_more_aweme`), `poi_review` (review preview with `has_more`) and `ai_summary` when the place has one. `nodes` is opaque and complete, `frames` keeps the raw ordered frames, and the typed counters (`top_video_count`, `post_count`, `post_cursor`, `has_more_posts`, `review_count`, `has_more_reviews`) are convenience projections. The measured page-size controls are forwarded with the app's defaults but the server applies its own bounds. The route is not signature-gated, so it does not need the device-backed signer.
+- **Params:** `enter_from` (string, optional) — Forwarded analytics origin (default search_places); `merged_count` (integer, optional) — Posts page size forwarded upstream (default 9, bounded at 50); `poi_id` (string, **required**) — Place id from the place search endpoint; `review_count` (integer, optional) — Review preview size forwarded upstream (default 20, bounded at 50); `review_cursor` (integer, optional) — Review cursor forwarded upstream (default 0); `video_cursor` (integer, optional) — Top-videos cursor forwarded upstream (default 0)
+
+### `tiktok_mobile_place_info`
+
+- **HTTP:** `GET /tiktok/mobile/place/info`
+- **What:** Compact place (POI) record: address, coordinates, rating, hours, counters. Returns one place's compact record, keyed by the `poi_id` that the place search endpoint returns. The upstream is TikTok's POI read (`/tiktok/poi/get/v1`), the record behind a place card: `name`, `address`, `category`, `average_price`, `latitude`/`longitude`, `city_code`/`region_code`, `review_score` with `review_count`/`no_rating`, `video_count`, `favorite_count`, `opening_hours`/`opening_status`, `cover`, `share_url`/`share_desc` and `parent_poi`, plus the upstream POI object unmodified in `place` so a richer field is never lost. This is the cheap lookup to use instead of the ~1 MB slash detail page when only the place record is needed. A nonexistent id answers 400 (the upstream business status 3009009 "poi not exist" is a caller error, not an outage). Measured 2026-10-21 with the pure-Go (device-free) signer: 4,594 B for a coffee shop (score 4.7 / 2 reviews, price "$", hours "8:00 AM – 5:00 PM", 11 videos), 4,623 B for a second location (score 4.8 / 13 reviews). The route is not signature-gated, so it does not need the device-backed signer.
+- **Params:** `poi_id` (string, **required**) — Place id from the place search endpoint
+
+### `tiktok_mobile_place_photos`
+
+- **HTTP:** `GET /tiktok/mobile/place/photos`
+- **What:** Place photo album with per-photo attribution. Returns one place's photo album, keyed by the `poi_id` that the place search endpoint returns. The upstream is `/tiktok/poi/picture_album/v1`: `categories` holds each album tab (`name`, `pic_tab_typecode`, `pictures` of bare image URL lists and `pictures_v2`, the same photos with `author` attribution, `pic_id`, `source` and origin/compressed URL info), `photo_count` sums the categories' pictures, and `title` is the app's own header. Measured 2026-10-21 with the pure-Go (device-free) signer: one place answered 5,368 B, title "Gallery (3)", 1 category with 3 photos whose `pictures_v2` entries name the Google-places contributor; another answered 24,196 B with more photos. The album is one-shot: `count` and `pic_tab_typecode` were measured and did not change the page. A nonexistent id answers 500 (the upstream answers status 4 "Server is currently unavailable" on this route, unlike the poi-not-exist code the other place routes use). The route is not signature-gated, so it does not need the device-backed signer.
+- **Params:** `poi_id` (string, **required**) — Place id from the place search endpoint
+
+### `tiktok_mobile_place_videos`
+
+- **HTTP:** `GET /tiktok/mobile/place/videos`
+- **What:** Videos posted at one place (paged). Returns one page of the videos posted at a place, keyed by the `poi_id` that the place search endpoint returns. The upstream is `/tiktok/poi/video/list/v1`: `aweme_list` holds the app's full video objects (id, description, author, statistics, media URLs, music, anchors, ...) and `item_count` is this page's size. Page with `cursor`: the returned `cursor` is a reusable next-page token (measured page 1 `cursor: 20` with `has_more: 1`, page 2 `cursor: 40`), never with arithmetic on `count`. `count` is a page-size hint, not a strict size: 1/2/5 returned exactly that many items on the first page, a later page returned 8 for count=5, and 10/20/50 were all server-capped at 17. Measured 2026-10-21 with the pure-Go (device-free) signer: 11 videos (940-944 KB) on one place, 17 videos (1.4 MB) on another. The route exposes no sort control: `sort_type` and `order` were measured and did not change the page or its order. The upstream throttles bursts, so paced clients are expected. The route is not signature-gated, so it does not need the device-backed signer.
+- **Params:** `count` (integer, optional) — Page-size hint: 1-50 measured, server caps larger pages (default is the app default); `cursor` (integer, optional) — Next-page token from the previous response (0 = first page); `poi_id` (string, **required**) — Place id from the place search endpoint
+
 ### `tiktok_mobile_search`
 
 - **HTTP:** `GET /tiktok/mobile/search`
-- **What:** Search TikTok videos on the mobile API. Keyword search returning the mobile API result documents unmodified: each entry has `aweme_info` (a full video object with statistics), `card_profile` and search metadata, plus `cursor` and `has_more`. Keep `count` small (20 already exceeds one megabyte of upstream JSON).
-- **Params:** `count` (integer, optional) — Results per page (max 20); `keyword` (string, **required**) — Search keyword; `offset` (integer, optional) — Result offset
+- **What:** Search TikTok videos on the mobile API. Keyword search returning the mobile API result documents unmodified: each entry has `aweme_info` (a full video object with statistics), `card_profile` and search metadata, plus `cursor` and `has_more`. Keep `count` small (20 already exceeds one megabyte of upstream JSON). Requires the device-backed signing service; without it the endpoint returns a generic service-unavailable error instead of an empty page.
+- **Params:** `count` (integer, optional) — Results per page (max 20); `keyword` (string, **required**) — Search keyword; `offset` (integer, optional) — Result offset; pass search_id with a non-zero offset; `search_id` (string, optional) — search_id returned by a previous page of the same search
+
+### `tiktok_mobile_search_effects`
+
+- **HTTP:** `GET /tiktok/mobile/search/effects`
+- **What:** Search TikTok effects/stickers by keyword. Searches TikTok's effect catalogue by `keyword`, returning the app's full effect objects (`name`, `hint`, `icon_url`, `file_url`, `effect_id`, `types`, `tags`, `parent`/`children`, `effect_type`, `music`, `source`, `designer_id`, `schema`). The upstream is `/aweme/v1/search/effect/`; the page is unfolded to the top level (`effects`, `cursor`, `has_more`, `search_id`, `use_hot`, plus `bind_effects`/`collection` on some queries). Paging is real but needs BOTH halves of the token: pass the previous response's `cursor` and `search_id` together (measured: page 1 `cursor: 100`, page 2 with `cursor=100&search_id=...` returned the final effect with `has_more: false`; a cursor without its `search_id` returns an empty page, which the service rejects as a 400). `count` and `offset` were measured as no-ops. Measured 2026-10-21 with the pure-Go (device-free) signer: `keyword=green screen` -> 6 effects (11,831 B) + 1 on page 2, `green` -> 2, `字幕` -> 4; a keyword with no matches is a valid empty page. The route is not signature-gated, so it does not need the device-backed signer.
+- **Params:** `count` (integer, optional) — Accepted for shape parity; the server was measured to ignore it; `cursor` (integer, optional) — Next-page token from the previous response (0 = first page); `keyword` (string, **required**) — Effect name or text, e.g. green screen; `search_id` (string, optional) — Search-session token from the previous response; required together with cursor
+
+### `tiktok_mobile_search_hashtags`
+
+- **HTTP:** `GET /tiktok/mobile/search/hashtags`
+- **What:** Hashtag suggestions for a keyword (hashtag typeahead). Returns the hashtag suggestions the app shows while typing in the search box, keyed by `keyword`. The upstream is `/aweme/v1/search/challengesug/`; each `sug_list` row carries `cha_name` (hashtag name), `view_count`, `use_count` and `cid` (the numeric hashtag id), so this is the discovery step for the hashtag endpoints (`hashtag info` is name-keyed). Measured 2026-10-21 with the pure-Go (device-free) signer: `keyword=lofi` returned 10 rows (`lofi` 18.2B views / 1.9M uses, then `lofiasmr`, `lofihiphop`, ...), `coffee` and `ラーメン` also returned 10 rows, and a keyword with no suggestions is a valid empty page (`sug_list: []`). `count` is accepted for shape parity but the server was measured to ignore it (5/20/100 all returned 10 rows), and the route has no paging. The route is not signature-gated, so it does not need the device-backed signer.
+- **Params:** `count` (integer, optional) — Accepted for shape parity; the server was measured to ignore it (always up to 10 rows); `keyword` (string, **required**) — Text typed so far; the server also accepts prefixes (e.g. lofi -> lofihiphop)
 
 ### `tiktok_mobile_search_music`
 
@@ -19351,10 +20309,34 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search TikTok sounds on the mobile API. Keyword search over sounds, returning `music_info_list` of full sound objects unmodified with `cursor`, `has_more` and `total`.
 - **Params:** `count` (integer, optional) — Sounds per page (max 50); `keyword` (string, **required**) — Search keyword; `offset` (integer, optional) — Result offset
 
+### `tiktok_mobile_search_place`
+
+- **HTTP:** `GET /tiktok/mobile/search/place`
+- **What:** Search TikTok places. Returns TikTok's place (POI) search results for a keyword, unmodified: each row carries `poi_name`, `poi_id`, `poi_type`, `video_count`, `poi_rating`, `poi_distance`, `poi_location`, `lat`/`lng`, `img_url`, `opening_time`, `price_level` and `parent_poi`. Useful for mapping a location or category to the places TikTok knows about, and for seeing how many videos each place carries. `keyword` is required. The page holds up to 30 rows (`count` 1-30 measured; a larger count makes the upstream answer an empty page, so the service rejects it) and the route is first-page-only — the returned `cursor` is not a reusable page token.
+- **Params:** `count` (integer, optional) — Rows to return, 1-30 measured (a larger count yields an empty upstream page and is rejected); `keyword` (string, **required**) — Place name or category to search for
+
+### `tiktok_mobile_search_pre_info`
+
+- **HTTP:** `GET /tiktok/mobile/search/pre-info`
+- **What:** Pre-search info token for a search session. Returns the `pre_info_id` token the app attaches to a search session (with its TTL). The token is short-lived; the app requests one before the search stream and reuses it for the following calls.
+- **Params:** `count` (integer, optional) — Suggestion count (max 50); `keyword` (string, optional) — Seed keyword (optional; the app also requests this with an empty keyword)
+
+### `tiktok_mobile_search_suggestions`
+
+- **HTTP:** `GET /tiktok/mobile/search/sug`
+- **What:** Retrieve TikTok search suggestions. Returns the mobile app's search typeahead for a seed keyword: `sug_list` of suggestions, each with `content`, `sug_type`, `word_record` (`group_id`, `words_position`, `words_content`, `words_source`) and positional fields, unmodified. Useful for query expansion and for seeing the phrases the app itself associates with a seed term. `keyword` is required; without it the upstream answers a well-formed but empty envelope.
+- **Params:** `count` (integer, optional) — Suggestions to return (max 50); `keyword` (string, **required**) — Seed keyword to expand
+
+### `tiktok_mobile_search_tabs`
+
+- **HTTP:** `GET /tiktok/mobile/search/tabs`
+- **What:** Search tabs available for a keyword. Returns the tab keys the mobile search screen offers for a keyword (`general`, `video`, `photos`, `user`, `music`, `live`, `place`, `hashtag`), plus the gateway's `is_failed` flag. Measured on the mobile search edge with a form POST.
+- **Params:** `keyword` (string, **required**) — Search keyword
+
 ### `tiktok_mobile_search_user`
 
 - **HTTP:** `GET /tiktok/mobile/search/user`
-- **What:** Search TikTok users on the mobile API. Keyword search over users, returning `user_list` unmodified. Each `user_info` carries the populated creator statistics (follower_count, following_count, total_favorited, aweme_count, custom_verify).
+- **What:** Search TikTok users on the mobile API. Keyword search over users, returning `user_list` unmodified. Each `user_info` carries the populated creator statistics (follower_count, following_count, total_favorited, aweme_count, custom_verify). Requires the device-backed signing service; without it the endpoint returns a generic service-unavailable error instead of an empty page.
 - **Params:** `count` (integer, optional) — Users per page (max 50); `cursor` (integer, optional) — Pagination cursor; `keyword` (string, **required**) — Search keyword (a username or display name)
 
 ### `tiktok_mobile_trending_categories`
@@ -19368,6 +20350,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /tiktok/mobile/trending/effects`
 - **What:** Retrieve TikTok trending effects. Returns the effect/sticker discovery feed unmodified: `aweme_list` of full video objects, each additionally carrying `stickers` and `sticker_detail`, plus `feed_session_id`, `cursor` and `has_more`.
 - **Params:** `count` (integer, optional) — Videos per page (max 50); `cursor` (integer, optional) — Pagination cursor
+
+### `tiktok_mobile_user_recommendations`
+
+- **HTTP:** `GET /tiktok/mobile/user/recommendations`
+- **What:** Recommended creators on the mobile app's Following page. Returns the app's suggested creators for the Following page unmodified: `user_list` entries are `{user, aweme_list}` where `user` is the full creator projection (uid, sec_uid, nickname, signature, avatars, follower/following counts, verification and privacy flags) and `aweme_list` holds up to three recent videos, so this is a creator-discovery surface rather than a bare id list. The route has no paging fields and returns one page of 13-17 creators (fresh recommendations differ per call). `count` is accepted for parity but the gateway was measured to ignore it. The route is not signature-value gated, so unlike the profile/posts routes it does not need the device-backed signer.
+- **Params:** `count` (integer, optional) — Requested page size; forwarded when set, but the gateway was measured to ignore it
+
+### `tiktok_mobile_video_subtitles`
+
+- **HTTP:** `GET /tiktok/mobile/video/subtitles`
+- **What:** Video captions translated into a target language. Returns one video's own captions translated into the requested language, as TikTok's caption/language (`cla`) service serves them. The response carries the track twice: `webvtt` is the upstream WebVTT text verbatim, and `cues` is the same track parsed into `{start_ms, end_ms, start, end, text}` records so a caller does not have to implement WebVTT. `video_id` is the aweme id returned by the feed, search, profile-posts and hashtag endpoints. Measured 2026-10-21 with the pure-Go (device-free) signer: the Korean-caption video 7696141388324293918 answered 11 English cues for `language=en`, and the same video answered Japanese, Chinese, Spanish, French, German, Korean, Portuguese, Russian, Arabic, Hindi, Indonesian, Thai, Vietnamese, Turkish and Italian tracks; a Portuguese-lyrics video answered an 18,494-character English track (240 cues). Track size is a snapshot rather than a contract (the upstream re-translates from a cache), so assert a non-empty track in the requested language, not a byte count. The route is not signature-gated, so it does not need the device-backed signer. A video with no captions answers 400 (upstream status 5); a nonexistent video answers 500 (upstream status 4).
+- **Params:** `language` (string, **required**) — Target language code: ar, de, en, es, fr, hi, id, it, ja, ko, pt, ru, th, tr, vi, zh; `video_id` (string, **required**) — Numeric id of the video (aweme id)
 
 ### `tiktok_popular_trend_country_industry_meta`
 
@@ -21732,7 +22726,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search YOOX products. Searches or browses YOOX products in the required `department`. Optional filters are `q`, `category`, `designer`, `color`, `size`, `price_min`, `price_max` and `on_sale`; `sort` takes `relevance`, `newest`, `price_asc`, `price_desc` or `discount`; `limit` is 1 to 100. Each product has brand, name, price, currency, stock status, image and URL, with `facets` for colors, sizes and sorts. May return `503`.
 - **Params:** `category` (string, optional) — Category slug from yoox-categories; `color` (string, optional) — Color filter; `department` (string, **required**) — Department; `designer` (string, optional) — Designer slug from yoox-designers; `limit` (integer, optional) — Results per page; `on_sale` (boolean, optional) — Sale items only; `page` (integer, optional) — 1-based page; `price_max` (number, optional) — Maximum price; `price_min` (number, optional) — Minimum price; `q` (string, optional) — Free-text search; `size` (string, optional) — Size filter; `sort` (string, optional) — Sort
 
-## YouTube (14)
+## YouTube (15)
 
 ### `youtube_captions`
 
@@ -21755,8 +22749,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `youtube_channel_shorts`
 
 - **HTTP:** `GET /youtube/channel/{id}/shorts`
-- **What:** Retrieve the shorts tab for a YouTube channel. Returns the first page of Shorts from a YouTube channel's Shorts tab. `id` accepts a channel id, `@handle`, `/c` or `/user` path, or a full channel URL. Each short has its position, video id, title, URL, thumbnail and view count text.
-- **Params:** `id` (string, **required**) — Channel ID, @handle, /c path, /user path, or full YouTube channel URL
+- **What:** Retrieve the shorts tab for a YouTube channel. Returns one page of Shorts from a YouTube channel's Shorts tab. `id` accepts a channel id, `@handle`, `/c` or `/user` path, or a full channel URL. Each short has its position within this page, video id, title, URL, thumbnail and view count text. Pass `continuation_token` from the response to fetch the next page.
+- **Params:** `continuation_token` (string, optional) — Opaque pagination token returned by the previous response; `id` (string, **required**) — Channel ID, @handle, /c path, /user path, or full YouTube channel URL
 
 ### `youtube_channel_videos`
 
@@ -21764,11 +22758,17 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Retrieve the videos tab for a YouTube channel. Lists the videos on a YouTube channel's Videos tab. `id` accepts a channel id, `@handle`, `/c` or `/user` path, or a full channel URL. Each item has its video id, title, URL, duration, view count, published text, thumbnail, badges and live flag. Pass the returned `continuation_token` to fetch the next page.
 - **Params:** `continuation_token` (string, optional) — Pagination token returned by a previous request; `id` (string, **required**) — Channel ID, @handle, /c path, /user path, or full YouTube channel URL
 
+### `youtube_comment_replies`
+
+- **HTTP:** `GET /youtube/comments/{id}/replies`
+- **What:** Retrieve replies to one YouTube comment. Returns one page of replies using the opaque `continuation_token` on a comment from `/youtube/comments/{id}`. The path `id` is the 11-character video ID that provides the YouTube watch-page context. Pass the response-level `continuation_token` to fetch another replies page.
+- **Params:** `continuation_token` (string, **required**) — Opaque per-comment reply token from a comment object; `id` (string, **required**) — YouTube video ID (11-character code)
+
 ### `youtube_comments`
 
 - **HTTP:** `GET /youtube/comments/{id}`
-- **What:** Retrieve video comments (top-level & replies). Returns one page of comments for a YouTube video by its 11-character `id`. Each comment has its id, content, author `user_name` and `channel_id`, `likes_count`, `reply_count` and `published_time`. Pass the previous response's `continuation_token` to get the next page; leave it empty for the first.
-- **Params:** `continuation_token` (string, optional) — Pagination token returned by a previous request, first page if empty; `id` (string, **required**) — YouTube video ID (11-character code)
+- **What:** Retrieve top-level video comments. Returns one page of top-level comments for a YouTube video by its 11-character `id`. Each comment has its id, content, author `user_name` and `channel_id`, `likes_count`, `reply_count` and `published_time`. Comments with replies may include their own `continuation_token`; pass that token to `/youtube/comments/{id}/replies`. Pass the response-level `continuation_token` here for deterministic pagination. If omitted, the service discovers an initial cursor or may resume the most recently cached cursor for this video.
+- **Params:** `continuation_token` (string, optional) — Opaque pagination token returned by a previous request; pass it for deterministic pagination; `id` (string, **required**) — YouTube video ID (11-character code)
 
 ### `youtube_playlist`
 

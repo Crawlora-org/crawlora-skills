@@ -661,6 +661,23 @@ case "$path" in
   /doordash/search/autocomplete) route_allowed=true ;;
   /doordash/search/filters) route_allowed=true ;;
   /doordash/search/items) route_allowed=true ;;
+  /draftkings/casino/directory) route_allowed=true ;;
+  /draftkings/casino/slots-guide) route_allowed=true ;;
+  /draftkings/casino/slots/categories) route_allowed=true ;;
+  /draftkings/casino/slots/cleopatra-guide) route_allowed=true ;;
+  /draftkings/casino/slots/wheel-of-fortune-guide) route_allowed=true ;;
+  /draftkings/dfs/glossary) route_allowed=true ;;
+  /draftkings/dfs/guide) route_allowed=true ;;
+  /draftkings/dfs/nfl-best-ball/featured-contests) route_allowed=true ;;
+  /draftkings/dfs/rules-and-scoring) route_allowed=true ;;
+  /draftkings/dfs/sports) route_allowed=true ;;
+  /draftkings/pick6/rules) route_allowed=true ;;
+  /draftkings/pick6/sports) route_allowed=true ;;
+  /draftkings/predictions/availability) route_allowed=true ;;
+  /draftkings/predictions/categories) route_allowed=true ;;
+  /draftkings/predictions/rules) route_allowed=true ;;
+  /draftkings/racing/schedule) route_allowed=true ;;
+  /draftkings/racing/tracks) route_allowed=true ;;
   /draftkings/sportsbook/event) route_allowed=true ;;
   /draftkings/sportsbook/event-context) route_allowed=true ;;
   /draftkings/sportsbook/event-markets) route_allowed=true ;;
@@ -760,6 +777,78 @@ case "$path" in
   /fanaticslive/browse) route_allowed=true ;;
   /fanaticslive/leagues) route_allowed=true ;;
   /fanaticslive/shops) route_allowed=true ;;
+  /fanduel/casino/categories) route_allowed=true ;;
+  /fanduel/casino/category) route_allowed=true ;;
+  /fanduel/casino/game) route_allowed=true ;;
+  /fanduel/racing/carryover-pools) route_allowed=true ;;
+  /fanduel/racing/filters) route_allowed=true ;;
+  /fanduel/racing/horse) route_allowed=true ;;
+  /fanduel/racing/past-race) route_allowed=true ;;
+  /fanduel/racing/past-races) route_allowed=true ;;
+  /fanduel/racing/past-tracks) route_allowed=true ;;
+  /fanduel/racing/race) route_allowed=true ;;
+  /fanduel/racing/races) route_allowed=true ;;
+  /fanduel/racing/results) route_allowed=true ;;
+  /fanduel/racing/search) route_allowed=true ;;
+  /fanduel/racing/track) route_allowed=true ;;
+  /fanduel/racing/tracks) route_allowed=true ;;
+  /fanduel/racing/wager-types) route_allowed=true ;;
+  /fanduel/research) route_allowed=true ;;
+  /fanduel/research/article) route_allowed=true ;;
+  /fanduel/research/articles) route_allowed=true ;;
+  /fanduel/research/author) route_allowed=true ;;
+  /fanduel/research/authors) route_allowed=true ;;
+  /fanduel/research/featured-articles) route_allowed=true ;;
+  /fanduel/research/fixtures) route_allowed=true ;;
+  /fanduel/research/nfl-schedule) route_allowed=true ;;
+  /fanduel/research/player-news) route_allowed=true ;;
+  /fanduel/research/podcasts/quick-picks-daily) route_allowed=true ;;
+  /fanduel/research/projection-slates) route_allowed=true ;;
+  /fanduel/research/projection-tables) route_allowed=true ;;
+  /fanduel/research/projections) route_allowed=true ;;
+  /fanduel/research/sports) route_allowed=true ;;
+  /fanduel/research/sub-categories) route_allowed=true ;;
+  /fanduel/sportsbook/autocomplete) route_allowed=true ;;
+  /fanduel/sportsbook/builder) route_allowed=true ;;
+  /fanduel/sportsbook/builder/events) route_allowed=true ;;
+  /fanduel/sportsbook/builder/quotes) route_allowed=true ;;
+  /fanduel/sportsbook/competition) route_allowed=true ;;
+  /fanduel/sportsbook/event) route_allowed=true ;;
+  /fanduel/sportsbook/event/box-score) route_allowed=true ;;
+  /fanduel/sportsbook/event/play-by-play) route_allowed=true ;;
+  /fanduel/sportsbook/event/players) route_allowed=true ;;
+  /fanduel/sportsbook/event/score) route_allowed=true ;;
+  /fanduel/sportsbook/event/stats) route_allowed=true ;;
+  /fanduel/sportsbook/events/status) route_allowed=true ;;
+  /fanduel/sportsbook/home) route_allowed=true ;;
+  /fanduel/sportsbook/league) route_allowed=true ;;
+  /fanduel/sportsbook/live) route_allowed=true ;;
+  /fanduel/sportsbook/live-count) route_allowed=true ;;
+  /fanduel/sportsbook/live-data) route_allowed=true ;;
+  /fanduel/sportsbook/live-scores) route_allowed=true ;;
+  /fanduel/sportsbook/market-prices) route_allowed=true ;;
+  /fanduel/sportsbook/parlays) route_allowed=true ;;
+  /fanduel/sportsbook/player) route_allowed=true ;;
+  /fanduel/sportsbook/player/news) route_allowed=true ;;
+  /fanduel/sportsbook/player/props) route_allowed=true ;;
+  /fanduel/sportsbook/player/stats) route_allowed=true ;;
+  /fanduel/sportsbook/players) route_allowed=true ;;
+  /fanduel/sportsbook/promotions) route_allowed=true ;;
+  /fanduel/sportsbook/schedule) route_allowed=true ;;
+  /fanduel/sportsbook/search) route_allowed=true ;;
+  /fanduel/sportsbook/search/tabs) route_allowed=true ;;
+  /fanduel/sportsbook/sport) route_allowed=true ;;
+  /fanduel/sportsbook/sports) route_allowed=true ;;
+  /fanduel/sportsbook/standings) route_allowed=true ;;
+  /fanduel/sportsbook/stats) route_allowed=true ;;
+  /fanduel/sportsbook/team/depth-chart) route_allowed=true ;;
+  /fanduel/sportsbook/team/news) route_allowed=true ;;
+  /fanduel/sportsbook/team/odds) route_allowed=true ;;
+  /fanduel/sportsbook/team/roster) route_allowed=true ;;
+  /fanduel/sportsbook/team/schedule) route_allowed=true ;;
+  /fanduel/sportsbook/team/stats) route_allowed=true ;;
+  /fanduel/sportsbook/teams) route_allowed=true ;;
+  /fanduel/sportsbook/trending) route_allowed=true ;;
   /farfetch/categories) route_allowed=true ;;
   /farfetch/designers) route_allowed=true ;;
   /farfetch/product) route_allowed=true ;;
@@ -939,6 +1028,33 @@ case "$path" in
   /ft/headlines) route_allowed=true ;;
   /ft/news) route_allowed=true ;;
   /ft/search) route_allowed=true ;;
+  /fussballde/amateur-stats) route_allowed=true ;;
+  /fussballde/club) route_allowed=true ;;
+  /fussballde/club-matches) route_allowed=true ;;
+  /fussballde/club-search) route_allowed=true ;;
+  /fussballde/competition-options) route_allowed=true ;;
+  /fussballde/competitions) route_allowed=true ;;
+  /fussballde/federation) route_allowed=true ;;
+  /fussballde/filters) route_allowed=true ;;
+  /fussballde/match) route_allowed=true ;;
+  /fussballde/match-calendar) route_allowed=true ;;
+  /fussballde/match-comparison) route_allowed=true ;;
+  /fussballde/match-plan) route_allowed=true ;;
+  /fussballde/matchday) route_allowed=true ;;
+  /fussballde/national-top-scorers) route_allowed=true ;;
+  /fussballde/news) route_allowed=true ;;
+  /fussballde/news-article) route_allowed=true ;;
+  /fussballde/news-search) route_allowed=true ;;
+  /fussballde/player) route_allowed=true ;;
+  /fussballde/player-matches) route_allowed=true ;;
+  /fussballde/player-search) route_allowed=true ;;
+  /fussballde/position-history) route_allowed=true ;;
+  /fussballde/postal-codes) route_allowed=true ;;
+  /fussballde/table) route_allowed=true ;;
+  /fussballde/team) route_allowed=true ;;
+  /fussballde/team-matches) route_allowed=true ;;
+  /fussballde/team-squad) route_allowed=true ;;
+  /fussballde/top-scorers) route_allowed=true ;;
   /gamerant/article) route_allowed=true ;;
   /gamerant/author) route_allowed=true ;;
   /gamerant/headlines) route_allowed=true ;;
@@ -1284,6 +1400,7 @@ case "$path" in
   /instacart/search-nearby) route_allowed=true ;;
   /instacart/stores) route_allowed=true ;;
   /instacart/trending) route_allowed=true ;;
+  /instagram/post/comments) route_allowed=true ;;
   /investopedia/article) route_allowed=true ;;
   /investopedia/author) route_allowed=true ;;
   /investopedia/headlines) route_allowed=true ;;
@@ -1358,6 +1475,11 @@ case "$path" in
   /jobs/workable/postings) route_allowed=true ;;
   /jobs/workday/board) route_allowed=true ;;
   /jobs/workday/job) route_allowed=true ;;
+  /jumia/categories) route_allowed=true ;;
+  /jumia/category) route_allowed=true ;;
+  /jumia/countries) route_allowed=true ;;
+  /jumia/product) route_allowed=true ;;
+  /jumia/search) route_allowed=true ;;
   /justeat/restaurant) route_allowed=true ;;
   /justeat/restaurant/menu) route_allowed=true ;;
   /justeat/search) route_allowed=true ;;
@@ -2040,6 +2162,12 @@ case "$path" in
   /rebag/sitemap/urls) route_allowed=true ;;
   /rebag/sitemaps) route_allowed=true ;;
   /rebag/store) route_allowed=true ;;
+  /reddit/archive/comments/ids) route_allowed=true ;;
+  /reddit/archive/comments/search) route_allowed=true ;;
+  /reddit/archive/posts/ids) route_allowed=true ;;
+  /reddit/archive/posts/search) route_allowed=true ;;
+  /reddit/archive/subreddits/search) route_allowed=true ;;
+  /reddit/archive/time-series) route_allowed=true ;;
   /reddit/leads) route_allowed=true ;;
   /reddit/search) route_allowed=true ;;
   /reddit/subreddits/posts) route_allowed=true ;;
@@ -2218,14 +2346,22 @@ case "$path" in
   /shakeshack/menu) route_allowed=true ;;
   /shakeshack/nearby) route_allowed=true ;;
   /shakeshack/store) route_allowed=true ;;
+  /shein/brands) route_allowed=true ;;
+  /shein/categories) route_allowed=true ;;
   /shein/category/filters) route_allowed=true ;;
   /shein/category/goods) route_allowed=true ;;
   /shein/category/nav) route_allowed=true ;;
+  /shein/deals/products) route_allowed=true ;;
+  /shein/deals/tabs) route_allowed=true ;;
   /shein/products/aggregation-filters) route_allowed=true ;;
   /shein/products/detail) route_allowed=true ;;
   /shein/products/search) route_allowed=true ;;
   /shein/search/autocomplete) route_allowed=true ;;
   /shein/search/keywords) route_allowed=true ;;
+  /shein/store) route_allowed=true ;;
+  /shein/store/products) route_allowed=true ;;
+  /shein/trending/categories) route_allowed=true ;;
+  /shein/trending/filters) route_allowed=true ;;
   /shop-app/analysis) route_allowed=true ;;
   /shop-app/categories) route_allowed=true ;;
   /shop-app/search) route_allowed=true ;;
@@ -2761,24 +2897,47 @@ case "$path" in
   /tiktok/creative-center/top-content) route_allowed=true ;;
   /tiktok/creative-center/videos) route_allowed=true ;;
   /tiktok/hashtags) route_allowed=true ;;
+  /tiktok/mobile/anchor/list) route_allowed=true ;;
+  /tiktok/mobile/comment/replies) route_allowed=true ;;
+  /tiktok/mobile/comments) route_allowed=true ;;
   /tiktok/mobile/feed) route_allowed=true ;;
+  /tiktok/mobile/feed/post) route_allowed=true ;;
   /tiktok/mobile/hashtag) route_allowed=true ;;
   /tiktok/mobile/hashtag/posts) route_allowed=true ;;
   /tiktok/mobile/hashtags) route_allowed=true ;;
   /tiktok/mobile/live/effects) route_allowed=true ;;
   /tiktok/mobile/live/gifts) route_allowed=true ;;
+  /tiktok/mobile/live/hashtags) route_allowed=true ;;
+  /tiktok/mobile/live/room) route_allowed=true ;;
+  /tiktok/mobile/live/room-by-user) route_allowed=true ;;
   /tiktok/mobile/live/search) route_allowed=true ;;
+  /tiktok/mobile/live/tabs) route_allowed=true ;;
   /tiktok/mobile/music/beats) route_allowed=true ;;
+  /tiktok/mobile/music/choices) route_allowed=true ;;
+  /tiktok/mobile/music/collection-list) route_allowed=true ;;
   /tiktok/mobile/music/collections) route_allowed=true ;;
   /tiktok/mobile/music/pick) route_allowed=true ;;
   /tiktok/mobile/music/posts) route_allowed=true ;;
   /tiktok/mobile/music/related) route_allowed=true ;;
   /tiktok/mobile/music/trending) route_allowed=true ;;
+  /tiktok/mobile/mv/videos) route_allowed=true ;;
+  /tiktok/mobile/place/detail) route_allowed=true ;;
+  /tiktok/mobile/place/info) route_allowed=true ;;
+  /tiktok/mobile/place/photos) route_allowed=true ;;
+  /tiktok/mobile/place/videos) route_allowed=true ;;
   /tiktok/mobile/search) route_allowed=true ;;
+  /tiktok/mobile/search/effects) route_allowed=true ;;
+  /tiktok/mobile/search/hashtags) route_allowed=true ;;
   /tiktok/mobile/search/music) route_allowed=true ;;
+  /tiktok/mobile/search/place) route_allowed=true ;;
+  /tiktok/mobile/search/pre-info) route_allowed=true ;;
+  /tiktok/mobile/search/sug) route_allowed=true ;;
+  /tiktok/mobile/search/tabs) route_allowed=true ;;
   /tiktok/mobile/search/user) route_allowed=true ;;
   /tiktok/mobile/trending/categories) route_allowed=true ;;
   /tiktok/mobile/trending/effects) route_allowed=true ;;
+  /tiktok/mobile/user/recommendations) route_allowed=true ;;
+  /tiktok/mobile/video/subtitles) route_allowed=true ;;
   /tiktok/popular-trend/country-industry-meta) route_allowed=true ;;
   /tiktok/posts) route_allowed=true ;;
   /tiktok/search) route_allowed=true ;;
@@ -3205,6 +3364,8 @@ if [ "$route_allowed" = false ]; then
   '^/doordash/store/[^/]+/item/[^/]+$'
   '^/doordash/store/[^/]+/menu$'
   '^/doordash/store/[^/]+/reviews$'
+  '^/draftkings/pick6/rules/[^/]+$'
+  '^/draftkings/racing/race/[^/]+$'
   '^/ebay/item/[^/]+$'
   '^/ebay/live/streams/[^/]+$'
   '^/ebay/live/streams/[^/]+/items$'
@@ -3291,6 +3452,7 @@ if [ "$route_allowed" = false ]; then
   '^/instagram/post/[^/]+/[^/]+$'
   '^/instagram/profile/[^/]+$'
   '^/instagram/reels/[^/]+$'
+  '^/instagram/user/[^/]+/posts$'
   '^/kalshi/event/[^/]+$'
   '^/kalshi/event/[^/]+/history$'
   '^/kalshi/event/[^/]+/metadata$'
@@ -3417,6 +3579,7 @@ if [ "$route_allowed" = false ]; then
   '^/rebag/pages/[^/]+$'
   '^/rebag/products/[^/]+$'
   '^/rebag/products/[^/]+/recommendations$'
+  '^/reddit/archive/comments/[^/]+/tree$'
   '^/reddit/comments/[^/]+$'
   '^/reddit/domain/[^/]+/posts$'
   '^/reddit/post/[^/]+$'
@@ -3567,6 +3730,7 @@ if [ "$route_allowed" = false ]; then
   '^/youtube/channel/[^/]+/shorts$'
   '^/youtube/channel/[^/]+/videos$'
   '^/youtube/comments/[^/]+$'
+  '^/youtube/comments/[^/]+/replies$'
   '^/youtube/playlist/[^/]+$'
   '^/youtube/profile/[^/]+$'
   '^/youtube/tag/[^/]+$'
@@ -4271,6 +4435,25 @@ route_method_regexes=(
   '^GET:/doordash/store/[^/]+/item/[^/]+$'
   '^GET:/doordash/store/[^/]+/menu$'
   '^GET:/doordash/store/[^/]+/reviews$'
+  '^GET:/draftkings/casino/directory$'
+  '^GET:/draftkings/casino/slots-guide$'
+  '^GET:/draftkings/casino/slots/categories$'
+  '^GET:/draftkings/casino/slots/cleopatra-guide$'
+  '^GET:/draftkings/casino/slots/wheel-of-fortune-guide$'
+  '^GET:/draftkings/dfs/glossary$'
+  '^GET:/draftkings/dfs/guide$'
+  '^GET:/draftkings/dfs/nfl-best-ball/featured-contests$'
+  '^GET:/draftkings/dfs/rules-and-scoring$'
+  '^GET:/draftkings/dfs/sports$'
+  '^GET:/draftkings/pick6/rules$'
+  '^GET:/draftkings/pick6/rules/[^/]+$'
+  '^GET:/draftkings/pick6/sports$'
+  '^GET:/draftkings/predictions/availability$'
+  '^GET:/draftkings/predictions/categories$'
+  '^GET:/draftkings/predictions/rules$'
+  '^GET:/draftkings/racing/race/[^/]+$'
+  '^GET:/draftkings/racing/schedule$'
+  '^GET:/draftkings/racing/tracks$'
   '^GET:/draftkings/sportsbook/event$'
   '^GET:/draftkings/sportsbook/event-context$'
   '^GET:/draftkings/sportsbook/event-markets$'
@@ -4385,6 +4568,78 @@ route_method_regexes=(
   '^GET:/fanaticslive/shops$'
   '^GET:/fanaticslive/show/[^/]+$'
   '^GET:/fanaticslive/show/[^/]+/instant-rips$'
+  '^GET:/fanduel/casino/categories$'
+  '^GET:/fanduel/casino/category$'
+  '^GET:/fanduel/casino/game$'
+  '^GET:/fanduel/racing/carryover-pools$'
+  '^GET:/fanduel/racing/filters$'
+  '^GET:/fanduel/racing/horse$'
+  '^GET:/fanduel/racing/past-race$'
+  '^GET:/fanduel/racing/past-races$'
+  '^GET:/fanduel/racing/past-tracks$'
+  '^GET:/fanduel/racing/race$'
+  '^GET:/fanduel/racing/races$'
+  '^GET:/fanduel/racing/results$'
+  '^GET:/fanduel/racing/search$'
+  '^GET:/fanduel/racing/track$'
+  '^GET:/fanduel/racing/tracks$'
+  '^GET:/fanduel/racing/wager-types$'
+  '^GET:/fanduel/research$'
+  '^GET:/fanduel/research/article$'
+  '^GET:/fanduel/research/articles$'
+  '^GET:/fanduel/research/author$'
+  '^GET:/fanduel/research/authors$'
+  '^GET:/fanduel/research/featured-articles$'
+  '^GET:/fanduel/research/fixtures$'
+  '^GET:/fanduel/research/nfl-schedule$'
+  '^GET:/fanduel/research/player-news$'
+  '^GET:/fanduel/research/podcasts/quick-picks-daily$'
+  '^GET:/fanduel/research/projection-slates$'
+  '^GET:/fanduel/research/projection-tables$'
+  '^GET:/fanduel/research/projections$'
+  '^GET:/fanduel/research/sports$'
+  '^GET:/fanduel/research/sub-categories$'
+  '^GET:/fanduel/sportsbook/autocomplete$'
+  '^GET:/fanduel/sportsbook/builder$'
+  '^GET:/fanduel/sportsbook/builder/events$'
+  '^GET:/fanduel/sportsbook/builder/quotes$'
+  '^GET:/fanduel/sportsbook/competition$'
+  '^GET:/fanduel/sportsbook/event$'
+  '^GET:/fanduel/sportsbook/event/box-score$'
+  '^GET:/fanduel/sportsbook/event/play-by-play$'
+  '^GET:/fanduel/sportsbook/event/players$'
+  '^GET:/fanduel/sportsbook/event/score$'
+  '^GET:/fanduel/sportsbook/event/stats$'
+  '^GET:/fanduel/sportsbook/events/status$'
+  '^GET:/fanduel/sportsbook/home$'
+  '^GET:/fanduel/sportsbook/league$'
+  '^GET:/fanduel/sportsbook/live$'
+  '^GET:/fanduel/sportsbook/live-count$'
+  '^GET:/fanduel/sportsbook/live-data$'
+  '^GET:/fanduel/sportsbook/live-scores$'
+  '^GET:/fanduel/sportsbook/market-prices$'
+  '^GET:/fanduel/sportsbook/parlays$'
+  '^GET:/fanduel/sportsbook/player$'
+  '^GET:/fanduel/sportsbook/player/news$'
+  '^GET:/fanduel/sportsbook/player/props$'
+  '^GET:/fanduel/sportsbook/player/stats$'
+  '^GET:/fanduel/sportsbook/players$'
+  '^GET:/fanduel/sportsbook/promotions$'
+  '^GET:/fanduel/sportsbook/schedule$'
+  '^GET:/fanduel/sportsbook/search$'
+  '^GET:/fanduel/sportsbook/search/tabs$'
+  '^GET:/fanduel/sportsbook/sport$'
+  '^GET:/fanduel/sportsbook/sports$'
+  '^GET:/fanduel/sportsbook/standings$'
+  '^GET:/fanduel/sportsbook/stats$'
+  '^GET:/fanduel/sportsbook/team/depth-chart$'
+  '^GET:/fanduel/sportsbook/team/news$'
+  '^GET:/fanduel/sportsbook/team/odds$'
+  '^GET:/fanduel/sportsbook/team/roster$'
+  '^GET:/fanduel/sportsbook/team/schedule$'
+  '^GET:/fanduel/sportsbook/team/stats$'
+  '^GET:/fanduel/sportsbook/teams$'
+  '^GET:/fanduel/sportsbook/trending$'
   '^GET:/farfetch/categories$'
   '^GET:/farfetch/designers$'
   '^GET:/farfetch/product$'
@@ -4574,6 +4829,33 @@ route_method_regexes=(
   '^GET:/ft/headlines$'
   '^GET:/ft/news$'
   '^GET:/ft/search$'
+  '^GET:/fussballde/amateur-stats$'
+  '^GET:/fussballde/club$'
+  '^GET:/fussballde/club-matches$'
+  '^GET:/fussballde/club-search$'
+  '^GET:/fussballde/competition-options$'
+  '^GET:/fussballde/competitions$'
+  '^GET:/fussballde/federation$'
+  '^GET:/fussballde/filters$'
+  '^GET:/fussballde/match$'
+  '^GET:/fussballde/match-calendar$'
+  '^GET:/fussballde/match-comparison$'
+  '^GET:/fussballde/match-plan$'
+  '^GET:/fussballde/matchday$'
+  '^GET:/fussballde/national-top-scorers$'
+  '^GET:/fussballde/news$'
+  '^GET:/fussballde/news-article$'
+  '^GET:/fussballde/news-search$'
+  '^GET:/fussballde/player$'
+  '^GET:/fussballde/player-matches$'
+  '^GET:/fussballde/player-search$'
+  '^GET:/fussballde/position-history$'
+  '^GET:/fussballde/postal-codes$'
+  '^GET:/fussballde/table$'
+  '^GET:/fussballde/team$'
+  '^GET:/fussballde/team-matches$'
+  '^GET:/fussballde/team-squad$'
+  '^GET:/fussballde/top-scorers$'
   '^GET:/gamerant/article$'
   '^GET:/gamerant/author$'
   '^GET:/gamerant/headlines$'
@@ -4955,8 +5237,10 @@ route_method_regexes=(
   '^GET:/instacart/stores$'
   '^GET:/instacart/trending$'
   '^GET:/instagram/post/[^/]+/[^/]+$'
+  '^GET:/instagram/post/comments$'
   '^GET:/instagram/profile/[^/]+$'
   '^GET:/instagram/reels/[^/]+$'
+  '^GET:/instagram/user/[^/]+/posts$'
   '^GET:/investopedia/article$'
   '^GET:/investopedia/author$'
   '^GET:/investopedia/headlines$'
@@ -5031,6 +5315,11 @@ route_method_regexes=(
   '^GET:/jobs/workable/postings$'
   '^GET:/jobs/workday/board$'
   '^GET:/jobs/workday/job$'
+  '^GET:/jumia/categories$'
+  '^GET:/jumia/category$'
+  '^GET:/jumia/countries$'
+  '^GET:/jumia/product$'
+  '^GET:/jumia/search$'
   '^GET:/justeat/restaurant$'
   '^GET:/justeat/restaurant/menu$'
   '^GET:/justeat/search$'
@@ -5835,6 +6124,13 @@ route_method_regexes=(
   '^GET:/rebag/sitemap/urls$'
   '^GET:/rebag/sitemaps$'
   '^GET:/rebag/store$'
+  '^GET:/reddit/archive/comments/[^/]+/tree$'
+  '^GET:/reddit/archive/comments/ids$'
+  '^GET:/reddit/archive/comments/search$'
+  '^GET:/reddit/archive/posts/ids$'
+  '^GET:/reddit/archive/posts/search$'
+  '^GET:/reddit/archive/subreddits/search$'
+  '^GET:/reddit/archive/time-series$'
   '^GET:/reddit/comments/[^/]+$'
   '^GET:/reddit/domain/[^/]+/posts$'
   '^GET:/reddit/leads$'
@@ -6032,10 +6328,18 @@ route_method_regexes=(
   '^GET:/shakeshack/menu$'
   '^GET:/shakeshack/nearby$'
   '^GET:/shakeshack/store$'
+  '^GET:/shein/brands$'
+  '^GET:/shein/categories$'
   '^GET:/shein/category/filters$'
   '^GET:/shein/category/goods$'
   '^GET:/shein/category/nav$'
+  '^GET:/shein/deals/products$'
+  '^GET:/shein/deals/tabs$'
   '^GET:/shein/products/detail$'
+  '^GET:/shein/store$'
+  '^GET:/shein/store/products$'
+  '^GET:/shein/trending/categories$'
+  '^GET:/shein/trending/filters$'
   '^GET:/shop-app/analysis$'
   '^GET:/shop-app/categories$'
   '^GET:/shop-app/products/[^/]+$'
@@ -6617,24 +6921,47 @@ route_method_regexes=(
   '^GET:/tiktok/explore/[^/]+$'
   '^GET:/tiktok/hashtag/[^/]+$'
   '^GET:/tiktok/hashtags$'
+  '^GET:/tiktok/mobile/anchor/list$'
+  '^GET:/tiktok/mobile/comment/replies$'
+  '^GET:/tiktok/mobile/comments$'
   '^GET:/tiktok/mobile/feed$'
+  '^GET:/tiktok/mobile/feed/post$'
   '^GET:/tiktok/mobile/hashtag$'
   '^GET:/tiktok/mobile/hashtag/posts$'
   '^GET:/tiktok/mobile/hashtags$'
   '^GET:/tiktok/mobile/live/effects$'
   '^GET:/tiktok/mobile/live/gifts$'
+  '^GET:/tiktok/mobile/live/hashtags$'
+  '^GET:/tiktok/mobile/live/room$'
+  '^GET:/tiktok/mobile/live/room-by-user$'
   '^GET:/tiktok/mobile/live/search$'
+  '^GET:/tiktok/mobile/live/tabs$'
   '^GET:/tiktok/mobile/music/beats$'
+  '^GET:/tiktok/mobile/music/choices$'
+  '^GET:/tiktok/mobile/music/collection-list$'
   '^GET:/tiktok/mobile/music/collections$'
   '^GET:/tiktok/mobile/music/pick$'
   '^GET:/tiktok/mobile/music/posts$'
   '^GET:/tiktok/mobile/music/related$'
   '^GET:/tiktok/mobile/music/trending$'
+  '^GET:/tiktok/mobile/mv/videos$'
+  '^GET:/tiktok/mobile/place/detail$'
+  '^GET:/tiktok/mobile/place/info$'
+  '^GET:/tiktok/mobile/place/photos$'
+  '^GET:/tiktok/mobile/place/videos$'
   '^GET:/tiktok/mobile/search$'
+  '^GET:/tiktok/mobile/search/effects$'
+  '^GET:/tiktok/mobile/search/hashtags$'
   '^GET:/tiktok/mobile/search/music$'
+  '^GET:/tiktok/mobile/search/place$'
+  '^GET:/tiktok/mobile/search/pre-info$'
+  '^GET:/tiktok/mobile/search/sug$'
+  '^GET:/tiktok/mobile/search/tabs$'
   '^GET:/tiktok/mobile/search/user$'
   '^GET:/tiktok/mobile/trending/categories$'
   '^GET:/tiktok/mobile/trending/effects$'
+  '^GET:/tiktok/mobile/user/recommendations$'
+  '^GET:/tiktok/mobile/video/subtitles$'
   '^GET:/tiktok/popular-trend/country-industry-meta$'
   '^GET:/tiktok/post/[^/]+$'
   '^GET:/tiktok/posts$'
@@ -7014,6 +7341,7 @@ route_method_regexes=(
   '^GET:/youtube/channel/[^/]+/shorts$'
   '^GET:/youtube/channel/[^/]+/videos$'
   '^GET:/youtube/comments/[^/]+$'
+  '^GET:/youtube/comments/[^/]+/replies$'
   '^GET:/youtube/playlist/[^/]+$'
   '^GET:/youtube/profile/[^/]+$'
   '^GET:/youtube/search$'

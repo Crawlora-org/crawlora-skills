@@ -183,14 +183,22 @@ case "$path" in
   /sephora/search) route_allowed=true ;;
   /sephora/stores) route_allowed=true ;;
   /sephora/suggest) route_allowed=true ;;
+  /shein/brands) route_allowed=true ;;
+  /shein/categories) route_allowed=true ;;
   /shein/category/filters) route_allowed=true ;;
   /shein/category/goods) route_allowed=true ;;
   /shein/category/nav) route_allowed=true ;;
+  /shein/deals/products) route_allowed=true ;;
+  /shein/deals/tabs) route_allowed=true ;;
   /shein/products/aggregation-filters) route_allowed=true ;;
   /shein/products/detail) route_allowed=true ;;
   /shein/products/search) route_allowed=true ;;
   /shein/search/autocomplete) route_allowed=true ;;
   /shein/search/keywords) route_allowed=true ;;
+  /shein/store) route_allowed=true ;;
+  /shein/store/products) route_allowed=true ;;
+  /shein/trending/categories) route_allowed=true ;;
+  /shein/trending/filters) route_allowed=true ;;
   /shop-app/analysis) route_allowed=true ;;
   /shop-app/categories) route_allowed=true ;;
   /shop-app/search) route_allowed=true ;;
@@ -457,10 +465,18 @@ route_method_regexes=(
   '^GET:/sephora/search$'
   '^GET:/sephora/stores$'
   '^GET:/sephora/suggest$'
+  '^GET:/shein/brands$'
+  '^GET:/shein/categories$'
   '^GET:/shein/category/filters$'
   '^GET:/shein/category/goods$'
   '^GET:/shein/category/nav$'
+  '^GET:/shein/deals/products$'
+  '^GET:/shein/deals/tabs$'
   '^GET:/shein/products/detail$'
+  '^GET:/shein/store$'
+  '^GET:/shein/store/products$'
+  '^GET:/shein/trending/categories$'
+  '^GET:/shein/trending/filters$'
   '^GET:/shop-app/analysis$'
   '^GET:/shop-app/categories$'
   '^GET:/shop-app/products/[^/]+$'

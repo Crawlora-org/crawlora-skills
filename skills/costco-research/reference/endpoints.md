@@ -37,7 +37,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `costco_search`
 
 - **HTTP:** `GET /costco/search`
-- **What:** Search Costco products. Returns public Costco products matching a text query and/or a category slug: title, brand, model, image, and rating for each result. Public data sourced from Costco's own search backend.
+- **What:** Search Costco products. Returns public Costco products matching a text query and/or a category slug: title, brand, model, image, and rating for each result. GDX is primary; if GDX is blocked, query-only searches may return explicitly partial product-sitemap results.
 - **Params:** `category` (string, optional) — Costco category slug, e.g. the last path segment of a category page URL; `query` (string, optional) — Search text
 
 ### `costco_warehouses`

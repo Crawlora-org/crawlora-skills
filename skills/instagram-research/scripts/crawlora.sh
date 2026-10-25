@@ -56,13 +56,14 @@ esac
 # segment; unlike a case '*', [^/]+ cannot consume another slash.
 route_allowed=false
 case "$path" in
-
+  /instagram/post/comments) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
   '^/instagram/post/[^/]+/[^/]+$'
   '^/instagram/profile/[^/]+$'
   '^/instagram/reels/[^/]+$'
+  '^/instagram/user/[^/]+/posts$'
   )
   for route_regex in ${route_regexes[@]+"${route_regexes[@]}"}; do
     if [[ "$path" =~ $route_regex ]]; then

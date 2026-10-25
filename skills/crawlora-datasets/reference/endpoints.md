@@ -403,7 +403,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_llms_item`
 
 - **HTTP:** `GET /datasets/llms/items/{domain}`
-- **What:** Get a site from the AI-readiness (llms.txt) dataset. Returns one site by its domain from dataset id enum value `llms`, including the stored `/llms.txt` and `/llms-full.txt` bodies (`llms.body`, `full.body`; `body_truncated` marks a cut file, and a body that tries to override an AI reader's instructions is withheld with `body_withheld` set to `injection`), their structure and classification, and the `/robots.txt` stance toward each tracked AI crawler. Returns 404 when the domain is not in the dataset or its owner asked for removal (privacy@crawlora.net).
+- **What:** Get a site from the AI-readiness (llms.txt) dataset. Returns one site by its domain from dataset id enum value `llms`, including the stored `/llms.txt` and `/llms-full.txt` bodies (`llms.body`, `full.body`; `body_truncated` marks a cut file, and a file flagged as an instruction override has its title, summary, and body withheld with `body_withheld` set to `injection`), their structure and classification, and the `/robots.txt` stance toward each tracked AI crawler. Returns 404 when the domain is not in the dataset or its owner asked for removal (privacy@crawlora.net).
 - **Params:** `domain` (string, **required**) — Site domain, e.g. shopify.com (a scheme and www. are stripped)
 
 ### `datasets_llms_search`

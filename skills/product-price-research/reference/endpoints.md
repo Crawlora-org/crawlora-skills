@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**233 endpoints across 36 platform group(s).**
+**241 endpoints across 36 platform group(s).**
 
 ## Amazon (5)
 
@@ -348,7 +348,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `costco_search`
 
 - **HTTP:** `GET /costco/search`
-- **What:** Search Costco products. Returns public Costco products matching a text query and/or a category slug: title, brand, model, image, and rating for each result. Public data sourced from Costco's own search backend.
+- **What:** Search Costco products. Returns public Costco products matching a text query and/or a category slug: title, brand, model, image, and rating for each result. GDX is primary; if GDX is blocked, query-only searches may return explicitly partial product-sitemap results.
 - **Params:** `category` (string, optional) — Costco category slug, e.g. the last path segment of a category page URL; `query` (string, optional) — Search text
 
 ### `costco_warehouses`
@@ -1053,7 +1053,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Sephora search suggestions. Returns Sephora's own search-box type-ahead suggestions for a partial keyword: keyword-completion terms, matching products, and trending/related categories. Sephora's own upstream never returns a genuine zero-result state for a nonempty query -- a deliberately nonsense query still returns unrelated product suggestions.
 - **Params:** `query` (string, **required**) — Partial search keywords
 
-## SHEIN (8)
+## SHEIN (16)
+
+### `shein_brands`
+
+- **HTTP:** `GET /shein/brands`
+- **What:** SHEIN brand channel categories. Returns the brand channel's category tabs with ids usable with `/shein/category/goods` and `/shein/products/search`.
+- **Params:** _none_
+
+### `shein_categories`
+
+- **HTTP:** `GET /shein/categories`
+- **What:** SHEIN category tree and global filters. Returns SHEIN's root category tree (11 top-level categories, nested to leaf ids) plus the global attribute filter taxonomy (sizes, colors, materials, …). Use the returned `cat_id` values with `/shein/category/nav`, `/shein/category/filters` and `/shein/category/goods`.
+- **Params:** _none_
 
 ### `shein_category_filters`
 
@@ -1072,6 +1084,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /shein/category/nav`
 - **What:** SHEIN category nav tabs. Returns the subcategory navigation tabs for a SHEIN category, by the required numeric `cat_id`. Each tab has its `nav_id`, `nav_name`, `nav_type`, `nav_img` and the `goods_id` of a representative product.
 - **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id
+
+### `shein_deals_products`
+
+- **HTTP:** `GET /shein/deals/products`
+- **What:** SHEIN coupon and deal products. Returns one page of SHEIN's coupon/deal product pool (≈3,000 items at the time of writing), with the same normalized product-card fields as product search plus an `is_new_coupon` flag. Paging is 1-based; `page_size` is capped at 20 by the upstream.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `page_size` (integer, optional) — Products per page, 1-20 (default 10)
+
+### `shein_deals_tabs`
+
+- **HTTP:** `GET /shein/deals/tabs`
+- **What:** SHEIN deal category tabs. Returns the deal-landing tabs and categories (ids usable with `/shein/category/goods` and `/shein/deals/products`).
+- **Params:** _none_
 
 ### `shein_products_aggregation_filters`
 
@@ -1102,6 +1126,30 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `POST /shein/search/keywords`
 - **What:** SHEIN trending search keywords. Returns the trending search keywords SHEIN shows in its search box. `scene` defaults to `trendStoreChannel` and `word_type` to `1`. Each keyword has its `word`, `word_id`, `type` and `from`.
 - **Params:** `scene` (string, optional) — Keyword scene (trendStoreChannel); `word_type` (string, optional) — Keyword type (1)
+
+### `shein_store`
+
+- **HTTP:** `GET /shein/store`
+- **What:** SHEIN store profile and categories. Returns a SHEIN store/seller profile — name, logo, follower count, seller label, store-type flags — plus the categories the store sells into, by the numeric `store_code` that product search/category/detail results already return. Use the returned `category_id` with `/shein/store/products` to list that category's products.
+- **Params:** `store_code` (string, **required**) — Numeric SHEIN store code, as returned in product cards
+
+### `shein_store_products`
+
+- **HTTP:** `GET /shein/store/products`
+- **What:** SHEIN store category products. Returns the product listing for one category of a SHEIN store. `store_code` comes from a product card or `/shein/store`; `category_id` from `/shein/store`. `page_size` is capped at 20 (the upstream limit). Product cards use the same normalized fields as product search.
+- **Params:** `category_id` (string, **required**) — Numeric store category id from /shein/store; `page` (integer, optional) — 1-based page number (default 1); `page_size` (integer, optional) — Products per page, 1-20 (default 20); `store_code` (string, **required**) — Numeric SHEIN store code
+
+### `shein_trending_categories`
+
+- **HTTP:** `GET /shein/trending/categories`
+- **What:** SHEIN trending categories. Returns SHEIN's trending-category cards: the category id/name list with a representative `store_code` and `goods_id` per category. Pair with `/shein/category/goods` (by `cat_id`) or `/shein/store` (by `store_code`).
+- **Params:** _none_
+
+### `shein_trending_filters`
+
+- **HTTP:** `GET /shein/trending/filters`
+- **What:** SHEIN trending filters. Returns the trending channel's collection tabs (e.g. "#Dot Charm") and the category filters available on the trending surface. Pair with `/shein/trending/categories` and `/shein/category/goods`.
+- **Params:** _none_
 
 ## Walgreens (1)
 

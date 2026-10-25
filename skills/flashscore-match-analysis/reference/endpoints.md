@@ -19,7 +19,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `flashscore_match_darts`
 
 - **HTTP:** `GET /flashscore/match-darts`
-- **What:** Flashscore darts throw-by-throw and statistics. Returns a darts match leg by leg: who started and won each leg, the leg score, every visit with the points scored, the score remaining and 180 or 140-plus highlights, and the score the winner finished from, plus the statistics comparison (three-dart average, 180s, 140+ and 100+ visits, checkout percentage, highest checkout). Streamed events whose scoring is not tracked and non-darts matches return not found.
+- **What:** Flashscore darts throw-by-throw and statistics. Returns a darts match leg by leg: who started and won each leg, the leg score, every visit with the points scored, the score remaining and 180 or 140-plus highlights, and the score the winner finished from, plus the statistics comparison (three-dart average, 180s, 140+ and 100+ visits, checkout percentage, highest checkout). Set-play matches add the set of each leg, the leg score within the set and the statistics of every set; a live match includes the leg being played. Streamed events whose scoring is not tracked and non-darts matches return not found.
 - **Params:** `id` (string, **required**) — Eight-character Flashscore match id
 
 ### `flashscore_match_missing_players`
