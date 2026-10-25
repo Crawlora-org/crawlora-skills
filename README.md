@@ -171,9 +171,11 @@ self-contained and do not require the broader bundles to be installed.
 | [`fantasy-sports-research`](skills/fantasy-sports-research) | Dated fantasy contest formats, rules, slates, and provider-published projections. | FanDuel Research, DraftKings DFS and Pick6 |
 | [`german-amateur-football-research`](skills/german-amateur-football-research) | Local fixtures, clubs, competitions, tables, and player match records across German amateur football. | FUSSBALL.DE |
 | [`horse-racing-research`](skills/horse-racing-research) | Race cards, horse histories, track schedules, and dated results with provider IDs preserved. | FanDuel Racing, DraftKings Racing |
+| [`consumer-product-opportunity`](skills/consumer-product-opportunity) | Public demand, marketplace-supply, and customer-feedback signals for physical product launch hypotheses. | Amazon, AliExpress, Jumia, Google Trends, Reddit |
+| [`company-fundamentals-comparison`](skills/company-fundamentals-comparison) | Period-matched public-company financial statements and source-qualified peer metrics, without valuation recommendations. | SEC EDGAR, Yahoo Finance |
 
-The repository contains **174 installable skills**. The Claude Code marketplace
-bundle includes **136 skills**; the narrower per-platform alternatives below remain
+The repository contains **176 installable skills**. The Claude Code marketplace
+bundle includes **138 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -331,6 +333,10 @@ trend coverage.
 The [2026-10-25 workflow expansion](audits/workflow-expansion-2026-10-25.md)
 adds five focused research skills and expands Jumia, FanDuel, and DraftKings
 coverage while keeping unexported API routes out of the packaged catalog.
+
+The [2026-10-25 opportunity expansion](audits/skill-opportunity-expansion-2026-10-25.md)
+adds physical-product opportunity screening and public-company fundamentals
+comparison with source and period controls.
 
 The [2026-10-19 audit](audits/coverage-2026-10-19.md) maps every catalog group
 and compares source API routes with the published skill contract. Its
