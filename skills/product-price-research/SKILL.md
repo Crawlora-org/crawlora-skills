@@ -1,6 +1,6 @@
 ---
 name: product-price-research
-description: Researches products, prices, sellers, and reviews across major online marketplaces and big-box/specialty retailers (Amazon, eBay, Shopify stores, Shop.app, Target, Costco, Walmart, Nike, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, IKEA, Chewy, and more) using the Crawlora API, returning clean JSON. Use when the user asks to find a product, compare prices or sellers, track listings, or pull marketplace/retailer reviews — instead of scraping store pages.
+description: Research products, prices, sellers, and reviews across major online marketplaces and retailers, including African Jumia storefronts. Use when the user asks to find products, compare observed prices or sellers, track listings, or pull marketplace reviews.
 ---
 
 # Product & price research
@@ -12,6 +12,8 @@ Athleta under the same endpoints), Sam's Club, Ulta Beauty, Wayfair, Wish,
 Zappos, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, IKEA, and
 Chewy — all as normalized JSON from the Crawlora API, with no HTML
 scraping. Walgreens is store-locator only (no product catalog).
+Jumia adds product listings across supported African storefronts, with prices
+reported in the selected country's currency.
 
 ## When to use this skill
 
@@ -21,6 +23,7 @@ scraping. Walgreens is store-locator only (no product catalog).
 - "Pull reviews / ratings for this product or seller."
 - "Track this product's price / variants / availability."
 - Competitive pricing, catalog, or marketplace-review research.
+- Compare Jumia storefront listings when the user specifies a country.
 - "Browse category X on Wayfair / Kohl's / Sam's Club" when the retailer has
   no keyword search of its own.
 - Apparel/beauty catalog lookups spanning Nike, Zara, H&M, Old Navy/Gap/Banana
@@ -180,6 +183,24 @@ this skill uses, including its method, path, parameters, and platform coverage.
 - **Old Navy's endpoints are shared across four storefronts** — pass
   `brand=on|gap|br|at` (Old Navy/Gap/Banana Republic/Athleta; defaults to
   `on`); a `cid`/`pid` found under one brand only works with that same brand.
+
+## Jumia regional store comparisons
+
+Jumia's search and category listings are storefront-specific. Start with
+`/jumia/countries`, then use the exact returned country code with search,
+category, or product lookup. Search prices are in the storefront's currency;
+keep markets and currencies separate unless the user supplies a conversion
+source and timestamp. Match brand, model, capacity, and variant before
+comparing offers. A result count is not proof of inventory at checkout.
+
+Jumia's upstream may respond slowly or return a transient 503. Allow one
+bounded retry after a delay; do not escalate to a different transport or a
+high-volume replay.
+
+~~~sh
+scripts/crawlora.sh /jumia/countries
+scripts/crawlora.sh /jumia/search country=ng q='wireless earbuds'
+~~~
 
 ## AliExpress product and attribute comparisons
 

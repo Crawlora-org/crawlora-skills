@@ -66,6 +66,9 @@ esac
 # segment; unlike a case '*', [^/]+ cannot consume another slash.
 route_allowed=false
 case "$path" in
+  /draftkings/predictions/availability) route_allowed=true ;;
+  /draftkings/predictions/categories) route_allowed=true ;;
+  /draftkings/predictions/rules) route_allowed=true ;;
   /kalshi/events) route_allowed=true ;;
   /kalshi/events/multivariate) route_allowed=true ;;
   /kalshi/exchange/schedule) route_allowed=true ;;
@@ -147,6 +150,9 @@ fi
 # Enforce the documented HTTP method for each route, not just the global method set.
 route_method_allowed=false
 route_method_regexes=(
+  '^GET:/draftkings/predictions/availability$'
+  '^GET:/draftkings/predictions/categories$'
+  '^GET:/draftkings/predictions/rules$'
   '^GET:/kalshi/event/[^/]+$'
   '^GET:/kalshi/event/[^/]+/history$'
   '^GET:/kalshi/event/[^/]+/metadata$'

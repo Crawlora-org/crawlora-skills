@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**62 endpoints across 3 platform group(s).**
+**65 endpoints across 4 platform group(s).**
 
 ## Polymarket (30)
 
@@ -389,3 +389,23 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /metaculus/tournament/{slug}/questions`
 - **What:** Metaculus tournament questions. Returns Metaculus question rows for one public tournament, filtered by its slug. A slug that does not exist returns 404.
 - **Params:** `limit` (integer, optional) — Rows to return, default 10, max 25; `slug` (string, **required**) — Metaculus tournament slug
+
+## DraftKings Predictions (3)
+
+### `draftkings_predictions_availability`
+
+- **HTTP:** `GET /draftkings/predictions/availability`
+- **What:** DraftKings Predictions availability map. Returns the 52 region/status mappings shown on DraftKings Predictions' public availability map. Allowed `status` values: `all_markets_available`, `financial_markets_only`, `sports_markets_unavailable`, `no_markets_available`. This source map is not a complete legal eligibility matrix and does not separately classify all territories or tribal land. It does not read caller location or trading/account state.
+- **Params:** _none_
+
+### `draftkings_predictions_categories`
+
+- **HTTP:** `GET /draftkings/predictions/categories`
+- **What:** DraftKings Predictions categories. Returns the public category and league navigation from the DraftKings Predictions homepage. It excludes market quotes, trade-slip selections, accounts, balances, promotions, and location data. Market availability varies by location and time; this endpoint is a navigation directory, not trading advice.
+- **Params:** _none_
+
+### `draftkings_predictions_rules`
+
+- **HTTP:** `GET /draftkings/predictions/rules`
+- **What:** DraftKings Predictions rules and settlement sources. Lists public rulebook and settlement-source links from the DraftKings Predictions Rules and Settlements page. It does not fetch market data, quotes, trades, user state, or location context.
+- **Params:** _none_
