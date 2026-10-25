@@ -9,6 +9,10 @@ Answer filing questions with identifiable documents, reporting periods, and
 source links. Separate reported facts, management statements, and analytical
 interpretations; a filing lookup alone does not support a buy/sell conclusion.
 
+For a period-matched financial statement matrix across multiple public issuers,
+use company-fundamentals-comparison. This skill remains the route for filing
+search, section extraction, and issuer-specific disclosure context.
+
 ## Setup
 
 Set `CRAWLORA_API_KEY` to your key from [crawlora.net](https://crawlora.net).

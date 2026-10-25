@@ -23,6 +23,9 @@ reported in the selected country's currency.
 - "Pull reviews / ratings for this product or seller."
 - "Track this product's price / variants / availability."
 - Competitive pricing, catalog, or marketplace-review research.
+- For a physical product launch hypothesis that needs demand and competitor
+  signals, use consumer-product-opportunity; use this skill for current
+  products, sellers, prices, and review retrieval.
 - Compare Jumia storefront listings when the user specifies a country.
 - "Browse category X on Wayfair / Kohl's / Sam's Club" when the retailer has
   no keyword search of its own.

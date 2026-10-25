@@ -1,6 +1,6 @@
 ---
 name: finance-markets-research
-description: Researches stocks, crypto, SEC filings, insider/congressional trading, and private-market (VC/PE) profiles via the Crawlora API — Yahoo Finance quotes/financials/history/options, SEC EDGAR filings and financial statements, congressional stock disclosures, CoinGecko crypto markets, and PitchBook company/fund/investor teasers — returning clean JSON. Use when the user asks about a ticker's price/financials/news, a company's SEC filings or insider trades, what a member of Congress traded, a crypto coin's market data, or a private company/fund/investor profile.
+description: Research stocks, crypto, SEC filings, insider/congressional trading, and private-market profiles through Crawlora. Use for one-ticker data, filing lookups, or market snapshots; for matched financial-statement comparisons across public-company peers, use company-fundamentals-comparison.
 ---
 
 # Finance & markets research
@@ -18,6 +18,8 @@ JSON from the Crawlora API — no scraping finance sites or parsing 10-Ks by han
 - Stock screening, earnings calendars, sector/industry overviews.
 - For sampled Reddit discussion around a ticker alongside same-window price
   context, use reddit-stock-sentiment-research when installed.
+- For a period-matched financial statement matrix across multiple public
+  companies, use company-fundamentals-comparison.
 
 ## Setup (one-time)
 

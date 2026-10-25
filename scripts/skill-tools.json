@@ -1398,5 +1398,38 @@
     "fanduel_casino_categories",
     "fanduel_casino_category",
     "fanduel_casino_game"
+  ],
+  "consumer-product-opportunity": [
+    "aliexpress_reviews",
+    "aliexpress_search",
+    "aliexpress_search_filters",
+    "amazon_charts",
+    "amazon_charts_categories",
+    "amazon_product",
+    "amazon_search",
+    "amazon_suggest",
+    "google_suggest",
+    "google_trends_explore_interest_over_time",
+    "jumia_categories",
+    "jumia_category",
+    "jumia_countries",
+    "jumia_product",
+    "jumia_search",
+    "reddit_comments",
+    "reddit_post",
+    "reddit_search"
+  ],
+  "company-fundamentals-comparison": [
+    "sec_company_search",
+    "sec_company_submissions",
+    "sec_filing",
+    "sec_filing_sections",
+    "sec_financials",
+    "sec_frames",
+    "yahoo_finance_industries",
+    "yahoo_finance_industry",
+    "yahoo_finance_lookup",
+    "yahoo_finance_ticker_financials",
+    "yahoo_finance_ticker_info"
   ]
 }

@@ -1,6 +1,6 @@
 ---
 name: topic-demand-validation
-description: Validate a topic, product category, or content idea by comparing autocomplete intent, Google Trends movement, search-result competition, and a bounded sample of Reddit, TikTok, or YouTube discussion. Use for questions like “is there demand for this?”, “what topic should we test next?”, or “what are people searching and discussing?”; use brand-mention-research for a known entity’s mentions.
+description: Validate broad topic, problem, audience, or content demand by comparing autocomplete, Google Trends, search results, and sampled discussion. For a physical product launch hypothesis that needs marketplace listings, prices, and review evidence, use consumer-product-opportunity; use brand-mention-research for a known entity's mentions.
 ---
 
 # Topic demand validation
@@ -12,6 +12,7 @@ Build an evidence brief about what people search for, what is changing, what alr
 Ask for or infer the topic, product/content decision, target market and language, time window, and any excluded sources. If geography or period is unspecified, state the chosen defaults before collecting. Keep the scope narrow enough to compare consistently.
 
 Use this workflow for category, problem, audience, or content-topic discovery. For one query’s autocomplete or SERP, use the focused SERP workflow. For a named brand’s mentions and reputation, use brand-mention-research.
+For a physical consumer-product launch decision that needs visible competitor listings, price ranges, and product-review evidence, use consumer-product-opportunity instead.
 
 ## Collect comparable evidence
 

@@ -8,6 +8,9 @@ description: Compare competing retail assortments through Crawlora catalogs. Use
 Compare defined category samples or complete collections and identify evidence-backed
 assortment gaps. Keep a product absent from the collected sample distinct from one
 confirmed absent from a fully enumerated catalog.
+For a new physical-product launch idea across marketplaces and review evidence,
+use consumer-product-opportunity. This workflow compares existing or supplied
+retailer assortments.
 
 ## Setup and API contract
 
