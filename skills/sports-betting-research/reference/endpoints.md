@@ -2,11 +2,11 @@
 
 > Generated from `scripts/tools.json` by `scripts/generate.mjs` — do not edit by hand.
 
-Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.sh` (see SKILL.md).
+Only the endpoints used by this workflow. Call them via `scripts/crawlora.sh` (see SKILL.md).
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**134 endpoints across 4 platform group(s).**
+**187 endpoints across 5 platform group(s).**
 
 ## DraftKings Sportsbook (12)
 
@@ -137,6 +137,352 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /espn/teams`
 - **What:** ESPN team list. Returns the full team list for a sport and league. The `sport` enum accepts `football`, `basketball`, `baseball`, `hockey`, and `soccer`. The `league` enum accepts `nfl`, `college-football`, `nba`, `wnba`, `mens-college-basketball`, `womens-college-basketball`, `mlb`, `nhl`, `eng.1`, `esp.1`, `ita.1`, `ger.1`, `fra.1`, `usa.1`, and `uefa.champions`; it must be valid for the chosen sport.
 - **Params:** `league` (string, **required**) — League key (must be valid for the sport); `sport` (string, **required**) — Sport key
+
+## FanDuel (53)
+
+### `fanduel_research`
+
+- **HTTP:** `GET /fanduel/research`
+- **What:** FanDuel Research recent RSS items. Returns channel metadata and the recent item summaries from FanDuel Research's official RSS feed. `summary` is the feed description, not a full article body; this endpoint does not fetch linked article pages.
+- **Params:** _none_
+
+### `fanduel_research_article`
+
+- **HTTP:** `GET /fanduel/research/article`
+- **What:** FanDuel Research article. Returns one FanDuel Research article in full: its details plus the body rendered as `blocks` (paragraphs, headings, list items, tables, and embedded Sportsbook markets with their event, market and selection ids) and as plain `text`. Content the renderer cannot show, such as embedded HTML, is counted in `omitted_blocks` instead of being dropped silently. An unknown slug returns 404.
+- **Params:** `article` (string, **required**) — Article slug from the `articles` route (`articles[].slug`)
+
+### `fanduel_research_articles`
+
+- **HTTP:** `GET /fanduel/research/articles`
+- **What:** FanDuel Research articles. Returns a page of FanDuel Research articles (predictions, picks, prop bets, guides), newest first, without their bodies: title, description, sport, author, publish time, link, thumbnail and tags. Filter by sport, sub-category (needs a sport; cannot be combined with a date window), team (needs a sport), author, hero type and publish window. Page with `cursor` while `has_more` is true; the service reports no total.
+- **Params:** `author` (string, optional) — Author id (a UUID) from the `authors` route; `cursor` (string, optional) — Continue from the previous response's `next_cursor`; `exclude_sport` (string, optional) — Drop these sports (repeat the parameter or comma-separate), same slugs as `sport`; `hero_type` (string, optional) — Hero media: `IMAGE` or `JWPLAYER` (video); `hide_deprioritized` (boolean, optional) — `true` to hide content the site ranks down; it also reorders the list; `limit` (integer, optional) — Articles per page, 1 to 50; default 20; `player` (integer, optional) — A player's `number_fire_id` (`subject.number_fire_id` of the `player-news` route); keeps articles about that player. An unknown id, or one of a different `sport`, returns `400`; `published_after` (string, optional) — Earliest publish time, RFC 3339 or `YYYY-MM-DD`; `published_before` (string, optional) — Latest publish time, RFC 3339 or `YYYY-MM-DD`; not earlier than `published_after`; `sport` (string, optional) — Sport or topic slug from the `sports` route; default all sports; `sub_category` (string, optional) — Topic slug from the `sub-categories` route; needs `sport` and must belong to it; `team` (integer, optional) — A team's `number_fire_id` from the `sports` route (`sport` selects the list); needs `sport`. An id of another sport returns `400`
+
+### `fanduel_research_author`
+
+- **HTTP:** `GET /fanduel/research/author`
+- **What:** FanDuel Research author. Returns one FanDuel Research author: id, slug, bio, images, social accounts, and the sports and topics they write for. An unknown slug returns 404.
+- **Params:** `author` (string, **required**) — Author slug from the `authors` route, such as `fanduel-staff`
+
+### `fanduel_research_authors`
+
+- **HTTP:** `GET /fanduel/research/authors`
+- **What:** FanDuel Research authors. Returns a page of FanDuel Research authors with their id, slug, bio, social accounts and the sports and topics they write for. Filter by sport; page with `cursor` while `has_more` is true. The author `id` filters the `articles` route.
+- **Params:** `cursor` (string, optional) — Continue from the previous response's `next_cursor`; `limit` (integer, optional) — Authors per page, 1 to 50; default 20; `sport` (string, optional) — Sport or topic slug from the `sports` route
+
+### `fanduel_research_featured_articles`
+
+- **HTTP:** `GET /fanduel/research/featured-articles`
+- **What:** FanDuel Research featured articles. Returns the articles the FanDuel Research editors feature on a sport's page (about ten per sport, such as the week's best bets for the NFL), each with title, description, author, publish time, link and tags. It is a curated list, not the newest-first feed of the `articles` route: for most sports it differs from the latest articles. A sport with nothing featured (Women's Soccer and Sports Betting 101 on 2026-10-24) returns an empty list. The service has no homepage variant, so `sport` is required.
+- **Params:** `sport` (string, **required**) — Sport or topic slug from the `sports` route
+
+### `fanduel_research_fixtures`
+
+- **HTTP:** `GET /fanduel/research/fixtures`
+- **What:** FanDuel Research live fixtures. Returns the games on today's slate and in progress for the NBA, NFL, NHL and MLB with status (`SCHEDULED`, `IN_PROGRESS`, `FINAL`), the game clock, each team's score and win probability, the TV network, the Sportsbook event link and the money line, spread and total prices with their market and selection ids. A team's `side` is `home` or `away` when it can be read from the event link. Pass `sport` to keep one league; a league with no games returns an empty list.
+- **Params:** `sport` (string, optional) — Keep one league
+
+### `fanduel_research_nfl_schedule`
+
+- **HTTP:** `GET /fanduel/research/nfl-schedule`
+- **What:** FanDuel Research NFL schedule. Returns one week of NFL games with kickoff time, stadium and roof type, weather, TV network, closing spread and total, status and game clock, and for each team its record, win probability, rankings, average yards, the game's box totals and its passing, rushing and receiving leaders. Games that have not finished also carry the Sportsbook event id, link and the money line, spread and total with the market and selection ids. `season_type` is `PRE`, `REGULAR` or `POST`; `week` is `0` to `4` for `PRE`, `1` to `18` for `REGULAR` and `1` to `5` for `POST`. A week with no games returns an empty list.
+- **Params:** `season_type` (string, optional) — Season phase; default `REGULAR`; `week` (integer, **required**) — Week number; `0` to `4` for PRE (`0` is the Hall of Fame game), `1` to `18` for REGULAR, `1` to `5` for POST
+
+### `fanduel_research_player_news`
+
+- **HTTP:** `GET /fanduel/research/player-news`
+- **What:** FanDuel Research player news and injuries. Returns short player and team updates, newest first: the fact, the analysis, the news type and the player (name, position, team, `number_fire_id`, and the Sportsbook roster page, whose slug ends in the same id). With `news_type=INJURY` it is a league-wide injury feed. Available for the NFL, NBA, MLB and NHL; the news types each sport has are listed by the `sports` route (the NFL has no `LINEUP`, MLB no `OUTLOOK`, the NHL only `INJURY`, `TRANSACTION` and `GAME_UPDATE`). Filter by team, or by player (id and position together).
+- **Params:** `cursor` (string, optional) — Continue from the previous response's `next_cursor`; `include_non_primary` (boolean, optional) — `true` to include updates where the subject is not the main player; `limit` (integer, optional) — Updates per page, 1 to 100; default 25; `news_type` (string, optional) — Update type: `INJURY`, `RECAP`, `TRANSACTION`, `LINEUP`, `GAME_UPDATE`, `OUTLOOK`; a type the sport lacks returns `400` and lists the ones it has; `player` (integer, optional) — A player's `number_fire_id`; needs `position`; `position` (string, optional) — The player's position code; needs `player`; `sport` (string, **required**) — Sport slug; `team` (integer, optional) — A team's `number_fire_id` from the `sports` route
+
+### `fanduel_research_quick_picks_daily`
+
+- **HTTP:** `GET /fanduel/research/podcasts/quick-picks-daily`
+- **What:** FanDuel Research Quick Picks Daily episode archive. Returns one page of public Quick Picks Daily program clip metadata from Omny Studio's read-only Consumer API. Follow `next_cursor` to continue; use `in_rss_playlist` to distinguish clips in the default podcast feed and `published_at` to judge freshness. The endpoint returns listening-page links and metadata, not audio files.
+- **Params:** `cursor` (string, optional) — Cursor from a previous response's `data.next_cursor`; omit for the first page
+
+### `fanduel_research_sports`
+
+- **HTTP:** `GET /fanduel/research/sports`
+- **What:** FanDuel Research sports and topics. Lists the 23 sports and topics of the FanDuel Research site (NFL, NBA, MLB, NHL, college football and basketball, golf, tennis, soccer, MMA, horse racing, casino, FanDuel Predicts and more) with the slug the other research routes take, the position codes, the team count and the player-news types each has. Pass `sport` to also get that sport's teams with the `number_fire_id` values the team filters take.
+- **Params:** `sport` (string, optional) — Sport or topic slug; adds the sport's teams
+
+### `fanduel_research_sub_categories`
+
+- **HTTP:** `GET /fanduel/research/sub-categories`
+- **What:** FanDuel Research topics. Lists the topics articles can be filtered by (predictions, best prop bets today, FanDuel picks, fantasy football, NFL draft, Kentucky Derby, Breeders' Cup, World Cup and more), each with the sport it belongs to. A topic only filters articles of its own sport.
+- **Params:** _none_
+
+### `fanduel_sportsbook_autocomplete`
+
+- **HTTP:** `GET /fanduel/sportsbook/autocomplete`
+- **What:** FanDuel Sportsbook search suggestions. Returns the suggestions the Sportsbook's search box offers while a user types: players, teams and competitions that match the prefix. Each suggestion has its plain `text` and a `highlighted` form that wraps the matched characters in `<em>` tags. Use `search/tabs` for the full results of a chosen suggestion.
+- **Params:** `limit` (integer, optional) — Suggestions to return, 1 to 50; default 5; `q` (string, **required**) — Prefix to complete, 2 to 100 characters, without `<` or `>`
+
+### `fanduel_sportsbook_builder`
+
+- **HTTP:** `GET /fanduel/sportsbook/builder`
+- **What:** FanDuel Sportsbook bet builder. Returns the Sportsbook's bet-builder content for one event: the `groups` and `cards` (bet templates such as who will win, player lines, bullseye ranges, player podium, either-player and head-to-head groups) with their selectable options, the `players` and `teams` on offer, the `periods` and every priceable `choice` with its `choice_id` and description. Choices carry no odds here; price them with `builder/quotes` using this response's `ramp_event_id`. `head-to-head` and `player-combos` return `404` when the event has no cards for that experience.
+- **Params:** `event_id` (integer, **required**) — Event id from the `builder/events` route (`events[].event_id`); `experience` (string, optional) — Builder experience: `yourway` (default), `head-to-head`, `player-combos`, `bullseye`, `player-podium`, `or-bets`; `state` (string, optional) — Market code, including `on` for Ontario; default `nj`
+
+### `fanduel_sportsbook_builder_events`
+
+- **HTTP:** `GET /fanduel/sportsbook/builder/events`
+- **What:** FanDuel Sportsbook bet builder events. Lists the events a bet-builder experience covers (currently NFL and NBA games), grouped by competition, with start times and team logos. Use an `event_id` from here with the `builder` route.
+- **Params:** `experience` (string, optional) — Builder experience: `yourway` (default), `head-to-head`, `player-combos`, `bullseye`, `player-podium`, `or-bets`; `state` (string, optional) — Market code, including `on` for Ontario; default `nj`
+
+### `fanduel_sportsbook_builder_quotes`
+
+- **HTTP:** `GET /fanduel/sportsbook/builder/quotes`
+- **What:** FanDuel Sportsbook bet builder quotes. Prices bet-builder choices as single bets and returns, for each, the live decimal, American and fractional odds. A choice the pricing service does not know is returned in `failures` (for example `CHOICE_NOT_FOUND`) instead of failing the request. This is the price of each choice on its own: the combined price of several choices is a separate call that requires an account and is not available.
+- **Params:** `choice_id` (array, **required**) — Choice ids from the builder response (`choices[].choice_id`); 1 to 25, repeated or comma-separated; `ramp_event_id` (integer, **required**) — The builder response's `ramp_event_id` (not its `event_id`); `state` (string, optional) — Market code, including `on` for Ontario; default `nj`
+
+### `fanduel_sportsbook_competition`
+
+- **HTTP:** `GET /fanduel/sportsbook/competition`
+- **What:** FanDuel Sportsbook competition schedule and futures. Returns one competition's schedule and futures (tabs `schedule` and `futures`) with markets and odds. Get `competition_id` from the `competitions` of a league or sport response.
+- **Params:** `competition_id` (integer, **required**) — Competition id from a league, sport or home response `competitions`; `event_type_id` (string, **required**) — Sport id: 6423 American Football; 1 Soccer; 7522 Basketball; 3 Golf; 7511 Baseball; 7524 Ice Hockey; 2 Tennis; 26420387 Mixed Martial Arts; 2593174 Table Tennis; 3503 Darts; 6 Boxing; 5 Rugby Union; 4 Cricket; 8 Motor Sport; 1477 Rugby League; 6422 Snooker; 468328 Handball; 28608997 Lacrosse; 998917 Volleyball, 4726642 Surfing, 10 Special Bets and 2378961 Politics; availability differs by market (Volleyball is also offered in NJ, PA, CO and AZ), and a sport a market does not offer returns 404; `exclude_markets` (boolean, optional) — Return events without their markets (a cheap event listing); `market_types` is still returned; `market_type` (string, optional) — Keep only these market types (repeat the parameter or comma-separate), for example `MONEY_LINE`. Valid values are listed in the response `market_types`; unmatched types return no markets; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj; `tab` (string, optional) — Show only one tab of this page: a tab slug from the response `tabs[].slug` (the lowercase-hyphenated tab title, such as `games` or `player-props`). An unknown slug returns 400 listing the page's tabs
+
+### `fanduel_sportsbook_event`
+
+- **HTTP:** `GET /fanduel/sportsbook/event`
+- **What:** FanDuel Sportsbook event markets. Returns one event with the markets and odds of one tab (game lines, player props, quarters, same-game-parlay markets and more). `tabs` lists every tab the event offers, each with the `slug` accepted by `tab`; the default is `popular`, which holds the most markets. An unknown tab returns 400 listing the valid slugs; an ended event returns 404.
+- **Params:** `event_id` (integer, **required**) — Event id from any Sportsbook events listing; `market_type` (string, optional) — Keep only these market types (repeat the parameter or comma-separate), for example `MONEY_LINE`. Valid values are listed in the response `market_types`; unmatched types return no markets; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj; `tab` (string, optional) — Tab slug from the response `tabs[].slug` (for example `popular`, `passing-props`, `1st-half`, `td-scorer-props`); default `popular`. Tabs differ by sport
+
+### `fanduel_sportsbook_event_box_score`
+
+- **HTTP:** `GET /fanduel/sportsbook/event/box-score`
+- **What:** FanDuel Sportsbook live box score. Returns an event's box score grouped by stat category (for football passing, rushing, receiving, kicking, defense) with column labels and player names joined in. `available` is false until the provider has a box score.
+- **Params:** `event_id` (integer, **required**) — Event id from any Sportsbook events listing
+
+### `fanduel_sportsbook_event_play_by_play`
+
+- **HTTP:** `GET /fanduel/sportsbook/event/play-by-play`
+- **What:** FanDuel Sportsbook live play-by-play. Returns an event's play-by-play feed. The `feed` object keeps the provider's sport-specific structure (drives and plays for football). `available` is false until play-by-play exists for the event.
+- **Params:** `current` (boolean, optional) — Return only the play in progress (a much smaller payload for polling a live game); default false; `event_id` (integer, **required**) — Event id from any Sportsbook events listing
+
+### `fanduel_sportsbook_event_players`
+
+- **HTTP:** `GET /fanduel/sportsbook/event/players`
+- **What:** FanDuel Sportsbook event teams and player roster. Returns the teams (names, abbreviations, colors, logos) and player roster (name, team, jersey number, position) the live-data provider holds for an event.
+- **Params:** `event_id` (integer, **required**) — Event id from any Sportsbook events listing
+
+### `fanduel_sportsbook_event_score`
+
+- **HTTP:** `GET /fanduel/sportsbook/event/score`
+- **What:** FanDuel Sportsbook live score and status. Returns an event's live status (`scheduled`, `inprogress`, ...), the data-availability flags for box score, play-by-play and quick bets, and the live score with the period breakdown and game clock once play has started.
+- **Params:** `event_id` (integer, **required**) — Event id from any Sportsbook events listing
+
+### `fanduel_sportsbook_event_stats`
+
+- **HTTP:** `GET /fanduel/sportsbook/event/stats`
+- **What:** FanDuel Sportsbook event betting splits and form. Returns one event's public betting split (share of bets and of money on each side of the spread) and each team's last five results, with team colors. Events without published stats return 404.
+- **Params:** `event_id` (integer, **required**) — Event id from any Sportsbook events listing
+
+### `fanduel_sportsbook_events_status`
+
+- **HTTP:** `GET /fanduel/sportsbook/events/status`
+- **What:** FanDuel Sportsbook events status. Returns the live state of up to 30 events in one call: `status` (for example `ACTIVE`), `game_phase` (for example `PRE_PLAY`) and the three logical clocks that change when prices, status or structure change, which makes it a cheap way to poll many events. Ids the Sportsbook does not know are listed in `not_found` instead of failing the call.
+- **Params:** `event_id` (array, **required**) — Event ids, 1 to 30, repeated or comma-separated; `state` (string, optional) — Market code, including `on` for Ontario; default `nj`
+
+### `fanduel_sportsbook_home`
+
+- **HTTP:** `GET /fanduel/sportsbook/home`
+- **What:** FanDuel Sportsbook homepage odds. Returns the Sportsbook homepage's featured events with their markets and current American, decimal and fractional odds, grouped by the homepage's tabs. Filter with `tab`, `competition_id` and `market_type`.
+- **Params:** `competition_id` (integer, optional) — Keep only events of this competition id (from the response `competitions`); `exclude_markets` (boolean, optional) — Return events without their markets (a cheap event listing); `market_types` is still returned; `market_type` (string, optional) — Keep only these market types (repeat the parameter or comma-separate), for example `MONEY_LINE`. Valid values are listed in the response `market_types`; unmatched types return no markets; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj; `tab` (string, optional) — Show only one tab of this page: a tab slug from the response `tabs[].slug` (the lowercase-hyphenated tab title, such as `games` or `player-props`). An unknown slug returns 400 listing the page's tabs
+
+### `fanduel_sportsbook_league`
+
+- **HTTP:** `GET /fanduel/sportsbook/league`
+- **What:** FanDuel Sportsbook league page odds. Returns a featured league page (for example nfl, nba, mlb) with its events, markets and odds, grouped by the page's tabs such as Games, Player Props, Win Totals or Super Bowl. `custom_page_id` values come from the sports route's `popular_links`; an unknown id returns 404.
+- **Params:** `competition_id` (integer, optional) — Keep only events of this competition id (from the response `competitions`); `custom_page_id` (string, **required**) — League page id such as `nfl`, `nba`, `mlb`, `ncaaf`, `ncaab`, `nhl`, `wnba`, `pga`, `ncaaw`. Tournament and event pages appear and disappear during the year, and a retired page returns 404; list the current ones with the sports route; `exclude_markets` (boolean, optional) — Return events without their markets (a cheap event listing); `market_types` is still returned; `market_type` (string, optional) — Keep only these market types (repeat the parameter or comma-separate), for example `MONEY_LINE`. Valid values are listed in the response `market_types`; unmatched types return no markets; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj; `tab` (string, optional) — Show only one tab of this page: a tab slug from the response `tabs[].slug` (the lowercase-hyphenated tab title, such as `games` or `player-props`). An unknown slug returns 400 listing the page's tabs
+
+### `fanduel_sportsbook_live`
+
+- **HTTP:** `GET /fanduel/sportsbook/live`
+- **What:** FanDuel Sportsbook live betting events. Returns events that are in play now for one sport, with their live markets and odds. `tabs` lists every sport with its live-event count (`live_count`); pass `event_type_id` to load another sport. Without it the Sportsbook's default sport is returned and reported in `event_type_id`.
+- **Params:** `event_type_id` (string, optional) — Sport id: 6423 American Football; 1 Soccer; 7522 Basketball; 3 Golf; 7511 Baseball; 7524 Ice Hockey; 2 Tennis; 26420387 Mixed Martial Arts; 2593174 Table Tennis; 3503 Darts; 6 Boxing; 5 Rugby Union; 4 Cricket; 8 Motor Sport; 1477 Rugby League; 6422 Snooker; 468328 Handball; 28608997 Lacrosse; 998917 Volleyball, 4726642 Surfing, 10 Special Bets and 2378961 Politics; availability differs by market (Volleyball is also offered in NJ, PA, CO and AZ), and a sport a market does not offer returns 404; `exclude_markets` (boolean, optional) — Return events without their markets (a cheap event listing); `market_types` is still returned; `market_type` (string, optional) — Keep only these market types (repeat the parameter or comma-separate), for example `MONEY_LINE`. Valid values are listed in the response `market_types`; unmatched types return no markets; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj
+
+### `fanduel_sportsbook_live_count`
+
+- **HTTP:** `GET /fanduel/sportsbook/live-count`
+- **What:** FanDuel Sportsbook live event count. Returns the number of events in play in a market, the figure the Sportsbook's homepage shows beside its Live link. It differs by market (for example about 130 in NJ, 107 in PA, 36 in NY and 185 in Ontario on one afternoon) and moves as games start and end, which makes it a cheap way to watch activity. Use the `live` route to list the events.
+- **Params:** `state` (string, optional) — Market code, including `on` for Ontario; default `nj`
+
+### `fanduel_sportsbook_live_data`
+
+- **HTTP:** `GET /fanduel/sportsbook/live-data`
+- **What:** FanDuel Sportsbook live state for any sport. Returns live state for up to 20 events from the Sportsbook's in-play service, which covers every sport: tennis sets, games, points and server; soccer score, cards and corners; basketball and hockey period scores and remaining time, with live progress of player-prop markets where the sport has them. `details` keeps the provider's sport-specific structure; `home_score` and `away_score` are filled when the sport reports a single score. Scheduled events return `live: false`; ids with no entry are listed in `missing`.
+- **Params:** `event_id` (string, **required**) — Event id from any Sportsbook events listing; repeat the parameter or comma-separate, 1 to 20 ids
+
+### `fanduel_sportsbook_live_scores`
+
+- **HTTP:** `GET /fanduel/sportsbook/live-scores`
+- **What:** FanDuel Sportsbook live scores and stats for many events. Returns the live score and stats of up to 100 events in one call, from the Sportsbook's game-state service. Each event has `home_score` and `away_score`, the `period` and `current_period`, the time left in the period (`period_remaining_milliseconds`, basketball), the available `media_types` (for example `LIVE_VIDEO`, `MATCH_STATS`) and a sport-specific `details` block with per-period points, cards, corners or a timeline. `sport` is the Sportsbook's own name for the details block, in which `football` is soccer and `americanFootball` is the NFL and college football. An event the service has no live state for is listed in `not_found` instead of failing the call; use `event/score`, `event/box-score` and `event/play-by-play` for one event in depth.
+- **Params:** `event_id` (array, **required**) — Event ids, 1 to 100, repeated or comma-separated; `state` (string, optional) — Market code, including `on` for Ontario; default `nj`
+
+### `fanduel_sportsbook_market_prices`
+
+- **HTTP:** `GET /fanduel/sportsbook/market-prices`
+- **What:** FanDuel Sportsbook current market prices. Refreshes the current prices of up to 70 markets by market id, using the price feed the Sportsbook itself polls. Returns each market's status and every selection's American, decimal and fractional odds in the order requested; market ids the Sportsbook returns nothing for are listed in `missing`. Get market ids from the event and page routes (`markets[].market_id`).
+- **Params:** `market_id` (string, **required**) — Market id such as `734.191539418`; repeat the parameter or comma-separate, 1 to 70 ids; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj
+
+### `fanduel_sportsbook_parlays`
+
+- **HTTP:** `GET /fanduel/sportsbook/parlays`
+- **What:** FanDuel Sportsbook Parlay Hub. Returns the Sportsbook's Parlay Hub: popular parlays, same-game parlays (SGP) and SGP+ combinations, each with the number of tickets placed on it (`total_bets`), combined odds, the legs and an editor's narrative when there is one. `view` picks the list: `popular` (the homepage list), `all` (every card, filterable by `type`), `next-to-start` (grouped by the events starting soonest) or `event` (popular cards for one event). The Sportsbook returns at most 50 cards per request. `filters` lists the competition groups its own filter bar offers. A request returns at most 50 cards (`card_cap`); `truncated` is true when it filled that cap, and narrower `type`, sport, competition or decimal-odds filters reveal the cards beyond it.
+- **Params:** `competition_id` (string, optional) — Competition filter for `view=all` and `view=next-to-start` (repeat or comma-separate, up to 20 ids); the groups in the response `filters` list valid ids; `event_id` (integer, optional) — Event id, required for `view=event` and rejected otherwise; `event_type_id` (string, optional) — Sport filter for `view=all` and `view=next-to-start`: 6423 American Football; 1 Soccer; 7522 Basketball; 3 Golf; 7511 Baseball; 7524 Ice Hockey; 2 Tennis; 26420387 Mixed Martial Arts; 2593174 Table Tennis; 3503 Darts; 6 Boxing; 5 Rugby Union; 4 Cricket; 8 Motor Sport; 1477 Rugby League; 6422 Snooker; 468328 Handball; 28608997 Lacrosse; 998917 Volleyball, 4726642 Surfing, 10 Special Bets and 2378961 Politics; availability differs by market (Volleyball is also offered in NJ, PA, CO and AZ), and a sport a market does not offer returns 404; `max_odds` (number, optional) — Maximum combined decimal odds (1.01 to 10000) for `view=all` and `view=next-to-start`; `min_odds` (number, optional) — Minimum combined decimal odds (1.01 to 10000) for `view=all` and `view=next-to-start`; `state` (string, optional) — Market to query; default nj; `type` (string, optional) — Card type filter for `view=all` (repeat or comma-separate): `PARLAY` (multi-event parlay), `SGP` (same-game parlay), `SGP_PLUS` (SGP combined across games); `view` (string, optional) — Which list: `popular` (default), `all`, `next-to-start` or `event`
+
+### `fanduel_sportsbook_player`
+
+- **HTTP:** `GET /fanduel/sportsbook/player`
+- **What:** FanDuel Sportsbook player overview. Returns a player's overview page: name, position, team, the season, and recent news with the player's updates. NFL players also carry `season_totals` and a `game_log`; NBA players carry `stats` (career and per-season lines) and `projections`. Available for NFL and NBA players; an unknown player id, or a player newly added to a roster whose page is still empty, returns 404.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`; `player` (string, **required**) — Player slug ending in its id, such as `josh-allen-53775`; take it from the `players` route (`players[].slug`) or `team/roster` (`players[].slug`)
+
+### `fanduel_sportsbook_player_news`
+
+- **HTTP:** `GET /fanduel/sportsbook/player/news`
+- **What:** FanDuel Sportsbook player news. Returns a page of a player's news (title, summary, author, time, link). Without `cursor` it is the player page's own first 15 articles; while `has_more` is true, pass `next_cursor` as `cursor` to continue, 1 to 50 articles at a time (default 25). Available for NFL and NBA players; a player with no coverage returns an empty list.
+- **Params:** `cursor` (string, optional) — Continue from the previous response's `next_cursor`; omit for the first page; `league` (string, **required**) — League: `nfl`, `nba`; `limit` (integer, optional) — Articles per page after the first, 1 to 50; default 25. Only valid together with `cursor`; `player` (string, **required**) — Player slug ending in its id, such as `josh-allen-53775`; take it from the `players` route (`players[].slug`) or `team/roster` (`players[].slug`)
+
+### `fanduel_sportsbook_player_props`
+
+- **HTTP:** `GET /fanduel/sportsbook/player/props`
+- **What:** FanDuel Sportsbook player props. Returns a player's prop markets for upcoming games, with event, market and selection ids and the current odds of each selection. A player with no listed props returns an empty `events` list. Available for NFL and NBA players.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`; `player` (string, **required**) — Player slug ending in its id, such as `josh-allen-53775`; take it from the `players` route (`players[].slug`) or `team/roster` (`players[].slug`)
+
+### `fanduel_sportsbook_player_stats`
+
+- **HTTP:** `GET /fanduel/sportsbook/player/stats`
+- **What:** FanDuel Sportsbook player statistics. Returns a player's career and per-season statistics. The groups differ by sport (NFL: career rows plus regular-season and post-season weeks; NBA: regular-season and playoff careers plus preseason, regular-season and play-in seasons) and are passed through with snake_case keys. Available for NFL and NBA players.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`; `player` (string, **required**) — Player slug ending in its id, such as `josh-allen-53775`; take it from the `players` route (`players[].slug`) or `team/roster` (`players[].slug`)
+
+### `fanduel_sportsbook_players`
+
+- **HTTP:** `GET /fanduel/sportsbook/players`
+- **What:** FanDuel Sportsbook player directory. Searches the players that have Sportsbook player pages: about 2,400 in the NFL and 480 in the NBA. Each entry has the `slug` that the player routes take, the numeric `player_id` and a `name` spelled from the slug (without punctuation or accents; `team/roster` has the exact spelling). `q` matches every word against the slug, results are in slug order, and `total` counts all matches so `limit` and `offset` can page through them.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`; `limit` (integer, optional) — Players per page, 1 to 200; default 50; `offset` (integer, optional) — Players to skip; default 0; `q` (string, optional) — Words to find in the player name, such as `josh allen`; omit to list everyone
+
+### `fanduel_sportsbook_promotions`
+
+- **HTTP:** `GET /fanduel/sportsbook/promotions`
+- **What:** FanDuel Sportsbook promotions. Lists the public promotions the Sportsbook shows to an anonymous visitor on its homepage, a league page or a sport page, with each promotion's tags, offer link, end time and artwork, and the carousel placement that orders them. Offers differ by `state` and by page. `tags` is the census of promotion tags on the page and is always unfiltered, so valid `tag` values are discoverable.
+- **Params:** `context` (string, optional) — Which page's promotions: `home` (default), `league` or `sport`; `custom_page_id` (string, optional) — League page id, required for `context=league` (for example `nfl`); `event_type_id` (string, optional) — Sport id, required for `context=sport`: 6423 American Football; 1 Soccer; 7522 Basketball; 3 Golf; 7511 Baseball; 7524 Ice Hockey; 2 Tennis; 26420387 Mixed Martial Arts; 2593174 Table Tennis; 3503 Darts; 6 Boxing; 5 Rugby Union; 4 Cricket; 8 Motor Sport; 1477 Rugby League; 6422 Snooker; 468328 Handball; 28608997 Lacrosse; 998917 Volleyball, 4726642 Surfing, 10 Special Bets and 2378961 Politics; availability differs by market (Volleyball is also offered in NJ, PA, CO and AZ), and a sport a market does not offer returns 404; `state` (string, optional) — Market to query (offers differ by state); default nj; `tag` (string, optional) — Keep only promotions with one of these tags (repeat the parameter or comma-separate), for example `nfl` or `basketball`; valid tags are listed in the response `tags`
+
+### `fanduel_sportsbook_schedule`
+
+- **HTTP:** `GET /fanduel/sportsbook/schedule`
+- **What:** FanDuel Sportsbook league schedule. Returns a league's games with teams, start time, status, venue, broadcast network and scores. The NFL is selected by `week` (default: the current week; the response lists every week id in `weeks`) or by `date` and `end_date`; college football by `date` and `end_date` (default: today, UTC); the NBA and MLB by `date` (default: today, UTC). Available for the NFL, NBA, MLB and college football.
+- **Params:** `date` (string, optional) — First day as `YYYY-MM-DD`. Required form for the NBA and MLB (default today, UTC); optional for the NFL and college football; `end_date` (string, optional) — NFL and college football only: last day as `YYYY-MM-DD`, at most 31 days after `date`; default is `date` alone; `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`; `week` (string, optional) — NFL only: week id from the response `weeks` list, such as `7`; default is the current week. Cannot be combined with `date`
+
+### `fanduel_sportsbook_search`
+
+- **HTTP:** `GET /fanduel/sportsbook/search`
+- **What:** FanDuel Sportsbook search. Searches the Sportsbook's events and competitions by text (team, player-event or league names such as `lakers` or `nfl`). Events come back in the search index's relevance order with the sport, competition and start time; competitions come back with a match count. Use the returned `event_id` and `competition_id` with the event and competition routes.
+- **Params:** `event_type_id` (string, optional) — Limit results to one sport: 6423 American Football; 1 Soccer; 7522 Basketball; 3 Golf; 7511 Baseball; 7524 Ice Hockey; 2 Tennis; 26420387 Mixed Martial Arts; 2593174 Table Tennis; 3503 Darts; 6 Boxing; 5 Rugby Union; 4 Cricket; 8 Motor Sport; 1477 Rugby League; 6422 Snooker; 468328 Handball; 28608997 Lacrosse; 998917 Volleyball, 4726642 Surfing, 10 Special Bets and 2378961 Politics; availability differs by market (Volleyball is also offered in NJ, PA, CO and AZ), and a sport a market does not offer returns 404; `limit` (integer, optional) — Maximum events returned, 1 to 50; default 20; `q` (string, **required**) — Search text, 2 to 100 characters; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj; `type` (string, optional) — What to search: `all` (events and competitions), `event` or `competition`; default all
+
+### `fanduel_sportsbook_search_tabs`
+
+- **HTTP:** `GET /fanduel/sportsbook/search/tabs`
+- **What:** FanDuel Sportsbook grouped search. Returns the Sportsbook's own search results, grouped into sport tabs (for example `Basketball`, `Ice Hockey`, `American Football`) and 20 per page. `tabs` lists the sports that have matches and the selected one is returned in `tab`; pass a tab title as `tab` to read another sport. A query without `tab` also lists competition `pills` for the selected sport, and passing `pill` with `tab` keeps only that competition. `found` counts the matches in the selected tab (and pill), `total_results` the matches across the whole query, and `next_start_index` is the `start_index` of the next page while more remain. Events and competitions are returned without markets; use the `search` route for markets.
+- **Params:** `pill` (string, optional) — Competition title from the response `pills[].title`, such as `NBA`; needs `tab`; `q` (string, **required**) — Search text, 3 to 100 characters, without `<` or `>`; `start_index` (integer, optional) — Index of the first result, 0 to 9999, in steps of 20; default 0; `state` (string, optional) — Market code, including `on` for Ontario; default `nj`; `tab` (string, optional) — Sport tab title from a previous response's `tabs[].title`, such as `Basketball`; default is the tab with the most relevant matches; `timezone` (string, optional) — IANA time zone for result times, such as `America/New_York`; default `UTC`
+
+### `fanduel_sportsbook_sport`
+
+- **HTTP:** `GET /fanduel/sportsbook/sport`
+- **What:** FanDuel Sportsbook sport page odds. Returns every league, event and market the Sportsbook shows for one sport, with current odds, grouped by the sport page's tabs. Get `event_type_id` from the sports route.
+- **Params:** `competition_id` (integer, optional) — Keep only events of this competition id (from the response `competitions`); `event_type_id` (string, **required**) — Sport id: 6423 American Football; 1 Soccer; 7522 Basketball; 3 Golf; 7511 Baseball; 7524 Ice Hockey; 2 Tennis; 26420387 Mixed Martial Arts; 2593174 Table Tennis; 3503 Darts; 6 Boxing; 5 Rugby Union; 4 Cricket; 8 Motor Sport; 1477 Rugby League; 6422 Snooker; 468328 Handball; 28608997 Lacrosse; 998917 Volleyball, 4726642 Surfing, 10 Special Bets and 2378961 Politics; availability differs by market (Volleyball is also offered in NJ, PA, CO and AZ), and a sport a market does not offer returns 404; `exclude_markets` (boolean, optional) — Return events without their markets (a cheap event listing); `market_types` is still returned; `market_type` (string, optional) — Keep only these market types (repeat the parameter or comma-separate), for example `MONEY_LINE`. Valid values are listed in the response `market_types`; unmatched types return no markets; `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj; `tab` (string, optional) — Show only one tab of this page: a tab slug from the response `tabs[].slug` (the lowercase-hyphenated tab title, such as `games` or `player-props`). An unknown slug returns 400 listing the page's tabs
+
+### `fanduel_sportsbook_sports`
+
+- **HTTP:** `GET /fanduel/sportsbook/sports`
+- **What:** FanDuel Sportsbook sports and league pages. Returns the Sportsbook's navigation: the sports with their `event_type_id` (the set a market offers changes: on 2026-10-24 NJ and CO listed 19, PA and AZ 18, NY only 12, and Ontario 22 on 2026-10-23), the featured league pages (each with the `custom_page_id` accepted by the league route), quick links, teaser-bet competitions, and the 28 supported markets (27 U.S. states and Ontario, `state`) the other routes can query. Use it to discover valid `event_type_id` and `custom_page_id` values.
+- **Params:** `state` (string, optional) — U.S. market to query (prices and offered markets differ by state); default nj
+
+### `fanduel_sportsbook_standings`
+
+- **HTTP:** `GET /fanduel/sportsbook/standings`
+- **What:** FanDuel Sportsbook league standings. Returns a league's standings, one row per team with the team's identity and the record groups the Sportsbook shows for that league: conference, division and league rankings with home, road and streak records (NFL and NBA), games back, last ten and home and away records (MLB), or conference record, points and AP ranking (college football). Available for the NFL, NBA, MLB and college football.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`
+
+### `fanduel_sportsbook_stats`
+
+- **HTTP:** `GET /fanduel/sportsbook/stats`
+- **What:** FanDuel Sportsbook betting splits and form for upcoming events. Lists every event the Sportsbook currently publishes stats for: the share of bets and of money wagered on each side of the spread, and each team's last five results. Filter to one competition with `competition_id`.
+- **Params:** `competition_id` (integer, optional) — Keep only this competition id (for example 12282733 for the NFL)
+
+### `fanduel_sportsbook_team_depth_chart`
+
+- **HTTP:** `GET /fanduel/sportsbook/team/depth-chart`
+- **What:** FanDuel Sportsbook team depth chart. Returns a team's depth chart (rank, position, college, age and draft details) and its statistical leaders. Available for the NFL only; other leagues return 400 listing their pages.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`, `college-basketball`; `team` (string, **required**) — Team slug from the `teams` route (`groups[].teams[].slug`), such as `arizona-cardinals`
+
+### `fanduel_sportsbook_team_news`
+
+- **HTTP:** `GET /fanduel/sportsbook/team/news`
+- **What:** FanDuel Sportsbook team news. Returns a page of a team's news (title, summary, author, time, link) and player updates. Without `cursor` it is the team page's own first 15 articles. While `has_more` is true, pass the response's `next_cursor` as `cursor` to continue through the archive, 1 to 50 articles at a time (default 25); an NFL team has more than 1,000. Teams in MLB and the college leagues currently have no news, which returns an empty list.
+- **Params:** `cursor` (string, optional) — Continue from the previous response's `next_cursor`; omit for the first page; `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`, `college-basketball`; `limit` (integer, optional) — Articles per page after the first, 1 to 50; default 25. Only valid together with `cursor`; `team` (string, **required**) — Team slug from the `teams` route (`groups[].teams[].slug`), such as `arizona-cardinals`
+
+### `fanduel_sportsbook_team_odds`
+
+- **HTTP:** `GET /fanduel/sportsbook/team/odds`
+- **What:** FanDuel Sportsbook team odds page. Returns a team's odds page: futures prices for its league's championship (Super Bowl, NBA Finals, World Series, national championship), its upcoming games with money line, spread and total for both sides, and player props with selection ids and odds. Available for every league; props appear for the NFL and NBA only.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`, `college-basketball`; `team` (string, **required**) — Team slug from the `teams` route (`groups[].teams[].slug`), such as `arizona-cardinals`
+
+### `fanduel_sportsbook_team_roster`
+
+- **HTTP:** `GET /fanduel/sportsbook/team/roster`
+- **What:** FanDuel Sportsbook team roster and injuries. Returns a team's roster with each player's roster `status` (for example `ACT`, `PRA`, `IR`, `IRD`, `UFA`, `TWO-WAY`) and `injury_status` (observed `Q` and `O`; empty when healthy). `statuses`, `injury_statuses` and `positions` count the whole roster so valid filter values are discoverable. Available for the NFL and NBA only.
+- **Params:** `injured_only` (boolean, optional) — Return only players with an injury designation; default false; `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`, `college-basketball`; `position` (string, optional) — Keep only this position code, such as `QB`; valid codes are listed in the response `positions`; `status` (string, optional) — Keep only this roster status code, such as `IR`; valid codes are listed in the response `statuses`; `team` (string, **required**) — Team slug from the `teams` route (`groups[].teams[].slug`), such as `arizona-cardinals`
+
+### `fanduel_sportsbook_team_schedule`
+
+- **HTTP:** `GET /fanduel/sportsbook/team/schedule`
+- **What:** FanDuel Sportsbook team schedule and results. Returns a team's schedule by season block (preseason, regular season) with opponent, venue, home/away, result and opponent record, plus its previous and next game. Available for the NFL and NBA only.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`, `college-basketball`; `team` (string, **required**) — Team slug from the `teams` route (`groups[].teams[].slug`), such as `arizona-cardinals`
+
+### `fanduel_sportsbook_team_stats`
+
+- **HTTP:** `GET /fanduel/sportsbook/team/stats`
+- **What:** FanDuel Sportsbook team statistics. Returns a team's season statistics. The groups differ by sport (scoring, offense, defense and special teams for the NFL; totals and averages for the NBA), so `stats` is an object with snake_case keys. Available for the NFL and NBA only.
+- **Params:** `league` (string, **required**) — League: `nfl`, `nba`, `mlb`, `college-football`, `college-basketball`; `team` (string, **required**) — Team slug from the `teams` route (`groups[].teams[].slug`), such as `arizona-cardinals`
+
+### `fanduel_sportsbook_teams`
+
+- **HTTP:** `GET /fanduel/sportsbook/teams`
+- **What:** FanDuel Sportsbook team index. Lists a league's teams grouped by conference or division, each with its season record against the spread, on the money line and on the over/under, its colors, head coach where published, and its next game. `sections` lists the team pages the league has (all six for the NFL; odds and news only for MLB and the college leagues). Team `slug` values feed the other team routes.
+- **Params:** `league` (string, optional) — League: `nfl` (default), `nba`, `mlb`, `college-football`, `college-basketball`
+
+### `fanduel_sportsbook_trending`
+
+- **HTTP:** `GET /fanduel/sportsbook/trending`
+- **What:** FanDuel Sportsbook trending searches. Returns the terms the Sportsbook's search box shows as trending (about ten players, teams and clubs). With `enriched=true` each term is resolved to the event it points at, with the competition, event name and id, entity type (for example `PLAYER`), image and the time the entry expires. The list was identical in every market tested, so the route takes no state.
+- **Params:** `enriched` (boolean, optional) — Resolve each term to its event, competition and entity; default false
+
+## Flashscore (4)
+
+### `flashscore_match_odds`
+
+- **HTTP:** `GET /flashscore/match-odds`
+- **What:** Flashscore match bookmaker odds comparison. Returns bookmaker odds for a match in one viewer market, grouped by betting type and scope with every bookmaker's priced outcomes, opening odds, handicap or total lines, and a selection label. Bookmakers and prices depend on the market, so pick geo (and subdivision for US or CA) from flashscore-odds-geos. A market with no licensed bookmakers returns empty lists. Promotional bonus text is not included.
+- **Params:** `betting_type` (string, optional) — Optional filter to one betting type; `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `id` (string, **required**) — Eight-character Flashscore match id; `scope` (string, optional) — Optional filter to one scope; `subdivision` (string, optional) — US state (with geo US) or Canadian province (with geo CA) code from flashscore-odds-geos; rejected with any other geo
+
+### `flashscore_odds_geos`
+
+- **HTTP:** `GET /flashscore/odds-geos`
+- **What:** Flashscore odds markets, subdivisions and odds enums. Lists every country code accepted by flashscore-match-odds and flashscore-match-tv (with whether bookmakers were found for it when verified), the US states and Canadian provinces that change the bookmaker list, and every betting type, scope and handicap type that can appear in odds responses.
+- **Params:** _none_
+
+### `flashscore_team_outright_odds`
+
+- **HTTP:** `GET /flashscore/team-outright-odds`
+- **What:** Flashscore team title odds. Returns the title odds bookmakers list for a team in one viewer market, grouped by the competitions it is priced in (league, cup, European competition) with every bookmaker's price and last movement. Pick geo (and subdivision for US or CA) from flashscore-odds-geos. A team with no listed title odds returns empty lists; a player id returns not found.
+- **Params:** `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `id` (string, **required**) — Eight-character Flashscore team id; `subdivision` (string, optional) — US state (with geo US) or Canadian province (with geo CA) code from flashscore-odds-geos; rejected with any other geo
+
+### `flashscore_tournament_outright_odds`
+
+- **HTTP:** `GET /flashscore/tournament-outright-odds`
+- **What:** Flashscore competition winner odds. Returns the title odds bookmakers list for one competition season in one viewer market, grouped by participant with every bookmaker's price and last movement. The provider lists only the top favourites (three in every competition checked), so this is a favourites market, not the full field. Bookmakers depend on the market: pick geo (and subdivision for US or CA) from flashscore-odds-geos. A market with no listed odds returns empty lists. Use the season-level tournament_id from event competition blocks or flashscore-tournament-archive-seasons.
+- **Params:** `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `subdivision` (string, optional) — US state (with geo US) or Canadian province (with geo CA) code from flashscore-odds-geos; rejected with any other geo; `tournament_id` (string, **required**) — Eight-character season-level tournament id (tournament_id of an event competition block or of a season)
 
 ## SofaScore (109)
 
@@ -793,29 +1139,3 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sofascore/venue-events`
 - **What:** SofaScore matches at a venue. Returns one page (up to 30) of the matches played (`direction` `last`, newest page first) or scheduled (`next`) at a venue, as match summaries. Without `tournament` and `season` it lists every match at the venue, optionally narrowed by `sport` (`all`, or any key listed in the venue's `sports`, such as `football`, `rugby`, `basketball`, `mma`); with both it lists that competition season's matches at the venue and `sport` must be omitted. Hidden venues (see venue) have no venue-wide list and answer 404 without `tournament` and `season`. A direction with no matches, a sport the venue never hosted and a page past the last one also answer 404; follow `has_next_page`.
 - **Params:** `direction` (string, **required**) — Upcoming matches or finished matches; `id` (string, **required**) — Numeric SofaScore venue id; `page` (integer, optional) — Zero-based page number. Defaults to 0; `season` (string, optional) — Numeric season id; with tournament, lists that competition season's matches at the venue; `sport` (string, optional) — Sport filter for the venue-wide list. Defaults to all; `tournament` (string, optional) — Numeric unique-tournament id; with season, lists that competition season's matches at the venue
-
-## Flashscore (4)
-
-### `flashscore_match_odds`
-
-- **HTTP:** `GET /flashscore/match-odds`
-- **What:** Flashscore match bookmaker odds comparison. Returns bookmaker odds for a match in one viewer market, grouped by betting type and scope with every bookmaker's priced outcomes, opening odds, handicap or total lines, and a selection label. Bookmakers and prices depend on the market, so pick geo (and subdivision for US or CA) from flashscore-odds-geos. A market with no licensed bookmakers returns empty lists. Promotional bonus text is not included.
-- **Params:** `betting_type` (string, optional) — Optional filter to one betting type; `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `id` (string, **required**) — Eight-character Flashscore match id; `scope` (string, optional) — Optional filter to one scope; `subdivision` (string, optional) — US state (with geo US) or Canadian province (with geo CA) code from flashscore-odds-geos; rejected with any other geo
-
-### `flashscore_odds_geos`
-
-- **HTTP:** `GET /flashscore/odds-geos`
-- **What:** Flashscore odds markets, subdivisions and odds enums. Lists every country code accepted by flashscore-match-odds and flashscore-match-tv (with whether bookmakers were found for it when verified), the US states and Canadian provinces that change the bookmaker list, and every betting type, scope and handicap type that can appear in odds responses.
-- **Params:** _none_
-
-### `flashscore_team_outright_odds`
-
-- **HTTP:** `GET /flashscore/team-outright-odds`
-- **What:** Flashscore team title odds. Returns the title odds bookmakers list for a team in one viewer market, grouped by the competitions it is priced in (league, cup, European competition) with every bookmaker's price and last movement. Pick geo (and subdivision for US or CA) from flashscore-odds-geos. A team with no listed title odds returns empty lists; a player id returns not found.
-- **Params:** `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `id` (string, **required**) — Eight-character Flashscore team id; `subdivision` (string, optional) — US state (with geo US) or Canadian province (with geo CA) code from flashscore-odds-geos; rejected with any other geo
-
-### `flashscore_tournament_outright_odds`
-
-- **HTTP:** `GET /flashscore/tournament-outright-odds`
-- **What:** Flashscore competition winner odds. Returns the title odds bookmakers list for one competition season in one viewer market, grouped by participant with every bookmaker's price and last movement. The provider lists only the top favourites (three in every competition checked), so this is a favourites market, not the full field. Bookmakers depend on the market: pick geo (and subdivision for US or CA) from flashscore-odds-geos. A market with no listed odds returns empty lists. Use the season-level tournament_id from event competition blocks or flashscore-tournament-archive-seasons.
-- **Params:** `geo` (string, optional) — Viewer market country code from flashscore-odds-geos; defaults to GB; `subdivision` (string, optional) — US state (with geo US) or Canadian province (with geo CA) code from flashscore-odds-geos; rejected with any other geo; `tournament_id` (string, **required**) — Eight-character season-level tournament id (tournament_id of an event competition block or of a season)

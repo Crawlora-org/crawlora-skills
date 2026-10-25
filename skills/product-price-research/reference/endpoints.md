@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**241 endpoints across 36 platform group(s).**
+**246 endpoints across 37 platform group(s).**
 
 ## Amazon (5)
 
@@ -1526,3 +1526,35 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /aliexpress/search-filters`
 - **What:** List AliExpress search filters. Returns every sort value and boolean filter the search endpoint accepts, plus the product-attribute filters (brand, color, style, and so on) AliExpress offers for the keyword, as ready-to-use attr values. Attribute filters differ per keyword, so call this with the same q as the search.
 - **Params:** `q` (string, **required**) — Free-text search keywords
+
+## Jumia (5)
+
+### `jumia_categories`
+
+- **HTTP:** `GET /jumia/categories`
+- **What:** List Jumia categories. Lists the category slugs that jumia-category accepts. Without category it returns the storefront's top-level departments; with category it returns that category's direct sub-categories, each with its numeric id. Walk the tree by passing a returned slug back as category. country is required; see jumia-countries. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it.
+- **Params:** `category` (string, optional) — Category slug whose sub-categories to list; omit for top-level departments; `country` (string, **required**) — Jumia country storefront
+
+### `jumia_category`
+
+- **HTTP:** `GET /jumia/category`
+- **What:** Browse a Jumia category. Browses one Jumia category listing by slug and returns the same product cards as jumia-search, plus the category's upstream total_count and a has_next flag. Take the slug from jumia-categories (top-level departments, or a department's sub-categories). Jumia serves at most 50 pages. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it. country is required; see jumia-countries.
+- **Params:** `category` (string, **required**) — Category slug from jumia-categories; `country` (string, **required**) — Jumia country storefront; `page` (integer, optional) — 1-based result page, 1 to 50
+
+### `jumia_countries`
+
+- **HTTP:** `GET /jumia/countries`
+- **What:** List supported Jumia country storefronts. Returns the Jumia country storefronts accepted by the country parameter on jumia-search, jumia-category and jumia-categories, with each storefront's domain and currency. Static metadata.
+- **Params:** _none_
+
+### `jumia_product`
+
+- **HTTP:** `GET /jumia/product`
+- **What:** Get a Jumia product. Returns one Jumia product: name, brand, sku, images, price in the storefront's currency with original price and discount, availability, rating and rating count, category path, seller (name, id, score, followers, shipping speed), description, key features and the specification table. Pass the url returned by jumia-search or jumia-category; the storefront country is taken from the URL host. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it. A product id Jumia no longer serves returns 404.
+- **Params:** `url` (string, **required**) — Absolute Jumia product URL from a search or category result
+
+### `jumia_search`
+
+- **HTTP:** `GET /jumia/search`
+- **What:** Search Jumia products. Searches a Jumia country storefront by keyword and returns one page of product cards with price in the storefront's currency, original price and discount, rating, brand, categories and badges, plus the upstream total_count and a has_next flag. Jumia serves at most 50 pages. A search with no matches returns an empty products list. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it. country is required (there is no default storefront); see jumia-countries.
+- **Params:** `country` (string, **required**) — Jumia country storefront; `page` (integer, optional) — 1-based result page, 1 to 50; `q` (string, **required**) — Product search keyword

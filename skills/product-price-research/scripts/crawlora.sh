@@ -138,6 +138,11 @@ case "$path" in
   /ikea/store) route_allowed=true ;;
   /ikea/stores) route_allowed=true ;;
   /ikea/suggest) route_allowed=true ;;
+  /jumia/categories) route_allowed=true ;;
+  /jumia/category) route_allowed=true ;;
+  /jumia/countries) route_allowed=true ;;
+  /jumia/product) route_allowed=true ;;
+  /jumia/search) route_allowed=true ;;
   /kohls/category) route_allowed=true ;;
   /kohls/product/reviews) route_allowed=true ;;
   /kohls/stores) route_allowed=true ;;
@@ -415,6 +420,11 @@ route_method_regexes=(
   '^GET:/ikea/store$'
   '^GET:/ikea/stores$'
   '^GET:/ikea/suggest$'
+  '^GET:/jumia/categories$'
+  '^GET:/jumia/category$'
+  '^GET:/jumia/countries$'
+  '^GET:/jumia/product$'
+  '^GET:/jumia/search$'
   '^GET:/kohls/category$'
   '^GET:/kohls/product/reviews$'
   '^GET:/kohls/stores$'

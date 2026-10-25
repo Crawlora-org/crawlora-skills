@@ -1,7 +1,7 @@
 {
   "name": "crawlora",
-  "version": "1.0.2",
-  "description": "169 Crawlora Agent Skills for structured public web data (search, e-commerce, social, finance, maps, app stores, media, reviews), plus the hosted Crawlora MCP server.",
+  "version": "1.0.3",
+  "description": "174 Crawlora Agent Skills for structured public web data (search, e-commerce, social, finance, maps, app stores, media, reviews), plus the hosted Crawlora MCP server.",
   "author": {
     "name": "Crawlora",
     "url": "https://crawlora.net"

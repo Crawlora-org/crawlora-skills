@@ -25,18 +25,18 @@ see [`crawlora-mcp`](https://github.com/Crawlora-org/crawlora-mcp).)
 | Skill | What it does | Platforms |
 |---|---|---|
 | [`crawlora`](skills/crawlora) | Umbrella catalog skill — fetch structured public data from **3,673** Crawlora MCP tools; explains hosted API scope, credit use, and durable crawl/research jobs. | 475 public-data platform groups |
-| [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (130 tools) |
-| [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, AliExpress, Shopify and DTC brands, BigCommerce, Boots, CVS, Lazada, Otto, SparkFun, Tokopedia, Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, Walgreens (stores only), IKEA, Chewy |
+| [`crawlora-datasets`](skills/crawlora-datasets) | Search/facet/fetch Crawlora's pre-built hosted datasets in bulk (jobs, apps, GitHub/Instagram/X users, housing markets, SEC companies, Steam, TrustMRR, and more) instead of live-crawling one record at a time. | Datasets (136 tools) |
+| [`product-price-research`](skills/product-price-research) | Find products, compare prices/sellers, pull marketplace/retailer reviews. | Amazon, eBay, AliExpress, Shopify and DTC brands, BigCommerce, Boots, CVS, Lazada, Jumia, Otto, SparkFun, Tokopedia, Shop.app, Target, Costco, Zalando, Walmart, H&M, Kohl's, Lululemon, Macy's, Nike, Old Navy, Sam's Club, Ulta Beauty, Wayfair, Wish, Zappos, Zara, Adidas, Best Buy, Home Depot, Sephora, SHEIN, Walgreens (stores only), IKEA, Chewy |
 | [`youtube-research`](skills/youtube-research) | Timestamped transcript evidence, comments, video/channel metadata, and search — no `yt-dlp`. | YouTube |
 | [`app-review-mining`](skills/app-review-mining) | App details, reviews, ratings, rankings, similar apps (ASO). | App Store, Google Play |
 | [`app-store-research`](skills/app-store-research) | Cross-store app and extension discovery, ratings, reviews, permissions, privacy, and release history. | Apple App Store, Google Play, Chrome Web Store |
-| [`sports-betting-research`](skills/sports-betting-research) | Time-stamped public sportsbook and viewer-market odds with schedule and game-status context. | DraftKings Sportsbook, ESPN, SofaScore, Flashscore |
+| [`sports-betting-research`](skills/sports-betting-research) | Time-stamped public sportsbook odds, game status, and source-attributed market commentary. | FanDuel, DraftKings Sportsbook, ESPN, SofaScore, Flashscore |
 | [`serp-keyword-research`](skills/serp-keyword-research) | Localized SERP samples, autocomplete ideas, and Google Trends, with provider-specific coverage limits. | Google, Bing, Brave, DuckDuckGo, Yahoo, Baidu, Yandex, Qwant/Startpage suggestions, Google Trends |
 | [`topic-demand-validation`](skills/topic-demand-validation) | Cross-check query phrasing, search trends, SERP competition, and a bounded social sample before testing a topic. | Google Suggest/Trends, Bing, Brave, Reddit, TikTok, YouTube |
 | [`finance-markets-research`](skills/finance-markets-research) | Stock quotes/financials, SEC filings & insider trades, congressional stock disclosures, crypto markets, VC/PE profiles. | Yahoo Finance, SEC EDGAR, Congress, CoinGecko, PitchBook |
 | [`crypto-market-research`](skills/crypto-market-research) | Coin discovery, market comparisons, global metrics, exchanges, categories, news, unlocks, and treasuries. | CoinGecko |
 | [`news-briefing-research`](skills/news-briefing-research) | Source-aware recent-news briefings, publisher comparisons, and coverage timelines. | GDELT, BBC, CNN, The Guardian, Yahoo News |
-| [`prediction-markets-research`](skills/prediction-markets-research) | Odds, order books, price history, and forecast questions. | Polymarket, Kalshi, Metaculus |
+| [`prediction-markets-research`](skills/prediction-markets-research) | Odds, order books, price history, forecast questions, and selected public market rules. | Polymarket, Kalshi, Metaculus, DraftKings Predictions |
 | [`movie-tv-research`](skills/movie-tv-research) | Cast/crew, ratings/reviews, streaming availability, box-office numbers. | IMDb, TMDB, JustWatch, Letterboxd, Rotten Tomatoes, Metacritic, Box Office Mojo |
 | [`entertainment-discovery-research`](skills/entertainment-discovery-research) | Cross-source title discovery, score comparisons, reviews, similar titles, and streaming offers. | IMDb, TMDB, JustWatch, Rotten Tomatoes, Metacritic |
 | [`startup-launch-research`](skills/startup-launch-research) | Public launch, verified-revenue, and crowdfunding campaign screening. | Product Hunt, TrustMRR, Kickstarter |
@@ -166,9 +166,14 @@ self-contained and do not require the broader bundles to be installed.
 | [`youtube-content-gap-analysis`](skills/youtube-content-gap-analysis) | Sampled topic/format maps and content hypotheses supported by metadata and available captions. | YouTube |
 | [`company-identity-reconciliation`](skills/company-identity-reconciliation) | Scoped company/brand/registrant ID crosswalks with provenance, relationships, and unresolved matches. | Public domains, LinkedIn, SEC, employer records |
 | [`pet-care-provider-shortlisting`](skills/pet-care-provider-shortlisting) | Provider/service fit with starting-rate units, public experience evidence and unverified availability. | Rover sitters/walkers and dog trainers |
+| [`ai-crawler-readiness`](skills/ai-crawler-readiness) | Snapshot benchmarks of public llms.txt files and AI-crawler robots policies, with unknown states kept separate. | AI-readiness dataset, public site files |
+| [`casino-game-research`](skills/casino-game-research) | Public casino game catalogs and provider-published game attributes; no wager strategy. | FanDuel Casino, DraftKings Casino |
+| [`fantasy-sports-research`](skills/fantasy-sports-research) | Dated fantasy contest formats, rules, slates, and provider-published projections. | FanDuel Research, DraftKings DFS and Pick6 |
+| [`german-amateur-football-research`](skills/german-amateur-football-research) | Local fixtures, clubs, competitions, tables, and player match records across German amateur football. | FUSSBALL.DE |
+| [`horse-racing-research`](skills/horse-racing-research) | Race cards, horse histories, track schedules, and dated results with provider IDs preserved. | FanDuel Racing, DraftKings Racing |
 
-The repository contains **169 installable skills**. The Claude Code marketplace
-bundle includes **131 skills**; the narrower per-platform alternatives below remain
+The repository contains **174 installable skills**. The Claude Code marketplace
+bundle includes **136 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -322,6 +327,10 @@ The [2026-10-19 workflow expansion](audits/workflow-expansion-2026-10-19.md)
 adds cross-corpus research, Flashscore match analysis, medication information,
 and sports team/player research, plus focused SERP, betting, viewing, and TikTok
 trend coverage.
+
+The [2026-10-25 workflow expansion](audits/workflow-expansion-2026-10-25.md)
+adds five focused research skills and expands Jumia, FanDuel, and DraftKings
+coverage while keeping unexported API routes out of the packaged catalog.
 
 The [2026-10-19 audit](audits/coverage-2026-10-19.md) maps every catalog group
 and compares source API routes with the published skill contract. Its
