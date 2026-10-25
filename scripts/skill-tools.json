@@ -1431,5 +1431,29 @@
     "yahoo_finance_lookup",
     "yahoo_finance_ticker_financials",
     "yahoo_finance_ticker_info"
+  ],
+  "business-location-screening": [
+    "apple_maps_directions",
+    "apple_maps_eta",
+    "apple_maps_place",
+    "apple_maps_search",
+    "apple_maps_transit_departures",
+    "bing_search",
+    "datasets_google_map_facets",
+    "datasets_google_map_item",
+    "datasets_google_map_nearby",
+    "datasets_google_map_search",
+    "datasets_housing_markets_item",
+    "datasets_housing_markets_search",
+    "datasets_numbeo_cities_item",
+    "datasets_numbeo_cities_search",
+    "google_map_place",
+    "google_map_place_reviews",
+    "google_map_search",
+    "web_scrape",
+    "yelp_business",
+    "yelp_business_review_highlights",
+    "yelp_business_reviews",
+    "yelp_search"
   ]
 }
