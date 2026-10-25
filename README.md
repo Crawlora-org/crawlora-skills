@@ -173,9 +173,10 @@ self-contained and do not require the broader bundles to be installed.
 | [`horse-racing-research`](skills/horse-racing-research) | Race cards, horse histories, track schedules, and dated results with provider IDs preserved. | FanDuel Racing, DraftKings Racing |
 | [`consumer-product-opportunity`](skills/consumer-product-opportunity) | Public demand, marketplace-supply, and customer-feedback signals for physical product launch hypotheses. | Amazon, AliExpress, Jumia, Google Trends, Reddit |
 | [`company-fundamentals-comparison`](skills/company-fundamentals-comparison) | Period-matched public-company financial statements and source-qualified peer metrics, without valuation recommendations. | SEC EDGAR, Yahoo Finance |
+| [`business-location-screening`](skills/business-location-screening) | Early comparisons of user-supplied candidate sites using competitor supply, map access, and explicit real-estate/regulatory gaps. | Google Maps, Apple Maps, Yelp, housing and Numbeo datasets |
 
-The repository contains **176 installable skills**. The Claude Code marketplace
-bundle includes **138 skills**; the narrower per-platform alternatives below remain
+The repository contains **177 installable skills**. The Claude Code marketplace
+bundle includes **139 skills**; the narrower per-platform alternatives below remain
 individually installable through the `skills` CLI.
 
 ### Per-platform skills
@@ -337,6 +338,10 @@ coverage while keeping unexported API routes out of the packaged catalog.
 The [2026-10-25 opportunity expansion](audits/skill-opportunity-expansion-2026-10-25.md)
 adds physical-product opportunity screening and public-company fundamentals
 comparison with source and period controls.
+
+The [2026-10-25 location-screening expansion](audits/business-location-screening-2026-10-25.md)
+adds an early candidate-site comparison workflow with explicit zoning, rent,
+demographic, and footfall evidence gaps.
 
 The [2026-10-19 audit](audits/coverage-2026-10-19.md) maps every catalog group
 and compares source API routes with the published skill contract. Its

@@ -6,12 +6,12 @@
   },
   "metadata": {
     "description": "Crawlora Agent Skills — structured public web data (search, e-commerce, social, finance, app stores, media, reviews, travel, sports, collectibles, jobs, prediction markets, gaming, real estate, and more) via the Crawlora REST API.",
-    "version": "1.24.26"
+    "version": "1.24.27"
   },
   "plugins": [
     {
       "name": "crawlora-skills",
-      "description": "138 Agent Skills for structured public web research through the Crawlora REST API. The bundle includes AI-crawler readiness, physical-product opportunity research, public-company fundamentals comparison, fantasy sports, horse racing, and workflows across media, commerce, finance, travel, and more. Additional per-platform skills are available through the skills CLI.",
+      "description": "139 Agent Skills for structured public web research through the Crawlora REST API, including AI-crawler readiness, physical-product opportunity research, public-company fundamentals comparison, business-location screening, sports, fantasy, horse racing, commerce, media, finance, and more. Additional per-platform skills are available through the skills CLI.",
       "source": "./",
       "homepage": "https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills",
       "repository": "https://github.com/Crawlora-org/crawlora-skills",
@@ -162,7 +162,8 @@
         "./skills/german-amateur-football-research",
         "./skills/horse-racing-research",
         "./skills/consumer-product-opportunity",
-        "./skills/company-fundamentals-comparison"
+        "./skills/company-fundamentals-comparison",
+        "./skills/business-location-screening"
       ]
     }
   ]

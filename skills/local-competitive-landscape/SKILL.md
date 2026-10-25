@@ -1,6 +1,6 @@
 ---
 name: local-competitive-landscape
-description: Compare observed local business supply, categories, attributes, hours, and review-sample themes across defined areas using Crawlora's Google Maps dataset, live Google Maps, Apple Maps, and Yelp. Use for matched-area competitor landscapes and coverage comparisons, not lead generation, demand forecasts, sales estimates, or site-viability claims.
+description: Compare observed local business supply, categories, attributes, hours, and review-sample themes across defined areas using Crawlora's Google Maps dataset, live Google Maps, Apple Maps, and Yelp. Use for matched-area competitor landscapes and coverage comparisons; for user-supplied candidate-site screening with access and diligence gaps, use business-location-screening. Neither estimates demand, sales, or site viability.
 ---
 
 # Local competitive landscape
@@ -8,6 +8,8 @@ description: Compare observed local business supply, categories, attributes, hou
 Compare like-for-like observations of businesses across defined areas. Produce a
 traceable market map without turning search-result coverage into a population,
 demand, revenue, or site-selection estimate.
+For a pre-screen of user-supplied candidate business locations that also needs
+route/access evidence and a missing-data checklist, use business-location-screening.
 
 ## Setup and API contract
 
