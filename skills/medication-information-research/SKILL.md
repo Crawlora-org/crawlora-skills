@@ -1,6 +1,6 @@
 ---
 name: medication-information-research
-description: Retrieve source-attributed GoodRx medication, condition, and health information with author and review dates, and cross-check safety-critical claims against official FDA or NIH sources. Use for general information, not personalized diagnosis, dosing, or treatment decisions.
+description: Retrieve source-attributed GoodRx medication and health information with author and review dates. Treat it as secondary material; safety-critical claims remain unverified without official source text. Not for personalized diagnosis, dosing, or treatment decisions.
 allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
@@ -13,11 +13,13 @@ person or animal.
 
 ## Access and source limits
 
-Set `CRAWLORA_API_KEY` and use the bundled `scripts/crawlora.sh`. It sends the
-key to Crawlora over HTTPS, not to GoodRx or FDA. Check HTTP status and the
-application `code`; stop on authentication errors, back off on `429`, and retry
-a transient upstream failure once. Bound page requests to the user's question.
-The selected routes are read-only. Do not submit medical or prescription data.
+Set `CRAWLORA_API_KEY` and use the bundled `scripts/crawlora.sh`. Its allowlist
+contains GoodRx read-only routes only; it sends the key to Crawlora over HTTPS,
+not to GoodRx or FDA. Check HTTP status and the application `code`; stop on
+authentication errors, back off on `429`, and retry a transient upstream failure
+once. Bound page requests to the user's question. Do not submit medical or
+prescription data, and do not use generic web-search or URL-scrape routes through
+this skill.
 
 GoodRx is an editorial secondary source. Preserve its article URL, authors,
 medical reviewers, and published/modified/reviewed dates where returned. GoodRx
@@ -55,18 +57,18 @@ and report any uncertainty.
    how two named medicines are described. Preserve GoodRx's stated takeaways;
    do not turn a comparison into a treatment ranking or substitute choice.
 
-## Verify claims and write the brief
+## Interpret claims and write the brief
 
 - For dosage, contraindications, interactions, pregnancy, children, serious
-  side effects, or other safety-critical claims, search official sources with
-  `/web/search` using FDA, DailyMed, or MedlinePlus domains, then read the exact
-  returned page with `/web/scrape` when available. Match the drug name, form,
-  route, and product identity. FDA resources point consumers to FDA-approved
-  patient labeling, Drugs@FDA, DailyMed, and NIH MedlinePlus; use GoodRx as an
-  accessible secondary explanation, not as a replacement for those sources.
-- If official material cannot be found or matched, label the point
-  `GoodRx-only` or `not independently verified`. Do not bridge a missing
-  population, formulation, or product with an assumption.
+  side effects, or other safety-critical claims, do not treat GoodRx as an
+  official source. The bundled helper cannot fetch FDA, DailyMed, or MedlinePlus
+  pages. If official source text is already available in the user's materials,
+  match the drug, formulation, and route before summarizing it; a link alone is
+  not verification. Otherwise label the point `GoodRx-only` or `not
+  independently verified` and direct the user to the official label and a
+  qualified clinician or pharmacist.
+- Do not bridge a missing population, formulation, or product with an
+  assumption, or use generic web endpoints to expand this skill's source scope.
 - Keep source statements separate from your plain-language summary. Preserve
   the exact source section, link, publication/review date, and retrieval time.
   A GoodRx list of condition-related medicines, FAQ, or alternative is not
@@ -84,11 +86,10 @@ scripts/crawlora.sh /goodrx/drug-guide slug=torsemide topic=interactions
 scripts/crawlora.sh /goodrx/health-topics section=well-being
 scripts/crawlora.sh /goodrx/health-articles section=well-being topic=sleep page=1 page_size=10
 scripts/crawlora.sh /goodrx/health-article path=well-being/sleep/cbd-for-sleep
-scripts/crawlora.sh -X POST /web/search '{"q":"FDA atorvastatin label interactions","include_domains":["fda.gov","dailymed.nlm.nih.gov"],"limit":5}'
-scripts/crawlora.sh -X POST /web/scrape '{"url":"https://www.fda.gov/drugs/information-consumers-and-patients-drugs/find-information-about-drug","formats":["markdown"]}'
 ```
 
 The deliverable should identify the question and population, summarize the
-relevant GoodRx page and any official cross-check, link every source, retain
-review/publication dates, and list unsupported or conflicting claims. A source
-page or scraped summary is not a personalized medical answer.
+relevant GoodRx page, link each source, retain review/publication dates, and list
+unsupported or conflicting claims. Identify any safety-critical point that is
+GoodRx-only or not independently verified. This is not a personalized medical
+answer.

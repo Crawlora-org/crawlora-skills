@@ -4,13 +4,9 @@
 # Get a free key (2,000 credits/mo, no card) at https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills.
 #
 # Usage:
-#   GET  :  crawlora.sh /amazon/search k=laptop s=relevanceblender
-#   GET  :  crawlora.sh /youtube/transcript/dQw4w9WgXcQ
-#   POST :  crawlora.sh -X POST /google/search '{"keyword":"web scraping api","language":"en","country":"us"}'
-#   POST :  crawlora.sh -X POST /google/trends/explore/interest-over-time '{"keywords":["bitcoin"]}'
+#   GET  :  crawlora.sh /path
 #
-# GET key=value args become the query string. POST takes one JSON body argument
-# (or pass it with -d '<json>'). Prints raw JSON to stdout — pipe into `jq`.
+# GET key=value args become the query string. Prints raw JSON to stdout — pipe into `jq`.
 set -euo pipefail
 
 : "${CRAWLORA_API_KEY:?Set CRAWLORA_API_KEY first — get a free key at https://crawlora.net?utm_source=github&utm_medium=referral&utm_campaign=crawlora-skills}"
@@ -24,21 +20,15 @@ esac
 base="https://api.crawlora.net/api/v1"
 
 method="GET"
-body=""
 args=()
 while [ $# -gt 0 ]; do
   case "$1" in
-    -X)
-      [ $# -ge 2 ] || { echo "-X requires an HTTP method" >&2; exit 2; }
-      method="$2"; shift 2 ;;
-    -d)
-      [ $# -ge 2 ] || { echo "-d requires a request body" >&2; exit 2; }
-      body="$2"; shift 2 ;;
-    *)  args+=("$1"); shift ;;
+    -X|-d) echo "only GET are supported by the medication-information-research skill" >&2; exit 2 ;;
+    *) args+=("$1"); shift ;;
   esac
 done
 
-[ "${#args[@]}" -ge 1 ] || { echo "usage: crawlora.sh [-X METHOD] /path [k=v ... | json-body]" >&2; exit 2; }
+[ "${#args[@]}" -ge 1 ] || { echo "usage: crawlora.sh /<route> [k=v ...]" >&2; exit 2; }
 path="${args[0]}"
 rest=("${args[@]:1}")
 
@@ -46,9 +36,9 @@ rest=("${args[@]:1}")
 # caller-account surfaces and unrelated API routes out of the helper even if
 # someone supplies an undocumented path directly.
 case "$method" in
-  GET|POST) ;;
+  GET) ;;
   *)
-    echo "only GET and POST are supported by the medication-information-research skill" >&2
+    echo "only GET are supported by the medication-information-research skill" >&2
     exit 2
     ;;
 esac
@@ -83,8 +73,6 @@ case "$path" in
   /goodrx/health-articles) route_allowed=true ;;
   /goodrx/health-topics) route_allowed=true ;;
   /goodrx/pet-medications) route_allowed=true ;;
-  /web/scrape) route_allowed=true ;;
-  /web/search) route_allowed=true ;;
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
@@ -102,40 +90,6 @@ if [ "$route_allowed" = false ]; then
   exit 2
 fi
 
-# Enforce the documented HTTP method for each route, not just the global method set.
-route_method_allowed=false
-route_method_regexes=(
-  '^GET:/goodrx/answer$'
-  '^GET:/goodrx/answers$'
-  '^GET:/goodrx/brands$'
-  '^GET:/goodrx/class$'
-  '^GET:/goodrx/classes$'
-  '^GET:/goodrx/comparison$'
-  '^GET:/goodrx/comparisons$'
-  '^GET:/goodrx/condition$'
-  '^GET:/goodrx/condition-drugs$'
-  '^GET:/goodrx/conditions$'
-  '^GET:/goodrx/drug-guide$'
-  '^GET:/goodrx/drug-guides$'
-  '^GET:/goodrx/drug-info$'
-  '^GET:/goodrx/health-article$'
-  '^GET:/goodrx/health-articles$'
-  '^GET:/goodrx/health-topics$'
-  '^GET:/goodrx/pet-medications$'
-  '^POST:/web/scrape$'
-  '^POST:/web/search$'
-)
-for route_method_regex in ${route_method_regexes[@]+"${route_method_regexes[@]}"}; do
-  if [[ "$method:$path" =~ $route_method_regex ]]; then
-    route_method_allowed=true
-    break
-  fi
-done
-if [ "$route_method_allowed" = false ]; then
-  echo "method is not allowed for this medication-information-research route" >&2
-  exit 2
-fi
-
 
 
 # Keep the API key out of the curl process command line. A private temporary
@@ -147,27 +101,14 @@ trap 'rm -f "$curl_config"' EXIT
 printf 'header = "x-api-key: %s"\n' "$CRAWLORA_API_KEY" >"$curl_config"
 auth=(--config "$curl_config")
 
-if [ "$method" = "GET" ]; then
-  # -G + --data-urlencode URL-encodes each value (so spaces etc. are safe).
-  qs=()
-  for kv in ${rest[@]+"${rest[@]}"}; do
-    [ -n "$kv" ] || continue
-    # curl treats both @file and name@file forms as local-file input for
-    # --data-urlencode. Reject @ outright so query arguments cannot disclose
-    # local files to the Crawlora API.
-    case "$kv" in
-      *@*) echo "@ is not allowed in query arguments" >&2; exit 2 ;;
-    esac
-    qs+=(--data-urlencode "$kv")
-  done
-  # -q must be the first curl option: ignore any user ~/.curlrc so inherited
-  # config cannot redirect the request, add uploads, or alter credential use.
-  curl -q -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
-else
-  [ -n "$body" ] || body="${rest[0]:-}"
-  [ -n "$body" ] || body='{}'
-  # Stream the body on stdin so curl never interprets a user value as its
-  # @file shorthand (and cannot read local files supplied in a request body).
-  printf '%s' "$body" | curl -q -fsS -X "$method" "${auth[@]}" \
-    -H "Content-Type: application/json" --data-binary @- "${base}${path}"
-fi
+# GET-only skill: no request body or alternate method is accepted.
+# -G + --data-urlencode URL-encodes each value (so spaces etc. are safe).
+qs=()
+for kv in ${rest[@]+"${rest[@]}"}; do
+  [ -n "$kv" ] || continue
+  case "$kv" in
+    *@*) echo "@ is not allowed in query arguments" >&2; exit 2 ;;
+  esac
+  qs+=(--data-urlencode "$kv")
+done
+curl -q -fsS -G "${auth[@]}" ${qs[@]+"${qs[@]}"} "${base}${path}"
