@@ -1,6 +1,6 @@
 ---
 name: football-match-performance-analysis
-description: Explain how a completed football (soccer) match unfolded using SofaScore event statistics, incidents, lineups, and match context. Use for requests like “why did this side control the match?” or “write a post-match statistical brief”; use multi-sport-match-research for reconciling Flashscore and LiveScore records.
+description: Explain a completed football (soccer) match from SofaScore statistics, incidents, and lineups, including beginner-friendly briefs for coaches or parents. Use for sourced post-match explanations; use multi-sport-match-research for basic cross-provider fixture checks.
 ---
 
 # Football match (soccer) performance analysis
@@ -30,6 +30,25 @@ Use one match as the default scope. Ask before collecting a broad match cohort o
 - Do not compare periods or categories with different definitions as if they were the same measure. Explain missing values, mismatched denominators, or unclear labels.
 - Recent form and head-to-head records are small descriptive samples, not forecasts. Odds are market snapshots, not an explanation of match quality.
 - Do not invent a tactical claim when the API exposes only aggregate stats. State the evidence gap plainly.
+
+## Beginner-friendly coach or parent view
+
+When the reader is new to match analysis, keep the same evidence scope and make
+the explanation easier to follow:
+
+1. Choose at most three useful observations. Keep each source label, value, and
+   period beside the plain-language explanation; define a metric only when its
+   meaning is clear from the source.
+2. Separate what SofaScore recorded from what the numbers might suggest. Do not
+   turn team-level totals into a verdict about a young player's ability, effort,
+   or coaching quality.
+3. Offer one reflection prompt tied to the available incident timeline, such as
+   what the viewer noticed before or after a goal or substitution. If the user
+   already has match footage, frame a question they can check in that recording;
+   these endpoints do not provide video or clips.
+4. If useful, organize the brief as “what I noticed”, “what the source recorded”,
+   and “what to check next”. Avoid prescribing a drill or tactical change from
+   aggregate match data alone.
 
 ## Deliverable
 
