@@ -1128,9 +1128,7 @@
     "goodrx_health_article",
     "goodrx_health_articles",
     "goodrx_health_topics",
-    "goodrx_pet_medications",
-    "web_search",
-    "web_scrape"
+    "goodrx_pet_medications"
   ],
   "sports-team-player-research": [
     "flashscore_search",
@@ -1355,8 +1353,7 @@
   "ai-crawler-readiness": [
     "datasets_llms_facets",
     "datasets_llms_item",
-    "datasets_llms_search",
-    "web_scrape"
+    "datasets_llms_search"
   ],
   "horse-racing-research": [
     "draftkings_racing_race_info",

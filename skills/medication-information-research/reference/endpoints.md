@@ -6,7 +6,7 @@ Only the endpoints used by this workflow. Call them via `scripts/crawlora.sh` (s
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**19 endpoints across 3 platform group(s).**
+**17 endpoints across 1 platform group(s).**
 
 ## GoodRx (17)
 
@@ -111,21 +111,3 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /goodrx/pet-medications`
 - **What:** List GoodRx pet medications. Lists the drugs that have a GoodRx information page for cats and dogs (21 on 2026-10-03). Each entry has the drug `slug` and the URL of its pet page; the `slug` can be passed to the drug information lookup with `audience=pets`. A retained copy up to about a day old is returned, flagged `X-Availability-Mode: stale`, if GoodRx is unreachable.
 - **Params:** _none_
-
-## Retrieval (1)
-
-### `web_search`
-
-- **HTTP:** `POST /web/search`
-- **What:** Search the public web. Search Brave's public web results. limit (1-50, default 10) is honoured by reading up to 3 result pages; each successful result page read costs 3 credits, and optional page reads (5 credits each) remain scoped to each result host. country and language select the result locale (defaults us and en-us).
-- **Params:** `request` (object, **required**) — Search request
-- **REST body:** Send the value of the MCP argument `request` directly as the JSON body; do not wrap it in a `request` property.
-
-## Web (1)
-
-### `web_scrape`
-
-- **HTTP:** `POST /web/scrape`
-- **What:** Scrape a URL into markdown, HTML, links or metadata. Fetches a single public URL and returns clean content in the requested formats (markdown, html, raw_html, links, metadata). The request body IS the ScrapeOption object itself — e.g. {"url": "https://example.com"} — do not wrap it in an extra key. With render=auto the request starts as a fast HTTP fetch and escalates to a real browser when the page is blocked or rendered with JavaScript. only_main_content (default true) strips navigation, headers, footers and other boilerplate before conversion. Only public pages are supported; respect each site's terms of use and robots directives. A handful of popular sites (Amazon, Reddit, Yelp, LinkedIn, and others) already have a dedicated, more reliable endpoint elsewhere in this API — a failed scrape against one of them names it. A Reddit URL that maps onto a dedicated Reddit endpoint (listings, search, comment threads, user and domain pages) is answered by that endpoint instead, and its response is returned as-is in data with an X-Routed-To header; send dedicated=false to always get the scraped page.
-- **Params:** `scrapeOption` (object, **required**) — Scrape options
-- **REST body:** Send the value of the MCP argument `scrapeOption` directly as the JSON body; do not wrap it in a `scrapeOption` property.

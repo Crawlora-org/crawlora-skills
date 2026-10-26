@@ -98,7 +98,7 @@ self-contained and do not require the broader bundles to be installed.
 |---|---|---|
 | [`cross-corpus-research`](skills/cross-corpus-research) | Bounded cited briefs across public web, papers, and indexed developer documentation with source revisions and partial-coverage reporting. | Public web, arXiv, Europe PMC, registered developer-document sources |
 | [`flashscore-match-analysis`](skills/flashscore-match-analysis) | Detailed match reports from covered Flashscore player statistics, lineups, sport-specific score feeds, and editorial evidence. | Flashscore |
-| [`medication-information-research`](skills/medication-information-research) | Source-attributed medication and health information with review dates and official-source cross-checks; no personalized treatment advice. | GoodRx, FDA, DailyMed, MedlinePlus |
+| [`medication-information-research`](skills/medication-information-research) | GoodRx-based medication and health information with review dates; safety-critical claims remain explicitly unverified without official source text. | GoodRx |
 | [`sports-team-player-research`](skills/sports-team-player-research) | Player and team dossiers with roster, career, match-log, transfer, and injury-history evidence kept source-qualified. | Flashscore |
 | [`google-maps-research`](skills/google-maps-research) | Current place lookups and comparisons, review samples, and photos. | Google Maps (four live tools) |
 | [`local-business-prospecting`](skills/local-business-prospecting) | Deduplicated business shortlists with public contacts and qualification evidence. | Google Maps live + dataset, Apple Maps, Yelp, business websites |
@@ -166,7 +166,7 @@ self-contained and do not require the broader bundles to be installed.
 | [`youtube-content-gap-analysis`](skills/youtube-content-gap-analysis) | Sampled topic/format maps and content hypotheses supported by metadata and available captions. | YouTube |
 | [`company-identity-reconciliation`](skills/company-identity-reconciliation) | Scoped company/brand/registrant ID crosswalks with provenance, relationships, and unresolved matches. | Public domains, LinkedIn, SEC, employer records |
 | [`pet-care-provider-shortlisting`](skills/pet-care-provider-shortlisting) | Provider/service fit with starting-rate units, public experience evidence and unverified availability. | Rover sitters/walkers and dog trainers |
-| [`ai-crawler-readiness`](skills/ai-crawler-readiness) | Snapshot benchmarks of public llms.txt files and AI-crawler robots policies, with unknown states kept separate. | AI-readiness dataset, public site files |
+| [`ai-crawler-readiness`](skills/ai-crawler-readiness) | Snapshot benchmarks from the AI-readiness dataset; domains outside its indexed census remain unknown. | AI-readiness dataset |
 | [`casino-game-research`](skills/casino-game-research) | Public casino game catalogs and provider-published game attributes; no wager strategy. | FanDuel Casino, DraftKings Casino |
 | [`fantasy-sports-research`](skills/fantasy-sports-research) | Dated fantasy contest formats, rules, slates, and provider-published projections. | FanDuel Research, DraftKings DFS and Pick6 |
 | [`german-amateur-football-research`](skills/german-amateur-football-research) | Local fixtures, clubs, competitions, tables, and player match records across German amateur football. | FUSSBALL.DE |

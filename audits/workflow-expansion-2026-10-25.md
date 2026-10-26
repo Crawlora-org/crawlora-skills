@@ -15,7 +15,7 @@ instead of exposing one skill per platform:
 
 | Workflow | Selected surface | Reason and boundary |
 |---|---|---|
-| ai-crawler-readiness | 3 AI-readiness dataset operations and web_scrape | Benchmark file and robots-policy signals. The dataset is a top-1M snapshot; blocked/error states stay unknown. No claim about AI citation visibility or search ranking. |
+| ai-crawler-readiness | 3 AI-readiness dataset operations | Benchmark the stored top-1M snapshot. Domains outside the dataset remain unknown; this workflow does not fetch live site files or claim AI citation visibility, traffic, or search ranking. |
 | horse-racing-research | 13 FanDuel Racing and 3 DraftKings Racing tools | Race cards, horse history, schedules, and results form a distinct race-day and retrospective workflow. Odds remain source snapshots, not picks. |
 | fantasy-sports-research | DraftKings DFS/Pick6 and FanDuel Research projections | Rules, contest formats, slates, and provider projections are distinct from sportsbook odds. The skill does not construct lineups or recommend entries. |
 | casino-game-research | DraftKings casino guides/categories and FanDuel casino catalogs | The endpoints expose public descriptions and selected game attributes. The skill is informational and excludes strategy, staking, and return claims. |
