@@ -60,6 +60,9 @@ case "$path" in
   /datasets/airbnb-markets/facets) route_allowed=true ;;
   /datasets/airbnb-markets/nearby) route_allowed=true ;;
   /datasets/airbnb-markets/search) route_allowed=true ;;
+  /datasets/apple-maps-places/facets) route_allowed=true ;;
+  /datasets/apple-maps-places/nearby) route_allowed=true ;;
+  /datasets/apple-maps-places/search) route_allowed=true ;;
   /datasets/apple-podcasts-shows/facets) route_allowed=true ;;
   /datasets/apple-podcasts-shows/search) route_allowed=true ;;
   /datasets/apps-charts/search) route_allowed=true ;;
@@ -155,6 +158,7 @@ esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
   '^/datasets/airbnb-markets/items/[^/]+$'
+  '^/datasets/apple-maps-places/items/[^/]+$'
   '^/datasets/apple-podcasts-shows/items/[^/]+$'
   '^/datasets/bbb-businesses/items/[^/]+$'
   '^/datasets/bbb-scamtracker-reports/items/[^/]+$'

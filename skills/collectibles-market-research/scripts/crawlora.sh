@@ -108,6 +108,7 @@ case "$path" in
   /psa/price-guide/categories) route_allowed=true ;;
   /psa/price-guide/search) route_allowed=true ;;
   /psa/price-guide/set) route_allowed=true ;;
+  /psa/price-guide/sets) route_allowed=true ;;
   /psa/probatfacts/categories) route_allowed=true ;;
   /psa/probatfacts/gallery) route_allowed=true ;;
   /psa/probatfacts/subject) route_allowed=true ;;

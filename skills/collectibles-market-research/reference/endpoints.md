@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**82 endpoints across 10 platform group(s).**
+**83 endpoints across 10 platform group(s).**
 
 ## Alt (9)
 
@@ -210,7 +210,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Goldin's search suggestions for a keyword. Goldin's own search-suggestions/autocomplete for a partial keyword, matching the site's own search box typeahead. keyword is optional -- when omitted, returns Goldin's current trending/popular searches instead of an error.
 - **Params:** `keyword` (string, optional) — Partial search query, e.g. \; `limit` (integer, optional) — Max suggestions to return, defaults to 8, capped at 20
 
-## PSA (19)
+## PSA (20)
 
 ### `psa_autographfacts_categories`
 
@@ -277,6 +277,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /psa/price-guide/set`
 - **What:** Get a PSA Price Guide set's price table. Fetches one PSA Price Guide set's full grade-by-grade price table: every card in the set with PSA's own formatted price per grade column (the set's own grade columns vary -- a vintage set may carry more/lower grade tiers than a modern one). category_path, set_path and set_id together identify the set; use the matching fields from a psa-price-guide-search result, or category_path from psa-price-guide-categories combined with a set_path/set_id found by browsing PSA's own category page.
 - **Params:** `category_path` (string, **required**) — Category URL path segment, from psa-price-guide-categories or a psa-price-guide-search result; `set_id` (string, **required**) — PSA's own numeric set id, from a psa-price-guide-search result; `set_path` (string, **required**) — Set URL path segment, from a psa-price-guide-search result
+
+### `psa_price_guide_sets`
+
+- **HTTP:** `GET /psa/price-guide/sets`
+- **What:** Search PSA Price Guide set names. Searches PSA Price Guide by set name (for example "1974 topps" or "super bowl") using PSA's own browse-by-category pages. It matches set names only: it does not search card or player names, and results carry no card items. Use psa-price-guide-search for card and player search while PSA's own search is available. Every word of the query must start a word of the set name; exact and leading matches rank first. Each result's category_path, set_path and set_id are the inputs to psa-price-guide-set. Set lists are cached for 12 hours, so a first call after a cold start can take longer. If a category's set list cannot be loaded, the other categories still answer and unavailable_categories names the missing ones.
+- **Params:** `category_path` (string, optional) — Restrict to one category. Allowed values: baseball-card-values, basketball-card-values, boxing-card-values, football-card-values, golf-card-values, hockey-card-values, soccer-card-values, non-sports-tcg-card-values, racing-card-values, sports-ticket-values, tennis-card-values, unopened-pack-values, presidential-autograph-values, sports-autograph-values, game-used-bat-values, graded-baseball-values. Default: every category.; `page` (integer, optional) — One-based result page, default 1; `page_size` (integer, optional) — Sets per page, default 50, max 100; `query` (string, **required**) — Set-name search term, e.g. 1974 topps
 
 ### `psa_probatfacts_categories`
 
