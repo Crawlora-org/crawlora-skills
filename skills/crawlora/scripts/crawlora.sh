@@ -118,9 +118,14 @@ case "$path" in
   /alcom/headlines) route_allowed=true ;;
   /alcom/news) route_allowed=true ;;
   /alcom/sections) route_allowed=true ;;
+  /aliexpress/categories) route_allowed=true ;;
+  /aliexpress/category-ids) route_allowed=true ;;
+  /aliexpress/category-products) route_allowed=true ;;
   /aliexpress/reviews) route_allowed=true ;;
   /aliexpress/search) route_allowed=true ;;
   /aliexpress/search-filters) route_allowed=true ;;
+  /aliexpress/suggest) route_allowed=true ;;
+  /aliexpress/trending-searches) route_allowed=true ;;
   /aljazeera/article) route_allowed=true ;;
   /aljazeera/author) route_allowed=true ;;
   /aljazeera/categories) route_allowed=true ;;
@@ -690,6 +695,22 @@ case "$path" in
   /draftkings/sportsbook/quick-links) route_allowed=true ;;
   /draftkings/sportsbook/team) route_allowed=true ;;
   /draftkings/sportsbook/teams) route_allowed=true ;;
+  /dramabox/browse) route_allowed=true ;;
+  /dramabox/categories) route_allowed=true ;;
+  /dramabox/category-books) route_allowed=true ;;
+  /dramabox/channels) route_allowed=true ;;
+  /dramabox/drama) route_allowed=true ;;
+  /dramabox/genres) route_allowed=true ;;
+  /dramabox/home) route_allowed=true ;;
+  /dramabox/more) route_allowed=true ;;
+  /dramabox/performer) route_allowed=true ;;
+  /dramabox/rank) route_allowed=true ;;
+  /dramabox/recommend) route_allowed=true ;;
+  /dramabox/search) route_allowed=true ;;
+  /dramabox/suggest) route_allowed=true ;;
+  /dramabox/tag) route_allowed=true ;;
+  /dramabox/theater) route_allowed=true ;;
+  /dramabox/trending) route_allowed=true ;;
   /duckduckgo/image) route_allowed=true ;;
   /duckduckgo/news) route_allowed=true ;;
   /duckduckgo/search) route_allowed=true ;;
@@ -1479,7 +1500,10 @@ case "$path" in
   /jumia/category) route_allowed=true ;;
   /jumia/countries) route_allowed=true ;;
   /jumia/product) route_allowed=true ;;
+  /jumia/reviews) route_allowed=true ;;
   /jumia/search) route_allowed=true ;;
+  /jumia/sitemap-urls) route_allowed=true ;;
+  /jumia/sitemaps) route_allowed=true ;;
   /justeat/restaurant) route_allowed=true ;;
   /justeat/restaurant/menu) route_allowed=true ;;
   /justeat/search) route_allowed=true ;;
@@ -1529,6 +1553,27 @@ case "$path" in
   /khaleejtimes/headlines) route_allowed=true ;;
   /khaleejtimes/news) route_allowed=true ;;
   /khaleejtimes/sections) route_allowed=true ;;
+  /kick/categories) route_allowed=true ;;
+  /kick/category-clips) route_allowed=true ;;
+  /kick/channel) route_allowed=true ;;
+  /kick/channel-chatroom) route_allowed=true ;;
+  /kick/channel-clips) route_allowed=true ;;
+  /kick/channel-emotes) route_allowed=true ;;
+  /kick/channel-links) route_allowed=true ;;
+  /kick/channel-streams) route_allowed=true ;;
+  /kick/channel-videos) route_allowed=true ;;
+  /kick/clip) route_allowed=true ;;
+  /kick/clips) route_allowed=true ;;
+  /kick/drops) route_allowed=true ;;
+  /kick/gifts) route_allowed=true ;;
+  /kick/languages) route_allowed=true ;;
+  /kick/livestreams) route_allowed=true ;;
+  /kick/search-categories) route_allowed=true ;;
+  /kick/search-channels) route_allowed=true ;;
+  /kick/subcategories) route_allowed=true ;;
+  /kick/subcategory) route_allowed=true ;;
+  /kick/top-channels) route_allowed=true ;;
+  /kick/video) route_allowed=true ;;
   /kickstarter/comments) route_allowed=true ;;
   /kickstarter/discover) route_allowed=true ;;
   /kickstarter/project) route_allowed=true ;;
@@ -2079,6 +2124,12 @@ case "$path" in
   /prada/search) route_allowed=true ;;
   /prada/stores) route_allowed=true ;;
   /prada/suggest) route_allowed=true ;;
+  /pricecharting/big-movers) route_allowed=true ;;
+  /pricecharting/categories) route_allowed=true ;;
+  /pricecharting/console) route_allowed=true ;;
+  /pricecharting/price-history) route_allowed=true ;;
+  /pricecharting/product) route_allowed=true ;;
+  /pricecharting/search) route_allowed=true ;;
   /pristine-auction/categories) route_allowed=true ;;
   /pristine-auction/search) route_allowed=true ;;
   /pristine-marketplace/collections) route_allowed=true ;;
@@ -2108,6 +2159,7 @@ case "$path" in
   /psa/price-guide/categories) route_allowed=true ;;
   /psa/price-guide/search) route_allowed=true ;;
   /psa/price-guide/set) route_allowed=true ;;
+  /psa/price-guide/sets) route_allowed=true ;;
   /psa/probatfacts/categories) route_allowed=true ;;
   /psa/probatfacts/gallery) route_allowed=true ;;
   /psa/probatfacts/subject) route_allowed=true ;;
@@ -2177,6 +2229,17 @@ case "$path" in
   /redfin/region-trends) route_allowed=true ;;
   /redfin/search) route_allowed=true ;;
   /redfin/similar) route_allowed=true ;;
+  /reelshort/fandom-categories) route_allowed=true ;;
+  /reelshort/fandom-post) route_allowed=true ;;
+  /reelshort/fandom-posts) route_allowed=true ;;
+  /reelshort/home) route_allowed=true ;;
+  /reelshort/movie) route_allowed=true ;;
+  /reelshort/new-releases) route_allowed=true ;;
+  /reelshort/search) route_allowed=true ;;
+  /reelshort/shelf) route_allowed=true ;;
+  /reelshort/tag-books) route_allowed=true ;;
+  /reelshort/tag-search) route_allowed=true ;;
+  /reelshort/tags) route_allowed=true ;;
   /research/jobs) route_allowed=true ;;
   /research/papers/metadata) route_allowed=true ;;
   /research/papers/read) route_allowed=true ;;
@@ -2766,6 +2829,15 @@ case "$path" in
   /target/reviews) route_allowed=true ;;
   /target/search) route_allowed=true ;;
   /target/stores) route_allowed=true ;;
+  /tcgplayer/filters) route_allowed=true ;;
+  /tcgplayer/listings) route_allowed=true ;;
+  /tcgplayer/price-guide) route_allowed=true ;;
+  /tcgplayer/price-history) route_allowed=true ;;
+  /tcgplayer/product) route_allowed=true ;;
+  /tcgplayer/product-lines) route_allowed=true ;;
+  /tcgplayer/sales) route_allowed=true ;;
+  /tcgplayer/search) route_allowed=true ;;
+  /tcgplayer/sets) route_allowed=true ;;
   /techcrunch/article) route_allowed=true ;;
   /techcrunch/author) route_allowed=true ;;
   /techcrunch/headlines) route_allowed=true ;;
@@ -2776,6 +2848,11 @@ case "$path" in
   /techradar/headlines) route_allowed=true ;;
   /techradar/news) route_allowed=true ;;
   /techradar/sections) route_allowed=true ;;
+  /telegram/bot) route_allowed=true ;;
+  /telegram/channel) route_allowed=true ;;
+  /telegram/channel-posts) route_allowed=true ;;
+  /telegram/group) route_allowed=true ;;
+  /telegram/post) route_allowed=true ;;
   /telegraph/article) route_allowed=true ;;
   /telegraph/author) route_allowed=true ;;
   /telegraph/headlines) route_allowed=true ;;
@@ -3106,12 +3183,28 @@ case "$path" in
   /walesonline/news) route_allowed=true ;;
   /walesonline/sections) route_allowed=true ;;
   /walgreens/stores) route_allowed=true ;;
+  /wallapop/categories) route_allowed=true ;;
+  /wallapop/filter-options) route_allowed=true ;;
+  /wallapop/filters) route_allowed=true ;;
+  /wallapop/item) route_allowed=true ;;
+  /wallapop/search) route_allowed=true ;;
   /walmart/search) route_allowed=true ;;
   /wapo/article) route_allowed=true ;;
   /wapo/author) route_allowed=true ;;
   /wapo/headlines) route_allowed=true ;;
   /wapo/news) route_allowed=true ;;
   /wapo/sections) route_allowed=true ;;
+  /wattpad/categories) route_allowed=true ;;
+  /wattpad/languages) route_allowed=true ;;
+  /wattpad/part) route_allowed=true ;;
+  /wattpad/part-comments) route_allowed=true ;;
+  /wattpad/search) route_allowed=true ;;
+  /wattpad/search-users) route_allowed=true ;;
+  /wattpad/story) route_allowed=true ;;
+  /wattpad/story-parts) route_allowed=true ;;
+  /wattpad/story-recommendations) route_allowed=true ;;
+  /wattpad/user) route_allowed=true ;;
+  /wattpad/user-stories) route_allowed=true ;;
   /wayfair/categories) route_allowed=true ;;
   /wayfair/category) route_allowed=true ;;
   /wccftech/article) route_allowed=true ;;
@@ -3816,9 +3909,14 @@ route_method_regexes=(
   '^GET:/alcom/headlines$'
   '^GET:/alcom/news$'
   '^GET:/alcom/sections$'
+  '^GET:/aliexpress/categories$'
+  '^GET:/aliexpress/category-ids$'
+  '^GET:/aliexpress/category-products$'
   '^GET:/aliexpress/reviews$'
   '^GET:/aliexpress/search$'
   '^GET:/aliexpress/search-filters$'
+  '^GET:/aliexpress/suggest$'
+  '^GET:/aliexpress/trending-searches$'
   '^GET:/aljazeera/article$'
   '^GET:/aljazeera/author$'
   '^GET:/aljazeera/categories$'
@@ -4466,6 +4564,22 @@ route_method_regexes=(
   '^GET:/draftkings/sportsbook/quick-links$'
   '^GET:/draftkings/sportsbook/team$'
   '^GET:/draftkings/sportsbook/teams$'
+  '^GET:/dramabox/browse$'
+  '^GET:/dramabox/categories$'
+  '^GET:/dramabox/category-books$'
+  '^GET:/dramabox/channels$'
+  '^GET:/dramabox/drama$'
+  '^GET:/dramabox/genres$'
+  '^GET:/dramabox/home$'
+  '^GET:/dramabox/more$'
+  '^GET:/dramabox/performer$'
+  '^GET:/dramabox/rank$'
+  '^GET:/dramabox/recommend$'
+  '^GET:/dramabox/search$'
+  '^GET:/dramabox/suggest$'
+  '^GET:/dramabox/tag$'
+  '^GET:/dramabox/theater$'
+  '^GET:/dramabox/trending$'
   '^GET:/duckduckgo/image$'
   '^GET:/duckduckgo/news$'
   '^GET:/duckduckgo/search$'
@@ -5319,7 +5433,10 @@ route_method_regexes=(
   '^GET:/jumia/category$'
   '^GET:/jumia/countries$'
   '^GET:/jumia/product$'
+  '^GET:/jumia/reviews$'
   '^GET:/jumia/search$'
+  '^GET:/jumia/sitemap-urls$'
+  '^GET:/jumia/sitemaps$'
   '^GET:/justeat/restaurant$'
   '^GET:/justeat/restaurant/menu$'
   '^GET:/justeat/search$'
@@ -5378,6 +5495,27 @@ route_method_regexes=(
   '^GET:/khaleejtimes/headlines$'
   '^GET:/khaleejtimes/news$'
   '^GET:/khaleejtimes/sections$'
+  '^GET:/kick/categories$'
+  '^GET:/kick/category-clips$'
+  '^GET:/kick/channel$'
+  '^GET:/kick/channel-chatroom$'
+  '^GET:/kick/channel-clips$'
+  '^GET:/kick/channel-emotes$'
+  '^GET:/kick/channel-links$'
+  '^GET:/kick/channel-streams$'
+  '^GET:/kick/channel-videos$'
+  '^GET:/kick/clip$'
+  '^GET:/kick/clips$'
+  '^GET:/kick/drops$'
+  '^GET:/kick/gifts$'
+  '^GET:/kick/languages$'
+  '^GET:/kick/livestreams$'
+  '^GET:/kick/search-categories$'
+  '^GET:/kick/search-channels$'
+  '^GET:/kick/subcategories$'
+  '^GET:/kick/subcategory$'
+  '^GET:/kick/top-channels$'
+  '^GET:/kick/video$'
   '^GET:/kickstarter/comments$'
   '^GET:/kickstarter/discover$'
   '^GET:/kickstarter/project$'
@@ -6019,6 +6157,12 @@ route_method_regexes=(
   '^GET:/prada/search$'
   '^GET:/prada/stores$'
   '^GET:/prada/suggest$'
+  '^GET:/pricecharting/big-movers$'
+  '^GET:/pricecharting/categories$'
+  '^GET:/pricecharting/console$'
+  '^GET:/pricecharting/price-history$'
+  '^GET:/pricecharting/product$'
+  '^GET:/pricecharting/search$'
   '^GET:/pristine-auction/categories$'
   '^GET:/pristine-auction/lot/[^/]+$'
   '^GET:/pristine-auction/search$'
@@ -6062,6 +6206,7 @@ route_method_regexes=(
   '^GET:/psa/price-guide/categories$'
   '^GET:/psa/price-guide/search$'
   '^GET:/psa/price-guide/set$'
+  '^GET:/psa/price-guide/sets$'
   '^GET:/psa/probatfacts/categories$'
   '^GET:/psa/probatfacts/gallery$'
   '^GET:/psa/probatfacts/subject$'
@@ -6148,6 +6293,17 @@ route_method_regexes=(
   '^GET:/redfin/region-trends$'
   '^GET:/redfin/search$'
   '^GET:/redfin/similar$'
+  '^GET:/reelshort/fandom-categories$'
+  '^GET:/reelshort/fandom-post$'
+  '^GET:/reelshort/fandom-posts$'
+  '^GET:/reelshort/home$'
+  '^GET:/reelshort/movie$'
+  '^GET:/reelshort/new-releases$'
+  '^GET:/reelshort/search$'
+  '^GET:/reelshort/shelf$'
+  '^GET:/reelshort/tag-books$'
+  '^GET:/reelshort/tag-search$'
+  '^GET:/reelshort/tags$'
   '^GET:/research/jobs/[^/]+$'
   '^GET:/research/jobs/[^/]+/events$'
   '^GET:/research/jobs/[^/]+/results$'
@@ -6776,6 +6932,15 @@ route_method_regexes=(
   '^GET:/target/reviews$'
   '^GET:/target/search$'
   '^GET:/target/stores$'
+  '^GET:/tcgplayer/filters$'
+  '^GET:/tcgplayer/listings$'
+  '^GET:/tcgplayer/price-guide$'
+  '^GET:/tcgplayer/price-history$'
+  '^GET:/tcgplayer/product$'
+  '^GET:/tcgplayer/product-lines$'
+  '^GET:/tcgplayer/sales$'
+  '^GET:/tcgplayer/search$'
+  '^GET:/tcgplayer/sets$'
   '^GET:/techcrunch/article$'
   '^GET:/techcrunch/author$'
   '^GET:/techcrunch/headlines$'
@@ -6786,6 +6951,11 @@ route_method_regexes=(
   '^GET:/techradar/headlines$'
   '^GET:/techradar/news$'
   '^GET:/techradar/sections$'
+  '^GET:/telegram/bot$'
+  '^GET:/telegram/channel$'
+  '^GET:/telegram/channel-posts$'
+  '^GET:/telegram/group$'
+  '^GET:/telegram/post$'
   '^GET:/telegraph/article$'
   '^GET:/telegraph/author$'
   '^GET:/telegraph/headlines$'
@@ -7152,6 +7322,11 @@ route_method_regexes=(
   '^GET:/walesonline/news$'
   '^GET:/walesonline/sections$'
   '^GET:/walgreens/stores$'
+  '^GET:/wallapop/categories$'
+  '^GET:/wallapop/filter-options$'
+  '^GET:/wallapop/filters$'
+  '^GET:/wallapop/item$'
+  '^GET:/wallapop/search$'
   '^GET:/walmart/product/[^/]+$'
   '^GET:/walmart/product/[^/]+/reviews$'
   '^GET:/walmart/search$'
@@ -7160,6 +7335,17 @@ route_method_regexes=(
   '^GET:/wapo/headlines$'
   '^GET:/wapo/news$'
   '^GET:/wapo/sections$'
+  '^GET:/wattpad/categories$'
+  '^GET:/wattpad/languages$'
+  '^GET:/wattpad/part$'
+  '^GET:/wattpad/part-comments$'
+  '^GET:/wattpad/search$'
+  '^GET:/wattpad/search-users$'
+  '^GET:/wattpad/story$'
+  '^GET:/wattpad/story-parts$'
+  '^GET:/wattpad/story-recommendations$'
+  '^GET:/wattpad/user$'
+  '^GET:/wattpad/user-stories$'
   '^GET:/wayfair/categories$'
   '^GET:/wayfair/category$'
   '^GET:/wayfair/product/[^/]+$'

@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**246 endpoints across 37 platform group(s).**
+**254 endpoints across 37 platform group(s).**
 
 ## Amazon (5)
 
@@ -1076,8 +1076,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `shein_category_goods`
 
 - **HTTP:** `GET /shein/category/goods`
-- **What:** SHEIN category product listing. Lists products in a SHEIN category, by the required numeric `cat_id`. `page` starts at 1 and `page_size` defaults to 20; `sort` is a non-negative integer, `0` by default. Each product has its id, name, images, sale, retail and USD prices, rating, review count, and `on_sale` and `sold_out` flags. `total` is the category's listing count.
-- **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page; `sort` (string, optional) — SHEIN sort code: a non-negative integer. `0` is the default (recommended). Other codes are accepted and forwarded as-is; the full code-to-meaning mapping has not been live-verified yet (see the endpoint markdown), so callers relying on a specific ordering should confirm behavior empirically.
+- **What:** SHEIN category product listing. Lists products in a SHEIN category, by the required numeric `cat_id`. `page` starts at 1 and `page_size` is 1-20 (default 20); `sort` is a non-negative integer, `0` by default. Each product has its id, name, images, sale, retail and USD prices, rating, review count, and `on_sale` and `sold_out` flags. `total` is the category's listing count.
+- **Params:** `cat_id` (string, **required**) — Numeric SHEIN category id; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page, 1-20 (default 20); `sort` (string, optional) — SHEIN sort code: a non-negative integer. `0` is the default (recommended). Other codes are accepted and forwarded as-is; the full code-to-meaning mapping has not been live-verified yet (see the endpoint markdown), so callers relying on a specific ordering should confirm behavior empirically.
 
 ### `shein_category_nav`
 
@@ -1106,14 +1106,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `shein_products_detail`
 
 - **HTTP:** `GET /shein/products/detail`
-- **What:** SHEIN product detail. Returns a SHEIN product by the required numeric `goods_id`; `goods_sn` is optional and narrows the lookup. The response has the name, description, category, brand code, sale, retail and USD prices, images, video URL, size options, per-SKU stock and prices, and colour variants.
-- **Params:** `goods_id` (string, **required**) — Numeric SHEIN goods id (from a search result's goods_id); `goods_sn` (string, optional) — SHEIN goods serial number, narrows the lookup
+- **What:** SHEIN product detail. Returns a SHEIN product by the required numeric `goods_id`; `goods_sn` is accepted but currently ignored. The response has the name, description, category, brand code, sale, retail and USD prices, images, video URL, size options, per-SKU stock and prices, and colour variants.
+- **Params:** `goods_id` (string, **required**) — Numeric SHEIN goods id (from a search result's goods_id); `goods_sn` (string, optional) — SHEIN goods serial number (accepted but currently ignored)
 
 ### `shein_products_search`
 
 - **HTTP:** `POST /shein/products/search`
-- **What:** SHEIN product search. Searches SHEIN products for the required `keyword`. `page` starts at 1, `page_size` defaults to 20 and `sort` is a non-negative integer, `0` by default. Each product card has its id, name, images, prices, rating, review count and stock flags. Also returns `total` and spelling suggestions in `suggest_words`.
-- **Params:** `keyword` (string, **required**) — Free-text search query; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page; `sort` (string, optional) — SHEIN sort code: a non-negative integer. `0` is the default (recommended). Other codes are accepted and forwarded as-is; the full code-to-meaning mapping has not been live-verified yet (see the endpoint markdown), so callers relying on a specific ordering should confirm behavior empirically.
+- **What:** SHEIN product search. Searches SHEIN products for the required `keyword`. `page` starts at 1, `page_size` is 1-20 and defaults to 20, and `sort` is a non-negative integer, `0` by default. A query with no matches returns an empty `products` list with `total` 0. Each product card has its id, name, images, prices, rating, review count and stock flags. Also returns `total` and spelling suggestions in `suggest_words`.
+- **Params:** `keyword` (string, **required**) — Free-text search query; `page` (integer, optional) — 1-based page number; `page_size` (integer, optional) — Results per page, 1-20 (default 20); `sort` (string, optional) — SHEIN sort code: a non-negative integer. `0` is the default (recommended). Other codes are accepted and forwarded as-is; the full code-to-meaning mapping has not been live-verified yet (see the endpoint markdown), so callers relying on a specific ordering should confirm behavior empirically.
 
 ### `shein_search_autocomplete`
 
@@ -1125,7 +1125,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `POST /shein/search/keywords`
 - **What:** SHEIN trending search keywords. Returns the trending search keywords SHEIN shows in its search box. `scene` defaults to `trendStoreChannel` and `word_type` to `1`. Each keyword has its `word`, `word_id`, `type` and `from`.
-- **Params:** `scene` (string, optional) — Keyword scene (trendStoreChannel); `word_type` (string, optional) — Keyword type (1)
+- **Params:** `scene` (string, optional) — Keyword scene: 1-64 letters, digits or underscores. Only trendStoreChannel is verified.; `word_type` (string, optional) — Keyword type: a 1-3 digit number. Only 1 is verified.
 
 ### `shein_store`
 
@@ -1507,7 +1507,25 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search SparkFun products. Searches public SparkFun product data with pagination and dynamic facet filters. Each filter must be `attribute:value`; use values from the response's filters array.
 - **Params:** `filter` (array, optional) — Repeatable dynamic facet in attribute:value form; `page` (integer, optional) — One-based result page (1-100); `per_page` (integer, optional) — Products per page (1-24); `q` (string, **required**) — Product search query
 
-## AliExpress (3)
+## AliExpress (8)
+
+### `aliexpress_categories`
+
+- **HTTP:** `GET /aliexpress/categories`
+- **What:** List AliExpress category navigation. Returns AliExpress's category navigation taxonomy. With no parameters it lists the top-level category tabs (about 24), each with its navigation id, name, numeric platform category id and icon. Pass one tab's id as category_tab to expand that tab into its second- and third-level categories; third-level categories carry the search keyword and a ready-to-use search URL, so they can be passed to the search endpoint as q. Category ids are exposed only where AliExpress's payload actually carries them: second-level categories have no numeric platform id, so none is invented for them. This is a taxonomy surface, not a product listing.
+- **Params:** `category_tab` (string, optional) — Top-level tab id from an unfiltered response, e.g. electronics; omit to list top-level tabs only
+
+### `aliexpress_category_ids`
+
+- **HTTP:** `GET /aliexpress/category-ids`
+- **What:** Discover AliExpress web category ids. Returns the AliExpress web category ids that its own product cards carry on one listing page, with each id's parent, depth and full category path. Pass q to discover the categories of products matching a keyword, or category_id to inspect one category listing. Pass exactly one of them. The ids are the same web category ids used in /category/<id>/<slug>.html URLs and by the search endpoint's cat_id parameter; they are NOT the platform/taxonomy ids returned by the categories endpoint. A parent category listing contains products from its descendants, so inspecting a category reveals its child ids, and every returned path names that id's ancestors: the value space is discoverable by walking from a keyword or a category id rather than guessing.
+- **Params:** `category_id` (integer, optional) — AliExpress web category id whose listing is inspected; a parent category reveals its descendants' ids. Pass exactly one of q or category_id; `page` (integer, optional) — 1-indexed listing page to inspect (1-60), defaults to 1; `q` (string, optional) — Free-text keywords whose result cards' web category ids are returned; pass exactly one of q or category_id
+
+### `aliexpress_category_products`
+
+- **HTTP:** `GET /aliexpress/category-products`
+- **What:** List products in an AliExpress category. Returns one page (up to 60 products) of a public AliExpress category listing with the same product fields as the search endpoint: product id, title, link, image, price, currency, original price, rating, sold text, discount, SKU id, ship-from country and store name when AliExpress lists them. category_id is the AliExpress web category id from a /category/<id>/<slug>.html URL (for example 5090301 for Cellphones); the slug segment is cosmetic (the listing is selected by id) and defaults to products. The listing uses the anonymous US English/USD locale. Product-detail pages are currently unavailable through the supported HTTP profiles.
+- **Params:** `category_id` (integer, **required**) — AliExpress web category id: the number in a /category/<id>/<slug>.html URL (for example 5090301 for Cellphones); taxonomy ids from the categories endpoint are a different namespace and are not interchangeable; `page` (integer, optional) — 1-indexed result page (1-60), defaults to 1; `slug` (string, optional) — Category path segment used by AliExpress's own URL (lower-case letters, digits, hyphens); cosmetic, defaults to products
 
 ### `aliexpress_reviews`
 
@@ -1519,7 +1537,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /aliexpress/search`
 - **What:** Search AliExpress products. Returns one page (up to 60 products) of public keyword search results with product ids, titles, links, images, prices, ratings, sold text, discount, SKU id, ship-from country, and store name when AliExpress lists them. Results can be sorted and filtered by price, free shipping, the Choice program, and product attributes; list the attribute values for a keyword with the search-filters endpoint. The search uses the anonymous US English/USD locale. Product-detail pages are currently unavailable through the supported HTTP profiles.
-- **Params:** `attr` (string, optional) — Attribute filter <attributeId>-<valueId>, from the search-filters endpoint for the same q; comma-separate up to 5 values, one per attribute group; `choice` (boolean, optional) — Only products in AliExpress's Choice program; `free_shipping` (boolean, optional) — Only free-shipping products; `max_price` (number, optional) — Maximum price in USD (0-1000000), not below min_price; `min_price` (number, optional) — Minimum price in USD (0-1000000); `page` (integer, optional) — 1-indexed result page (1-200), defaults to 1; `q` (string, **required**) — Free-text search keywords; `sort` (string, optional) — Sort order. Allowed values: best_match (default), orders, price_asc, price_desc
+- **Params:** `attr` (string, optional) — Attribute filter <attributeId>-<valueId>, from the search-filters endpoint for the same q; comma-separate up to 5 values, one per attribute group; `cat_id` (integer, optional) — Search within one AliExpress web category id (the number in a /category/<id>/<slug>.html URL); taxonomy ids from the categories endpoint are a different namespace and are not interchangeable; `choice` (boolean, optional) — Only products in AliExpress's Choice program; `free_shipping` (boolean, optional) — Only free-shipping products; `max_price` (number, optional) — Maximum price in USD (0-1000000), not below min_price; `min_price` (number, optional) — Minimum price in USD (0-1000000); `page` (integer, optional) — 1-indexed result page (1-60), defaults to 1; `q` (string, **required**) — Free-text search keywords; `sort` (string, optional) — Sort order. Allowed values: best_match (default), orders, price_asc, price_desc
 
 ### `aliexpress_search_filters`
 
@@ -1527,7 +1545,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List AliExpress search filters. Returns every sort value and boolean filter the search endpoint accepts, plus the product-attribute filters (brand, color, style, and so on) AliExpress offers for the keyword, as ready-to-use attr values. Attribute filters differ per keyword, so call this with the same q as the search.
 - **Params:** `q` (string, **required**) — Free-text search keywords
 
-## Jumia (5)
+### `aliexpress_suggest`
+
+- **HTTP:** `GET /aliexpress/suggest`
+- **What:** Suggest AliExpress search keywords. Returns AliExpress's own search-box keyword completions for a query, with a ready-to-use search URL for each suggestion. This is a suggestion/autocomplete surface, not a product feed: the upstream payload contains keyword strings only, so no product id, title, price or seller is returned. AliExpress usually offers 10-12 suggestions; each suggestion's url is the matching AliExpress search page and can be passed to the search endpoint as q.
+- **Params:** `limit` (integer, optional) — Maximum suggestions to return (1-20), defaults to 10; `q` (string, **required**) — Partial or full search keywords to complete
+
+### `aliexpress_trending_searches`
+
+- **HTTP:** `GET /aliexpress/trending-searches`
+- **What:** List AliExpress trending searches. Returns AliExpress's own discovery/trending keyword feed from its anonymous search box: the hot-search keywords it groups by category, plus its discovery and shading keyword modules. Each item carries the keyword, its display casing when different, the kind (hot, shading, discovery, history), the module's UI label, the hot-list category, and a ready-to-use search URL; keyword thumbnails are included where AliExpress supplies them. This is a keyword-discovery feed, not a product list and not a personalized recommendation: no product id, title, price or seller is returned, and AliExpress does not promise a stable order between calls. The anonymous feed carries roughly 40 hot keywords plus a few discovery/shading keywords per call; search history is empty for anonymous callers.
+- **Params:** `limit` (integer, optional) — Maximum trending keywords to return (1-20), defaults to 10
+
+## Jumia (8)
 
 ### `jumia_categories`
 
@@ -1553,8 +1583,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get a Jumia product. Returns one Jumia product: name, brand, sku, images, price in the storefront's currency with original price and discount, availability, rating and rating count, category path, seller (name, id, score, followers, shipping speed), description, key features and the specification table. Pass the url returned by jumia-search or jumia-category; the storefront country is taken from the URL host. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it. A product id Jumia no longer serves returns 404.
 - **Params:** `url` (string, **required**) — Absolute Jumia product URL from a search or category result
 
+### `jumia_reviews`
+
+- **HTTP:** `GET /jumia/reviews`
+- **What:** Get the reviews of a Jumia product. Returns one page of a Jumia product's written, verified customer reviews (rating, title, text, date, first name of the author) with the rating summary: average rating, total ratings, total written reviews and the count of ratings per star. Reviews are 10 per page. A product with ratings but no written reviews returns an empty list with the summary. Pass the sku returned by jumia-search, jumia-category or jumia-product. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it. country is required; see jumia-countries.
+- **Params:** `country` (string, **required**) — Jumia country storefront; `page` (integer, optional) — 1-based page of reviews, 10 per page; `sku` (string, **required**) — Product sku
+
 ### `jumia_search`
 
 - **HTTP:** `GET /jumia/search`
 - **What:** Search Jumia products. Searches a Jumia country storefront by keyword and returns one page of product cards with price in the storefront's currency, original price and discount, rating, brand, categories and badges, plus the upstream total_count and a has_next flag. Jumia serves at most 50 pages. A search with no matches returns an empty products list. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it. country is required (there is no default storefront); see jumia-countries.
 - **Params:** `country` (string, **required**) — Jumia country storefront; `page` (integer, optional) — 1-based result page, 1 to 50; `q` (string, **required**) — Product search keyword
+
+### `jumia_sitemap_urls`
+
+- **HTTP:** `GET /jumia/sitemap-urls`
+- **What:** Read the URLs in a Jumia sitemap file. Returns one page of the URLs listed in a Jumia sitemap file, each with its last-modified date and first image, plus the total number of URLs in the file. A product file holds up to 16,000 product URLs; page through it with page and page_size (up to 5000). Take the file name from jumia-sitemaps. A page past the end returns an empty list. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it. country is required; see jumia-countries.
+- **Params:** `country` (string, **required**) — Jumia country storefront; `page` (integer, optional) — 1-based page of URLs; `page_size` (integer, optional) — URLs per page; `sitemap` (string, **required**) — Sitemap file name from jumia-sitemaps
+
+### `jumia_sitemaps`
+
+- **HTTP:** `GET /jumia/sitemaps`
+- **What:** List the sitemap files of a Jumia storefront. Lists the sitemap files a Jumia storefront publishes: product, brand, category and curated-page (mlps) files, each with its name, type, language, last-modified date and URL. Pass a returned name to jumia-sitemap-urls to read the URLs in it. Optionally narrow to one type. Jumia sits behind an anti-bot challenge that clears on only some connections, so a call can take up to about 50 seconds and may return 503; retry it. country is required; see jumia-countries.
+- **Params:** `country` (string, **required**) — Jumia country storefront; `type` (string, optional) — Only list one kind of sitemap

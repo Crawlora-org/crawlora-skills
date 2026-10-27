@@ -6,7 +6,7 @@ description: Fetches structured public web data through Crawlora's hosted REST A
 # Crawlora — structured public web data
 
 Crawlora is a hosted API that turns public websites into clean, normalized JSON.
-The current public-data catalog contains **3,673 tools across 475 platform
+The current public-data catalog contains **3,766 tools across 483 platform
 groups**, and the repository ships 177 installable research skills. One API key gives
 you the endpoints in the bundled [catalog](reference/catalog.md) — search engines,
 marketplaces, social and video, finance and crypto, maps, app stores, media, and

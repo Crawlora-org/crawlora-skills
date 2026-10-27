@@ -73,9 +73,14 @@ case "$path" in
   /adidas/store) route_allowed=true ;;
   /adidas/stores) route_allowed=true ;;
   /adidas/suggest) route_allowed=true ;;
+  /aliexpress/categories) route_allowed=true ;;
+  /aliexpress/category-ids) route_allowed=true ;;
+  /aliexpress/category-products) route_allowed=true ;;
   /aliexpress/reviews) route_allowed=true ;;
   /aliexpress/search) route_allowed=true ;;
   /aliexpress/search-filters) route_allowed=true ;;
+  /aliexpress/suggest) route_allowed=true ;;
+  /aliexpress/trending-searches) route_allowed=true ;;
   /amazon/charts) route_allowed=true ;;
   /amazon/charts/categories) route_allowed=true ;;
   /amazon/search) route_allowed=true ;;
@@ -142,7 +147,10 @@ case "$path" in
   /jumia/category) route_allowed=true ;;
   /jumia/countries) route_allowed=true ;;
   /jumia/product) route_allowed=true ;;
+  /jumia/reviews) route_allowed=true ;;
   /jumia/search) route_allowed=true ;;
+  /jumia/sitemap-urls) route_allowed=true ;;
+  /jumia/sitemaps) route_allowed=true ;;
   /kohls/category) route_allowed=true ;;
   /kohls/product/reviews) route_allowed=true ;;
   /kohls/stores) route_allowed=true ;;
@@ -338,9 +346,14 @@ route_method_regexes=(
   '^GET:/adidas/store$'
   '^GET:/adidas/stores$'
   '^GET:/adidas/suggest$'
+  '^GET:/aliexpress/categories$'
+  '^GET:/aliexpress/category-ids$'
+  '^GET:/aliexpress/category-products$'
   '^GET:/aliexpress/reviews$'
   '^GET:/aliexpress/search$'
   '^GET:/aliexpress/search-filters$'
+  '^GET:/aliexpress/suggest$'
+  '^GET:/aliexpress/trending-searches$'
   '^GET:/amazon/charts$'
   '^GET:/amazon/charts/categories$'
   '^GET:/amazon/product/[^/]+$'
@@ -424,7 +437,10 @@ route_method_regexes=(
   '^GET:/jumia/category$'
   '^GET:/jumia/countries$'
   '^GET:/jumia/product$'
+  '^GET:/jumia/reviews$'
   '^GET:/jumia/search$'
+  '^GET:/jumia/sitemap-urls$'
+  '^GET:/jumia/sitemaps$'
   '^GET:/kohls/category$'
   '^GET:/kohls/product/reviews$'
   '^GET:/kohls/stores$'
