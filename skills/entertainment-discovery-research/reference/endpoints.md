@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**90 endpoints across 5 platform group(s).**
+**99 endpoints across 5 platform group(s).**
 
 ## IMDb (30)
 
@@ -374,7 +374,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get a TMDB TV chart. Returns a page of TMDB TV shows from the `category` chart (`popular` by default, or `top_rated`, `airing_today`, `on_the_air`), optionally refined by `sort_by`, `with_genres`, `original_language`, first-air-date bounds `date_from` and `date_to`, rating, votes and runtime. `limit` defaults to 10 (max 20). A filtered page with no matches returns an empty `shows` array.
 - **Params:** `category` (string, optional) — TV chart, default popular; `date_from` (string, optional) — First-air date lower bound (YYYY-MM-DD); `date_to` (string, optional) — First-air date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max shows, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TV genre ids: 10759,16,35,80,99,18,10751,10762,9648,10763,10764,10765,10766,10767,10768,37
 
-## Rotten Tomatoes (20)
+## Rotten Tomatoes (29)
 
 ### `rottentomatoes_browse_filters`
 
@@ -386,13 +386,31 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /rottentomatoes/browse/movies`
 - **What:** Rotten Tomatoes movie discovery rows. Returns movie rows from Rotten Tomatoes' browse listing. Use `/rottentomatoes/browse/filters` to discover current values for each list. Filters accept comma-separated values; pagination uses the opaque `after` cursor from the previous response.
-- **Params:** `affiliates` (string, optional) — Comma-separated streaming/service values from browse/filters; `after` (string, optional) — Opaque next-page cursor returned in data.page_info.end_cursor; `audience` (string, optional) — Comma-separated Popcornmeter values from browse/filters; `critics` (string, optional) — Comma-separated Tomatometer values from browse/filters; `genres` (string, optional) — Comma-separated genre values from browse/filters; `limit` (integer, optional) — Rows to return, default 10, max 30; `list` (string, optional) — Movie browse list: movies_in_theaters, movies_at_home, movies_coming_soon; `ratings` (string, optional) — Comma-separated content ratings from browse/filters; `sort` (string, optional) — Sort value from the selected list's browse/filters response
+- **Params:** `affiliates` (string, optional) — Comma-separated streaming/service values from browse/filters; `after` (string, optional) — Opaque next-page cursor returned in data.page_info.end_cursor; `audience` (string, optional) — Comma-separated Popcornmeter values from browse/filters; `critics` (string, optional) — Comma-separated Tomatometer values from browse/filters; `genres` (string, optional) — Comma-separated genre values from browse/filters; `limit` (integer, optional) — Rows to return, default 30 (one full page), max 30. The cursor always moves past the whole 30-row page, so keep the default when paging; `list` (string, optional) — Movie browse list: movies_in_theaters, movies_at_home, movies_coming_soon; `ratings` (string, optional) — Comma-separated content ratings from browse/filters; `sort` (string, optional) — Sort value from the selected list's browse/filters response
 
 ### `rottentomatoes_browse_tv`
 
 - **HTTP:** `GET /rottentomatoes/browse/tv`
 - **What:** Rotten Tomatoes TV discovery rows. Returns TV series rows from Rotten Tomatoes' browse listing. Use `/rottentomatoes/browse/filters?list=tv_series_browse` to discover current filters; pagination uses the opaque `after` cursor from the previous response.
-- **Params:** `affiliates` (string, optional) — Comma-separated streaming/service values from browse/filters; `after` (string, optional) — Opaque next-page cursor returned in data.page_info.end_cursor; `audience` (string, optional) — Comma-separated Popcornmeter values from browse/filters; `critics` (string, optional) — Comma-separated Tomatometer values from browse/filters; `genres` (string, optional) — Comma-separated genre values from browse/filters; `limit` (integer, optional) — Rows to return, default 10, max 30; `list` (string, optional) — TV browse list: tv_series_browse; `ratings` (string, optional) — Comma-separated content ratings from browse/filters; `sort` (string, optional) — Sort value from browse/filters
+- **Params:** `affiliates` (string, optional) — Comma-separated streaming/service values from browse/filters; `after` (string, optional) — Opaque next-page cursor returned in data.page_info.end_cursor; `audience` (string, optional) — Comma-separated Popcornmeter values from browse/filters; `critics` (string, optional) — Comma-separated Tomatometer values from browse/filters; `genres` (string, optional) — Comma-separated genre values from browse/filters; `limit` (integer, optional) — Rows to return, default 30 (one full page), max 30. The cursor always moves past the whole 30-row page, so keep the default when paging; `list` (string, optional) — TV browse list: tv_series_browse; `ratings` (string, optional) — Comma-separated content ratings from browse/filters; `sort` (string, optional) — Sort value from browse/filters
+
+### `rottentomatoes_critic`
+
+- **HTTP:** `GET /rottentomatoes/critic`
+- **What:** Rotten Tomatoes critic profile. Returns one Rotten Tomatoes critic's profile: display name, initials, vanity, encrypted critic id, biography, website, top-critic and Tomatometer-approved flags, review and publication counts, follower/following counts, critics groups, the publications they write for and their most recent reviews. The profile is read directly from Rotten Tomatoes' feed (normally a second or two), with a slower browser fallback when the feed cannot be read. An unknown critic path returns 404. Pass exactly one of `path` or `url`.
+- **Params:** `path` (string, optional) — Rotten Tomatoes critic path: /critic/{slug}. /critics/{slug} (the form critics/authors returns) and /profiles/critic/{slug} are accepted too; `url` (string, optional) — Absolute https://www.rottentomatoes.com critic URL
+
+### `rottentomatoes_critic_publications`
+
+- **HTTP:** `GET /rottentomatoes/critic/publications`
+- **What:** Rotten Tomatoes critic publications. Returns the publications one Rotten Tomatoes critic writes for: publication name, editorial site URL, logo image, encrypted and numeric publication ids, and the top-publication and Tomatometer-approved flags. The list is read directly from Rotten Tomatoes' feed (normally a second or two), with a slower browser fallback when the feed cannot be read. Only the first page is served today; `data.page_info.end_cursor` reports that more exist. An unknown critic path returns 404. Pass exactly one of `path` or `url`.
+- **Params:** `path` (string, optional) — Rotten Tomatoes critic path: /critic/{slug}. /critics/{slug} (the form critics/authors returns) and /profiles/critic/{slug} are accepted too; `url` (string, optional) — Absolute https://www.rottentomatoes.com critic URL
+
+### `rottentomatoes_critic_reviews`
+
+- **HTTP:** `GET /rottentomatoes/critic/reviews`
+- **What:** Rotten Tomatoes reviews by one critic. Returns the movie reviews published by one critic, newest first. Each review carries a stable `id`, ISO `created_at`/`updated_at`, the publication, the original article URL and a `media` object naming the reviewed title (with its path, URL and poster). The list is pageable `limit` reviews at a time, up to 500 deep: pass `data.page_info.end_cursor` as `after` and keep `limit` the same while paging. It is read directly from Rotten Tomatoes' review feed (`data.transport` is `feed_api`, normally a second or two), with a slower browser fallback (`browser_render`, at most five pages) when the feed cannot be read. A critic with no reviews returns 200 with an empty `reviews` array; an unknown critic path returns 404. `data.subject.kind` is `critic` and `data.subject.title` is the reviewer's display name as Rotten Tomatoes prints it.
+- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response, with the same limit. Lists can be paged up to 500 reviews deep.; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk: the cursor is a page index times this value.; `path` (string, optional) — Rotten Tomatoes critic path: /critic/{slug}. /critics/{slug} (the form critics/authors returns) and /profiles/critic/{slug} are accepted too; `url` (string, optional) — Absolute https://www.rottentomatoes.com critic URL
 
 ### `rottentomatoes_critics_authors`
 
@@ -448,6 +466,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Rotten Tomatoes episode detail. Returns Rotten Tomatoes TV episode metadata, scorecard data, parent series/season metadata, and public video metadata. Pass exactly one of `path` or `url`.
 - **Params:** `path` (string, optional) — Rotten Tomatoes episode path; `url` (string, optional) — Absolute https://www.rottentomatoes.com episode URL
 
+### `rottentomatoes_episode_reviews`
+
+- **HTTP:** `GET /rottentomatoes/episode/reviews`
+- **What:** Rotten Tomatoes TV episode critic reviews. Returns the critic reviews of one TV episode, newest first, read the same way as the season and movie feeds. Reviews carry a stable `id`, ISO `created_at`/`updated_at`, the critic identity and the original article URL. The list is pageable `limit` reviews at a time, up to 500 deep: pass `data.page_info.end_cursor` as `after` and keep `limit` the same while paging. It is read directly from Rotten Tomatoes' review feed (`data.transport` is `feed_api`, normally about a second), with a slower browser fallback (`browser_render`, at most five pages) when the feed cannot be read. Episode review lists are often small or empty: an episode nobody has reviewed yet returns 200 with an empty `reviews` array. `data.subject` identifies the episode.
+- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response, with the same limit. Critic cursors are base64 page indexes; audience cursors are opaque keyset values that should be passed back unchanged. The feed can serve up to 500 reviews; browser fallback is capped at five pages.; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk: the cursor is a page index times this value.; `path` (string, optional) — Rotten Tomatoes episode path; `type` (string, optional) — Review list: critics (default), top-critics or audience.; `url` (string, optional) — Absolute https://www.rottentomatoes.com episode URL
+
 ### `rottentomatoes_movie`
 
 - **HTTP:** `GET /rottentomatoes/movie`
@@ -457,14 +481,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rottentomatoes_movie_reviews`
 
 - **HTTP:** `GET /rottentomatoes/movie/reviews`
-- **What:** Rotten Tomatoes movie reviews. Returns critic or audience reviews from Rotten Tomatoes, including pagination metadata. Pass exactly one of `path` or `url`. Supported `type` values are `critics`, `top-critics`, `audience`, and `verified-audience`.
-- **Params:** `after` (string, optional) — Pagination cursor from data.page_info.end_cursor; `limit` (integer, optional) — Reviews to return, default 10, max 20; `path` (string, optional) — Rotten Tomatoes movie path; `type` (string, optional) — Review type: critics, top-critics, audience, verified-audience; `url` (string, optional) — Absolute https://www.rottentomatoes.com movie URL
+- **What:** Rotten Tomatoes movie reviews. Returns Rotten Tomatoes movie reviews, newest first. All four `type` values return the full review feed in one request: each review carries a stable `id`, ISO `created_at`/`updated_at` timestamps, the critic identity and the original article URL, and the list is pageable `limit` reviews at a time: pass `data.page_info.end_cursor` back as `after` for the next page and keep `limit` the same while paging. `data.transport` is `feed_api` for that path. A title with no reviews yet, or a top-critics or audience list that is still empty, returns 200 with an empty `reviews` array. If the feed cannot be read the service loads the movie's own review page the way a visitor's browser does and reads the list that page receives (`transport: browser_render`, slower, at most five pages); if that also fails for the first page, the movie page's embedded sample of about 6 reviews is served with `render_error` set (`transport: public_page`) and the call is not charged. `data.subject.kind` is `movie`, and `data.movie` remains present for compatibility. `data.fetched_at` and the `X-Cache` and `X-Availability-Last-Success-*` response headers show how fresh the data is. Pass exactly one of `path` or `url`. Supported `type` values are `critics`, `top-critics`, `audience`, and `verified-audience`.
+- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response. Critic cursors are base64 page indexes; audience cursors are opaque keyset values that should be passed back unchanged. The feed can serve up to 500 reviews; browser fallback is capped at five pages. Invalid cursors are rejected before upstream work.; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk: the critic cursor is a page index times this value.; `path` (string, optional) — Rotten Tomatoes movie path; `type` (string, optional) — Review type: critics, top-critics, audience, verified-audience; `url` (string, optional) — Absolute https://www.rottentomatoes.com movie URL
+
+### `rottentomatoes_movie_videos`
+
+- **HTTP:** `GET /rottentomatoes/movie/videos`
+- **What:** Rotten Tomatoes movie videos and trailers. Returns the videos Rotten Tomatoes lists for one movie: trailers and clips with the video id, title, kind (`TRAILER`/`OTHER`), duration, thumbnail, playable stream/playlist URL and the video page URL. The primary video reference is read from the movie page and the list comes from Rotten Tomatoes' open JSON endpoint (`/cnapi/videos`), so it is as fast as other endpoints. A movie with no listed video returns an empty `data.videos` rather than an error. `data.fetched_at` is the UTC time the data was fetched. Pass exactly one of `path` or `url`.
+- **Params:** `path` (string, optional) — Rotten Tomatoes movie path; `url` (string, optional) — Absolute https://www.rottentomatoes.com movie URL
+
+### `rottentomatoes_movies`
+
+- **HTTP:** `GET /rottentomatoes/movies`
+- **What:** Rotten Tomatoes movie details, several at once. Returns the details of up to 20 Rotten Tomatoes movies in one call, in the order requested. Each entry carries the title, synopsis, path and URL, `ems_id`, runtime, release date/year, production companies, the release runs with distributors, the Tomatometer and Popcornmeter scores, the score variants for all critics, top critics, all audience and verified audience, the critics and audience consensus, and `where_to_watch`: the public streaming, rental and purchase offers with provider name, link, licence, quality, price and availability date. Those are public provider pages, not playable media URLs. Identifiers that resolve to nothing are listed in `data.not_found` instead of failing the call. Pass exactly one of `ids` (Rotten Tomatoes `ems_id` values) or `paths` (Rotten Tomatoes movie paths or URLs); the `paths` form resolves each path first, so it costs one extra upstream read per path. The headline Tomatometer and Popcornmeter carry no counts; review and rating counts are in the score variants (for the number of critic reviews read `scores.critics_all.review_count`). Review samples are not returned here: use `/rottentomatoes/movie/reviews` for reviews. `data.fetched_at` is the UTC fetch time.
+- **Params:** `ids` (string, optional) — Comma-separated Rotten Tomatoes ems_id values, 1 to 20; `paths` (string, optional) — Comma-separated Rotten Tomatoes movie paths or URLs, 1 to 20
 
 ### `rottentomatoes_person`
 
 - **HTTP:** `GET /rottentomatoes/person`
 - **What:** Rotten Tomatoes person detail and filmography. Returns Rotten Tomatoes celebrity/person metadata and filmography rows. Pass exactly one of `path` or `url`.
-- **Params:** `path` (string, optional) — Rotten Tomatoes person path; `url` (string, optional) — Absolute https://www.rottentomatoes.com person URL
+- **Params:** `after` (string, optional) — Filmography pagination cursor: pass data.page_info.end_cursor from the previous response.; `limit` (integer, optional) — Filmography page size. Defaults to 20; a value above 100 is lowered to 100; a negative value is rejected.; `media_type` (string, optional) — Filmography list to page: movie or tv. Omit to use the page's embedded first page.; `path` (string, optional) — Rotten Tomatoes person path; `sort` (string, optional) — Filmography sort order. Omit for newest.; `url` (string, optional) — Absolute https://www.rottentomatoes.com person URL
+
+### `rottentomatoes_publication`
+
+- **HTTP:** `GET /rottentomatoes/publication`
+- **What:** Rotten Tomatoes publication profile. Returns one Rotten Tomatoes publication: its name, encrypted id, editorial page, image, whether it is a top publication and Tomatometer approved, its follower and review counts, and the critics who write for it with their names, encrypted ids, profile URLs and top-critic flags. Take the `id` from `encrypted_publication_id` (or `publication_id`) on any review row returned by the review endpoints. `data.fetched_at` is the UTC fetch time.
+- **Params:** `id` (string, **required**) — Publication id: encrypted_publication_id or publication_id
+
+### `rottentomatoes_publication_reviews`
+
+- **HTTP:** `GET /rottentomatoes/publication/reviews`
+- **What:** Rotten Tomatoes publication reviews. Returns the critic reviews one Rotten Tomatoes publication has published, newest first: stable review ids, ISO `created_at`/`updated_at` times, the critic identity, the publication name, the quote, the score sentiment and the original article URL. Pass `data.page_info.end_cursor` back as `after` for the next page, with the same `limit` (max 20). `data.subject.kind` is `publication` and `data.subject.title` is the outlet's name. An empty list is a `200` with no reviews. The `id` must be the encrypted publication id (`encrypted_publication_id` on any review row); a numeric id is rejected. `data.fetched_at` is the UTC fetch time.
+- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response; `id` (string, **required**) — Publication id: encrypted_publication_id; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk.
 
 ### `rottentomatoes_search`
 
@@ -477,6 +525,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /rottentomatoes/season`
 - **What:** Rotten Tomatoes season detail. Returns Rotten Tomatoes TV season metadata, scorecard data, parent series metadata, and episode rows. Pass exactly one of `path` or `url`.
 - **Params:** `path` (string, optional) — Rotten Tomatoes season path; `url` (string, optional) — Absolute https://www.rottentomatoes.com season URL
+
+### `rottentomatoes_season_reviews`
+
+- **HTTP:** `GET /rottentomatoes/season/reviews`
+- **What:** Rotten Tomatoes TV season critic reviews. Returns the critic reviews of one TV season, newest first. Each review has a stable `id`, ISO `created_at`/`updated_at` timestamps, the critic identity and the original article URL. The list is pageable `limit` reviews at a time, up to 500 deep: pass `data.page_info.end_cursor` as `after` and keep `limit` the same while paging. It is read directly from Rotten Tomatoes' review feed (`data.transport` is `feed_api`, normally about a second); if the feed cannot be read, the service may fall back to loading the season's reviews page in a browser (`transport: browser_render`, much slower and at most five pages deep). A season with no critic reviews yet returns 200 with an empty `reviews` array. `data.subject` identifies the season. `data.fetched_at`, `X-Cache` and `X-Availability-Last-Success-*` describe freshness. Pass exactly one of `path` or `url`.
+- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response. Critic cursors are base64 page indexes; audience cursors are opaque keyset values that should be passed back unchanged. The feed can serve up to 500 reviews; browser fallback is capped at five pages.; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk: the cursor is a page index times this value.; `path` (string, optional) — Rotten Tomatoes season path; `type` (string, optional) — Review list: critics (default), top-critics or audience.; `url` (string, optional) — Absolute https://www.rottentomatoes.com season URL
 
 ### `rottentomatoes_series`
 

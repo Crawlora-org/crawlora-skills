@@ -56,8 +56,10 @@ esac
 # segment; unlike a case '*', [^/]+ cannot consume another slash.
 route_allowed=false
 case "$path" in
+  /apple-books/audiobook/charts) route_allowed=true ;;
   /apple-books/audiobook/search) route_allowed=true ;;
   /apple-books/charts) route_allowed=true ;;
+  /apple-books/genres) route_allowed=true ;;
   /apple-books/search) route_allowed=true ;;
   /audible/categories) route_allowed=true ;;
   /audible/charts) route_allowed=true ;;

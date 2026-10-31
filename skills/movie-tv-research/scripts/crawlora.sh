@@ -134,6 +134,9 @@ case "$path" in
   /rottentomatoes/browse/filters) route_allowed=true ;;
   /rottentomatoes/browse/movies) route_allowed=true ;;
   /rottentomatoes/browse/tv) route_allowed=true ;;
+  /rottentomatoes/critic) route_allowed=true ;;
+  /rottentomatoes/critic/publications) route_allowed=true ;;
+  /rottentomatoes/critic/reviews) route_allowed=true ;;
   /rottentomatoes/critics/authors) route_allowed=true ;;
   /rottentomatoes/editorial/content) route_allowed=true ;;
   /rottentomatoes/editorial/detail) route_allowed=true ;;
@@ -143,11 +146,17 @@ case "$path" in
   /rottentomatoes/editorial/terms) route_allowed=true ;;
   /rottentomatoes/editorial/types) route_allowed=true ;;
   /rottentomatoes/episode) route_allowed=true ;;
+  /rottentomatoes/episode/reviews) route_allowed=true ;;
   /rottentomatoes/movie) route_allowed=true ;;
   /rottentomatoes/movie/reviews) route_allowed=true ;;
+  /rottentomatoes/movie/videos) route_allowed=true ;;
+  /rottentomatoes/movies) route_allowed=true ;;
   /rottentomatoes/person) route_allowed=true ;;
+  /rottentomatoes/publication) route_allowed=true ;;
+  /rottentomatoes/publication/reviews) route_allowed=true ;;
   /rottentomatoes/search) route_allowed=true ;;
   /rottentomatoes/season) route_allowed=true ;;
+  /rottentomatoes/season/reviews) route_allowed=true ;;
   /rottentomatoes/series) route_allowed=true ;;
   /rottentomatoes/sitemap/urls) route_allowed=true ;;
   /rottentomatoes/sitemaps) route_allowed=true ;;

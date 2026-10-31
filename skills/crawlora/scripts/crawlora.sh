@@ -172,8 +172,10 @@ case "$path" in
   /apnews/headlines) route_allowed=true ;;
   /apnews/news) route_allowed=true ;;
   /apnews/sections) route_allowed=true ;;
+  /apple-books/audiobook/charts) route_allowed=true ;;
   /apple-books/audiobook/search) route_allowed=true ;;
   /apple-books/charts) route_allowed=true ;;
+  /apple-books/genres) route_allowed=true ;;
   /apple-books/search) route_allowed=true ;;
   /apple-jobs/job) route_allowed=true ;;
   /apple-jobs/locations) route_allowed=true ;;
@@ -330,6 +332,34 @@ case "$path" in
   /bluesky/profile) route_allowed=true ;;
   /bluesky/search-actors) route_allowed=true ;;
   /bluesky/trending-topics) route_allowed=true ;;
+  /bo3/economy-baseline) route_allowed=true ;;
+  /bo3/forum) route_allowed=true ;;
+  /bo3/forum-categories) route_allowed=true ;;
+  /bo3/match) route_allowed=true ;;
+  /bo3/match-games) route_allowed=true ;;
+  /bo3/match-history) route_allowed=true ;;
+  /bo3/match-players) route_allowed=true ;;
+  /bo3/news-categories) route_allowed=true ;;
+  /bo3/news-feed) route_allowed=true ;;
+  /bo3/player) route_allowed=true ;;
+  /bo3/player-leaderboard) route_allowed=true ;;
+  /bo3/player-recent-matches) route_allowed=true ;;
+  /bo3/player-stats) route_allowed=true ;;
+  /bo3/records) route_allowed=true ;;
+  /bo3/team) route_allowed=true ;;
+  /bo3/team-prize-money) route_allowed=true ;;
+  /bo3/team-ranking-dates) route_allowed=true ;;
+  /bo3/team-rankings) route_allowed=true ;;
+  /bo3/team-recent-matches) route_allowed=true ;;
+  /bo3/team-stats) route_allowed=true ;;
+  /bo3/tournament) route_allowed=true ;;
+  /bo3/tournament-map-pool) route_allowed=true ;;
+  /bo3/tournament-mvps) route_allowed=true ;;
+  /bo3/tournament-squads) route_allowed=true ;;
+  /bo3/tournament-stages) route_allowed=true ;;
+  /bo3/tournaments) route_allowed=true ;;
+  /bo3/transfers) route_allowed=true ;;
+  /bo3/valorant-leaderboard) route_allowed=true ;;
   /bonhams/auctions/search) route_allowed=true ;;
   /bonhams/lots/search) route_allowed=true ;;
   /booking-attractions/detail) route_allowed=true ;;
@@ -410,6 +440,11 @@ case "$path" in
   /capterra/product) route_allowed=true ;;
   /capterra/product/reviews) route_allowed=true ;;
   /capterra/search) route_allowed=true ;;
+  /cardmarket/catalog) route_allowed=true ;;
+  /cardmarket/catalog/categories) route_allowed=true ;;
+  /cardmarket/games) route_allowed=true ;;
+  /cardmarket/price-guide) route_allowed=true ;;
+  /cardmarket/price-guide/categories) route_allowed=true ;;
   /carmax/search) route_allowed=true ;;
   /carmax/search/suggestions) route_allowed=true ;;
   /carmax/shop-by-brand) route_allowed=true ;;
@@ -547,6 +582,41 @@ case "$path" in
   /courtlistener/courts) route_allowed=true ;;
   /courtlistener/people) route_allowed=true ;;
   /courtlistener/search) route_allowed=true ;;
+  /cricbuzz/archives) route_allowed=true ;;
+  /cricbuzz/auction/info) route_allowed=true ;;
+  /cricbuzz/auction/live) route_allowed=true ;;
+  /cricbuzz/auction/live-blog) route_allowed=true ;;
+  /cricbuzz/auction/news) route_allowed=true ;;
+  /cricbuzz/auction/options) route_allowed=true ;;
+  /cricbuzz/auction/player) route_allowed=true ;;
+  /cricbuzz/auction/player-search) route_allowed=true ;;
+  /cricbuzz/auction/results) route_allowed=true ;;
+  /cricbuzz/auction/seasons) route_allowed=true ;;
+  /cricbuzz/auction/team) route_allowed=true ;;
+  /cricbuzz/auction/teams) route_allowed=true ;;
+  /cricbuzz/auction/teams/options) route_allowed=true ;;
+  /cricbuzz/auction/upcoming) route_allowed=true ;;
+  /cricbuzz/auction/upcoming/options) route_allowed=true ;;
+  /cricbuzz/auction/videos) route_allowed=true ;;
+  /cricbuzz/match-facts) route_allowed=true ;;
+  /cricbuzz/match-graphs) route_allowed=true ;;
+  /cricbuzz/match-overs) route_allowed=true ;;
+  /cricbuzz/matches) route_allowed=true ;;
+  /cricbuzz/navigation) route_allowed=true ;;
+  /cricbuzz/news/story) route_allowed=true ;;
+  /cricbuzz/news/topics) route_allowed=true ;;
+  /cricbuzz/rankings) route_allowed=true ;;
+  /cricbuzz/records) route_allowed=true ;;
+  /cricbuzz/schedule) route_allowed=true ;;
+  /cricbuzz/scorecard) route_allowed=true ;;
+  /cricbuzz/series) route_allowed=true ;;
+  /cricbuzz/series/stats) route_allowed=true ;;
+  /cricbuzz/team/stats) route_allowed=true ;;
+  /cricbuzz/team/stats/options) route_allowed=true ;;
+  /cricbuzz/teams) route_allowed=true ;;
+  /cricbuzz/videos/categories) route_allowed=true ;;
+  /cricbuzz/videos/playlists) route_allowed=true ;;
+  /cricbuzz/wtc) route_allowed=true ;;
   /cricinfo/calendar) route_allowed=true ;;
   /cricinfo/commentary) route_allowed=true ;;
   /cricinfo/grounds) route_allowed=true ;;
@@ -1215,6 +1285,23 @@ case "$path" in
   /googleplay/reviews) route_allowed=true ;;
   /googleplay/search) route_allowed=true ;;
   /googleplay/similar) route_allowed=true ;;
+  /gosugamers/article) route_allowed=true ;;
+  /gosugamers/articles) route_allowed=true ;;
+  /gosugamers/encounters) route_allowed=true ;;
+  /gosugamers/games) route_allowed=true ;;
+  /gosugamers/match) route_allowed=true ;;
+  /gosugamers/match-game) route_allowed=true ;;
+  /gosugamers/matches) route_allowed=true ;;
+  /gosugamers/player) route_allowed=true ;;
+  /gosugamers/rankings) route_allowed=true ;;
+  /gosugamers/results) route_allowed=true ;;
+  /gosugamers/stage-groups) route_allowed=true ;;
+  /gosugamers/team) route_allowed=true ;;
+  /gosugamers/team-results) route_allowed=true ;;
+  /gosugamers/tournament) route_allowed=true ;;
+  /gosugamers/tournament-participants) route_allowed=true ;;
+  /gosugamers/tournament-talents) route_allowed=true ;;
+  /gosugamers/tournaments) route_allowed=true ;;
   /gq/article) route_allowed=true ;;
   /gq/author) route_allowed=true ;;
   /gq/headlines) route_allowed=true ;;
@@ -1650,6 +1737,19 @@ case "$path" in
   /livescore/search) route_allowed=true ;;
   /livescore/sports) route_allowed=true ;;
   /livescore/team) route_allowed=true ;;
+  /lolesports/completed-events) route_allowed=true ;;
+  /lolesports/event) route_allowed=true ;;
+  /lolesports/game-details) route_allowed=true ;;
+  /lolesports/game-window) route_allowed=true ;;
+  /lolesports/gpr) route_allowed=true ;;
+  /lolesports/leagues) route_allowed=true ;;
+  /lolesports/live) route_allowed=true ;;
+  /lolesports/news) route_allowed=true ;;
+  /lolesports/schedule) route_allowed=true ;;
+  /lolesports/seasons) route_allowed=true ;;
+  /lolesports/standings) route_allowed=true ;;
+  /lolesports/teams) route_allowed=true ;;
+  /lolesports/tournaments) route_allowed=true ;;
   /lululemon/categories) route_allowed=true ;;
   /lululemon/category) route_allowed=true ;;
   /lululemon/outfit) route_allowed=true ;;
@@ -1956,6 +2056,37 @@ case "$path" in
   /oldnavy/product/reviews) route_allowed=true ;;
   /oldnavy/search) route_allowed=true ;;
   /oldnavy/stores) route_allowed=true ;;
+  /opendota/abilities) route_allowed=true ;;
+  /opendota/benchmarks) route_allowed=true ;;
+  /opendota/constants) route_allowed=true ;;
+  /opendota/find-matches) route_allowed=true ;;
+  /opendota/hero-abilities) route_allowed=true ;;
+  /opendota/hero-descriptions) route_allowed=true ;;
+  /opendota/hero-durations) route_allowed=true ;;
+  /opendota/hero-items) route_allowed=true ;;
+  /opendota/hero-matches) route_allowed=true ;;
+  /opendota/hero-matchups) route_allowed=true ;;
+  /opendota/hero-stats) route_allowed=true ;;
+  /opendota/heroes) route_allowed=true ;;
+  /opendota/items) route_allowed=true ;;
+  /opendota/league) route_allowed=true ;;
+  /opendota/league-match-ids) route_allowed=true ;;
+  /opendota/league-matches) route_allowed=true ;;
+  /opendota/leagues) route_allowed=true ;;
+  /opendota/live) route_allowed=true ;;
+  /opendota/match) route_allowed=true ;;
+  /opendota/patch-notes) route_allowed=true ;;
+  /opendota/pro-matches) route_allowed=true ;;
+  /opendota/pro-players) route_allowed=true ;;
+  /opendota/public-matches) route_allowed=true ;;
+  /opendota/rank-distribution) route_allowed=true ;;
+  /opendota/records) route_allowed=true ;;
+  /opendota/scenarios) route_allowed=true ;;
+  /opendota/team) route_allowed=true ;;
+  /opendota/team-heroes) route_allowed=true ;;
+  /opendota/team-matches) route_allowed=true ;;
+  /opendota/team-players) route_allowed=true ;;
+  /opendota/teams) route_allowed=true ;;
   /opensea/activity) route_allowed=true ;;
   /opensea/categories) route_allowed=true ;;
   /opensea/chains) route_allowed=true ;;
@@ -2229,6 +2360,10 @@ case "$path" in
   /redfin/region-trends) route_allowed=true ;;
   /redfin/search) route_allowed=true ;;
   /redfin/similar) route_allowed=true ;;
+  /rednote/explore) route_allowed=true ;;
+  /rednote/note) route_allowed=true ;;
+  /rednote/note-comments) route_allowed=true ;;
+  /rednote/search-suggest) route_allowed=true ;;
   /reelshort/fandom-categories) route_allowed=true ;;
   /reelshort/fandom-post) route_allowed=true ;;
   /reelshort/fandom-posts) route_allowed=true ;;
@@ -2310,6 +2445,9 @@ case "$path" in
   /rottentomatoes/browse/filters) route_allowed=true ;;
   /rottentomatoes/browse/movies) route_allowed=true ;;
   /rottentomatoes/browse/tv) route_allowed=true ;;
+  /rottentomatoes/critic) route_allowed=true ;;
+  /rottentomatoes/critic/publications) route_allowed=true ;;
+  /rottentomatoes/critic/reviews) route_allowed=true ;;
   /rottentomatoes/critics/authors) route_allowed=true ;;
   /rottentomatoes/editorial/content) route_allowed=true ;;
   /rottentomatoes/editorial/detail) route_allowed=true ;;
@@ -2319,11 +2457,17 @@ case "$path" in
   /rottentomatoes/editorial/terms) route_allowed=true ;;
   /rottentomatoes/editorial/types) route_allowed=true ;;
   /rottentomatoes/episode) route_allowed=true ;;
+  /rottentomatoes/episode/reviews) route_allowed=true ;;
   /rottentomatoes/movie) route_allowed=true ;;
   /rottentomatoes/movie/reviews) route_allowed=true ;;
+  /rottentomatoes/movie/videos) route_allowed=true ;;
+  /rottentomatoes/movies) route_allowed=true ;;
   /rottentomatoes/person) route_allowed=true ;;
+  /rottentomatoes/publication) route_allowed=true ;;
+  /rottentomatoes/publication/reviews) route_allowed=true ;;
   /rottentomatoes/search) route_allowed=true ;;
   /rottentomatoes/season) route_allowed=true ;;
+  /rottentomatoes/season/reviews) route_allowed=true ;;
   /rottentomatoes/series) route_allowed=true ;;
   /rottentomatoes/sitemap/urls) route_allowed=true ;;
   /rottentomatoes/sitemaps) route_allowed=true ;;
@@ -2429,6 +2573,21 @@ case "$path" in
   /shop-app/categories) route_allowed=true ;;
   /shop-app/search) route_allowed=true ;;
   /shop-app/suggestions) route_allowed=true ;;
+  /shopee/banners) route_allowed=true ;;
+  /shopee/categories) route_allowed=true ;;
+  /shopee/category-detail) route_allowed=true ;;
+  /shopee/flash-sale) route_allowed=true ;;
+  /shopee/footer) route_allowed=true ;;
+  /shopee/home) route_allowed=true ;;
+  /shopee/home-categories) route_allowed=true ;;
+  /shopee/location-filters) route_allowed=true ;;
+  /shopee/mall-categories) route_allowed=true ;;
+  /shopee/prefills) route_allowed=true ;;
+  /shopee/search-filters) route_allowed=true ;;
+  /shopee/search-hints) route_allowed=true ;;
+  /shopee/shop-info) route_allowed=true ;;
+  /shopee/shops) route_allowed=true ;;
+  /shopee/suggest) route_allowed=true ;;
   /shopify/collections) route_allowed=true ;;
   /shopify/pages) route_allowed=true ;;
   /shopify/products) route_allowed=true ;;
@@ -3169,6 +3328,29 @@ case "$path" in
   /vinted/category) route_allowed=true ;;
   /vinted/item) route_allowed=true ;;
   /vinted/member) route_allowed=true ;;
+  /vlr/event) route_allowed=true ;;
+  /vlr/event-agents) route_allowed=true ;;
+  /vlr/event-matches) route_allowed=true ;;
+  /vlr/event-stats) route_allowed=true ;;
+  /vlr/events) route_allowed=true ;;
+  /vlr/forum-categories) route_allowed=true ;;
+  /vlr/forum-threads) route_allowed=true ;;
+  /vlr/match) route_allowed=true ;;
+  /vlr/match-economy) route_allowed=true ;;
+  /vlr/match-performance) route_allowed=true ;;
+  /vlr/match-rounds) route_allowed=true ;;
+  /vlr/matches) route_allowed=true ;;
+  /vlr/news) route_allowed=true ;;
+  /vlr/news-article) route_allowed=true ;;
+  /vlr/player) route_allowed=true ;;
+  /vlr/player-matches) route_allowed=true ;;
+  /vlr/rankings) route_allowed=true ;;
+  /vlr/results) route_allowed=true ;;
+  /vlr/search) route_allowed=true ;;
+  /vlr/stats) route_allowed=true ;;
+  /vlr/team) route_allowed=true ;;
+  /vlr/team-maps) route_allowed=true ;;
+  /vlr/team-matches) route_allowed=true ;;
   /vox/article) route_allowed=true ;;
   /vox/author) route_allowed=true ;;
   /vox/headlines) route_allowed=true ;;
@@ -3264,6 +3446,10 @@ case "$path" in
   /xda/headlines) route_allowed=true ;;
   /xda/news) route_allowed=true ;;
   /xda/sections) route_allowed=true ;;
+  /xiaohongshu/explore) route_allowed=true ;;
+  /xiaohongshu/note) route_allowed=true ;;
+  /xiaohongshu/note-comments) route_allowed=true ;;
+  /xiaohongshu/search-suggest) route_allowed=true ;;
   /yahoo-autos/article) route_allowed=true ;;
   /yahoo-autos/category) route_allowed=true ;;
   /yahoo-autos/home) route_allowed=true ;;
@@ -3978,12 +4164,14 @@ route_method_regexes=(
   '^GET:/apple-books/audiobook/[^/]+$'
   '^GET:/apple-books/audiobook/[^/]+/reviews$'
   '^GET:/apple-books/audiobook/[^/]+/similar$'
+  '^GET:/apple-books/audiobook/charts$'
   '^GET:/apple-books/audiobook/search$'
   '^GET:/apple-books/author/[^/]+$'
   '^GET:/apple-books/book/[^/]+$'
   '^GET:/apple-books/book/[^/]+/reviews$'
   '^GET:/apple-books/book/[^/]+/similar$'
   '^GET:/apple-books/charts$'
+  '^GET:/apple-books/genres$'
   '^GET:/apple-books/search$'
   '^GET:/apple-books/series/[^/]+$'
   '^GET:/apple-jobs/job$'
@@ -4157,6 +4345,34 @@ route_method_regexes=(
   '^GET:/bluesky/profile$'
   '^GET:/bluesky/search-actors$'
   '^GET:/bluesky/trending-topics$'
+  '^GET:/bo3/economy-baseline$'
+  '^GET:/bo3/forum$'
+  '^GET:/bo3/forum-categories$'
+  '^GET:/bo3/match$'
+  '^GET:/bo3/match-games$'
+  '^GET:/bo3/match-history$'
+  '^GET:/bo3/match-players$'
+  '^GET:/bo3/news-categories$'
+  '^GET:/bo3/news-feed$'
+  '^GET:/bo3/player$'
+  '^GET:/bo3/player-leaderboard$'
+  '^GET:/bo3/player-recent-matches$'
+  '^GET:/bo3/player-stats$'
+  '^GET:/bo3/records$'
+  '^GET:/bo3/team$'
+  '^GET:/bo3/team-prize-money$'
+  '^GET:/bo3/team-ranking-dates$'
+  '^GET:/bo3/team-rankings$'
+  '^GET:/bo3/team-recent-matches$'
+  '^GET:/bo3/team-stats$'
+  '^GET:/bo3/tournament$'
+  '^GET:/bo3/tournament-map-pool$'
+  '^GET:/bo3/tournament-mvps$'
+  '^GET:/bo3/tournament-squads$'
+  '^GET:/bo3/tournament-stages$'
+  '^GET:/bo3/tournaments$'
+  '^GET:/bo3/transfers$'
+  '^GET:/bo3/valorant-leaderboard$'
   '^GET:/bonhams/auctions/[^/]+$'
   '^GET:/bonhams/auctions/[^/]+/lots$'
   '^GET:/bonhams/auctions/search$'
@@ -4244,6 +4460,11 @@ route_method_regexes=(
   '^GET:/capterra/product$'
   '^GET:/capterra/product/reviews$'
   '^GET:/capterra/search$'
+  '^GET:/cardmarket/catalog$'
+  '^GET:/cardmarket/catalog/categories$'
+  '^GET:/cardmarket/games$'
+  '^GET:/cardmarket/price-guide$'
+  '^GET:/cardmarket/price-guide/categories$'
   '^GET:/carmax/search$'
   '^GET:/carmax/search/suggestions$'
   '^GET:/carmax/shop-by-brand$'
@@ -4398,6 +4619,41 @@ route_method_regexes=(
   '^GET:/courtlistener/courts$'
   '^GET:/courtlistener/people$'
   '^GET:/courtlistener/search$'
+  '^GET:/cricbuzz/archives$'
+  '^GET:/cricbuzz/auction/info$'
+  '^GET:/cricbuzz/auction/live$'
+  '^GET:/cricbuzz/auction/live-blog$'
+  '^GET:/cricbuzz/auction/news$'
+  '^GET:/cricbuzz/auction/options$'
+  '^GET:/cricbuzz/auction/player$'
+  '^GET:/cricbuzz/auction/player-search$'
+  '^GET:/cricbuzz/auction/results$'
+  '^GET:/cricbuzz/auction/seasons$'
+  '^GET:/cricbuzz/auction/team$'
+  '^GET:/cricbuzz/auction/teams$'
+  '^GET:/cricbuzz/auction/teams/options$'
+  '^GET:/cricbuzz/auction/upcoming$'
+  '^GET:/cricbuzz/auction/upcoming/options$'
+  '^GET:/cricbuzz/auction/videos$'
+  '^GET:/cricbuzz/match-facts$'
+  '^GET:/cricbuzz/match-graphs$'
+  '^GET:/cricbuzz/match-overs$'
+  '^GET:/cricbuzz/matches$'
+  '^GET:/cricbuzz/navigation$'
+  '^GET:/cricbuzz/news/story$'
+  '^GET:/cricbuzz/news/topics$'
+  '^GET:/cricbuzz/rankings$'
+  '^GET:/cricbuzz/records$'
+  '^GET:/cricbuzz/schedule$'
+  '^GET:/cricbuzz/scorecard$'
+  '^GET:/cricbuzz/series$'
+  '^GET:/cricbuzz/series/stats$'
+  '^GET:/cricbuzz/team/stats$'
+  '^GET:/cricbuzz/team/stats/options$'
+  '^GET:/cricbuzz/teams$'
+  '^GET:/cricbuzz/videos/categories$'
+  '^GET:/cricbuzz/videos/playlists$'
+  '^GET:/cricbuzz/wtc$'
   '^GET:/cricinfo/calendar$'
   '^GET:/cricinfo/commentary$'
   '^GET:/cricinfo/grounds$'
@@ -5139,6 +5395,23 @@ route_method_regexes=(
   '^GET:/googleplay/search$'
   '^GET:/googleplay/similar$'
   '^GET:/googleplay/suggest/[^/]+$'
+  '^GET:/gosugamers/article$'
+  '^GET:/gosugamers/articles$'
+  '^GET:/gosugamers/encounters$'
+  '^GET:/gosugamers/games$'
+  '^GET:/gosugamers/match$'
+  '^GET:/gosugamers/match-game$'
+  '^GET:/gosugamers/matches$'
+  '^GET:/gosugamers/player$'
+  '^GET:/gosugamers/rankings$'
+  '^GET:/gosugamers/results$'
+  '^GET:/gosugamers/stage-groups$'
+  '^GET:/gosugamers/team$'
+  '^GET:/gosugamers/team-results$'
+  '^GET:/gosugamers/tournament$'
+  '^GET:/gosugamers/tournament-participants$'
+  '^GET:/gosugamers/tournament-talents$'
+  '^GET:/gosugamers/tournaments$'
   '^GET:/gq/article$'
   '^GET:/gq/author$'
   '^GET:/gq/headlines$'
@@ -5605,6 +5878,19 @@ route_method_regexes=(
   '^GET:/livescore/search$'
   '^GET:/livescore/sports$'
   '^GET:/livescore/team$'
+  '^GET:/lolesports/completed-events$'
+  '^GET:/lolesports/event$'
+  '^GET:/lolesports/game-details$'
+  '^GET:/lolesports/game-window$'
+  '^GET:/lolesports/gpr$'
+  '^GET:/lolesports/leagues$'
+  '^GET:/lolesports/live$'
+  '^GET:/lolesports/news$'
+  '^GET:/lolesports/schedule$'
+  '^GET:/lolesports/seasons$'
+  '^GET:/lolesports/standings$'
+  '^GET:/lolesports/teams$'
+  '^GET:/lolesports/tournaments$'
   '^GET:/lululemon/categories$'
   '^GET:/lululemon/category$'
   '^GET:/lululemon/outfit$'
@@ -5941,6 +6227,37 @@ route_method_regexes=(
   '^GET:/oldnavy/product/reviews$'
   '^GET:/oldnavy/search$'
   '^GET:/oldnavy/stores$'
+  '^GET:/opendota/abilities$'
+  '^GET:/opendota/benchmarks$'
+  '^GET:/opendota/constants$'
+  '^GET:/opendota/find-matches$'
+  '^GET:/opendota/hero-abilities$'
+  '^GET:/opendota/hero-descriptions$'
+  '^GET:/opendota/hero-durations$'
+  '^GET:/opendota/hero-items$'
+  '^GET:/opendota/hero-matches$'
+  '^GET:/opendota/hero-matchups$'
+  '^GET:/opendota/hero-stats$'
+  '^GET:/opendota/heroes$'
+  '^GET:/opendota/items$'
+  '^GET:/opendota/league$'
+  '^GET:/opendota/league-match-ids$'
+  '^GET:/opendota/league-matches$'
+  '^GET:/opendota/leagues$'
+  '^GET:/opendota/live$'
+  '^GET:/opendota/match$'
+  '^GET:/opendota/patch-notes$'
+  '^GET:/opendota/pro-matches$'
+  '^GET:/opendota/pro-players$'
+  '^GET:/opendota/public-matches$'
+  '^GET:/opendota/rank-distribution$'
+  '^GET:/opendota/records$'
+  '^GET:/opendota/scenarios$'
+  '^GET:/opendota/team$'
+  '^GET:/opendota/team-heroes$'
+  '^GET:/opendota/team-matches$'
+  '^GET:/opendota/team-players$'
+  '^GET:/opendota/teams$'
   '^GET:/opensea/activity$'
   '^GET:/opensea/categories$'
   '^GET:/opensea/chains$'
@@ -6293,6 +6610,10 @@ route_method_regexes=(
   '^GET:/redfin/region-trends$'
   '^GET:/redfin/search$'
   '^GET:/redfin/similar$'
+  '^GET:/rednote/explore$'
+  '^GET:/rednote/note$'
+  '^GET:/rednote/note-comments$'
+  '^GET:/rednote/search-suggest$'
   '^GET:/reelshort/fandom-categories$'
   '^GET:/reelshort/fandom-post$'
   '^GET:/reelshort/fandom-posts$'
@@ -6380,6 +6701,9 @@ route_method_regexes=(
   '^GET:/rottentomatoes/browse/filters$'
   '^GET:/rottentomatoes/browse/movies$'
   '^GET:/rottentomatoes/browse/tv$'
+  '^GET:/rottentomatoes/critic$'
+  '^GET:/rottentomatoes/critic/publications$'
+  '^GET:/rottentomatoes/critic/reviews$'
   '^GET:/rottentomatoes/critics/authors$'
   '^GET:/rottentomatoes/editorial/content$'
   '^GET:/rottentomatoes/editorial/detail$'
@@ -6389,11 +6713,17 @@ route_method_regexes=(
   '^GET:/rottentomatoes/editorial/terms$'
   '^GET:/rottentomatoes/editorial/types$'
   '^GET:/rottentomatoes/episode$'
+  '^GET:/rottentomatoes/episode/reviews$'
   '^GET:/rottentomatoes/movie$'
   '^GET:/rottentomatoes/movie/reviews$'
+  '^GET:/rottentomatoes/movie/videos$'
+  '^GET:/rottentomatoes/movies$'
   '^GET:/rottentomatoes/person$'
+  '^GET:/rottentomatoes/publication$'
+  '^GET:/rottentomatoes/publication/reviews$'
   '^GET:/rottentomatoes/search$'
   '^GET:/rottentomatoes/season$'
+  '^GET:/rottentomatoes/season/reviews$'
   '^GET:/rottentomatoes/series$'
   '^GET:/rottentomatoes/sitemap/urls$'
   '^GET:/rottentomatoes/sitemaps$'
@@ -6512,6 +6842,21 @@ route_method_regexes=(
   '^GET:/shop-app/shops/[^/]+/reviews$'
   '^GET:/shop-app/shops/[^/]+/typeahead$'
   '^GET:/shop-app/suggestions$'
+  '^GET:/shopee/banners$'
+  '^GET:/shopee/categories$'
+  '^GET:/shopee/category-detail$'
+  '^GET:/shopee/flash-sale$'
+  '^GET:/shopee/footer$'
+  '^GET:/shopee/home$'
+  '^GET:/shopee/home-categories$'
+  '^GET:/shopee/location-filters$'
+  '^GET:/shopee/mall-categories$'
+  '^GET:/shopee/prefills$'
+  '^GET:/shopee/search-filters$'
+  '^GET:/shopee/search-hints$'
+  '^GET:/shopee/shop-info$'
+  '^GET:/shopee/shops$'
+  '^GET:/shopee/suggest$'
   '^GET:/shopify/collections$'
   '^GET:/shopify/collections/[^/]+/products$'
   '^GET:/shopify/pages$'
@@ -7305,6 +7650,29 @@ route_method_regexes=(
   '^GET:/vinted/category$'
   '^GET:/vinted/item$'
   '^GET:/vinted/member$'
+  '^GET:/vlr/event$'
+  '^GET:/vlr/event-agents$'
+  '^GET:/vlr/event-matches$'
+  '^GET:/vlr/event-stats$'
+  '^GET:/vlr/events$'
+  '^GET:/vlr/forum-categories$'
+  '^GET:/vlr/forum-threads$'
+  '^GET:/vlr/match$'
+  '^GET:/vlr/match-economy$'
+  '^GET:/vlr/match-performance$'
+  '^GET:/vlr/match-rounds$'
+  '^GET:/vlr/matches$'
+  '^GET:/vlr/news$'
+  '^GET:/vlr/news-article$'
+  '^GET:/vlr/player$'
+  '^GET:/vlr/player-matches$'
+  '^GET:/vlr/rankings$'
+  '^GET:/vlr/results$'
+  '^GET:/vlr/search$'
+  '^GET:/vlr/stats$'
+  '^GET:/vlr/team$'
+  '^GET:/vlr/team-maps$'
+  '^GET:/vlr/team-matches$'
   '^GET:/vox/article$'
   '^GET:/vox/author$'
   '^GET:/vox/headlines$'
@@ -7413,6 +7781,10 @@ route_method_regexes=(
   '^GET:/xda/headlines$'
   '^GET:/xda/news$'
   '^GET:/xda/sections$'
+  '^GET:/xiaohongshu/explore$'
+  '^GET:/xiaohongshu/note$'
+  '^GET:/xiaohongshu/note-comments$'
+  '^GET:/xiaohongshu/search-suggest$'
   '^GET:/yahoo-autos/article$'
   '^GET:/yahoo-autos/category$'
   '^GET:/yahoo-autos/home$'

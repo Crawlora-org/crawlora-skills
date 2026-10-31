@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**33 endpoints across 3 platform group(s).**
+**35 endpoints across 3 platform group(s).**
 
 ## Goodreads (10)
 
@@ -70,13 +70,19 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Goodreads books. Searches Goodreads for books by title or author using `q`, returning up to `limit` results (default 10, max 50). Each result has its id, title, author and author id, average rating, ratings count, page count, a truncated description, cover image URL and Goodreads URL. Only books are returned, not authors or lists.
 - **Params:** `limit` (integer, optional) — Max results, default 10, max 50; `q` (string, **required**) — Search query
 
-## AppleBooks (12)
+## AppleBooks (14)
 
 ### `apple_books_audiobook`
 
 - **HTTP:** `GET /apple-books/audiobook/{id}`
 - **What:** Retrieve Apple Books audiobook details. Returns audiobook metadata from Apple Books, including narrator, duration, audio preview, and a cross-link to the ebook edition (when one exists).
 - **Params:** `country` (string, optional) — Two-letter storefront country code; `id` (string, **required**) — Apple Books numeric audiobook ID; `lang` (string, optional) — Result language tag
+
+### `apple_books_audiobook_charts`
+
+- **HTTP:** `GET /apple-books/audiobook/charts`
+- **What:** Retrieve Apple Books audiobook chart rankings. Returns the 40 audiobook rows Apple currently serves in its paid top chart for one storefront. `genre_id` narrows the page using an ID from `GET /apple-books/genres?media=audiobook`. The upstream page has no free/paid selector or pagination.
+- **Params:** `country` (string, optional) — Two-letter storefront code, default us; `genre_id` (string, optional) — Audiobook genre ID. Allowed values: 50000042, 50000043, 50000040, 50000049, 50000044, 50000051, 50000052, 50000053, 50000069, 50000055, 50000054, 50000056
 
 ### `apple_books_audiobook_reviews`
 
@@ -129,8 +135,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `apple_books_charts`
 
 - **HTTP:** `GET /apple-books/charts`
-- **What:** Retrieve Apple Books chart rankings. Returns Apple Books chart rankings for a `collection`, `top-free` (default) or `top-paid`. Narrow with `genre` (an Apple Books genre ID, `0` for all genres), `country` (default `us`) and `limit` (default 50, max 200). Each entry has `name`, author, `genres`, `release_date`, `artwork_url` and `url`.
-- **Params:** `collection` (string, optional) — Chart collection. Allowed values: top-free, top-paid; `country` (string, optional) — Two-letter storefront country code; `genre` (integer, optional) — Optional Apple Books genre ID to filter the chart; `limit` (integer, optional) — Number of chart items to return
+- **What:** Retrieve Apple Books chart rankings. Returns Apple Books ebook chart rankings for `collection`, `top-free` (default) or `top-paid`. Omit `genre` for all genres, or use one of the discovered ebook category IDs. `country` defaults to `us`; `limit` defaults to 50 and maxes at 200. Each entry has `name`, author, `genres`, `release_date`, `artwork_url` and `url`.
+- **Params:** `collection` (string, optional) — Chart collection. Allowed values: top-free, top-paid; `country` (string, optional) — Two-letter storefront country code; `genre` (integer, optional) — Optional ebook genre ID. Allowed values: 9008, 9009, 9026, 9027, 9028, 9031, 9025, 9015, 11086, 9032, 9002, 9034, 9018, 9003, 9020, 9035, 11165. Use apple_books_genres with media=book to discover names.; `limit` (integer, optional) — Number of chart items to return
+
+### `apple_books_genres`
+
+- **HTTP:** `GET /apple-books/genres`
+- **What:** List Apple Books chart genres. Reads every category link from Apple's current chart page. The ebook and audiobook genre ID spaces differ; pass `media=book` before filtering ebook charts or `media=audiobook` before filtering audiobook charts.
+- **Params:** `country` (string, optional) — Two-letter storefront code, default us; `media` (string, **required**) — Media taxonomy: book or audiobook
 
 ### `apple_books_search`
 
