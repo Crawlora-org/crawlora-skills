@@ -74,7 +74,15 @@ case "$path" in
   /fanatics/search) route_allowed=true ;;
   /fanaticscollect/auctions) route_allowed=true ;;
   /fanaticscollect/categories) route_allowed=true ;;
+  /fanaticscollect/instant-packs/release) route_allowed=true ;;
+  /fanaticscollect/instant-packs/releases) route_allowed=true ;;
   /fanaticscollect/instant-rips/categories) route_allowed=true ;;
+  /fanaticscollect/instant-rips/pack-categories) route_allowed=true ;;
+  /fanaticscollect/instant-rips/pack-checklist) route_allowed=true ;;
+  /fanaticscollect/instant-rips/packs) route_allowed=true ;;
+  /fanaticscollect/instant-rips/recently-ripped) route_allowed=true ;;
+  /fanaticscollect/newsroom) route_allowed=true ;;
+  /fanaticscollect/newsroom/filters) route_allowed=true ;;
   /fanaticscollect/search) route_allowed=true ;;
   /fanaticscollect/sold-items) route_allowed=true ;;
   /fanaticscollect/trending-searches) route_allowed=true ;;

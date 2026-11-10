@@ -45,7 +45,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_map_search`
 
 - **HTTP:** `POST /google/map/search`
-- **What:** Google Maps search API. Searches Google Maps with a request body of `keyword`, `language` and `country` (an ISO-2 code such as `us`), all required. Each place has its name, place id, categories, address, coordinates, phone, website, rating and review count. `rating` is `null` when Google has no aggregate rating.
+- **What:** Google Maps search API. Searches Google Maps with a request body of `keyword` (required) plus optional `language` (default `en`) and `country` (an ISO-2 code such as `us`, default `us`). Each place has its name, place id, categories, address, coordinates, phone, website, rating and review count. `rating` is `null` when Google has no aggregate rating.
 - **Params:** `mapSearchOption` (object, **required**) — Search options
 - **REST body:** Send the value of the MCP argument `mapSearchOption` directly as the JSON body; do not wrap it in a `mapSearchOption` property.
 

@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**270 endpoints across 7 platform group(s).**
+**272 endpoints across 7 platform group(s).**
 
 ## ESPN (9)
 
@@ -64,7 +64,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** ESPN team list. Returns the full team list for a sport and league. The `sport` enum accepts `football`, `basketball`, `baseball`, `hockey`, and `soccer`. The `league` enum accepts `nfl`, `college-football`, `nba`, `wnba`, `mens-college-basketball`, `womens-college-basketball`, `mlb`, `nhl`, `eng.1`, `esp.1`, `ita.1`, `ger.1`, `fra.1`, `usa.1`, and `uefa.champions`; it must be valid for the chosen sport.
 - **Params:** `league` (string, **required**) — League key (must be valid for the sport); `sport` (string, **required**) — Sport key
 
-## SofaScore (109)
+## SofaScore (111)
 
 ### `sofascore_categories`
 
@@ -192,6 +192,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** SofaScore event odds. Returns one match's betting markets and choices. Returns 404 when SofaScore has no odds for the match.
 - **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
 
+### `sofascore_event_player_actions`
+
+- **HTTP:** `GET /sofascore/event-player-actions`
+- **What:** SofaScore football player action maps. Returns the spatial actions SofaScore tracks for one football player in a match, grouped into passes, dribbles, defensive actions and ball carries. Includes pitch coordinates, end coordinates when reported, and optional outcome and key-pass flags. Get the player id from event-lineups. An uncovered match or player returns 404.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event id; `player_id` (string, **required**) — Numeric SofaScore player id for that event
+
 ### `sofascore_event_player_heatmap`
 
 - **HTTP:** `GET /sofascore/event-player-heatmap`
@@ -233,6 +239,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sofascore/event-team-heatmap`
 - **What:** SofaScore event team heatmap. Returns one team's touch locations in a football match as `player_points` (outfield players) and `goalkeeper_points`, each point an `x` and `y` on SofaScore's 0-100 pitch scale. `team_id` must be the home or away team of the event; get both ids from the event endpoint. Returns 404 when SofaScore has no heatmap for that team in that match, which includes teams that did not play it, unstarted matches and sports other than football.
 - **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id; `team_id` (string, **required**) — Numeric SofaScore team id of the home or away side
+
+### `sofascore_event_team_shotmap`
+
+- **HTTP:** `GET /sofascore/event-team-shotmap`
+- **What:** SofaScore basketball team shot chart. Returns one team's shot chart in a basketball game, with the made, missed and saved counts at each court location in SofaScore's coordinate units. Pass the home or away team id from the event. An uncovered team or event returns 404.
+- **Params:** `id` (string, **required**) — Numeric SofaScore basketball event id; `team_id` (string, **required**) — Numeric SofaScore team id for that event
 
 ### `sofascore_event_team_streaks`
 

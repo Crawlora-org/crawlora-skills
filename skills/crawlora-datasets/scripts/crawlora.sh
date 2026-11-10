@@ -57,6 +57,8 @@ esac
 route_allowed=false
 case "$path" in
   /datasets) route_allowed=true ;;
+  /datasets/airbnb-hosts/facets) route_allowed=true ;;
+  /datasets/airbnb-hosts/search) route_allowed=true ;;
   /datasets/airbnb-markets/facets) route_allowed=true ;;
   /datasets/airbnb-markets/nearby) route_allowed=true ;;
   /datasets/airbnb-markets/search) route_allowed=true ;;
@@ -67,8 +69,11 @@ case "$path" in
   /datasets/apple-maps-places/search) route_allowed=true ;;
   /datasets/apple-podcasts-shows/facets) route_allowed=true ;;
   /datasets/apple-podcasts-shows/search) route_allowed=true ;;
+  /datasets/apps-charts/facets) route_allowed=true ;;
   /datasets/apps-charts/search) route_allowed=true ;;
+  /datasets/apps-reviews/facets) route_allowed=true ;;
   /datasets/apps-reviews/search) route_allowed=true ;;
+  /datasets/apps/facets) route_allowed=true ;;
   /datasets/apps/search) route_allowed=true ;;
   /datasets/bbb-businesses/facets) route_allowed=true ;;
   /datasets/bbb-businesses/search) route_allowed=true ;;
@@ -81,6 +86,7 @@ case "$path" in
   /datasets/chrome-extensions/metrics) route_allowed=true ;;
   /datasets/chrome-extensions/search) route_allowed=true ;;
   /datasets/chrome-extensions/trending) route_allowed=true ;;
+  /datasets/creators/facets) route_allowed=true ;;
   /datasets/creators/search) route_allowed=true ;;
   /datasets/doordash-stores/facets) route_allowed=true ;;
   /datasets/doordash-stores/nearby) route_allowed=true ;;
@@ -130,6 +136,7 @@ case "$path" in
   /datasets/producthunt-products/search) route_allowed=true ;;
   /datasets/producthunt-trends/facets) route_allowed=true ;;
   /datasets/producthunt-trends/search) route_allowed=true ;;
+  /datasets/reddit-trending/facets) route_allowed=true ;;
   /datasets/reddit-trending/search) route_allowed=true ;;
   /datasets/sec-companies/facets) route_allowed=true ;;
   /datasets/sec-companies/search) route_allowed=true ;;
@@ -138,14 +145,22 @@ case "$path" in
   /datasets/starbucks-stores/facets) route_allowed=true ;;
   /datasets/starbucks-stores/nearby) route_allowed=true ;;
   /datasets/starbucks-stores/search) route_allowed=true ;;
+  /datasets/steam-achievements/facets) route_allowed=true ;;
   /datasets/steam-achievements/search) route_allowed=true ;;
+  /datasets/steam-charts/facets) route_allowed=true ;;
   /datasets/steam-charts/search) route_allowed=true ;;
   /datasets/steam-games/facets) route_allowed=true ;;
   /datasets/steam-games/search) route_allowed=true ;;
+  /datasets/steam-news/facets) route_allowed=true ;;
   /datasets/steam-news/search) route_allowed=true ;;
+  /datasets/steam-playercounts/facets) route_allowed=true ;;
   /datasets/steam-playercounts/search) route_allowed=true ;;
+  /datasets/steam-prices/facets) route_allowed=true ;;
   /datasets/steam-prices/search) route_allowed=true ;;
+  /datasets/steam-reviews/facets) route_allowed=true ;;
   /datasets/steam-reviews/search) route_allowed=true ;;
+  /datasets/substack/facets) route_allowed=true ;;
+  /datasets/substack/search) route_allowed=true ;;
   /datasets/techstack/facets) route_allowed=true ;;
   /datasets/techstack/search) route_allowed=true ;;
   /datasets/trustmrr/facets) route_allowed=true ;;
@@ -159,15 +174,20 @@ case "$path" in
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
+  '^/datasets/airbnb-hosts/items/[^/]+$'
   '^/datasets/airbnb-markets/items/[^/]+$'
   '^/datasets/apple-books/items/[^/]+/[^/]+$'
   '^/datasets/apple-maps-places/items/[^/]+$'
   '^/datasets/apple-podcasts-shows/items/[^/]+$'
+  '^/datasets/apps-charts/items/[^/]+$'
+  '^/datasets/apps-reviews/items/[^/]+$'
+  '^/datasets/apps/items/[^/]+$'
   '^/datasets/bbb-businesses/items/[^/]+$'
   '^/datasets/bbb-scamtracker-reports/items/[^/]+$'
   '^/datasets/boxofficemojo/items/[^/]+$'
   '^/datasets/chrome-extensions/history/[^/]+$'
   '^/datasets/chrome-extensions/items/[^/]+$'
+  '^/datasets/creators/items/[^/]+$'
   '^/datasets/doordash-stores/items/[^/]+$'
   '^/datasets/facebook-pages/items/[^/]+$'
   '^/datasets/github-users/items/[^/]+$'
@@ -190,11 +210,19 @@ if [ "$route_allowed" = false ]; then
   '^/datasets/playstation-games/items/[^/]+$'
   '^/datasets/producthunt-makers/items/[^/]+$'
   '^/datasets/producthunt-products/items/[^/]+$'
+  '^/datasets/reddit-trending/items/[^/]+$'
   '^/datasets/sec-companies/financials/[^/]+$'
   '^/datasets/sec-companies/insider/[^/]+$'
   '^/datasets/sec-companies/items/[^/]+$'
   '^/datasets/starbucks-stores/items/[^/]+$'
+  '^/datasets/steam-achievements/items/[^/]+/[^/]+$'
+  '^/datasets/steam-charts/items/[^/]+$'
   '^/datasets/steam-games/items/[^/]+$'
+  '^/datasets/steam-news/items/[^/]+/[^/]+$'
+  '^/datasets/steam-playercounts/items/[^/]+/[^/]+$'
+  '^/datasets/steam-prices/items/[^/]+/[^/]+$'
+  '^/datasets/steam-reviews/items/[^/]+/[^/]+$'
+  '^/datasets/substack/items/[^/]+$'
   '^/datasets/techstack/items/[^/]+$'
   '^/datasets/trustmrr/history/[^/]+$'
   '^/datasets/trustmrr/items/[^/]+$'
