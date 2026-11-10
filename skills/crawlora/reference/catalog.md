@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**4455 endpoints across 525 platform group(s).**
+**4493 endpoints across 529 platform group(s).**
 
 ## 1stDibs (4)
 
@@ -5666,6 +5666,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Entertainment Weekly sections. Lists the nine Entertainment Weekly primary-navigation sections accepted by `ew-headlines`: `tv`, `movies`, `music`, `what-to-watch`, `binge`, `celebrity`, `awardist`, `books` and `theater`. Each entry has the `slug`, display `name` and section `url`.
 - **Params:** _none_
 
+## Epic Games Store (1)
+
+### `epicgames_free_promotions`
+
+- **HTTP:** `GET /epicgames/free-promotions`
+- **What:** Get Epic Games Store free promotions. Returns the store's current and upcoming promotion offers for the requested locale and country. The response preserves the upstream Catalog searchStore payload and its promotion windows; a zero price alone does not mean an offer is part of a limited-time promotion.
+- **Params:** `allowCountries` (string, optional) — Comma-separated country codes accepted by the upstream promotion query; defaults to country; `country` (string, optional) — Two-letter country code; `locale` (string, optional) — Store locale
+
 ## ESPN (9)
 
 ### `espn_athlete`
@@ -10379,6 +10387,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List popular Healthgrades searches. Returns the popular specialty searches Healthgrades currently suggests, in `groups`. Each group has a category, a title such as Popular Healthcare Specialties, and suggestions with a label and value. The set changes over time and is not a fixed list.
 - **Params:** _none_
 
+## Hearthstone (3)
+
+### `hearthstone_card`
+
+- **HTTP:** `GET /hearthstone/card`
+- **What:** Get a Hearthstone card by ID. Returns one card from the public Hearthstone card library. The card record and pagination metadata preserve the upstream response shape.
+- **Params:** `id` (string, **required**) — Numeric card ID from the Hearthstone card library
+
+### `hearthstone_card_filters`
+
+- **HTTP:** `GET /hearthstone/filters`
+- **What:** List Hearthstone card gallery filters. Returns the card gallery's current filter collections and sort options. Filter values come from the gallery page configuration; sort slugs come from its current hashed card bundle.
+- **Params:** _none_
+
+### `hearthstone_cards`
+
+- **HTTP:** `GET /hearthstone/cards`
+- **What:** List Hearthstone cards. Returns a card-gallery page with native constructed, Battlegrounds, Mercenaries, and card-back filters. Dynamic filter values are discoverable from hearthstone_filters; sort mappings are returned there as well. The default view is all-class Standard with page size 450.
+- **Params:** `armor` (array, optional) — Repeatable armor filter; `attack` (array, optional) — Repeatable attack filter; `bgCardType` (string, optional) — Battlegrounds card-type selector from the source gallery; `bgGameMode` (string, optional) — Battlegrounds mode filter; see hearthstone_filters; `cardBackCategory` (string, optional) — Source card-back category filter; see hearthstone_filters; `cardSetId` (array, optional) — Repeatable card-set ID filter; `cardTypeId` (array, optional) — Repeatable card-type ID filter; `class` (string, optional) — Source class selector; use hearthstone_filters to discover current classes; `collectible` (array, optional) — Repeatable source collectible selector; `deckFormat` (string, optional) — Source deck-format selector; `deckcode` (string, optional) — Optional source deck code filter; `faction` (string, optional) — Source faction filter; see hearthstone_filters; `filterLocale` (string, optional) — Locale for textFilter; defaults to en-us; `gameMode` (string, optional) — Source game mode; Arena and Duels select their matching set; `health` (array, optional) — Repeatable health filter; `keyword` (string, optional) — Source keyword filter; see hearthstone_filters; `locale` (string, optional) — Source card locale; defaults to en_US; `manaCost` (array, optional) — Repeatable mana-cost filter; `mercenaryFaction` (string, optional) — Source Mercenary faction filter; see hearthstone_filters; `mercenaryRole` (string, optional) — Source Mercenary role filter; see hearthstone_filters; `minionType` (string, optional) — Source minion-type filter; see hearthstone_filters; `order` (string, optional) — Source sort direction; `page` (integer, optional) — Upstream page number; `pageSize` (integer, optional) — Upstream page size; `rarity` (string, optional) — Source rarity filter; see hearthstone_filters; `rarityId` (array, optional) — Repeatable rarity ID filter; `set` (string, optional) — Source set selector; use hearthstone_filters to discover current sets; `sort` (string, optional) — Native source sort expression; see sort_options from hearthstone_filters; `spellSchool` (string, optional) — Source spell-school filter; see hearthstone_filters; `spellSchoolId` (array, optional) — Repeatable spell-school ID filter; `textFilter` (string, optional) — Source card text search; `tier` (array, optional) — Repeatable Battlegrounds tavern-tier filter; `type` (array, optional) — Repeatable source type filter; see hearthstone_filters; `viewMode` (string, optional) — Card-gallery view mode; `zilliaxMod` (boolean, optional) — Source Zilliax module filter
+
 ## Hermes (8)
 
 ### `hermes_categories`
@@ -14844,7 +14872,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get National Post sections. Lists the 45 National Post section slugs accepted by `nationalpost-headlines`, such as `canada`, `opinion`, `hockey` and `gift-guide`, each with its display `name` and category page `url`. Links that leave nationalpost.com (Financial Post, Driving.ca, puzzles, classifieds, e-paper) and the paid Sponsored categories are not included.
 - **Params:** _none_
 
-## NBA (37)
+## NBA (51)
 
 ### `nba_box_score`
 
@@ -14936,6 +14964,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** NBA hustle statistics for one game. Returns the hustle statistics for one game: minutes plus contested shots (overall, two-point and three-point), deflections, charges drawn, screen assists and screen-assist points, loose balls recovered (offensive, defensive and total) and box-outs. Marker-verified columns are PLAYER_ID, TEAM_ID, MINUTES, CONTESTED_SHOTS, CONTESTED_SHOTS_2PT, CONTESTED_SHOTS_3PT, DEFLECTIONS, CHARGES_DRAWN, SCREEN_ASSISTS, SCREEN_AST_PTS, OFF_LOOSE_BALLS_RECOVERED, DEF_LOOSE_BALLS_RECOVERED, LOOSE_BALLS_RECOVERED and BOX_OUTS; the sampled BOX_OUTS_PLAYER and BOX_OUTS_TEAM names did not match and are not claimed.
 - **Params:** `game_id` (string, **required**) — Ten-digit game id from nba-scoreboard
 
+### `nba_hustle_team`
+
+- **HTTP:** `GET /nba/hustle-team`
+- **What:** Returns the league's team hustle table: contested shots, deflections, charges drawn, screen assists and points, loose balls recovered and box-outs. Returns the league's team hustle table: contested shots, deflections, charges drawn, screen assists and points, loose balls recovered and box-outs.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
+
 ### `nba_league_game_log`
 
 - **HTTP:** `GET /nba/league-game-log`
@@ -14953,6 +14987,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /nba/news`
 - **What:** NBA news articles from nba.com. Returns the news articles nba.com is currently featuring, read from the page's embedded JSON state: article id, title, slug, canonical permalink, excerpt, publication and modification timestamps, publish status, word count and the primary section name and slug. Permalinks are the canonical article URLs, so a caller can link straight to a story without building a URL.
 - **Params:** _none_
+
+### `nba_opp_pt_shot`
+
+- **HTTP:** `GET /nba/opp-pt-shot`
+- **What:** Returns the league's opponent shooting table: one row per team with the shooting it allows, split overall and from three. Returns the league's opponent shooting table: one row per team with the shooting it allows, split overall and from three.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
 
 ### `nba_play_by_play`
 
@@ -14978,11 +15018,23 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** NBA player season-by-season and career statistics. Returns one player's career statistics as several tables: the season-by-season regular-season line, the career regular-season totals, the season-by-season postseason line and the career postseason totals. Verified columns are SEASON_ID, TEAM_ID, GP, GS, MIN and PTS. per_mode PerGame or Totals is validated against the values verified on this endpoint.
 - **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `per_mode` (string, optional) — Aggregation; PerGame or Totals; `player_id` (integer, **required**) — Player id from nba-players or nba-team-roster
 
+### `nba_player_clutch`
+
+- **HTTP:** `GET /nba/player-clutch`
+- **What:** Returns the league's clutch player table for one clutch window and score margin: the players' clutch shooting and counting stats. Returns the league's clutch player table for one clutch window and score margin: the players' clutch shooting and counting stats.
+- **Params:** `ahead_behind` (string, optional) — Optional score-margin filter; only 'Ahead or Behind' is verified.; `clutch_time` (string, optional) — Optional clutch window; only 'Last 5 Minutes' is verified.; `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `measure_type` (string, optional) — Optional statistic family.; `per_mode` (string, optional) — Optional aggregation.; `point_diff` (integer, optional) — Optional point margin; only 5 is verified.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
+
 ### `nba_player_dash_pt_shots`
 
 - **HTTP:** `GET /nba/player-dash-pt-shots`
 - **What:** NBA player tracking shot dashboard. Returns one player's tracking shot dashboard as several result sets (overall, and the tracking breakdowns the upstream returns). The endpoint rejects a trimmed query with HTTP 500, so the full dashboard scope set is always sent.
 - **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `per_mode` (string, optional) — Aggregation; `player_id` (integer, **required**) — Player id from nba-players or nba-team-roster; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type
+
+### `nba_player_game_logs`
+
+- **HTTP:** `GET /nba/player-game-logs`
+- **What:** Returns one player's game log for a season, one row per game with the player's box-score line. Returns one player's game log for a season, one row per game with the player's box-score line.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `player_id` (integer, **required**) — Required player id from nba-players or nba-team-roster.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
 
 ### `nba_player_info`
 
@@ -14990,11 +15042,29 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** NBA player profile. Returns one player's league profile: full name forms, birth date, school and country, draft year and round, jersey number, position, height and weight, team identity and season experience. Take the player id from nba-players or nba-team-roster.
 - **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `player_id` (integer, **required**) — Player id from nba-players or nba-team-roster
 
+### `nba_player_profile_v2`
+
+- **HTTP:** `GET /nba/player-profile-v2`
+- **What:** Returns one player's full profile stat set: the season-by-season regular-season line, the career regular-season totals and the postseason equivalents. Returns one player's full profile stat set: the season-by-season regular-season line, the career regular-season totals and the postseason equivalents.
+- **Params:** `per_mode` (string, optional) — Optional aggregation.; `player_id` (integer, **required**) — Required player id from nba-players or nba-team-roster.
+
+### `nba_player_pt_shot`
+
+- **HTTP:** `GET /nba/player-pt-shot`
+- **What:** Returns the league's player shooting table: one row per player with the shooting line, split overall and from three. Returns the league's player shooting table: one row per player with the shooting line, split overall and from three.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
+
 ### `nba_player_stats`
 
 - **HTTP:** `GET /nba/player-stats`
 - **What:** NBA league-wide player statistics table. Returns the league-wide player statistics table for one season, measure and aggregation: one row per player with the columns the source publishes for that measure, keyed by the source's own column names such as PLAYER_ID, PLAYER_NAME, TEAM_ID, GP, MIN, PTS, REB and AST. Base and Advanced are the two verified measures, and PerGame and Totals the two verified aggregations; read the response's headers list rather than assuming a fixed column set.
 - **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `measure_type` (string, optional) — Statistic family; Base or Advanced; `per_mode` (string, optional) — Aggregation; PerGame or Totals; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type; Regular Season or Playoffs
+
+### `nba_player_streak_finder`
+
+- **HTTP:** `GET /nba/player-streak-finder`
+- **What:** Returns player game streaks for a season: the streak rows the upstream computes, one row per streak, with the player identity and streak totals. Returns player game streaks for a season: the streak rows the upstream computes, one row per streak, with the player identity and streak totals.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `min_games` (integer, optional) — Optional minimum streak length in games.; `player_id` (integer, optional) — Optional player id from nba-players; narrows the streaks to one player.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
 
 ### `nba_players`
 
@@ -15038,11 +15108,47 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** NBA synergy play-type dashboard. Returns the synergy play-type dashboard for one play type and grouping. This endpoint takes a four-digit SeasonYear rather than the dashboards' YYYY-YY season label. play_type is pinned to the one verified value, Isolation, and type_grouping to the verified offensive grouping.
 - **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `per_mode` (string, optional) — Aggregation; `play_type` (string, optional) — Synergy play type; only Isolation is verified; `player_or_team` (string, optional) — Subject; `season_type` (string, optional) — Season type; `season_year` (string, optional) — Four-digit season year such as 2026; defaults to the current season; `type_grouping` (string, optional) — Grouping
 
+### `nba_team_dash_pt_pass`
+
+- **HTTP:** `GET /nba/team-dash-pt-pass`
+- **What:** Returns one team's passing dashboard: the pass-type breakdowns the upstream computes for that team, as several result sets. Returns one team's passing dashboard: the pass-type breakdowns the upstream computes for that team, as several result sets.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.; `team_id` (integer, **required**) — Required team id from nba-standings.
+
+### `nba_team_dash_pt_shots`
+
+- **HTTP:** `GET /nba/team-dash-pt-shots`
+- **What:** Returns one team's tracking shot dashboard: the shot breakdowns the upstream computes for that team (by touch time and shot type), as several result sets. Returns one team's tracking shot dashboard: the shot breakdowns the upstream computes for that team (by touch time and shot type), as several result sets.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.; `team_id` (integer, **required**) — Required team id from nba-standings.
+
 ### `nba_team_details`
 
 - **HTTP:** `GET /nba/team-details`
 - **What:** NBA franchise background, season history and awards. Returns one franchise's detail from the league statistics service: the franchise background row (team id, abbreviation, nickname, city, arena and capacity, owner, general manager, head coach, G-League affiliate, founding year), its season-by-season history, and its championship awards. Verified columns are TEAM_ID, ABBREVIATION, NICKNAME, CITY, ARENA, ARENACAPACITY, OWNER, GENERALMANAGER, HEADCOACH, DLEAGUEAFFILIATION and YEARFOUNDED on TeamBackground, plus YEARAWARDED and OPPOSITETEAM on TeamAwardsChampionships; the upstream sends more columns than were confirmed here and they are passed through as-is.
 - **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `team_id` (integer, **required**) — Team id from nba-standings
+
+### `nba_team_game_logs`
+
+- **HTTP:** `GET /nba/team-game-logs`
+- **What:** Returns one team's game log for a season, one row per game with the team's box-score line (field goals, threes, rebounds, assists, steals, blocks, turnovers, points and plus-minus). Returns one team's game log for a season, one row per game with the team's box-score line (field goals, threes, rebounds, assists, steals, blocks, turnovers, points and plus-minus).
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.; `team_id` (integer, **required**) — Required team id from nba-standings.
+
+### `nba_team_info_common`
+
+- **HTTP:** `GET /nba/team-info-common`
+- **What:** Returns one team's identity and season summary: city, name, abbreviation, code, conference and division, the win/loss record and per-game team averages, plus the team's available seasons. Returns one team's identity and season summary: city, name, abbreviation, code, conference and division, the win/loss record and per-game team averages, plus the team's available seasons.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.; `team_id` (integer, **required**) — Required team id from nba-standings.
+
+### `nba_team_on_off`
+
+- **HTTP:** `GET /nba/team-on-off`
+- **What:** Returns a team's on-court/off-court player splits: the on-court and off-court rows the upstream computes, with each player's minutes and rating impact. Returns a team's on-court/off-court player splits: the on-court and off-court rows the upstream computes, with each player's minutes and rating impact.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `measure_type` (string, optional) — Optional statistic family.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.; `team_id` (integer, **required**) — Required team id from nba-standings.
+
+### `nba_team_pt_shot`
+
+- **HTTP:** `GET /nba/team-pt-shot`
+- **What:** Returns the league's team shooting table: one row per team with the shooting line, split overall and from three. Returns the league's team shooting table: one row per team with the shooting line, split overall and from three.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
 
 ### `nba_team_roster`
 
@@ -15067,6 +15173,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /nba/team-stats-leaders`
 - **What:** NBA league leaders for one statistical category. Returns the league leaders table for one ranked statistical category: one row per player with the columns the source publishes, keyed by the source's own column names such as PLAYER_ID, PLAYER_NAME, TEAM_ID, GP, MIN, PTS, REB and AST. stat_category is required and only the verified categories are accepted; the upstream answers HTTP 403 when it is omitted, so this route rejects the request locally instead.
 - **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `per_mode` (string, optional) — Aggregation; PerGame or Totals; `scope` (string, optional) — Player-pool scope; S is all players (the only verified value); `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type; Regular Season or Playoffs; `stat_category` (string, **required**) — Ranked statistic; PTS, REB or AST
+
+### `nba_team_years`
+
+- **HTTP:** `GET /nba/team-years`
+- **What:** Returns every franchise and the range of seasons it has played, one row per team. Returns every franchise and the range of seasons it has played, one row per team.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.
 
 ## NBC News (5)
 
@@ -15609,6 +15721,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /nfhs/suggest`
 - **What:** Typeahead school and association suggestions. Returns typeahead suggestions for a partial name (at least 3 characters). The profiles scope (default) returns schools and state associations, matching the site's global search box; the schools scope returns schools only. Each item uses the school shape, so school items carry the full school identity and location fields. Use nfhs-schools for a paginated filtered search instead.
 - **Params:** `scope` (string, optional) — Suggester scope: schools or profiles (default); `search_term` (string, **required**) — Partial name, at least 3 characters; `size` (integer, optional) — Number of suggestions, 1 to 500; defaults to 10
+
+## NHL (5)
+
+### `nhl_gamecenter_boxscore`
+
+- **HTTP:** `GET /nhl/gamecenter/boxscore`
+- **What:** Get NHL game boxscore. Returns the upstream gamecenter boxscore for one NHL game ID, preserving the source's team and player statistics.
+- **Params:** `game_id` (string, **required**) — 10-digit NHL game ID
+
+### `nhl_gamecenter_play_by_play`
+
+- **HTTP:** `GET /nhl/gamecenter/play-by-play`
+- **What:** Get NHL game play by play. Returns the upstream gamecenter play-by-play for one NHL game ID, preserving the source event sequence and team/player fields.
+- **Params:** `game_id` (string, **required**) — 10-digit NHL game ID
+
+### `nhl_schedule`
+
+- **HTTP:** `GET /nhl/schedule`
+- **What:** Get NHL schedule. Returns the NHL schedule resource for the requested ISO date. Omitting date uses the upstream `now` resource. The response preserves game IDs, game state, and source schedule structure.
+- **Params:** `date` (string, optional) — ISO date (YYYY-MM-DD); defaults to now
+
+### `nhl_seasons`
+
+- **HTTP:** `GET /nhl/seasons`
+- **What:** List NHL seasons. Returns the NHL API's native season catalog without additional filtering or derived fields.
+- **Params:** _none_
+
+### `nhl_standings`
+
+- **HTTP:** `GET /nhl/standings`
+- **What:** Get NHL standings. Returns the NHL standings resource for the requested ISO date. Omitting date uses the upstream `now` resource. The response preserves NHL team IDs, standings fields, and source dates.
+- **Params:** `date` (string, optional) — ISO date (YYYY-MM-DD); defaults to now
 
 ## Nike (9)
 
@@ -20022,6 +20166,98 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sephora/suggest`
 - **What:** Sephora search suggestions. Returns Sephora's own search-box type-ahead suggestions for a partial keyword: keyword-completion terms, matching products, and trending/related categories. Sephora's own upstream never returns a genuine zero-result state for a nonempty query -- a deliberately nonsense query still returns unrelated product suggestions.
 - **Params:** `query` (string, **required**) — Partial search keywords
+
+## Serebii (15)
+
+### `serebii_pokemongo_event_categories`
+
+- **HTTP:** `GET /serebii/pokemongo/event-categories`
+- **What:** List Serebii Pokémon GO event category pages. Returns the nine native event category pages linked from the Pokémon GO event index.
+- **Params:** _none_
+
+### `serebii_pokemongo_event_detail_community_day`
+
+- **HTTP:** `GET /serebii/pokemongo/communityday/{filename}`
+- **What:** Get a Serebii Pokémon GO Community Day page. Returns the public tables from one native Community Day detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Community Day list
+
+### `serebii_pokemongo_event_detail_global`
+
+- **HTTP:** `GET /serebii/pokemongo/events/{filename}`
+- **What:** Get a Serebii Pokémon GO global event page. Returns the public tables from one native Global Events detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Global Events list
+
+### `serebii_pokemongo_event_detail_hatch_day`
+
+- **HTTP:** `GET /serebii/pokemongo/hatchday/{filename}`
+- **What:** Get a Serebii Pokémon GO Hatch Day page. Returns the public tables from one native Hatch Day detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Hatch Day list
+
+### `serebii_pokemongo_event_detail_incense_day`
+
+- **HTTP:** `GET /serebii/pokemongo/incenseday/{filename}`
+- **What:** Get a Serebii Pokémon GO Incense Day page. Returns the public tables from one native Incense Day detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Incense Day list
+
+### `serebii_pokemongo_event_detail_max_battle_day`
+
+- **HTTP:** `GET /serebii/pokemongo/maxbattleday/{filename}`
+- **What:** Get a Serebii Pokémon GO Max Battle Day page. Returns the public tables from one native Max Battle Day detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Max Battle Day list
+
+### `serebii_pokemongo_event_detail_raid_day`
+
+- **HTTP:** `GET /serebii/pokemongo/raidday/{filename}`
+- **What:** Get a Serebii Pokémon GO Raid Day page. Returns the public tables from one native Raid Day detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Raid Day list
+
+### `serebii_pokemongo_event_detail_real_life`
+
+- **HTTP:** `GET /serebii/pokemongo/reallifeevents/{filename}`
+- **What:** Get a Serebii Pokémon GO real-life event page. Returns the public tables from one native Real Life Events detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Real Life Events list
+
+### `serebii_pokemongo_event_detail_research_day`
+
+- **HTTP:** `GET /serebii/pokemongo/limitedresearchday/{filename}`
+- **What:** Get a Serebii Pokémon GO Research Day page. Returns the public tables from one native Research Day detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Research Day list
+
+### `serebii_pokemongo_event_detail_ticket`
+
+- **HTTP:** `GET /serebii/pokemongo/ticketevents/{filename}`
+- **What:** Get a Serebii Pokémon GO ticket event page. Returns the public tables from one native Ticket Events detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Ticket Events list
+
+### `serebii_pokemongo_event_only_moves`
+
+- **HTTP:** `GET /serebii/pokemongo/event-only-moves`
+- **What:** List Serebii Pokémon GO event-only move tables. Returns Serebii's Fast Attacks and Charge Attacks tables for moves identified as event-only.
+- **Params:** _none_
+
+### `serebii_pokemongo_event_only_research`
+
+- **HTTP:** `GET /serebii/pokemongo/event-only-research`
+- **What:** List Serebii Pokémon GO event-only field research. Returns the rows from Serebii's Event Only Field Research table.
+- **Params:** _none_
+
+### `serebii_pokemongo_events`
+
+- **HTTP:** `GET /serebii/pokemongo/events`
+- **What:** List events from a Serebii Pokémon GO category page. Returns the rows from one native Serebii Pokémon GO event category page, preserving source order and date labels.
+- **Params:** `category` (string, **required**) — Native event page filename from event-categories
+
+### `serebii_pokemongo_spotlight_hours`
+
+- **HTTP:** `GET /serebii/pokemongo/spotlight-hours`
+- **What:** List Serebii Pokémon GO Spotlight Hour archive rows. Returns rows from Serebii's historical Spotlight Hour table. The source dates are labels and do not represent a current or future schedule.
+- **Params:** _none_
+
+### `serebii_pokemongo_unown_events`
+
+- **HTTP:** `GET /serebii/pokemongo/unown-events`
+- **What:** List Serebii Pokémon GO Unown event locations. Returns the rows from Serebii's Unown Event Locations archive, including source date, event, locations, letters, and restrictions.
+- **Params:** _none_
 
 ## SFGate (5)
 

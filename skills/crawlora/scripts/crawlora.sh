@@ -849,6 +849,7 @@ case "$path" in
   /eonline/headlines) route_allowed=true ;;
   /eonline/news) route_allowed=true ;;
   /eonline/sections) route_allowed=true ;;
+  /epicgames/free-promotions) route_allowed=true ;;
   /espn/athlete) route_allowed=true ;;
   /espn/game-summary) route_allowed=true ;;
   /espn/news) route_allowed=true ;;
@@ -1527,6 +1528,9 @@ case "$path" in
   /healthgrades/physicians/search) route_allowed=true ;;
   /healthgrades/specialties) route_allowed=true ;;
   /healthgrades/top-searches) route_allowed=true ;;
+  /hearthstone/card) route_allowed=true ;;
+  /hearthstone/cards) route_allowed=true ;;
+  /hearthstone/filters) route_allowed=true ;;
   /hermes/categories) route_allowed=true ;;
   /hermes/category) route_allowed=true ;;
   /hermes/product) route_allowed=true ;;
@@ -2209,16 +2213,23 @@ case "$path" in
   /nba/games) route_allowed=true ;;
   /nba/homepage-leaders) route_allowed=true ;;
   /nba/hustle-stats) route_allowed=true ;;
+  /nba/hustle-team) route_allowed=true ;;
   /nba/league-game-log) route_allowed=true ;;
   /nba/lineups) route_allowed=true ;;
   /nba/news) route_allowed=true ;;
+  /nba/opp-pt-shot) route_allowed=true ;;
   /nba/play-by-play) route_allowed=true ;;
   /nba/player-awards) route_allowed=true ;;
   /nba/player-bio-stats) route_allowed=true ;;
   /nba/player-career-stats) route_allowed=true ;;
+  /nba/player-clutch) route_allowed=true ;;
   /nba/player-dash-pt-shots) route_allowed=true ;;
+  /nba/player-game-logs) route_allowed=true ;;
   /nba/player-info) route_allowed=true ;;
+  /nba/player-profile-v2) route_allowed=true ;;
+  /nba/player-pt-shot) route_allowed=true ;;
   /nba/player-stats) route_allowed=true ;;
+  /nba/player-streak-finder) route_allowed=true ;;
   /nba/players) route_allowed=true ;;
   /nba/playoff-picture) route_allowed=true ;;
   /nba/pt-defend) route_allowed=true ;;
@@ -2226,11 +2237,18 @@ case "$path" in
   /nba/scoreboard) route_allowed=true ;;
   /nba/standings) route_allowed=true ;;
   /nba/synergy-play-types) route_allowed=true ;;
+  /nba/team-dash-pt-pass) route_allowed=true ;;
+  /nba/team-dash-pt-shots) route_allowed=true ;;
   /nba/team-details) route_allowed=true ;;
+  /nba/team-game-logs) route_allowed=true ;;
+  /nba/team-info-common) route_allowed=true ;;
+  /nba/team-on-off) route_allowed=true ;;
+  /nba/team-pt-shot) route_allowed=true ;;
   /nba/team-roster) route_allowed=true ;;
   /nba/team-shot-locations) route_allowed=true ;;
   /nba/team-stats) route_allowed=true ;;
   /nba/team-stats-leaders) route_allowed=true ;;
+  /nba/team-years) route_allowed=true ;;
   /nbc/article) route_allowed=true ;;
   /nbc/author) route_allowed=true ;;
   /nbc/headlines) route_allowed=true ;;
@@ -2296,6 +2314,11 @@ case "$path" in
   /nfhs/sports) route_allowed=true ;;
   /nfhs/states) route_allowed=true ;;
   /nfhs/suggest) route_allowed=true ;;
+  /nhl/gamecenter/boxscore) route_allowed=true ;;
+  /nhl/gamecenter/play-by-play) route_allowed=true ;;
+  /nhl/schedule) route_allowed=true ;;
+  /nhl/seasons) route_allowed=true ;;
+  /nhl/standings) route_allowed=true ;;
   /nike/categories) route_allowed=true ;;
   /nike/product) route_allowed=true ;;
   /nike/product/availability) route_allowed=true ;;
@@ -2905,6 +2928,12 @@ case "$path" in
   /sephora/search) route_allowed=true ;;
   /sephora/stores) route_allowed=true ;;
   /sephora/suggest) route_allowed=true ;;
+  /serebii/pokemongo/event-categories) route_allowed=true ;;
+  /serebii/pokemongo/event-only-moves) route_allowed=true ;;
+  /serebii/pokemongo/event-only-research) route_allowed=true ;;
+  /serebii/pokemongo/events) route_allowed=true ;;
+  /serebii/pokemongo/spotlight-hours) route_allowed=true ;;
+  /serebii/pokemongo/unown-events) route_allowed=true ;;
   /sevennewsau/article) route_allowed=true ;;
   /sevennewsau/author) route_allowed=true ;;
   /sevennewsau/headlines) route_allowed=true ;;
@@ -4363,6 +4392,15 @@ if [ "$route_allowed" = false ]; then
   '^/samsclub/content/[^/]+$'
   '^/samsclub/product/[^/]+$'
   '^/samsclub/product/[^/]+/related$'
+  '^/serebii/pokemongo/communityday/[^/]+$'
+  '^/serebii/pokemongo/events/[^/]+$'
+  '^/serebii/pokemongo/hatchday/[^/]+$'
+  '^/serebii/pokemongo/incenseday/[^/]+$'
+  '^/serebii/pokemongo/limitedresearchday/[^/]+$'
+  '^/serebii/pokemongo/maxbattleday/[^/]+$'
+  '^/serebii/pokemongo/raidday/[^/]+$'
+  '^/serebii/pokemongo/reallifeevents/[^/]+$'
+  '^/serebii/pokemongo/ticketevents/[^/]+$'
   '^/shop-app/products/[^/]+$'
   '^/shop-app/products/[^/]+/related$'
   '^/shop-app/products/[^/]+/reviews$'
@@ -5427,6 +5465,7 @@ route_method_regexes=(
   '^GET:/eonline/headlines$'
   '^GET:/eonline/news$'
   '^GET:/eonline/sections$'
+  '^GET:/epicgames/free-promotions$'
   '^GET:/espn/athlete$'
   '^GET:/espn/game-summary$'
   '^GET:/espn/news$'
@@ -6168,6 +6207,9 @@ route_method_regexes=(
   '^GET:/healthgrades/physicians/search$'
   '^GET:/healthgrades/specialties$'
   '^GET:/healthgrades/top-searches$'
+  '^GET:/hearthstone/card$'
+  '^GET:/hearthstone/cards$'
+  '^GET:/hearthstone/filters$'
   '^GET:/hermes/categories$'
   '^GET:/hermes/category$'
   '^GET:/hermes/product$'
@@ -6915,16 +6957,23 @@ route_method_regexes=(
   '^GET:/nba/games$'
   '^GET:/nba/homepage-leaders$'
   '^GET:/nba/hustle-stats$'
+  '^GET:/nba/hustle-team$'
   '^GET:/nba/league-game-log$'
   '^GET:/nba/lineups$'
   '^GET:/nba/news$'
+  '^GET:/nba/opp-pt-shot$'
   '^GET:/nba/play-by-play$'
   '^GET:/nba/player-awards$'
   '^GET:/nba/player-bio-stats$'
   '^GET:/nba/player-career-stats$'
+  '^GET:/nba/player-clutch$'
   '^GET:/nba/player-dash-pt-shots$'
+  '^GET:/nba/player-game-logs$'
   '^GET:/nba/player-info$'
+  '^GET:/nba/player-profile-v2$'
+  '^GET:/nba/player-pt-shot$'
   '^GET:/nba/player-stats$'
+  '^GET:/nba/player-streak-finder$'
   '^GET:/nba/players$'
   '^GET:/nba/playoff-picture$'
   '^GET:/nba/pt-defend$'
@@ -6932,11 +6981,18 @@ route_method_regexes=(
   '^GET:/nba/scoreboard$'
   '^GET:/nba/standings$'
   '^GET:/nba/synergy-play-types$'
+  '^GET:/nba/team-dash-pt-pass$'
+  '^GET:/nba/team-dash-pt-shots$'
   '^GET:/nba/team-details$'
+  '^GET:/nba/team-game-logs$'
+  '^GET:/nba/team-info-common$'
+  '^GET:/nba/team-on-off$'
+  '^GET:/nba/team-pt-shot$'
   '^GET:/nba/team-roster$'
   '^GET:/nba/team-shot-locations$'
   '^GET:/nba/team-stats$'
   '^GET:/nba/team-stats-leaders$'
+  '^GET:/nba/team-years$'
   '^GET:/nbc/article$'
   '^GET:/nbc/author$'
   '^GET:/nbc/headlines$'
@@ -7008,6 +7064,11 @@ route_method_regexes=(
   '^GET:/nfhs/sports$'
   '^GET:/nfhs/states$'
   '^GET:/nfhs/suggest$'
+  '^GET:/nhl/gamecenter/boxscore$'
+  '^GET:/nhl/gamecenter/play-by-play$'
+  '^GET:/nhl/schedule$'
+  '^GET:/nhl/seasons$'
+  '^GET:/nhl/standings$'
   '^GET:/nike/categories$'
   '^GET:/nike/product$'
   '^GET:/nike/product/availability$'
@@ -7722,6 +7783,21 @@ route_method_regexes=(
   '^GET:/sephora/search$'
   '^GET:/sephora/stores$'
   '^GET:/sephora/suggest$'
+  '^GET:/serebii/pokemongo/communityday/[^/]+$'
+  '^GET:/serebii/pokemongo/event-categories$'
+  '^GET:/serebii/pokemongo/event-only-moves$'
+  '^GET:/serebii/pokemongo/event-only-research$'
+  '^GET:/serebii/pokemongo/events$'
+  '^GET:/serebii/pokemongo/events/[^/]+$'
+  '^GET:/serebii/pokemongo/hatchday/[^/]+$'
+  '^GET:/serebii/pokemongo/incenseday/[^/]+$'
+  '^GET:/serebii/pokemongo/limitedresearchday/[^/]+$'
+  '^GET:/serebii/pokemongo/maxbattleday/[^/]+$'
+  '^GET:/serebii/pokemongo/raidday/[^/]+$'
+  '^GET:/serebii/pokemongo/reallifeevents/[^/]+$'
+  '^GET:/serebii/pokemongo/spotlight-hours$'
+  '^GET:/serebii/pokemongo/ticketevents/[^/]+$'
+  '^GET:/serebii/pokemongo/unown-events$'
   '^GET:/sevennewsau/article$'
   '^GET:/sevennewsau/author$'
   '^GET:/sevennewsau/headlines$'
