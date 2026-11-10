@@ -1,9 +1,14 @@
 ---
 name: chain-store-footprint-analysis
 description: Compare observed chain-store coverage using Crawlora Starbucks directories, live chain locators, and Google Maps business records. Use for branch counts, geographic overlap, amenity coverage, or footprint gaps within a defined area with source caps and identity uncertainty preserved.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Chain store footprint analysis
+
+## Tool scope and data flow
+
+Use the bundled `scripts/crawlora.sh` helper only for this skill's documented routes in `reference/endpoints.md`; the helper enforces its exact route and method allowlist. It reads `CRAWLORA_API_KEY` from the environment and sends it as an `x-api-key` header over HTTPS to `api.crawlora.net`. It stores the key in a mode-600 curl config under `TMPDIR` and removes it when the command exits. It reads `TMPDIR` only to choose that temporary config location; it does not inspect other environment variables or enumerate files, install software, or run with elevated privileges.
 
 ## Access and scope
 

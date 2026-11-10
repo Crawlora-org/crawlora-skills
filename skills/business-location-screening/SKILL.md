@@ -1,9 +1,14 @@
 ---
 name: business-location-screening
 description: Compare user-supplied candidate locations for a local business using nearby competitors, public access signals, review samples, and available city-level context. Use for an early screen, not a lease or viability recommendation.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Business location screening
+
+## Tool scope and data flow
+
+Use the bundled `scripts/crawlora.sh` helper only for this skill's documented routes in `reference/endpoints.md`; the helper enforces its exact route and method allowlist. It reads `CRAWLORA_API_KEY` from the environment and sends it as an `x-api-key` header over HTTPS to `api.crawlora.net`. It stores the key in a mode-600 curl config under `TMPDIR` and removes it when the command exits. It reads `TMPDIR` only to choose that temporary config location; it does not inspect other environment variables or enumerate files, install software, or run with elevated privileges.
 
 Compare a small set of user-supplied candidate sites or neighborhoods for a
 local business. This is an early evidence screen for competition, access, and
@@ -11,6 +16,8 @@ public context, not a market-size estimate, commercial rent analysis, or
 site-viability recommendation.
 
 ## Define the comparison
+
+Before using Google or Apple Maps, explain that candidate locations, exact coordinates, and route anchors are sent through Crawlora to the named mapping provider. Ask for explicit consent before submitting a home address, unpublished business site, or confidential expansion location; use public/general locations or omit that comparison if the user does not approve.
 
 Confirm the business type, candidate addresses or coordinates, target customer,
 search radius, travel mode, and the factors the user cares about. Keep the

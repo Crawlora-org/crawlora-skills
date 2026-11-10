@@ -1,9 +1,14 @@
 ---
 name: crawlora-datasets
 description: Queries Crawlora's pre-built hosted datasets — Airbnb markets, App Store/Google Play apps, GitHub/Instagram/X users, job postings, US housing markets, Google Maps businesses, Goodreads, PitchBook, Steam, TrustMRR, Product Hunt, SEC companies, tech-stack, and more — via search/facets/item/nearby endpoints, returning clean JSON without live-crawling each platform. Use when the user wants bulk or aggregate analysis, to search a pre-indexed corpus, to facet/filter a large population, or to look up one record by its dataset id, instead of scraping pages one at a time.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Crawlora hosted datasets
+
+## Tool scope and data flow
+
+Use the bundled `scripts/crawlora.sh` helper only for this skill's documented routes in `reference/endpoints.md`; the helper enforces its exact route and method allowlist. It reads `CRAWLORA_API_KEY` from the environment and sends it as an `x-api-key` header over HTTPS to `api.crawlora.net`. It stores the key in a mode-600 curl config under `TMPDIR` and removes it when the command exits. It reads `TMPDIR` only to choose that temporary config location; it does not inspect other environment variables or enumerate files, install software, or run with elevated privileges.
 
 Query Crawlora's own **pre-crawled, pre-indexed datasets** — search, facet, and
 fetch-by-id over corpora Crawlora already built and refreshes on a schedule.

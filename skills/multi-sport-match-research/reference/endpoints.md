@@ -6,7 +6,7 @@ Only the endpoints used by this workflow. Call them via `scripts/crawlora.sh` (s
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**40 endpoints across 2 platform group(s).**
+**39 endpoints across 2 platform group(s).**
 
 ## Flashscore (24)
 
@@ -154,7 +154,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Flashscore competition standings view discovery. Returns the table views currently exposed on a public Flashscore competition standings page. The view set varies by competition and stage; use a returned value with flashscore-tournament-standings.
 - **Params:** `path` (string, **required**) — Relative Flashscore competition path from flashscore-navigation or flashscore-competitions; omit /standings/
 
-## LiveScore (16)
+## LiveScore (15)
 
 ### `livescore_competition`
 
@@ -209,12 +209,6 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /livescore/news-feed`
 - **What:** LiveScore global RSS news feed. Returns latest public news items from LiveScore's global RSS feed. The source feed may include multiple sports and has no verified category filter. Set include_content=true to include each RSS item's full content:encoded body.
 - **Params:** `include_content` (boolean, optional) — Include full RSS article content when available
-
-### `livescore_news_publishers`
-
-- **HTTP:** `GET /livescore/news-publishers`
-- **What:** LiveScore news publisher directory. Returns the current public publisher directory linked from LiveScore News, including publisher names, logos, websites, contact links, and telephone numbers.
-- **Params:** _none_
 
 ### `livescore_player`
 

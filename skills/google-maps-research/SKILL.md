@@ -1,9 +1,14 @@
 ---
 name: google-maps-research
 description: Search Google Maps businesses and places, retrieve place details, and inspect review samples or photos through the Crawlora REST API. Use for current place lookups and comparisons, including addresses, ratings, review themes, and business information.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Google Maps research
+
+## Tool scope and data flow
+
+Use the bundled `scripts/crawlora.sh` helper only for this skill's documented routes in `reference/endpoints.md`; the helper enforces its exact route and method allowlist. It reads `CRAWLORA_API_KEY` from the environment and sends it as an `x-api-key` header over HTTPS to `api.crawlora.net`. It stores the key in a mode-600 curl config under `TMPDIR` and removes it when the command exits. It reads `TMPDIR` only to choose that temporary config location; it does not inspect other environment variables or enumerate files, install software, or run with elevated privileges.
 
 Resolve places from a query, then compare their returned details with source links.
 This skill contains only the four live Google Maps endpoints.

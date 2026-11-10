@@ -1,9 +1,14 @@
 ---
 name: multi-sport-match-research
 description: Compare public fixtures, live scores, match statistics, standings, and head-to-head records using Crawlora Flashscore and LiveScore tools. Use for multi-sport score checks, a sourced match preview or recap, or reconciling different scoreboard providers.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Multi-sport match research
+
+## Tool scope and data flow
+
+Use the bundled `scripts/crawlora.sh` helper only for this skill's documented routes in `reference/endpoints.md`; the helper enforces its exact route and method allowlist. It reads `CRAWLORA_API_KEY` from the environment and sends it as an `x-api-key` header over HTTPS to `api.crawlora.net`. It stores the key in a mode-600 curl config under `TMPDIR` and removes it when the command exits. It reads `TMPDIR` only to choose that temporary config location; it does not inspect other environment variables or enumerate files, install software, or run with elevated privileges.
 
 ## Access and contract
 

@@ -199,3 +199,50 @@ test("flagged marketplace skills declare their helper scope and explain data flo
   assert.match(sports, /Cricinfo, and Sportskeeda/);
   assert.match(sports, /location-sensitive training patterns/);
 });
+
+test("weekly sync skills declare the scoped helper in frontmatter", () => {
+  for (const name of [
+    "app-market-opportunity-research",
+    "business-location-screening",
+    "chain-store-footprint-analysis",
+    "collectibles-market-research",
+    "crawlora-datasets",
+    "entertainment-discovery-research",
+    "google-maps-research",
+    "local-business-prospecting",
+    "local-competitive-landscape",
+    "movie-tv-research",
+    "multi-sport-match-research",
+    "sports-scores-research",
+    "yahoo-network-research",
+  ]) {
+    const skill = readFileSync(join(SKILLS_DIR, name, "SKILL.md"), "utf8");
+    const frontmatter = skill.match(/^---\n([\s\S]*?)\n---/);
+    assert.ok(frontmatter, `${name}: frontmatter exists`);
+    assert.match(frontmatter[1], /^allowed-tools: Bash\(scripts\/crawlora\.sh:\*\)$/m, `${name}: scoped helper only`);
+    assert.doesNotMatch(frontmatter[1], /Bash\(\*\)/, `${name}: no unrestricted shell grant`);
+  }
+});
+
+test("scan-corrected research helpers reject routes outside their declared scope", () => {
+  const cases = [
+    ["entertainment-discovery-research", "/metacritic/game/elden-ring"],
+    ["movie-tv-research", "/metacritic/game/elden-ring"],
+    ["movie-tv-research", "/letterboxd/member/sample-member"],
+    ["multi-sport-match-research", "/livescore/news-publishers"],
+  ];
+  for (const [name, route] of cases) {
+    const helper = join(SKILLS_DIR, name, "scripts/crawlora.sh");
+    withFakeCurl((dir, marker) => {
+      const result = invoke(helper, ["-X", "GET", route], dir);
+      assert.equal(result.status, 2, `${name} should reject ${route}: ${result.stderr}`);
+      assert.equal(existsSync(marker), false, `${name} must reject ${route} before curl`);
+    });
+  }
+});
+
+test("business-location-screening discloses sensitive location data before map calls", () => {
+  const skill = readFileSync(join(SKILLS_DIR, "business-location-screening", "SKILL.md"), "utf8");
+  assert.match(skill, /Before using Google or Apple Maps, explain that candidate locations, exact coordinates, and route anchors are sent/);
+  assert.match(skill, /Ask for explicit consent before submitting a home address, unpublished business site, or confidential expansion location/);
+});

@@ -1,9 +1,14 @@
 ---
 name: entertainment-discovery-research
 description: Researches movies and TV titles across IMDb, TMDB, JustWatch, Rotten Tomatoes, and Metacritic using the Crawlora API. Use for title discovery, cast and crew, ratings, critic and audience reviews, streaming offers, similar titles, and release comparisons.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Entertainment discovery research
+
+## Tool scope and data flow
+
+Use the bundled `scripts/crawlora.sh` helper only for this skill's documented routes in `reference/endpoints.md`; the helper enforces its exact route and method allowlist. It reads `CRAWLORA_API_KEY` from the environment and sends it as an `x-api-key` header over HTTPS to `api.crawlora.net`. It stores the key in a mode-600 curl config under `TMPDIR` and removes it when the command exits. It reads `TMPDIR` only to choose that temporary config location; it does not inspect other environment variables or enumerate files, install software, or run with elevated privileges.
 
 Find and compare movies and TV shows across public IMDb, TMDB, JustWatch,
 Rotten Tomatoes, and Metacritic data. Use the source that fits the question,

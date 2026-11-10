@@ -145,9 +145,6 @@ case "$path" in
 esac
 if [ "$route_allowed" = false ]; then
   route_regexes=(
-  '^/metacritic/game/[^/]+$'
-  '^/metacritic/game/[^/]+/critic-reviews$'
-  '^/metacritic/game/[^/]+/user-reviews$'
   '^/metacritic/movie/[^/]+$'
   '^/metacritic/movie/[^/]+/critic-reviews$'
   '^/metacritic/movie/[^/]+/user-reviews$'
