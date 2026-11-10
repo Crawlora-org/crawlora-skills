@@ -243,6 +243,12 @@ case "$path" in
   /balenciaga/search) route_allowed=true ;;
   /balenciaga/store-countries) route_allowed=true ;;
   /balenciaga/stores) route_allowed=true ;;
+  /bandcamp/artist) route_allowed=true ;;
+  /bandcamp/discover) route_allowed=true ;;
+  /bandcamp/filters) route_allowed=true ;;
+  /bandcamp/related-tags) route_allowed=true ;;
+  /bandcamp/release) route_allowed=true ;;
+  /bandcamp/search) route_allowed=true ;;
   /barrons/article) route_allowed=true ;;
   /barrons/headlines) route_allowed=true ;;
   /barrons/news) route_allowed=true ;;
@@ -360,6 +366,11 @@ case "$path" in
   /bo3/tournaments) route_allowed=true ;;
   /bo3/transfers) route_allowed=true ;;
   /bo3/valorant-leaderboard) route_allowed=true ;;
+  /boardgamegeek/geeklists) route_allowed=true ;;
+  /boardgamegeek/hotness) route_allowed=true ;;
+  /boardgamegeek/links) route_allowed=true ;;
+  /boardgamegeek/taxonomy) route_allowed=true ;;
+  /boardgamegeek/threads) route_allowed=true ;;
   /bonhams/auctions/search) route_allowed=true ;;
   /bonhams/lots/search) route_allowed=true ;;
   /booking-attractions/detail) route_allowed=true ;;
@@ -370,6 +381,10 @@ case "$path" in
   /booking/hotel-detail) route_allowed=true ;;
   /booking/reviews) route_allowed=true ;;
   /booking/search) route_allowed=true ;;
+  /booksy/business) route_allowed=true ;;
+  /booksy/businesses) route_allowed=true ;;
+  /booksy/categories) route_allowed=true ;;
+  /booksy/treatment-hints) route_allowed=true ;;
   /boots/search) route_allowed=true ;;
   /boots/suggest) route_allowed=true ;;
   /bostonglobe/news) route_allowed=true ;;
@@ -405,6 +420,14 @@ case "$path" in
   /breitbart/headlines) route_allowed=true ;;
   /breitbart/news) route_allowed=true ;;
   /breitbart/sections) route_allowed=true ;;
+  /bringatrailer/filters) route_allowed=true ;;
+  /bringatrailer/listing) route_allowed=true ;;
+  /bringatrailer/live) route_allowed=true ;;
+  /bringatrailer/makes) route_allowed=true ;;
+  /bringatrailer/price-history) route_allowed=true ;;
+  /bringatrailer/results) route_allowed=true ;;
+  /bringatrailer/search) route_allowed=true ;;
+  /bringatrailer/suggest) route_allowed=true ;;
   /brisbanetimes/article) route_allowed=true ;;
   /brisbanetimes/author) route_allowed=true ;;
   /brisbanetimes/headlines) route_allowed=true ;;
@@ -724,6 +747,18 @@ case "$path" in
   /developer/search) route_allowed=true ;;
   /developer/sources) route_allowed=true ;;
   /discogs/search) route_allowed=true ;;
+  /dollartree/blog/article) route_allowed=true ;;
+  /dollartree/categories) route_allowed=true ;;
+  /dollartree/price) route_allowed=true ;;
+  /dollartree/product) route_allowed=true ;;
+  /dollartree/products) route_allowed=true ;;
+  /dollartree/search) route_allowed=true ;;
+  /dollartree/stock-status) route_allowed=true ;;
+  /dollartree/typeahead/keywords) route_allowed=true ;;
+  /dollartree/typeahead/products) route_allowed=true ;;
+  /domain/dns/record-types) route_allowed=true ;;
+  /domain/dns/resolve) route_allowed=true ;;
+  /domain/rdap/ip) route_allowed=true ;;
   /dominos/coupons) route_allowed=true ;;
   /dominos/customization) route_allowed=true ;;
   /dominos/menu) route_allowed=true ;;
@@ -814,6 +849,7 @@ case "$path" in
   /eonline/headlines) route_allowed=true ;;
   /eonline/news) route_allowed=true ;;
   /eonline/sections) route_allowed=true ;;
+  /epicgames/free-promotions) route_allowed=true ;;
   /espn/athlete) route_allowed=true ;;
   /espn/game-summary) route_allowed=true ;;
   /espn/news) route_allowed=true ;;
@@ -855,13 +891,56 @@ case "$path" in
   /expresstribune/news) route_allowed=true ;;
   /expresstribune/sections) route_allowed=true ;;
   /facebook/marketplace/search) route_allowed=true ;;
+  /faceit/ban-reasons) route_allowed=true ;;
+  /faceit/banlist) route_allowed=true ;;
+  /faceit/banlist-stats) route_allowed=true ;;
+  /faceit/best-clips) route_allowed=true ;;
+  /faceit/championship) route_allowed=true ;;
+  /faceit/championship-bracket) route_allowed=true ;;
+  /faceit/championship-participants) route_allowed=true ;;
+  /faceit/championship-search) route_allowed=true ;;
+  /faceit/clip) route_allowed=true ;;
+  /faceit/clips) route_allowed=true ;;
+  /faceit/competition-matches) route_allowed=true ;;
+  /faceit/fpl) route_allowed=true ;;
+  /faceit/game-modes) route_allowed=true ;;
+  /faceit/games) route_allowed=true ;;
+  /faceit/hub) route_allowed=true ;;
+  /faceit/hub-categories) route_allowed=true ;;
+  /faceit/hub-memberships) route_allowed=true ;;
+  /faceit/hubs) route_allowed=true ;;
+  /faceit/hubs-detailed) route_allowed=true ;;
+  /faceit/leaderboard) route_allowed=true ;;
+  /faceit/leaderboard-detail) route_allowed=true ;;
+  /faceit/leaderboard-statuses) route_allowed=true ;;
+  /faceit/maps) route_allowed=true ;;
+  /faceit/match-clips) route_allowed=true ;;
+  /faceit/organizer) route_allowed=true ;;
+  /faceit/player) route_allowed=true ;;
+  /faceit/player-rank) route_allowed=true ;;
+  /faceit/regions) route_allowed=true ;;
+  /faceit/rule) route_allowed=true ;;
+  /faceit/rules) route_allowed=true ;;
+  /faceit/skill-levels) route_allowed=true ;;
+  /faceit/standings) route_allowed=true ;;
+  /faceit/team) route_allowed=true ;;
+  /faceit/tournaments-past) route_allowed=true ;;
+  /faceit/user-skills) route_allowed=true ;;
   /fanatics/categories) route_allowed=true ;;
   /fanatics/category) route_allowed=true ;;
   /fanatics/product) route_allowed=true ;;
   /fanatics/search) route_allowed=true ;;
   /fanaticscollect/auctions) route_allowed=true ;;
   /fanaticscollect/categories) route_allowed=true ;;
+  /fanaticscollect/instant-packs/release) route_allowed=true ;;
+  /fanaticscollect/instant-packs/releases) route_allowed=true ;;
   /fanaticscollect/instant-rips/categories) route_allowed=true ;;
+  /fanaticscollect/instant-rips/pack-categories) route_allowed=true ;;
+  /fanaticscollect/instant-rips/pack-checklist) route_allowed=true ;;
+  /fanaticscollect/instant-rips/packs) route_allowed=true ;;
+  /fanaticscollect/instant-rips/recently-ripped) route_allowed=true ;;
+  /fanaticscollect/newsroom) route_allowed=true ;;
+  /fanaticscollect/newsroom/filters) route_allowed=true ;;
   /fanaticscollect/search) route_allowed=true ;;
   /fanaticscollect/sold-items) route_allowed=true ;;
   /fanaticscollect/trending-searches) route_allowed=true ;;
@@ -964,6 +1043,12 @@ case "$path" in
   /fastcompany/headlines) route_allowed=true ;;
   /fastcompany/news) route_allowed=true ;;
   /fastcompany/sections) route_allowed=true ;;
+  /fever/cities) route_allowed=true ;;
+  /fever/feed) route_allowed=true ;;
+  /fever/filters) route_allowed=true ;;
+  /fever/plan) route_allowed=true ;;
+  /fever/plans) route_allowed=true ;;
+  /fever/top-cities) route_allowed=true ;;
   /fiveguys/directory) route_allowed=true ;;
   /fiveguys/faq) route_allowed=true ;;
   /fiveguys/faq-categories) route_allowed=true ;;
@@ -980,9 +1065,11 @@ case "$path" in
   /flashscore/competitions) route_allowed=true ;;
   /flashscore/entity-news) route_allowed=true ;;
   /flashscore/match-box-score) route_allowed=true ;;
+  /flashscore/match-commentary) route_allowed=true ;;
   /flashscore/match-darts) route_allowed=true ;;
   /flashscore/match-h2h) route_allowed=true ;;
   /flashscore/match-highlights) route_allowed=true ;;
+  /flashscore/match-incidents) route_allowed=true ;;
   /flashscore/match-info) route_allowed=true ;;
   /flashscore/match-lineups) route_allowed=true ;;
   /flashscore/match-missing-players) route_allowed=true ;;
@@ -992,6 +1079,7 @@ case "$path" in
   /flashscore/match-player-stats) route_allowed=true ;;
   /flashscore/match-point-by-point) route_allowed=true ;;
   /flashscore/match-predicted-lineups) route_allowed=true ;;
+  /flashscore/match-prematch-scorers) route_allowed=true ;;
   /flashscore/match-report) route_allowed=true ;;
   /flashscore/match-standings) route_allowed=true ;;
   /flashscore/match-stats) route_allowed=true ;;
@@ -1024,11 +1112,17 @@ case "$path" in
   /flashscore/team-transfers) route_allowed=true ;;
   /flashscore/top-search) route_allowed=true ;;
   /flashscore/tournament-archive-seasons) route_allowed=true ;;
+  /flashscore/tournament-draw) route_allowed=true ;;
   /flashscore/tournament-events) route_allowed=true ;;
   /flashscore/tournament-outright-odds) route_allowed=true ;;
   /flashscore/tournament-seasons) route_allowed=true ;;
   /flashscore/tournament-standings) route_allowed=true ;;
   /flashscore/tournament-standings-views) route_allowed=true ;;
+  /flickreels/classify) route_allowed=true ;;
+  /flickreels/genres) route_allowed=true ;;
+  /flickreels/home) route_allowed=true ;;
+  /flickreels/movie) route_allowed=true ;;
+  /flickreels/shelf) route_allowed=true ;;
   /foodpanda/restaurant) route_allowed=true ;;
   /foodpanda/restaurant/menu) route_allowed=true ;;
   /foodpanda/restaurant/reviews) route_allowed=true ;;
@@ -1053,6 +1147,34 @@ case "$path" in
   /foreignpolicy/project) route_allowed=true ;;
   /foreignpolicy/projects) route_allowed=true ;;
   /foreignpolicy/topic) route_allowed=true ;;
+  /formula1/driver) route_allowed=true ;;
+  /formula1/driver-grid) route_allowed=true ;;
+  /formula1/driver-season-results) route_allowed=true ;;
+  /formula1/driver-standings) route_allowed=true ;;
+  /formula1/filters) route_allowed=true ;;
+  /formula1/json/awards) route_allowed=true ;;
+  /formula1/json/constructors) route_allowed=true ;;
+  /formula1/json/driver-assembly) route_allowed=true ;;
+  /formula1/json/drivers) route_allowed=true ;;
+  /formula1/json/editorial) route_allowed=true ;;
+  /formula1/json/event-tracker) route_allowed=true ;;
+  /formula1/json/meeting-datasets) route_allowed=true ;;
+  /formula1/json/meetings) route_allowed=true ;;
+  /formula1/json/race-assembly) route_allowed=true ;;
+  /formula1/json/results) route_allowed=true ;;
+  /formula1/json/season-award) route_allowed=true ;;
+  /formula1/json/team-assembly) route_allowed=true ;;
+  /formula1/meetings) route_allowed=true ;;
+  /formula1/race-calendar) route_allowed=true ;;
+  /formula1/race-hub) route_allowed=true ;;
+  /formula1/season-awards) route_allowed=true ;;
+  /formula1/season-results) route_allowed=true ;;
+  /formula1/seasons) route_allowed=true ;;
+  /formula1/session-results) route_allowed=true ;;
+  /formula1/team) route_allowed=true ;;
+  /formula1/team-grid) route_allowed=true ;;
+  /formula1/team-season-results) route_allowed=true ;;
+  /formula1/team-standings) route_allowed=true ;;
   /fortune/article) route_allowed=true ;;
   /fortune/author) route_allowed=true ;;
   /fortune/companies) route_allowed=true ;;
@@ -1113,6 +1235,10 @@ case "$path" in
   /france24/sections) route_allowed=true ;;
   /freemalaysiatoday/news) route_allowed=true ;;
   /freemalaysiatoday/sections) route_allowed=true ;;
+  /fresha/landing-venues) route_allowed=true ;;
+  /fresha/search-venues) route_allowed=true ;;
+  /fresha/taxonomy) route_allowed=true ;;
+  /fresha/venue) route_allowed=true ;;
   /ft/article) route_allowed=true ;;
   /ft/author) route_allowed=true ;;
   /ft/categories) route_allowed=true ;;
@@ -1146,6 +1272,20 @@ case "$path" in
   /fussballde/team-matches) route_allowed=true ;;
   /fussballde/team-squad) route_allowed=true ;;
   /fussballde/top-scorers) route_allowed=true ;;
+  /futgg/fc27/catalog) route_allowed=true ;;
+  /futgg/fc27/definitions) route_allowed=true ;;
+  /futgg/fc27/evolutions) route_allowed=true ;;
+  /futgg/fc27/gg-rating-ranks) route_allowed=true ;;
+  /futgg/fc27/gg-ratings) route_allowed=true ;;
+  /futgg/fc27/objective-categories) route_allowed=true ;;
+  /futgg/fc27/objectives) route_allowed=true ;;
+  /futgg/fc27/player-sorts) route_allowed=true ;;
+  /futgg/fc27/players) route_allowed=true ;;
+  /futgg/fc27/price-index) route_allowed=true ;;
+  /futgg/fc27/prices) route_allowed=true ;;
+  /futgg/fc27/sbc/categories) route_allowed=true ;;
+  /futgg/fc27/sbc/sets) route_allowed=true ;;
+  /futgg/fc27/season-pass) route_allowed=true ;;
   /gamerant/article) route_allowed=true ;;
   /gamerant/author) route_allowed=true ;;
   /gamerant/headlines) route_allowed=true ;;
@@ -1204,6 +1344,16 @@ case "$path" in
   /globeandmail/headlines) route_allowed=true ;;
   /globeandmail/news) route_allowed=true ;;
   /globeandmail/sections) route_allowed=true ;;
+  /glovo/categories) route_allowed=true ;;
+  /glovo/cities) route_allowed=true ;;
+  /glovo/city) route_allowed=true ;;
+  /glovo/store) route_allowed=true ;;
+  /glovo/store/fees) route_allowed=true ;;
+  /glovo/store/menu) route_allowed=true ;;
+  /glovo/store/products) route_allowed=true ;;
+  /glovo/store/search) route_allowed=true ;;
+  /glovo/stores) route_allowed=true ;;
+  /glovo/stores/filters) route_allowed=true ;;
   /gmanews/article) route_allowed=true ;;
   /gmanews/headlines) route_allowed=true ;;
   /gmanews/news) route_allowed=true ;;
@@ -1378,6 +1528,9 @@ case "$path" in
   /healthgrades/physicians/search) route_allowed=true ;;
   /healthgrades/specialties) route_allowed=true ;;
   /healthgrades/top-searches) route_allowed=true ;;
+  /hearthstone/card) route_allowed=true ;;
+  /hearthstone/cards) route_allowed=true ;;
+  /hearthstone/filters) route_allowed=true ;;
   /hermes/categories) route_allowed=true ;;
   /hermes/category) route_allowed=true ;;
   /hermes/product) route_allowed=true ;;
@@ -1391,6 +1544,15 @@ case "$path" in
   /hindustantimes/headlines) route_allowed=true ;;
   /hindustantimes/news) route_allowed=true ;;
   /hindustantimes/sections) route_allowed=true ;;
+  /hltv/event) route_allowed=true ;;
+  /hltv/events) route_allowed=true ;;
+  /hltv/match) route_allowed=true ;;
+  /hltv/matches) route_allowed=true ;;
+  /hltv/player) route_allowed=true ;;
+  /hltv/rankings) route_allowed=true ;;
+  /hltv/results) route_allowed=true ;;
+  /hltv/search) route_allowed=true ;;
+  /hltv/team) route_allowed=true ;;
   /hm/categories) route_allowed=true ;;
   /hm/listing) route_allowed=true ;;
   /hm/search) route_allowed=true ;;
@@ -1529,6 +1691,18 @@ case "$path" in
   /irishtimes/headlines) route_allowed=true ;;
   /irishtimes/news) route_allowed=true ;;
   /irishtimes/sections) route_allowed=true ;;
+  /itchio/browse) route_allowed=true ;;
+  /itchio/browse/options) route_allowed=true ;;
+  /itchio/games/top-rated) route_allowed=true ;;
+  /itchio/jams/browse) route_allowed=true ;;
+  /itchio/jams/calendar) route_allowed=true ;;
+  /itchio/jams/entries) route_allowed=true ;;
+  /itchio/jams/options) route_allowed=true ;;
+  /itchio/jams/overview) route_allowed=true ;;
+  /itchio/jams/results) route_allowed=true ;;
+  /itchio/jams/results/options) route_allowed=true ;;
+  /itchio/jams/submission) route_allowed=true ;;
+  /itchio/project) route_allowed=true ;;
   /japantimes/article) route_allowed=true ;;
   /japantimes/author) route_allowed=true ;;
   /japantimes/headlines) route_allowed=true ;;
@@ -1665,6 +1839,23 @@ case "$path" in
   /kickstarter/discover) route_allowed=true ;;
   /kickstarter/project) route_allowed=true ;;
   /kickstarter/updates) route_allowed=true ;;
+  /klook/attractions/categories) route_allowed=true ;;
+  /klook/attractions/destinations) route_allowed=true ;;
+  /klook/attractions/highlights) route_allowed=true ;;
+  /klook/attractions/search) route_allowed=true ;;
+  /klook/attractions/suggest) route_allowed=true ;;
+  /klook/categories) route_allowed=true ;;
+  /klook/destinations) route_allowed=true ;;
+  /klook/hot) route_allowed=true ;;
+  /klook/interests) route_allowed=true ;;
+  /klook/recommendations) route_allowed=true ;;
+  /klook/reviews) route_allowed=true ;;
+  /klook/search) route_allowed=true ;;
+  /klook/search/filters) route_allowed=true ;;
+  /klook/search/hot-keywords) route_allowed=true ;;
+  /klook/search/unified) route_allowed=true ;;
+  /klook/suggest) route_allowed=true ;;
+  /klook/verticals) route_allowed=true ;;
   /kohls/category) route_allowed=true ;;
   /kohls/product/reviews) route_allowed=true ;;
   /kohls/stores) route_allowed=true ;;
@@ -1754,6 +1945,15 @@ case "$path" in
   /lululemon/category) route_allowed=true ;;
   /lululemon/outfit) route_allowed=true ;;
   /lululemon/stores) route_allowed=true ;;
+  /luma/calendar) route_allowed=true ;;
+  /luma/calendar-events) route_allowed=true ;;
+  /luma/categories) route_allowed=true ;;
+  /luma/category) route_allowed=true ;;
+  /luma/category-events) route_allowed=true ;;
+  /luma/event) route_allowed=true ;;
+  /luma/place) route_allowed=true ;;
+  /luma/place-calendars) route_allowed=true ;;
+  /luma/place-events) route_allowed=true ;;
   /macrumors/article) route_allowed=true ;;
   /macrumors/author) route_allowed=true ;;
   /macrumors/headlines) route_allowed=true ;;
@@ -1782,6 +1982,26 @@ case "$path" in
   /mashable/headlines) route_allowed=true ;;
   /mashable/news) route_allowed=true ;;
   /mashable/sections) route_allowed=true ;;
+  /maxpreps/rankings-groupings) route_allowed=true ;;
+  /maxpreps/request-enums) route_allowed=true ;;
+  /maxpreps/school) route_allowed=true ;;
+  /maxpreps/school-contests) route_allowed=true ;;
+  /maxpreps/school-proximal) route_allowed=true ;;
+  /maxpreps/school-search) route_allowed=true ;;
+  /maxpreps/school-seasons) route_allowed=true ;;
+  /maxpreps/school-zip-search) route_allowed=true ;;
+  /maxpreps/scoreboard) route_allowed=true ;;
+  /maxpreps/season-navigation) route_allowed=true ;;
+  /maxpreps/sports) route_allowed=true ;;
+  /maxpreps/states) route_allowed=true ;;
+  /maxpreps/team) route_allowed=true ;;
+  /maxpreps/team-context) route_allowed=true ;;
+  /maxpreps/team-next-contest) route_allowed=true ;;
+  /maxpreps/team-rankings) route_allowed=true ;;
+  /maxpreps/team-roster-summary) route_allowed=true ;;
+  /maxpreps/team-schedule) route_allowed=true ;;
+  /maxpreps/team-stat-leaders) route_allowed=true ;;
+  /maxpreps/tournament-sports) route_allowed=true ;;
   /mcdonalds/categories) route_allowed=true ;;
   /mcdonalds/item) route_allowed=true ;;
   /mcdonalds/item-list) route_allowed=true ;;
@@ -1909,6 +2129,23 @@ case "$path" in
   /modaoperandi/designers) route_allowed=true ;;
   /modaoperandi/product) route_allowed=true ;;
   /modaoperandi/search) route_allowed=true ;;
+  /modrinth/collections) route_allowed=true ;;
+  /modrinth/metadata/link-platforms) route_allowed=true ;;
+  /modrinth/metadata/loader-fields) route_allowed=true ;;
+  /modrinth/metadata/loaders) route_allowed=true ;;
+  /modrinth/organizations) route_allowed=true ;;
+  /modrinth/projects) route_allowed=true ;;
+  /modrinth/projects_random) route_allowed=true ;;
+  /modrinth/search) route_allowed=true ;;
+  /modrinth/statistics) route_allowed=true ;;
+  /modrinth/v3/search) route_allowed=true ;;
+  /modrinth/v3/search/options) route_allowed=true ;;
+  /modrinth/version_file/project) route_allowed=true ;;
+  /modrinth/version_files) route_allowed=true ;;
+  /modrinth/version_files/update) route_allowed=true ;;
+  /modrinth/version_files/update_individual) route_allowed=true ;;
+  /modrinth/version_files/update_many) route_allowed=true ;;
+  /modrinth/versions) route_allowed=true ;;
   /moncler/categories) route_allowed=true ;;
   /moncler/category) route_allowed=true ;;
   /moncler/product) route_allowed=true ;;
@@ -1925,6 +2162,27 @@ case "$path" in
   /motleyfool/headlines) route_allowed=true ;;
   /motleyfool/news) route_allowed=true ;;
   /motleyfool/sections) route_allowed=true ;;
+  /motogp/bmw-award) route_allowed=true ;;
+  /motogp/categories) route_allowed=true ;;
+  /motogp/circuit-poles) route_allowed=true ;;
+  /motogp/circuit-records) route_allowed=true ;;
+  /motogp/circuit-wins) route_allowed=true ;;
+  /motogp/classifications) route_allowed=true ;;
+  /motogp/content/categories) route_allowed=true ;;
+  /motogp/content/events) route_allowed=true ;;
+  /motogp/content/sessions/latest) route_allowed=true ;;
+  /motogp/content/sessions/next-live) route_allowed=true ;;
+  /motogp/entries) route_allowed=true ;;
+  /motogp/event-files) route_allowed=true ;;
+  /motogp/events) route_allowed=true ;;
+  /motogp/seasons) route_allowed=true ;;
+  /motogp/sessions) route_allowed=true ;;
+  /motogp/standings) route_allowed=true ;;
+  /motogp/standings-files) route_allowed=true ;;
+  /motogp/starting-grid) route_allowed=true ;;
+  /nascar/live-feed) route_allowed=true ;;
+  /nascar/races) route_allowed=true ;;
+  /nascar/series) route_allowed=true ;;
   /nationafrica/article) route_allowed=true ;;
   /nationafrica/author) route_allowed=true ;;
   /nationafrica/headlines) route_allowed=true ;;
@@ -1940,6 +2198,57 @@ case "$path" in
   /nationalpost/headlines) route_allowed=true ;;
   /nationalpost/news) route_allowed=true ;;
   /nationalpost/sections) route_allowed=true ;;
+  /nba/box-score) route_allowed=true ;;
+  /nba/box-score-advanced) route_allowed=true ;;
+  /nba/box-score-four-factors) route_allowed=true ;;
+  /nba/box-score-misc) route_allowed=true ;;
+  /nba/box-score-player-track) route_allowed=true ;;
+  /nba/box-score-scoring) route_allowed=true ;;
+  /nba/box-score-usage) route_allowed=true ;;
+  /nba/common-all-players) route_allowed=true ;;
+  /nba/draft-combine-anthro) route_allowed=true ;;
+  /nba/enums) route_allowed=true ;;
+  /nba/franchise-history) route_allowed=true ;;
+  /nba/game-detail) route_allowed=true ;;
+  /nba/games) route_allowed=true ;;
+  /nba/homepage-leaders) route_allowed=true ;;
+  /nba/hustle-stats) route_allowed=true ;;
+  /nba/hustle-team) route_allowed=true ;;
+  /nba/league-game-log) route_allowed=true ;;
+  /nba/lineups) route_allowed=true ;;
+  /nba/news) route_allowed=true ;;
+  /nba/opp-pt-shot) route_allowed=true ;;
+  /nba/play-by-play) route_allowed=true ;;
+  /nba/player-awards) route_allowed=true ;;
+  /nba/player-bio-stats) route_allowed=true ;;
+  /nba/player-career-stats) route_allowed=true ;;
+  /nba/player-clutch) route_allowed=true ;;
+  /nba/player-dash-pt-shots) route_allowed=true ;;
+  /nba/player-game-logs) route_allowed=true ;;
+  /nba/player-info) route_allowed=true ;;
+  /nba/player-profile-v2) route_allowed=true ;;
+  /nba/player-pt-shot) route_allowed=true ;;
+  /nba/player-stats) route_allowed=true ;;
+  /nba/player-streak-finder) route_allowed=true ;;
+  /nba/players) route_allowed=true ;;
+  /nba/playoff-picture) route_allowed=true ;;
+  /nba/pt-defend) route_allowed=true ;;
+  /nba/pt-stats) route_allowed=true ;;
+  /nba/scoreboard) route_allowed=true ;;
+  /nba/standings) route_allowed=true ;;
+  /nba/synergy-play-types) route_allowed=true ;;
+  /nba/team-dash-pt-pass) route_allowed=true ;;
+  /nba/team-dash-pt-shots) route_allowed=true ;;
+  /nba/team-details) route_allowed=true ;;
+  /nba/team-game-logs) route_allowed=true ;;
+  /nba/team-info-common) route_allowed=true ;;
+  /nba/team-on-off) route_allowed=true ;;
+  /nba/team-pt-shot) route_allowed=true ;;
+  /nba/team-roster) route_allowed=true ;;
+  /nba/team-shot-locations) route_allowed=true ;;
+  /nba/team-stats) route_allowed=true ;;
+  /nba/team-stats-leaders) route_allowed=true ;;
+  /nba/team-years) route_allowed=true ;;
   /nbc/article) route_allowed=true ;;
   /nbc/author) route_allowed=true ;;
   /nbc/headlines) route_allowed=true ;;
@@ -1957,6 +2266,14 @@ case "$path" in
   /ndtv/video) route_allowed=true ;;
   /ndtv/video-categories) route_allowed=true ;;
   /ndtv/videos) route_allowed=true ;;
+  /netshort/browse) route_allowed=true ;;
+  /netshort/genres) route_allowed=true ;;
+  /netshort/home) route_allowed=true ;;
+  /netshort/label) route_allowed=true ;;
+  /netshort/plots) route_allowed=true ;;
+  /netshort/search) route_allowed=true ;;
+  /netshort/title) route_allowed=true ;;
+  /netshort/toplist) route_allowed=true ;;
   /news18/article) route_allowed=true ;;
   /news18/author) route_allowed=true ;;
   /news18/headlines) route_allowed=true ;;
@@ -1986,6 +2303,22 @@ case "$path" in
   /newyorker/headlines) route_allowed=true ;;
   /newyorker/news) route_allowed=true ;;
   /newyorker/sections) route_allowed=true ;;
+  /nfhs/activities) route_allowed=true ;;
+  /nfhs/affiliates) route_allowed=true ;;
+  /nfhs/associations) route_allowed=true ;;
+  /nfhs/events) route_allowed=true ;;
+  /nfhs/filters) route_allowed=true ;;
+  /nfhs/highlights) route_allowed=true ;;
+  /nfhs/schools) route_allowed=true ;;
+  /nfhs/search) route_allowed=true ;;
+  /nfhs/sports) route_allowed=true ;;
+  /nfhs/states) route_allowed=true ;;
+  /nfhs/suggest) route_allowed=true ;;
+  /nhl/gamecenter/boxscore) route_allowed=true ;;
+  /nhl/gamecenter/play-by-play) route_allowed=true ;;
+  /nhl/schedule) route_allowed=true ;;
+  /nhl/seasons) route_allowed=true ;;
+  /nhl/standings) route_allowed=true ;;
   /nike/categories) route_allowed=true ;;
   /nike/product) route_allowed=true ;;
   /nike/product/availability) route_allowed=true ;;
@@ -2087,6 +2420,46 @@ case "$path" in
   /opendota/team-matches) route_allowed=true ;;
   /opendota/team-players) route_allowed=true ;;
   /opendota/teams) route_allowed=true ;;
+  /openf1/car-data) route_allowed=true ;;
+  /openf1/championship-drivers) route_allowed=true ;;
+  /openf1/championship-teams) route_allowed=true ;;
+  /openf1/drivers) route_allowed=true ;;
+  /openf1/intervals) route_allowed=true ;;
+  /openf1/laps) route_allowed=true ;;
+  /openf1/location) route_allowed=true ;;
+  /openf1/meetings) route_allowed=true ;;
+  /openf1/overtakes) route_allowed=true ;;
+  /openf1/pit) route_allowed=true ;;
+  /openf1/position) route_allowed=true ;;
+  /openf1/race-control) route_allowed=true ;;
+  /openf1/session-result) route_allowed=true ;;
+  /openf1/sessions) route_allowed=true ;;
+  /openf1/starting-grid) route_allowed=true ;;
+  /openf1/stints) route_allowed=true ;;
+  /openf1/team-radio) route_allowed=true ;;
+  /openf1/weather) route_allowed=true ;;
+  /openligadb/current-group) route_allowed=true ;;
+  /openligadb/current-matchday) route_allowed=true ;;
+  /openligadb/goal-getters) route_allowed=true ;;
+  /openligadb/groups) route_allowed=true ;;
+  /openligadb/last-changed) route_allowed=true ;;
+  /openligadb/last-match) route_allowed=true ;;
+  /openligadb/last-team-match) route_allowed=true ;;
+  /openligadb/league-team-matches) route_allowed=true ;;
+  /openligadb/leagues) route_allowed=true ;;
+  /openligadb/match) route_allowed=true ;;
+  /openligadb/matchday-matches) route_allowed=true ;;
+  /openligadb/matches) route_allowed=true ;;
+  /openligadb/matches-by-team) route_allowed=true ;;
+  /openligadb/matches-by-team-id) route_allowed=true ;;
+  /openligadb/next-match) route_allowed=true ;;
+  /openligadb/next-team-match) route_allowed=true ;;
+  /openligadb/result-infos) route_allowed=true ;;
+  /openligadb/result-types) route_allowed=true ;;
+  /openligadb/sports) route_allowed=true ;;
+  /openligadb/table) route_allowed=true ;;
+  /openligadb/team-pair-matches) route_allowed=true ;;
+  /openligadb/teams) route_allowed=true ;;
   /opensea/activity) route_allowed=true ;;
   /opensea/categories) route_allowed=true ;;
   /opensea/chains) route_allowed=true ;;
@@ -2150,6 +2523,10 @@ case "$path" in
   /papajohns/poland/menu) route_allowed=true ;;
   /papajohns/russia/menu) route_allowed=true ;;
   /papajohns/store) route_allowed=true ;;
+  /partiful/city-facets) route_allowed=true ;;
+  /partiful/city-feed) route_allowed=true ;;
+  /partiful/event) route_allowed=true ;;
+  /partiful/explore-cities) route_allowed=true ;;
   /patreon/creator) route_allowed=true ;;
   /patreon/creator/tiers) route_allowed=true ;;
   /patreon/explore) route_allowed=true ;;
@@ -2169,6 +2546,18 @@ case "$path" in
   /people/headlines) route_allowed=true ;;
   /people/news) route_allowed=true ;;
   /people/sections) route_allowed=true ;;
+  /petsmart/categories) route_allowed=true ;;
+  /petsmart/product) route_allowed=true ;;
+  /petsmart/product/inventory) route_allowed=true ;;
+  /petsmart/search) route_allowed=true ;;
+  /petsmart/search/filters) route_allowed=true ;;
+  /petsmart/suggest) route_allowed=true ;;
+  /pgatour/leaderboard) route_allowed=true ;;
+  /pgatour/players) route_allowed=true ;;
+  /pgatour/schedule) route_allowed=true ;;
+  /pgatour/schedule/seasons) route_allowed=true ;;
+  /pgatour/stats) route_allowed=true ;;
+  /pgatour/tournament-links) route_allowed=true ;;
   /phillyinquirer/article) route_allowed=true ;;
   /phillyinquirer/author) route_allowed=true ;;
   /phillyinquirer/headlines) route_allowed=true ;;
@@ -2539,6 +2928,12 @@ case "$path" in
   /sephora/search) route_allowed=true ;;
   /sephora/stores) route_allowed=true ;;
   /sephora/suggest) route_allowed=true ;;
+  /serebii/pokemongo/event-categories) route_allowed=true ;;
+  /serebii/pokemongo/event-only-moves) route_allowed=true ;;
+  /serebii/pokemongo/event-only-research) route_allowed=true ;;
+  /serebii/pokemongo/events) route_allowed=true ;;
+  /serebii/pokemongo/spotlight-hours) route_allowed=true ;;
+  /serebii/pokemongo/unown-events) route_allowed=true ;;
   /sevennewsau/article) route_allowed=true ;;
   /sevennewsau/author) route_allowed=true ;;
   /sevennewsau/headlines) route_allowed=true ;;
@@ -2660,6 +3055,7 @@ case "$path" in
   /sofascore/event-lineups) route_allowed=true ;;
   /sofascore/event-managers) route_allowed=true ;;
   /sofascore/event-odds) route_allowed=true ;;
+  /sofascore/event-player-actions) route_allowed=true ;;
   /sofascore/event-player-heatmap) route_allowed=true ;;
   /sofascore/event-player-statistics) route_allowed=true ;;
   /sofascore/event-point-by-point) route_allowed=true ;;
@@ -2667,6 +3063,7 @@ case "$path" in
   /sofascore/event-shotmap) route_allowed=true ;;
   /sofascore/event-statistics) route_allowed=true ;;
   /sofascore/event-team-heatmap) route_allowed=true ;;
+  /sofascore/event-team-shotmap) route_allowed=true ;;
   /sofascore/event-team-streaks) route_allowed=true ;;
   /sofascore/event-tennis-power) route_allowed=true ;;
   /sofascore/event-tv-channels) route_allowed=true ;;
@@ -2774,6 +3171,8 @@ case "$path" in
   /sparkfun/category) route_allowed=true ;;
   /sparkfun/product) route_allowed=true ;;
   /sparkfun/search) route_allowed=true ;;
+  /speedrun/games) route_allowed=true ;;
+  /speedrun/options) route_allowed=true ;;
   /sportingnews/article) route_allowed=true ;;
   /sportingnews/author) route_allowed=true ;;
   /sportingnews/headlines) route_allowed=true ;;
@@ -3398,6 +3797,12 @@ case "$path" in
   /web/crawl) route_allowed=true ;;
   /web/map) route_allowed=true ;;
   /web/search) route_allowed=true ;;
+  /webtoon/genre) route_allowed=true ;;
+  /webtoon/genres) route_allowed=true ;;
+  /webtoon/originals) route_allowed=true ;;
+  /webtoon/rankings) route_allowed=true ;;
+  /webtoon/search) route_allowed=true ;;
+  /webtoon/series) route_allowed=true ;;
   /wendys/categories) route_allowed=true ;;
   /wendys/directory) route_allowed=true ;;
   /wendys/item) route_allowed=true ;;
@@ -3436,6 +3841,10 @@ case "$path" in
   /wolt/search/filters) route_allowed=true ;;
   /wsj/article) route_allowed=true ;;
   /wsj/author) route_allowed=true ;;
+  /wta/countries) route_allowed=true ;;
+  /wta/match-states) route_allowed=true ;;
+  /wta/tournament-seasons) route_allowed=true ;;
+  /wta/tournaments) route_allowed=true ;;
   /xbox/browse) route_allowed=true ;;
   /xbox/collection) route_allowed=true ;;
   /xbox/game) route_allowed=true ;;
@@ -3483,30 +3892,71 @@ case "$path" in
   /yahoo-search/suggest) route_allowed=true ;;
   /yahoo-search/videos) route_allowed=true ;;
   /yahoo-shopping/article) route_allowed=true ;;
+  /yahoo-shopping/author) route_allowed=true ;;
+  /yahoo-shopping/categories) route_allowed=true ;;
   /yahoo-shopping/category) route_allowed=true ;;
+  /yahoo-shopping/experts) route_allowed=true ;;
   /yahoo-shopping/home) route_allowed=true ;;
   /yahoo-shopping/shopping-list) route_allowed=true ;;
   /yahoo-shopping/shopping-lists) route_allowed=true ;;
+  /yahoo-shopping/sitemap) route_allowed=true ;;
+  /yahoo-shopping/sitemaps) route_allowed=true ;;
   /yahoo-shopping/store) route_allowed=true ;;
   /yahoo-shopping/stores) route_allowed=true ;;
+  /yahoo-shopping/suggest) route_allowed=true ;;
+  /yahoo-sports/college-rankings) route_allowed=true ;;
+  /yahoo-sports/draft) route_allowed=true ;;
+  /yahoo-sports/dropdown-catalog) route_allowed=true ;;
   /yahoo-sports/game) route_allowed=true ;;
   /yahoo-sports/golf-leaderboard) route_allowed=true ;;
+  /yahoo-sports/golf-player) route_allowed=true ;;
+  /yahoo-sports/golf-player-news) route_allowed=true ;;
+  /yahoo-sports/golf-players) route_allowed=true ;;
   /yahoo-sports/golf-schedule) route_allowed=true ;;
+  /yahoo-sports/home) route_allowed=true ;;
+  /yahoo-sports/injury-report) route_allowed=true ;;
+  /yahoo-sports/league-schedule) route_allowed=true ;;
+  /yahoo-sports/leagues) route_allowed=true ;;
   /yahoo-sports/mma-fight-card) route_allowed=true ;;
   /yahoo-sports/mma-schedule) route_allowed=true ;;
+  /yahoo-sports/more-news) route_allowed=true ;;
   /yahoo-sports/motorsports-race) route_allowed=true ;;
   /yahoo-sports/motorsports-schedule) route_allowed=true ;;
+  /yahoo-sports/navigation) route_allowed=true ;;
+  /yahoo-sports/network-catalog) route_allowed=true ;;
   /yahoo-sports/news) route_allowed=true ;;
+  /yahoo-sports/newsletter-archive) route_allowed=true ;;
+  /yahoo-sports/newsletters) route_allowed=true ;;
+  /yahoo-sports/odds-featured) route_allowed=true ;;
+  /yahoo-sports/odds-game) route_allowed=true ;;
+  /yahoo-sports/odds-games) route_allowed=true ;;
+  /yahoo-sports/odds-trending) route_allowed=true ;;
   /yahoo-sports/olympics-medals) route_allowed=true ;;
   /yahoo-sports/player) route_allowed=true ;;
+  /yahoo-sports/player-search) route_allowed=true ;;
+  /yahoo-sports/playoff-bracket) route_allowed=true ;;
+  /yahoo-sports/playoff-bracket-catalog) route_allowed=true ;;
+  /yahoo-sports/rss-catalog) route_allowed=true ;;
+  /yahoo-sports/rss-feed) route_allowed=true ;;
+  /yahoo-sports/schedule-catalog) route_allowed=true ;;
   /yahoo-sports/scoreboard) route_allowed=true ;;
+  /yahoo-sports/section-stream) route_allowed=true ;;
+  /yahoo-sports/soccer-scoreboard) route_allowed=true ;;
+  /yahoo-sports/sportsbook-catalog) route_allowed=true ;;
   /yahoo-sports/standings) route_allowed=true ;;
+  /yahoo-sports/stats) route_allowed=true ;;
+  /yahoo-sports/stats-catalog) route_allowed=true ;;
+  /yahoo-sports/stats-discovery) route_allowed=true ;;
   /yahoo-sports/team) route_allowed=true ;;
   /yahoo-sports/team-roster) route_allowed=true ;;
   /yahoo-sports/team-schedule) route_allowed=true ;;
   /yahoo-sports/tennis-rankings) route_allowed=true ;;
   /yahoo-sports/tennis-schedule) route_allowed=true ;;
   /yahoo-sports/tennis-scoreboard) route_allowed=true ;;
+  /yahoo-sports/topic-news) route_allowed=true ;;
+  /yahoo-sports/video-headlines) route_allowed=true ;;
+  /yahoo-sports/video-list-catalog) route_allowed=true ;;
+  /yahoo-sports/watch-schedule) route_allowed=true ;;
   /yahoo-tech/article) route_allowed=true ;;
   /yahoo-tech/category) route_allowed=true ;;
   /yahoo-tech/home) route_allowed=true ;;
@@ -3602,6 +4052,15 @@ if [ "$route_allowed" = false ]; then
   '^/autotrader/dealer/[^/]+$'
   '^/autotrader/vehicle/[^/]+$'
   '^/bbb/scamtracker/[^/]+$'
+  '^/boardgamegeek/cardsets/[^/]+$'
+  '^/boardgamegeek/entity/[^/]+/[^/]+$'
+  '^/boardgamegeek/game/[^/]+$'
+  '^/boardgamegeek/geeklist/[^/]+$'
+  '^/boardgamegeek/geeklist/[^/]+/items$'
+  '^/boardgamegeek/media/[^/]+$'
+  '^/boardgamegeek/recommendations/[^/]+$'
+  '^/boardgamegeek/reviews/[^/]+/[^/]+$'
+  '^/boardgamegeek/thread/[^/]+$'
   '^/bonhams/auctions/[^/]+$'
   '^/bonhams/auctions/[^/]+/lots$'
   '^/bonhams/lots/[^/]+/[^/]+$'
@@ -3637,6 +4096,12 @@ if [ "$route_allowed" = false ]; then
   '^/discogs/label/[^/]+/releases$'
   '^/discogs/master/[^/]+$'
   '^/discogs/release/[^/]+$'
+  '^/domain/rdap/domain/[^/]+$'
+  '^/domain/robots/[^/]+$'
+  '^/domain/site/[^/]+$'
+  '^/domain/subdomains/[^/]+$'
+  '^/domain/wayback/availability/[^/]+$'
+  '^/domain/wayback/cdx/[^/]+$'
   '^/doordash/store/[^/]+$'
   '^/doordash/store/[^/]+/fulfillment$'
   '^/doordash/store/[^/]+/info$'
@@ -3678,6 +4143,13 @@ if [ "$route_allowed" = false ]; then
   '^/fashionphile/products/[^/]+/recommendations$'
   '^/fiverr/gig/[^/]+/[^/]+$'
   '^/fiverr/seller/[^/]+$'
+  '^/futgg/fc27/evolutions/[^/]+$'
+  '^/futgg/fc27/objectives/[^/]+$'
+  '^/futgg/fc27/objectives/by-ea/[^/]+$'
+  '^/futgg/fc27/objectives/by-objective/[^/]+$'
+  '^/futgg/fc27/sbc/sets/[^/]+$'
+  '^/futgg/fc27/sbc/sets/by-challenge/[^/]+$'
+  '^/futgg/fc27/sbc/sets/by-ea/[^/]+$'
   '^/github/org/[^/]+$'
   '^/github/org/[^/]+/repos$'
   '^/github/repo/[^/]+/[^/]+$'
@@ -3732,6 +4204,8 @@ if [ "$route_allowed" = false ]; then
   '^/instagram/profile/[^/]+$'
   '^/instagram/reels/[^/]+$'
   '^/instagram/user/[^/]+/posts$'
+  '^/itchio/catalogs/[^/]+$'
+  '^/itchio/tags/[^/]+$'
   '^/kalshi/event/[^/]+$'
   '^/kalshi/event/[^/]+/history$'
   '^/kalshi/event/[^/]+/metadata$'
@@ -3741,6 +4215,7 @@ if [ "$route_allowed" = false ]; then
   '^/kalshi/market/[^/]+/history$'
   '^/kalshi/market/[^/]+/orderbook$'
   '^/kalshi/series/[^/]+$'
+  '^/klook/activities/[^/]+$'
   '^/kyliecosmetics/collections/[^/]+/products$'
   '^/kyliecosmetics/pages/[^/]+$'
   '^/kyliecosmetics/products/[^/]+$'
@@ -3778,6 +4253,32 @@ if [ "$route_allowed" = false ]; then
   '^/metaculus/question/[^/]+/metadata$'
   '^/metaculus/question/[^/]+/options$'
   '^/metaculus/tournament/[^/]+/questions$'
+  '^/modrinth/collection/[^/]+$'
+  '^/modrinth/metadata/loader-fields/[^/]+$'
+  '^/modrinth/organization/[^/]+$'
+  '^/modrinth/organization/[^/]+/projects$'
+  '^/modrinth/project/[^/]+$'
+  '^/modrinth/project/[^/]+/check$'
+  '^/modrinth/project/[^/]+/dependencies$'
+  '^/modrinth/project/[^/]+/disclosures$'
+  '^/modrinth/project/[^/]+/version$'
+  '^/modrinth/project/[^/]+/version/[^/]+$'
+  '^/modrinth/tag/[^/]+$'
+  '^/modrinth/tag/license/[^/]+$'
+  '^/modrinth/updates/[^/]+/forge_updates\.json$'
+  '^/modrinth/version/[^/]+$'
+  '^/modrinth/version_file/[^/]+$'
+  '^/modrinth/version_file/[^/]+/update$'
+  '^/motogp/content/events/[^/]+$'
+  '^/motogp/entry-grid-options/[^/]+$'
+  '^/nascar/races/[^/]+$'
+  '^/nascar/weekend/[^/]+/[^/]+/[^/]+$'
+  '^/nfhs/affiliates/[^/]+$'
+  '^/nfhs/associations/[^/]+$'
+  '^/nfhs/events/[^/]+$'
+  '^/nfhs/producers/[^/]+$'
+  '^/nfhs/publishers/[^/]+$'
+  '^/nfhs/schools/[^/]+$'
   '^/numbeo/cost-of-living/city/[^/]+$'
   '^/numbeo/indices/city/[^/]+$'
   '^/ohpolly/collections/[^/]+/products$'
@@ -3811,6 +4312,15 @@ if [ "$route_allowed" = false ]; then
   '^/opensea/profile/[^/]+/created$'
   '^/opensea/profile/[^/]+/items$'
   '^/opensea/profile/[^/]+/search-items$'
+  '^/pgatour/stats/[^/]+$'
+  '^/pgatour/stats/[^/]+/options$'
+  '^/pgatour/tournaments/[^/]+/[^/]+/[^/]+/broadcast$'
+  '^/pgatour/tournaments/[^/]+/[^/]+/[^/]+/course-stats$'
+  '^/pgatour/tournaments/[^/]+/[^/]+/[^/]+/field$'
+  '^/pgatour/tournaments/[^/]+/[^/]+/[^/]+/overview$'
+  '^/pgatour/tournaments/[^/]+/[^/]+/[^/]+/past-results$'
+  '^/pgatour/tournaments/[^/]+/[^/]+/[^/]+/tee-times$'
+  '^/pgatour/tournaments/[^/]+/[^/]+/[^/]+/weather$'
   '^/pinterest/board/[^/]+/[^/]+$'
   '^/pinterest/ideas/[^/]+$'
   '^/pinterest/pin/[^/]+$'
@@ -3882,6 +4392,15 @@ if [ "$route_allowed" = false ]; then
   '^/samsclub/content/[^/]+$'
   '^/samsclub/product/[^/]+$'
   '^/samsclub/product/[^/]+/related$'
+  '^/serebii/pokemongo/communityday/[^/]+$'
+  '^/serebii/pokemongo/events/[^/]+$'
+  '^/serebii/pokemongo/hatchday/[^/]+$'
+  '^/serebii/pokemongo/incenseday/[^/]+$'
+  '^/serebii/pokemongo/limitedresearchday/[^/]+$'
+  '^/serebii/pokemongo/maxbattleday/[^/]+$'
+  '^/serebii/pokemongo/raidday/[^/]+$'
+  '^/serebii/pokemongo/reallifeevents/[^/]+$'
+  '^/serebii/pokemongo/ticketevents/[^/]+$'
   '^/shop-app/products/[^/]+$'
   '^/shop-app/products/[^/]+/related$'
   '^/shop-app/products/[^/]+/reviews$'
@@ -3903,6 +4422,21 @@ if [ "$route_allowed" = false ]; then
   '^/skims/pages/[^/]+$'
   '^/skims/products/[^/]+$'
   '^/skims/products/[^/]+/recommendations$'
+  '^/speedrun/catalogs/[^/]+$'
+  '^/speedrun/categories/[^/]+$'
+  '^/speedrun/categories/[^/]+/records$'
+  '^/speedrun/categories/[^/]+/variables$'
+  '^/speedrun/games/[^/]+$'
+  '^/speedrun/games/[^/]+/categories$'
+  '^/speedrun/games/[^/]+/levels$'
+  '^/speedrun/games/[^/]+/records$'
+  '^/speedrun/games/[^/]+/variables$'
+  '^/speedrun/leaderboards/[^/]+/category/[^/]+$'
+  '^/speedrun/leaderboards/[^/]+/level/[^/]+/[^/]+$'
+  '^/speedrun/levels/[^/]+$'
+  '^/speedrun/levels/[^/]+/categories$'
+  '^/speedrun/levels/[^/]+/records$'
+  '^/speedrun/levels/[^/]+/variables$'
   '^/starbucks/product/[^/]+/[^/]+$'
   '^/starbucks/product/[^/]+/[^/]+/nutrition$'
   '^/steam/category/[^/]+$'
@@ -3963,6 +4497,12 @@ if [ "$route_allowed" = false ]; then
   '^/wish/product/[^/]+$'
   '^/wish/product/[^/]+/related$'
   '^/wish/product/[^/]+/reviews$'
+  '^/wta/rankings/[^/]+$'
+  '^/wta/tournaments/[^/]+/[^/]+$'
+  '^/wta/tournaments/[^/]+/[^/]+/draws$'
+  '^/wta/tournaments/[^/]+/[^/]+/matches$'
+  '^/wta/tournaments/[^/]+/[^/]+/order-of-play$'
+  '^/wta/tournaments/[^/]+/[^/]+/players$'
   '^/x/post/[^/]+$'
   '^/x/profile/[^/]+$'
   '^/x/profile/[^/]+/posts$'
@@ -4255,6 +4795,12 @@ route_method_regexes=(
   '^GET:/balenciaga/search$'
   '^GET:/balenciaga/store-countries$'
   '^GET:/balenciaga/stores$'
+  '^GET:/bandcamp/artist$'
+  '^GET:/bandcamp/discover$'
+  '^GET:/bandcamp/filters$'
+  '^GET:/bandcamp/related-tags$'
+  '^GET:/bandcamp/release$'
+  '^GET:/bandcamp/search$'
   '^GET:/barrons/article$'
   '^GET:/barrons/headlines$'
   '^GET:/barrons/news$'
@@ -4373,6 +4919,20 @@ route_method_regexes=(
   '^GET:/bo3/tournaments$'
   '^GET:/bo3/transfers$'
   '^GET:/bo3/valorant-leaderboard$'
+  '^GET:/boardgamegeek/cardsets/[^/]+$'
+  '^GET:/boardgamegeek/entity/[^/]+/[^/]+$'
+  '^GET:/boardgamegeek/game/[^/]+$'
+  '^GET:/boardgamegeek/geeklist/[^/]+$'
+  '^GET:/boardgamegeek/geeklist/[^/]+/items$'
+  '^GET:/boardgamegeek/geeklists$'
+  '^GET:/boardgamegeek/hotness$'
+  '^GET:/boardgamegeek/links$'
+  '^GET:/boardgamegeek/media/[^/]+$'
+  '^GET:/boardgamegeek/recommendations/[^/]+$'
+  '^GET:/boardgamegeek/reviews/[^/]+/[^/]+$'
+  '^GET:/boardgamegeek/taxonomy$'
+  '^GET:/boardgamegeek/thread/[^/]+$'
+  '^GET:/boardgamegeek/threads$'
   '^GET:/bonhams/auctions/[^/]+$'
   '^GET:/bonhams/auctions/[^/]+/lots$'
   '^GET:/bonhams/auctions/search$'
@@ -4386,6 +4946,10 @@ route_method_regexes=(
   '^GET:/booking/hotel-detail$'
   '^GET:/booking/reviews$'
   '^GET:/booking/search$'
+  '^GET:/booksy/business$'
+  '^GET:/booksy/businesses$'
+  '^GET:/booksy/categories$'
+  '^GET:/booksy/treatment-hints$'
   '^GET:/boots/search$'
   '^GET:/boots/suggest$'
   '^GET:/bostonglobe/news$'
@@ -4421,6 +4985,14 @@ route_method_regexes=(
   '^GET:/breitbart/headlines$'
   '^GET:/breitbart/news$'
   '^GET:/breitbart/sections$'
+  '^GET:/bringatrailer/filters$'
+  '^GET:/bringatrailer/listing$'
+  '^GET:/bringatrailer/live$'
+  '^GET:/bringatrailer/makes$'
+  '^GET:/bringatrailer/price-history$'
+  '^GET:/bringatrailer/results$'
+  '^GET:/bringatrailer/search$'
+  '^GET:/bringatrailer/suggest$'
   '^GET:/brisbanetimes/article$'
   '^GET:/brisbanetimes/author$'
   '^GET:/brisbanetimes/headlines$'
@@ -4771,6 +5343,24 @@ route_method_regexes=(
   '^GET:/discogs/master/[^/]+$'
   '^GET:/discogs/release/[^/]+$'
   '^GET:/discogs/search$'
+  '^GET:/dollartree/blog/article$'
+  '^GET:/dollartree/categories$'
+  '^GET:/dollartree/price$'
+  '^GET:/dollartree/product$'
+  '^GET:/dollartree/products$'
+  '^GET:/dollartree/search$'
+  '^GET:/dollartree/stock-status$'
+  '^GET:/dollartree/typeahead/keywords$'
+  '^GET:/dollartree/typeahead/products$'
+  '^GET:/domain/dns/record-types$'
+  '^GET:/domain/dns/resolve$'
+  '^GET:/domain/rdap/domain/[^/]+$'
+  '^GET:/domain/rdap/ip$'
+  '^GET:/domain/robots/[^/]+$'
+  '^GET:/domain/site/[^/]+$'
+  '^GET:/domain/subdomains/[^/]+$'
+  '^GET:/domain/wayback/availability/[^/]+$'
+  '^GET:/domain/wayback/cdx/[^/]+$'
   '^GET:/dominos/coupons$'
   '^GET:/dominos/customization$'
   '^GET:/dominos/menu$'
@@ -4875,6 +5465,7 @@ route_method_regexes=(
   '^GET:/eonline/headlines$'
   '^GET:/eonline/news$'
   '^GET:/eonline/sections$'
+  '^GET:/epicgames/free-promotions$'
   '^GET:/espn/athlete$'
   '^GET:/espn/game-summary$'
   '^GET:/espn/news$'
@@ -4919,14 +5510,57 @@ route_method_regexes=(
   '^GET:/expresstribune/sections$'
   '^GET:/facebook/[^/]+$'
   '^GET:/facebook/marketplace/search$'
+  '^GET:/faceit/ban-reasons$'
+  '^GET:/faceit/banlist$'
+  '^GET:/faceit/banlist-stats$'
+  '^GET:/faceit/best-clips$'
+  '^GET:/faceit/championship$'
+  '^GET:/faceit/championship-bracket$'
+  '^GET:/faceit/championship-participants$'
+  '^GET:/faceit/championship-search$'
+  '^GET:/faceit/clip$'
+  '^GET:/faceit/clips$'
+  '^GET:/faceit/competition-matches$'
+  '^GET:/faceit/fpl$'
+  '^GET:/faceit/game-modes$'
+  '^GET:/faceit/games$'
+  '^GET:/faceit/hub$'
+  '^GET:/faceit/hub-categories$'
+  '^GET:/faceit/hub-memberships$'
+  '^GET:/faceit/hubs$'
+  '^GET:/faceit/hubs-detailed$'
+  '^GET:/faceit/leaderboard$'
+  '^GET:/faceit/leaderboard-detail$'
+  '^GET:/faceit/leaderboard-statuses$'
+  '^GET:/faceit/maps$'
+  '^GET:/faceit/match-clips$'
+  '^GET:/faceit/organizer$'
+  '^GET:/faceit/player$'
+  '^GET:/faceit/player-rank$'
+  '^GET:/faceit/regions$'
+  '^GET:/faceit/rule$'
+  '^GET:/faceit/rules$'
+  '^GET:/faceit/skill-levels$'
+  '^GET:/faceit/standings$'
+  '^GET:/faceit/team$'
+  '^GET:/faceit/tournaments-past$'
+  '^GET:/faceit/user-skills$'
   '^GET:/fanatics/categories$'
   '^GET:/fanatics/category$'
   '^GET:/fanatics/product$'
   '^GET:/fanatics/search$'
   '^GET:/fanaticscollect/auctions$'
   '^GET:/fanaticscollect/categories$'
+  '^GET:/fanaticscollect/instant-packs/release$'
+  '^GET:/fanaticscollect/instant-packs/releases$'
   '^GET:/fanaticscollect/instant-rips/categories$'
+  '^GET:/fanaticscollect/instant-rips/pack-categories$'
+  '^GET:/fanaticscollect/instant-rips/pack-checklist$'
+  '^GET:/fanaticscollect/instant-rips/packs$'
+  '^GET:/fanaticscollect/instant-rips/recently-ripped$'
   '^GET:/fanaticscollect/listing/[^/]+$'
+  '^GET:/fanaticscollect/newsroom$'
+  '^GET:/fanaticscollect/newsroom/filters$'
   '^GET:/fanaticscollect/search$'
   '^GET:/fanaticscollect/sold-items$'
   '^GET:/fanaticscollect/trending-searches$'
@@ -5042,6 +5676,12 @@ route_method_regexes=(
   '^GET:/fastcompany/headlines$'
   '^GET:/fastcompany/news$'
   '^GET:/fastcompany/sections$'
+  '^GET:/fever/cities$'
+  '^GET:/fever/feed$'
+  '^GET:/fever/filters$'
+  '^GET:/fever/plan$'
+  '^GET:/fever/plans$'
+  '^GET:/fever/top-cities$'
   '^GET:/fiveguys/directory$'
   '^GET:/fiveguys/faq$'
   '^GET:/fiveguys/faq-categories$'
@@ -5060,9 +5700,11 @@ route_method_regexes=(
   '^GET:/flashscore/competitions$'
   '^GET:/flashscore/entity-news$'
   '^GET:/flashscore/match-box-score$'
+  '^GET:/flashscore/match-commentary$'
   '^GET:/flashscore/match-darts$'
   '^GET:/flashscore/match-h2h$'
   '^GET:/flashscore/match-highlights$'
+  '^GET:/flashscore/match-incidents$'
   '^GET:/flashscore/match-info$'
   '^GET:/flashscore/match-lineups$'
   '^GET:/flashscore/match-missing-players$'
@@ -5072,6 +5714,7 @@ route_method_regexes=(
   '^GET:/flashscore/match-player-stats$'
   '^GET:/flashscore/match-point-by-point$'
   '^GET:/flashscore/match-predicted-lineups$'
+  '^GET:/flashscore/match-prematch-scorers$'
   '^GET:/flashscore/match-report$'
   '^GET:/flashscore/match-standings$'
   '^GET:/flashscore/match-stats$'
@@ -5104,11 +5747,17 @@ route_method_regexes=(
   '^GET:/flashscore/team-transfers$'
   '^GET:/flashscore/top-search$'
   '^GET:/flashscore/tournament-archive-seasons$'
+  '^GET:/flashscore/tournament-draw$'
   '^GET:/flashscore/tournament-events$'
   '^GET:/flashscore/tournament-outright-odds$'
   '^GET:/flashscore/tournament-seasons$'
   '^GET:/flashscore/tournament-standings$'
   '^GET:/flashscore/tournament-standings-views$'
+  '^GET:/flickreels/classify$'
+  '^GET:/flickreels/genres$'
+  '^GET:/flickreels/home$'
+  '^GET:/flickreels/movie$'
+  '^GET:/flickreels/shelf$'
   '^GET:/foodpanda/restaurant$'
   '^GET:/foodpanda/restaurant/menu$'
   '^GET:/foodpanda/restaurant/reviews$'
@@ -5133,6 +5782,34 @@ route_method_regexes=(
   '^GET:/foreignpolicy/project$'
   '^GET:/foreignpolicy/projects$'
   '^GET:/foreignpolicy/topic$'
+  '^GET:/formula1/driver$'
+  '^GET:/formula1/driver-grid$'
+  '^GET:/formula1/driver-season-results$'
+  '^GET:/formula1/driver-standings$'
+  '^GET:/formula1/filters$'
+  '^GET:/formula1/json/awards$'
+  '^GET:/formula1/json/constructors$'
+  '^GET:/formula1/json/driver-assembly$'
+  '^GET:/formula1/json/drivers$'
+  '^GET:/formula1/json/editorial$'
+  '^GET:/formula1/json/event-tracker$'
+  '^GET:/formula1/json/meeting-datasets$'
+  '^GET:/formula1/json/meetings$'
+  '^GET:/formula1/json/race-assembly$'
+  '^GET:/formula1/json/results$'
+  '^GET:/formula1/json/season-award$'
+  '^GET:/formula1/json/team-assembly$'
+  '^GET:/formula1/meetings$'
+  '^GET:/formula1/race-calendar$'
+  '^GET:/formula1/race-hub$'
+  '^GET:/formula1/season-awards$'
+  '^GET:/formula1/season-results$'
+  '^GET:/formula1/seasons$'
+  '^GET:/formula1/session-results$'
+  '^GET:/formula1/team$'
+  '^GET:/formula1/team-grid$'
+  '^GET:/formula1/team-season-results$'
+  '^GET:/formula1/team-standings$'
   '^GET:/fortune/article$'
   '^GET:/fortune/author$'
   '^GET:/fortune/companies$'
@@ -5193,6 +5870,10 @@ route_method_regexes=(
   '^GET:/france24/sections$'
   '^GET:/freemalaysiatoday/news$'
   '^GET:/freemalaysiatoday/sections$'
+  '^GET:/fresha/landing-venues$'
+  '^GET:/fresha/search-venues$'
+  '^GET:/fresha/taxonomy$'
+  '^GET:/fresha/venue$'
   '^GET:/ft/article$'
   '^GET:/ft/author$'
   '^GET:/ft/categories$'
@@ -5226,6 +5907,27 @@ route_method_regexes=(
   '^GET:/fussballde/team-matches$'
   '^GET:/fussballde/team-squad$'
   '^GET:/fussballde/top-scorers$'
+  '^GET:/futgg/fc27/catalog$'
+  '^GET:/futgg/fc27/definitions$'
+  '^GET:/futgg/fc27/evolutions$'
+  '^GET:/futgg/fc27/evolutions/[^/]+$'
+  '^GET:/futgg/fc27/gg-rating-ranks$'
+  '^GET:/futgg/fc27/gg-ratings$'
+  '^GET:/futgg/fc27/objective-categories$'
+  '^GET:/futgg/fc27/objectives$'
+  '^GET:/futgg/fc27/objectives/[^/]+$'
+  '^GET:/futgg/fc27/objectives/by-ea/[^/]+$'
+  '^GET:/futgg/fc27/objectives/by-objective/[^/]+$'
+  '^GET:/futgg/fc27/player-sorts$'
+  '^GET:/futgg/fc27/players$'
+  '^GET:/futgg/fc27/price-index$'
+  '^GET:/futgg/fc27/prices$'
+  '^GET:/futgg/fc27/sbc/categories$'
+  '^GET:/futgg/fc27/sbc/sets$'
+  '^GET:/futgg/fc27/sbc/sets/[^/]+$'
+  '^GET:/futgg/fc27/sbc/sets/by-challenge/[^/]+$'
+  '^GET:/futgg/fc27/sbc/sets/by-ea/[^/]+$'
+  '^GET:/futgg/fc27/season-pass$'
   '^GET:/gamerant/article$'
   '^GET:/gamerant/author$'
   '^GET:/gamerant/headlines$'
@@ -5297,6 +5999,16 @@ route_method_regexes=(
   '^GET:/globeandmail/headlines$'
   '^GET:/globeandmail/news$'
   '^GET:/globeandmail/sections$'
+  '^GET:/glovo/categories$'
+  '^GET:/glovo/cities$'
+  '^GET:/glovo/city$'
+  '^GET:/glovo/store$'
+  '^GET:/glovo/store/fees$'
+  '^GET:/glovo/store/menu$'
+  '^GET:/glovo/store/products$'
+  '^GET:/glovo/store/search$'
+  '^GET:/glovo/stores$'
+  '^GET:/glovo/stores/filters$'
   '^GET:/gmanews/article$'
   '^GET:/gmanews/headlines$'
   '^GET:/gmanews/news$'
@@ -5495,6 +6207,9 @@ route_method_regexes=(
   '^GET:/healthgrades/physicians/search$'
   '^GET:/healthgrades/specialties$'
   '^GET:/healthgrades/top-searches$'
+  '^GET:/hearthstone/card$'
+  '^GET:/hearthstone/cards$'
+  '^GET:/hearthstone/filters$'
   '^GET:/hermes/categories$'
   '^GET:/hermes/category$'
   '^GET:/hermes/product$'
@@ -5508,6 +6223,15 @@ route_method_regexes=(
   '^GET:/hindustantimes/headlines$'
   '^GET:/hindustantimes/news$'
   '^GET:/hindustantimes/sections$'
+  '^GET:/hltv/event$'
+  '^GET:/hltv/events$'
+  '^GET:/hltv/match$'
+  '^GET:/hltv/matches$'
+  '^GET:/hltv/player$'
+  '^GET:/hltv/rankings$'
+  '^GET:/hltv/results$'
+  '^GET:/hltv/search$'
+  '^GET:/hltv/team$'
   '^GET:/hm/categories$'
   '^GET:/hm/listing$'
   '^GET:/hm/product/[^/]+$'
@@ -5648,6 +6372,20 @@ route_method_regexes=(
   '^GET:/irishtimes/headlines$'
   '^GET:/irishtimes/news$'
   '^GET:/irishtimes/sections$'
+  '^GET:/itchio/browse$'
+  '^GET:/itchio/browse/options$'
+  '^GET:/itchio/catalogs/[^/]+$'
+  '^GET:/itchio/games/top-rated$'
+  '^GET:/itchio/jams/browse$'
+  '^GET:/itchio/jams/calendar$'
+  '^GET:/itchio/jams/entries$'
+  '^GET:/itchio/jams/options$'
+  '^GET:/itchio/jams/overview$'
+  '^GET:/itchio/jams/results$'
+  '^GET:/itchio/jams/results/options$'
+  '^GET:/itchio/jams/submission$'
+  '^GET:/itchio/project$'
+  '^GET:/itchio/tags/[^/]+$'
   '^GET:/japantimes/article$'
   '^GET:/japantimes/author$'
   '^GET:/japantimes/headlines$'
@@ -5793,6 +6531,24 @@ route_method_regexes=(
   '^GET:/kickstarter/discover$'
   '^GET:/kickstarter/project$'
   '^GET:/kickstarter/updates$'
+  '^GET:/klook/activities/[^/]+$'
+  '^GET:/klook/attractions/categories$'
+  '^GET:/klook/attractions/destinations$'
+  '^GET:/klook/attractions/highlights$'
+  '^GET:/klook/attractions/search$'
+  '^GET:/klook/attractions/suggest$'
+  '^GET:/klook/categories$'
+  '^GET:/klook/destinations$'
+  '^GET:/klook/hot$'
+  '^GET:/klook/interests$'
+  '^GET:/klook/recommendations$'
+  '^GET:/klook/reviews$'
+  '^GET:/klook/search$'
+  '^GET:/klook/search/filters$'
+  '^GET:/klook/search/hot-keywords$'
+  '^GET:/klook/search/unified$'
+  '^GET:/klook/suggest$'
+  '^GET:/klook/verticals$'
   '^GET:/kohls/category$'
   '^GET:/kohls/product/reviews$'
   '^GET:/kohls/stores$'
@@ -5896,6 +6652,15 @@ route_method_regexes=(
   '^GET:/lululemon/outfit$'
   '^GET:/lululemon/product/[^/]+$'
   '^GET:/lululemon/stores$'
+  '^GET:/luma/calendar$'
+  '^GET:/luma/calendar-events$'
+  '^GET:/luma/categories$'
+  '^GET:/luma/category$'
+  '^GET:/luma/category-events$'
+  '^GET:/luma/event$'
+  '^GET:/luma/place$'
+  '^GET:/luma/place-calendars$'
+  '^GET:/luma/place-events$'
   '^GET:/macrumors/article$'
   '^GET:/macrumors/author$'
   '^GET:/macrumors/headlines$'
@@ -5929,6 +6694,26 @@ route_method_regexes=(
   '^GET:/mashable/headlines$'
   '^GET:/mashable/news$'
   '^GET:/mashable/sections$'
+  '^GET:/maxpreps/rankings-groupings$'
+  '^GET:/maxpreps/request-enums$'
+  '^GET:/maxpreps/school$'
+  '^GET:/maxpreps/school-contests$'
+  '^GET:/maxpreps/school-proximal$'
+  '^GET:/maxpreps/school-search$'
+  '^GET:/maxpreps/school-seasons$'
+  '^GET:/maxpreps/school-zip-search$'
+  '^GET:/maxpreps/scoreboard$'
+  '^GET:/maxpreps/season-navigation$'
+  '^GET:/maxpreps/sports$'
+  '^GET:/maxpreps/states$'
+  '^GET:/maxpreps/team$'
+  '^GET:/maxpreps/team-context$'
+  '^GET:/maxpreps/team-next-contest$'
+  '^GET:/maxpreps/team-rankings$'
+  '^GET:/maxpreps/team-roster-summary$'
+  '^GET:/maxpreps/team-schedule$'
+  '^GET:/maxpreps/team-stat-leaders$'
+  '^GET:/maxpreps/tournament-sports$'
   '^GET:/mcdonalds/categories$'
   '^GET:/mcdonalds/item$'
   '^GET:/mcdonalds/item-list$'
@@ -6074,6 +6859,33 @@ route_method_regexes=(
   '^GET:/modaoperandi/designers$'
   '^GET:/modaoperandi/product$'
   '^GET:/modaoperandi/search$'
+  '^GET:/modrinth/collection/[^/]+$'
+  '^GET:/modrinth/collections$'
+  '^GET:/modrinth/metadata/link-platforms$'
+  '^GET:/modrinth/metadata/loader-fields$'
+  '^GET:/modrinth/metadata/loader-fields/[^/]+$'
+  '^GET:/modrinth/metadata/loaders$'
+  '^GET:/modrinth/organization/[^/]+$'
+  '^GET:/modrinth/organization/[^/]+/projects$'
+  '^GET:/modrinth/organizations$'
+  '^GET:/modrinth/project/[^/]+$'
+  '^GET:/modrinth/project/[^/]+/check$'
+  '^GET:/modrinth/project/[^/]+/dependencies$'
+  '^GET:/modrinth/project/[^/]+/disclosures$'
+  '^GET:/modrinth/project/[^/]+/version$'
+  '^GET:/modrinth/project/[^/]+/version/[^/]+$'
+  '^GET:/modrinth/projects$'
+  '^GET:/modrinth/projects_random$'
+  '^GET:/modrinth/search$'
+  '^GET:/modrinth/statistics$'
+  '^GET:/modrinth/tag/[^/]+$'
+  '^GET:/modrinth/tag/license/[^/]+$'
+  '^GET:/modrinth/updates/[^/]+/forge_updates\.json$'
+  '^GET:/modrinth/v3/search$'
+  '^GET:/modrinth/v3/search/options$'
+  '^GET:/modrinth/version/[^/]+$'
+  '^GET:/modrinth/version_file/[^/]+$'
+  '^GET:/modrinth/versions$'
   '^GET:/moncler/categories$'
   '^GET:/moncler/category$'
   '^GET:/moncler/product$'
@@ -6090,6 +6902,31 @@ route_method_regexes=(
   '^GET:/motleyfool/headlines$'
   '^GET:/motleyfool/news$'
   '^GET:/motleyfool/sections$'
+  '^GET:/motogp/bmw-award$'
+  '^GET:/motogp/categories$'
+  '^GET:/motogp/circuit-poles$'
+  '^GET:/motogp/circuit-records$'
+  '^GET:/motogp/circuit-wins$'
+  '^GET:/motogp/classifications$'
+  '^GET:/motogp/content/categories$'
+  '^GET:/motogp/content/events$'
+  '^GET:/motogp/content/events/[^/]+$'
+  '^GET:/motogp/content/sessions/latest$'
+  '^GET:/motogp/content/sessions/next-live$'
+  '^GET:/motogp/entries$'
+  '^GET:/motogp/entry-grid-options/[^/]+$'
+  '^GET:/motogp/event-files$'
+  '^GET:/motogp/events$'
+  '^GET:/motogp/seasons$'
+  '^GET:/motogp/sessions$'
+  '^GET:/motogp/standings$'
+  '^GET:/motogp/standings-files$'
+  '^GET:/motogp/starting-grid$'
+  '^GET:/nascar/live-feed$'
+  '^GET:/nascar/races$'
+  '^GET:/nascar/races/[^/]+$'
+  '^GET:/nascar/series$'
+  '^GET:/nascar/weekend/[^/]+/[^/]+/[^/]+$'
   '^GET:/nationafrica/article$'
   '^GET:/nationafrica/author$'
   '^GET:/nationafrica/headlines$'
@@ -6105,6 +6942,57 @@ route_method_regexes=(
   '^GET:/nationalpost/headlines$'
   '^GET:/nationalpost/news$'
   '^GET:/nationalpost/sections$'
+  '^GET:/nba/box-score$'
+  '^GET:/nba/box-score-advanced$'
+  '^GET:/nba/box-score-four-factors$'
+  '^GET:/nba/box-score-misc$'
+  '^GET:/nba/box-score-player-track$'
+  '^GET:/nba/box-score-scoring$'
+  '^GET:/nba/box-score-usage$'
+  '^GET:/nba/common-all-players$'
+  '^GET:/nba/draft-combine-anthro$'
+  '^GET:/nba/enums$'
+  '^GET:/nba/franchise-history$'
+  '^GET:/nba/game-detail$'
+  '^GET:/nba/games$'
+  '^GET:/nba/homepage-leaders$'
+  '^GET:/nba/hustle-stats$'
+  '^GET:/nba/hustle-team$'
+  '^GET:/nba/league-game-log$'
+  '^GET:/nba/lineups$'
+  '^GET:/nba/news$'
+  '^GET:/nba/opp-pt-shot$'
+  '^GET:/nba/play-by-play$'
+  '^GET:/nba/player-awards$'
+  '^GET:/nba/player-bio-stats$'
+  '^GET:/nba/player-career-stats$'
+  '^GET:/nba/player-clutch$'
+  '^GET:/nba/player-dash-pt-shots$'
+  '^GET:/nba/player-game-logs$'
+  '^GET:/nba/player-info$'
+  '^GET:/nba/player-profile-v2$'
+  '^GET:/nba/player-pt-shot$'
+  '^GET:/nba/player-stats$'
+  '^GET:/nba/player-streak-finder$'
+  '^GET:/nba/players$'
+  '^GET:/nba/playoff-picture$'
+  '^GET:/nba/pt-defend$'
+  '^GET:/nba/pt-stats$'
+  '^GET:/nba/scoreboard$'
+  '^GET:/nba/standings$'
+  '^GET:/nba/synergy-play-types$'
+  '^GET:/nba/team-dash-pt-pass$'
+  '^GET:/nba/team-dash-pt-shots$'
+  '^GET:/nba/team-details$'
+  '^GET:/nba/team-game-logs$'
+  '^GET:/nba/team-info-common$'
+  '^GET:/nba/team-on-off$'
+  '^GET:/nba/team-pt-shot$'
+  '^GET:/nba/team-roster$'
+  '^GET:/nba/team-shot-locations$'
+  '^GET:/nba/team-stats$'
+  '^GET:/nba/team-stats-leaders$'
+  '^GET:/nba/team-years$'
   '^GET:/nbc/article$'
   '^GET:/nbc/author$'
   '^GET:/nbc/headlines$'
@@ -6122,6 +7010,14 @@ route_method_regexes=(
   '^GET:/ndtv/video$'
   '^GET:/ndtv/video-categories$'
   '^GET:/ndtv/videos$'
+  '^GET:/netshort/browse$'
+  '^GET:/netshort/genres$'
+  '^GET:/netshort/home$'
+  '^GET:/netshort/label$'
+  '^GET:/netshort/plots$'
+  '^GET:/netshort/search$'
+  '^GET:/netshort/title$'
+  '^GET:/netshort/toplist$'
   '^GET:/news18/article$'
   '^GET:/news18/author$'
   '^GET:/news18/headlines$'
@@ -6151,6 +7047,28 @@ route_method_regexes=(
   '^GET:/newyorker/headlines$'
   '^GET:/newyorker/news$'
   '^GET:/newyorker/sections$'
+  '^GET:/nfhs/activities$'
+  '^GET:/nfhs/affiliates$'
+  '^GET:/nfhs/affiliates/[^/]+$'
+  '^GET:/nfhs/associations$'
+  '^GET:/nfhs/associations/[^/]+$'
+  '^GET:/nfhs/events$'
+  '^GET:/nfhs/events/[^/]+$'
+  '^GET:/nfhs/filters$'
+  '^GET:/nfhs/highlights$'
+  '^GET:/nfhs/producers/[^/]+$'
+  '^GET:/nfhs/publishers/[^/]+$'
+  '^GET:/nfhs/schools$'
+  '^GET:/nfhs/schools/[^/]+$'
+  '^GET:/nfhs/search$'
+  '^GET:/nfhs/sports$'
+  '^GET:/nfhs/states$'
+  '^GET:/nfhs/suggest$'
+  '^GET:/nhl/gamecenter/boxscore$'
+  '^GET:/nhl/gamecenter/play-by-play$'
+  '^GET:/nhl/schedule$'
+  '^GET:/nhl/seasons$'
+  '^GET:/nhl/standings$'
   '^GET:/nike/categories$'
   '^GET:/nike/product$'
   '^GET:/nike/product/availability$'
@@ -6258,6 +7176,46 @@ route_method_regexes=(
   '^GET:/opendota/team-matches$'
   '^GET:/opendota/team-players$'
   '^GET:/opendota/teams$'
+  '^GET:/openf1/car-data$'
+  '^GET:/openf1/championship-drivers$'
+  '^GET:/openf1/championship-teams$'
+  '^GET:/openf1/drivers$'
+  '^GET:/openf1/intervals$'
+  '^GET:/openf1/laps$'
+  '^GET:/openf1/location$'
+  '^GET:/openf1/meetings$'
+  '^GET:/openf1/overtakes$'
+  '^GET:/openf1/pit$'
+  '^GET:/openf1/position$'
+  '^GET:/openf1/race-control$'
+  '^GET:/openf1/session-result$'
+  '^GET:/openf1/sessions$'
+  '^GET:/openf1/starting-grid$'
+  '^GET:/openf1/stints$'
+  '^GET:/openf1/team-radio$'
+  '^GET:/openf1/weather$'
+  '^GET:/openligadb/current-group$'
+  '^GET:/openligadb/current-matchday$'
+  '^GET:/openligadb/goal-getters$'
+  '^GET:/openligadb/groups$'
+  '^GET:/openligadb/last-changed$'
+  '^GET:/openligadb/last-match$'
+  '^GET:/openligadb/last-team-match$'
+  '^GET:/openligadb/league-team-matches$'
+  '^GET:/openligadb/leagues$'
+  '^GET:/openligadb/match$'
+  '^GET:/openligadb/matchday-matches$'
+  '^GET:/openligadb/matches$'
+  '^GET:/openligadb/matches-by-team$'
+  '^GET:/openligadb/matches-by-team-id$'
+  '^GET:/openligadb/next-match$'
+  '^GET:/openligadb/next-team-match$'
+  '^GET:/openligadb/result-infos$'
+  '^GET:/openligadb/result-types$'
+  '^GET:/openligadb/sports$'
+  '^GET:/openligadb/table$'
+  '^GET:/openligadb/team-pair-matches$'
+  '^GET:/openligadb/teams$'
   '^GET:/opensea/activity$'
   '^GET:/opensea/categories$'
   '^GET:/opensea/chains$'
@@ -6348,6 +7306,10 @@ route_method_regexes=(
   '^GET:/papajohns/poland/menu$'
   '^GET:/papajohns/russia/menu$'
   '^GET:/papajohns/store$'
+  '^GET:/partiful/city-facets$'
+  '^GET:/partiful/city-feed$'
+  '^GET:/partiful/event$'
+  '^GET:/partiful/explore-cities$'
   '^GET:/patreon/creator$'
   '^GET:/patreon/creator/tiers$'
   '^GET:/patreon/explore$'
@@ -6367,6 +7329,27 @@ route_method_regexes=(
   '^GET:/people/headlines$'
   '^GET:/people/news$'
   '^GET:/people/sections$'
+  '^GET:/petsmart/categories$'
+  '^GET:/petsmart/product$'
+  '^GET:/petsmart/product/inventory$'
+  '^GET:/petsmart/search$'
+  '^GET:/petsmart/search/filters$'
+  '^GET:/petsmart/suggest$'
+  '^GET:/pgatour/leaderboard$'
+  '^GET:/pgatour/players$'
+  '^GET:/pgatour/schedule$'
+  '^GET:/pgatour/schedule/seasons$'
+  '^GET:/pgatour/stats$'
+  '^GET:/pgatour/stats/[^/]+$'
+  '^GET:/pgatour/stats/[^/]+/options$'
+  '^GET:/pgatour/tournament-links$'
+  '^GET:/pgatour/tournaments/[^/]+/[^/]+/[^/]+/broadcast$'
+  '^GET:/pgatour/tournaments/[^/]+/[^/]+/[^/]+/course-stats$'
+  '^GET:/pgatour/tournaments/[^/]+/[^/]+/[^/]+/field$'
+  '^GET:/pgatour/tournaments/[^/]+/[^/]+/[^/]+/overview$'
+  '^GET:/pgatour/tournaments/[^/]+/[^/]+/[^/]+/past-results$'
+  '^GET:/pgatour/tournaments/[^/]+/[^/]+/[^/]+/tee-times$'
+  '^GET:/pgatour/tournaments/[^/]+/[^/]+/[^/]+/weather$'
   '^GET:/phillyinquirer/article$'
   '^GET:/phillyinquirer/author$'
   '^GET:/phillyinquirer/headlines$'
@@ -6800,6 +7783,21 @@ route_method_regexes=(
   '^GET:/sephora/search$'
   '^GET:/sephora/stores$'
   '^GET:/sephora/suggest$'
+  '^GET:/serebii/pokemongo/communityday/[^/]+$'
+  '^GET:/serebii/pokemongo/event-categories$'
+  '^GET:/serebii/pokemongo/event-only-moves$'
+  '^GET:/serebii/pokemongo/event-only-research$'
+  '^GET:/serebii/pokemongo/events$'
+  '^GET:/serebii/pokemongo/events/[^/]+$'
+  '^GET:/serebii/pokemongo/hatchday/[^/]+$'
+  '^GET:/serebii/pokemongo/incenseday/[^/]+$'
+  '^GET:/serebii/pokemongo/limitedresearchday/[^/]+$'
+  '^GET:/serebii/pokemongo/maxbattleday/[^/]+$'
+  '^GET:/serebii/pokemongo/raidday/[^/]+$'
+  '^GET:/serebii/pokemongo/reallifeevents/[^/]+$'
+  '^GET:/serebii/pokemongo/spotlight-hours$'
+  '^GET:/serebii/pokemongo/ticketevents/[^/]+$'
+  '^GET:/serebii/pokemongo/unown-events$'
   '^GET:/sevennewsau/article$'
   '^GET:/sevennewsau/author$'
   '^GET:/sevennewsau/headlines$'
@@ -6938,6 +7936,7 @@ route_method_regexes=(
   '^GET:/sofascore/event-lineups$'
   '^GET:/sofascore/event-managers$'
   '^GET:/sofascore/event-odds$'
+  '^GET:/sofascore/event-player-actions$'
   '^GET:/sofascore/event-player-heatmap$'
   '^GET:/sofascore/event-player-statistics$'
   '^GET:/sofascore/event-point-by-point$'
@@ -6945,6 +7944,7 @@ route_method_regexes=(
   '^GET:/sofascore/event-shotmap$'
   '^GET:/sofascore/event-statistics$'
   '^GET:/sofascore/event-team-heatmap$'
+  '^GET:/sofascore/event-team-shotmap$'
   '^GET:/sofascore/event-team-streaks$'
   '^GET:/sofascore/event-tennis-power$'
   '^GET:/sofascore/event-tv-channels$'
@@ -7052,6 +8052,23 @@ route_method_regexes=(
   '^GET:/sparkfun/category$'
   '^GET:/sparkfun/product$'
   '^GET:/sparkfun/search$'
+  '^GET:/speedrun/catalogs/[^/]+$'
+  '^GET:/speedrun/categories/[^/]+$'
+  '^GET:/speedrun/categories/[^/]+/records$'
+  '^GET:/speedrun/categories/[^/]+/variables$'
+  '^GET:/speedrun/games$'
+  '^GET:/speedrun/games/[^/]+$'
+  '^GET:/speedrun/games/[^/]+/categories$'
+  '^GET:/speedrun/games/[^/]+/levels$'
+  '^GET:/speedrun/games/[^/]+/records$'
+  '^GET:/speedrun/games/[^/]+/variables$'
+  '^GET:/speedrun/leaderboards/[^/]+/category/[^/]+$'
+  '^GET:/speedrun/leaderboards/[^/]+/level/[^/]+/[^/]+$'
+  '^GET:/speedrun/levels/[^/]+$'
+  '^GET:/speedrun/levels/[^/]+/categories$'
+  '^GET:/speedrun/levels/[^/]+/records$'
+  '^GET:/speedrun/levels/[^/]+/variables$'
+  '^GET:/speedrun/options$'
   '^GET:/sportingnews/article$'
   '^GET:/sportingnews/author$'
   '^GET:/sportingnews/headlines$'
@@ -7725,6 +8742,12 @@ route_method_regexes=(
   '^GET:/web/capabilities$'
   '^GET:/web/crawl/[^/]+$'
   '^GET:/web/crawl/[^/]+/results$'
+  '^GET:/webtoon/genre$'
+  '^GET:/webtoon/genres$'
+  '^GET:/webtoon/originals$'
+  '^GET:/webtoon/rankings$'
+  '^GET:/webtoon/search$'
+  '^GET:/webtoon/series$'
   '^GET:/wendys/categories$'
   '^GET:/wendys/directory$'
   '^GET:/wendys/item$'
@@ -7768,6 +8791,16 @@ route_method_regexes=(
   '^GET:/wolt/search/filters$'
   '^GET:/wsj/article$'
   '^GET:/wsj/author$'
+  '^GET:/wta/countries$'
+  '^GET:/wta/match-states$'
+  '^GET:/wta/rankings/[^/]+$'
+  '^GET:/wta/tournament-seasons$'
+  '^GET:/wta/tournaments$'
+  '^GET:/wta/tournaments/[^/]+/[^/]+$'
+  '^GET:/wta/tournaments/[^/]+/[^/]+/draws$'
+  '^GET:/wta/tournaments/[^/]+/[^/]+/matches$'
+  '^GET:/wta/tournaments/[^/]+/[^/]+/order-of-play$'
+  '^GET:/wta/tournaments/[^/]+/[^/]+/players$'
   '^GET:/x/post/[^/]+$'
   '^GET:/x/profile/[^/]+$'
   '^GET:/x/profile/[^/]+/posts$'
@@ -7847,30 +8880,71 @@ route_method_regexes=(
   '^GET:/yahoo-search/suggest$'
   '^GET:/yahoo-search/videos$'
   '^GET:/yahoo-shopping/article$'
+  '^GET:/yahoo-shopping/author$'
+  '^GET:/yahoo-shopping/categories$'
   '^GET:/yahoo-shopping/category$'
+  '^GET:/yahoo-shopping/experts$'
   '^GET:/yahoo-shopping/home$'
   '^GET:/yahoo-shopping/shopping-list$'
   '^GET:/yahoo-shopping/shopping-lists$'
+  '^GET:/yahoo-shopping/sitemap$'
+  '^GET:/yahoo-shopping/sitemaps$'
   '^GET:/yahoo-shopping/store$'
   '^GET:/yahoo-shopping/stores$'
+  '^GET:/yahoo-shopping/suggest$'
+  '^GET:/yahoo-sports/college-rankings$'
+  '^GET:/yahoo-sports/draft$'
+  '^GET:/yahoo-sports/dropdown-catalog$'
   '^GET:/yahoo-sports/game$'
   '^GET:/yahoo-sports/golf-leaderboard$'
+  '^GET:/yahoo-sports/golf-player$'
+  '^GET:/yahoo-sports/golf-player-news$'
+  '^GET:/yahoo-sports/golf-players$'
   '^GET:/yahoo-sports/golf-schedule$'
+  '^GET:/yahoo-sports/home$'
+  '^GET:/yahoo-sports/injury-report$'
+  '^GET:/yahoo-sports/league-schedule$'
+  '^GET:/yahoo-sports/leagues$'
   '^GET:/yahoo-sports/mma-fight-card$'
   '^GET:/yahoo-sports/mma-schedule$'
+  '^GET:/yahoo-sports/more-news$'
   '^GET:/yahoo-sports/motorsports-race$'
   '^GET:/yahoo-sports/motorsports-schedule$'
+  '^GET:/yahoo-sports/navigation$'
+  '^GET:/yahoo-sports/network-catalog$'
   '^GET:/yahoo-sports/news$'
+  '^GET:/yahoo-sports/newsletter-archive$'
+  '^GET:/yahoo-sports/newsletters$'
+  '^GET:/yahoo-sports/odds-featured$'
+  '^GET:/yahoo-sports/odds-game$'
+  '^GET:/yahoo-sports/odds-games$'
+  '^GET:/yahoo-sports/odds-trending$'
   '^GET:/yahoo-sports/olympics-medals$'
   '^GET:/yahoo-sports/player$'
+  '^GET:/yahoo-sports/player-search$'
+  '^GET:/yahoo-sports/playoff-bracket$'
+  '^GET:/yahoo-sports/playoff-bracket-catalog$'
+  '^GET:/yahoo-sports/rss-catalog$'
+  '^GET:/yahoo-sports/rss-feed$'
+  '^GET:/yahoo-sports/schedule-catalog$'
   '^GET:/yahoo-sports/scoreboard$'
+  '^GET:/yahoo-sports/section-stream$'
+  '^GET:/yahoo-sports/soccer-scoreboard$'
+  '^GET:/yahoo-sports/sportsbook-catalog$'
   '^GET:/yahoo-sports/standings$'
+  '^GET:/yahoo-sports/stats$'
+  '^GET:/yahoo-sports/stats-catalog$'
+  '^GET:/yahoo-sports/stats-discovery$'
   '^GET:/yahoo-sports/team$'
   '^GET:/yahoo-sports/team-roster$'
   '^GET:/yahoo-sports/team-schedule$'
   '^GET:/yahoo-sports/tennis-rankings$'
   '^GET:/yahoo-sports/tennis-schedule$'
   '^GET:/yahoo-sports/tennis-scoreboard$'
+  '^GET:/yahoo-sports/topic-news$'
+  '^GET:/yahoo-sports/video-headlines$'
+  '^GET:/yahoo-sports/video-list-catalog$'
+  '^GET:/yahoo-sports/watch-schedule$'
   '^GET:/yahoo-tech/article$'
   '^GET:/yahoo-tech/category$'
   '^GET:/yahoo-tech/home$'
@@ -7968,6 +9042,13 @@ route_method_regexes=(
   '^POST:/hotels/reviews$'
   '^POST:/hotels/reviews/archive$'
   '^POST:/hotels/search$'
+  '^POST:/modrinth/v3/search$'
+  '^POST:/modrinth/version_file/[^/]+/update$'
+  '^POST:/modrinth/version_file/project$'
+  '^POST:/modrinth/version_files$'
+  '^POST:/modrinth/version_files/update$'
+  '^POST:/modrinth/version_files/update_individual$'
+  '^POST:/modrinth/version_files/update_many$'
   '^POST:/polymarket/tokens/midpoints$'
   '^POST:/polymarket/tokens/orderbooks$'
   '^POST:/polymarket/tokens/prices$'

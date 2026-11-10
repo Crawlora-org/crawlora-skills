@@ -186,6 +186,7 @@ case "$path" in
   /sofascore/event-lineups) route_allowed=true ;;
   /sofascore/event-managers) route_allowed=true ;;
   /sofascore/event-odds) route_allowed=true ;;
+  /sofascore/event-player-actions) route_allowed=true ;;
   /sofascore/event-player-heatmap) route_allowed=true ;;
   /sofascore/event-player-statistics) route_allowed=true ;;
   /sofascore/event-point-by-point) route_allowed=true ;;
@@ -193,6 +194,7 @@ case "$path" in
   /sofascore/event-shotmap) route_allowed=true ;;
   /sofascore/event-statistics) route_allowed=true ;;
   /sofascore/event-team-heatmap) route_allowed=true ;;
+  /sofascore/event-team-shotmap) route_allowed=true ;;
   /sofascore/event-team-streaks) route_allowed=true ;;
   /sofascore/event-tennis-power) route_allowed=true ;;
   /sofascore/event-tv-channels) route_allowed=true ;;

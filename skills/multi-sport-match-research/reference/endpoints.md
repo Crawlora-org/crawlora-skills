@@ -49,7 +49,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `flashscore_match_lineups`
 
 - **HTTP:** `GET /flashscore/match-lineups`
-- **What:** Flashscore match lineups and formations. Returns the public starting-lineup and formation feed as the provider's raw delimited text. Matches without published lineups return not found.
+- **What:** Flashscore match lineups and formations. Returns each side's confirmed formation, starters and substitutes with positions, in-match ratings and incidents such as cards and substitutions, plus coaches and the substitutions made. Lineups usually appear shortly before kickoff for covered matches; a match with no lineup players on either side returns not found. Use flashscore-match-predicted-lineups for expected lineups before they are confirmed.
 - **Params:** `id` (string, **required**) — Eight-character Flashscore match id
 
 ### `flashscore_match_news`

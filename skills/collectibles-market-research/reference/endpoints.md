@@ -6,7 +6,7 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**83 endpoints across 10 platform group(s).**
+**91 endpoints across 10 platform group(s).**
 
 ## Alt (9)
 
@@ -55,8 +55,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `alt_sold_listings`
 
 - **HTTP:** `GET /alt/sold-listings`
-- **What:** Search Alt's completed sales archive. Searches Alt's global archive of completed card sales, aggregated across every source auction house its search carries -- the "market data" side of Alt's card-investment-marketplace positioning. This is a separate index from alt-search/alt-auctions, scoped to a rolling recent time window, not a filtered view of live listings. Pass auction_house=Alt to see only Alt's own completed sales. Each of Alt's own sales carries listing_id and listing_type -- pass both to alt-listing to get that item's certificate number -- and its url is the alt.xyz item page; a sale aggregated from another auction house carries that source site's own url instead. See alt-categories for the accepted category/auction_house/grading_company values.
-- **Params:** `auction_house` (string, optional) — Comma-separated source auction house filter. Pass Alt to see only Alt's own completed auctions.; `category` (string, optional) — Comma-separated card category filter; `grading_company` (string, optional) — Comma-separated grading company filter; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 24, max 100; `q` (string, optional) — Free-text search across item name, subject, brand, and variety. Omit or pass * to browse the most recent sales.
+- **What:** Search Alt's completed sales archive. Searches Alt's global archive of completed card sales, aggregated across every source auction house its search carries -- the "market data" side of Alt's card-investment-marketplace positioning. This is a separate index from alt-search/alt-auctions, scoped to a rolling 90-day window, not a filtered view of live listings. Filter by sold date (sold_from, sold_to), by when Alt added the sale to its index (added_from, added_to), by listing type, grade, subject, brand, card number, year, price, population and the serial, print-run and rookie flags; order with sort (sold date, added time, price, population or year, either direction); up to 250 rows per page. To read only new sales, pass the largest added_at you already hold as added_from with sort=added_asc and de-duplicate on id. Pass auction_house=Alt to see only Alt's own completed sales. Each of Alt's own sales carries listing_id and listing_type -- pass both to alt-listing to get that item's certificate number -- and its url is the alt.xyz item page; a sale aggregated from another auction house carries that source site's own url instead. See alt-categories for the accepted category/auction_house/grading_company values.
+- **Params:** `added_from` (string, optional) — Only sales Alt added to its index at or after this time, RFC 3339 or Unix seconds. Pass the largest added_at you already hold and de-duplicate on id to read only what is new.; `added_to` (string, optional) — Only sales Alt added to its index at or before this time, RFC 3339 or Unix seconds; `auction_house` (string, optional) — Comma-separated source auction house filter. Pass Alt to see only Alt's own completed auctions.; `brand` (string, optional) — Exact match on the card's brand (set name), case-insensitive; `card_number` (string, optional) — Exact match on the card number within its set, case-insensitive; `category` (string, optional) — Comma-separated card category filter; `grade` (string, optional) — Comma-separated grade filter. Combine with grading_company to pin a grade such as PSA 10.; `grading_company` (string, optional) — Comma-separated grading company filter; `has_print_run` (boolean, optional) — Cards with a stated print run (true) or without one (false); `has_serial` (boolean, optional) — Serial-numbered cards (true) or cards without a serial number (false); `listing_type` (string, optional) — Comma-separated listing type filter. AUCTION and FIXED_PRICE are Alt's own sales; EXTERNAL_AUCTION and EXTERNAL_FIXED_PRICE are aggregated from other houses.; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 24, max 250; `pop_max` (integer, optional) — Maximum grading population, inclusive, for example 10 for low-pop cards. Cards with an unknown population are never matched. 0 or omitted means no maximum.; `pop_min` (integer, optional) — Minimum grading population, inclusive. Cards with an unknown population are never matched by a pop filter.; `price_max` (number, optional) — Maximum sale price in US dollars, inclusive; `price_min` (number, optional) — Minimum sale price in US dollars, inclusive; `q` (string, optional) — Free-text search across item name, subject, brand, and variety. Omit or pass * to browse the most recent sales.; `rookie_year_card` (boolean, optional) — Rookie-year cards (true) or other cards (false); `sold_from` (string, optional) — Only sales on or after this UTC date, YYYY-MM-DD. The index is a rolling 90-day window, so earlier dates return nothing.; `sold_to` (string, optional) — Only sales on or before this UTC date, YYYY-MM-DD; `sort` (string, optional) — Result order. Default recommended is Alt's relevance order. An explicit sort replaces text relevance. year_asc and pop_asc list unknown values (0) first.; `subject` (string, optional) — Exact match on the card's subject (player or character name), case-insensitive; `year_max` (integer, optional) — Maximum card year, inclusive. Cards with an unknown year are never matched by a year filter.; `year_min` (integer, optional) — Minimum card year, inclusive. Cards with an unknown year are never matched by a year filter.
 
 ### `alt_top_movers`
 
@@ -84,7 +84,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search COMC card listings. Searches or browses COMC's (comc.com) live consignment marketplace for graded and ungraded trading cards. Each result row is a distinct card+grade combination (COMC's own category/search grid aggregates every seller's copy under one row); chain a row's handle into the listing endpoint for the per-seller breakdown. At least one of category or query is typically useful, but both are optional -- omitting both searches all categories.
 - **Params:** `attributes` (string, optional) — Optional, comma-separated. Allowed values: AUTO (Autographed), HOF (Hall of Fame), MEM (Memorabilia), PRC (Pre-Rookie Card), RC (Rookie Card), RR (Rookie Related), RY (Rookie Year), SN (Serial Numbered).; `category` (string, optional) — Optional. One of comc_categories' slug values. Omit to search all categories.; `condition` (string, optional) — Optional. Allowed values: aUngraded (Ungraded), aGraded (Graded), aAftermarketAuto (Aftermarket Auto), aAfterAutoGraded (Aftermarket Auto Graded).; `page` (integer, optional) — 1-based page, default 1.; `page_size` (integer, optional) — Optional. Allowed values: 6, 8, 10, 12, 14, 15, 16, 18, 20, 24, 30, 40, 50, 64, 100. Omit to use COMC's own default.; `query` (string, optional) — Optional free-text search query.; `sort` (string, optional) — Optional. Allowed values: r (Recently Added, default), c (Card #), o (Oldest), n (Newest), b (Highest SRP), h (Highest Price), l (Lowest Price), d (Biggest Discount), p (Highest Percent Off), q (Print Run), s (Least in Stock), m (Most in Stock), e (Ending Soonest).
 
-## Fanatics Collect (7)
+## Fanatics Collect (15)
 
 ### `fanaticscollect_auctions`
 
@@ -98,17 +98,65 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List Fanatics Collect search filter values. Returns every accepted value for GetListing's marketplace param -- WEEKLY, PREMIER, FIXED -- and for Search's marketplace, category_parent, sub_category, grading_service, status, and sort params. Discovery endpoint for those closed enums.
 - **Params:** _none_
 
+### `fanaticscollect_instant_pack_release`
+
+- **HTTP:** `GET /fanaticscollect/instant-packs/release`
+- **What:** Fanatics Collect Topps Instant Pack release details. Returns a release's title, launch time, current status, checklist link and published odds by checklist ID. The price in cents appears when a price is published. Unknown checklists return 404. Discover the checklist ID with fanaticscollect-instant-pack-releases.
+- **Params:** `checklist_id` (string, **required**) — Checklist UUID from Instant Pack releases
+
+### `fanaticscollect_instant_pack_releases`
+
+- **HTTP:** `GET /fanaticscollect/instant-packs/releases`
+- **What:** Fanatics Collect Topps Instant Packs releases. Lists the Instant Packs releases currently published by Fanatics Collect with the release ID, checklist ID, launch time and listing ID when available. Pass a checklist ID to fanaticscollect-instant-pack-release for the product details, published checklist and pull odds.
+- **Params:** _none_
+
 ### `fanaticscollect_instant_rips_categories`
 
 - **HTTP:** `GET /fanaticscollect/instant-rips/categories`
 - **What:** Get Fanatics Collect Instant Rips categories. Returns every category Fanatics Collect's "Instant Rips" mystery-pack product (fanaticscollect.com/instant-rips) currently advertises on its homepage: id, name, and price range. Instant Rips is a "buy a randomized pack, a real graded card is revealed" product; each category's id is a real listing id, fetchable through GetListing with type=FIXED for that entry point's own full detail. This does not cover the individual pack-tier tiles within a category or the homepage's "Recently ripped" live feed.
 - **Params:** _none_
 
+### `fanaticscollect_instant_rips_pack_categories`
+
+- **HTTP:** `GET /fanaticscollect/instant-rips/pack-categories`
+- **What:** Fanatics Collect Instant Rips pack categories. List the categories from both Instant Rips catalog rails, including Limited Release when available. The category ID selects a pack catalog. The separate default listing ID identifies the marketplace listing linked from the category tile.
+- **Params:** _none_
+
+### `fanaticscollect_instant_rips_pack_checklist`
+
+- **HTTP:** `GET /fanaticscollect/instant-rips/pack-checklist`
+- **What:** Fanatics Collect Instant Rips card checklist. Fetch up to 15 public card checklist rows for a Fanatics Collect pack checklist ID from fanaticscollect_instant_rips_packs. Each row can include card title, tier, year, brand, set, grade and population. Pass next_cursor with the same checklist_id and optional tier for the next page. An uncovered checklist can return an empty page.
+- **Params:** `checklist_id` (string, **required**) — Checklist UUID from the Instant Rips pack catalog; `cursor` (string, optional) — Opaque next_cursor from the previous page; `tier` (string, optional) — Optional checklist tier
+
+### `fanaticscollect_instant_rips_packs`
+
+- **HTTP:** `GET /fanaticscollect/instant-rips/packs`
+- **What:** Fanatics Collect Instant Rips packs by category. Fetch up to 15 public Instant Rips packs for a category UUID from fanaticscollect_instant_rips_pack_categories. Each row can include the pack checklist ID, listing ID, price, status, and published hit-rate tiers. Pass a checklist_id to fanaticscollect_recently_ripped to narrow reveal history. An empty list is valid.
+- **Params:** `category_id` (string, **required**) — Pack category UUID from pack category discovery
+
 ### `fanaticscollect_listing`
 
 - **HTTP:** `GET /fanaticscollect/listing/{id}`
 - **What:** Get Fanatics Collect listing detail. Returns full detail for a single Fanatics Collect listing: a weekly-auction lot, a premier-auction lot, or a fixed-price "buy now" item (including an Instant Rips pack). Fields include title, current bid/starting/asking price, bid count, auction window and status, images, description, completed sale history, and -- when the card is stored in Fanatics' vault -- grading/authentication metadata including a direct PSA cert-verification link. Costs 1 credit per successful call.
 - **Params:** `id` (string, **required**) — Listing UUID; `type` (string, optional) — Listing type. Default: WEEKLY
+
+### `fanaticscollect_newsroom`
+
+- **HTTP:** `GET /fanaticscollect/newsroom`
+- **What:** Fanatics Collect newsroom article metadata. List public Fanatics Collect newsroom posts with title, publication time, category, link and images when available. Page starts at 1. Use fanaticscollect_newsroom_filters to discover category and tag IDs and pass multiple IDs separated by hyphens. Sort newest first by default or choose oldest. An empty page is valid.
+- **Params:** `category` (string, optional) — Category ID or hyphen-separated IDs; `page` (integer, optional) — 1-based page number; `sort_by` (string, optional) — Publication sort order; `tags` (string, optional) — Tag ID or hyphen-separated IDs
+
+### `fanaticscollect_newsroom_filters`
+
+- **HTTP:** `GET /fanaticscollect/newsroom/filters`
+- **What:** Fanatics Collect newsroom filter discovery. Discover the newsroom category and tag IDs, labels and supported publication sort orders. Pass these IDs to fanaticscollect_newsroom to filter its paginated article metadata. This operation takes no parameters and reads the current archive filter catalog.
+- **Params:** _none_
+
+### `fanaticscollect_recently_ripped`
+
+- **HTTP:** `GET /fanaticscollect/instant-rips/recently-ripped`
+- **What:** Fanatics Collect Recently Ripped cards. Fetch up to 15 recent public Instant Rips card reveals with card and pack titles, item type, time and images. Omit checklist_id for the general feed or pass a pack checklist UUID from fanaticscollect_instant_rips_packs to narrow the feed. An uncovered pack can return an empty list.
+- **Params:** `checklist_id` (string, optional) — Pack checklist UUID from the pack catalog
 
 ### `fanaticscollect_search`
 

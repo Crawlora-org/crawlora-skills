@@ -6,7 +6,7 @@ The complete Crawlora public-web-data API surface, grouped by platform. Use this
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**3952 endpoints across 493 platform group(s).**
+**4493 endpoints across 529 platform group(s).**
 
 ## 1stDibs (4)
 
@@ -680,8 +680,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `alt_sold_listings`
 
 - **HTTP:** `GET /alt/sold-listings`
-- **What:** Search Alt's completed sales archive. Searches Alt's global archive of completed card sales, aggregated across every source auction house its search carries -- the "market data" side of Alt's card-investment-marketplace positioning. This is a separate index from alt-search/alt-auctions, scoped to a rolling recent time window, not a filtered view of live listings. Pass auction_house=Alt to see only Alt's own completed sales. Each of Alt's own sales carries listing_id and listing_type -- pass both to alt-listing to get that item's certificate number -- and its url is the alt.xyz item page; a sale aggregated from another auction house carries that source site's own url instead. See alt-categories for the accepted category/auction_house/grading_company values.
-- **Params:** `auction_house` (string, optional) — Comma-separated source auction house filter. Pass Alt to see only Alt's own completed auctions.; `category` (string, optional) — Comma-separated card category filter; `grading_company` (string, optional) — Comma-separated grading company filter; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 24, max 100; `q` (string, optional) — Free-text search across item name, subject, brand, and variety. Omit or pass * to browse the most recent sales.
+- **What:** Search Alt's completed sales archive. Searches Alt's global archive of completed card sales, aggregated across every source auction house its search carries -- the "market data" side of Alt's card-investment-marketplace positioning. This is a separate index from alt-search/alt-auctions, scoped to a rolling 90-day window, not a filtered view of live listings. Filter by sold date (sold_from, sold_to), by when Alt added the sale to its index (added_from, added_to), by listing type, grade, subject, brand, card number, year, price, population and the serial, print-run and rookie flags; order with sort (sold date, added time, price, population or year, either direction); up to 250 rows per page. To read only new sales, pass the largest added_at you already hold as added_from with sort=added_asc and de-duplicate on id. Pass auction_house=Alt to see only Alt's own completed sales. Each of Alt's own sales carries listing_id and listing_type -- pass both to alt-listing to get that item's certificate number -- and its url is the alt.xyz item page; a sale aggregated from another auction house carries that source site's own url instead. See alt-categories for the accepted category/auction_house/grading_company values.
+- **Params:** `added_from` (string, optional) — Only sales Alt added to its index at or after this time, RFC 3339 or Unix seconds. Pass the largest added_at you already hold and de-duplicate on id to read only what is new.; `added_to` (string, optional) — Only sales Alt added to its index at or before this time, RFC 3339 or Unix seconds; `auction_house` (string, optional) — Comma-separated source auction house filter. Pass Alt to see only Alt's own completed auctions.; `brand` (string, optional) — Exact match on the card's brand (set name), case-insensitive; `card_number` (string, optional) — Exact match on the card number within its set, case-insensitive; `category` (string, optional) — Comma-separated card category filter; `grade` (string, optional) — Comma-separated grade filter. Combine with grading_company to pin a grade such as PSA 10.; `grading_company` (string, optional) — Comma-separated grading company filter; `has_print_run` (boolean, optional) — Cards with a stated print run (true) or without one (false); `has_serial` (boolean, optional) — Serial-numbered cards (true) or cards without a serial number (false); `listing_type` (string, optional) — Comma-separated listing type filter. AUCTION and FIXED_PRICE are Alt's own sales; EXTERNAL_AUCTION and EXTERNAL_FIXED_PRICE are aggregated from other houses.; `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 24, max 250; `pop_max` (integer, optional) — Maximum grading population, inclusive, for example 10 for low-pop cards. Cards with an unknown population are never matched. 0 or omitted means no maximum.; `pop_min` (integer, optional) — Minimum grading population, inclusive. Cards with an unknown population are never matched by a pop filter.; `price_max` (number, optional) — Maximum sale price in US dollars, inclusive; `price_min` (number, optional) — Minimum sale price in US dollars, inclusive; `q` (string, optional) — Free-text search across item name, subject, brand, and variety. Omit or pass * to browse the most recent sales.; `rookie_year_card` (boolean, optional) — Rookie-year cards (true) or other cards (false); `sold_from` (string, optional) — Only sales on or after this UTC date, YYYY-MM-DD. The index is a rolling 90-day window, so earlier dates return nothing.; `sold_to` (string, optional) — Only sales on or before this UTC date, YYYY-MM-DD; `sort` (string, optional) — Result order. Default recommended is Alt's relevance order. An explicit sort replaces text relevance. year_asc and pop_asc list unknown values (0) first.; `subject` (string, optional) — Exact match on the card's subject (player or character name), case-insensitive; `year_max` (integer, optional) — Maximum card year, inclusive. Cards with an unknown year are never matched by a year filter.; `year_min` (integer, optional) — Minimum card year, inclusive. Cards with an unknown year are never matched by a year filter.
 
 ### `alt_top_movers`
 
@@ -1487,6 +1487,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List Balenciaga stores. Returns Balenciaga's public physical-store directory for one country, including addresses, coordinates, phone numbers, opening hours, and store-service flags. Use balenciaga-store-countries to discover the complete accepted country enum.
 - **Params:** `country` (string, **required**) — Two-letter country code
 
+## Bandcamp (6)
+
+### `bandcamp_artist`
+
+- **HTTP:** `GET /bandcamp/artist`
+- **What:** Get a Bandcamp artist or label page. Returns a Bandcamp artist or label page: name, location, bio, image and the discography grid of albums and tracks with their URLs. Pass an entry's url to bandcamp_release for full detail.
+- **Params:** `artist` (string, **required**) — Artist subdomain or https://{subdomain}.bandcamp.com URL
+
+### `bandcamp_discover`
+
+- **HTTP:** `GET /bandcamp/discover`
+- **What:** Browse Bandcamp Discover. Pages through Bandcamp Discover albums. Filter by one to five tags (genres from bandcamp_filters, subgenres from bandcamp_related_tags), physical format (vinyl, CD, cassette), sort (best-selling, new arrivals, random), a time window, and a GeoNames place id. Each album carries artist, location, price, release date, track count, duration, cover art and any physical formats. Page with the returned next_cursor.
+- **Params:** `cursor` (string, optional) — next_cursor from the previous page; `format` (string, optional) — Physical format; `geoname_id` (integer, optional) — GeoNames place id; `size` (integer, optional) — Albums per page; `sort` (string, optional) — Sort order; `tags` (string, optional) — Comma-separated tag slugs, up to 5, all of which an album must carry; `time_facet` (integer, optional) — Time-window id from bandcamp_filters
+
+### `bandcamp_filters`
+
+- **HTTP:** `GET /bandcamp/filters`
+- **What:** List Bandcamp Discover filter values. Returns the complete value space of the bandcamp_discover filters: the 27 top-level genre tags, physical formats, sort orders, time-window ids and the size range.
+- **Params:** _none_
+
+### `bandcamp_related_tags`
+
+- **HTTP:** `GET /bandcamp/related-tags`
+- **What:** List tags related to a Bandcamp tag. Returns the tags Bandcamp relates to a tag, strongest first, including location tags. Use it to walk from a genre in bandcamp_filters to its subgenres, then pass them to bandcamp_discover.
+- **Params:** `size` (integer, optional) — Related tags to return; `tag` (string, **required**) — Tag slug
+
+### `bandcamp_release`
+
+- **HTTP:** `GET /bandcamp/release`
+- **What:** Get one Bandcamp album or track. Returns one Bandcamp album or track page: title, artist, label, release date, tags, about text, credits, digital price, tracklist with durations, physical packages with prices and, for a track, its parent album and ISRC. Audio stream and download URLs are never returned.
+- **Params:** `url` (string, **required**) — Album or track URL on an artist subdomain
+
+### `bandcamp_search`
+
+- **HTTP:** `GET /bandcamp/search`
+- **What:** Search Bandcamp. Runs Bandcamp's site search and returns artists and labels, albums and tracks in Bandcamp's relevance order, each with its id, name, url and artwork (albums and tracks also carry the artist, tracks the album), plus any tags and genre that match the text. Bandcamp returns at most 50 hits (25 for artists) and does not page, so may_have_more reports when the cap was reached; narrow the text or pick a type to see more. Fan accounts are never returned. Pass a result's url to bandcamp_release or bandcamp_artist, and a tag's slug to bandcamp_discover.
+- **Params:** `q` (string, **required**) — Text to search, 1 to 100 characters; `type` (string, optional) — Kind of hit to return: all (default), artists (artists and labels), albums or tracks
+
 ## Barrons (4)
 
 ### `barrons_article`
@@ -2223,6 +2261,92 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** BO3.gg Valorant player leaderboard. Returns BO3.gg's Valorant player leaderboard over a day range (default: the last six months): players ranked by `sort` (`acs`, `kills`, `deaths`, `damage`, `assists`, `first_kills`, `clutches`, `first_duels`, `games`, `rounds`) in `order` (`desc`, `asc`) with paging. Each player has nickname, slug, games, rounds and every per-round average as a `stats` map; players below the API's minimum-games threshold for the window are excluded (`min_games_count`).
 - **Params:** `from` (string, optional) — First day, YYYY-MM-DD (UTC); defaults to six months before to; `limit` (integer, optional) — Page size, 1 to 100; defaults to 20; `offset` (integer, optional) — Zero-based offset; defaults to 0; `order` (string, optional) — Direction; one of desc, asc; defaults to desc; `sort` (string, optional) — Stat to rank by; one of acs, kills, deaths, damage, assists, first_kills, clutches, first_duels, games, rounds; defaults to acs; `to` (string, optional) — Last day, YYYY-MM-DD (UTC); defaults to today
 
+## BoardGameGeek (14)
+
+### `boardgamegeek_cardsets`
+
+- **HTTP:** `GET /boardgamegeek/cardsets/{id}`
+- **What:** List a BoardGameGeek game's card sets. Returns the card sets recorded for a game, including the base or expansion flag, notes, prior card-set family links, and each set's card types with physical width/height, quantity and quantity notes. Useful for card-size or sleeving questions. A game with no card sets returns a valid empty list.
+- **Params:** `id` (string, **required**) — BoardGameGeek game id, positive integer; Catan is 13
+
+### `boardgamegeek_entity`
+
+- **HTTP:** `GET /boardgamegeek/entity/{type}/{id}`
+- **What:** Get a BoardGameGeek family, person, company, property or version. Returns one non-game entity by canonical object type and numeric id: name, alternate names, description and wiki text, website, images, and the typed link map for that entity (for example a designer's credits, a publisher's games, a family's members, a category's games, or a version's parent game and publishers). Community counters and the item's field schema are merged in. Slug aliases are not accepted because they return item records without description content.
+- **Params:** `id` (string, **required**) — BoardGameGeek entity id, positive integer; the Catan family is 3; `type` (string, **required**) — Entity object type
+
+### `boardgamegeek_game`
+
+- **HTTP:** `GET /boardgamegeek/game/{id}`
+- **What:** Get a BoardGameGeek game's detail, ratings and links. Returns one BoardGameGeek game by its numeric item id: primary and alternate names, player counts, play time, minimum age, description and wiki text, official website, images, and the typed link map (designers, artists, publishers, categories, mechanics, families, expansions, versions, honors). Community ratings, rank lines, poll answers, and ownership/play counters are merged in, and the item's field schema is included. Uses BoardGameGeek's anonymous website JSON API; no token or login is involved.
+- **Params:** `id` (string, **required**) — BoardGameGeek game (thing) id, positive integer; Catan is 13
+
+### `boardgamegeek_geeklist`
+
+- **HTTP:** `GET /boardgamegeek/geeklist/{id}`
+- **What:** Get a BoardGameGeek geeklist's detail. Returns one community geeklist's metadata and body: title, creator id, post/edit dates, plain-text body, rendered bodyXml, privacy/comment/trade flags, sort direction and domain, and the source's discoverability links (items, comments, thumbs, tips). Use boardgamegeek_geeklist_items to page its entries.
+- **Params:** `id` (string, **required**) — BoardGameGeek geeklist id, positive integer
+
+### `boardgamegeek_geeklist_items`
+
+- **HTTP:** `GET /boardgamegeek/geeklist/{id}/items`
+- **What:** List a BoardGameGeek geeklist's entries. Returns one page of a geeklist's entries: each entry's id, linked item summary (id, name, href, descriptors, images), author id, post/edit dates, commentary body, optional custom image, rating snapshot and links. The source pages entries 25 at a time; a page past the end is a valid empty page.
+- **Params:** `id` (string, **required**) — BoardGameGeek geeklist id, positive integer; `page` (integer, optional) — Entry page number, 1-1000; the source pages entries 25 at a time
+
+### `boardgamegeek_geeklists`
+
+- **HTTP:** `GET /boardgamegeek/geeklists`
+- **What:** List geeklists that link a BoardGameGeek object. Returns one page of the community geeklists that link an object, filtered by category (all, trade, general) and sorted by hot or recent. Each row carries the list title, author, item count, recommendation count and dates. The response includes the category filters the source offers and the list totals. Use boardgamegeek_geeklist and boardgamegeek_geeklist_items to read a list's content.
+- **Params:** `category` (string, optional) — Category filter: all, trade or general. Defaults to general.; `objectid` (integer, **required**) — Object identifier, positive integer; Catan is 13; `objecttype` (string, optional) — Object type: thing, family, person, company, property or version. Defaults to thing.; `pageid` (integer, optional) — Page number, 1-1000; `showcount` (integer, optional) — Page size, 1-50; `sort` (string, optional) — Sort: hot or recent. Defaults to hot.
+
+### `boardgamegeek_hotness`
+
+- **HTTP:** `GET /boardgamegeek/hotness`
+- **What:** Get BoardGameGeek's current hotness list. Returns the site's ranked hotness list for one object type: games (thing), people or companies, with the object identifier, name, rank position, rank delta since the previous day, year published (games only), short description (games only) and images. The list length is requested with showcount; the source caps it at 50.
+- **Params:** `objecttype` (string, optional) — Object type; one of thing (games), person or company; `showcount` (integer, optional) — Requested list length, 1-50; the source caps the list at 50
+
+### `boardgamegeek_links`
+
+- **HTTP:** `GET /boardgamegeek/links`
+- **What:** List a BoardGameGeek object's typed links. Returns one page of a typed link list for an object: for a game, its mechanics, categories, designers, publishers, expansions or versions; for a family, its games; for a person, their credits; for a company, its games; for a property, its games; for a version, its parent game and publishers. Each row carries the linked object's identity, name, post date, subtype and image. The link type must be valid for the requested object type; see boardgamegeek-taxonomy for the complete per-type value space.
+- **Params:** `linktype` (string, **required**) — Link type; must be one of the values verified for the object type (see boardgamegeek-taxonomy); `objectid` (integer, **required**) — Object identifier, positive integer; Catan is 13; `objecttype` (string, **required**) — Canonical object type that owns the links; `pageid` (integer, optional) — Page number, 1-1000; `showcount` (integer, optional) — Page size, 1-50
+
+### `boardgamegeek_media`
+
+- **HTTP:** `GET /boardgamegeek/media/{id}`
+- **What:** List a BoardGameGeek item's images, videos or files. Returns one page of media for one item: gallery images with captions and vote counts, videos with host, title, duration and thumbnail, or file pages with filename, size and language. Exactly one of images, videos or files is populated. Filters follow the source's own per-kind filter models: images accept sort, interval, gallery, tag and license; videos accept sort, gallery and languageid; files accept sort and languageid. A filter used with the wrong kind is rejected locally with HTTP 400.
+- **Params:** `gallery` (string, optional) — Gallery filter. Images: all, game, person, creative. Videos: all, review, session, instructional, interview, unboxing, humor, other. Not valid for files.; `id` (string, **required**) — BoardGameGeek item (thing) id, positive integer; Catan is 13; `interval` (string, optional) — Image date interval; image only; `languageid` (string, optional) — Media language id from boardgamegeek_taxonomy media_video_languages/media_file_languages; video and file only; `license` (string, optional) — Image license filter; image only; `pageid` (integer, optional) — Page number, 1-1000; `showcount` (integer, optional) — Page size, 1-50; `sort` (string, optional) — Sort order; applies to images, videos and files; `tag` (string, optional) — Image category; image only; `type` (string, optional) — Media kind; defaults to image
+
+### `boardgamegeek_recommendations`
+
+- **HTTP:** `GET /boardgamegeek/recommendations/{id}`
+- **What:** Get BoardGameGeek recommendations for a game. Returns BoardGameGeek's "fans also like" recommendations for one game: each suggested item's identity, name and image, plus the source's similarity rating, rank, voter count, year published and fan count. An unknown game id yields a valid empty list with count 0 rather than an error.
+- **Params:** `id` (string, **required**) — BoardGameGeek game id, positive integer; Catan is 13; `showcount` (integer, optional) — Maximum number of recommendations, 1-50
+
+### `boardgamegeek_reviews`
+
+- **HTTP:** `GET /boardgamegeek/reviews/{type}/{id}`
+- **What:** List a BoardGameGeek object's reviews. Returns an object's hot and recent reviews as the source publishes them: text review threads (thread id, subject, forum, author, dates, post count) and video reviews (video id, host, external id, title, language, thumbnail), with the source's review totals and the paths to the full review lists. An object with no reviews is a valid empty result, not an error.
+- **Params:** `id` (string, **required**) — Object identifier, positive integer; Catan is 13; `type` (string, **required**) — Object type
+
+### `boardgamegeek_taxonomy`
+
+- **HTTP:** `GET /boardgamegeek/taxonomy`
+- **What:** List BoardGameGeek's object-type, subtype and link-type enums. Returns the complete pinned taxonomy this family accepts: the canonical object types and entity types, the live-verified subtypes for each object type (with separately listed unverified subtypes), the verified link types for each object type, and the hotness, media, media-filter and entity enums. Values were verified with anonymous live requests on the date in verified_at and are constants, not live reads. Use it to validate objecttype/linktype combinations before calling the other BoardGameGeek routes.
+- **Params:** _none_
+
+### `boardgamegeek_thread`
+
+- **HTTP:** `GET /boardgamegeek/thread/{id}`
+- **What:** Get a BoardGameGeek thread and one page of its articles. Returns a forum thread's metadata (subject, forum id, creator, post/page counts, pin/lock flags, breadcrumbs) plus one page of its articles: article id, author id, post and edit dates, plain-text body, rendered bodyXml, first-post flag and links. The source pages articles 25 at a time; a page past the end is a valid empty page. Use boardgamegeek_threads to discover thread ids.
+- **Params:** `id` (string, **required**) — BoardGameGeek thread id, positive integer; `pageid` (integer, optional) — Article page number, 1-1000; the source pages articles 25 at a time
+
+### `boardgamegeek_threads`
+
+- **HTTP:** `GET /boardgamegeek/threads`
+- **What:** List a BoardGameGeek object's forum threads. Returns one page of forum threads for a BoardGameGeek object (game, family, person, company, property or version), sorted by hot, recent or active. Each row carries the thread id, subject, forum, author, post/last-post dates, post count, pin/lock flags and hrefs, and the response includes the forums that object exposes with their thread/post counts so callers can discover the forumid filter. Use boardgamegeek_thread to read a thread's articles.
+- **Params:** `forumid` (integer, optional) — Forum id from this route's forums list; unknown ids are ignored upstream, so use a listed id; `objectid` (integer, **required**) — Object identifier, positive integer; Catan is 13; `objecttype` (string, optional) — Object type: thing, family, person, company, property or version. Defaults to thing.; `pageid` (integer, optional) — Page number, 1-1000; `showcount` (integer, optional) — Page size, 1-100; the source caps it at 100; `sort` (string, optional) — Thread sort: hot, recent or active. Defaults to recent.
+
 ## Bonhams (5)
 
 ### `bonhams_auction_detail`
@@ -2304,6 +2428,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /booking/search`
 - **What:** Search Booking.com hotels. Searches Booking.com hotels for a destination `query` between `checkin` and `checkout` (`YYYY-MM-DD`, both required). `adults` is 1 to 9 (default 2), `rooms` 1 to 8 (default 1), `children` 0 to 9, and `page` is 1-based. Each property has `name`, `price`, `currency`, `review_score`, `star_rating` and `distance`; `results_count` gives the total.
 - **Params:** `adults` (integer, optional) — Number of adults, 1-9, default 2; `checkin` (string, **required**) — Check-in date, YYYY-MM-DD; `checkout` (string, **required**) — Check-out date, YYYY-MM-DD; `children` (integer, optional) — Number of children, 0-9; `page` (integer, optional) — 1-based result page, default 1; `query` (string, **required**) — Destination name or city; `rooms` (integer, optional) — Number of rooms, 1-8, default 1
+
+## Booksy (4)
+
+### `booksy_business`
+
+- **HTTP:** `GET /booksy/business`
+- **What:** Get one Booksy business's detail record. Returns one Booksy (booksy.com) business: name, slug, description, the website's own listing path token (`<businessId>_<slug>_<categorySlug>_<cityId>_<citySlug>`, served by the app and usable to join the two surfaces), every category with its web slug, the geographic chain from country down to zip with numeric ids, address and coordinates, cover and logo images, the complete partner-defined service menu with prices and durations, opening hours, amenities, booking policy text, public contact links and aggregate review scores. This is the Android app's JSON detail route (`/core/v2/customer_api/businesses/{id}/`), so one business costs a few tens of kilobytes instead of a rendered page. An unknown id is a 404. Review text, reviewer identities, staff identities, client records and any availability, booking or payment data are never returned.
+- **Params:** `country` (string, optional) — Market host; `id` (integer, **required**) — Numeric Booksy business id
+
+### `booksy_businesses`
+
+- **HTTP:** `GET /booksy/businesses`
+- **What:** List and filter Booksy businesses in one market. Returns one page of Booksy's (booksy.com) salon and barber marketplace for a country, filtered by a top-level category, a treatment id or a free-text query, and optionally scoped to a location. This reads the Android customer app's own JSON API (`https://{country}.booksy.com/core/v2/customer_api/businesses/`), which is offset-paginated: page_size is honoured up to 100 (larger values are silently clamped, so they are rejected here) and total is the marketplace's own match count. total saturates at 10000, and total_capped reports when the number is a ceiling rather than an exact count. category and treatment are INTEGER ids — a slug is rejected upstream — taken from booksy-categories and booksy-treatment-hints respectively; they may be combined. The listing filters the app's own client sends are supported as well: sort_order (distance, score, top_rated, by_ids — by_ids requires business_ids and returns the businesses in the order supplied; score is the default ranking and returns the same order as no sort_order), gender (M, F, R — it reorders the page for a stated client gender but does not filter it, so total is unchanged, and an unrecognised value is rejected here because Booksy silently ignores it), open_now and has_special_offers (booleans that restrict the page to businesses open now or running an offer; open_now is sent upstream as 1/0 because Booksy rejects true/false on it), and business_ids (a comma-separated bulk lookup of at most 100 ids, which also satisfies the requirement for one of category, treatment or query). location_id and location_name are alternatives, and an unknown location_name is not an error: the server silently falls back to the whole country, so read the response's location node instead of assuming the name was applied. A page past the end is an honest empty businesses array with total intact; page 0 is rejected. Records carry catalogue metadata, geo, promotion flags and aggregate review scores only — never reviews, reviewer identities, staff or availability.
+- **Params:** `business_ids` (string, optional) — Comma-separated business ids for a bulk lookup, at most 100; required with sort_order=by_ids; `category` (integer, optional) — Top-level category id from booksy-categories (integer, not a slug); `country` (string, optional) — Market host; `gender` (string, optional) — Ranking personalisation for a stated client gender; reorders but does not filter; `has_special_offers` (boolean, optional) — Only businesses running a special offer; `location_id` (integer, optional) — Booksy location id, e.g. 30067 for New York City; `location_name` (string, optional) — Location name for the server to resolve, e.g. New York City; `open_now` (boolean, optional) — Only businesses open now; `page` (integer, optional) — 1-based page number, default 1; `page_size` (integer, optional) — Records per page, default 20, maximum 100; `query` (string, optional) — Free-text search term; at least one of category, treatment or query is required; `sort_order` (string, optional) — Listing order; distance needs a location, score is the default ranking, by_ids requires business_ids; `treatment` (integer, optional) — Treatment id from booksy-treatment-hints (integer, not a slug)
+
+### `booksy_categories`
+
+- **HTTP:** `GET /booksy/categories`
+- **What:** List Booksy's complete top-level category enum. Returns Booksy's (booksy.com) complete top-level marketplace category enum for one market, in the upstream's own order, with each category's integer id, name and icon URL. This is the discovery endpoint for the category parameter of booksy-businesses: the 18 values are every top-level search category the marketplace publishes (Hair 1, Nails 3, Massage 4, Wellness and spa 5, Barber 6, Skin care 7, Makeup 9, Pet services 11, Home services 17, Brows and lashes 177, Tattoos 179, Medical aesthetics 183, Dental and orthodontics 184, Hair removal 187, Piercing 190, Braids and locs 657, Health and fitness 658, Professional services 659), verified live for both the US and GB hosts. The list is returned as the host publishes it rather than from a pinned constant, so a taxonomy change is visible. Takes no parameters beyond the market.
+- **Params:** `country` (string, optional) — Market host
+
+### `booksy_treatment_hints`
+
+- **HTTP:** `GET /booksy/treatment-hints`
+- **What:** Discover Booksy treatment ids for a query. Returns the treatments and businesses Booksy's (booksy.com) app API suggests for one search text, with each treatment's integer id, name, slug and type, and each suggested business's id, name, slug, web path token and address. This is the discovery step for the treatment parameter of booksy-businesses, and it is the only treatment-id surface the app API exposes. It is query-driven, not a complete value space: the response says query_driven=true because the upstream returns only what the query matches, and no route found returns the full treatment taxonomy, so a treatment id outside these answers can exist. Prefer seeding it with the service name you want (haircut, braids, nails, massage). A query that matches nothing answers an empty suggestions array rather than an error; a blank query is rejected.
+- **Params:** `country` (string, optional) — Market host; `query` (string, **required**) — Search text that seeds the hint lookup
 
 ## Boots (2)
 
@@ -2526,6 +2676,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /breitbart/sections`
 - **What:** Get Breitbart sections. Lists the 21 Breitbart sections accepted by `breitbart-headlines`, including `politics`, `economy`, `border`, `national-security`, `the-media`, `world-news` and `america250`. Each has a `slug`, a display `name` and the section's page `url`. The list was verified on 2026-09-23.
 - **Params:** _none_
+
+## Bring a Trailer (8)
+
+### `bringatrailer_filters`
+
+- **HTTP:** `GET /bringatrailer/filters`
+- **What:** List Bring a Trailer filter values. Returns the complete value space of every bringatrailer_results filter: vehicle categories, decades, origins, regions with their countries, sort orders, results, auction types, recency windows, maximum-bid presets and the per_page range.
+- **Params:** _none_
+
+### `bringatrailer_listing`
+
+- **HTTP:** `GET /bringatrailer/listing`
+- **What:** Get one Bring a Trailer auction. Returns one auction's detail: status, sold or high bid, end time, bid count, comments, views, watchers, seller, location, chassis, listing details, description and lead image. Pass the slug from /listing/{slug}/ or the full listing URL returned by the other endpoints. bid_history=true adds every bid (amount, currency, time, and any soft-close end-time extension) oldest first, without bidder names; it needs no extra request.
+- **Params:** `bid_history` (boolean, optional) — Add the bid-by-bid history, without bidder names; `slug` (string, **required**) — Listing slug or bringatrailer.com listing URL
+
+### `bringatrailer_live`
+
+- **HTTP:** `GET /bringatrailer/live`
+- **What:** List live Bring a Trailer auctions. Returns the auctions currently open on Bring a Trailer (about 1,300) with current bid, end time and attributes. Filter by title text, category, decade, country, ending window, maximum current bid and the premium and no-reserve flags; sort by ending soon, highest bid or lowest bid.
+- **Params:** `category` (string, optional) — Comma-separated category ids from bringatrailer_filters; `country` (string, optional) — Comma-separated ISO 3166-1 alpha-2 country codes; `ending_within` (integer, optional) — Only auctions ending within this many hours; `era` (string, optional) — Comma-separated decade ids from bringatrailer_filters; `max_bid` (integer, optional) — Only auctions whose current bid is at most this many USD; `no_reserve` (boolean, optional) — Only no-reserve auctions; `page` (integer, optional) — 1-based page; `per_page` (integer, optional) — Results per page; `premium` (boolean, optional) — Only premium auctions; `q` (string, optional) — Case-insensitive text that must appear in the title; `sort` (string, optional) — Sort order
+
+### `bringatrailer_makes`
+
+- **HTTP:** `GET /bringatrailer/makes`
+- **What:** Bring a Trailer makes and models. Returns Bring a Trailer's Makes and Models Directory: every make with its model pages and the numeric model_id that bringatrailer_results accepts. Narrow with q (matches make or model names) or make (exact slug).
+- **Params:** `make` (string, optional) — Exact make slug; `q` (string, optional) — Case-insensitive text matched against make and model names
+
+### `bringatrailer_price_history`
+
+- **HTTP:** `GET /bringatrailer/price-history`
+- **What:** Bring a Trailer auction price history. Returns the price chart Bring a Trailer draws for a make or a model: summaries (count, min, median, mean, max) of sold and reserve-not-met final bids, sold prices by closing year, and the most recent auctions as dated points. Exactly one of make and model_id is required; the same filters as bringatrailer_results narrow the chart. Bring a Trailer returns at most the most recent 10,000 auctions, reported as truncated. Large makes can take up to about 50 seconds.
+- **Params:** `category` (string, optional) — Comma-separated category ids from bringatrailer_filters; `country` (string, optional) — Comma-separated ISO 3166-1 alpha-2 country codes; `era` (string, optional) — Comma-separated decade ids from bringatrailer_filters; `exclude` (string, optional) — Keyword that must not appear in the listing; `make` (string, optional) — Make name from bringatrailer_makes; exactly one of make and model_id is required; `max_bid` (integer, optional) — Maximum final bid in USD; `max_year` (integer, optional) — Maximum model year; `min_year` (integer, optional) — Minimum model year; `model_id` (integer, optional) — Numeric model id from bringatrailer_makes; exactly one of make and model_id is required; `origin` (string, optional) — Comma-separated origin ids from bringatrailer_filters; `points_limit` (integer, optional) — Most recent auctions to list in points; 0 returns only the summaries; `q` (string, optional) — Keyword that must appear in the listing; `recency` (string, optional) — Closed within; `type` (string, optional) — Auction type
+
+### `bringatrailer_results`
+
+- **HTTP:** `GET /bringatrailer/results`
+- **What:** Bring a Trailer completed auctions. Pages through Bring a Trailer's archive of completed collector-vehicle auctions with final bids and sold or reserve-not-met results. Filter by make or model (ids from bringatrailer_makes), keyword, category, decade, origin, country, result, premium or no-reserve type, recency, model-year range, maximum bid and sort order. Every filter value is listed by bringatrailer_filters.
+- **Params:** `category` (string, optional) — Comma-separated category ids from bringatrailer_filters; `country` (string, optional) — Comma-separated ISO 3166-1 alpha-2 country codes; `era` (string, optional) — Comma-separated decade ids from bringatrailer_filters; `exclude` (string, optional) — Keyword that must not appear in the listing; `make` (string, optional) — Make name from bringatrailer_makes; mutually exclusive with model_id; `max_bid` (integer, optional) — Maximum final bid in USD; `max_year` (integer, optional) — Maximum model year; `min_year` (integer, optional) — Minimum model year; `model_id` (integer, optional) — Numeric model id from bringatrailer_makes; mutually exclusive with make; `origin` (string, optional) — Comma-separated origin ids from bringatrailer_filters; `page` (integer, optional) — 1-based page; `per_page` (integer, optional) — Results per page; `q` (string, optional) — Keyword that must appear in the listing; `recency` (string, optional) — Closed within; `result` (string, optional) — Auction result; `sort` (string, optional) — Sort order; `type` (string, optional) — Auction type
+
+### `bringatrailer_search`
+
+- **HTTP:** `GET /bringatrailer/search`
+- **What:** Search Bring a Trailer. Runs Bring a Trailer's site search and returns the matching live listings, make and model pages, previous auctions (sold, reserve not met and withdrawn, with final prices), past events and editorial stories, each with its own total. section narrows the response to one list and pages through it; every list pages 12 rows at a time except previous auctions at 24, and live listings (up to 100, repeated on every site page) come back only on page 1. A term that is exactly a make, model or category name (Ferrari, BMW 2002, boat) makes the site redirect to that page: the response then carries redirect and empty lists, and phrase=true runs the search instead. Member profiles are never returned.
+- **Params:** `page` (integer, optional) — Page number from 1; `phrase` (boolean, optional) — Match q as an exact phrase; needed when q is exactly a make, model or category name; `q` (string, **required**) — Text to search, 2 to 100 characters without double quotes; `section` (string, optional) — List to return: all (default), live_listings, models, previous_auctions, events or stories
+
+### `bringatrailer_suggest`
+
+- **HTTP:** `GET /bringatrailer/suggest`
+- **What:** Bring a Trailer search suggestions. Returns Bring a Trailer's search-box completions for a term: make pages, model and generation pages, decades and categories. Era rows carry the decade id and category rows the category id that bringatrailer_results accepts as era and category; make rows can be passed by title as make. Use bringatrailer_makes for a model's numeric model_id.
+- **Params:** `term` (string, **required**) — Text to complete
 
 ## Brisbane Times (5)
 
@@ -4659,6 +4859,118 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the Discogs database. Searches the Discogs database for releases, masters, artists and labels, optionally filtered to one `type`, with `page` and `per_page` (max 100). Release and master results carry country, year, formats, labels, genres, styles, catalog number and barcodes; artist and label results carry id, title and thumbnail.
 - **Params:** `page` (integer, optional) — 1-based page number, default 1; `per_page` (integer, optional) — Results per page, default 50, max 100; `q` (string, **required**) — Search query; `type` (string, optional) — Result type filter
 
+## Dollar Tree (9)
+
+### `dollartree_blog_article`
+
+- **HTTP:** `GET /dollartree/blog/article`
+- **What:** Get a Dollar Tree Value Seekers Blog article. Returns the public DTBlogPost record for one article URL, including the HTML body and parent category metadata.
+- **Params:** `article_id` (string, **required**) — Article id from the public Value Seekers Blog URL; `slug` (string, **required**) — Article slug from the public Value Seekers Blog URL
+
+### `dollartree_categories`
+
+- **HTTP:** `GET /dollartree/categories`
+- **What:** List Dollar Tree product and blog categories. Returns Dollar Tree's complete public storefront taxonomy, including product departments, nested product categories, and Value Seekers Blog topics. Each node preserves its repository id and search dimension id.
+- **Params:** _none_
+
+### `dollartree_keyword_typeahead`
+
+- **HTTP:** `GET /dollartree/typeahead/keywords`
+- **What:** Get Dollar Tree keyword suggestions. Returns the keyword-suggestion results from Dollar Tree's search box for a prefix. An empty suggestion list is a valid upstream response.
+- **Params:** `q` (string, **required**) — Search prefix of at least two characters; `viewport` (string, optional) — Storefront viewport context
+
+### `dollartree_price`
+
+- **HTTP:** `GET /dollartree/price`
+- **What:** Get Dollar Tree product prices. Returns the current list price and per-SKU prices from Dollar Tree's public pricing resource for one product repository id, including the upstream price-range flag.
+- **Params:** `product_id` (string, **required**) — Dollar Tree product id
+
+### `dollartree_product`
+
+- **HTTP:** `GET /dollartree/product`
+- **What:** Get one Dollar Tree product record. Returns the complete public product record for one Dollar Tree repository id, including the fields and SKU information supplied by the storefront.
+- **Params:** `product_id` (string, **required**) — Dollar Tree product id
+
+### `dollartree_product_typeahead`
+
+- **HTTP:** `GET /dollartree/typeahead/products`
+- **What:** Get Dollar Tree product suggestions. Returns up to six product suggestions from Dollar Tree's search box for a prefix, with product identifiers, routes, images, prices, and source attributes.
+- **Params:** `q` (string, **required**) — Search prefix of at least two characters; `viewport` (string, optional) — Storefront viewport context
+
+### `dollartree_products`
+
+- **HTTP:** `GET /dollartree/products`
+- **What:** Get multiple Dollar Tree product records. Returns the complete public product records for a comma-separated list of Dollar Tree repository ids, matching the storefront's list-valued productIds resource.
+- **Params:** `product_ids` (string, **required**) — Comma-separated Dollar Tree product ids
+
+### `dollartree_search`
+
+- **HTTP:** `GET /dollartree/search`
+- **What:** Search Dollar Tree products and facets. Searches the public Dollar Tree catalog or browses a category using its search dimension id. Returns products, pagination metadata, every context-specific filter group and option, and each option's upstream navigation state for follow-up filter requests. Sort values are the exact values used by Dollar Tree's storefront.
+- **Params:** `navigation_id` (string, optional) — Search navigation id from dollartree_categories or a filter option; `navigation_state` (string, optional) — Exact navigation_state returned by a filter option; mutually exclusive with navigation_id; `offset` (integer, optional) — Zero-based upstream result offset; `page_size` (integer, optional) — Results per page; `q` (string, optional) — Product search query; omit to browse the selected category or navigation state; `sort` (string, optional) — Exact storefront sort value (omit for relevance)
+
+### `dollartree_stock_status`
+
+- **HTTP:** `GET /dollartree/stock-status`
+- **What:** Get Dollar Tree stock status for one SKU. Returns the current stock status and orderable, in-stock, backorderable, and preorderable quantities for one product SKU. Use the product id and child SKU repository id returned by the Dollar Tree product endpoints.
+- **Params:** `product_id` (string, **required**) — Dollar Tree product id; `sku_id` (string, **required**) — SKU repository id from the product's childSKUs
+
+## Domain (9)
+
+### `domain_dns_record_types`
+
+- **HTTP:** `GET /domain/dns/record-types`
+- **What:** List supported DNS record types. Returns the complete record-type vocabulary accepted by domain_dns_resolve.
+- **Params:** _none_
+
+### `domain_dns_resolve`
+
+- **HTTP:** `GET /domain/dns/resolve`
+- **What:** Resolve one public DNS record query. Performs one Google Public DNS JSON query. Use domain_dns_record_types to discover supported types.
+- **Params:** `name` (string, **required**) — Bare public DNS name, including service labels such as _dmarc; `type` (string, **required**) — DNS record type
+
+### `domain_rdap_domain`
+
+- **HTTP:** `GET /domain/rdap/domain/{domain}`
+- **What:** Get domain registration data. Uses the IANA RDAP DNS bootstrap and the selected registry's domain lookup.
+- **Params:** `domain` (string, **required**) — Bare DNS hostname
+
+### `domain_rdap_ip`
+
+- **HTTP:** `GET /domain/rdap/ip`
+- **What:** Get IP allocation data. Performs one RIR RDAP lookup for a public IPv4 or IPv6 address.
+- **Params:** `ip` (string, **required**) — Public IPv4 or IPv6 address
+
+### `domain_robots`
+
+- **HTTP:** `GET /domain/robots/{domain}`
+- **What:** Fetch robots.txt. Resolves the hostname through public DoH, pins the HTTPS request to a validated public IP, and returns robots.txt up to 256 KiB.
+- **Params:** `domain` (string, **required**) — Bare DNS hostname
+
+### `domain_site`
+
+- **HTTP:** `GET /domain/site/{domain}`
+- **What:** Inspect one public HTTPS homepage. Resolves the hostname through public DoH, rejects unsafe addresses, pins the connection while preserving Host and TLS SNI, then derives TLS, public headers, and technology from one bounded homepage response.
+- **Params:** `domain` (string, **required**) — Bare DNS hostname
+
+### `domain_subdomains`
+
+- **HTTP:** `GET /domain/subdomains/{domain}`
+- **What:** List public indexed subdomains. Returns crt.name index entries. Names may be historical, are not checked against live DNS, and the source limits unauthenticated queries to 100 per source IP per day.
+- **Params:** `domain` (string, **required**) — Bare DNS hostname
+
+### `domain_wayback_availability`
+
+- **HTTP:** `GET /domain/wayback/availability/{domain}`
+- **What:** Get the closest Wayback snapshot. Performs one Internet Archive Availability API request.
+- **Params:** `domain` (string, **required**) — Bare DNS hostname
+
+### `domain_wayback_cdx`
+
+- **HTTP:** `GET /domain/wayback/cdx/{domain}`
+- **What:** Get Wayback CDX year samples. Performs one bounded Internet Archive CDX request and returns the earliest sample per year.
+- **Params:** `domain` (string, **required**) — Bare DNS hostname
+
 ## Dominos (6)
 
 ### `dominos_coupons`
@@ -5354,6 +5666,14 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Entertainment Weekly sections. Lists the nine Entertainment Weekly primary-navigation sections accepted by `ew-headlines`: `tv`, `movies`, `music`, `what-to-watch`, `binge`, `celebrity`, `awardist`, `books` and `theater`. Each entry has the `slug`, display `name` and section `url`.
 - **Params:** _none_
 
+## Epic Games Store (1)
+
+### `epicgames_free_promotions`
+
+- **HTTP:** `GET /epicgames/free-promotions`
+- **What:** Get Epic Games Store free promotions. Returns the store's current and upcoming promotion offers for the requested locale and country. The response preserves the upstream Catalog searchStore payload and its promotion windows; a zero price alone does not mean an offer is part of a limited-time promotion.
+- **Params:** `allowCountries` (string, optional) — Comma-separated country codes accepted by the upstream promotion query; defaults to country; `country` (string, optional) — Two-letter country code; `locale` (string, optional) — Store locale
+
 ## ESPN (9)
 
 ### `espn_athlete`
@@ -5651,6 +5971,218 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Facebook page details. Fetches public data about a Facebook Page given its page ID, vanity name, or full page URL: name, follower/like counts, intro, category, business hours/price range, review count, and any public contact details (email, phone, address, website, WhatsApp number) exposed on the Page's About tab.
 - **Params:** `page` (string, **required**) — Facebook Page reference: vanity name, handle, profile.php id, or full Facebook URL
 
+## FACEIT (35)
+
+### `faceit_ban_reasons`
+
+- **HTTP:** `GET /faceit/ban-reasons`
+- **What:** FACEIT ban reason enum. Returns the closed ban-reason enum the ban-list filter accepts. The upstream names these values in its own validation error, so they are server-validated. Pass one as the reason parameter of faceit-banlist to filter the ban list.
+- **Params:** _none_
+
+### `faceit_banlist`
+
+- **HTTP:** `GET /faceit/banlist`
+- **What:** FACEIT public ban list page. Returns one page of the public FACEIT ban list: ban id, banned user id and nickname, avatar, country, reason, start and end timestamps and duration. Paging uses the upstream's size parameter (5-100, default 25) and the opaque cursor returned with the previous page; pass it back to advance. A cursor from the upstream is echoed in the response.
+- **Params:** `cursor` (string, optional) — Optional opaque cursor copied from the previous response; omit for the first page.; `reason` (string, optional) — Optional ban reason, one of: ban evasion, cheating, multiple accounts, platform abuse, smurfing, toxicity, playing on a smurf (see faceit-ban-reasons).; `size` (integer, optional) — Optional page size, 5-100; default 25.
+
+### `faceit_banlist_stats`
+
+- **HTTP:** `GET /faceit/banlist-stats`
+- **What:** FACEIT ban list aggregate counters. Returns the aggregate FACEIT ban counters: bans in the last 12 months and bans in the last 30 days. The upstream publishes no per-reason or per-game breakdown on this anonymous surface.
+- **Params:** _none_
+
+### `faceit_best_clips`
+
+- **HTTP:** `GET /faceit/best-clips`
+- **What:** FACEIT player best clips in a time window. Returns a player's best Allstar clips inside an inclusive time window: the same clip row shape as faceit-clips, ordered by the upstream best-clip ranking. Both from and to are required RFC3339 timestamps. Only cs2 has Allstar clips; a window with no clips is a valid empty list. The upstream ignores offset on this route, so no offset parameter is exposed.
+- **Params:** `from` (string, **required**) — Inclusive lower bound as an RFC3339 timestamp.; `game` (string, **required**) — Game slug; only cs2 has Allstar clips.; `limit` (integer, optional) — Optional page size, 1-100; default 10.; `to` (string, **required**) — Inclusive upper bound as an RFC3339 timestamp.; `user_id` (string, **required**) — FACEIT user UUID.
+
+### `faceit_championship`
+
+- **HTTP:** `GET /faceit/championship`
+- **What:** FACEIT championship detail by id. Returns one FACEIT championship: identity and organizer, status and type, region, slots and participant counts, subscription/check-in/start timestamps (epoch milliseconds), entry checks, substitution policy, normalized match settings, schedule and groups, the organizer's FFA leaderboard points and role names. Championship ids are discovered through faceit-championship-search. An unknown id answers 404.
+- **Params:** `id` (string, **required**) — Championship UUID from faceit-championship-search.
+
+### `faceit_championship_bracket`
+
+- **HTTP:** `GET /faceit/championship-bracket`
+- **What:** FACEIT championship group bracket by group and round. Returns one group and round of a championship bracket: group number, delimiter, status, total and the bracket match pairings with each side's player id and faction number. The group and round parameters are required by the upstream; start and end bound the returned match range. An unknown championship answers 404.
+- **Params:** `end` (integer, optional) — Optional end offset.; `group` (integer, **required**) — Group number.; `id` (string, **required**) — Championship UUID from faceit-championship-search.; `round` (integer, **required**) — Round number.; `start` (integer, optional) — Optional non-negative start offset.
+
+### `faceit_championship_participants`
+
+- **HTTP:** `GET /faceit/championship-participants`
+- **What:** FACEIT championship participants page. Returns one page of a championship's participants: membership id, player identity (id, nickname, avatar, country and game list), the championship reference, role names and the participant's championship status. The upstream caps the page size at 50. Paging uses limit and offset, and the response echoes the upstream start and end markers.
+- **Params:** `id` (string, **required**) — Championship UUID from faceit-championship-search.; `limit` (integer, optional) — Optional page size, 1-50; default 20.; `offset` (integer, optional) — Optional non-negative row offset.
+
+### `faceit_championship_search`
+
+- **HTTP:** `GET /faceit/championship-search`
+- **What:** Discover FACEIT championships and leaderboards. Returns leaderboard discovery rows, which are the anonymous way to discover championship ids: leaderboard identity, entity id/type, game and region, season, group/round/bracket placement, ranking type, scoring fields, dates, status and prize metadata. Defaults to ongoing championships. status is a closed enum (see faceit-leaderboard-statuses); entity_type and type are forwarded as filters and are not server-validated. The upstream caps a page at 100 rows.
+- **Params:** `country` (string, optional) — Optional two-letter ISO country code such as DE.; `entity_type` (string, optional) — Optional entity type; defaults to championship. Documented values: championship, hub, tournament, league, club, matchmaking.; `game` (string, optional) — Optional game slug, one of the values returned by faceit-games.; `has_drops` (boolean, optional) — Optional drops filter.; `limit` (integer, optional) — Optional page size, 1-100; default 25.; `offset` (integer, optional) — Optional non-negative row offset.; `status` (string, optional) — Optional status, one of ONGOING, UPCOMING or FINISHED; defaults to ONGOING.; `subtype` (string, optional) — Optional leaderboard subtype filter.; `type` (string, optional) — Optional leaderboard type; defaults to championship and normally equals entity_type.
+
+### `faceit_clip`
+
+- **HTTP:** `GET /faceit/clip`
+- **What:** FACEIT Allstar clip detail. Returns one Allstar clip by id: title, view count, embed URL, thumbnail, linked FACEIT match id and match instance, processing status, demo filename, clip reason, map and round. Clip ids come from faceit-clips. An unknown id answers 404.
+- **Params:** `id` (string, **required**) — 24-character clip id from faceit-clips.
+
+### `faceit_clips`
+
+- **HTTP:** `GET /faceit/clips`
+- **What:** FACEIT player Allstar clips. Returns one page of a player's Allstar clips: clip id, title, view count, embed URL, thumbnail, linked FACEIT match id and match instance, processing status, map, round and creation/update timestamps. Only the cs2 game has Allstar clips; every other game is rejected by the upstream as unknown. Paging uses limit and offset and the response reports has_more. An unknown player is a valid empty page.
+- **Params:** `game` (string, **required**) — Game slug; only cs2 has Allstar clips.; `limit` (integer, optional) — Optional page size, 1-100; default 10.; `offset` (integer, optional) — Optional non-negative row offset.; `user_id` (string, **required**) — FACEIT user UUID.
+
+### `faceit_competition_matches`
+
+- **HTTP:** `GET /faceit/competition-matches`
+- **What:** FACEIT competition match list. Returns one page of a competition's match list for a competition id and type. The upstream requires both id and type and rejects a missing type; an unknown id is an empty list. The sampled anonymous response was empty and its non-empty item shape is unverified, so each match is passed through as raw upstream JSON rather than a guessed DTO.
+- **Params:** `id` (string, **required**) — Competition id from faceit-championship-search.; `page` (integer, optional) — Optional non-negative page number; default 0.; `player_id` (string, optional) — Optional player UUID filter.; `size` (integer, optional) — Optional page size, 1-100; default 20.; `type` (string, **required**) — Competition type such as championship; the upstream rejects a missing type.
+
+### `faceit_fpl`
+
+- **HTTP:** `GET /faceit/fpl`
+- **What:** FACEIT Pro League circuits. Returns FPL (FACEIT Pro League) circuits, optionally filtered to one game: circuit id, game and region, display name, default flag, season windows with start and end timestamps, and the configured ranking source. An unknown game is a valid empty list. Paging uses limit and offset and the response reports has_more.
+- **Params:** `game` (string, optional) — Optional game slug, one of the values returned by faceit-games.; `limit` (integer, optional) — Optional page size, 1-100; default 20.; `offset` (integer, optional) — Optional non-negative row offset.
+
+### `faceit_game_modes`
+
+- **HTTP:** `GET /faceit/game-modes`
+- **What:** FACEIT public queues for a game and region. Returns the public matchmaking queues for a game and region: queue id, queue group id, localized label, spectator flag and team size. Both game and region are required by the upstream. A pair with no queues is a valid empty list, not an error.
+- **Params:** `game` (string, **required**) — Game slug, one of the values returned by faceit-games.; `region` (string, **required**) — Region code such as EU; see faceit-regions.
+
+### `faceit_games`
+
+- **HTTP:** `GET /faceit/games`
+- **What:** FACEIT game slugs confirmed by the live map oracle. Returns the pinned game taxonomy: the slugs whose map configuration answered with real maps on the verification date. The upstream exposes no anonymous games catalogue, so this list is pinned and marked not complete rather than being a claimed complete catalogue. Every other FACEIT route validates its game parameter against this set.
+- **Params:** _none_
+
+### `faceit_hub`
+
+- **HTTP:** `GET /faceit/hub`
+- **What:** FACEIT hub detail by id. Returns one FACEIT hub: identity, description, game/region/category, organizer, publication and featured flags, slot and player counts, skill band, join permissions, rules id, images, geo/region/game checks, nested child hubs, role identities, FACEIT points, prize counts and queue/application/chat settings. An unknown id answers 404.
+- **Params:** `id` (string, **required**) — Hub UUID from faceit-hub-memberships.
+
+### `faceit_hub_categories`
+
+- **HTTP:** `GET /faceit/hub-categories`
+- **What:** FACEIT hub category enum. Returns the closed hub category enum the hub membership endpoint accepts. The upstream names these values in its own validation error, so they are server-validated.
+- **Params:** _none_
+
+### `faceit_hub_memberships`
+
+- **HTTP:** `GET /faceit/hub-memberships`
+- **What:** FACEIT user hub memberships. Returns one page of a user's hub and competition memberships: membership id, user identity, the competition/hub reference (game, category, skill band, join permissions, player count, child ids), role names, highest role ranking and join date. This is the only anonymous hub-discovery path the FACEIT website exposes, so hub ids for faceit-hub come from here. category is a closed enum.
+- **Params:** `category` (string, optional) — Optional hub category; one of community, chat or ihl.; `limit` (integer, optional) — Optional page size, 1-50; default 20.; `offset` (integer, optional) — Optional non-negative row offset.; `user_id` (string, **required**) — FACEIT user UUID.
+
+### `faceit_hubs`
+
+- **HTTP:** `GET /faceit/hubs`
+- **What:** FACEIT hubs by id. Returns summary rows for up to 20 hub ids supplied as a repeated ids parameter: hub id, game and region, name, organizer, avatar, player count, category, publication state, relationship type, child ids and organizer tier. An unknown id is simply omitted from the item list. Hub ids come from faceit-hub-memberships.
+- **Params:** `ids` (array, **required**) — Hub UUIDs; repeat the parameter for up to 20 hubs.
+
+### `faceit_hubs_detailed`
+
+- **HTTP:** `GET /faceit/hubs-detailed`
+- **What:** FACEIT full hub objects for up to 20 ids. Returns full hub objects for up to 20 hub ids through the v2 bulk read: identity, description, game/region/category, organizer and owner, publication flags, slot and player counts, skill band, join permissions, rules id, images, checks, child ids, role identities, points and queue/application/chat settings. Unlike faceit-hubs (summaries) and faceit-hub (one id), this resolves several full hubs in one call. An unknown id is omitted from the item list.
+- **Params:** `ids` (array, **required**) — Hub UUIDs; repeat the parameter for up to 20 hubs.
+
+### `faceit_leaderboard`
+
+- **HTTP:** `GET /faceit/leaderboard`
+- **What:** FACEIT ranked leaderboard for one game and region. Returns one page of a game region's ranked leaderboard: position, player identity and country, Elo, skill level, verification level and global position. With season set it reads the season-aware ranking and also returns the requested season and the available season history; without season it reads the all-time ranking. The upstream caps a page at 100 rows. An unknown game or region code is a valid empty page, not an error.
+- **Params:** `game` (string, **required**) — Game slug, one of the values returned by faceit-games.; `limit` (integer, optional) — Optional page size, 1-100; default 20 and the gateway caps a page at 100 rows.; `offset` (integer, optional) — Optional non-negative row offset.; `region` (string, **required**) — Region code such as EU or NA; see faceit-regions.; `season` (integer, optional) — Optional season number; when set the season-aware ranking is read.
+
+### `faceit_leaderboard_detail`
+
+- **HTTP:** `GET /faceit/leaderboard-detail`
+- **What:** FACEIT leaderboard detail by id. Returns one leaderboard's full configuration: entity references, game and region, group/round/bracket placement, ranking and points configuration, scoring fields, prizes, requirements, status and ranking-field visibility rules. Leaderboard ids come from faceit-championship-search or faceit-standings. An unknown id answers 404.
+- **Params:** `id` (string, **required**) — 24-character leaderboard id from faceit-championship-search or faceit-standings.
+
+### `faceit_leaderboard_statuses`
+
+- **HTTP:** `GET /faceit/leaderboard-statuses`
+- **What:** FACEIT leaderboard status enum. Returns the closed leaderboard status enum: ONGOING, UPCOMING and FINISHED. The upstream rejects lowercase and any other value, so callers must use these exact uppercase values. Also returns the observed entity type and leaderboard type values, which the gateway does not validate.
+- **Params:** _none_
+
+### `faceit_maps`
+
+- **HTTP:** `GET /faceit/maps`
+- **What:** FACEIT votable maps for a game. Returns a game's votable map taxonomy: map id, display name, game map id, class name and two image sizes. A game without map configuration is answered with 404 by the upstream and surfaces as NotFound; discover valid game slugs from faceit-games.
+- **Params:** `game` (string, **required**) — Game slug, one of the values returned by faceit-games.
+
+### `faceit_match_clips`
+
+- **HTTP:** `GET /faceit/match-clips`
+- **What:** FACEIT Allstar clips for one match. Returns one page of the Allstar clips attached to one FACEIT match: clip id, title, view count, embed URL, thumbnail, linked user and match ids, processing status, map and round. Match ids come from any clip row returned by faceit-clips or faceit-best-clips. Only cs2 has Allstar clips; an unknown match is a valid empty page.
+- **Params:** `game` (string, **required**) — Game slug; only cs2 has Allstar clips.; `limit` (integer, optional) — Optional page size, 1-100; default 10.; `match_id` (string, **required**) — Upstream match id from a clip row, for example 1-bef84e57-4ce3-41aa-b5e5-2918228c1c28.; `offset` (integer, optional) — Optional non-negative row offset.
+
+### `faceit_organizer`
+
+- **HTTP:** `GET /faceit/organizer`
+- **What:** FACEIT organizer profile by id. Returns one organizer's public profile: name and type, plan-tier limits, publication state, avatar and cover, sponsors, public staff roles, social links, supported games, description, featuring countries, countries, geo regions and features. Organizer ids appear as organizer_id on championship and leaderboard rows. The staff account ids are deliberately not mirrored. An unknown id answers 404.
+- **Params:** `id` (string, **required**) — Organizer UUID.
+
+### `faceit_player`
+
+- **HTTP:** `GET /faceit/player`
+- **What:** FACEIT player profile by nickname or user id. Returns one FACEIT profile: nickname, avatar and cover image, country, verified/registration status, memberships and per-game competitive state (Elo, region, skill level and level label). Exactly one of nickname and user_id is required. The ranking routes accept the user id returned here. A nickname that does not exist is an unknown entity and answers 404; profile friends, streaming ids and linked platform accounts are deliberately not mirrored.
+- **Params:** `nickname` (string, optional) — Optional FACEIT nickname; exactly one of nickname and user_id is required.; `user_id` (string, optional) — Optional FACEIT user UUID; exactly one of nickname and user_id is required.
+
+### `faceit_player_rank`
+
+- **HTTP:** `GET /faceit/player-rank`
+- **What:** FACEIT player ranked position in one game and region. Returns one player's position in a game and region ranking, either the all-time ranking or a season-aware ranking when season is set. A nickname is resolved to its user id first, so a nickname request costs one extra upstream lookup. Position is null when the player has no rank there. Exactly one of nickname and user_id is required.
+- **Params:** `game` (string, **required**) — Game slug, one of the values returned by faceit-games.; `nickname` (string, optional) — Optional FACEIT nickname; exactly one of nickname and user_id is required.; `region` (string, **required**) — Region code such as EU or NA; see faceit-regions for the documented values.; `season` (integer, optional) — Optional season number; when set the season-aware ranking is read.; `user_id` (string, optional) — Optional FACEIT user UUID; exactly one of nickname and user_id is required.
+
+### `faceit_regions`
+
+- **HTTP:** `GET /faceit/regions`
+- **What:** FACEIT region codes known to the website. Returns the documented region values: the website client's GEO-REGION list, region codes observed serving live ranking data, and free-form region values seen on live championship leaderboard rows. Region is not a server-validated closed set, so this list is advisory and any well-formed 2-8 character code is forwarded to the upstream.
+- **Params:** _none_
+
+### `faceit_rule`
+
+- **HTTP:** `GET /faceit/rule`
+- **What:** FACEIT competition rule detail. Returns one published rule set: rule id, name, game, organizer id, creation and update timestamps and the full rule body in markdown. Rule ids come from faceit-rules. An unknown id answers 404.
+- **Params:** `id` (string, **required**) — Rule UUID from faceit-rules.
+
+### `faceit_rules`
+
+- **HTTP:** `GET /faceit/rules`
+- **What:** FACEIT published competition rules. Returns one page of the published FACEIT competition rule sets: rule id, name, game, organizer id, creation and update timestamps and the full rule body in markdown. The upstream accepts entity filters but ignores them, so this route exposes only paging. Paging uses limit and offset.
+- **Params:** `limit` (integer, optional) — Optional page size, 1-100; default 20.; `offset` (integer, optional) — Optional non-negative row offset.
+
+### `faceit_skill_levels`
+
+- **HTTP:** `GET /faceit/skill-levels`
+- **What:** FACEIT skill levels and Elo bands for a game. Returns a game's skill-level configuration: the level number (1-10) and its inclusive Elo band. This is the discovery surface for the skill levels that ranking rows report. The upstream returns a default mapping for any slug, so this route does not prove a game exists and is not an error for an unknown-but-valid slug.
+- **Params:** `game` (string, **required**) — Game slug, one of the values returned by faceit-games.
+
+### `faceit_standings`
+
+- **HTTP:** `GET /faceit/standings`
+- **What:** FACEIT championship standings by group and round. Returns a championship's standings for one group and round: the leaderboard identity and each ranked participant's entity id, name, avatar, skill level, country, played count, position and points. The upstream requires group and round plus a segment or match number. An entity or round without standings is a valid empty list, not an error.
+- **Params:** `entity_id` (string, **required**) — Championship UUID from faceit-championship-search.; `group` (integer, **required**) — Group number.; `match` (integer, optional) — Optional match number; provide segment or match.; `round` (string, **required**) — Round number, or a comma-separated list such as 1,2.; `segment` (integer, optional) — Optional segment number; provide segment or match.
+
+### `faceit_team`
+
+- **HTTP:** `GET /faceit/team`
+- **What:** FACEIT team profile by id. Returns one public FACEIT team profile: name and nickname, game, leader, team type and status, description, country, avatar and cover, creation/update timestamps, social links, member and pending-member ids, and public member rows (guid, nickname, avatar, country and game list). Team ids are discovered from premade championship bracket faction ids in faceit-championship-bracket. An unknown id answers 404 and is returned as NotFound.
+- **Params:** `id` (string, **required**) — Team UUID from a premade bracket faction id.
+
+### `faceit_tournaments_past`
+
+- **HTTP:** `GET /faceit/tournaments-past`
+- **What:** FACEIT player past tournament history. Returns one page of a player's past tournament history. The upstream answered the sampled anonymous requests with an empty list and its non-empty item shape is unverified, so each item is passed through as raw upstream JSON rather than a guessed DTO. A nickname with no history is a valid empty result.
+- **Params:** `limit` (integer, optional) — Optional page size, 1-100; default 20.; `nickname` (string, **required**) — FACEIT nickname.; `offset` (integer, optional) — Optional non-negative row offset.
+
+### `faceit_user_skills`
+
+- **HTTP:** `GET /faceit/user-skills`
+- **What:** FACEIT player skills for up to 10 users in one game. Returns competitive skill entries for a bounded batch of up to 10 players in one game: Elo value, skill level, ranked match count, latest Elo delta, current win streak and the professional-player flag, plus the upstream skill expiration timestamp. Duplicate ids are collapsed and unknown users are omitted, so the entries list can be shorter than the request and is a valid empty result when no player has skill data. The upstream requires exactly one game per request and returns entries in its own order.
+- **Params:** `game` (string, **required**) — Game slug, one of the values returned by faceit-games.; `user_ids` (array, **required**) — Required FACEIT user UUIDs; repeat the parameter for up to 10 users.
+
 ## Fanatics (4)
 
 ### `fanatics_categories`
@@ -5677,7 +6209,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Fanatics' product catalog. Searches Fanatics products by the required `query`. Choose `page_size` (24, 48 or 72; default 24), `page_number` (default 1) and `sort` (`TopSellers`, `LowestPrice`, `HighestPrice` or `NewestArrivals`; default `TopSellers`). Each item has product id, name, brand, category, price, currency, availability, image and URL. Also returns `total_items` and `has_next_page`. An invalid `page_size` or `sort` returns `400`.
 - **Params:** `page_number` (integer, optional) — 1-based result page. Defaults to 1.; `page_size` (integer, optional) — Results per page. One of 24, 48, 72. Defaults to 24.; `query` (string, **required**) — Free-text search keywords.; `sort` (string, optional) — One of TopSellers, LowestPrice, HighestPrice, NewestArrivals. Defaults to TopSellers.
 
-## Fanatics Collect (7)
+## Fanatics Collect (15)
 
 ### `fanaticscollect_auctions`
 
@@ -5691,17 +6223,65 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List Fanatics Collect search filter values. Returns every accepted value for GetListing's marketplace param -- WEEKLY, PREMIER, FIXED -- and for Search's marketplace, category_parent, sub_category, grading_service, status, and sort params. Discovery endpoint for those closed enums.
 - **Params:** _none_
 
+### `fanaticscollect_instant_pack_release`
+
+- **HTTP:** `GET /fanaticscollect/instant-packs/release`
+- **What:** Fanatics Collect Topps Instant Pack release details. Returns a release's title, launch time, current status, checklist link and published odds by checklist ID. The price in cents appears when a price is published. Unknown checklists return 404. Discover the checklist ID with fanaticscollect-instant-pack-releases.
+- **Params:** `checklist_id` (string, **required**) — Checklist UUID from Instant Pack releases
+
+### `fanaticscollect_instant_pack_releases`
+
+- **HTTP:** `GET /fanaticscollect/instant-packs/releases`
+- **What:** Fanatics Collect Topps Instant Packs releases. Lists the Instant Packs releases currently published by Fanatics Collect with the release ID, checklist ID, launch time and listing ID when available. Pass a checklist ID to fanaticscollect-instant-pack-release for the product details, published checklist and pull odds.
+- **Params:** _none_
+
 ### `fanaticscollect_instant_rips_categories`
 
 - **HTTP:** `GET /fanaticscollect/instant-rips/categories`
 - **What:** Get Fanatics Collect Instant Rips categories. Returns every category Fanatics Collect's "Instant Rips" mystery-pack product (fanaticscollect.com/instant-rips) currently advertises on its homepage: id, name, and price range. Instant Rips is a "buy a randomized pack, a real graded card is revealed" product; each category's id is a real listing id, fetchable through GetListing with type=FIXED for that entry point's own full detail. This does not cover the individual pack-tier tiles within a category or the homepage's "Recently ripped" live feed.
 - **Params:** _none_
 
+### `fanaticscollect_instant_rips_pack_categories`
+
+- **HTTP:** `GET /fanaticscollect/instant-rips/pack-categories`
+- **What:** Fanatics Collect Instant Rips pack categories. List the categories from both Instant Rips catalog rails, including Limited Release when available. The category ID selects a pack catalog. The separate default listing ID identifies the marketplace listing linked from the category tile.
+- **Params:** _none_
+
+### `fanaticscollect_instant_rips_pack_checklist`
+
+- **HTTP:** `GET /fanaticscollect/instant-rips/pack-checklist`
+- **What:** Fanatics Collect Instant Rips card checklist. Fetch up to 15 public card checklist rows for a Fanatics Collect pack checklist ID from fanaticscollect_instant_rips_packs. Each row can include card title, tier, year, brand, set, grade and population. Pass next_cursor with the same checklist_id and optional tier for the next page. An uncovered checklist can return an empty page.
+- **Params:** `checklist_id` (string, **required**) — Checklist UUID from the Instant Rips pack catalog; `cursor` (string, optional) — Opaque next_cursor from the previous page; `tier` (string, optional) — Optional checklist tier
+
+### `fanaticscollect_instant_rips_packs`
+
+- **HTTP:** `GET /fanaticscollect/instant-rips/packs`
+- **What:** Fanatics Collect Instant Rips packs by category. Fetch up to 15 public Instant Rips packs for a category UUID from fanaticscollect_instant_rips_pack_categories. Each row can include the pack checklist ID, listing ID, price, status, and published hit-rate tiers. Pass a checklist_id to fanaticscollect_recently_ripped to narrow reveal history. An empty list is valid.
+- **Params:** `category_id` (string, **required**) — Pack category UUID from pack category discovery
+
 ### `fanaticscollect_listing`
 
 - **HTTP:** `GET /fanaticscollect/listing/{id}`
 - **What:** Get Fanatics Collect listing detail. Returns full detail for a single Fanatics Collect listing: a weekly-auction lot, a premier-auction lot, or a fixed-price "buy now" item (including an Instant Rips pack). Fields include title, current bid/starting/asking price, bid count, auction window and status, images, description, completed sale history, and -- when the card is stored in Fanatics' vault -- grading/authentication metadata including a direct PSA cert-verification link. Costs 1 credit per successful call.
 - **Params:** `id` (string, **required**) — Listing UUID; `type` (string, optional) — Listing type. Default: WEEKLY
+
+### `fanaticscollect_newsroom`
+
+- **HTTP:** `GET /fanaticscollect/newsroom`
+- **What:** Fanatics Collect newsroom article metadata. List public Fanatics Collect newsroom posts with title, publication time, category, link and images when available. Page starts at 1. Use fanaticscollect_newsroom_filters to discover category and tag IDs and pass multiple IDs separated by hyphens. Sort newest first by default or choose oldest. An empty page is valid.
+- **Params:** `category` (string, optional) — Category ID or hyphen-separated IDs; `page` (integer, optional) — 1-based page number; `sort_by` (string, optional) — Publication sort order; `tags` (string, optional) — Tag ID or hyphen-separated IDs
+
+### `fanaticscollect_newsroom_filters`
+
+- **HTTP:** `GET /fanaticscollect/newsroom/filters`
+- **What:** Fanatics Collect newsroom filter discovery. Discover the newsroom category and tag IDs, labels and supported publication sort orders. Pass these IDs to fanaticscollect_newsroom to filter its paginated article metadata. This operation takes no parameters and reads the current archive filter catalog.
+- **Params:** _none_
+
+### `fanaticscollect_recently_ripped`
+
+- **HTTP:** `GET /fanaticscollect/instant-rips/recently-ripped`
+- **What:** Fanatics Collect Recently Ripped cards. Fetch up to 15 recent public Instant Rips card reveals with card and pack titles, item type, time and images. Omit checklist_id for the general feed or pass a pack checklist UUID from fanaticscollect_instant_rips_packs to narrow the feed. An uncovered pack can return an empty list.
+- **Params:** `checklist_id` (string, optional) — Pack checklist UUID from the pack catalog
 
 ### `fanaticscollect_search`
 
@@ -6405,6 +6985,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Fast Company sections. Returns the Fast Company section/topic inventory: the site's six primary verticals (Tech, Work Life, News, Design, Leadership, Impact) plus every topic tag accepted by GET /fastcompany/headlines (78 values total, too many to enumerate inline -- see that endpoint for the full, current, live-verified list), each linking to its public RSS feed.
 - **Params:** _none_
 
+## Fever (6)
+
+### `fever_cities`
+
+- **HTTP:** `GET /fever/cities`
+- **What:** Search Fever cities by name. Searches Fever's (feverup.com) city index and returns the matching city records grouped by the upstream's own suggestion type: city id, city code (pass it to fever-plans and fever-filters), name, country, region, slug, language, centre coordinates and thumbnail. Matching is Fever's own fuzzy name match, so search by name (new york, london) rather than by a bare city code: a three-letter code query that matches nothing falls back to the whole top-city list instead of reporting no results. No public route enumerates every Fever city; fever-top-cities is a fixed 25-city seed and this search is the way to reach the rest.
+- **Params:** `locale` (string, optional) — Locale for results, defaults to en-US; `query` (string, **required**) — City search text, e.g. new york
+
+### `fever_feed`
+
+- **HTTP:** `GET /fever/feed`
+- **What:** List one city's curated Fever feed rows and the feed's pill filter enum. Returns one city's curated Fever (feverup.com) feed: every row with its title, subtype, layout and Fever category id, plus the feed's complete pill enum (creative, culture, wellness, tourist, social, luxe, romantic, detective, nightlife, foodie, adventurer, family). This is a discovery surface, not coverage: the rows are editorial carousels, and each row's items are reached through fever-plans with the row's whatplanfilter_id. It exists because fever-filters is incomplete: Fever runs two disjoint category id spaces, and today's NYC feed exposes nine category ids the filter list never lists (558, 566, 655, 851, 865, 871, 1033, 1070, 1109 on 2026-11-08, drifting by city and day), most of which fever-plans accepts as whatplanfilter_id. pill_id filters the rows and is validated against the pills array in the same response, because the enum is only learnable from the response itself; an unknown pill is a typed invalid-params error listing the accepted ids. A served city is identified by a non-empty pills array, so an unserved city_code is a typed invalid-params error naming the code rather than an empty success. Carousel items are deliberately not exposed: the whatplanfilter item route answers 404 upstream for every variant.
+- **Params:** `city_code` (string, **required**) — Fever city code, e.g. NYC; `pill_id` (string, optional) — Feed pill id to filter the rows, e.g. foodie; the accepted set is the pills array this endpoint returns
+
+### `fever_filters`
+
+- **HTTP:** `GET /fever/filters`
+- **What:** List one city's complete Fever category and date filter value space. Returns the complete filter value space Fever publishes for one city: the date windows (Today, Tomorrow, This weekend, Next week, Later) and every category id with its label and page URL. This is the discovery endpoint for fever-plans' whatplanfilter_id parameter, so a caller never has to hard-code a category set, and the set is per city (19 categories for NYC, 17 for LAX). The date window ids are Fever's own shortcuts for display; fever-plans takes epoch-second bounds rather than these ids.
+- **Params:** `city_code` (string, **required**) — Fever city code, e.g. NYC
+
+### `fever_plan`
+
+- **HTTP:** `GET /fever/plan`
+- **What:** Get one Fever plan's detail record. Returns one Fever (feverup.com) plan: name, description, canonical page, city, category labels, advertised from-price, every place it happens at with coordinates, gallery images, the first and last session dates, translation languages and the plan's own session flags. This reads Fever's JSON plan route rather than the Angular page that carries the same record, so one plan costs a few kilobytes instead of a few hundred. An unknown plan id is a 404. The price is the advertised starting price and is volatile; it is never a final or purchasable price, and no ticket, session-availability or checkout data is returned.
+- **Params:** `plan_id` (integer, **required**) — Numeric Fever plan id from fever-plans
+
+### `fever_plans`
+
+- **HTTP:** `GET /fever/plans`
+- **What:** List and filter Fever plans for a city. Returns one page of Fever's (feverup.com) plan catalogue for a city, optionally filtered by category and session-date window and ordered by one of Fever's own sort values. This is the category and date browse Fever's own website refuses (its listing API is a 403), served from the public search endpoint the site and its app already use. page_size is capped at 100: the upstream silently truncates larger values to 100 rows, so anything above 100 is rejected. date_start and date_end are epoch SECONDS; date_start is required whenever a window is given, and a millisecond value is rejected because the upstream silently answers an empty window for one. Category ids come from fever-filters. Latitudes/longitudes default to the city's own centre from fever-top-cities; a city outside that list needs an explicit pair. count is the search index's own match count and is not the website's total_plans, so the two can differ materially.
+- **Params:** `city_code` (string, **required**) — Fever city code, e.g. NYC; `date_end` (integer, optional) — Latest session date in epoch SECONDS; only with date_start; `date_start` (integer, optional) — Earliest session date in epoch SECONDS; required when date_end is set; `latitude` (number, optional) — Latitude of the search centre; supply with longitude. Defaults to the city's own centre; `locale` (string, optional) — Response language for the search index, defaults to en; `longitude` (number, optional) — Longitude of the search centre; supply with latitude; `page` (integer, optional) — 1-based page number, defaults to 1; `page_size` (integer, optional) — Plans per page, defaults to 20, maximum 100; `query` (string, optional) — Free-text query; empty means no keyword filter; `sort_type` (string, optional) — Result ordering; `whatplanfilter_id` (string, optional) — Fever category id from fever-filters, e.g. 1040
+
+### `fever_top_cities`
+
+- **HTTP:** `GET /fever/top-cities`
+- **What:** List Fever's fixed top-city seed. Returns Fever's (feverup.com) fixed list of 25 top cities, in the upstream's own order, with each city's id, code, name, country, region, slug, language, centre coordinates and thumbnail. This is the only enumerable city surface on the platform: it is a top list and not the complete city set, so use fever-cities to find a city outside it. It takes no parameters and has no paging.
+- **Params:** _none_
+
 ## FiveGuys (10)
 
 ### `fiveguys_directory`
@@ -6487,7 +7105,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Fiverr seller profile. Returns a Fiverr seller profile: display name, one-liner title, description, country, seller level, verification status, hourly rate, spoken languages, join date, and the seller's gig ids. Seller level uses the same values on the search, seller and gig endpoints: level_one_seller, level_two_seller, top_rated_seller, or new_seller.
 - **Params:** `username` (string, **required**) — Fiverr seller username, e.g. from a search result's seller_username field
 
-## Flashscore (54)
+## Flashscore (58)
 
 ### `flashscore_calendar`
 
@@ -6519,6 +7137,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Flashscore basketball, hockey and baseball box score. Returns the per-player box score of a basketball, hockey or baseball match: one table per team (hockey adds a goalkeeper table and baseball a pitcher table) with the statistic columns the provider defines for that sport, and each player's value per column, or null where Flashscore shows a dash. Other sports and matches without box-score coverage return not found.
 - **Params:** `id` (string, **required**) — Eight-character Flashscore match id
 
+### `flashscore_match_commentary`
+
+- **HTTP:** `GET /flashscore/match-commentary`
+- **What:** Flashscore match text commentary. Returns the play-by-play text Flashscore publishes for a match, newest first. Each entry can include the displayed minute, a detailed clock and an event type. Pre-match comments may have no time. Matches without text coverage return not found.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore match id
+
 ### `flashscore_match_darts`
 
 - **HTTP:** `GET /flashscore/match-darts`
@@ -6537,6 +7161,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Flashscore match highlights. Returns public highlight identifiers, metadata, and video links as the provider's raw delimited text. Video content is not fetched or included. Matches without available highlights return not found.
 - **Params:** `id` (string, **required**) — Eight-character Flashscore match id
 
+### `flashscore_match_incidents`
+
+- **HTTP:** `GET /flashscore/match-incidents`
+- **What:** Flashscore structured match incidents. Fetch the structured Flashscore incident timeline by match ID with period, displayed clock, team side and ordered actions. An incident can group a goal and assist or both players in a substitution. Valid summaries without incidents return an empty list. Use flashscore_match_commentary for editorial text.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore match ID
+
 ### `flashscore_match_info`
 
 - **HTTP:** `GET /flashscore/match-info`
@@ -6546,7 +7176,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `flashscore_match_lineups`
 
 - **HTTP:** `GET /flashscore/match-lineups`
-- **What:** Flashscore match lineups and formations. Returns the public starting-lineup and formation feed as the provider's raw delimited text. Matches without published lineups return not found.
+- **What:** Flashscore match lineups and formations. Returns each side's confirmed formation, starters and substitutes with positions, in-match ratings and incidents such as cards and substitutions, plus coaches and the substitutions made. Lineups usually appear shortly before kickoff for covered matches; a match with no lineup players on either side returns not found. Use flashscore-match-predicted-lineups for expected lineups before they are confirmed.
 - **Params:** `id` (string, **required**) — Eight-character Flashscore match id
 
 ### `flashscore_match_missing_players`
@@ -6590,6 +7220,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /flashscore/match-predicted-lineups`
 - **What:** Flashscore predicted lineups. Returns each side's predicted formation, predicted starters with position tags and player details, lineup groups, and coaches. Predictions usually appear shortly before kickoff for covered matches; a match with no predicted players on either side returns not found.
 - **Params:** `id` (string, **required**) — Eight-character Flashscore match id
+
+### `flashscore_match_prematch_scorers`
+
+- **HTTP:** `GET /flashscore/match-prematch-scorers`
+- **What:** Flashscore pre-match top scorers. Fetch the pre-match scorer panel for a Flashscore match by match ID, with each side’s leading scorers, competition and recent goal averages, and player goal counts from recent fixtures. A match without a scorer panel returns not found. Use flashscore_match_player_stats for individual performance during the selected match.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore match ID
 
 ### `flashscore_match_report`
 
@@ -6783,6 +7419,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Flashscore competition seasons by stage id. Returns every season of the competition that owns a tournament stage: season label, season tournament id, whether it is current, the winning participants and the stage ids of each season, plus the requested stage's names and page tabs (summary, odds, standings, results, fixtures, draw, news). Get a stage id from tournament_stage_id in the competition block of team, player and match event lists, then reuse the stage ids returned here for older seasons. Pass a stage id, not a season tournament id or a competition id: other ids can return an unrelated competition, so check the returned tournament name. An unknown stage id returns not found.
 - **Params:** `stage_id` (string, **required**) — Eight-character tournament stage id (tournament_stage_id of an event competition block)
 
+### `flashscore_tournament_draw`
+
+- **HTTP:** `GET /flashscore/tournament-draw`
+- **What:** Flashscore tournament draw by season and stage. Returns one knockout stage with its entrants and ordered bracket rounds, slots, linked match IDs, scores and winners. A slot can contain replays or have no linked match yet. Use the season tournament_id and its stage_id from flashscore-tournament-archive-seasons or the competition block of an event. A stage without a published draw returns not found.
+- **Params:** `stage_id` (string, **required**) — Eight-character Flashscore draw stage id; `tournament_id` (string, **required**) — Eight-character Flashscore season tournament id
+
 ### `flashscore_tournament_events`
 
 - **HTTP:** `GET /flashscore/tournament-events`
@@ -6812,6 +7454,38 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /flashscore/tournament-standings-views`
 - **What:** Flashscore competition standings view discovery. Returns the table views currently exposed on a public Flashscore competition standings page. The view set varies by competition and stage; use a returned value with flashscore-tournament-standings.
 - **Params:** `path` (string, **required**) — Relative Flashscore competition path from flashscore-navigation or flashscore-competitions; omit /standings/
+
+## FlickReels (5)
+
+### `flickreels_classify`
+
+- **HTTP:** `GET /flickreels/classify`
+- **What:** List one page of a FlickReels category. Returns one page of a FlickReels (flickreels.net) category listing: twelve titles with each one's playlet id, the slug flickreels-movie requires, title, cover, episode count, tags and canonical URL, plus the site's own total for that category. Take tag_id and slug from flickreels-genres for the same locale: the route is slug+id keyed, so an id-only request, a wrong slug and an unknown id are all a 404. Page 0 is treated as page 1 locally because the upstream canonicalises it, and a page past the end is a valid empty page with empty=true and the site's total intact, never an error.
+- **Params:** `language` (string, optional) — Locale code, defaults to en; `page` (integer, optional) — 1-based page of 12 titles, defaults to 1; `slug` (string, **required**) — Category slug from flickreels-genres for the same language; `tag_id` (integer, **required**) — Category tag id from flickreels-genres; 0 means All
+
+### `flickreels_genres`
+
+- **HTTP:** `GET /flickreels/genres`
+- **What:** List FlickReels' complete category and language taxonomy. Returns the complete FlickReels (flickreels.net) category taxonomy for one locale: every category the site lists, each with the tag_id and slug that flickreels-classify requires, plus the site's own 10-entry language list, which is the value space of the language parameter. This is the discovery endpoint for both the tag_id and language parameters, so no caller has to hard-code them. Category tag ids and slugs are locale-scoped: read both from the same locale you pass to the listing endpoint. The All category is tag_id 0 and its slug is all.
+- **Params:** `language` (string, optional) — Locale code, defaults to en
+
+### `flickreels_home`
+
+- **HTTP:** `GET /flickreels/home`
+- **What:** List the FlickReels home page's shelves. Returns every shelf the FlickReels (flickreels.net) home page renders, in the site's own order: each shelf's column id, the slug flickreels-shelf needs when the row links a see-more page, its title, the site's own count and the titles it rendered. Five shelves are observed for the default locale. The site publishes the true count while rendering only a window of rows, so the count and the returned list length legitimately differ; use flickreels-shelf with the shelf id to page a shelf that carries more.
+- **Params:** `language` (string, optional) — Locale code, defaults to en
+
+### `flickreels_movie`
+
+- **HTTP:** `GET /flickreels/movie`
+- **What:** Get a FlickReels title with its full episode list. Returns one FlickReels (flickreels.net) title: the site's own title, cover, synopsis, episode count, release date and tag labels, the complete episode list (number, chapter id, title, duration in seconds and locked flag), and the detail page's own related shelf. The route is slug+id keyed, so pass both values from the same card; an id-only request or a wrong slug is a 404. Episode cover images are signed with an expiring token and are deliberately not returned, and no playable media is ever exposed.
+- **Params:** `language` (string, optional) — Locale code, defaults to en; `slug` (string, **required**) — Title slug from the same card; `title_id` (integer, **required**) — Playlet id from any listing card
+
+### `flickreels_shelf`
+
+- **HTTP:** `GET /flickreels/shelf`
+- **What:** List one page of a FlickReels curated shelf. Returns one page of a curated FlickReels (flickreels.net) shelf: the shelf's title and the site's own total, plus twelve titles with each one's playlet id, movie slug, title, cover, episode count, tags and canonical URL. Take shelf_id from a flickreels-home shelf; the slug is optional because the upstream ignores that path segment. A shelf can hold far more rows than the home page renders, so page through with the page parameter and stop when a page returns an empty list, which the upstream answers as a valid 200 rather than a 404.
+- **Params:** `language` (string, optional) — Locale code, defaults to en; `page` (integer, optional) — 1-based page, twelve rows per page, defaults to 1; `shelf_id` (integer, **required**) — Shelf id from a flickreels-home shelf; `slug` (string, optional) — Shelf slug from the same shelf; the upstream ignores its value
 
 ## Foodpanda (5)
 
@@ -6964,6 +7638,176 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /foreignpolicy/topic`
 - **What:** Get Foreign Policy category or tag archive. Returns one page of a public Foreign Policy category or tag archive (newest first). type selects the archive namespace and defaults to category; topic is the slug within it; page is 1-based.
 - **Params:** `page` (integer, optional) — 1-based archive page, defaults to 1; `topic` (string, **required**) — Foreign Policy category or tag slug; `type` (string, optional) — Archive namespace, defaults to category
+
+## Formula1 (28)
+
+### `formula1_driver`
+
+- **HTTP:** `GET /formula1/driver`
+- **What:** One Formula 1 driver profile. Returns one driver profile: full name, team, nationality and car number, the season the statistics describe, the current-season statistics (grand prix and sprint results, points and positions) and the career statistics, plus identity facts such as date and place of birth. The nested-statistics label and value are kept as text so suffixed values such as "1 (x9)" survive unchanged.
+- **Params:** `driver_slug` (string, **required**) — Driver profile slug from a season page or standings row, such as kimi-antonelli example(kimi-antonelli)
+
+### `formula1_driver_grid`
+
+- **HTTP:** `GET /formula1/driver-grid`
+- **What:** The Formula 1 driver grid the site currently shows. Returns the current race grid: each driver's first and last name, team, nationality, team colour, profile slug and profile URL. The grid page has no season selector (a season query is ignored upstream), so the route describes the season the page header names and reports that season in the payload. The grid is the current race line-up and can be smaller than the standings row set, which also lists mid-season substitutes.
+- **Params:** _none_
+
+### `formula1_driver_season_results`
+
+- **HTTP:** `GET /formula1/driver-season-results`
+- **What:** One Formula 1 driver's race-by-race results for a season. Returns one driver's per-round results for a season: round, Grand Prix name, weekend date, the constructor the driver raced for in that round, finishing position or a non-numeric classification such as DNF, NC or DSQ, and the points scored. The page lists the rounds the driver appears in, not every round of the championship. The driver code is the page's real key; the slug only builds the URL and a wrong slug still serves the driver.
+- **Params:** `driver_code` (string, **required**) — Uppercase driver code from formula1-driver-standings, such as ANDANT01 example(ANDANT01); `driver_slug` (string, optional) — Driver profile slug used only in the upstream URL; a placeholder is used when omitted example(kimi-antonelli); `season` (integer, optional) — Four-digit championship year, 1950 through the current season; defaults to the current season example(2026)
+
+### `formula1_driver_standings`
+
+- **HTTP:** `GET /formula1/driver-standings`
+- **What:** Formula 1 drivers' championship standings. Returns one season's drivers' championship table: position, driver name and abbreviation, nationality, team, points, and the driver code, profile slug and standings URLs the page links to. The results archive covers 1950 through the current season.
+- **Params:** `season` (integer, optional) — Four-digit championship year, 1950 through the current season; defaults to the current season example(2026)
+
+### `formula1_filters`
+
+- **HTTP:** `GET /formula1/filters`
+- **What:** List the pinned Formula 1 request values. Returns the pinned value space the Formula1 routes validate locally: the eleven session-result views with their page labels, the four season awards, the accepted season range per route class, the current season, and the discovery notes for driver codes, team values, meeting ids and the two slug spaces. The site publishes no value-listing endpoint for these; the values are read from its own page navigation and covered by exact-set tests. No upstream call is made.
+- **Params:** _none_
+
+### `formula1_json_awards`
+
+- **HTTP:** `GET /formula1/json/awards`
+- **What:** Formula 1 season awards from the JSON API. Returns one season's award dropdown: the four award labels and the absolute extension path that returns each award's per-round winners. The award values match formula1-json-season-award's award enum.
+- **Params:** `season` (integer, **required**) — Four-digit championship year, 1950 through next season example(2026)
+
+### `formula1_json_constructors`
+
+- **HTTP:** `GET /formula1/json/constructors`
+- **What:** Formula 1 constructors from the JSON API. Returns one season's constructor dropdown: each team's value (the standings identifier), name, logo image and team colour codes. This is the discovery surface for the team value formula1-team-season-results accepts.
+- **Params:** `season` (integer, **required**) — Four-digit championship year, 1950 through next season example(2026)
+
+### `formula1_json_driver_assembly`
+
+- **HTTP:** `GET /formula1/json/driver-assembly`
+- **What:** One Formula 1 driver's editorial assembly. Returns one driver's full editorial assembly payload exactly as the API sends it: the driver reference and identifier, SEO copy, profile and logo images, shop link, results-archive CTA, pull quote, vertical video stories, gallery images and the related article/video assemblies. Use either `reference` (the alphanumeric driver code from formula1-json-drivers) or `identifier` (the driver slug), never both.
+- **Params:** `identifier` (string, optional) — Driver identifier (lowercase letters and hyphens) such as alexander-albon example(alexander-albon); `reference` (string, optional) — Alphanumeric driver reference from formula1-json-drivers, such as ALEALB01 example(ALEALB01)
+
+### `formula1_json_drivers`
+
+- **HTTP:** `GET /formula1/json/drivers`
+- **What:** Formula 1 driver codes from the JSON API. Returns one season's driver dropdown: each driver's code (the value formula1-driver-season-results and the HTML standings rows use), display names, name format, avatar image and team colour codes. A season with no driver entries returns an empty list.
+- **Params:** `season` (integer, **required**) — Four-digit championship year, 1950 through next season example(2026)
+
+### `formula1_json_editorial`
+
+- **HTTP:** `GET /formula1/json/editorial`
+- **What:** Formula 1 editorial JSON resources. Returns one editorial resource exactly as the API sends it: the season event listing (every round with its event slug, official name, circuit facts and dates), the driver listing, the constructor listing, the atom race calendar (meeting dates with city and timezone) or the results archive metadata. The resource is a closed set; every resource except race-calendar requires a season, and race-calendar rejects one.
+- **Params:** `resource` (string, **required**) — Resource: events, driver-listing, constructor-listing, race-calendar or results-archive; `season` (integer, optional) — Four-digit championship year; required for events, driver-listing, constructor-listing and results-archive, and not accepted for race-calendar example(2026)
+
+### `formula1_json_event_tracker`
+
+- **HTTP:** `GET /formula1/json/event-tracker`
+- **What:** Formula 1 event tracker: current season context and live-timing source. Returns the event tracker payload the site's own front end reads: the current season context (season year, current or next meeting key, event and season state), the current meeting's identity and dates, the live-timing and static replay base URLs, and any published race results. This is the current-event surface; the URLs it names are not fetched by any route (live timing stays out of scope).
+- **Params:** _none_
+
+### `formula1_json_meeting_datasets`
+
+- **HTTP:** `GET /formula1/json/meeting-datasets`
+- **What:** Formula 1 session datasets for one meeting, from the JSON API. Returns one meeting's dataset dropdown: each dataset's label, its relative path (with the meeting or session parameters), whether it is a session result, whether it is available and the editorial session type. This is the discovery surface for the dataset values formula1-json-results accepts for that meeting; a sprint dataset appears only on sprint weekends.
+- **Params:** `meeting` (integer, **required**) — Numeric meeting id from formula1-json-meetings example(1299); `season` (integer, **required**) — Four-digit championship year example(2026)
+
+### `formula1_json_meetings`
+
+- **HTTP:** `GET /formula1/json/meetings`
+- **What:** Formula 1 meeting ids from the JSON API. Returns one season's meeting dropdown from formula1.com's own JSON API: each meeting's numeric id, name, country code and ISO country name, and which one the site marks as current. Use the id with formula1-json-results and formula1-json-meeting-datasets; the JSON API requires the site's embedded public-bundle key, which this service rediscovers on first use and refreshes when the gateway rejects it.
+- **Params:** `season` (integer, **required**) — Four-digit championship year, 1950 through next season example(2026)
+
+### `formula1_json_race_assembly`
+
+- **HTTP:** `GET /formula1/json/race-assembly`
+- **What:** One Formula 1 race weekend's editorial assembly. Returns one race weekend's full editorial assembly payload exactly as the API sends it: the structured data (fomRaceId, season, identifier, SEO copy, brand colour and images), the session schedule (race.meetingSessions with session codes, names and UTC start/end times), the circuit description, session link sets, promotional content and the related article/video assemblies. Use either `meeting` or `season`+`identifier`, never both. Identifiers match the race-hub event slugs from formula1-race-calendar.
+- **Params:** `identifier` (string, optional) — Race identifier (lowercase letters, numbers, hyphens) such as brazil; required with season example(brazil); `meeting` (integer, optional) — Numeric meeting id from formula1-json-meetings; use it alone example(1299); `season` (integer, optional) — Four-digit championship year for the season+identifier mode example(2026)
+
+### `formula1_json_results`
+
+- **HTTP:** `GET /formula1/json/results`
+- **What:** One Formula 1 session dataset's rich JSON payload. Returns one session dataset's full JSON payload for a meeting, exactly as formula1.com's own API returns it: session metadata, the result rows with every field the API sends, classification codes, gaps, lap counts, points, qualifying segment times and the meeting block. The dataset is the closed set from formula1-json-meeting-datasets; practice requires its numbered session and every other dataset rejects one. The payload is kept verbatim in data, so no rich field is reshaped or dropped.
+- **Params:** `dataset` (string, **required**) — Dataset: race, qualifying, starting-grid, pitstops, fastestlaps, sprint, sprint-grid, sprint-shootout or practice; `meeting` (integer, **required**) — Numeric meeting id from formula1-json-meetings example(1299); `session` (integer, optional) — Practice session, 1 to 3; required for the practice dataset and rejected for the others example(1)
+
+### `formula1_json_season_award`
+
+- **HTTP:** `GET /formula1/json/season-award`
+- **What:** One Formula 1 season award's rich JSON payload. Returns one season award extension payload exactly as the API sends it: the award text, call-to-action, article or video tags, and the per-round winner data with classified times, driver and team references. The award enum is the closed set the JSON API publishes; a season that predates an award is a valid empty data list.
+- **Params:** `award` (string, **required**) — Award: fastest-laps, pole-positions, fastest-pit-stops or driver-of-the-day; `season` (integer, **required**) — Four-digit championship year example(2026)
+
+### `formula1_json_team_assembly`
+
+- **HTTP:** `GET /formula1/json/team-assembly`
+- **What:** One Formula 1 team's editorial assembly. Returns one team's full editorial assembly payload exactly as the API sends it: the team key and identifier, SEO copy, profile and logo images, shop link, profile text, vertical video stories, gallery images and the related article/video assemblies. Use either `key` (the numeric teamKey from formula1-json-editorial resource=constructor-listing) or `identifier` (the team slug), never both.
+- **Params:** `identifier` (string, optional) — Team identifier (lowercase letters, numbers and hyphens) such as mercedes example(mercedes); `key` (string, optional) — Numeric team key from the constructor listing, such as 543 example(543)
+
+### `formula1_meetings`
+
+- **HTTP:** `GET /formula1/meetings`
+- **What:** Formula 1 meetings with numeric meeting ids for one season. Returns one season's Grand Prix weekends in championship order with the site's numeric meeting id, the results-archive slug, the Grand Prix name, the weekend date and the winner's race result once the round has run. The meeting id is the only stable race key and is the selector the session-results route takes; on a detail URL the season and slug segments are decorative.
+- **Params:** `season` (integer, optional) — Four-digit championship year, 1950 through the current season; defaults to the current season example(2026)
+
+### `formula1_race_calendar`
+
+- **HTTP:** `GET /formula1/race-calendar`
+- **What:** Formula 1 race calendar for one season. Returns the season's published calendar: every Grand Prix weekend including future rounds and pre-season testing, with the race-hub event slug, the short and official event names, the host country, the parsed weekend start and end dates, the completed marker and the championship round. The event slug is the race-hub selector and is a different slug space from the results-archive slug; winners come from the season-results route.
+- **Params:** `season` (integer, optional) — Four-digit championship year, 2018 through next season; defaults to the current season example(2026)
+
+### `formula1_race_hub`
+
+- **HTTP:** `GET /formula1/race-hub`
+- **What:** One Formula 1 race weekend hub. Returns one race weekend's hub: the event's official name, description, host location and weekend bounds from the page's schema.org structured data, the published session schedule with UTC start and end times, the circuit facts (length, first Grand Prix, lap count) and, once the race has run, the top-five result table. The event slug is the race-hub slug from formula1-race-calendar and is a different slug space from the results-archive slug.
+- **Params:** `event_slug` (string, **required**) — Race-hub event slug from formula1-race-calendar, such as brazil or united-arab-emirates example(brazil); `season` (integer, optional) — Four-digit championship year, 2018 through next season; defaults to the current season example(2026)
+
+### `formula1_season_awards`
+
+- **HTTP:** `GET /formula1/season-awards`
+- **What:** Formula 1 season award winners by round. Returns one season award's per-round winner list: the DHL Fastest Lap, Pirelli Pole Position, DHL Fastest Pit Stop (a team award) or Salesforce Driver of the Day. Each row carries the round, numeric meeting id, Grand Prix name, winner and the award time where the page renders one. An award the site does not publish for the requested season returns HTTP 400 with an explicit message.
+- **Params:** `award` (string, **required**) — Season award: fastest-laps, pole-positions, fastest-pit-stops or driver-of-the-day; `season` (integer, optional) — Four-digit championship year, 1950 through the current season; defaults to the current season example(2026)
+
+### `formula1_season_results`
+
+- **HTTP:** `GET /formula1/season-results`
+- **What:** Formula 1 season results table. Returns one season's completed rounds: round number, numeric meeting id, results-archive slug, Grand Prix name, weekend date, race winner with abbreviation, winning team, lap count and race time. A season that has not started yet is a valid empty result.
+- **Params:** `season` (integer, optional) — Four-digit championship year, 1950 through the current season; defaults to the current season example(2026)
+
+### `formula1_seasons`
+
+- **HTTP:** `GET /formula1/seasons`
+- **What:** Formula 1 seasons published by the results archive. Returns every championship season the formula1.com results archive publishes, newest first, with the season the site currently defaults to marked as current. This is the discovery surface for the season parameter the other Formula 1 routes accept: the archive covers 1950 through the current season.
+- **Params:** _none_
+
+### `formula1_session_results`
+
+- **HTTP:** `GET /formula1/session-results`
+- **What:** One Formula 1 session result table by meeting id. Returns one session's classified table for a meeting: race, qualifying, starting grid, practice 1 to 3, pit-stop summary, fastest laps or the three sprint sessions. The meeting id is the real selector; the season and slug parameters only build the upstream URL and are decorative on the site's own detail pages. A session the site has no data for (a sprint view on a non-sprint weekend, or a practice session the weekend did not run) is a valid empty result.
+- **Params:** `meeting_id` (integer, **required**) — Numeric meeting id from formula1-meetings, such as 1299 example(1299); `meeting_slug` (string, optional) — Results-archive slug used in the upstream URL only; the meeting id selects the data. Defaults to a fixed placeholder example(brazil); `season` (integer, optional) — Four-digit season used in the upstream URL only; the meeting id selects the data. Defaults to the current season example(2026); `session` (string, **required**) — Session view: race-result, qualifying, starting-grid, practice-1, practice-2, practice-3, pit-stop-summary, fastest-laps, sprint-results, sprint-grid or sprint-qualifying
+
+### `formula1_team`
+
+- **HTTP:** `GET /formula1/team`
+- **What:** One Formula 1 team profile. Returns one team profile: team name, the current drivers the profile lists with their profile slugs, the season the statistics describe, the current-season statistics and the career statistics, plus profile facts such as full team name, base, team chief and power unit.
+- **Params:** `team_slug` (string, **required**) — Team profile slug from a season page or standings row, such as mercedes example(mercedes)
+
+### `formula1_team_grid`
+
+- **HTTP:** `GET /formula1/team-grid`
+- **What:** The Formula 1 team grid the site currently shows. Returns the current team grid: each team's name, team colour, profile slug, profile URL and the drivers the card names. The team page has no season selector (a season query is ignored upstream), so the route describes the season the page header names and reports that season in the payload.
+- **Params:** _none_
+
+### `formula1_team_season_results`
+
+- **HTTP:** `GET /formula1/team-season-results`
+- **What:** One Formula 1 team's race-by-race points for a season. Returns one team's per-round points for a season: round, Grand Prix name, weekend date and the points the team scored in that round. The page lists the rounds the team appears in. The team value comes from formula1-team-standings and the upstream page matches it case-insensitively, so Mercedes and mercedes both serve the same team.
+- **Params:** `season` (integer, optional) — Four-digit championship year, 1950 through the current season; defaults to the current season example(2026); `team` (string, **required**) — Results-archive team value from formula1-team-standings, such as Mercedes or Williams-Renault; matched case-insensitively example(Mercedes)
+
+### `formula1_team_standings`
+
+- **HTTP:** `GET /formula1/team-standings`
+- **What:** Formula 1 constructors' championship standings. Returns one season's constructors' championship table: position, team, points and the team standings URL. The constructors' championship started in 1958; a pre-1958 season returns available=false with an empty table, and a season the site has not published yet returns an empty table.
+- **Params:** `season` (integer, optional) — Four-digit championship year, 1950 through the current season; defaults to the current season example(2026)
 
 ## Fortune (12)
 
@@ -7337,6 +8181,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List Free Malaysia Today sections. Lists every live-verified primary editorial navigation section, with its slug, display name, and landing-page URL. This is the live-verified primary editorial navigation taxonomy; media, promotional, and duplicate commercial destinations are excluded.
 - **Params:** _none_
 
+## Fresha (4)
+
+### `fresha_landing_venues`
+
+- **HTTP:** `GET /fresha/landing-venues`
+- **What:** List the venues on one Fresha landing page. Returns the venue list Fresha (fresha.com) publishes on one of its own pre-rendered landing pages: each venue's name, canonical page, published business types, postal address with coordinates, average rating with its rating count, the venue's coarse price band and an image. Read a plain city page with city alone, a business-type page with business_type, or a treatment-type page with treatment_type; the two facets are mutually exclusive. city is the page's own value with its country prefix, e.g. us-new-york. There is no pagination on this route: Fresha pre-renders a fixed list (about 30 venues on a city page, 130 on a business-type or treatment-type page) and exposes no page parameter, so count is the number of venues on the page and never a total. A facet combination Fresha does not publish is a not-found. The price range is the venue's own coarse display string and is not this API's price surface: a venue's service menu, read through fresha-venue, is.
+- **Params:** `business_type` (string, optional) — Business-type slug, e.g. hair-salons; mutually exclusive with treatment_type; `city` (string, **required**) — City landing value with country prefix, e.g. us-new-york; `treatment_type` (string, optional) — Treatment-type slug, e.g. hair-colouring; mutually exclusive with business_type
+
+### `fresha_search_venues`
+
+- **HTTP:** `GET /fresha/search-venues`
+- **What:** Search Fresha venues by text, place, price, gender, award and treatment. Returns one page of Fresha's (fresha.com) salon, barber and wellness venue search: each venue's id, slug, name, canonical page, address, business type, rating and rating count, rating badge, cover image and distance, plus the gateway's own match count and a forward cursor. Pass a latitude/longitude pair to search a place (with neither, the gateway falls back to its own default centre and the response reports the centre it used). query, min_price, service_gender (EVERYONE, MALE, FEMALE), awards (BEST_IN_CLASS, HIGHLY_RECOMMENDED), sort (DISTANCE, RATING, RECOMMENDED) and the three treatment ids from fresha-taxonomy (category:<slug>, tag:<slug>, treatment:<category>/<type>) each change the result set. first is 1 to 200 and larger values are rejected because the gateway rejects them too. Paging is cursor-based: pass next_cursor back as after while has_next_page is true, and note that a malformed cursor silently restarts the list at page one. count 0 with no error is an honest empty result for a valid filter. Search results carry no price: a venue's own service menu, read through fresha-venue, is the only place this API publishes one.
+- **Params:** `after` (string, optional) — Forward cursor from next_cursor; omit for the first page; `awards` (string, optional) — Fresha award filter; `first` (integer, optional) — Venues per page, default 20, maximum 200; `latitude` (number, optional) — Latitude of the search centre; supply with longitude; `longitude` (number, optional) — Longitude of the search centre; supply with latitude; `min_price` (number, optional) — Minimum service price in the market's own currency; `query` (string, optional) — Free-text query matched by Fresha's venue search; `service_gender` (string, optional) — Venue gender focus; `sort` (string, optional) — Result ordering; `treatment_category_id` (string, optional) — Taxonomy category id from fresha-taxonomy, e.g. category:nails; `treatment_tag_id` (string, optional) — Taxonomy tag id from fresha-taxonomy, e.g. tag:haircut; `treatment_type_id` (string, optional) — Taxonomy treatment id from fresha-taxonomy, e.g. treatment:nails/wedding-nails
+
+### `fresha_taxonomy`
+
+- **HTTP:** `GET /fresha/taxonomy`
+- **What:** List Fresha's treatment categories, tags and treatment types. Returns one page of Fresha's (fresha.com) treatment taxonomy: the ids that fresha-search-venues accepts as treatment_category_id, treatment_tag_id and treatment_type_id. Each node carries its id, display label, kind (TreatmentCategory, TreatmentTag or TreatmentType) and an icon for categories; ids take the forms category:<slug>, tag:<slug> and treatment:<category-slug>/<type-slug>. With no query this returns Fresha's closed category page: 20 categories, with a 21st reachable only by text search, so categories are effectively complete. Tags and treatment types are not: they only appear for a text query and are ranked by Fresha's own autocomplete, so treat a text search as a discovered set rather than a complete catalogue, and page it with next_start while has_next_page is true. Use words from a treatment name (nail, haircut, massage). first is 1 to 200.
+- **Params:** `first` (integer, optional) — Nodes per page, default 200, maximum 200; `query` (string, optional) — Taxonomy search text; empty returns the closed category page; `start` (integer, optional) — Zero-based offset from next_start, default 0
+
+### `fresha_venue`
+
+- **HTTP:** `GET /fresha/venue`
+- **What:** Get one Fresha venue's profile, opening hours and service menu. Returns one Fresha (fresha.com) venue: name, description, canonical page, country and currency, business type, full postal address with coordinates, average rating with its rating count and rating badge, published opening hours per day, gallery images and the venue's own service menu. The service menu is grouped as the venue groups it; every service carries its own retail price in the venue's own currency and its shortest and longest duration in seconds, so this is the only place this API publishes a price and it is always the provider's own menu price, never a quote or a booking price. Pass a slug from fresha-search-venues. An unknown slug is a not-found, not an empty success. No staff, professional profile, review text or reviewer identity is returned, and no availability slot, booking or checkout data exists on this route.
+- **Params:** `slug` (string, **required**) — Venue page slug, e.g. toto-hair-new-york-201-grand-street-oqiknjih
+
 ## FT (6)
 
 ### `ft_article`
@@ -7538,6 +8408,134 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /fussballde/top-scorers`
 - **What:** Get the FUSSBALL.DE top scorers of a competition. Returns a page of a competition's top-scorer list with position, player, team and goals; page through it with `limit` (1 to 100, default 30) and `offset`. Tied scorers share a position. A competition without recorded scorers returns an empty list; cups and tournaments have no scorer list at all and return 404.
 - **Params:** `competition_id` (string, **required**) — Competition id from fussballde-competitions; `limit` (integer, optional) — Scorers per call, 1 to 100, default 30; `offset` (integer, optional) — Number of scorers to skip, 0 to 1000, default 0
+
+## FUT.GG (21)
+
+### `futgg_fc27_catalog`
+
+- **HTTP:** `GET /futgg/fc27/catalog`
+- **What:** Discover FC27 native card catalogs. Returns native catalog IDs, EA IDs and labels. Use eaId for player filters; internal database IDs are a separate namespace.
+- **Params:** _none_
+
+### `futgg_fc27_definitions`
+
+- **HTTP:** `GET /futgg/fc27/definitions`
+- **What:** Get native FC27 card definitions. Reads the source batch metadata endpoint with EA item IDs and preserves card identity/stat fields. This does not fetch accounts or install anything.
+- **Params:** `ids` (string, **required**) — Comma-separated EA item IDs, 1 to 100
+
+### `futgg_fc27_evolution`
+
+- **HTTP:** `GET /futgg/fc27/evolutions/{slug}`
+- **What:** Read FC27 evolution detail. Uses the source evolution slug and returns native game/rule/level/upgrade metadata with its published raw-definition example. This differs from list example-card wrappers. Preserves nulls and source order while excluding biography/account/editorial/internal engine data. No previous-edition fallback, player/path generation, local upgrades or media execution.
+- **Params:** `slug` (string, **required**) — Native evolution slug from listing; numeric prefix is the site evolution ID, not EA ID
+
+### `futgg_fc27_evolutions`
+
+- **HTTP:** `GET /futgg/fc27/evolutions`
+- **What:** Browse FC27 evolution metadata. Reads native expiry/cosmetic/name/page/full-list options and preserves source evolution rules, level tasks, upgrade choices, published metrics and example cards. include_cosmetics=false does not mean every returned isCosmeticEvolution is false; the source option is forwarded without a local partition. Omission preserves the underlying API default; explicitly request include_cosmetics=true to match the current FC27 UI. No eligible-player/path generation, account tracking, biography or local calculation.
+- **Params:** `include_cosmetics` (boolean, optional) — Native option that widens source cosmetic coverage; not an exclusive type predicate; `name` (string, optional) — Native evolution name search, up to1024bytes; `no_pagination` (boolean, optional) — Return source data-only full-list mode; ignores paging controls; `only_expired` (boolean, optional) — Native expired-list selector; explicit false preserved; `page` (integer, optional) — One-based source page; omission resolves native page1; `page_size` (integer, optional) — Native integer size; nonpositive uses source default30; ignored in full mode
+
+### `futgg_fc27_gg_rating_ranks`
+
+- **HTTP:** `GET /futgg/fc27/gg-rating-ranks`
+- **What:** Get FC27 published GG-rating rank histograms. Returns every native role histogram with source scale and bucket data. Role IDs are distinct from card EA item IDs. This returns the publisher's dataset without calculating new player ranks or percentiles.
+- **Params:** _none_
+
+### `futgg_fc27_gg_ratings`
+
+- **HTTP:** `GET /futgg/fc27/gg-ratings`
+- **What:** Get FC27 published GG ratings. Returns the complete native compact rating dataset with delta-coded EA item IDs, positions and scaled scores. Source fields, order, wire version and sentinel values remain intact. Publication references refresh automatically.
+- **Params:** _none_
+
+### `futgg_fc27_objective_categories`
+
+- **HTTP:** `GET /futgg/fc27/objective-categories`
+- **What:** Discover FC27 objective group categories. Returns every source-backed group category, including the native coming-soon selector. The separate Season Pass campaign navigation row is excluded. UI-only Expiring Soon is not a server filter and is not offered. Native EA category IDs and optional flags are preserved; category_slug is the consuming value.
+- **Params:** _none_
+
+### `futgg_fc27_objective_group`
+
+- **HTTP:** `GET /futgg/fc27/objectives/{slug}`
+- **What:** Read FC27 objective group detail. Reads a source group slug and preserves task rules, completion requirements, source rewards and optional values. objectivesCompletionCount is a public completion requirement, not user progress. No automatic previous-edition fallback, biography/account data or locally built squad/reward totals.
+- **Params:** `slug` (string, **required**) — Native objective group slug from listing
+
+### `futgg_fc27_objective_group_by_ea`
+
+- **HTTP:** `GET /futgg/fc27/objectives/by-ea/{id}`
+- **What:** Read FC27 objective group by EA group ID. Uses group eaId, not its internal database id or a child objective EA id. Returns the same public parent group metadata as the slug resource, without account state or cross-edition fallback.
+- **Params:** `id` (integer, **required**) — Positive EA group ID from listing eaId
+
+### `futgg_fc27_objective_group_by_objective`
+
+- **HTTP:** `GET /futgg/fc27/objectives/by-objective/{id}`
+- **What:** Read FC27 parent group by EA objective ID. Uses objectivesEaIds or objectives[].eaId and returns the parent group, not a standalone task DTO. EA group IDs and database IDs are distinct. No account tracking, biography or completion mutation.
+- **Params:** `id` (integer, **required**) — Positive child EA objective ID
+
+### `futgg_fc27_objectives`
+
+- **HTTP:** `GET /futgg/fc27/objectives`
+- **What:** Browse FC27 objective groups. Preserves native category, preview, expiry and pagination arguments/results. Current source quirk: omitted hide_expired hides expired groups, while explicit true or false both include them. The API forwards the native flag without locally correcting it. Full mode returns data only; paginated mode has currentPage,next,totalPages and no invented totalCount. No local expiry windows, squad building, account progress or reward aggregation.
+- **Params:** `category_slug` (string, optional) — Native group category; `hide_expired` (boolean, optional) — Native flag; omission and explicit presence differ as described; `include_unreleased` (boolean, optional) — Include source-published taskless preview metadata; `no_pagination` (boolean, optional) — Return native complete data-only envelope; `page` (integer, optional) — Native one-based page, default1; `page_size` (integer, optional) — Native size; nonpositive resolves default30; ignored in full mode
+
+### `futgg_fc27_player_sorts`
+
+- **HTTP:** `GET /futgg/fc27/player-sorts`
+- **What:** Discover native FC27 player sorts. Returns the complete accepted business-sort catalog for the native Console or PC context, grouped by source labels with exact ascending/descending values. Price uses different Console/PC keys. Pass one returned value as sorts to the FC27 players endpoint. Biological sorts are outside the game-card contract.
+- **Params:** `platform` (string, optional) — Native UI price-platform context
+
+### `futgg_fc27_players`
+
+- **HTTP:** `GET /futgg/fc27/players`
+- **What:** Search native FC27 player cards. Preserves source card, page/next and capped total metadata. Native definition predicates qualify position/body/foot/gender/acceleration filters; base accelerateType is not a substitute for possible chemistry-style types.
+- **Params:** `accelerate_types` (array, optional) — Comma-separated possible chemistry-style codes:1 explosive,2 lengthy,3 controlled; OR within selection; `body_types` (array, optional) — Comma-separated native body-type codes:1,2,3,4,5,6,7,8,9,10; OR within selection; `club_id` (integer, optional) — Native grouped-club eaId from the catalog; `count` (integer, optional) — API result count bound, 1 to 100; `foot` (array, optional) — Comma-separated strong-foot codes:1 right,2 left; OR within selection; `gender` (array, optional) — Comma-separated native gender codes:1 male,2 female; OR within selection; `grading_score__gte` (integer, optional) — Native inclusive lower bound: Min Item Score (console); zero is forwarded unchanged; `grading_score__lte` (integer, optional) — Native inclusive upper bound: Max Item Score (console); zero is forwarded unchanged; `holographic_type` (array, optional) — Comma-separated native types:1 Regular (holographic),2 Pristine; OR within selection; `league_id` (integer, optional) — League eaId from the catalog; `name` (string, optional) — Native player name search text; `nation_id` (integer, optional) — Nation eaId from the catalog; `number_of_positions__gte` (integer, optional) — Native inclusive lower bound: Min Positions (console); zero is forwarded unchanged; `number_of_positions__lte` (integer, optional) — Native inclusive upper bound: Max Positions (console); zero is forwarded unchanged; `overall__gte` (integer, optional) — Native inclusive lower bound: Min OVR (console); zero is forwarded unchanged; `overall__lte` (integer, optional) — Native inclusive upper bound: Max OVR (console); zero is forwarded unchanged; `page` (integer, optional) — Native one-based page; `pc_price__gte` (integer, optional) — Native inclusive lower bound: Min Price (pc); zero is forwarded unchanged; `pc_price__lte` (integer, optional) — Native inclusive upper bound: Max Price (pc); zero is forwarded unchanged; `playstyles_count__gte` (integer, optional) — Native inclusive lower bound: Min PlayStyles (console); zero is forwarded unchanged; `playstyles_count__lte` (integer, optional) — Native inclusive upper bound: Max PlayStyles (console); zero is forwarded unchanged; `playstyles_plus_count__gte` (integer, optional) — Native inclusive lower bound: Min PlayStyles+ (console); zero is forwarded unchanged; `playstyles_plus_count__lte` (integer, optional) — Native inclusive upper bound: Max PlayStyles+ (console); zero is forwarded unchanged; `positions` (array, optional) — Comma-separated primary/alternative positions:0,3,5,7,10,12,14,16,18,23,25,27; OR within selection; `price__gte` (integer, optional) — Native inclusive lower bound: Min Price (console); zero is forwarded unchanged; `price__lte` (integer, optional) — Native inclusive upper bound: Max Price (console); zero is forwarded unchanged; `rarity_id` (integer, optional) — Rarity eaId from the catalog; `role_plus_count__gte` (integer, optional) — Native inclusive lower bound: Min Roles+ (console); zero is forwarded unchanged; `role_plus_count__lte` (integer, optional) — Native inclusive upper bound: Max Roles+ (console); zero is forwarded unchanged; `role_plus_plus_count__gte` (integer, optional) — Native inclusive lower bound: Min Roles++ (console); zero is forwarded unchanged; `role_plus_plus_count__lte` (integer, optional) — Native inclusive upper bound: Max Roles++ (console); zero is forwarded unchanged; `show_holographics` (string, optional) — Omit for native Hide mode; true includes holographics,only restricts to holographics; `skill_moves` (array, optional) — Comma-separated exact star selections:1,2,3,4,5; OR within selection; `sorts` (string, optional) — Single native signed key from player-sorts discovery; omit for native GG-rating order; `weak_foot` (array, optional) — Comma-separated exact star selections:1,2,3,4,5; OR within selection
+
+### `futgg_fc27_price_index`
+
+- **HTTP:** `GET /futgg/fc27/price-index`
+- **What:** Get FC27 published card-price index. Returns native delta-coded EA item identifiers and sparse price/token metadata, preserving source wire fields and zero/absent values. The index is not a historical-price series.
+- **Params:** _none_
+
+### `futgg_fc27_prices`
+
+- **HTTP:** `GET /futgg/fc27/prices`
+- **What:** Get FC27 published card prices. Supports all four native Console/PC standard/dynamic publications. Dynamic columns are combined with the same publication's shared index exactly as the website does; every price/status column is checked against its item index. Returns native compact fields, not computed price estimates or history.
+- **Params:** `dataset` (string, optional) — Native publication key; ps5 is the website's Console dataset
+
+### `futgg_fc27_sbc_categories`
+
+- **HTTP:** `GET /futgg/fc27/sbc/categories`
+- **What:** Discover FC27 SBC categories. Returns every native SBC category with its slug, label, database ID, EA category ID and source active-set count. Slugs are accepted by the SBC listing; virtual Expired/Expiring Soon tabs use listing flags instead. Counts are source catalog values and are not recalculated for each listing filter.
+- **Params:** _none_
+
+### `futgg_fc27_sbc_set`
+
+- **HTTP:** `GET /futgg/fc27/sbc/sets/{slug}`
+- **What:** Read FC27 SBC set detail. Reads a source-provided FC27 set slug and returns native set, challenge, condition/reward metadata and published prices. Preserves source IDs, order, repeatability and nullable values. Excludes biography, account/render flags and unreviewed editorial blobs. Does not execute a solver or access a private club.
+- **Params:** `slug` (string, **required**) — Native FC27 slug from listing, for example27-125-riccardo-calafiori
+
+### `futgg_fc27_sbc_set_by_challenge`
+
+- **HTTP:** `GET /futgg/fc27/sbc/sets/by-challenge/{id}`
+- **What:** Read FC27 parent SBC set by EA challenge ID. Uses a native EA challenge identity from challengeEaIds or challenges[].eaId and returns its parent set. This resource does not return a standalone challenge DTO. Database IDs and EA set IDs are different namespaces. No biography, account access or solver execution.
+- **Params:** `id` (integer, **required**) — Positive EA challenge ID from a native set
+
+### `futgg_fc27_sbc_set_by_ea`
+
+- **HTTP:** `GET /futgg/fc27/sbc/sets/by-ea/{id}`
+- **What:** Read FC27 SBC set by EA set ID. Uses the native EA set identity from listing eaId, not the set database id or an EA challenge ID. Returns the same public set/challenge/reward metadata as the slug resource. No account, biography or solver execution.
+- **Params:** `id` (integer, **required**) — Positive EA set ID from set eaId
+
+### `futgg_fc27_sbc_sets`
+
+- **HTTP:** `GET /futgg/fc27/sbc/sets`
+- **What:** Browse FC27 squad building challenges. Reads native category/search/expiry filters and pagination. Both expiry flags true preserve the source's expired-only precedence. no_pagination=true returns the native data-only envelope and ignores pagination controls; no metadata is synthesized. Native page_size<=0 resolves its default. Preserves rewards, challenge metadata, published prices and null/false/zero values; excludes biography, account/render flags and unreviewed editorial data.
+- **Params:** `category_slug` (string, optional) — Native category from discovery; `expired_only` (boolean, optional) — Native expired-only selector; explicit false preserved; `expiring_soon` (boolean, optional) — Native expiring-soon selector; expired_only=true takes source precedence; `no_pagination` (boolean, optional) — Native full-list mode; source returns data without page fields; `page` (integer, optional) — One-based native page; default1; ignored in full-list mode; `page_size` (integer, optional) — Native integer page size; nonpositive uses source default24; ignored in full-list mode; `search` (string, optional) — Native SBC search text, up to1024bytes
+
+### `futgg_fc27_season_pass`
+
+- **HTTP:** `GET /futgg/fc27/season-pass`
+- **What:** Read FC27 Season Pass reward metadata. Returns current native campaign identity, dates, nullable premium currency metadata and every reward-tier row. Free and premium rows can share a level number and remain separate in source order. isPremium describes a reward tier, not user entitlement. No purchase, account access, reward aggregation, biography or media fetch.
+- **Params:** _none_
 
 ## Game Rant (5)
 
@@ -7984,6 +8982,68 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /globeandmail/sections`
 - **What:** List Globe and Mail sections. Lists every Globe and Mail section accepted by /globeandmail/headlines, with its slug, display name, and landing-page URL. This is the full public, RSS-backed section taxonomy from the site's primary navigation.
 - **Params:** _none_
+
+## Glovo (10)
+
+### `glovo_categories`
+
+- **HTTP:** `GET /glovo/categories`
+- **What:** List a Glovo city's store categories. Returns a city's top-level store categories (for example Food, Groceries, Shops, Pharmacy & Beauty). Each carries the id that /glovo/stores/filters and /glovo/stores take as category_id. Only categories of type STORES have a store list; other types, such as package delivery, are listed but have none. The set differs by city.
+- **Params:** `city` (string, **required**) — City slug (madrid) or city code (mad), from /glovo/cities.; `country` (string, **required**) — Two-letter country code, from /glovo/cities.; `language` (string, optional) — Optional two-letter response language; defaults to en. A city's supported languages are in /glovo/city's supported_languages.
+
+### `glovo_cities`
+
+- **HTTP:** `GET /glovo/cities`
+- **What:** List the countries and cities Glovo serves. Returns Glovo's live directory of every country and city it delivers in, read from the directory its own landing page embeds. Each city carries the slug and the city code; every other Glovo endpoint takes country plus city (either the slug or the code) from here. The countries field always lists every supported country code, so the optional country filter's value space is discoverable; a country Glovo does not serve returns a 400 rather than an empty list. As of 2026-11-02 the directory covers 24 countries and 1,330 cities.
+- **Params:** `country` (string, optional) — Optional two-letter country code to restrict the directory to, e.g. es, it, pl. Omit for every country.
+
+### `glovo_city`
+
+- **HTTP:** `GET /glovo/city`
+- **What:** Get one Glovo city's market settings. Returns one city's market settings: its name, whether it is enabled, the languages it supports (the values the language parameter of every Glovo endpoint accepts for that city), its currency and its timezone. A city or country Glovo does not serve returns a 400 pointing to /glovo/cities.
+- **Params:** `city` (string, **required**) — City slug (madrid) or city code (mad), from /glovo/cities.; `country` (string, **required**) — Two-letter country code, from /glovo/cities.; `language` (string, optional) — Optional two-letter response language; defaults to en. A city's supported languages are in /glovo/city's supported_languages.
+
+### `glovo_store`
+
+- **HTTP:** `GET /glovo/store`
+- **What:** Get one Glovo store's detail. Returns one store's public detail: name, slug, category, address and coordinates, whether it is open and enabled, rating label and count, delivery and service fees, cuisine filters, promotions and its default address_id. An unknown store_id returns a 404.
+- **Params:** `city` (string, **required**) — City slug (madrid) or city code (mad), from /glovo/cities.; `country` (string, **required**) — Two-letter country code, from /glovo/cities.; `language` (string, optional) — Optional two-letter response language; defaults to en. A city's supported languages are in /glovo/city's supported_languages.; `store_id` (integer, **required**) — Store id, from /glovo/stores' id field.
+
+### `glovo_store_fees`
+
+- **HTTP:** `GET /glovo/store/fees`
+- **What:** Get one Glovo store's small-basket surcharge tiers. Returns the small-basket surcharge tiers of one store: for each basket-value range (lower_bound to upper_bound) the extra fee charged, its currency and Glovo's strategy name. A store with no small-basket surcharge returns an empty tiers list. When address_id is omitted the store's own default location is looked up first, which costs one extra upstream call.
+- **Params:** `address_id` (integer, optional) — Optional store location id, from /glovo/stores' address_id field.; `city` (string, **required**) — City slug (madrid) or city code (mad), from /glovo/cities.; `country` (string, **required**) — Two-letter country code, from /glovo/cities.; `language` (string, optional) — Optional two-letter response language; defaults to en. A city's supported languages are in /glovo/city's supported_languages.; `store_id` (integer, **required**) — Store id, from /glovo/stores' id field.
+
+### `glovo_store_menu`
+
+- **HTTP:** `GET /glovo/store/menu`
+- **What:** Get one Glovo store's menu collections. Returns one store's menu as its tree of collections (for example Top sellers, Starters, Drinks). Each collection's slug is the value /glovo/store/products takes as collection. When address_id is omitted the store's own default location is looked up first, which costs one extra upstream call.
+- **Params:** `address_id` (integer, optional) — Optional store location id, from /glovo/stores' address_id field.; `city` (string, **required**) — City slug (madrid) or city code (mad), from /glovo/cities.; `country` (string, **required**) — Two-letter country code, from /glovo/cities.; `language` (string, optional) — Optional two-letter response language; defaults to en. A city's supported languages are in /glovo/city's supported_languages.; `store_id` (integer, **required**) — Store id, from /glovo/stores' id field.
+
+### `glovo_store_products`
+
+- **HTTP:** `GET /glovo/store/products`
+- **What:** Get one Glovo store's products. Returns one store's products grouped into sections, each with a name, description, price, currency, display price, image URL, stock flag and its option groups (sizes, sides, toppings with price impact). Pass collection to return only one menu collection. limit caps the total products across sections (default 200, maximum 500); truncated reports whether more existed. When address_id is omitted the store's own default location is looked up first, which costs one extra upstream call.
+- **Params:** `address_id` (integer, optional) — Optional store location id, from /glovo/stores' address_id field.; `city` (string, **required**) — City slug (madrid) or city code (mad), from /glovo/cities.; `collection` (string, optional) — Optional menu collection slug, from /glovo/store/menu, to return only that collection.; `country` (string, **required**) — Two-letter country code, from /glovo/cities.; `language` (string, optional) — Optional two-letter response language; defaults to en. A city's supported languages are in /glovo/city's supported_languages.; `limit` (integer, optional) — Max products returned across all sections. Defaults to 200, maximum 500.; `store_id` (integer, **required**) — Store id, from /glovo/stores' id field.
+
+### `glovo_store_search`
+
+- **HTTP:** `GET /glovo/store/search`
+- **What:** Search one Glovo store's products by keyword. Returns the products of one store that match a keyword (for example burger), with the same fields as /glovo/store/products: name, description, price, currency, display price, image URL, stock flag and option groups. total_products reports how many matched in the store; limit caps the returned list (default 50, maximum 500). A keyword that matches nothing returns an empty list, not an error. When address_id is omitted the store's own default location is looked up first, which costs one extra upstream call.
+- **Params:** `address_id` (integer, optional) — Optional store location id, from /glovo/stores' address_id field.; `city` (string, **required**) — City slug (madrid) or city code (mad), from /glovo/cities.; `country` (string, **required**) — Two-letter country code, from /glovo/cities.; `language` (string, optional) — Optional two-letter response language; defaults to en. A city's supported languages are in /glovo/city's supported_languages.; `limit` (integer, optional) — Max products returned. Defaults to 50, maximum 500.; `query` (string, **required**) — Keyword to search this store's own products by.; `store_id` (integer, **required**) — Store id, from /glovo/stores' id field.
+
+### `glovo_stores`
+
+- **HTTP:** `GET /glovo/stores`
+- **What:** List a Glovo category's ranked stores. Returns the first page of up to 50 stores from a city's category, in Glovo's own ranking, optionally narrowed to one cuisine or type filter. total_entries reports how many stores match in the city; only the first page is reachable without logging in (Glovo's server-rendered list ignores paging parameters), so use filter_id to reach other subsets. A category_id the city does not list, or a filter_id the category does not offer, returns a 404; a real category with no matching stores returns an empty list. The ranking and each store's distance are relative to the city's default point and can change between calls. Each store carries its id and address_id, which the store, menu and products endpoints take, plus its rating label, delivery estimate, delivery fee, promotions and open status.
+- **Params:** `category_id` (integer, **required**) — Store category id, from /glovo/categories.; `city` (string, **required**) — City slug (madrid) or city code (mad), from /glovo/cities.; `country` (string, **required**) — Two-letter country code, from /glovo/cities.; `filter_id` (integer, optional) — Optional cuisine or type filter id, from /glovo/stores/filters for the same country, city and category_id.; `language` (string, optional) — Optional two-letter response language; defaults to en. A city's supported languages are in /glovo/city's supported_languages.; `limit` (integer, optional) — Max stores returned from the page. Defaults to 50, maximum 50.
+
+### `glovo_stores_filters`
+
+- **HTTP:** `GET /glovo/stores/filters`
+- **What:** List a Glovo category's cuisine and type filters. Returns the cuisine or type filters (for example Burgers, Pizza, Healthy) that one category's store list accepts in one city. Each carries the id that /glovo/stores takes as filter_id. The filter set is category- and city-scoped, so call this for the same country, city and category_id you will pass to /glovo/stores. A category_id Glovo does not recognise in that city returns a 404.
+- **Params:** `category_id` (integer, **required**) — Store category id, from /glovo/categories.; `city` (string, **required**) — City slug (madrid) or city code (mad), from /glovo/cities.; `country` (string, **required**) — Two-letter country code, from /glovo/cities.; `language` (string, optional) — Optional two-letter response language; defaults to en. A city's supported languages are in /glovo/city's supported_languages.
 
 ## GMA News (4)
 
@@ -8439,7 +9499,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `google_map_search`
 
 - **HTTP:** `POST /google/map/search`
-- **What:** Google Maps search API. Searches Google Maps with a request body of `keyword`, `language` and `country` (an ISO-2 code such as `us`), all required. Each place has its name, place id, categories, address, coordinates, phone, website, rating and review count. `rating` is `null` when Google has no aggregate rating.
+- **What:** Google Maps search API. Searches Google Maps with a request body of `keyword` (required) plus optional `language` (default `en`) and `country` (an ISO-2 code such as `us`, default `us`). Each place has its name, place id, categories, address, coordinates, phone, website, rating and review count. `rating` is `null` when Google has no aggregate rating.
 - **Params:** `mapSearchOption` (object, **required**) — Search options
 - **REST body:** Send the value of the MCP argument `mapSearchOption` directly as the JSON body; do not wrap it in a `mapSearchOption` property.
 
@@ -9327,6 +10387,26 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** List popular Healthgrades searches. Returns the popular specialty searches Healthgrades currently suggests, in `groups`. Each group has a category, a title such as Popular Healthcare Specialties, and suggestions with a label and value. The set changes over time and is not a fixed list.
 - **Params:** _none_
 
+## Hearthstone (3)
+
+### `hearthstone_card`
+
+- **HTTP:** `GET /hearthstone/card`
+- **What:** Get a Hearthstone card by ID. Returns one card from the public Hearthstone card library. The card record and pagination metadata preserve the upstream response shape.
+- **Params:** `id` (string, **required**) — Numeric card ID from the Hearthstone card library
+
+### `hearthstone_card_filters`
+
+- **HTTP:** `GET /hearthstone/filters`
+- **What:** List Hearthstone card gallery filters. Returns the card gallery's current filter collections and sort options. Filter values come from the gallery page configuration; sort slugs come from its current hashed card bundle.
+- **Params:** _none_
+
+### `hearthstone_cards`
+
+- **HTTP:** `GET /hearthstone/cards`
+- **What:** List Hearthstone cards. Returns a card-gallery page with native constructed, Battlegrounds, Mercenaries, and card-back filters. Dynamic filter values are discoverable from hearthstone_filters; sort mappings are returned there as well. The default view is all-class Standard with page size 450.
+- **Params:** `armor` (array, optional) — Repeatable armor filter; `attack` (array, optional) — Repeatable attack filter; `bgCardType` (string, optional) — Battlegrounds card-type selector from the source gallery; `bgGameMode` (string, optional) — Battlegrounds mode filter; see hearthstone_filters; `cardBackCategory` (string, optional) — Source card-back category filter; see hearthstone_filters; `cardSetId` (array, optional) — Repeatable card-set ID filter; `cardTypeId` (array, optional) — Repeatable card-type ID filter; `class` (string, optional) — Source class selector; use hearthstone_filters to discover current classes; `collectible` (array, optional) — Repeatable source collectible selector; `deckFormat` (string, optional) — Source deck-format selector; `deckcode` (string, optional) — Optional source deck code filter; `faction` (string, optional) — Source faction filter; see hearthstone_filters; `filterLocale` (string, optional) — Locale for textFilter; defaults to en-us; `gameMode` (string, optional) — Source game mode; Arena and Duels select their matching set; `health` (array, optional) — Repeatable health filter; `keyword` (string, optional) — Source keyword filter; see hearthstone_filters; `locale` (string, optional) — Source card locale; defaults to en_US; `manaCost` (array, optional) — Repeatable mana-cost filter; `mercenaryFaction` (string, optional) — Source Mercenary faction filter; see hearthstone_filters; `mercenaryRole` (string, optional) — Source Mercenary role filter; see hearthstone_filters; `minionType` (string, optional) — Source minion-type filter; see hearthstone_filters; `order` (string, optional) — Source sort direction; `page` (integer, optional) — Upstream page number; `pageSize` (integer, optional) — Upstream page size; `rarity` (string, optional) — Source rarity filter; see hearthstone_filters; `rarityId` (array, optional) — Repeatable rarity ID filter; `set` (string, optional) — Source set selector; use hearthstone_filters to discover current sets; `sort` (string, optional) — Native source sort expression; see sort_options from hearthstone_filters; `spellSchool` (string, optional) — Source spell-school filter; see hearthstone_filters; `spellSchoolId` (array, optional) — Repeatable spell-school ID filter; `textFilter` (string, optional) — Source card text search; `tier` (array, optional) — Repeatable Battlegrounds tavern-tier filter; `type` (array, optional) — Repeatable source type filter; see hearthstone_filters; `viewMode` (string, optional) — Card-gallery view mode; `zilliaxMod` (boolean, optional) — Source Zilliax module filter
+
 ## Hermes (8)
 
 ### `hermes_categories`
@@ -9408,6 +10488,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /hindustantimes/sections`
 - **What:** Get Hindustan Times sections. Lists the 24 Hindustan Times sections accepted by `hindustantimes-headlines`, including `india-news`, `world-news`, `cricket`, `real-estate`, `nri` and `editors-pick`. Each entry has a `slug`, display `name` and section `url`. Takes no parameters.
 - **Params:** _none_
+
+## HLTV (9)
+
+### `hltv_event`
+
+- **HTTP:** `GET /hltv/event`
+- **What:** Get a Counter-Strike event overview. Returns one event's public HLTV overview page by numeric `id`: name, canonical URL, `status` (`finished`, `ongoing`, or `upcoming`), start/end dates in UTC, total prize pool, participating team count, location, and the attending teams with their ids, logos and the HLTV/Valve ranking positions shown at event start. The trailing `slug` is cosmetic and optional; HLTV resolves the event by id. Use hltv-events to discover event ids.
+- **Params:** `id` (integer, **required**) — HLTV numeric event id; `slug` (string, optional) — Cosmetic event slug; HLTV resolves the event by id
+
+### `hltv_events`
+
+- **HTTP:** `GET /hltv/events`
+- **What:** Get the Counter-Strike event calendar. Returns HLTV's public event calendar: ongoing events, featured events, and the month-grouped upcoming list. Each event has its numeric `id`, canonical `url`, `name`, `status` (`ongoing` or `upcoming`), `type` (for example `LAN`, `Intl. LAN`, `Online`), start/end dates in UTC when published, prize pool and location when the card shows them, and the top participating teams when listed. Use hltv-event with an id from this response for one event's overview.
+- **Params:** _none_
+
+### `hltv_match`
+
+- **HTTP:** `GET /hltv/match`
+- **What:** Get a Counter-Strike match detail page. Returns one HLTV match by numeric `id`: both teams with ids, logos and series score; `status` (`finished`, `live` or `upcoming`); scheduled `date` in UTC; `format` (`bo1`/`bo3`/`bo5`), LAN flag and stage from the veto summary; the event id/name/URL; the full map list with per-map `score`, `winner`, `picked_by`, regulation and overtime `halves`, and the per-map stats page id; the map `veto` in order (`picked`, `removed` or `left over`); both `lineups` with player ids, nicknames, real names and roles; the match-total scoreboard `stats`; and `map_stats` scoreboards for the captured maps. The trailing `slug` is cosmetic and optional; HLTV resolves the match by id.
+- **Params:** `id` (integer, **required**) — HLTV numeric match id; `slug` (string, optional) — Cosmetic match slug; HLTV resolves the match by id
+
+### `hltv_matches`
+
+- **HTTP:** `GET /hltv/matches`
+- **What:** Get live and upcoming Counter-Strike 2 matches. Returns HLTV's current live and upcoming Counter-Strike 2 matches, no input needed. Each match has its numeric `id`, canonical `url`, scheduled `starts_at` (UTC; omitted for matches already live), `status` (`live` or `upcoming`), `format` (`bo1`/`bo3`/`bo5`), `stage`, star rating `stars` (0-5), `region`, LAN flag, both teams with ids and logos, and the event id/name. Use this for the current schedule; use hltv-results for finished matches and hltv-events for tournament calendars. Pinned matches may omit `event.name` while still carrying `event.id`.
+- **Params:** _none_
+
+### `hltv_player`
+
+- **HTTP:** `GET /hltv/player`
+- **What:** Get a Counter-Strike player profile. Returns one player's public HLTV profile by numeric `id`: nickname, real name, country, age and date of birth when published, canonical URL, current team (id, name, logo) when the player is on a team, and the role-rating rows HLTV shows (Rating 3.0 plus Firepower, Entrying, Trading, Opening, Closing, Sniping and Utility scored out of 100). The trailing `slug` is cosmetic and optional; HLTV resolves the player by id.
+- **Params:** `id` (integer, **required**) — HLTV numeric player id; `slug` (string, optional) — Cosmetic player slug; HLTV resolves the player by id
+
+### `hltv_rankings`
+
+- **HTTP:** `GET /hltv/rankings`
+- **What:** Get the HLTV world team ranking. Returns one HLTV Counter-Strike world-ranking snapshot: the snapshot `date` and every ranked team in order, each with `rank`, team id/name/logo, HLTV `points`, the week-over-week `change` (`+1`, `-2`, `new`, or `-` for unchanged), and the five ranked players with their ids and profile URLs. Omit `date` for the current ranking; pass a snapshot date (`YYYY-MM-DD`, typically a Monday) to read an older ranking. A date with no published snapshot returns `404`.
+- **Params:** `country` (string, optional) — Country or region from the ranking page's own region selector; `date` (string, optional) — Ranking snapshot date (YYYY-MM-DD); omit for the current ranking
+
+### `hltv_results`
+
+- **HTTP:** `GET /hltv/results`
+- **What:** Get finished Counter-Strike 2 match results. Returns one page of HLTV's finished-match archive, 100 results per page in reverse chronological order. Each result has the match `id`, canonical `url`, group `date` (YYYY-MM-DD), both teams with logos, `score` as [team1, team2], `winner` (1 or 2), event name, `format`, and star rating. Pass `offset` to page: `next_offset` in the response is the value for the following page and is absent on the last page; `total` is the archive's full result count. Offsets past the end return an empty `results` list rather than an error.
+- **Params:** `event` (integer, optional) — HLTV event id to limit results to one tournament; `offset` (integer, optional) — Result offset; 0 is the newest page, 100 is the next page
+
+### `hltv_search`
+
+- **HTTP:** `GET /hltv/search`
+- **What:** Search HLTV for players, teams and articles. Runs HLTV's public site search and returns its result groups. Each group has a `name` (for example `Player`, `Team` or `Article`) and `items`; every item has a `type` (`player`, `team`, `article`, `event` or `match`), numeric `id`, `name`, canonical `url` and `slug`. Player items carry their `country`; team items carry a `logo_url`; article items carry the publication `date` and the `author` with the author profile `author_url`. The query is required (up to 100 characters) and is echoed as `query`. Use this to resolve a name to the ids that hltv-player, hltv-team, hltv-event and hltv-match accept.
+- **Params:** `query` (string, **required**) — Search term, 1-100 characters
+
+### `hltv_team`
+
+- **HTTP:** `GET /hltv/team`
+- **What:** Get a Counter-Strike team profile. Returns one team's public HLTV profile by numeric `id`: name, country, logo, canonical URL, the team's current HLTV and Valve ranking positions (with regional rank when shown), and the current five-player roster with player ids, nicknames, real names, profile URLs and in-game roles when HLTV publishes them. The trailing `slug` is cosmetic and optional; HLTV resolves the team by id. Use hltv-rankings to discover team ids.
+- **Params:** `id` (integer, **required**) — HLTV numeric team id; `slug` (string, optional) — Cosmetic team slug; HLTV resolves the team by id
 
 ## Hollywood Reporter (5)
 
@@ -10198,6 +11334,92 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /irishtimes/sections`
 - **What:** Get Irish Times sections. Lists the 16 Irish Times sections accepted by `irishtimes-headlines`: `ireland`, `opinion`, `politics`, `business`, `your-money`, `world`, `sport`, `life-style`, `health`, `technology`, `culture`, `property`, `food`, `motors`, `history` and `abroad`. Each entry has a `slug`, `name` and `url`.
 - **Params:** _none_
+
+## itch.io (14)
+
+### `itchio_browse`
+
+- **HTTP:** `GET /itchio/browse`
+- **What:** Browse itch.io projects by native filter path. Follow paths from browse options or tag discovery. Supports all nine classifications and native filter/sort combinations with one-based pages. Returns the source order, project cards and native item count; an explicit empty page returns an empty array.
+- **Params:** `page` (integer, optional) — Native one-based page; `path` (string, **required**) — Relative native catalog path, such as /games/top-rated/tag-horror
+
+### `itchio_browse_options`
+
+- **HTTP:** `GET /itchio/browse/options`
+- **What:** Discover itch.io catalog filters and sorts. Returns all visible filter groups, source destination paths, five native sort choices, the current facet values and a tag-discovery reference. Tags form an open vocabulary; suggested tags are not an exhaustive list of creator tags. Follow returned paths to preserve the selected context.
+- **Params:** `path` (string, **required**) — Relative native catalog path, such as /games or /tools/newest
+
+### `itchio_catalog`
+
+- **HTTP:** `GET /itchio/catalogs/{classification}`
+- **What:** Get a native itch.io classification index. Reads public itch.io catalog metadata without account keys, purchases or creator administration.
+- **Params:** `classification` (string, **required**) — Website catalog context
+
+### `itchio_jam_calendar`
+
+- **HTTP:** `GET /itchio/jams/calendar`
+- **What:** Get itch.io game-jam calendar. Returns every jam in the public calendar payload, preserving source IDs, relative detail URLs, dates, joined counts, hue and optional featured/highlight values. Dates remain source strings. The calendar is a source-selected window, not an exhaustive archive. Participant, duration and featured UI filters operate locally and are not server query parameters.
+- **Params:** _none_
+
+### `itchio_jams_browse`
+
+- **HTTP:** `GET /itchio/jams/browse`
+- **What:** Browse itch.io game jams. Follows native timing/voting/featured/participation filters and context-specific sorts. Preserves source cards, host links, dates, display counts, result links, ordering and page links. Explicit empty pages return an empty array. The /jams landing grid supports page1 only and has no pagination field.
+- **Params:** `page` (integer, optional) — One-based native page; `path` (string, optional) — Native relative path from jam options
+
+### `itchio_jams_entries`
+
+- **HTTP:** `GET /itchio/jams/entries`
+- **What:** Read itch.io game-jam submissions. Resolves the current native submissions JSON URL from the public jam page and returns its full published document. Preserves source ordering, entry and project ID namespaces, generated_on, zero counts, contributor credits and optional project metadata. The upstream UI filters, sorts and paginates this document locally; this endpoint accepts no server-side filter, sort or page parameters. Account, rating and custom private submission data are excluded.
+- **Params:** `path` (string, **required**) — Native relative /jam/slug/entries path linked by a public jam
+
+### `itchio_jams_options`
+
+- **HTTP:** `GET /itchio/jams/options`
+- **What:** Discover itch.io game-jam filters and sorts. Returns every visible filter-group value, selected choice, clear-filter path and contextual sort. At /jams returns native landing-page browse links. Follow returned paths without guessing parameter translations. Account, hosting, joining and rating operations are excluded.
+- **Params:** `path` (string, optional) — Native relative jam destination
+
+### `itchio_jams_overview`
+
+- **HTTP:** `GET /itchio/jams/overview`
+- **What:** Read itch.io game-jam overview. Returns the jam's native identity, date strings, optional voting deadline, hosting credits/links, description text, status text, banner, display statistics and navigation. Preserves upcoming, active, voting and finished page metadata without computing a phase or countdown. Account and participation actions are excluded.
+- **Params:** `path` (string, **required**) — Native relative /jam/slug destination from jam browse
+
+### `itchio_jams_results`
+
+- **HTTP:** `GET /itchio/jams/results`
+- **What:** Read itch.io game-jam results. Reads a published per-criterion ranking page. Criteria must belong to the selected jam's live discovery menu. Preserves native ties, rank text, adjusted/raw score strings (including n/a), creator credits, submission links and relative pagination. No derived rankings or account actions.
+- **Params:** `page` (integer, optional) — One-based native page; `path` (string, **required**) — Relative result destination from jam results options
+
+### `itchio_jams_results_options`
+
+- **HTTP:** `GET /itchio/jams/results/options`
+- **What:** Discover itch.io game-jam ranking criteria. Returns every visible criterion label and native results path for one jam, including the default/primary selection. Criteria are host-defined and may include manual rankings or Overall. Use a root /jam/slug/results path linked from jam browse. Hidden or unpublished results are unavailable.
+- **Params:** `path` (string, **required**) — Root relative /jam/slug/results destination
+
+### `itchio_jams_submission`
+
+- **HTTP:** `GET /itchio/jams/submission`
+- **What:** Read itch.io jam submission metadata and scores. Returns the public submission's project/jam identity, title, summary, submitter credits and published per-criterion rank/score/raw-score strings. Preserves n/a manual scores and source ordering. results_available:false means the anonymous page provides no published score table; it does not assert that private or future results do not exist. Individual votes, comments, arbitrary custom answers, judge feedback and account actions are excluded.
+- **Params:** `path` (string, **required**) — Native relative /jam/slug/rate/project-id link from entries or results
+
+### `itchio_project`
+
+- **HTTP:** `GET /itchio/project`
+- **What:** Get itch.io public project details. Returns source project ID, title, summary, project description, cover URL and every available More information row/link. Uses public HTTPS creator.itch.io project pages only; source schema metadata provides title fallback. Download instructions, community text, credentials and account/purchase/download requests are excluded.
+- **Params:** `url` (string, **required**) — Public HTTPS creator.itch.io/project URL without query or fragment
+
+### `itchio_tags`
+
+- **HTTP:** `GET /itchio/tags/{classification}`
+- **What:** Get native itch.io picker options. Reads public itch.io catalog metadata without account keys, purchases or creator administration.
+- **Params:** `classification` (string, **required**) — Website catalog context
+
+### `itchio_top_rated`
+
+- **HTTP:** `GET /itchio/games/top-rated`
+- **What:** Get a native top-rated games page. Reads public itch.io catalog metadata without account keys, purchases or creator administration.
+- **Params:** `page` (integer, optional) — Native one-based page
 
 ## J.Crew (8)
 
@@ -11063,6 +12285,116 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get a Kickstarter campaign's updates feed. Returns one Kickstarter campaign's full updates feed: for each update, its number, title, author, whether the author is the creator, publish date, body text, and comment count. creator and slug are the two path segments of the project URL, e.g. lookingglass and musubi for kickstarter.com/projects/lookingglass/musubi.
 - **Params:** `creator` (string, **required**) — Creator path segment of the project URL; `slug` (string, **required**) — Project slug path segment of the project URL
 
+## Klook (18)
+
+### `klook_activity`
+
+- **HTTP:** `GET /klook/activities/{activity_id}`
+- **What:** Get a Klook activity card. Returns the public card-level record for one Klook activity: title, destination, price, rating, review count, image, coordinates and tags. Use an activity_id from /klook/search. This is Klook's card surface; the full detail page payload is behind Klook's bot defense and is not served.
+- **Params:** `activity_id` (integer, **required**) — Klook activity id from /klook/search
+
+### `klook_attractions_categories`
+
+- **HTTP:** `GET /klook/attractions/categories`
+- **What:** List Klook attraction categories. Returns Klook's attractions-vertical category set: the flat list of attraction categories with ids, names and listing URLs, plus the vertical's root category ("Attraction tickets"). Use a category_id with /klook/attractions/search to narrow listings; this list is the authoritative value space for that parameter.
+- **Params:** _none_
+
+### `klook_attractions_destinations`
+
+- **HTTP:** `GET /klook/attractions/destinations`
+- **What:** Discover Klook attractions destinations. Returns Klook's attractions destination-discovery surface: the hot attractions countries with their top activity cards (always), the hot cities for a country (when country_id is supplied), and the cities near a destination city (when city_id is supplied). Note the two country id spaces: the response's countries[].country_id uses Klook's activity-country ids (Japan is 1012), while the country_id parameter uses the destination-country ids from /klook/destinations (Japan is 12) because that is what Klook's hot-city read accepts. Nearby cities carry their upstream distance in kilometres; hot cities do not. Empty hot-city or nearby-city lists are valid answers.
+- **Params:** `city_id` (integer, optional) — Klook city id; adds nearby cities and scopes the hot-city list; `country_id` (integer, optional) — Klook destination-country id from /klook/destinations; adds the hot-city list
+
+### `klook_attractions_highlights`
+
+- **HTTP:** `GET /klook/attractions/highlights`
+- **What:** List curated Klook attraction highlight sections. Returns Klook's curated attraction highlight sections (Bestsellers, Book for today or tomorrow, New experiences, deals, date ideas, great for kids) for a city or a country, each with its top activity cards, plus the section-list button text and URL. A scope is required: type defaults to city when city_id is supplied and country otherwise, and the id must match the requested type. Unscoped highlights are rejected upstream.
+- **Params:** `city_id` (integer, optional) — Klook city id; required when type is city; `country_id` (integer, optional) — Klook country id; required when type is country; `type` (string, optional) — Highlight scope
+
+### `klook_attractions_search`
+
+- **HTTP:** `GET /klook/attractions/search`
+- **What:** Search Klook attractions by destination or category. Returns one page of Klook's attractions-vertical listings (theme parks, museums, observation decks and the rest of the attraction-ticket catalogue) for an optional destination city and/or attraction category. Use city_id from /klook/destinations and category_id from /klook/attractions/categories; with neither it returns Klook's global attractions listing. Unlike /klook/search this reads Klook's dedicated attractions catalogue, which is a separate inventory from the general experiences search. sort reorders the same result set, page is 1-based, and prices are display strings in the response currency. Klook caps the reported total at 10000 for broad queries.
+- **Params:** `category_id` (integer, optional) — Klook attraction category id from /klook/attractions/categories; `city_id` (integer, optional) — Klook city id from /klook/destinations; omit to browse globally; `duration_tag` (integer, optional) — Duration tag id, e.g. 7959 (0-3 hours); `other_filters_tag` (integer, optional) — Other-filter tag id, e.g. 3013 (Free cancellation); `page` (integer, optional) — 1-based result page; `per_page` (integer, optional) — Results per page, 1-50; `price_max` (integer, optional) — Maximum price in the response currency; requires price_min; `price_min` (integer, optional) — Minimum price in the response currency; requires price_max; `service_lang_tag` (integer, optional) — Guided-language tag id, e.g. 3029 (English guided); `sort` (string, optional) — Result ordering
+
+### `klook_attractions_suggest`
+
+- **HTTP:** `GET /klook/attractions/suggest`
+- **What:** Autocomplete Klook attractions, cities and countries. Returns Klook attractions-vertical autocomplete matches for a partial query: matching attraction tickets with ids, city ids, images and URLs, plus matching destination cities and countries. Use a returned activity_id with /klook/activities/{activity_id} or its city_id with /klook/attractions/search.
+- **Params:** `limit` (integer, optional) — Maximum activities to return, 1-20; `query` (string, **required**) — Text to complete, 2-80 characters
+
+### `klook_categories`
+
+- **HTTP:** `GET /klook/categories`
+- **What:** List Klook activity categories. Returns Klook's complete filterable activity category tree with ids, names and listing URLs. Use a category_id with /klook/search to narrow results; the tree is the authoritative value space for that parameter.
+- **Params:** _none_
+
+### `klook_destinations`
+
+- **HTTP:** `GET /klook/destinations`
+- **What:** List Klook countries and destination areas. Returns Klook's bookable country list and its destination-guide area tree with city ids and listing URLs. Use a city_id with /klook/search to browse that destination.
+- **Params:** _none_
+
+### `klook_hot`
+
+- **HTTP:** `GET /klook/hot`
+- **What:** List Klook hot destinations and activities. Returns Klook's curated hot lists: named groups of popular destinations and popular activities, the Travel Must-Haves category group, and the short vertical menu published alongside them. Destination entries carry a city id and country name plus a landing link; use a city entry's id with /klook/search or /klook/destinations. Activity entries carry the activity id and display name. An empty hot list is a valid answer, not an error.
+- **Params:** _none_
+
+### `klook_interests`
+
+- **HTTP:** `GET /klook/interests`
+- **What:** List Klook interest topics. Returns Klook's published interest-topic landing pages, read from its en-US interest sitemap. Each entry carries the interest id, the landing-page slug, the optional city id or country id the page is scoped to, and the absolute landing URL. The same interest id appears more than once: once unscoped, and again scoped to a country or a city, because each is a separately published landing page. Use an interest id as the interest_tag value with /klook/search (browse only, not with query); the context-scoped interest options for a specific destination are published by /klook/search/filters.
+- **Params:** _none_
+
+### `klook_recommendations`
+
+- **HTTP:** `GET /klook/recommendations`
+- **What:** Get Klook curated category recommendations. Returns Klook's curated "unmissable experiences" sections for a destination (or its default global selection): named category sections with their activity cards, plus the call-to-action button. Use city_id from /klook/destinations or /klook/suggest to scope the sections; use /klook/search or /klook/attractions/search for a full result page instead.
+- **Params:** `city_id` (integer, optional) — Klook city id to scope the curated sections to
+
+### `klook_reviews`
+
+- **HTTP:** `GET /klook/reviews`
+- **What:** List recent Klook reviews for a city. Returns recent review cards from Klook's city-level review feed for one product vertical: the reviewed activity title and URL, the review score, the review text and its timestamp. Reviewer display names are deliberately not returned because they are personal data, even when Klook masks them. Vertical experiences (the default) reads Klook's experiences review feed and attractions reads its attractions review feed; the two feeds are separate inventories. Use a city_id from /klook/destinations.
+- **Params:** `city_id` (integer, **required**) — Klook city id from /klook/destinations; `vertical` (string, optional) — Review feed to read
+
+### `klook_search`
+
+- **HTTP:** `GET /klook/search`
+- **What:** Search Klook travel activities. Returns Klook activity search results for a free-text query, a destination city, or a category. A free-text query runs Klook keyword search against its en-US catalogue and can be combined with city_id and category_id; without a query the request browses a destination or category listing instead. Use city_id from /klook/destinations (or a city from /klook/suggest) and category_id from /klook/categories; the tag filters (interest_tag, service_lang_tag, duration_tag, other_filters_tag) take ids from /klook/search/filters, and interest_tag is browse-only. sort reorders the same result set. A query with no matches returns an empty activities list, Klook caps the reported total at 10000 for broad queries, and prices are display strings in the response currency.
+- **Params:** `category_id` (integer, optional) — Klook category id from /klook/categories; `city_id` (integer, optional) — Klook city id from /klook/destinations or /klook/suggest; `duration_tag` (integer, optional) — Duration-bucket id from /klook/search/filters; `interest_tag` (integer, optional) — Interest/topic id from /klook/search/filters; browse only, not with query; `other_filters_tag` (integer, optional) — Service/feature id from /klook/search/filters; `page` (integer, optional) — 1-based result page; `per_page` (integer, optional) — Results per page, 1-50; `price_max` (integer, optional) — Maximum price in the response currency; requires price_min; `price_min` (integer, optional) — Minimum price in the response currency; requires price_max; `query` (string, optional) — Free-text activity search. At least one of query, city_id or category_id is required.; `service_lang_tag` (integer, optional) — Guided-language id from /klook/search/filters; `sort` (string, optional) — Result ordering
+
+### `klook_search_filters`
+
+- **HTTP:** `GET /klook/search/filters`
+- **What:** Get Klook search filter metadata. Returns the filter metadata Klook publishes for a search context: the category tree, price bounds, the bookable dates, the destination tree and the accepted sort values. vertical selects the product vertical. experiences (the default) returns the activity category tree, the price slider bounds, the accepted sort values and the resolved destination, but no destination tree and no enumerated dates: use /klook/destinations for the experiences destination tree and /klook/search for the date-range input. attractions returns the attraction category tree with Klook's own enabled flags, the attraction price bounds, the exact bookable start dates and the region -> country -> city destination tree. Use a returned category id with /klook/search (experiences) or /klook/attractions/search (attractions), and a returned city id with either listing.
+- **Params:** `category_id` (integer, optional) — Category id from /klook/categories (experiences) or /klook/attractions/categories (attractions) to scope the metadata; `city_id` (integer, optional) — Klook city id from /klook/destinations to scope the metadata; `vertical` (string, optional) — Product vertical whose filters to return
+
+### `klook_search_hot_keywords`
+
+- **HTTP:** `GET /klook/search/hot-keywords`
+- **What:** Get Klook hot search keywords and topic tabs. Returns the hot search keywords Klook publishes for a search context, together with its curated topic tabs. Without country_id it reads the start-page set, scoped to city_id when one is supplied and unscoped otherwise; with country_id it reads that destination country's page instead and city_id is ignored. hot_words entries carry the keyword text, the exact query Klook records for it and a landing url when Klook publishes one (some hot words have no link). tabs are named lists of curated items (a raw tab key such as search_topics_popular, or Klook's display name for the curated tab that has no raw key), and each item carries its title, subtitle, icon, landing url and display price when present. An empty hot_words list is a valid answer, not an error.
+- **Params:** `city_id` (integer, optional) — Klook city id from /klook/destinations or /klook/suggest to scope the start-page hot words; ignored when country_id is set; `country_id` (integer, optional) — Klook country id from /klook/destinations to read the destination-page hot words instead of the start-page set
+
+### `klook_search_unified`
+
+- **HTTP:** `GET /klook/search/unified`
+- **What:** Search Klook across product verticals. Returns Klook's platform search-box suggestions for a partial query: destination cities, keyword suggestions, vertical-service shortcuts (airport transfers, hotels, rail passes and similar) and matching activities in one list. Each suggestion carries a normalized type (destination, keyword, vertical_service, activity or other), Klook's raw upstream type code in upstream_type, and an absolute landing url. Vertical-service entries can carry Klook's own template placeholders such as {dest_city_id} in their url; they are served as-is, so substitute a real id only if you know that vertical's own parameter shape. A query with no matches returns an empty suggestions list. Use a destination suggestion's id with /klook/search (city_id), or an activity suggestion's id with /klook/activities/{activity_id}.
+- **Params:** `query` (string, **required**) — Partial text to suggest for, 1-80 characters
+
+### `klook_suggest`
+
+- **HTTP:** `GET /klook/suggest`
+- **What:** Autocomplete Klook activities, cities and countries. Returns Klook autocomplete matches for a partial query: matching activities, destination cities with city ids, and countries. Use a returned city_id with /klook/search, or an activity_id with /klook/activities/{activity_id}.
+- **Params:** `limit` (integer, optional) — Maximum activities to return, 1-20; `query` (string, **required**) — Text to complete, 2-80 characters
+
+### `klook_verticals`
+
+- **HTTP:** `GET /klook/verticals`
+- **What:** List Klook product verticals. Returns Klook's navigation vertical menu: the top-level product verticals (Things to do, WiFi & SIM Card, Transportation, Train Tickets & Passes, Food & Dining) with every child entry nested. Each entry carries Klook's own type/template key, display label, icon key and absolute listing link. Use the menu to discover which product families Klook currently sells; the things_to_do children are the template_id value space the search page accepts.
+- **Params:** _none_
+
 ## Kohl's (4)
 
 ### `kohls_category`
@@ -11679,6 +13011,62 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Browse lululemon's physical store directory. Returns lululemon's own complete physical store directory (480 US and 86 Canada locations), including regular weekly hours and in-store amenities. All filters are optional and applied to the full directory. country and state are free-text equality filters against the values this directory actually carries (2-letter codes, e.g. US/CA, NY/CA), not an enforced enum. lat and lng (both required together) filter to stores within radius_miles (1 to 500, defaults to 50), sorted nearest-first.
 - **Params:** `country` (string, optional) — Filter to one country by its 2-letter code; `lat` (number, optional) — Latitude, requires lng; `lng` (number, optional) — Longitude, requires lat; `radius_miles` (number, optional) — Search radius in miles, 1 to 500, defaults to 50; `state` (string, optional) — Filter to one state/province by its 2-letter code
 
+## Luma (9)
+
+### `luma_calendar`
+
+- **HTTP:** `GET /luma/calendar`
+- **What:** Get a public Luma calendar. Returns public calendar details, its current tags, featured items and initial upcoming events from the public calendar page. Personal, membership, subscription and payment fields are omitted. Use luma-calendar-events for past or date-specific feeds.
+- **Params:** `slug` (string, **required**) — Public Luma calendar slug, such as philosophy
+
+### `luma_calendar_events`
+
+- **HTTP:** `GET /luma/calendar-events`
+- **What:** List events for a public Luma calendar. Returns public future, past, or date-specific events for one calendar. `period` accepts `future`, `past`, or `specific`; the last value requires RFC3339 `after` and `before` timestamps.
+- **Params:** `after` (string, optional) — RFC3339 start time; required for period=specific; `before` (string, optional) — RFC3339 end time; required for period=specific; `calendar_api_id` (string, **required**) — Calendar API id from luma-place-calendars; `pagination_cursor` (string, optional) — Opaque cursor returned by Luma; `pagination_limit` (integer, optional) — Page size; 0 returns all entries in the selected period; `period` (string, optional) — Calendar event period
+
+### `luma_categories`
+
+- **HTTP:** `GET /luma/categories`
+- **What:** List Luma event categories. Returns Luma's complete current public event-category list. Use each category slug with the category detail or event-feed endpoint.
+- **Params:** _none_
+
+### `luma_category`
+
+- **HTTP:** `GET /luma/category`
+- **What:** Get a Luma event category. Returns public category details and its public featured/timeline calendars. The slug must be one of `family`, `books`, `games`, `tech`, `food`, `ai`, `running`, `arts`, `climate`, `fitness`, `wellness`, or `crypto`.
+- **Params:** `slug` (string, **required**) — Luma category slug
+
+### `luma_category_events`
+
+- **HTTP:** `GET /luma/category-events`
+- **What:** List and search events in a Luma category. Returns public event cards in a Luma category. The category slug must be one of `family`, `books`, `games`, `tech`, `food`, `ai`, `running`, `arts`, `climate`, `fitness`, `wellness`, or `crypto`. Query, cursor, page limit, and optional coordinates mirror Luma's category feed. Follow `next_cursor` only when `has_more` is true.
+- **Params:** `latitude` (number, optional) — Optional latitude used by Luma's nearby category feed; `longitude` (number, optional) — Optional longitude used by Luma's nearby category feed; `pagination_cursor` (string, optional) — Opaque cursor returned by Luma; `pagination_limit` (integer, optional) — Page size; Luma returns at most 50 entries; `query` (string, optional) — Luma event search text; `slug` (string, **required**) — Luma category slug
+
+### `luma_event`
+
+- **HTTP:** `GET /luma/event`
+- **What:** Get a public Luma event. Returns public event details, categories, host display names, and ticket availability fields. Guest identities, payment data, and private calendar fields are omitted.
+- **Params:** `event_api_id` (string, **required**) — Public Luma event id returned by an event feed
+
+### `luma_place`
+
+- **HTTP:** `GET /luma/place`
+- **What:** Get a Luma place. Returns public place details from a Luma place page, including its name, slug, time zone, public coordinates, description, and event metadata.
+- **Params:** `slug` (string, **required**) — Luma place page slug
+
+### `luma_place_calendars`
+
+- **HTTP:** `GET /luma/place-calendars`
+- **What:** List public calendars for a Luma place. Returns calendars that Luma publicly lists for a place. Personal and blocked calendars are omitted.
+- **Params:** `slug` (string, **required**) — Luma place page slug
+
+### `luma_place_events`
+
+- **HTTP:** `GET /luma/place-events`
+- **What:** List and search public events for a Luma place. Returns public event cards for a Luma place. The optional query, page limit, and cursor mirror the place's public event feed. Follow the returned `next_cursor` only when `has_more` is true.
+- **Params:** `pagination_cursor` (string, optional) — Opaque cursor returned by Luma; `pagination_limit` (integer, optional) — Page size; Luma returns at most 50 entries; `place_slug` (string, **required**) — Luma place page slug; `query` (string, optional) — Luma event search text
+
 ## MacRumors (5)
 
 ### `macrumors_article`
@@ -11922,6 +13310,128 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /mashable/sections`
 - **What:** Get Mashable sections. Returns the public Mashable category taxonomy accepted by the headlines endpoint. Only categories that publish a working public RSS feed are listed.
 - **Params:** _none_
+
+## MaxPreps (20)
+
+### `maxpreps_rankings_groupings`
+
+- **HTTP:** `GET /maxpreps/rankings-groupings`
+- **What:** MaxPreps ranking groupings for a state season. Returns one state season's ranking groupings: the league/section/division/athlete naming aliases, the state divisions, the associations and the designated market areas, each with its id and canonical rankings/scoreboard URLs. This is the discovery surface for the sectionId, stateDivisionId, associationId and dmaId values maxpreps-scoreboard and maxpreps-team-rankings accept.
+- **Params:** `sportSeasonId` (string, **required**) — Sport-season id for the ranked team season example(2286cd80-c46d-4739-8dd1-92a67ca8daa7); `stateCode` (string, **required**) — State code from maxpreps-states
+
+### `maxpreps_request_enums`
+
+- **HTTP:** `GET /maxpreps/request-enums`
+- **What:** MaxPreps closed request enum values. Returns every closed request value set the MaxPreps routes validate locally: the 53 state codes, the 64 gender+sport tokens, the three genders, the three team levels, the two school-search sort orders and the seven scoreboard contexts with the identifier kind each context's id parameter must carry. Values were cold-replay verified on 2026-11-09 and are covered by exact-set tests. No upstream call is made.
+- **Params:** _none_
+
+### `maxpreps_school`
+
+- **HTTP:** `GET /maxpreps/school`
+- **What:** MaxPreps school record by id. Returns one school's institutional record by schoolId: name, address, city, ZIP, state, colours, mascot, enrollment, school type and the governing association (id, name, abbreviation, URL). Use it after maxpreps-school-search to resolve the school behind a team.
+- **Params:** `schoolId` (string, **required**) — School id from maxpreps-school-search or maxpreps-school-zip-search example(7bdc339f-7cbf-4728-b0c8-ed898929cf68)
+
+### `maxpreps_school_contests`
+
+- **HTTP:** `GET /maxpreps/school-contests`
+- **What:** MaxPreps school recent and upcoming contests. Returns a school's recent and upcoming contests across sports: contest id, canonical URL, timestamp, sport/gender/season/year, team level, contest state, TBA flags, home/away type and both teams with score, result and record. The source caps the list with maxLimit and returns the most relevant contests first.
+- **Params:** `maxLimit` (integer, optional) — Maximum number of contests from 1 to 100; defaults to 25 example(5); `schoolId` (string, **required**) — School id from maxpreps-school-search or maxpreps-school-zip-search example(7bdc339f-7cbf-4728-b0c8-ed898929cf68)
+
+### `maxpreps_school_proximal`
+
+- **HTTP:** `GET /maxpreps/school-proximal`
+- **What:** MaxPreps schools near a school. Returns the MaxPreps schools near one school, using that school as the proximity origin, with the same school record shape as maxpreps-school-search: identity, location, colours, mascot, enrollment and each school's sport-season ids. Offset pagination with maxResults and startFrom; optional name, distance, ZIP, season and state-scope filters.
+- **Params:** `allSeasonId` (string, optional) — Optional all-season id from maxpreps-sports example(22e2b335-334e-4d4d-9f67-a0f716bb1ccd); `byState` (boolean, optional) — Search by state instead of radius; `historicalOnly` (boolean, optional) — Only historically published schools; `includeDeleted` (boolean, optional) — Include deleted schools; `maxDistance` (integer, optional) — Optional maximum distance in metres example(40000); `maxResults` (integer, optional) — Page size from 1 to 200; defaults to 50 example(25); `publishedOnly` (boolean, optional) — Only published schools; `schoolId` (string, **required**) — School id used as the proximity origin example(7bdc339f-7cbf-4728-b0c8-ed898929cf68); `searchText` (string, optional) — Optional school-name filter inside the radius example(lincoln); `sortOrder` (string, optional) — Optional sort order: Distance or Name; `sportSeasonId` (string, optional) — Optional sport-season id to scope returned teams example(2286cd80-c46d-4739-8dd1-92a67ca8daa7); `startFrom` (integer, optional) — Zero-based offset; defaults to 0 example(0); `zipCode` (string, optional) — Optional five-digit US ZIP code example(90210)
+
+### `maxpreps_school_search`
+
+- **HTTP:** `GET /maxpreps/school-search`
+- **What:** Search MaxPreps schools by name. Searches MaxPreps schools by name and returns school records with identity, location, colours, mascot, enrollment and the sport-season ids of the school's teams. Offset pagination with maxResults and startFrom; sortOrder Name sorts alphabetically, Distance requires schoolId and returns rows nearest to that school. This is the primary discovery surface for schoolId and team sportSeasonId values.
+- **Params:** `allSeasonId` (string, optional) — Optional all-season id from maxpreps-sports to scope returned teams example(22e2b335-334e-4d4d-9f67-a0f716bb1ccd); `historicalOnly` (boolean, optional) — Only historically published schools; `includeDeleted` (boolean, optional) — Include deleted schools; `maxResults` (integer, optional) — Page size from 1 to 200; defaults to 50 example(25); `publishedOnly` (boolean, optional) — Only published schools; `query` (string, **required**) — School-name search text; * browses the whole directory example(lincoln); `schoolId` (string, optional) — School id used as the distance origin; required when sortOrder is Distance example(7bdc339f-7cbf-4728-b0c8-ed898929cf68); `sortOrder` (string, optional) — Sort order: Distance or Name; Distance requires schoolId; `startFrom` (integer, optional) — Zero-based offset; defaults to 0 example(0); `zipCode` (string, optional) — Optional five-digit US ZIP code example(90210)
+
+### `maxpreps_school_seasons`
+
+- **HTTP:** `GET /maxpreps/school-seasons`
+- **What:** MaxPreps school sport seasons. Returns every sport-season entry one school publishes: one row per team at each level and year, with the sportSeasonId, allSeasonId, gender, sport, level, teamLevel, season and year, and the canonical team URL. This is the discovery surface for the sportSeasonId values that maxpreps-team, maxpreps-team-schedule, maxpreps-team-stat-leaders, maxpreps-team-roster-summary, maxpreps-team-next-contest and maxpreps-team-context require.
+- **Params:** `schoolId` (string, **required**) — School id from maxpreps-school-search or maxpreps-school-zip-search example(7bdc339f-7cbf-4728-b0c8-ed898929cf68)
+
+### `maxpreps_school_zip_search`
+
+- **HTTP:** `GET /maxpreps/school-zip-search`
+- **What:** List MaxPreps schools near a ZIP code. Returns the MaxPreps schools around one five-digit US ZIP code with the same school record shape as maxpreps-school-search: identity, location, colours, mascot, enrollment and each school's sport-season ids. Offset pagination with startFrom; optional name, city and distance filters. Use it when a caller starts from a location rather than a school name.
+- **Params:** `allSeasonId` (string, optional) — Optional all-season id from maxpreps-sports example(22e2b335-334e-4d4d-9f67-a0f716bb1ccd); `historicalOnly` (boolean, optional) — Only historically published schools; `includeDeleted` (boolean, optional) — Include deleted schools; `maxDistance` (integer, optional) — Optional maximum distance in metres example(40000); `publishedOnly` (boolean, optional) — Only published schools; `searchByState` (boolean, optional) — Search by state instead of radius; `searchCity` (string, optional) — Optional city filter example(Beverly Hills); `searchText` (string, optional) — Optional school-name filter example(lincoln); `sportSeasonId` (string, optional) — Optional sport-season id to scope returned teams example(2286cd80-c46d-4739-8dd1-92a67ca8daa7); `startFrom` (integer, optional) — Zero-based offset; defaults to 0 example(0); `zipCode` (string, **required**) — Five-digit US ZIP code example(90210)
+
+### `maxpreps_scoreboard`
+
+- **HTTP:** `GET /maxpreps/scoreboard`
+- **What:** MaxPreps scoreboard contest ids by date. Returns the scoreboard for one context (National, State, Section, StateDivision, Association, League or DMA) and one genderSport and level: the yesterday/today/tomorrow scoreboard canonical URLs and the contest ids grouped by date. Use the ids to discover which games exist on a date; this route returns the id index, not the contest detail.
+- **Params:** `context` (string, **required**) — Scoreboard context: National, State, Section, StateDivision, Association, League or DMA; see maxpreps-request-enums for the id kind each context needs; `excludeTbaDate` (boolean, optional) — Exclude contests whose date is still TBA; `genderSport` (string, **required**) — Gender+sport value from maxpreps-sports in lowercase, for example boys,football. Case-insensitive; see maxpreps-sports for all 64 values example(boys,football); `id` (string, optional) — Context identifier: state code for National (use NN) and State, otherwise a section/state-division/association/league/DMA id example(FL); `level` (string, **required**) — Team level: Varsity, JV or Freshman; `nationalTeamCount` (integer, optional) — Number of nationally ranked teams to include for a National context scoreboard example(10)
+
+### `maxpreps_season_navigation`
+
+- **HTTP:** `GET /maxpreps/season-navigation`
+- **What:** MaxPreps season navigation tree. Returns the season navigation tree for one allSeasonId: the resolved season name and the site's own navigation sections (Football Home, Teams, Players, States, Scores, Rankings, Stat leaders, Photos, Playoffs, Videos, Record Book, News, Live Streams) with their links. Use it to resolve the season an allSeasonId belongs to and the sport/season pages the site itself links.
+- **Params:** `allSeasonId` (string, **required**) — All-season id from maxpreps-sports (one per gender+sport) example(22e2b335-334e-4d4d-9f67-a0f716bb1ccd); `season` (string, optional) — Optional season name as the navigation reports it example(Fall)
+
+### `maxpreps_sports`
+
+- **HTTP:** `GET /maxpreps/sports`
+- **What:** MaxPreps gender and sport taxonomy. Returns the complete MaxPreps gender/sport taxonomy grouped by Boys, Co-ed and Girls: 64 gender+sport entries covering 40 distinct sports. Each entry carries its own allSeasonId, display name, public URL, canonical genderSport token, schedule model and stat model. This is the discovery surface for the genderSport enum and the allSeasonId values the other routes accept.
+- **Params:** _none_
+
+### `maxpreps_states`
+
+- **HTTP:** `GET /maxpreps/states`
+- **What:** MaxPreps states and areas taxonomy. Returns the complete MaxPreps state/area taxonomy: 54 records covering the 50 US states, the District of Columbia, National (NN), Prep Schools (PS) and Mexico. Each record carries the state GUID, code, long name, section/division naming aliases, governing-body identity and time zone. This is the discovery surface for the stateCode enum every other MaxPreps route accepts.
+- **Params:** _none_
+
+### `maxpreps_team`
+
+- **HTTP:** `GET /maxpreps/team`
+- **What:** MaxPreps team-season record. Returns one team-season record by teamId and sportSeasonId: school identity and address, season/level/gender/sport, league, section and state division (with their ids), governing association and the team's canonical URL. The returned sectionId, leagueId, stateDivisionId and associationId are the identifiers maxpreps-scoreboard and maxpreps-team-rankings accept for their non-state contexts.
+- **Params:** `sportSeasonId` (string, **required**) — Sport-season id for that exact team and level example(2286cd80-c46d-4739-8dd1-92a67ca8daa7); `teamId` (string, **required**) — Team id from maxpreps-school-search or maxpreps-school-zip-search example(7bdc339f-7cbf-4728-b0c8-ed898929cf68)
+
+### `maxpreps_team_context`
+
+- **HTTP:** `GET /maxpreps/team-context`
+- **What:** MaxPreps team page context. Returns the focused team page context for one team season: the team identity (same shape as maxpreps-team), every school sport-season, the sport's own vocabulary (contest/athlete aliases, period alias, overtime alias), the state record, the team's ranking summaries for the current and last season, its overall and league standings, its designated market areas, its association affiliations and its content-availability flags. Site chrome, partner/commerce blocks, team photo and internal settings are excluded.
+- **Params:** `sportSeasonId` (string, **required**) — Sport-season id for that exact team and level example(2286cd80-c46d-4739-8dd1-92a67ca8daa7); `teamId` (string, **required**) — Team id from maxpreps-school-search or maxpreps-team example(7bdc339f-7cbf-4728-b0c8-ed898929cf68)
+
+### `maxpreps_team_next_contest`
+
+- **HTTP:** `GET /maxpreps/team-next-contest`
+- **What:** MaxPreps team next contest. Returns one team season's next-contest box: the contest (date, site, teams, scores, home/away type, contest state) with the same contest shape as maxpreps-team-schedule, the derived fields the site renders (title, contest alias, canonical URL, TBA flags) and the Hudl linkage block. Videos and the gofan/NFHS stream URLs are media/commerce fields and are excluded.
+- **Params:** `sportSeasonId` (string, **required**) — Sport-season id for that exact team and level example(2286cd80-c46d-4739-8dd1-92a67ca8daa7); `teamId` (string, **required**) — Team id from maxpreps-school-search or maxpreps-team example(7bdc339f-7cbf-4728-b0c8-ed898929cf68)
+
+### `maxpreps_team_rankings`
+
+- **HTTP:** `GET /maxpreps/team-rankings`
+- **What:** MaxPreps team rankings (national, state, section). Returns a ranked team list for one sport season: national, state (stateCode) or section (sectionId) scope, with the rank, school identity, overall record, rating, strength, movement, team size, last-updated time and total ranked count. The source pages with count and page; teamSize is optional and the source returned the same rankings with and without it.
+- **Params:** `allSeasonId` (string, **required**) — All-season id from maxpreps-sports example(22e2b335-334e-4d4d-9f67-a0f716bb1ccd); `count` (integer, optional) — Page size from 1 to 100; defaults to 25 example(10); `page` (integer, optional) — One-based page number; defaults to 1 example(1); `sectionId` (string, optional) — Section id; required when type is section (discover it from maxpreps-team or maxpreps-rankings-groupings) example(7bcaf5fa-f8bd-4fe8-a970-f05012cd05b2); `sportSeasonId` (string, **required**) — Sport-season id for the ranked team season example(2286cd80-c46d-4739-8dd1-92a67ca8daa7); `stateCode` (string, optional) — State code; required when type is state. See maxpreps-states for the complete value set; `teamSize` (integer, optional) — Optional on-field team size, for example 11 for football or 5 for basketball example(11); `type` (string, **required**) — Ranking scope: national, state or section
+
+### `maxpreps_team_roster_summary`
+
+- **HTTP:** `GET /maxpreps/team-roster-summary`
+- **What:** MaxPreps team roster counts. Returns one team season's roster counts only: whether the team has a team photo, the athlete count, how many athletes have a photo or jersey number, and the Hudl athlete count. Coach names and staff records are personal data and are excluded; use this route for roster size, not for player records.
+- **Params:** `sportSeasonId` (string, **required**) — Sport-season id for that exact team and level example(2286cd80-c46d-4739-8dd1-92a67ca8daa7); `teamId` (string, **required**) — Team id from maxpreps-school-search or maxpreps-team example(7bdc339f-7cbf-4728-b0c8-ed898929cf68)
+
+### `maxpreps_team_schedule`
+
+- **HTTP:** `GET /maxpreps/team-schedule`
+- **What:** MaxPreps team schedule and results. Returns one team season's full schedule with results: each contest's date, site, state, per-team scores (b1..b30), result, home/away type, forfeit/TBA flags, contest state (Pregame, ContestInProgress, Boxscore, ScoreNotReported) and the derived fields the site renders (title, contest alias, canonical URL, overtime, tournament and bracket identity).
+- **Params:** `sportSeasonId` (string, **required**) — Sport-season id for that exact team and level example(2286cd80-c46d-4739-8dd1-92a67ca8daa7); `teamId` (string, **required**) — Team id from maxpreps-school-search or maxpreps-team example(7bdc339f-7cbf-4728-b0c8-ed898929cf68)
+
+### `maxpreps_team_stat_leaders`
+
+- **HTTP:** `GET /maxpreps/team-stat-leaders`
+- **What:** MaxPreps team stat leaders. Returns one team season's stat-leader rows: the stat name and header, the stat value, the leader's rank within that stat and the leaderboard context, plus the minimum-games cutoffs the leaderboard applied. Athlete identity (name, photo, positions, class year, ids) is deliberately excluded; this route reports the statistics, not player records.
+- **Params:** `sportSeasonId` (string, **required**) — Sport-season id for that exact team and level example(2286cd80-c46d-4739-8dd1-92a67ca8daa7); `teamId` (string, **required**) — Team id from maxpreps-school-search or maxpreps-team example(7bdc339f-7cbf-4728-b0c8-ed898929cf68)
+
+### `maxpreps_tournament_sports`
+
+- **HTTP:** `GET /maxpreps/tournament-sports`
+- **What:** MaxPreps tournament sports. Returns the sports the upstream publishes tournament (playoff) brackets for, with each sport's display name and canonical playoffs URL. Optionally scope the list to one state with stateCode.
+- **Params:** `stateCode` (string, optional) — Optional state code from maxpreps-states to scope the list
 
 ## McDonalds (6)
 
@@ -12861,6 +14371,219 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Moda Operandi products. Searches or browses the Moda Operandi catalogue for one department, with `gender` (`women` or `men`) required and either `q` or `category` needed as well. Filter by `designer`, `color`, `size`, `availability`, price range or `on_sale`, and sort with `sort`. `limit` is 1 to 180 per page. Returns products plus facet counts and the `total`.
 - **Params:** `attribute` (string, optional) — Attribute facet value; `availability` (string, optional) — Availability; `category` (string, optional) — Category slug from modaoperandi-categories; `color` (string, optional) — Color facet value; `designer` (string, optional) — Designer slug from modaoperandi-designers; `gender` (string, **required**) — Department; `limit` (integer, optional) — Results per page; `on_sale` (boolean, optional) — Sale items only; `page` (integer, optional) — 1-based page; `price_max` (number, optional) — Maximum price; `price_min` (number, optional) — Minimum price; `q` (string, optional) — Free-text search; `size` (string, optional) — Size facet value; `sort` (string, optional) — Sort
 
+## Modrinth (34)
+
+### `modrinth_check_project`
+
+- **HTTP:** `GET /modrinth/project/{id}/check`
+- **What:** Resolve a project ID or slug. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `id` (string, **required**) — Native id
+
+### `modrinth_collection`
+
+- **HTTP:** `GET /modrinth/collection/{id}`
+- **What:** Read a public Modrinth collection. Reads public collection metadata and its complete native project-ID list. Retains native list order, visibility, timestamps and nullable fields while excluding the owner's account identifier. Does not fetch project details or private collections.
+- **Params:** `id` (string, **required**) — Base62 collection ID from a public collection URL
+
+### `modrinth_collections`
+
+- **HTTP:** `GET /modrinth/collections`
+- **What:** Resolve public Modrinth collections. Uses the native bulk read for a JSON array of collection IDs. Preserves the returned order, omissions and complete per-collection project-ID lists. Excludes owner account identifiers and private data. An empty array returns an empty array.
+- **Params:** `ids` (string, **required**) — Native JSON array of base62 collection IDs; [] is valid
+
+### `modrinth_dependencies`
+
+- **HTTP:** `GET /modrinth/project/{id}/dependencies`
+- **What:** Get project dependency metadata. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `id` (string, **required**) — Native id
+
+### `modrinth_file_projects`
+
+- **HTTP:** `POST /modrinth/version_file/project`
+- **What:** Resolve file hashes to projects. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `body` (object, **required**) — Native metadata lookup body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
+
+### `modrinth_file_update`
+
+- **HTTP:** `POST /modrinth/version_file/{hash}/update`
+- **What:** Resolve a compatible update for a file. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `algorithm` (string, optional) — File-hash algorithm; omitted uses native auto-detection; `body` (object, **required**) — Native metadata lookup body; `hash` (string, **required**) — Native hash
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
+
+### `modrinth_file_version`
+
+- **HTTP:** `GET /modrinth/version_file/{hash}`
+- **What:** Resolve a version by file hash. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `algorithm` (string, optional) — File-hash algorithm; omitted uses native auto-detection; `hash` (string, **required**) — Native hash
+
+### `modrinth_file_versions`
+
+- **HTTP:** `POST /modrinth/version_files`
+- **What:** Resolve file hashes to versions. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `body` (object, **required**) — Native metadata lookup body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
+
+### `modrinth_files_update`
+
+- **HTTP:** `POST /modrinth/version_files/update`
+- **What:** Resolve compatible updates for files. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `body` (object, **required**) — Native metadata lookup body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
+
+### `modrinth_files_update_individual`
+
+- **HTTP:** `POST /modrinth/version_files/update_individual`
+- **What:** Resolve updates with per-file filters. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `body` (object, **required**) — Native metadata lookup body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
+
+### `modrinth_files_update_many`
+
+- **HTTP:** `POST /modrinth/version_files/update_many`
+- **What:** List compatible update versions for files. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `body` (object, **required**) — Native metadata lookup body
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
+
+### `modrinth_forge_updates`
+
+- **HTTP:** `GET /modrinth/updates/{id}/forge_updates.json`
+- **What:** Get native Forge update metadata. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `id` (string, **required**) — Native id; `neoforge` (string, optional) — Native NeoForge selection; omitted retains Forge default
+
+### `modrinth_license`
+
+- **HTTP:** `GET /modrinth/tag/license/{id}`
+- **What:** Get source license title and text. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `id` (string, **required**) — Native id
+
+### `modrinth_metadata_link_platforms`
+
+- **HTTP:** `GET /modrinth/metadata/link-platforms`
+- **What:** Get Modrinth link platforms. Returns every native link-platform name and donation classification. This is public reference metadata and does not initiate donations, payments or account actions.
+- **Params:** _none_
+
+### `modrinth_metadata_loader_field_values`
+
+- **HTTP:** `GET /modrinth/metadata/loader-fields/{field}`
+- **What:** Get Modrinth loader-field values. Returns all native enumerable values and metadata for a field from loader-field discovery. Null ordering/type/major and explicit false remain distinct; optional upstream metadata filters are not exposed.
+- **Params:** `field` (string, **required**) — Source field name from loader-field discovery
+
+### `modrinth_metadata_loader_fields`
+
+- **HTTP:** `GET /modrinth/metadata/loader-fields`
+- **What:** Discover Modrinth loader fields. Returns every distinct supported field advertised by the native loader catalog, preserving first source occurrence. Names refresh with the loader catalog rather than a hard-coded field list.
+- **Params:** _none_
+
+### `modrinth_metadata_loaders`
+
+- **HTTP:** `GET /modrinth/metadata/loaders`
+- **What:** Get Modrinth loader capabilities. Returns native v3 loader names, supported games, project types, supported fields and metadata. Use the dedicated loader-field discovery to obtain accepted field names.
+- **Params:** _none_
+
+### `modrinth_organization`
+
+- **HTTP:** `GET /modrinth/organization/{id}`
+- **What:** Read a public Modrinth organization. Reads an organization by its native ID or slug and returns its public name, description and icon metadata. Account, team-member and moderation data are excluded.
+- **Params:** `id` (string, **required**) — Organization ID or slug from a public organization URL or project metadata
+
+### `modrinth_organization_projects`
+
+- **HTTP:** `GET /modrinth/organization/{id}/projects`
+- **What:** Read a public organization's Modrinth projects. Returns every anonymously visible project published by the organization in native order, including reviewed game, compatibility and public server metadata. Validates organization identity before accepting the list. Does not add project-type filters, sorting or pagination.
+- **Params:** `id` (string, **required**) — Organization ID or slug from a public organization URL or project metadata
+
+### `modrinth_organizations`
+
+- **HTTP:** `GET /modrinth/organizations`
+- **What:** Resolve public Modrinth organizations. Uses the native bulk read for a JSON array of organization IDs or slugs. Preserves native response order and omissions instead of creating entries for unknown IDs. Returns public organization metadata without members or account data. An empty array returns an empty array.
+- **Params:** `ids` (string, **required**) — Native JSON array of organization IDs or slugs; [] is valid
+
+### `modrinth_project`
+
+- **HTTP:** `GET /modrinth/project/{id}`
+- **What:** Get a Modrinth project. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `id` (string, **required**) — Native id
+
+### `modrinth_project_disclosures`
+
+- **HTTP:** `GET /modrinth/project/{id}/disclosures`
+- **What:** Get Modrinth public project disclosures. Returns all current public declarations, their type-specific fields and timestamps. Empty declarations are valid. Public AI/system/telemetry/derivative/paid-feature/archive metadata is preserved; moderation, authorship, lock and deletion controls are omitted. No credentials, private/member view or write operation is used.
+- **Params:** `id` (string, **required**) — Native project ID or canonical slug
+
+### `modrinth_project_version`
+
+- **HTTP:** `GET /modrinth/project/{id}/version/{number}`
+- **What:** Get a project version by number or ID. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `id` (string, **required**) — Native id; `number` (string, **required**) — Native number
+
+### `modrinth_project_versions`
+
+- **HTTP:** `GET /modrinth/project/{id}/version`
+- **What:** List project versions. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `featured` (boolean, optional) — Native featured selector; false is distinct from omission; `game_versions` (string, optional) — JSON array of game versions from the game_version tag catalog; `id` (string, **required**) — Native id; `include_changelog` (boolean, optional) — Include changelog fields; `loaders` (string, optional) — JSON array of loader names from the loader tag catalog
+
+### `modrinth_projects`
+
+- **HTTP:** `GET /modrinth/projects`
+- **What:** Get native multiple-project metadata. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `ids` (string, **required**) — JSON-encoded array of native identifiers; absent members are omitted
+
+### `modrinth_random_projects`
+
+- **HTTP:** `GET /modrinth/projects_random`
+- **What:** Get native random projects. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `count` (integer, **required**) — Number of random projects, 1 to 100
+
+### `modrinth_search`
+
+- **HTTP:** `GET /modrinth/search`
+- **What:** Search Modrinth projects. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `facets` (string, optional) — Native JSON array of OR groups joined by AND; see the full facet reference; `index` (string, optional) — Native search order; `limit` (integer, optional) — Native result limit, zero to 100; `offset` (integer, optional) — Native result offset, at least zero; `query` (string, optional) — Search text
+
+### `modrinth_search_v3`
+
+- **HTTP:** `GET /modrinth/v3/search`
+- **What:** Search current Modrinth projects and servers. Returns native v3 name/summary/project_types/version-aware hits, page, hits_per_page and total_hits. Uses native offset/limit and filter expressions unchanged. Source limit0 resolves to1, values above100 cap at100; page is one-based. New_filters takes precedence over legacy filters/version; version is a legacy expression clause, not a bare game-version value. Use search options and native metadata catalogs for values.
+- **Params:** `facets` (string, optional) — Legacy JSON array of string arrays using v3 field names; `filters` (string, optional) — Legacy filter-expression clause; `index` (string, optional) — Native v3 order; `limit` (integer, optional) — Native nonnegative limit; default10; source normalizes to1–100; `new_filters` (string, optional) — Native current filter expression, forwarded unchanged; `offset` (integer, optional) — Native nonnegative offset; default0; `query` (string, optional) — Native search text; `version` (string, optional) — Legacy secondary filter-expression clause
+
+### `modrinth_search_v3_body`
+
+- **HTTP:** `POST /modrinth/v3/search`
+- **What:** Search Modrinth using the native v3 JSON body. Performs the upstream native POST search read. Offset and limit are decimal strings in this body; show_metadata preserves explicit false and optionally returns native per-hit score/sort metadata. No projects or account state are modified. Other fields and filter precedence match GET search.
+- **Params:** `body` (object, **required**) — Native search body; offset/limit are strings
+- **REST body:** Send the value of the MCP argument `body` directly as the JSON body; do not wrap it in a `body` property.
+
+### `modrinth_search_v3_options`
+
+- **HTTP:** `GET /modrinth/v3/search/options`
+- **What:** Discover Modrinth v3 search options. Returns all supported indexes, published server UI region/language choices, exact native content/status filter expressions, disclosure search flags and catalog paths for dynamic project types, categories, loaders, versions, environments and licenses. These reference choices do not restrict the native expression grammar.
+- **Params:** _none_
+
+### `modrinth_statistics`
+
+- **HTTP:** `GET /modrinth/statistics`
+- **What:** Get Modrinth instance statistics. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** _none_
+
+### `modrinth_tags`
+
+- **HTTP:** `GET /modrinth/tag/{type}`
+- **What:** Discover Modrinth catalog values. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `type` (string, **required**) — Native type
+
+### `modrinth_version`
+
+- **HTTP:** `GET /modrinth/version/{id}`
+- **What:** Get a version by ID. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `id` (string, **required**) — Native id
+
+### `modrinth_versions`
+
+- **HTTP:** `GET /modrinth/versions`
+- **What:** Get native multiple-version metadata. Returns the native public Modrinth metadata for this resource. See the endpoint reference for exact request and response behavior.
+- **Params:** `ids` (string, **required**) — JSON-encoded array of native identifiers; absent members are omitted
+
 ## Moncler (6)
 
 ### `moncler_categories`
@@ -12931,6 +14654,160 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get Moneycontrol sections. Lists the 52 Moneycontrol news section slugs accepted by `moneycontrol-headlines`, such as `markets`, `economy`, `ipo` and `cricket`. Each entry has its `slug`, display `name` and page `url`. Moneycontrol Pro-only research, video, podcast and photo hubs are not sections.
 - **Params:** _none_
 
+## MotoGP (20)
+
+### `motogp_bmw_award`
+
+- **HTTP:** `GET /motogp/bmw-award`
+- **What:** Get MotoGP BMW Award standings. Returns every source classification row and its report URL for a calendar season year. Uses a numeric year, not a season UUID. Native empty classifications remain empty and do not imply that the award existed in that season. Report links are metadata only.
+- **Params:** `season_year` (integer, **required**) — Four-digit native season year; seasons discovery supplies observed years
+
+### `motogp_categories`
+
+- **HTTP:** `GET /motogp/categories`
+- **What:** Discover historical result categories. Reads anonymous MotoGP results metadata using the result UUID namespace. Historical categories and test events retain their native source fields.
+- **Params:** `event_uuid` (string, optional) — Result UUID from the corresponding discovery resource; `season_uuid` (string, optional) — Result UUID from the corresponding discovery resource
+
+### `motogp_circuit_poles`
+
+- **HTTP:** `GET /motogp/circuit-poles`
+- **What:** Get native MotoGP circuit pole records. Preserves every native rider/count row, source ordering and pagination metadata. Uses result-circuit UUIDs and lowercase circuit-statistics categories; no new rank, total or historical category alias is calculated.
+- **Params:** `category_name` (string, **required**) — Native circuit-statistics category name; `circuit_uuid` (string, **required**) — Native result-circuit UUID from result event metadata
+
+### `motogp_circuit_records`
+
+- **HTTP:** `GET /motogp/circuit-records`
+- **What:** Get native circuit record metadata. Reads anonymous native result metadata. Result UUID namespaces and source report/record variants are preserved.
+- **Params:** `circuit_uuid` (string, **required**) — Result UUID from the corresponding discovery resource
+
+### `motogp_circuit_wins`
+
+- **HTTP:** `GET /motogp/circuit-wins`
+- **What:** Get native MotoGP circuit win records. Mirrors the circuit first-place-frequency resource. Preserves source rider identities, times, finishing position1, order and pagination metadata. Lowercase category names are a separate namespace from result-category UUIDs. Empty MotoE data can be valid even when native pagination totals are nonzero.
+- **Params:** `category_name` (string, **required**) — Native circuit-statistics category name; `circuit_uuid` (string, **required**) — Native result-circuit UUID from result event metadata
+
+### `motogp_classifications`
+
+- **HTTP:** `GET /motogp/classifications`
+- **What:** Get a native MotoGP session classification. Reads anonymous MotoGP results metadata using the result UUID namespace. Historical categories and test events retain their native source fields.
+- **Params:** `session_uuid` (string, **required**) — Result UUID from the corresponding discovery resource; `test` (boolean, optional) — Native test-session flag; defaults to false
+
+### `motogp_content_categories`
+
+- **HTTP:** `GET /motogp/content/categories`
+- **What:** Read MotoGP content category catalog. Returns the complete native category entity IDs, names and signed numeric legacy IDs for a source season year. These category UUIDs differ from event-instance and result-category UUIDs. Legacy IDs select latest sports sessions; historical choices can have no available session and return404 there.
+- **Params:** `season_year` (integer, **required**) — Four-digit source year; seasons discovery supplies published choices
+
+### `motogp_content_event`
+
+- **HTTP:** `GET /motogp/content/events/{id}`
+- **What:** Read MotoGP content event metadata. Uses a content-event UUID from the content catalog or session metadata. Returns the native public event/category/venue/track/schedule metadata and explicit result-event/result-circuit UUID bridges when present. Does not synthesize mappings or hydrate classifications. Preserves nulls, dates and source spelling; excludes assets, playback, client location and venue narratives.
+- **Params:** `id` (string, **required**) — Content-event UUID; not a result-event UUID
+
+### `motogp_content_events`
+
+- **HTTP:** `GET /motogp/content/events`
+- **What:** Read MotoGP content event catalog. Returns all source event metadata in native order, including GP, test and media-event timing metadata. Preserves native schedules, season context, venue/track fields, category relations and availability flags. Assets, playback, client location and venue narrative content are excluded. Source season years can include preseason dates in the preceding calendar year. No locally computed filters, timezone transforms or pagination.
+- **Params:** `season_year` (integer, **required**) — Four-digit source season year
+
+### `motogp_entries`
+
+- **HTTP:** `GET /motogp/entries`
+- **What:** Read a MotoGP event category's published entry list. Returns the whole native entry array and optional report link. Preserves professional rider identities, countries, numbers, team/constructor data and published wildcard/replacement/rookie flags. Validates the event's category context before reading entries. Does not reconcile entries with grids or infer active riders.
+- **Params:** `category_uuid` (string, **required**) — Result-category UUID from that event's category discovery; `event_uuid` (string, **required**) — Result-event UUID from entry/grid options or event discovery
+
+### `motogp_entry_grid_options`
+
+- **HTTP:** `GET /motogp/entry-grid-options/{id}`
+- **What:** Discover MotoGP entry-list and grid selectors. Resolves a native content event's explicit result-event bridge and categories. Returns complete entry-list UUID tuples and GP starting-grid season/shortname/category tuples. Uses the site's native category-name conversion. Missing bridges or mismatched category namespaces fail rather than inventing identifiers. No source rows or media are fetched for discovery.
+- **Params:** `id` (string, **required**) — Content-event UUID from content event discovery; this is a different namespace from result UUIDs
+
+### `motogp_event_files`
+
+- **HTTP:** `GET /motogp/event-files`
+- **What:** Get native event and category report links. Reads anonymous native result metadata. Result UUID namespaces and source report/record variants are preserved.
+- **Params:** `category_uuid` (string, **required**) — Result UUID from the corresponding discovery resource; `event_uuid` (string, **required**) — Result UUID from the corresponding discovery resource
+
+### `motogp_events`
+
+- **HTTP:** `GET /motogp/events`
+- **What:** List native season events. Reads anonymous MotoGP results metadata using the result UUID namespace. Historical categories and test events retain their native source fields.
+- **Params:** `is_finished` (boolean, optional) — Native selector; omitted, true and false are distinct; true also includes the current weekend; `season_uuid` (string, **required**) — Result UUID from the corresponding discovery resource
+
+### `motogp_latest_session`
+
+- **HTTP:** `GET /motogp/content/sessions/latest`
+- **What:** Read latest MotoGP sports session metadata. Reads the native sport/session resource, with optional signed legacy-category and GP/test selectors. Omission preserves the upstream default. Returned session/category/event IDs are content metadata IDs, not result-session/category UUIDs. Historical categories can return older sessions or native404. Null season fields and published timing/availability flags remain unchanged; no media or account access.
+- **Params:** `category_legacy_id` (integer, optional) — Native numeric legacy_id from content category catalog; `event_kind` (string, optional) — Optional native sports-event kind
+
+### `motogp_next_live_session`
+
+- **HTTP:** `GET /motogp/content/sessions/next-live`
+- **What:** Read next live MotoGP session metadata. Reads the native next-session request with live=true and returns reviewed public broadcast timing, category and event metadata. Preserves source ordering within nested metadata and null/false/zero values. Content-session UUIDs are not result-session UUIDs. Playback assets, account state, client location and venue narratives are excluded. No query parameters.
+- **Params:** _none_
+
+### `motogp_seasons`
+
+- **HTTP:** `GET /motogp/seasons`
+- **What:** Discover MotoGP result seasons. Reads anonymous MotoGP results metadata using the result UUID namespace. Historical categories and test events retain their native source fields.
+- **Params:** _none_
+
+### `motogp_sessions`
+
+- **HTTP:** `GET /motogp/sessions`
+- **What:** List event and category sessions. Reads anonymous MotoGP results metadata using the result UUID namespace. Historical categories and test events retain their native source fields.
+- **Params:** `category_uuid` (string, **required**) — Result UUID from the corresponding discovery resource; `event_uuid` (string, **required**) — Result UUID from the corresponding discovery resource
+
+### `motogp_standings`
+
+- **HTTP:** `GET /motogp/standings`
+- **What:** Get native season rider standings. Reads anonymous native result metadata. Result UUID namespaces and source report/record variants are preserved.
+- **Params:** `category_uuid` (string, **required**) — Result UUID from the corresponding discovery resource; `season_uuid` (string, **required**) — Result UUID from the corresponding discovery resource
+
+### `motogp_standings_files`
+
+- **HTTP:** `GET /motogp/standings-files`
+- **What:** Get native standings report links. Reads anonymous native result metadata. Result UUID namespaces and source report/record variants are preserved.
+- **Params:** `category_uuid` (string, **required**) — Result UUID from the corresponding discovery resource; `season_uuid` (string, **required**) — Result UUID from the corresponding discovery resource
+
+### `motogp_starting_grid`
+
+- **HTTP:** `GET /motogp/starting-grid`
+- **What:** Read a published MotoGP starting grid. Reads the native season/shortname/category grid after validating its GP event context. Preserves native grid order, positions, times, professional rider/team data and optional penalty text. Biography and media fields are excluded. No qualifying-order calculation, row regrouping, entry reconciliation or local filters are added.
+- **Params:** `category_name` (string, **required**) — Exact native category label from the same starting_grid option tuple; `season_year` (integer, **required**) — Native season_year from entry/grid options; `shortname` (string, **required**) — Exact native GP event shortname, up to four characters, from entry/grid options
+
+## NASCAR (5)
+
+### `nascar_live_feed`
+
+- **HTTP:** `GET /nascar/live-feed`
+- **What:** Get NASCAR’s latest published global session feed. Preserves the native anonymous feed and its source identity and timestamps. This resource does not accept series or historical selectors.
+- **Params:** _none_
+
+### `nascar_race_weekend`
+
+- **HTTP:** `GET /nascar/weekend/{season}/{series}/{race}`
+- **What:** Get NASCAR race-weekend results and sessions. Returns all native weekend_race and weekend_runs rows for a discovered race, preserving source result fields, run types and timestamps. The race must belong to the selected native season/series; driver biography fields are omitted. No ranking, status inference or local series filtering is performed.
+- **Params:** `race` (integer, **required**) — Source race ID from selected season and series; `season` (integer, **required**) — Four-digit native season; `series` (integer, **required**) — Source series ID from series/race discovery
+
+### `nascar_races`
+
+- **HTTP:** `GET /nascar/races`
+- **What:** Get the current-season NASCAR race feed. Preserves the native anonymous feed and its source identity and timestamps. This resource does not accept series or historical selectors.
+- **Params:** _none_
+
+### `nascar_season_races`
+
+- **HTTP:** `GET /nascar/races/{season}`
+- **What:** Get a NASCAR season race feed. Returns the complete published source series groups for a native calendar year. Discover race and series IDs here before requesting a weekend. Year is a source resource key, not a guarantee that every historical/future file is published; missing or denied source objects remain errors.
+- **Params:** `season` (integer, **required**) — Four-digit native season year
+
+### `nascar_series`
+
+- **HTTP:** `GET /nascar/series`
+- **What:** Discover NASCAR source series IDs. Returns every native series ID and source group key in a published season feed. No marketing label or unavailable season inventory is invented. Omission selects the current UTC calendar year.
+- **Params:** `season` (integer, optional) — Published native season; omission uses current UTC year
+
 ## Nation Africa (5)
 
 ### `nationafrica_article`
@@ -12994,6 +14871,314 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /nationalpost/sections`
 - **What:** Get National Post sections. Lists the 45 National Post section slugs accepted by `nationalpost-headlines`, such as `canada`, `opinion`, `hockey` and `gift-guide`, each with its display `name` and category page `url`. Links that leave nationalpost.com (Financial Post, Driving.ca, puzzles, classifieds, e-paper) and the paid Sponsored categories are not included.
 - **Params:** _none_
+
+## NBA (51)
+
+### `nba_box_score`
+
+- **HTTP:** `GET /nba/box-score`
+- **What:** NBA traditional box score for one game. Returns the traditional box score for one game: both teams and, per team, one row per player with player id, name, jersey number, position, starter flag, minutes, points, rebounds, assists and field goals made. The player ids are the source's stable player identity used by the player-statistics routes.
+- **Params:** `end_period` (integer, optional) — Last period to include, 0 to 14; 0 means through the end example(14); `game_id` (string, **required**) — Ten-digit game id from nba-scoreboard; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `start_period` (integer, optional) — First period to include, 0 to 14; 0 means from the start example(0)
+
+### `nba_box_score_advanced`
+
+- **HTTP:** `GET /nba/box-score-advanced`
+- **What:** NBA advanced box score for one game. Returns the advanced box score for one game: each team's per-player rows with the upstream's own advanced statistics keyed by their source names. Verified statistic keys include netRating, pace and pie; the upstream sends a larger key set (offensive/defensive rating and the percentage family use long names such as offensiveRating and effectiveFieldGoalPercentage) and every key is passed through unchanged rather than projected onto a guessed struct.
+- **Params:** `end_period` (integer, optional) — Last period to include, 0 to 14; 0 means through the end; `game_id` (string, **required**) — Ten-digit game id from nba-scoreboard; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `start_period` (integer, optional) — First period to include, 0 to 14; 0 means from the start
+
+### `nba_box_score_four_factors`
+
+- **HTTP:** `GET /nba/box-score-four-factors`
+- **What:** NBA four-factors box score for one game. Returns the four-factors box score for one game. Verified statistic keys are effectiveFieldGoalPercentage, freeThrowAttemptRate, teamTurnoverPercentage, offensiveReboundPercentage, oppEffectiveFieldGoalPercentage and oppFreeThrowAttemptRate.
+- **Params:** `end_period` (integer, optional) — Last period to include, 0 to 14; 0 means through the end; `game_id` (string, **required**) — Ten-digit game id from nba-scoreboard; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `start_period` (integer, optional) — First period to include, 0 to 14; 0 means from the start
+
+### `nba_box_score_misc`
+
+- **HTTP:** `GET /nba/box-score-misc`
+- **What:** NBA miscellaneous box score for one game. Returns the miscellaneous box score for one game: points off turnovers, second chance and fast-break points, paint points, opponent points off turnovers, blocks, blocks against, personal fouls and fouls drawn. All of those keys are verified on this flavor.
+- **Params:** `end_period` (integer, optional) — Last period to include, 0 to 14; 0 means through the end; `game_id` (string, **required**) — Ten-digit game id from nba-scoreboard; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `start_period` (integer, optional) — First period to include, 0 to 14; 0 means from the start
+
+### `nba_box_score_player_track`
+
+- **HTTP:** `GET /nba/box-score-player-track`
+- **What:** NBA player-tracking box score for one game. Returns the player-tracking box score for one game. Verified statistic keys are speed, distance, touches, passes, secondaryAssists, contestedFieldGoalsMade and uncontestedFieldGoals. Unlike its siblings this flavor answers the game id alone, so it takes no league or period parameters.
+- **Params:** `game_id` (string, **required**) — Ten-digit game id from nba-scoreboard
+
+### `nba_box_score_scoring`
+
+- **HTTP:** `GET /nba/box-score-scoring`
+- **What:** NBA scoring-distribution box score for one game. Returns the scoring-distribution box score for one game. Verified statistic keys are percentageFieldGoalsAttempted2pt, percentageFieldGoalsAttempted3pt, percentagePoints2pt, percentagePoints3pt, percentagePointsFastBreak and percentagePointsPaint.
+- **Params:** `end_period` (integer, optional) — Last period to include, 0 to 14; 0 means through the end; `game_id` (string, **required**) — Ten-digit game id from nba-scoreboard; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `start_period` (integer, optional) — First period to include, 0 to 14; 0 means from the start
+
+### `nba_box_score_usage`
+
+- **HTTP:** `GET /nba/box-score-usage`
+- **What:** NBA usage box score for one game. Returns the usage box score for one game: each team's per-player rows with the upstream's usage statistics. Verified statistic keys are usagePercentage, percentageFieldGoalsAttempted, percentageFreeThrowsAttempted, percentageAssists, percentageTurnovers, percentageRebounds and percentagePoints.
+- **Params:** `end_period` (integer, optional) — Last period to include, 0 to 14; 0 means through the end; `game_id` (string, **required**) — Ten-digit game id from nba-scoreboard; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `start_period` (integer, optional) — First period to include, 0 to 14; 0 means from the start
+
+### `nba_common_all_players`
+
+- **HTTP:** `GET /nba/common-all-players`
+- **What:** NBA league-wide player listing for a season. Returns the league's complete player listing for a season (the CommonAllPlayers table). Verified columns are PERSON_ID, DISPLAY_FIRST_LAST, ROSTERSTATUS, TEAM_ID, TEAM_NAME, TEAM_ABBREVIATION and PLAYERCODE. This is the widest player listing in the family; use nba-players when you want the index with roster attributes, and this route when you need the historical-to-current player set.
+- **Params:** `is_only_current_season` (boolean, optional) — When true, only players on a current roster are returned; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season
+
+### `nba_draft_combine_anthro`
+
+- **HTTP:** `GET /nba/draft-combine-anthro`
+- **What:** NBA draft combine anthropometric measurements. Returns one draft class's combine anthropometric measurements (the DraftCombinePlayerAnthro table). Verified columns are PLAYER_ID, FIRST_NAME, LAST_NAME, POSITION, HEIGHT_WO_SHOES, WEIGHT, WINGSPAN, STANDING_REACH, HAND_LENGTH and HAND_WIDTH. The draft year is required: the endpoint has no all-years mode that was verified.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `season_year` (string, **required**) — Four-digit draft year
+
+### `nba_enums`
+
+- **HTTP:** `GET /nba/enums`
+- **What:** List the pinned NBA request enum values. Returns the complete pinned request-enum inventory the NBA routes validate locally: league ids, season types (all four upstream values, including Pre Season and All Star), measure types, per modes, leader stat categories, the leaderboard scope, the game-date and season formats, and the values deliberately blocked because they are not verified. The upstream exposes no value-listing endpoint and answers an invalid enum with a bare HTTP 500, so these values are pinned from measured live acceptance and covered by exact-set tests. No upstream call is made.
+- **Params:** _none_
+
+### `nba_franchise_history`
+
+- **HTTP:** `GET /nba/franchise-history`
+- **What:** NBA franchise history, including defunct teams. Returns every franchise's history as two tables: FranchiseHistory for active franchises and DefunctTeams for the ones that no longer play. Verified columns are TEAM_ID, TEAM_NAME, START_YEAR, END_YEAR, YEARS and GAMES. The table is league-wide and needs no team id; pass team_id only to narrow it.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `team_id` (integer, optional) — Optional team id from nba-standings; narrows the history to that franchise
+
+### `nba_game_detail`
+
+- **HTTP:** `GET /nba/game-detail`
+- **What:** NBA game summary detail from nba.com. Returns one game's summary detail from nba.com's game page, read from the page's embedded JSON state: status and clock, game duration, attendance and sellout flag, venue id, name, city, state, country and timezone, the officiating crew with names and jersey numbers, series text, and each team's per-period scoring with a derived game total. Use nba-box-score for per-player statistics; this route is the game-level summary the box score does not carry.
+- **Params:** `game_id` (string, **required**) — Ten-digit game id from nba-scoreboard
+
+### `nba_games`
+
+- **HTTP:** `GET /nba/games`
+- **What:** Current NBA games from nba.com's own page state. Returns the games currently shown on nba.com's games page, read from the page's embedded JSON state: game id, code, status and clock, period, and both teams with id, tricode, name, score, wins and losses. The shape is identical to nba-scoreboard, so the two routes are interchangeable for callers. This route is an independent fallback: it uses nba.com's public website instead of the statistics service, needs no parameters, and returns the slate that page displays rather than an arbitrary date.
+- **Params:** _none_
+
+### `nba_homepage_leaders`
+
+- **HTTP:** `GET /nba/homepage-leaders`
+- **What:** NBA homepage leader board. Returns the homepage leader board for one category. This endpoint has no required parameter beyond the league: a LeagueID-only request answers 200 and echoes its whole contract, which is how its parameter names were recovered after an earlier sampled request answered 400. Note its category spelling is the upstream's own — 'Points' and 'Rebounds', not the 'PTS' short form leagueleaders uses.
+- **Params:** `game_scope` (string, optional) — Game window; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `player_or_team` (string, optional) — Subject; `player_scope` (string, optional) — Player pool; `stat_category` (string, optional) — Leader category
+
+### `nba_hustle_stats`
+
+- **HTTP:** `GET /nba/hustle-stats`
+- **What:** NBA hustle statistics for one game. Returns the hustle statistics for one game: minutes plus contested shots (overall, two-point and three-point), deflections, charges drawn, screen assists and screen-assist points, loose balls recovered (offensive, defensive and total) and box-outs. Marker-verified columns are PLAYER_ID, TEAM_ID, MINUTES, CONTESTED_SHOTS, CONTESTED_SHOTS_2PT, CONTESTED_SHOTS_3PT, DEFLECTIONS, CHARGES_DRAWN, SCREEN_ASSISTS, SCREEN_AST_PTS, OFF_LOOSE_BALLS_RECOVERED, DEF_LOOSE_BALLS_RECOVERED, LOOSE_BALLS_RECOVERED and BOX_OUTS; the sampled BOX_OUTS_PLAYER and BOX_OUTS_TEAM names did not match and are not claimed.
+- **Params:** `game_id` (string, **required**) — Ten-digit game id from nba-scoreboard
+
+### `nba_hustle_team`
+
+- **HTTP:** `GET /nba/hustle-team`
+- **What:** Returns the league's team hustle table: contested shots, deflections, charges drawn, screen assists and points, loose balls recovered and box-outs. Returns the league's team hustle table: contested shots, deflections, charges drawn, screen assists and points, loose balls recovered and box-outs.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
+
+### `nba_league_game_log`
+
+- **HTTP:** `GET /nba/league-game-log`
+- **What:** NBA game log for a season, by team or by player. Returns every game in a season as the league's game log. With player_or_team=T each row is one team-game and carries GAME_ID, TEAM_ID, GAME_DATE, MATCHUP, WL, MIN, PTS, PLUS_MINUS and VIDEO_AVAILABLE; with player_or_team=P each row is one player-game (the same identity columns plus PLAYER_ID and PLAYER_NAME) and the payload grows to several hundred KB. direction orders the log newest-first (DESC) or chronologically (ASC).
+- **Params:** `direction` (string, optional) — Ordering; ASC or DESC; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `player_or_team` (string, optional) — T for one row per team, P for one row per player; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type; `sorter` (string, optional) — Sort key; only DATE is verified
+
+### `nba_lineups`
+
+- **HTTP:** `GET /nba/lineups`
+- **What:** NBA lineup dashboard. Returns the lineup dashboard for one lineup size and measure: one row per lineup with GROUP_ID, GROUP_NAME, TEAM_ID, TEAM_ABBREVIATION and the counting/rate columns for the requested measure. The payload is large — the five-man sample was about 712 KB — so request it once and page locally. GroupQuantity is pinned to the one verified size, 5.
+- **Params:** `group_quantity` (integer, optional) — Lineup size; only 5 is verified; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `measure_type` (string, optional) — Statistic family; `per_mode` (string, optional) — Aggregation; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type
+
+### `nba_news`
+
+- **HTTP:** `GET /nba/news`
+- **What:** NBA news articles from nba.com. Returns the news articles nba.com is currently featuring, read from the page's embedded JSON state: article id, title, slug, canonical permalink, excerpt, publication and modification timestamps, publish status, word count and the primary section name and slug. Permalinks are the canonical article URLs, so a caller can link straight to a story without building a URL.
+- **Params:** _none_
+
+### `nba_opp_pt_shot`
+
+- **HTTP:** `GET /nba/opp-pt-shot`
+- **What:** Returns the league's opponent shooting table: one row per team with the shooting it allows, split overall and from three. Returns the league's opponent shooting table: one row per team with the shooting it allows, split overall and from three.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
+
+### `nba_play_by_play`
+
+- **HTTP:** `GET /nba/play-by-play`
+- **What:** NBA play-by-play for one game. Returns every play-by-play action for one game in period order: action number and type, period, an ISO-8601 clock such as PT12M00.00S, team and player identity, the description, shot result and value, and the running home/away score. A full game is about 220 KB, so request it once and page locally rather than polling.
+- **Params:** `end_period` (integer, optional) — Last period to include, 0 to 14; 0 means through the end example(14); `game_id` (string, **required**) — Ten-digit game id from nba-scoreboard; `start_period` (integer, optional) — First period to include, 0 to 14; 0 means from the start example(0)
+
+### `nba_player_awards`
+
+- **HTTP:** `GET /nba/player-awards`
+- **What:** NBA player award history. Returns one player's award history, one row per award. Marker-verified columns are PERSON_ID, FIRST_NAME, LAST_NAME, TEAM, DESCRIPTION, SEASON, CONFERENCE, TYPE, SUBTYPE1, SUBTYPE2, SUBTYPE3, ALL_NBA_TEAM_NUMBER and ALL_NBA_TEAM; the sampled AWARD_TYPE, ALL_DEFENSIVE_TEAM_NUMBER and ALL_ROOKIE_TEAM_NUMBER names did not match and are not claimed.
+- **Params:** `player_id` (integer, **required**) — Player id from nba-players or nba-team-roster
+
+### `nba_player_bio_stats`
+
+- **HTTP:** `GET /nba/player-bio-stats`
+- **What:** NBA league bio table. Returns the league bio table for a season: each player's height (label and inches), weight, college, country, draft year/round/number and age, with season GP and the counting stat line. Marker-verified columns are PLAYER_ID, PLAYER_NAME, TEAM_ID, TEAM_ABBREVIATION, AGE, PLAYER_HEIGHT, PLAYER_HEIGHT_INCHES, PLAYER_WEIGHT, COLLEGE, COUNTRY, DRAFT_YEAR, DRAFT_ROUND, DRAFT_NUMBER, GP, PTS, REB and AST — the complete sampled set matched.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `per_mode` (string, optional) — Aggregation; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type
+
+### `nba_player_career_stats`
+
+- **HTTP:** `GET /nba/player-career-stats`
+- **What:** NBA player season-by-season and career statistics. Returns one player's career statistics as several tables: the season-by-season regular-season line, the career regular-season totals, the season-by-season postseason line and the career postseason totals. Verified columns are SEASON_ID, TEAM_ID, GP, GS, MIN and PTS. per_mode PerGame or Totals is validated against the values verified on this endpoint.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `per_mode` (string, optional) — Aggregation; PerGame or Totals; `player_id` (integer, **required**) — Player id from nba-players or nba-team-roster
+
+### `nba_player_clutch`
+
+- **HTTP:** `GET /nba/player-clutch`
+- **What:** Returns the league's clutch player table for one clutch window and score margin: the players' clutch shooting and counting stats. Returns the league's clutch player table for one clutch window and score margin: the players' clutch shooting and counting stats.
+- **Params:** `ahead_behind` (string, optional) — Optional score-margin filter; only 'Ahead or Behind' is verified.; `clutch_time` (string, optional) — Optional clutch window; only 'Last 5 Minutes' is verified.; `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `measure_type` (string, optional) — Optional statistic family.; `per_mode` (string, optional) — Optional aggregation.; `point_diff` (integer, optional) — Optional point margin; only 5 is verified.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
+
+### `nba_player_dash_pt_shots`
+
+- **HTTP:** `GET /nba/player-dash-pt-shots`
+- **What:** NBA player tracking shot dashboard. Returns one player's tracking shot dashboard as several result sets (overall, and the tracking breakdowns the upstream returns). The endpoint rejects a trimmed query with HTTP 500, so the full dashboard scope set is always sent.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `per_mode` (string, optional) — Aggregation; `player_id` (integer, **required**) — Player id from nba-players or nba-team-roster; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type
+
+### `nba_player_game_logs`
+
+- **HTTP:** `GET /nba/player-game-logs`
+- **What:** Returns one player's game log for a season, one row per game with the player's box-score line. Returns one player's game log for a season, one row per game with the player's box-score line.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `player_id` (integer, **required**) — Required player id from nba-players or nba-team-roster.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
+
+### `nba_player_info`
+
+- **HTTP:** `GET /nba/player-info`
+- **What:** NBA player profile. Returns one player's league profile: full name forms, birth date, school and country, draft year and round, jersey number, position, height and weight, team identity and season experience. Take the player id from nba-players or nba-team-roster.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `player_id` (integer, **required**) — Player id from nba-players or nba-team-roster
+
+### `nba_player_profile_v2`
+
+- **HTTP:** `GET /nba/player-profile-v2`
+- **What:** Returns one player's full profile stat set: the season-by-season regular-season line, the career regular-season totals and the postseason equivalents. Returns one player's full profile stat set: the season-by-season regular-season line, the career regular-season totals and the postseason equivalents.
+- **Params:** `per_mode` (string, optional) — Optional aggregation.; `player_id` (integer, **required**) — Required player id from nba-players or nba-team-roster.
+
+### `nba_player_pt_shot`
+
+- **HTTP:** `GET /nba/player-pt-shot`
+- **What:** Returns the league's player shooting table: one row per player with the shooting line, split overall and from three. Returns the league's player shooting table: one row per player with the shooting line, split overall and from three.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
+
+### `nba_player_stats`
+
+- **HTTP:** `GET /nba/player-stats`
+- **What:** NBA league-wide player statistics table. Returns the league-wide player statistics table for one season, measure and aggregation: one row per player with the columns the source publishes for that measure, keyed by the source's own column names such as PLAYER_ID, PLAYER_NAME, TEAM_ID, GP, MIN, PTS, REB and AST. Base and Advanced are the two verified measures, and PerGame and Totals the two verified aggregations; read the response's headers list rather than assuming a fixed column set.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `measure_type` (string, optional) — Statistic family; Base or Advanced; `per_mode` (string, optional) — Aggregation; PerGame or Totals; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type; Regular Season or Playoffs
+
+### `nba_player_streak_finder`
+
+- **HTTP:** `GET /nba/player-streak-finder`
+- **What:** Returns player game streaks for a season: the streak rows the upstream computes, one row per streak, with the player identity and streak totals. Returns player game streaks for a season: the streak rows the upstream computes, one row per streak, with the player identity and streak totals.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `min_games` (integer, optional) — Optional minimum streak length in games.; `player_id` (integer, optional) — Optional player id from nba-players; narrows the streaks to one player.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
+
+### `nba_players`
+
+- **HTTP:** `GET /nba/players`
+- **What:** NBA player index: every player id for a season. Returns the league's player index for a season, one row per player with player id, first and last name, team id and the source's roster attributes. This is the family's player-id discovery route: the ids it returns are what nba-player-info, nba-box-score and nba-play-by-play accept, so call this instead of guessing an id. Pass team_id to narrow the index to one roster.
+- **Params:** `active` (boolean, optional) — When true, keep only players active in the season; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `team_id` (integer, optional) — Optional team id from nba-standings; narrows the index to that roster example(1610612741)
+
+### `nba_playoff_picture`
+
+- **HTTP:** `GET /nba/playoff-picture`
+- **What:** NBA playoff picture by conference. Returns the current playoff picture as two tables, EastConfPlayoffPicture and WestConfPlayoffPicture. Verified columns are TEAM_ID, CONFERENCE and CLINCHED; the upstream sends more columns than were confirmed here (the sampled PLAYOFF_RANK column name did not match the response) and any extras are passed through as-is.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `season_id` (string, optional) — Five-digit season id such as 22026; defaults to the current season
+
+### `nba_pt_defend`
+
+- **HTTP:** `GET /nba/pt-defend`
+- **What:** NBA defensive tracking dashboard. Returns the league's defensive tracking table for one defended-shot category. Marker-verified columns are CLOSE_DEF_PERSON_ID, PLAYER_NAME, TEAM_ID, TEAM_ABBREVIATION, AGE, GP, G, FREQ, D_FGM, D_FGA, D_FG_PCT, NORMAL_FG_PCT and PCT_PLUSMINUS. The player identity column on this table is CLOSE_DEF_PERSON_ID, not PLAYER_ID.
+- **Params:** `defense_category` (string, optional) — Defended-shot category; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `per_mode` (string, optional) — Aggregation; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type
+
+### `nba_pt_stats`
+
+- **HTTP:** `GET /nba/pt-stats`
+- **What:** NBA player-tracking dashboard. Returns the league player-tracking dashboard for one tracking measure. The endpoint rejects a trimmed query with HTTP 500, so the full dashboard scope set is always sent. pt_measure_type is pinned to the one verified measure, SpeedDistance.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `per_mode` (string, optional) — Aggregation; `pt_measure_type` (string, optional) — Tracking measure; only SpeedDistance is verified; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type
+
+### `nba_scoreboard`
+
+- **HTTP:** `GET /nba/scoreboard`
+- **What:** NBA scoreboard for one game day. Returns every NBA game for a game day from the league's own statistics service: game id, code, status and clock, period, and both teams with id, tricode, name, score, wins and losses. Game ids from this route are the input to the box-score and play-by-play routes. The upstream requires a game date, so a missing date defaults to the current UTC date; the NBA game day is US Eastern, so pass game_date explicitly when the exact slate matters.
+- **Params:** `day_offset` (integer, optional) — Whole-day offset applied to the game day example(0); `game_date` (string, optional) — Game day in MM/DD/YYYY form; defaults to the current UTC date; `league_id` (string, optional) — League id; only 00 (NBA) is verified
+
+### `nba_standings`
+
+- **HTTP:** `GET /nba/standings`
+- **What:** NBA standings for a season and season type. Returns the standings table for one season and season type: one row per team with team id, city, name, slug, conference, division, wins, losses, win percentage, playoff rank, streak, conference record and clinched flag. Western/Eastern conference and division are columns rather than parameters, so one call returns the whole league and callers split on them.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type; Regular Season or Playoffs
+
+### `nba_synergy_play_types`
+
+- **HTTP:** `GET /nba/synergy-play-types`
+- **What:** NBA synergy play-type dashboard. Returns the synergy play-type dashboard for one play type and grouping. This endpoint takes a four-digit SeasonYear rather than the dashboards' YYYY-YY season label. play_type is pinned to the one verified value, Isolation, and type_grouping to the verified offensive grouping.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `per_mode` (string, optional) — Aggregation; `play_type` (string, optional) — Synergy play type; only Isolation is verified; `player_or_team` (string, optional) — Subject; `season_type` (string, optional) — Season type; `season_year` (string, optional) — Four-digit season year such as 2026; defaults to the current season; `type_grouping` (string, optional) — Grouping
+
+### `nba_team_dash_pt_pass`
+
+- **HTTP:** `GET /nba/team-dash-pt-pass`
+- **What:** Returns one team's passing dashboard: the pass-type breakdowns the upstream computes for that team, as several result sets. Returns one team's passing dashboard: the pass-type breakdowns the upstream computes for that team, as several result sets.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.; `team_id` (integer, **required**) — Required team id from nba-standings.
+
+### `nba_team_dash_pt_shots`
+
+- **HTTP:** `GET /nba/team-dash-pt-shots`
+- **What:** Returns one team's tracking shot dashboard: the shot breakdowns the upstream computes for that team (by touch time and shot type), as several result sets. Returns one team's tracking shot dashboard: the shot breakdowns the upstream computes for that team (by touch time and shot type), as several result sets.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.; `team_id` (integer, **required**) — Required team id from nba-standings.
+
+### `nba_team_details`
+
+- **HTTP:** `GET /nba/team-details`
+- **What:** NBA franchise background, season history and awards. Returns one franchise's detail from the league statistics service: the franchise background row (team id, abbreviation, nickname, city, arena and capacity, owner, general manager, head coach, G-League affiliate, founding year), its season-by-season history, and its championship awards. Verified columns are TEAM_ID, ABBREVIATION, NICKNAME, CITY, ARENA, ARENACAPACITY, OWNER, GENERALMANAGER, HEADCOACH, DLEAGUEAFFILIATION and YEARFOUNDED on TeamBackground, plus YEARAWARDED and OPPOSITETEAM on TeamAwardsChampionships; the upstream sends more columns than were confirmed here and they are passed through as-is.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `team_id` (integer, **required**) — Team id from nba-standings
+
+### `nba_team_game_logs`
+
+- **HTTP:** `GET /nba/team-game-logs`
+- **What:** Returns one team's game log for a season, one row per game with the team's box-score line (field goals, threes, rebounds, assists, steals, blocks, turnovers, points and plus-minus). Returns one team's game log for a season, one row per game with the team's box-score line (field goals, threes, rebounds, assists, steals, blocks, turnovers, points and plus-minus).
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.; `team_id` (integer, **required**) — Required team id from nba-standings.
+
+### `nba_team_info_common`
+
+- **HTTP:** `GET /nba/team-info-common`
+- **What:** Returns one team's identity and season summary: city, name, abbreviation, code, conference and division, the win/loss record and per-game team averages, plus the team's available seasons. Returns one team's identity and season summary: city, name, abbreviation, code, conference and division, the win/loss record and per-game team averages, plus the team's available seasons.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.; `team_id` (integer, **required**) — Required team id from nba-standings.
+
+### `nba_team_on_off`
+
+- **HTTP:** `GET /nba/team-on-off`
+- **What:** Returns a team's on-court/off-court player splits: the on-court and off-court rows the upstream computes, with each player's minutes and rating impact. Returns a team's on-court/off-court player splits: the on-court and off-court rows the upstream computes, with each player's minutes and rating impact.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `measure_type` (string, optional) — Optional statistic family.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.; `team_id` (integer, **required**) — Required team id from nba-standings.
+
+### `nba_team_pt_shot`
+
+- **HTTP:** `GET /nba/team-pt-shot`
+- **What:** Returns the league's team shooting table: one row per team with the shooting line, split overall and from three. Returns the league's team shooting table: one row per team with the shooting line, split overall and from three.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.; `per_mode` (string, optional) — Optional aggregation.; `season` (string, optional) — Optional season in YYYY-YY form; defaults to the current NBA season.; `season_type` (string, optional) — Optional season type.
+
+### `nba_team_roster`
+
+- **HTTP:** `GET /nba/team-roster`
+- **What:** NBA team roster for a season. Returns one team's roster for a season, one row per player with player id, name, nickname, player slug, jersey number, position, height and weight. Player ids from this route are the input nba-player-info accepts; take the team id from nba-standings.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `team_id` (integer, **required**) — Team id from nba-standings
+
+### `nba_team_shot_locations`
+
+- **HTTP:** `GET /nba/team-shot-locations`
+- **What:** NBA team shot-location dashboard. Returns the team shot-location dashboard: one row per team with the shooting columns for each distance zone. The endpoint requires both MeasureType and DistanceRange; a request without MeasureType answers HTTP 400 naming that parameter. distance_range is pinned to the one verified value, 'By Zone'.
+- **Params:** `distance_range` (string, optional) — Distance bucket set; only By Zone is verified; `league_id` (string, optional) — League id; only 00 (NBA) is verified; `measure_type` (string, optional) — Statistic family; `per_mode` (string, optional) — Aggregation; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type
+
+### `nba_team_stats`
+
+- **HTTP:** `GET /nba/team-stats`
+- **What:** NBA league-wide team statistics table. Returns the league-wide team statistics table for one season, measure and aggregation: one row per team with the columns the source publishes for that measure, keyed by the source's own column names such as TEAM_ID, TEAM_NAME, GP, W, L, W_PCT, PTS and PLUS_MINUS. Base and Advanced are the two verified measures, and PerGame and Totals the two verified aggregations; the columns differ between measures, so read the response's headers list rather than assuming a fixed set.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `measure_type` (string, optional) — Statistic family; Base or Advanced; `per_mode` (string, optional) — Aggregation; PerGame or Totals; `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type; Regular Season or Playoffs
+
+### `nba_team_stats_leaders`
+
+- **HTTP:** `GET /nba/team-stats-leaders`
+- **What:** NBA league leaders for one statistical category. Returns the league leaders table for one ranked statistical category: one row per player with the columns the source publishes, keyed by the source's own column names such as PLAYER_ID, PLAYER_NAME, TEAM_ID, GP, MIN, PTS, REB and AST. stat_category is required and only the verified categories are accepted; the upstream answers HTTP 403 when it is omitted, so this route rejects the request locally instead.
+- **Params:** `league_id` (string, optional) — League id; only 00 (NBA) is verified; `per_mode` (string, optional) — Aggregation; PerGame or Totals; `scope` (string, optional) — Player-pool scope; S is all players (the only verified value); `season` (string, optional) — Season in YYYY-YY form; defaults to the current NBA season; `season_type` (string, optional) — Season type; Regular Season or Playoffs; `stat_category` (string, **required**) — Ranked statistic; PTS, REB or AST
+
+### `nba_team_years`
+
+- **HTTP:** `GET /nba/team-years`
+- **What:** Returns every franchise and the range of seasons it has played, one row per team. Returns every franchise and the range of seasons it has played, one row per team.
+- **Params:** `league_id` (string, optional) — Optional league id; only 00 (NBA) is verified.
 
 ## NBC News (5)
 
@@ -13100,6 +15285,56 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /ndtv/videos`
 - **What:** Get videos from an NDTV category. Returns one page of metadata cards from a supported NDTV-hosted video category. Use ndtv-video-categories to discover the complete supported category set; request pages sequentially. This returns no media bytes or player URLs.
 - **Params:** `category` (string, **required**) — NDTV video category slug from ndtv-video-categories; `page` (integer, optional) — 1-based category result page
+
+## NetShort (8)
+
+### `netshort_browse`
+
+- **HTTP:** `GET /netshort/browse`
+- **What:** List one page of NetShort's browse index. Returns one page of NetShort's (netshort.com) all-episodes browse index: 10 titles per page over the same 11,575-title catalogue as netshort-plots, with the site's own totalCount. It is the same library in the site's browse ordering and a different page size, so it overlaps netshort-plots almost completely — use netshort-plots for coverage and this endpoint when the browse order is what you want; do not merge the two expecting disjoint sets. Pages are 1-based; page 0 is rejected and a page past the end is a 404.
+- **Params:** `language` (string, optional) — Locale, defaults to en; `page` (integer, optional) — 1-based page of 10 titles, defaults to 1
+
+### `netshort_genres`
+
+- **HTTP:** `GET /netshort/genres`
+- **What:** List NetShort's label taxonomy. Returns NetShort's (netshort.com) label taxonomy as the site's own plot index carries it: four navigation tabs (all-plots, story, characters, settings) and every label value underneath them, each with its labelId, labelName, site path and play count. This is the discovery endpoint for netshort-label, so a caller never has to guess a label id. The capture held 196 labels over the four tabs (146 distinct ids), and three tabs end at exactly 50: that is the upstream's own per-tab cap, not a truncation here, so capped reports it and the list must not be described as provably exhaustive. Labels here are the type-2 id space; the labels attached to a card are a different, type-1 vocabulary.
+- **Params:** `language` (string, optional) — Locale, defaults to en
+
+### `netshort_home`
+
+- **HTTP:** `GET /netshort/home`
+- **What:** Get NetShort's home shelves. Returns the NetShort (netshort.com) home page's five curated shelves (Trending Now, New Releases, Highly Recommended, Exclusive Originals and one editorial shelf), each with its display name, its "see all" link and 11-12 titles. Every title carries its shortPlayId, library id, name, episode path, cover, synopsis, episode count, finished flag and labels. Pass language to read a different locale's catalogue: the site offers 17 locales and each is a separate library, so shelves and ids differ per locale. Take a title id from any card and pass it to netshort-title; take a label id and name from netshort-genres for netshort-label.
+- **Params:** `language` (string, optional) — Locale, defaults to en (the un-prefixed default)
+
+### `netshort_label`
+
+- **HTTP:** `GET /netshort/label`
+- **What:** List one page of a NetShort label listing. Returns one page of one NetShort (netshort.com) label listing: 24 titles per page with the site's own totalCount for that label, in the same card shape as netshort-plots. Take label_id and name from netshort-genres — the site's own label path is /drama/<name>-<id>-2 and carries both, so a type-2 label id without its name is rejected locally. Label pages are English-only in practice regardless of the site's locale prefixes. Pages are 1-based; page 0 is rejected and a page past the end is a 404.
+- **Params:** `label_id` (string, **required**) — Type-2 labelId from netshort-genres; `name` (string, **required**) — labelName of the same label from netshort-genres; it is part of the site's own path; `page` (integer, optional) — 1-based page of 24 titles, defaults to 1
+
+### `netshort_plots`
+
+- **HTTP:** `GET /netshort/plots`
+- **What:** List one page of NetShort's whole catalogue. Returns one page of NetShort's (netshort.com) complete catalogue in the site's plot-index order: 24 titles per page with the site's own totalCount (11,575 titles in the 2026-11-07 capture), page number and page size. Use it to walk the whole library; consecutive pages do not overlap. Pages are 1-based path segments: page 1 is the canonical un-suffixed URL and page 0 is rejected locally. A page past the end answers HTTP 404 upstream, so has-next is only ever a full-page signal — walk until a 404. Pass language for one of the site's 17 locale catalogues.
+- **Params:** `language` (string, optional) — Locale, defaults to en; `page` (integer, optional) — 1-based page of 24 titles, defaults to 1; a page past the end is a 404
+
+### `netshort_search`
+
+- **HTTP:** `GET /netshort/search`
+- **What:** Search NetShort's catalogue by keyword. Returns one page of NetShort (netshort.com) keyword search results: each match's shortPlayId, library id, name with the upstream's highlight markup stripped, episode path, cover, synopsis, episode count and labels. This is the platform's only real search — its /search page ships just the site shell — and it is reached through the site's own encrypted XHR, with the key material read from the site's public bundle at runtime and never pinned. The search is fuzzy, not exact: an unmatched keyword still returns token matches, so treat results as approximate and never read an empty result as "no such title" (only an empty query is empty, and that is rejected locally). Pages are not a strict partition either — page 2 repeated 2 of page 1's 15 ids in the 2026-11-07 measurement — so dedupe by id when accumulating pages. The upstream applies a floor of 15 items on page 1, so a response can carry more results than page_size. language selects the locale and results are locale-specific.
+- **Params:** `language` (string, optional) — Locale sent as content-language; results are locale-specific; `page` (integer, optional) — 1-based result page, defaults to 1; `page_size` (integer, optional) — Results per page, 1-50, default 10; the upstream floors page 1 at 15 items; `query` (string, **required**) — Keyword to search for
+
+### `netshort_title`
+
+- **HTTP:** `GET /netshort/title`
+- **What:** Get one NetShort title with its episode window. Returns one NetShort (netshort.com) title: shortPlayId, library id, name, canonical episode path, cover, synopsis, label list, the site's own like and chase counters (display strings such as 282.6K, not exact integers), publish time, delisted flag, and the episode window the page carries (40 videoEpisodeInfos with episode id, number, lock flag and cover). has_more_episodes reports a full 40-episode window, so a longer series continues past it. An unknown title id is a 404. Play URLs and the site's shortPlayAddress fields are never returned.
+- **Params:** `slug` (string, optional) — Optional slug from the card URL (the text between /episode/ and the trailing -id); the id resolves the route; `title_id` (string, **required**) — shortPlayId from any catalogue card or search result
+
+### `netshort_toplist`
+
+- **HTTP:** `GET /netshort/toplist`
+- **What:** List one NetShort toplist board. Returns one of NetShort's (netshort.com) four fixed toplist boards: twelve titles with the same card shape as the other catalogue endpoints and no paging. The four boards — trending-short-dramas, new-short-drama-releases, recommended-short-dramas, exclusive-original-short-dramas — are the complete set from the site's own navigation, and each board's titles also appear as a home shelf, so this is the cheaper single-board read. An unknown board is rejected locally.
+- **Params:** `board` (string, **required**) — Board slug
 
 ## New York Daily News (5)
 
@@ -13382,6 +15617,142 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /newsweek/sections`
 - **What:** Get Newsweek sections. Lists the 21 Newsweek section slugs accepted by `newsweek-headlines`, such as `news`, `world`, `us`, `fact-check` and `pets`. Each entry has its `slug`, display `name` and section page `url`.
 - **Params:** _none_
+
+## NFHS (17)
+
+### `nfhs_activities`
+
+- **HTTP:** `GET /nfhs/activities`
+- **What:** List NFHS Network activities and sports. Returns the complete activity list NFHS Network serves: sports plus non-sport activities such as graduation, band performance and assembly, with each record's sport, two-team, indoor, championship and top-sport flags. Use this discovery endpoint to obtain the exact activity names the nfhs-events and nfhs-highlights activity filter accepts, matched case-insensitively. The upstream list is complete and ordered; is_sport and is_top_sport are filtered locally against the upstream's own flags.
+- **Params:** `is_sport` (boolean, optional) — Optional sport flag filter; true returns only sports; `is_top_sport` (boolean, optional) — Optional top-sport flag filter; true returns the 12 promoted top sports
+
+### `nfhs_affiliate`
+
+- **HTTP:** `GET /nfhs/affiliates/{key}`
+- **What:** Get one NFHS Network broadcast affiliate. Returns one broadcast affiliate by its key or slug, including its type, network and subscription flags, attribution group, colours, social links and state coverage. Use nfhs-affiliates to discover the key or slug first.
+- **Params:** `key` (string, **required**) — Affiliate key or slug, for example prepspin or 00bf21ab8d
+
+### `nfhs_affiliates`
+
+- **HTTP:** `GET /nfhs/affiliates`
+- **What:** Search NFHS Network broadcast affiliates. Returns one page of broadcast affiliates with identity, type, network and subscription flags, attribution group, colours, social links and state coverage. Search by name with search_term (at least 3 characters) or filter by state; page with start/size and use next_cursor for deep pages. Use nfhs-affiliate to fetch one record by key or slug.
+- **Params:** `is_network` (boolean, optional) — Optional network flag filter; true returns affiliates that are part of the NFHS Network; `search_term` (string, optional) — Free-text term matched against affiliate names; at least 3 characters; `size` (integer, optional) — Page size, 1 to 500; defaults to 20; `start` (integer, optional) — Zero-based result offset; `state` (string, optional) — Two-letter state code from nfhs-states
+
+### `nfhs_association`
+
+- **HTTP:** `GET /nfhs/associations/{key}`
+- **What:** Get one NFHS Network state association. Returns one state association or section by its key or slug, including its about text, colours, social links, state coverage and publisher, producer and championship-page identities. Use nfhs-associations to discover the key or slug first.
+- **Params:** `key` (string, **required**) — Association key or slug, for example ghsa or 18bad24aaa
+
+### `nfhs_associations`
+
+- **HTTP:** `GET /nfhs/associations`
+- **What:** Search NFHS Network state associations and sections. Returns one page of state high-school associations and their sections (for example GHSA or CIF - North Coast Section) with identity, acronym, timezone, colours, social links, state coverage, publisher and producer keys and championship page URL. Search by name or acronym with search_term (at least 3 characters) or filter by state; page with start/size and use next_cursor for deep pages. Use nfhs-association to fetch one record by key or slug.
+- **Params:** `is_network` (boolean, optional) — Optional network flag filter; true returns associations that are part of the NFHS Network; `search_term` (string, optional) — Free-text term matched against association names and acronyms; at least 3 characters; `size` (integer, optional) — Page size, 1 to 500; defaults to 20; `start` (integer, optional) — Zero-based result offset; `state` (string, optional) — Two-letter state code from nfhs-states
+
+### `nfhs_event`
+
+- **HTTP:** `GET /nfhs/events/{key}`
+- **What:** Get one NFHS Network event. Returns one game or event by key with its full schedule, sport, game type, gender, level, scores, status, postseason flag, participant teams and publisher identities. Broadcast ingest data, VOD keys, tickets and contact fields are not part of this contract. The site reads event detail from the echo service first and falls back to unity; this route mirrors that order. Use nfhs-events to discover the event key first.
+- **Params:** `key` (string, **required**) — Event key from nfhs-events, for example gam00aa5c4cde
+
+### `nfhs_events`
+
+- **HTTP:** `GET /nfhs/events`
+- **What:** Search NFHS Network games and events. Returns one page of games and events from the live, upcoming or on-demand drill-down with schedule, sport, game type, gender, level, scores, status, postseason flag, participant teams and publisher identities. Filter by activity display name from nfhs-activities, state from nfhs-states, gender and level from nfhs-filters, school_key or publisher_key, a free-text search_term (at least 3 characters) and a YYYY-MM-DD from/to start-date range; sort by start_time or date. Page with start/size and use next_cursor for deep pages. Use nfhs-event for the full detail of one event key.
+- **Params:** `activity` (string, optional) — Activity name from nfhs-activities, matched case-insensitively, for example Football; `cursor` (string, optional) — next_cursor from a previous page; the reliable way to page beyond 10000 results; `download_to_own` (boolean, optional) — Optional download-to-own filter; true returns events whose broadcast can be downloaded for ownership; `from` (string, optional) — Inclusive start-date lower bound as YYYY-MM-DD; `gender` (string, optional) — Gender filter: boys, girls or coed; `is_postseason` (boolean, optional) — Optional postseason flag filter; true returns playoff and championship events only; `level` (string, optional) — Level filter: varsity, junior varsity, freshman, sophomore or middle school; `publisher_key` (string, optional) — Publisher key from an event's publishers list; `school_key` (string, optional) — School key from nfhs-schools; `search_term` (string, optional) — Free-text term matched against event titles and team names; at least 3 characters; `size` (integer, optional) — Page size, 1 to 500; defaults to 20; `sort` (string, optional) — Sort order: start_time+asc, start_time+desc, date+asc, date+desc or updated_at+desc; `start` (integer, optional) — Zero-based result offset; `state` (string, optional) — Two-letter state code from nfhs-states; `to` (string, optional) — Inclusive start-date upper bound as YYYY-MM-DD; `type` (string, optional) — Event drill-down: live, upcoming (default) or ondemand
+
+### `nfhs_filters`
+
+- **HTTP:** `GET /nfhs/filters`
+- **What:** List the closed NFHS Network event-filter value space. Returns every closed enum the NFHS Network event-filter UI exposes: genders, levels, event drill-down types, event sort expressions, highlight sort expressions, school sort expressions and suggester scopes. The activity and state value spaces are larger upstream-owned lists and have their own discovery endpoints (nfhs-activities, nfhs-states). Use this before calling nfhs-events, nfhs-highlights, nfhs-schools or nfhs-suggest so a filter value is never guessed. This endpoint takes no parameters.
+- **Params:** _none_
+
+### `nfhs_highlights`
+
+- **HTTP:** `GET /nfhs/highlights`
+- **What:** Search NFHS Network highlights. Returns one page of published highlight clips with title, headline, subtitle, date, duration, publisher identity and logo, sport, game type, gender, level, categories and thumbnail. Filter by activity display name from nfhs-activities, state from nfhs-states, gender and level from nfhs-filters, school_key, a free-text search_term (at least 3 characters) and a YYYY-MM-DD from/to date range; sort by date or created_at. Page with start/size and use next_cursor for deep pages.
+- **Params:** `activity` (string, optional) — Activity name from nfhs-activities, matched case-insensitively; `cursor` (string, optional) — next_cursor from a previous page; the reliable way to page beyond 10000 results; `from` (string, optional) — Inclusive date lower bound as YYYY-MM-DD; `gender` (string, optional) — Gender filter: boys, girls or coed; `level` (string, optional) — Level filter: varsity, junior varsity, freshman, sophomore or middle school; `school_key` (string, optional) — School key from nfhs-schools; `search_term` (string, optional) — Free-text term matched against highlight titles; at least 3 characters; `size` (integer, optional) — Page size, 1 to 500; defaults to 20; `sort` (string, optional) — Sort order: date+asc, date+desc or created_at+desc; `start` (integer, optional) — Zero-based result offset; `state` (string, optional) — Two-letter state code from nfhs-states; `to` (string, optional) — Inclusive date upper bound as YYYY-MM-DD
+
+### `nfhs_producer`
+
+- **HTTP:** `GET /nfhs/producers/{key}`
+- **What:** Get one NFHS Network producer. Returns one producer record by key: identity, type, state-association linkage, state coverage, colours, social links and related publishers. Producer keys appear in school and event records. Use nfhs-publisher for the publisher that fronts a producer. Device and contact data is not part of this contract.
+- **Params:** `key` (string, **required**) — Producer key, for example pdc1e100ffe6e
+
+### `nfhs_publisher`
+
+- **HTTP:** `GET /nfhs/publishers/{key}`
+- **What:** Get one NFHS Network publisher. Returns one publisher record by key: identity, type, state-association linkage, state coverage, colours, social links, network/subscription flags and related producers. Publisher keys appear in an event's publishers list and in school records. Use nfhs-producer for the producer behind a publisher. Device and contact data is not part of this contract.
+- **Params:** `key` (string, **required**) — Publisher key, for example cdb81ad6cb
+
+### `nfhs_school`
+
+- **HTTP:** `GET /nfhs/schools/{key}`
+- **What:** Get one NFHS Network school. Returns one school by its key or slug with identity, mascot, acronym, address, city, state, coordinates, colours, logo, network/subscription flags, publisher and producer keys and share image. Contact fields, subscriber emails and Pixellot device mappings are not part of this contract. Use nfhs-schools or nfhs-suggest to discover the key or slug first.
+- **Params:** `key` (string, **required**) — School key or slug, for example 0004954463 or covington-high-school-covington-tx
+
+### `nfhs_schools`
+
+- **HTTP:** `GET /nfhs/schools`
+- **What:** Search NFHS Network schools. Returns one page of schools with identity, mascot, acronym, address, city, state, coordinates, colours, logo, network/subscription flags, publisher and producer keys and share image. Search within a state (recommended) and optionally by school name with search_term (at least 3 characters), sorted by school_name+asc or school_name+desc; page with start/size and use next_cursor for deep pages. Use nfhs-suggest for typeahead and nfhs-school for one record by key or slug.
+- **Params:** `is_network` (boolean, optional) — Optional network flag filter; true returns schools that are part of the NFHS Network; `search_term` (string, optional) — Free-text term matched against school names; at least 3 characters; `size` (integer, optional) — Page size, 1 to 500; defaults to 20; `sort` (string, optional) — Sort order: school_name+asc or school_name+desc; `start` (integer, optional) — Zero-based result offset; `state` (string, optional) — Two-letter state code from nfhs-states; without it the national school index is searched
+
+### `nfhs_search`
+
+- **HTTP:** `GET /nfhs/search`
+- **What:** Free-text search across NFHS Network entities. Returns one page of mixed-entity search results for a term of at least 3 characters. Each item's content_type identifies its shape: school items carry school identity and location fields, state_association items carry association identity, and game items carry game scheduling fields. Optionally filter by state from nfhs-states or activity from nfhs-activities; page with start/size and use next_cursor for deep pages. Use the entity-specific routes when the type is known.
+- **Params:** `activity` (string, optional) — Activity name from nfhs-activities, matched case-insensitively; `cursor` (string, optional) — next_cursor from a previous page; the reliable way to page beyond 10000 results; `search_term` (string, **required**) — Free-text term matched across school, association and game names; at least 3 characters; `size` (integer, optional) — Page size, 1 to 500; defaults to 20; `start` (integer, optional) — Zero-based result offset; `state` (string, optional) — Two-letter state code from nfhs-states
+
+### `nfhs_sports`
+
+- **HTTP:** `GET /nfhs/sports`
+- **What:** List NFHS Network sport slugs and two-team flags. Returns the sport-slug to flags map NFHS Network uses in its sport routes, currently the is_two_team flag for each of the nine two-team sports. The keys are the URL slugs used in /sports/{sport}/... routes; the nfhs-events activity filter instead takes the activity display names returned by nfhs-activities. This endpoint takes no parameters.
+- **Params:** _none_
+
+### `nfhs_states`
+
+- **HTTP:** `GET /nfhs/states`
+- **What:** List NFHS Network states and territories. Returns the complete state list NFHS Network serves (52 values, including DC and the national "US" pseudo-state) with the name, code and slug used by state routes. Use it to obtain the exact state code the nfhs-schools, nfhs-events, nfhs-highlights, nfhs-associations, nfhs-affiliates and nfhs-search state filters accept. This endpoint takes no parameters.
+- **Params:** _none_
+
+### `nfhs_suggest`
+
+- **HTTP:** `GET /nfhs/suggest`
+- **What:** Typeahead school and association suggestions. Returns typeahead suggestions for a partial name (at least 3 characters). The profiles scope (default) returns schools and state associations, matching the site's global search box; the schools scope returns schools only. Each item uses the school shape, so school items carry the full school identity and location fields. Use nfhs-schools for a paginated filtered search instead.
+- **Params:** `scope` (string, optional) — Suggester scope: schools or profiles (default); `search_term` (string, **required**) — Partial name, at least 3 characters; `size` (integer, optional) — Number of suggestions, 1 to 500; defaults to 10
+
+## NHL (5)
+
+### `nhl_gamecenter_boxscore`
+
+- **HTTP:** `GET /nhl/gamecenter/boxscore`
+- **What:** Get NHL game boxscore. Returns the upstream gamecenter boxscore for one NHL game ID, preserving the source's team and player statistics.
+- **Params:** `game_id` (string, **required**) — 10-digit NHL game ID
+
+### `nhl_gamecenter_play_by_play`
+
+- **HTTP:** `GET /nhl/gamecenter/play-by-play`
+- **What:** Get NHL game play by play. Returns the upstream gamecenter play-by-play for one NHL game ID, preserving the source event sequence and team/player fields.
+- **Params:** `game_id` (string, **required**) — 10-digit NHL game ID
+
+### `nhl_schedule`
+
+- **HTTP:** `GET /nhl/schedule`
+- **What:** Get NHL schedule. Returns the NHL schedule resource for the requested ISO date. Omitting date uses the upstream `now` resource. The response preserves game IDs, game state, and source schedule structure.
+- **Params:** `date` (string, optional) — ISO date (YYYY-MM-DD); defaults to now
+
+### `nhl_seasons`
+
+- **HTTP:** `GET /nhl/seasons`
+- **What:** List NHL seasons. Returns the NHL API's native season catalog without additional filtering or derived fields.
+- **Params:** _none_
+
+### `nhl_standings`
+
+- **HTTP:** `GET /nhl/standings`
+- **What:** Get NHL standings. Returns the NHL standings resource for the requested ISO date. Omitting date uses the upstream `now` resource. The response preserves NHL team IDs, standings fields, and source dates.
+- **Params:** `date` (string, optional) — ISO date (YYYY-MM-DD); defaults to now
 
 ## Nike (9)
 
@@ -13860,6 +16231,250 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /opendota/teams`
 - **What:** OpenDota team directory. Returns a zero-based page of OpenDota team records with team IDs, names, tags, ranking and recent-match metadata. OpenDota returns up to 1000 teams per page; use `next_page` while present. Use a team ID with opendota_team or opendota_team_matches.
 - **Params:** `page` (integer, optional) — Zero-based page index; defaults to 0
+
+## OpenF1 (18)
+
+### `openf1_car_data`
+
+- **HTTP:** `GET /openf1/car-data`
+- **What:** OpenF1 Formula 1 car telemetry samples. Returns car telemetry at roughly 3.7 Hz: speed, engine RPM, gear, throttle percentage, brake flag and DRS status for each sample timestamp. Always pass driver_number and a date window: a whole-session request without a driver is rejected upstream as too much data at once.
+- **Params:** `brake` (integer, optional) — Brake flag, 0 or 1; `date_from` (string, optional) — Inclusive lower bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-07); `date_to` (string, optional) — Inclusive upper bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-08); `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `drs` (integer, optional) — Exact DRS status code; `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, driver_number, date, rpm, speed, n_gear, throttle, brake, drs.; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `n_gear` (integer, optional) — Exact gear, 0 to 8; `rpm_gte` (integer, optional) — Inclusive minimum engine RPM; `rpm_lte` (integer, optional) — Inclusive maximum engine RPM; `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408); `speed_gte` (integer, optional) — Inclusive minimum speed in km/h example(315); `speed_lte` (integer, optional) — Inclusive maximum speed in km/h; `throttle_gte` (integer, optional) — Inclusive minimum throttle percentage; `throttle_lte` (integer, optional) — Inclusive maximum throttle percentage
+
+### `openf1_championship_drivers`
+
+- **HTTP:** `GET /openf1/championship-drivers`
+- **What:** OpenF1 Formula 1 driver championship standings. Returns each driver's championship position and points before the race and during/after it. Available for race sessions only; other session types return an empty list.
+- **Params:** `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, driver_number, position_start, position_current, points_start, points_current.; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408)
+
+### `openf1_championship_teams`
+
+- **HTTP:** `GET /openf1/championship-teams`
+- **What:** OpenF1 Formula 1 team championship standings. Returns each team's championship position and points before the race and during/after it. Available for race sessions only; other session types return an empty list.
+- **Params:** `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, team_name, position_start, position_current, points_start, points_current.; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408); `team_name` (string, optional) — Team name exactly as the source reports it example(McLaren)
+
+### `openf1_drivers`
+
+- **HTTP:** `GET /openf1/drivers`
+- **What:** OpenF1 Formula 1 drivers in a session or meeting. Returns the drivers entered in a session or meeting with their permanent number, broadcast/full name, three-letter acronym, team name and colour, and headshot URL. Use it to resolve a driver_number before querying telemetry, laps or position data.
+- **Params:** `country_code` (string, optional) — Three-letter country code example(BRA); `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, driver_number, broadcast_name, full_name, name_acronym, team_name, team_colour, first_name, last_name, headshot_url, country_code.; `full_name` (string, optional) — Full driver name example(Lando NORRIS); `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `name_acronym` (string, optional) — Three-letter driver acronym example(NOR); `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408); `team_name` (string, optional) — Team name exactly as the source reports it example(McLaren)
+
+### `openf1_intervals`
+
+- **HTTP:** `GET /openf1/intervals`
+- **What:** OpenF1 Formula 1 interval and gap measurements. Returns the gap to the car ahead and the gap to the leader, updated about every four seconds during race sessions. Values are raw source data: a number of seconds, an array, or a string such as +1 LAP, and null for the leader. Race sessions only; other session types return an empty list.
+- **Params:** `date_from` (string, optional) — Inclusive lower bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-07); `date_to` (string, optional) — Inclusive upper bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-08); `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, driver_number, gap_to_leader, interval, date.; `gap_to_leader_gt` (number, optional) — Exclusive minimum gap to the leader, in seconds; `gap_to_leader_lt` (number, optional) — Exclusive maximum gap to the leader, in seconds; `interval_gt` (number, optional) — Exclusive minimum gap to the car ahead, in seconds; `interval_lt` (number, optional) — Exclusive maximum gap to the car ahead, in seconds; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408)
+
+### `openf1_laps`
+
+- **HTTP:** `GET /openf1/laps`
+- **What:** OpenF1 Formula 1 lap times and sectors. Returns per-lap data: lap duration, three sector durations, intermediate and speed-trap speeds, pit-out flag and the mini-sector code arrays the source publishes. Segment arrays are not published during races. Pass session_key plus driver_number to keep the response bounded.
+- **Params:** `date_from` (string, optional) — Inclusive lower bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-07); `date_to` (string, optional) — Inclusive upper bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-08); `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, driver_number, lap_number, date_start, duration_sector_1, duration_sector_2, duration_sector_3, i1_speed, i2_speed, is_pit_out_lap, lap_duration, st_speed.; `is_pit_out_lap` (boolean, optional) — Only pit-out laps; `lap_duration_gte` (number, optional) — Inclusive minimum lap duration, in seconds; `lap_duration_lte` (number, optional) — Inclusive maximum lap duration, in seconds; `lap_number` (integer, optional) — Lap number within the session, starting at 1 example(8); `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408)
+
+### `openf1_location`
+
+- **HTTP:** `GET /openf1/location`
+- **What:** OpenF1 Formula 1 car position samples. Returns the approximate car position at roughly 3.7 Hz in the circuit's 3D coordinate system (x, y, z). The origin is arbitrary and is not tied to a point on the track, and lateral placement is not carried. Always pass driver_number and a date window to keep the response small.
+- **Params:** `date_from` (string, optional) — Inclusive lower bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-07); `date_to` (string, optional) — Inclusive upper bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-08); `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, driver_number, date, x, y, z.; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408)
+
+### `openf1_meetings`
+
+- **HTTP:** `GET /openf1/meetings`
+- **What:** OpenF1 Formula 1 meetings by season and filters. Returns Formula 1 Grand Prix and testing weekends from OpenF1's anonymous public API: meeting and official name, country, circuit key and type, circuit info/image URLs, GMT offset and start/end timestamps. A season query is the discovery surface for the country, circuit and meeting values the other OpenF1 resources filter on.
+- **Params:** `circuit_key` (integer, optional) — Circuit key from openf1-meetings example(14); `circuit_short_name` (string, optional) — Circuit short name example(Interlagos); `circuit_type` (string, optional) — Circuit type, one of Permanent, Temporary - Road, Temporary - Street; `country_code` (string, optional) — Three-letter country code example(BRA); `country_name` (string, optional) — Country name exactly as the source reports it example(Brazil); `date_from` (string, optional) — Inclusive lower bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-07); `date_to` (string, optional) — Inclusive upper bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-08); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, meeting_name, meeting_official_name, location, country_key, country_code, country_name, country_flag, circuit_key, circuit_short_name, circuit_type, circuit_info_url, circuit_image, gmt_offset, date_start, date_end, year, is_cancelled.; `is_cancelled` (boolean, optional) — Cancelled flag filter; `location` (string, optional) — City or geographical location of the meeting example(São Paulo); `meeting_name` (string, optional) — Meeting name exactly as the source reports it example(Singapore Grand Prix); `year` (integer, optional) — Four-digit season year; the source serves 2023 onwards example(2024)
+
+### `openf1_overtakes`
+
+- **HTTP:** `GET /openf1/overtakes`
+- **What:** OpenF1 Formula 1 overtakes. Returns position exchanges during race sessions, naming the overtaking and overtaken driver and the position held after the pass. The source includes pit-stop and penalty position changes and states the data may be incomplete. Race sessions only.
+- **Params:** `date_from` (string, optional) — Inclusive lower bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-07); `date_to` (string, optional) — Inclusive upper bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-08); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, overtaking_driver_number, overtaken_driver_number, date, position.; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `overtaken_driver_number` (integer, optional) — Number of the driver who lost the position example(4); `overtaking_driver_number` (integer, optional) — Number of the driver who gained the position example(63); `position` (integer, optional) — Exact position, starting at 1; `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408)
+
+### `openf1_pit`
+
+- **HTTP:** `GET /openf1/pit`
+- **What:** OpenF1 Formula 1 pit lane entries. Returns pit-lane entries with the lap number, time spent in the pit lane and the stationary stop time where the source publishes it (from the 2024 United States Grand Prix onwards). Present across session types, so pass session_key and optionally driver_number.
+- **Params:** `date_from` (string, optional) — Inclusive lower bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-07); `date_to` (string, optional) — Inclusive upper bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-08); `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, lap_number, driver_number, date, pit_duration, lane_duration, stop_duration.; `lane_duration_gte` (number, optional) — Inclusive minimum pit-lane time, in seconds; `lane_duration_lte` (number, optional) — Inclusive maximum pit-lane time, in seconds; `lap_number` (integer, optional) — Lap number within the session, starting at 1 example(8); `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408); `stop_duration_lt` (number, optional) — Exclusive maximum stationary stop time, in seconds example(2.3); `stop_duration_lte` (number, optional) — Inclusive maximum stationary stop time, in seconds
+
+### `openf1_position`
+
+- **HTTP:** `GET /openf1/position`
+- **What:** OpenF1 Formula 1 driver position changes. Returns each driver's position at every change during a session, with the timestamp of the change. Pass session_key with driver_number or a position bound to keep the result small.
+- **Params:** `date_from` (string, optional) — Inclusive lower bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-07); `date_to` (string, optional) — Inclusive upper bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-08); `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, driver_number, date, position.; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `position_gte` (integer, optional) — Inclusive minimum position, starting at 1; `position_lte` (integer, optional) — Inclusive maximum position, starting at 1 example(3); `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408)
+
+### `openf1_race_control`
+
+- **HTTP:** `GET /openf1/race-control`
+- **What:** OpenF1 Formula 1 race control messages. Returns race-control messages: session status, incidents, flags, safety car and DRS events, with category, flag, scope, sector, lap number, qualifying phase and the message text. Use session_key for one session, or a date window to sweep a range.
+- **Params:** `category` (string, optional) — Race-control category, one of CarEvent, Drs, Flag, Other, SafetyCar, SessionStatus Enums(CarEvent,Drs,Flag,Other,SafetyCar,SessionStatus) example(Flag); `date_from` (string, optional) — Inclusive lower bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-07); `date_to` (string, optional) — Inclusive upper bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-08); `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, date, driver_number, lap_number, category, flag, scope, sector, qualifying_phase, message.; `flag` (string, optional) — Flag type, one of BLACK AND WHITE, BLUE, CHEQUERED, CLEAR, DOUBLE YELLOW, GREEN, RED, YELLOW Enums(BLACK AND WHITE,BLUE,CHEQUERED,CLEAR,DOUBLE YELLOW,GREEN,RED,YELLOW) example(BLACK AND WHITE); `lap_number` (integer, optional) — Lap number within the session, starting at 1 example(8); `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `qualifying_phase` (integer, optional) — Qualifying phase, 1 to 3; `scope` (string, optional) — Event scope; one of Track, Driver, Sector Enums(Track,Driver,Sector); `sector` (integer, optional) — Track sector the message refers to, starting at 1; `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408)
+
+### `openf1_session_result`
+
+- **HTTP:** `GET /openf1/session-result`
+- **What:** OpenF1 Formula 1 session classification. Returns the classification published a few minutes after the official results: final position, laps completed, DNF/DNS/DSQ flags, points for races, and duration and gap to the leader, which are single numbers for a race and Q1/Q2/Q3 arrays for practice and qualifying.
+- **Params:** `dnf` (boolean, optional) — Only drivers who did not finish; `dns` (boolean, optional) — Only drivers who did not start; `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `dsq` (boolean, optional) — Only disqualified drivers; `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, position, driver_number, number_of_laps, points, dnf, dns, dsq.; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `position_gte` (integer, optional) — Inclusive minimum position, starting at 1; `position_lte` (integer, optional) — Inclusive maximum position, starting at 1 example(3); `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408)
+
+### `openf1_sessions`
+
+- **HTTP:** `GET /openf1/sessions`
+- **What:** OpenF1 Formula 1 sessions by season and filters. Returns the practice, qualifying, sprint and race sessions OpenF1 publishes, with session type and name, start/end timestamps, meeting and circuit keys, country and location. A session_key from this list is the input to almost every other OpenF1 route; latest resolves to the current or most recent session.
+- **Params:** `circuit_key` (integer, optional) — Circuit key from openf1-meetings example(14); `country_code` (string, optional) — Three-letter country code example(BRA); `country_name` (string, optional) — Country name exactly as the source reports it example(Brazil); `date_from` (string, optional) — Inclusive lower bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-07); `date_to` (string, optional) — Inclusive upper bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-08); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: session_key, session_type, session_name, date_start, date_end, meeting_key, circuit_key, circuit_short_name, country_key, country_code, country_name, location, gmt_offset, year, is_cancelled.; `is_cancelled` (boolean, optional) — Cancelled flag filter; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `session_name` (string, optional) — Session name exactly as the source reports it example(Qualifying); `session_type` (string, optional) — Session type; one of Practice, Qualifying, Race Enums(Practice,Qualifying,Race) example(Qualifying); `year` (integer, optional) — Four-digit season year; the source serves 2023 onwards example(2024)
+
+### `openf1_starting_grid`
+
+- **HTTP:** `GET /openf1/starting-grid`
+- **What:** OpenF1 Formula 1 starting grid. Returns the grid for an upcoming or completed race: grid position, driver number and the qualifying lap duration that set it, published a few minutes after the official results. The rows are keyed by the qualifying session_key that set the grid, not the race session_key; pair this route with the matching openf1-sessions row.
+- **Params:** `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, position, driver_number, lap_duration.; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `position_gte` (integer, optional) — Inclusive minimum position, starting at 1; `position_lte` (integer, optional) — Inclusive maximum position, starting at 1 example(3); `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408)
+
+### `openf1_stints`
+
+- **HTTP:** `GET /openf1/stints`
+- **What:** OpenF1 Formula 1 stints and tyre compounds. Returns each continuous driving period on one set of tyres: stint number, starting and ending lap, tyre compound and tyre age at the start. Use session_key with driver_number for one driver's strategy.
+- **Params:** `compound` (string, optional) — Tyre compound; one of SOFT, MEDIUM, HARD, INTERMEDIATE, WET Enums(SOFT,MEDIUM,HARD,INTERMEDIATE,WET) example(SOFT); `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, stint_number, driver_number, lap_start, lap_end, compound, tyre_age_at_start.; `lap_end_gte` (integer, optional) — Inclusive minimum stint ending lap; `lap_end_lte` (integer, optional) — Inclusive maximum stint ending lap; `lap_start_gte` (integer, optional) — Inclusive minimum stint starting lap; `lap_start_lte` (integer, optional) — Inclusive maximum stint starting lap; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408); `stint_number` (integer, optional) — Stint number within the session, starting at 1; `tyre_age_at_start_gte` (integer, optional) — Inclusive minimum tyre age at stint start, in laps example(3); `tyre_age_at_start_lte` (integer, optional) — Inclusive maximum tyre age at stint start, in laps
+
+### `openf1_team_radio`
+
+- **HTTP:** `GET /openf1/team-radio`
+- **What:** OpenF1 Formula 1 team radio recordings. Returns published driver-to-team radio exchanges with the timestamp and an MP3 recording URL. Only a selection of communications is published and coverage is sparse; several sessions return no radio data at all.
+- **Params:** `date_from` (string, optional) — Inclusive lower bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-07); `date_to` (string, optional) — Inclusive upper bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-08); `driver_number` (integer, optional) — Positive permanent driver number (see openf1-drivers) example(1); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, driver_number, date, recording_url.; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408)
+
+### `openf1_weather`
+
+- **HTTP:** `GET /openf1/weather`
+- **What:** OpenF1 Formula 1 track weather samples. Returns track-weather samples updated about once a minute: air and track temperature, humidity, pressure, wind speed and direction, and the rainfall flag. Pass session_key or meeting_key plus a date window for a bounded read.
+- **Params:** `air_temperature_gte` (number, optional) — Inclusive minimum air temperature in Celsius; `air_temperature_lte` (number, optional) — Inclusive maximum air temperature in Celsius; `date_from` (string, optional) — Inclusive lower bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-07); `date_to` (string, optional) — Inclusive upper bound; RFC3339 timestamp or YYYY-MM-DD example(2026-11-08); `filter` (array, optional) — Repeatable upstream filter written as <attribute><operator><value>, with operators >=, <=, =, > and <. Repeated filters on the same attribute are OR'ed, a lower and upper bound form an inclusive range, and different attributes are AND'ed. Filterable attributes on this route: meeting_key, session_key, date, air_temperature, humidity, pressure, rainfall, track_temperature, wind_direction, wind_speed.; `humidity_gte` (number, optional) — Inclusive minimum relative humidity percentage; `humidity_lte` (number, optional) — Inclusive maximum relative humidity percentage; `meeting_key` (string, optional) — Positive meeting key from openf1-meetings, or `latest` for the current meeting example(1299); `pressure_gte` (number, optional) — Inclusive minimum air pressure in mbar; `pressure_lte` (number, optional) — Inclusive maximum air pressure in mbar; `rainfall` (integer, optional) — Rainfall flag, 0 or 1; `session_key` (string, optional) — Positive session key from openf1-sessions, or `latest` for the current session example(11408); `track_temperature_gte` (number, optional) — Inclusive minimum track temperature in Celsius example(52); `track_temperature_lte` (number, optional) — Inclusive maximum track temperature in Celsius; `wind_direction_gte` (number, optional) — Inclusive minimum wind direction in degrees example(130); `wind_direction_lte` (number, optional) — Inclusive maximum wind direction in degrees; `wind_speed_gte` (number, optional) — Inclusive minimum wind speed in m/s; `wind_speed_lte` (number, optional) — Inclusive maximum wind speed in m/s
+
+## OpenLigaDB (22)
+
+### `openligadb_current_group`
+
+- **HTTP:** `GET /openligadb/current-group`
+- **What:** Get the current league matchday. Returns OpenLigaDB's current group or matchday for a league shortcut. Use `openligadb_groups` for all matchdays and `openligadb_current_matchday` for the matches in this group.
+- **Params:** `league_shortcut` (string, **required**) — Exact shortcut from openligadb-leagues
+
+### `openligadb_current_matchday`
+
+- **HTTP:** `GET /openligadb/current-matchday`
+- **What:** Get current matchday fixtures and results. Returns the matches for OpenLigaDB's current group or matchday in one league. This mirrors the source's current-matchday route; a league without a current matchday may return not found. Use `openligadb_current_group` to see the selected group id or `openligadb_matches` for a whole season.
+- **Params:** `league_shortcut` (string, **required**) — Exact shortcut from openligadb-leagues
+
+### `openligadb_goal_getters`
+
+- **HTTP:** `GET /openligadb/goal-getters`
+- **What:** List league season goal-getters. Returns the source's goal-getter ranking for one discovered league shortcut and season. The ranking uses the source's own goal and result records.
+- **Params:** `league_shortcut` (string, **required**) — Exact shortcut from openligadb-leagues; `season` (integer, **required**) — Season starting year
+
+### `openligadb_groups`
+
+- **HTTP:** `GET /openligadb/groups`
+- **What:** List league matchdays and rounds. Returns every matchday or round id for one discovered league shortcut and season. Pass a returned `groupOrderID` to `openligadb_matchday_matches` or `openligadb_last_changed`. Some legacy league-season entries in the source directory may return 404 or an empty group list.
+- **Params:** `league_shortcut` (string, **required**) — Exact shortcut from openligadb-leagues; `season` (integer, **required**) — Season starting year
+
+### `openligadb_last_changed`
+
+- **HTTP:** `GET /openligadb/last-changed`
+- **What:** Get a matchday's last update time. Returns OpenLigaDB's source update timestamp for one league, season and matchday. Use this cheap check before refetching the full matchday when the timestamp is unchanged.
+- **Params:** `group_order_id` (integer, **required**) — Matchday or round id from openligadb-groups; `league_shortcut` (string, **required**) — Exact shortcut from openligadb-leagues; `season` (integer, **required**) — Season starting year
+
+### `openligadb_last_match`
+
+- **HTTP:** `GET /openligadb/last-match`
+- **What:** Get a league's last match. Returns the most recently played match for a league shortcut. Use `openligadb_leagues` to find a shortcut or `openligadb_last_team_match` for one team.
+- **Params:** `league_shortcut` (string, **required**) — Exact shortcut from openligadb-leagues
+
+### `openligadb_last_team_match`
+
+- **HTTP:** `GET /openligadb/last-team-match`
+- **What:** Get a team's last match in a league. Returns the most recently played match for one team id in one league id. Discover the league id with `openligadb_leagues` and the team id with `openligadb_teams`.
+- **Params:** `league_id` (integer, **required**) — OpenLigaDB league id from openligadb_leagues; `team_id` (integer, **required**) — OpenLigaDB team id from openligadb_teams
+
+### `openligadb_league_matches`
+
+- **HTTP:** `GET /openligadb/matches`
+- **What:** List a league season's matches. Returns every fixture and result recorded for one league shortcut and season. Use `openligadb_groups` and `openligadb_matchday_matches` for one round, or `openligadb_leagues` to discover valid league-season pairs. The source returns the full list without pagination.
+- **Params:** `league_shortcut` (string, **required**) — Exact shortcut from openligadb-leagues; `season` (integer, **required**) — Season starting year
+
+### `openligadb_league_team_matches`
+
+- **HTTP:** `GET /openligadb/league-team-matches`
+- **What:** Find a team's matches in one league season. Returns matches in one league season whose team name matches a partial text fragment. Use `openligadb_teams` for exact team names and ids. Numeric fragments are rejected because the upstream path assigns numeric segments to matchday ids.
+- **Params:** `league_shortcut` (string, **required**) — Exact shortcut from openligadb-leagues; `season` (integer, **required**) — Season starting year; `team_filter` (string, **required**) — Partial team-name text; numeric-only values are not accepted
+
+### `openligadb_leagues`
+
+- **HTTP:** `GET /openligadb/leagues`
+- **What:** List OpenLigaDB league seasons. Returns every league-season record across all sports. Set `season` to the season's starting year to use OpenLigaDB's season-specific listing. This is the discovery source for `league_shortcut`, `league_id`, and `sport`; shortcuts may repeat across seasons, and the response is not paginated. The catalog is community-maintained and may include user-created or legacy entries; verify a selected pair through groups or matches.
+- **Params:** `season` (integer, optional) — Optional season starting year, e.g. 2026 for 2026/27
+
+### `openligadb_match`
+
+- **HTTP:** `GET /openligadb/match`
+- **What:** Get one OpenLigaDB match. Returns one match record with its results, goal sequence, teams, location, and source update time. Get `match_id` from `openligadb_matches`, `openligadb_matchday_matches`, or a team-match endpoint.
+- **Params:** `match_id` (integer, **required**) — OpenLigaDB match id
+
+### `openligadb_matchday_matches`
+
+- **HTTP:** `GET /openligadb/matchday-matches`
+- **What:** List one league matchday. Returns all fixtures and results for one discovered league shortcut, season and group order id. Use `openligadb_groups` to discover valid matchday or round ids.
+- **Params:** `group_order_id` (integer, **required**) — Matchday or round id from openligadb-groups; `league_shortcut` (string, **required**) — Exact shortcut from openligadb-leagues; `season` (integer, **required**) — Season starting year
+
+### `openligadb_matches_by_team`
+
+- **HTTP:** `GET /openligadb/matches-by-team`
+- **What:** Find recent and upcoming matches by team name. Returns matches around the current date across leagues for a partial team-name fragment. Both week counts are required; zero is allowed. Use `openligadb_matches_by_team_id` when you have a team id.
+- **Params:** `team_filter` (string, **required**) — Partial team-name fragment; `weeks_future` (integer, **required**) — Number of weeks after today to include; zero is allowed; `weeks_past` (integer, **required**) — Number of weeks before today to include; zero is allowed
+
+### `openligadb_matches_by_team_id`
+
+- **HTTP:** `GET /openligadb/matches-by-team-id`
+- **What:** Find recent and upcoming matches by team id. Returns matches around the current date across leagues for an OpenLigaDB team id. Both week counts are required; zero is allowed. Use `openligadb_matches_by_team` for a partial name search.
+- **Params:** `team_id` (integer, **required**) — OpenLigaDB team id from openligadb_teams; `weeks_future` (integer, **required**) — Number of weeks after today to include; zero is allowed; `weeks_past` (integer, **required**) — Number of weeks before today to include; zero is allowed
+
+### `openligadb_next_match`
+
+- **HTTP:** `GET /openligadb/next-match`
+- **What:** Get a league's next match. Returns the next upcoming match for a league shortcut. Use `openligadb_leagues` to find a shortcut or `openligadb_next_team_match` for one team.
+- **Params:** `league_shortcut` (string, **required**) — Exact shortcut from openligadb-leagues
+
+### `openligadb_next_team_match`
+
+- **HTTP:** `GET /openligadb/next-team-match`
+- **What:** Get a team's next match in a league. Returns the next match for one team id in one league id. Discover the league id with `openligadb_leagues` and the team id with `openligadb_teams`.
+- **Params:** `league_id` (integer, **required**) — OpenLigaDB league id from openligadb_leagues; `team_id` (integer, **required**) — OpenLigaDB team id from openligadb_teams
+
+### `openligadb_result_infos`
+
+- **HTTP:** `GET /openligadb/result-infos`
+- **What:** List result types configured for a league. Returns the result types configured for one OpenLigaDB league id. Use this for league-specific result names and ids; `openligadb_result_types` lists the global machine-readable meanings.
+- **Params:** `league_id` (integer, **required**) — OpenLigaDB league id from openligadb-leagues
+
+### `openligadb_result_types`
+
+- **HTTP:** `GET /openligadb/result-types`
+- **What:** List global result types. Returns the global machine-readable meanings of OpenLigaDB result types, including halftime, regulation, extra time, penalties and unknown.
+- **Params:** _none_
+
+### `openligadb_sports`
+
+- **HTTP:** `GET /openligadb/sports`
+- **What:** List OpenLigaDB sports. Returns OpenLigaDB's current sport directory. Use the returned sport names and ids with `openligadb_leagues` to inspect the complete league-season catalog; the source currently exposes 13 sports, including its `Test` category.
+- **Params:** _none_
+
+### `openligadb_table`
+
+- **HTTP:** `GET /openligadb/table`
+- **What:** Get a league season's table. Returns the league standings for one discovered shortcut and season. OpenLigaDB's documented `getgrouptable` path currently returns HTTP 404 on tested league/season pairs; this endpoint uses the live `getbltable` resource.
+- **Params:** `league_shortcut` (string, **required**) — Exact shortcut from openligadb-leagues; `season` (integer, **required**) — Season starting year
+
+### `openligadb_team_pair_matches`
+
+- **HTTP:** `GET /openligadb/team-pair-matches`
+- **What:** List matches between two teams. Returns every recorded match between two OpenLigaDB team ids. Discover team ids through `openligadb_teams`.
+- **Params:** `team_id_1` (integer, **required**) — First OpenLigaDB team id; `team_id_2` (integer, **required**) — Second OpenLigaDB team id
+
+### `openligadb_teams`
+
+- **HTTP:** `GET /openligadb/teams`
+- **What:** List teams in a league season. Returns the full team list for one discovered league shortcut and season. Use the returned `teamId` values with the team-match and head-to-head endpoints.
+- **Params:** `league_shortcut` (string, **required**) — Exact shortcut from openligadb-leagues; `season` (integer, **required**) — Season starting year
 
 ## OpenSea (36)
 
@@ -14415,6 +17030,32 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get one Papa John's store. Returns one Papa John's store's published profile: address, phone, coordinates, general and pickup hours, timezone, Google Place id, and ordering link. The path comes from a store child returned by GET /papajohns/directory. Passing a directory path returns 404.
 - **Params:** `path` (string, **required**) — Store path from a /papajohns/directory child marked is_store=true
 
+## Partiful (4)
+
+### `partiful_city_facets`
+
+- **HTTP:** `GET /partiful/city-facets`
+- **What:** Get one facet of one Partiful region. Returns one facet of one Partiful (partiful.com) region: the requested slug, the facet value Partiful reports for it, its label, the month and date-range labels, the facet's featured events, the date and category facets Partiful offers alongside it, and the other regions it links. Each event carries its id, title, start and end time, timezone, status, cover image, canonical URL and venue name plus approximate city and neighborhood. The slug is validated locally against the complete fifteen-value set (events, today, tomorrow, this-week, this-weekend, thanksgiving, fall, popups, food, free-events, live-music, parties, run-clubs, trivia, lgbtq) because Partiful answers an unknown slug with a 200 that silently degrades to its unfiltered ANYTIME view; the response's facet value must match the slug, or the call fails as an upstream error rather than returning the wrong list. A slug Partiful does not serve for that region is reported as a 400 naming both values. Facet availability is per-region and seasonal, which is why the response carries the arrays rather than a fixed per-region promise. Private-party data is never returned.
+- **Params:** `facet` (string, **required**) — Facet slug; validated locally against the complete fifteen-value set; `region` (string, **required**) — Region code from partiful-explore-cities
+
+### `partiful_city_feed`
+
+- **HTTP:** `GET /partiful/city-feed`
+- **What:** Get one region's Partiful discover feed. Returns one Partiful (partiful.com) region's public discover feed: the region code and label, its trending carousel, every themed carousel, a flat feed of up to twenty featured events, and the category facets Partiful currently offers for that region. Each event carries its id, title, start and end time, timezone, status, cover image, canonical URL and venue name plus approximate city and neighborhood; pass an id to partiful-event for the full public event. This is a curated discovery feed, never a complete city catalogue: Partiful publishes a fixed slab and there is no page, cursor or offset parameter, so a page parameter is not accepted and coverage is only what Partiful chose to feature. Private-party data is never returned: guest lists, attendees, invite/RSVP state, ownerIds, host contacts, exact street addresses and RSVP counters are dropped, and non-public events are filtered out. Regions come from partiful-explore-cities.
+- **Params:** `region` (string, **required**) — Region code from partiful-explore-cities
+
+### `partiful_event`
+
+- **HTTP:** `GET /partiful/event`
+- **What:** Get one public Partiful event. Returns one publicly listed Partiful (partiful.com) event: title, host-authored description, start and end time, timezone, status, cover image, canonical URL, venue name plus approximate city and neighborhood, host display names, the page's own advertised offers with a free signal, and the public events Partiful suggests. Take event_id from partiful-city-feed, partiful-city-facets or partiful-explore-cities; ids are twenty alphanumeric characters and are validated locally. An unknown id is a 404, and an event that is not public or requires a password is answered as a 404 because it belongs to the invite-link surface. Privacy is a hard scope limit: guest lists, attendee names and phone numbers, invite/RSVP state, ownerIds, host ids and contacts, exact street addresses and aggregate RSVP counters are never returned.
+- **Params:** `event_id` (string, **required**) — Partiful event id, twenty alphanumeric characters
+
+### `partiful_explore_cities`
+
+- **HTTP:** `GET /partiful/explore-cities`
+- **What:** List the three regions Partiful's Explore hub features. Returns the top of Partiful's (partiful.com) public Explore surface: the three regions its hub features (New York City, Los Angeles, San Francisco), each with the carousel's own title, subtitle, icon and featured events. Every event carries its id, title, start and end time, timezone, status, cover image, canonical partiful.com URL, and venue name plus approximate city and neighborhood. Private-party fields are never returned: guest lists, attendee names and phone numbers, invite/RSVP state, ownerIds, host contacts, exact street addresses and aggregate RSVP counters are dropped, and events flagged isPublic false or requiring a password are filtered out. This is also the discovery endpoint for the region parameter: its region codes are the complete nine-value set (NYC, LA, SF, CHI, ATX, BOS, DC, MIA, LON). Explore is a curated discovery feed, not a city catalogue: there is no pagination anywhere on this surface.
+- **Params:** _none_
+
 ## Patreon (4)
 
 ### `patreon_creator`
@@ -14536,6 +17177,136 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /people/sections`
 - **What:** Get PEOPLE sections. Returns the full PEOPLE section/category navigation inventory (37 entries as of 2026-09-24), each with a slug, display name, and public listing URL. Use a returned slug as the section parameter on GET /people/headlines.
 - **Params:** _none_
+
+## PetSmart (6)
+
+### `petsmart_categories`
+
+- **HTTP:** `GET /petsmart/categories`
+- **What:** List PetSmart's product categories. Returns PetSmart's category directory: every category path (for example Dog > Food > Dry Food) with its name, parent path and depth, about 1,400 in all, hierarchical so a parent path covers its descendants. A category's path is the value /petsmart/search and /petsmart/search/filters take as category. Filter with query (text in the path), parent (descendants of a path) and depth, and page through with page and limit. Ancestor paths that the directory does not list itself are included, since products carry them and they are valid category filters. Pass country=ca for the Canadian catalog.
+- **Params:** `country` (string, optional) — Optional catalog: us (default) or ca for the Canadian store, which has its own products (about 9,000), categories, filters and prices.; `depth` (integer, optional) — Optional exact depth: 1 for top-level categories, 2 for their children, and so on.; `limit` (integer, optional) — Optional categories per page. Defaults to 100, maximum 500.; `page` (integer, optional) — Optional 1-based page number. Defaults to 1.; `parent` (string, optional) — Optional category path; keeps only its descendants.; `query` (string, optional) — Optional text; keeps categories whose path contains it (case-insensitive).
+
+### `petsmart_product`
+
+- **HTTP:** `GET /petsmart/product`
+- **What:** Get one PetSmart product's full detail. Returns one product's full public detail by SKU: everything /petsmart/search returns plus the full description (as text and as PetSmart's HTML), short description, manufacturer name and SKU, every UPC, all category paths, the size and flavor variation options, current promotions, shipping dimensions and every other catalog attribute PetSmart publishes (life stage, food form, flavor, health considerations and so on) under attributes. An unknown SKU returns a 404. Pass country=ca for the Canadian catalog.
+- **Params:** `country` (string, optional) — Optional catalog: us (default) or ca for the Canadian store, which has its own products (about 9,000), categories, filters and prices.; `id` (integer, **required**) — Product SKU, from /petsmart/search's id field.
+
+### `petsmart_product_inventory`
+
+- **HTTP:** `GET /petsmart/product/inventory`
+- **What:** Get one PetSmart product's stock count per store. Returns how many units of a product PetSmart reports in each store, as store number and quantity, highest stock first, with totals over every store that has a record (stores_with_record, stores_in_stock, total_units). Narrow with store_id (repeatable) and min_quantity; limit caps the list (default 100, maximum 2000) without changing the totals. Store numbers are PetSmart's own; PetSmart's store locator is not available anonymously, so this endpoint does not map them to addresses. An unknown SKU returns a 404.
+- **Params:** `id` (integer, **required**) — Product SKU, from /petsmart/search's id field.; `limit` (integer, optional) — Optional stores returned, highest stock first. Defaults to 100, maximum 2000.; `min_quantity` (integer, optional) — Optional minimum units in stock for a store to be listed. Defaults to 0, which includes stores that are out of stock.; `store_id` (integer, optional) — Optional PetSmart store numbers to return, repeatable. Omit for every store with a record.
+
+### `petsmart_search`
+
+- **HTTP:** `GET /petsmart/search`
+- **What:** Search PetSmart products. Returns one page of PetSmart products from its catalog of about 20,000, optionally narrowed by keyword, category, brand, price range, minimum rating or any catalog filter, in six orderings (relevance, price_asc, price_desc, best_sellers, top_rated, new_arrivals). Each product carries its SKU id, master product id, name, brand, price (current, list and PetSmart's display text, with the range across sizes), images, rating and review count, primary category, pets, size, variations, UPC and availability flags (available online, in stock in stores, in-store only, online only, pickup and autoship eligible). total_results and total_pages describe the whole result set; PetSmart pages no deeper than 10,000 results, so narrow the search to reach the rest. Call /petsmart/categories and /petsmart/search/filters for the valid category and filter values; an unknown category path or filter name returns a 400 rather than an empty list. Pass country=ca for the Canadian catalog.
+- **Params:** `brand` (string, optional) — Optional exact brand name. Find values with /petsmart/search/filters using facet=brand and facet_query.; `category` (string, optional) — Optional category path, from /petsmart/categories' path field (for example Dog > Food > Dry Food). Includes the category's descendants. A path not in the directory returns a 400.; `country` (string, optional) — Optional catalog: us (default) or ca for the Canadian store, which has its own products (about 9,000), categories, filters and prices.; `filter` (string, optional) — Optional catalog filters as name:value, repeatable (for example customPet:Dog). Names and values come from /petsmart/search/filters; an unknown name returns a 400. Different names combine with AND; repeating one name combines its values with OR.; `limit` (integer, optional) — Optional products per page. Defaults to 24, maximum 100.; `max_price` (number, optional) — Optional maximum price in dollars.; `min_price` (number, optional) — Optional minimum price in dollars.; `min_rating` (number, optional) — Optional minimum average customer rating, 0 to 5.; `page` (integer, optional) — Optional 1-based page number. Defaults to 1.; `query` (string, optional) — Optional keyword.; `sort` (string, optional) — Optional ordering.
+
+### `petsmart_search_filters`
+
+- **HTTP:** `GET /petsmart/search/filters`
+- **What:** List PetSmart's catalog filters and their values. Returns every filter PetSmart's catalog offers (about 120, such as brand, pet type, food form, size, flavor and life stage) with each filter's top values and product counts, scoped to the same search arguments /petsmart/search takes so the counts describe the result set that search would return. facet_names always lists every valid filter name for /petsmart/search's filter parameter. Pass facet to list one filter's values (up to 1,000) and facet_query to search within them, for example brand names containing blue; numeric_ranges reports the spread of numeric attributes such as price and rating over the scoped products. An unknown facet returns a 400. Pass country=ca for the Canadian catalog.
+- **Params:** `brand` (string, optional) — Optional exact brand name. Find values with /petsmart/search/filters using facet=brand and facet_query.; `category` (string, optional) — Optional category path, from /petsmart/categories' path field (for example Dog > Food > Dry Food). Includes the category's descendants. A path not in the directory returns a 400.; `country` (string, optional) — Optional catalog: us (default) or ca for the Canadian store, which has its own products (about 9,000), categories, filters and prices.; `facet` (string, optional) — Optional single filter name to list values for, from facet_names. Without it every filter is returned with its top values.; `facet_query` (string, optional) — Optional text to search within the values of facet, for example brand names containing blue. Requires facet.; `filter` (string, optional) — Optional catalog filters as name:value, repeatable (for example customPet:Dog). Names and values come from /petsmart/search/filters; an unknown name returns a 400. Different names combine with AND; repeating one name combines its values with OR.; `limit` (integer, optional) — Optional values per filter. Defaults to 10 (maximum 100) for all filters; with facet, maximum 1000, or 100 together with facet_query.; `max_price` (number, optional) — Optional maximum price in dollars.; `min_price` (number, optional) — Optional minimum price in dollars.; `min_rating` (number, optional) — Optional minimum average customer rating, 0 to 5.; `query` (string, optional) — Optional keyword.
+
+### `petsmart_suggest`
+
+- **HTTP:** `GET /petsmart/suggest`
+- **What:** Get PetSmart search suggestions. Returns PetSmart's own search suggestions for partial text, each with its relative popularity and how many products it matches exactly. Useful for completing a search phrase before calling /petsmart/search. Pass country=ca for the Canadian catalog.
+- **Params:** `country` (string, optional) — Optional catalog: us (default) or ca for the Canadian store, which has its own products (about 9,000), categories, filters and prices.; `limit` (integer, optional) — Optional suggestions returned. Defaults to 8, maximum 20.; `query` (string, **required**) — Partial search text to complete, for example dog fo.
+
+## PGA Tour (15)
+
+### `pgatour_leaderboard`
+
+- **HTTP:** `GET /pgatour/leaderboard`
+- **What:** Get the website-default golf leaderboard. Returns the selected public golf resource with its native identity, tour and resolved season context. Player IDs retain significant leading zeroes.
+- **Params:** `tour` (string, optional) — R: PGA Tour; S: Champions; H: Korn Ferry; Y: Americas
+
+### `pgatour_players`
+
+- **HTTP:** `GET /pgatour/players`
+- **What:** Get a professional golf player directory. Returns the selected public golf resource with its native identity, tour and resolved season context. Player IDs retain significant leading zeroes.
+- **Params:** `tour` (string, optional) — R: PGA Tour; S: Champions; H: Korn Ferry; Y: Americas
+
+### `pgatour_schedule`
+
+- **HTTP:** `GET /pgatour/schedule`
+- **What:** Get the website-default golf schedule. Returns the selected public golf resource with its native identity, tour and resolved season context. Player IDs retain significant leading zeroes.
+- **Params:** `season` (integer, optional) — Native season value from tour-specific season discovery; omission preserves source default; `tour` (string, optional) — R: PGA Tour; S: Champions; H: Korn Ferry; Y: Americas
+
+### `pgatour_schedule_seasons`
+
+- **HTTP:** `GET /pgatour/schedule/seasons`
+- **What:** Discover PGA tour-specific schedule seasons. Returns every native season value and display label for the selected tour. Labels such as2022–2023 are not replaced by guessed calendar years. Use returned values with the schedule season selector; omission there preserves its own source default.
+- **Params:** `tour` (string, optional) — Native tour, defaultR
+
+### `pgatour_stat_detail`
+
+- **HTTP:** `GET /pgatour/stats/{stat_id}`
+- **What:** Read a PGA Tour statistics table. Returns the published player and tour-average rows for a native stat ID. Preserves source season labels, columns, values and selector menus. Use stat options for per-stat years and tournaments; pair query_type with tournament_id. Search, sorting and favorites are not server filters.
+- **Params:** `query_type` (string, optional) — Native event aggregation; requires tournament_id; `stat_id` (string, **required**) — Native stat ID from statistics discovery; leading zeroes are significant; `tour` (string, optional) — Tour; `tournament_id` (string, optional) — Native tournament ID from this stat and year's options; requires query_type; `year` (integer, optional) — Native year from this stat's options; omission selects the source default
+
+### `pgatour_stat_options`
+
+- **HTTP:** `GET /pgatour/stats/{stat_id}/options`
+- **What:** Discover PGA Tour statistics selectors. Returns the native years, season labels, tournaments and event-query types for one statistics table. A year selector refreshes the tournament choices for that season. Stat IDs and category groups come from statistics discovery.
+- **Params:** `stat_id` (string, **required**) — Native stat ID from statistics discovery; leading zeroes are significant; `tour` (string, optional) — Tour; `year` (integer, optional) — Native year from this stat's options
+
+### `pgatour_stats`
+
+- **HTTP:** `GET /pgatour/stats`
+- **What:** Get the golf statistics overview. Returns the selected public golf resource with its native identity, tour and resolved season context. Player IDs retain significant leading zeroes.
+- **Params:** `tour` (string, optional) — R: PGA Tour; S: Champions; H: Korn Ferry; Y: Americas
+
+### `pgatour_tournament_broadcast`
+
+- **HTTP:** `GET /pgatour/tournaments/{year}/{slug}/{id}/broadcast`
+- **What:** Get PGA tournament broadcast coverage. Returns native regional broadcast schedules, network metadata and the actual source country code. There is no country selector or worldwide-coverage promise. Direct media stream URLs are omitted; no stream is fetched. Use year, slug and full main-tour ID from tournament-link discovery.
+- **Params:** `id` (string, **required**) — Complete main-tour tournament ID; `slug` (string, **required**) — Native tournament URL slug from link discovery; `year` (string, **required**) — Four-digit native tournament URL year
+
+### `pgatour_tournament_course_stats`
+
+- **HTTP:** `GET /pgatour/tournaments/{year}/{slug}/{id}/course-stats`
+- **What:** Get PGA Tour tournament course statistics. Returns every native course, round summary and hole statistic. Null all-round selectors remain null. Supply canonical year, slug and full tournament ID from tournament-link discovery. Other tours and team-event variants are not qualified by this local contract.
+- **Params:** `id` (string, **required**) — Full native main-tour tournament ID, for example R2026457; `slug` (string, **required**) — Canonical main-tour tournament URL slug from schedule; `year` (string, **required**) — Canonical tournament URL year, matching the full ID
+
+### `pgatour_tournament_field`
+
+- **HTTP:** `GET /pgatour/tournaments/{year}/{slug}/{id}/field`
+- **What:** Get PGA Tour tournament field and alternates. Returns the complete native field and alternate lists, status and qualifying metadata. It does not equate field membership with leaderboard rows. Supply canonical year, slug and full tournament ID from tournament-link discovery. Other tours and team-event variants are not qualified by this local contract.
+- **Params:** `id` (string, **required**) — Full native main-tour tournament ID, for example R2026457; `slug` (string, **required**) — Canonical main-tour tournament URL slug from schedule; `year` (string, **required**) — Canonical tournament URL year, matching the full ID
+
+### `pgatour_tournament_links`
+
+- **HTTP:** `GET /pgatour/tournament-links`
+- **What:** Discover PGA tournament URL contexts. Returns year, slug and ID from actual main-tour schedule/sitemap links. Schedule events without a matching source link are listed separately; their slugs are not guessed. Use returned contexts with tournament tab endpoints.
+- **Params:** _none_
+
+### `pgatour_tournament_overview`
+
+- **HTTP:** `GET /pgatour/tournaments/{year}/{slug}/{id}/overview`
+- **What:** Get PGA Tour tournament overview. Returns native tournament facts, courses and individual champion history. Ticket purchase links and account preference fields are omitted. Supply canonical year, slug and full tournament ID from tournament-link discovery. Other tours and team-event variants are not qualified by this local contract.
+- **Params:** `id` (string, **required**) — Full native main-tour tournament ID, for example R2026457; `slug` (string, **required**) — Canonical main-tour tournament URL slug from schedule; `year` (string, **required**) — Canonical tournament URL year, matching the full ID
+
+### `pgatour_tournament_past_results`
+
+- **HTTP:** `GET /pgatour/tournaments/{year}/{slug}/{id}/past-results`
+- **What:** Get PGA Tour tournament past results. Returns the source default historical results and every native available-season entry. The resolved results ID can refer to a previous year; no year selector is invented. Supply canonical year, slug and full tournament ID from tournament-link discovery. Other tours and team-event variants are not qualified by this local contract.
+- **Params:** `id` (string, **required**) — Full native main-tour tournament ID, for example R2026457; `slug` (string, **required**) — Canonical main-tour tournament URL slug from schedule; `year` (string, **required**) — Canonical tournament URL year, matching the full ID
+
+### `pgatour_tournament_tee_times`
+
+- **HTTP:** `GET /pgatour/tournaments/{year}/{slug}/{id}/tee-times`
+- **What:** Get PGA Tour tournament tee times. Returns all native rounds, groups and professional player identities with source tee times and timezone. Supply canonical year, slug and full tournament ID from tournament-link discovery. Other tours and team-event variants are not qualified by this local contract.
+- **Params:** `id` (string, **required**) — Full native main-tour tournament ID, for example R2026457; `slug` (string, **required**) — Canonical main-tour tournament URL slug from schedule; `year` (string, **required**) — Canonical tournament URL year, matching the full ID
+
+### `pgatour_tournament_weather`
+
+- **HTTP:** `GET /pgatour/tournaments/{year}/{slug}/{id}/weather`
+- **What:** Get PGA tournament weather forecast. Returns native hourly and daily forecasts, source conditions, wind, humidity, precipitation and Celsius/Fahrenheit strings. Reads the tournament overview resource without calculating weather values. Use year, slug and full main-tour ID from tournament-link discovery.
+- **Params:** `id` (string, **required**) — Complete main-tour tournament ID; `slug` (string, **required**) — Native tournament URL slug from link discovery; `year` (string, **required**) — Four-digit native tournament URL year
 
 ## Philadelphia Inquirer (5)
 
@@ -16793,8 +19564,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rottentomatoes_critic_reviews`
 
 - **HTTP:** `GET /rottentomatoes/critic/reviews`
-- **What:** Rotten Tomatoes reviews by one critic. Returns the movie reviews published by one critic, newest first. Each review carries a stable `id`, ISO `created_at`/`updated_at`, the publication, the original article URL and a `media` object naming the reviewed title (with its path, URL and poster). The list is pageable `limit` reviews at a time, up to 500 deep: pass `data.page_info.end_cursor` as `after` and keep `limit` the same while paging. It is read directly from Rotten Tomatoes' review feed (`data.transport` is `feed_api`, normally a second or two), with a slower browser fallback (`browser_render`, at most five pages) when the feed cannot be read. A critic with no reviews returns 200 with an empty `reviews` array; an unknown critic path returns 404. `data.subject.kind` is `critic` and `data.subject.title` is the reviewer's display name as Rotten Tomatoes prints it.
-- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response, with the same limit. Lists can be paged up to 500 reviews deep.; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk: the cursor is a page index times this value.; `path` (string, optional) — Rotten Tomatoes critic path: /critic/{slug}. /critics/{slug} (the form critics/authors returns) and /profiles/critic/{slug} are accepted too; `url` (string, optional) — Absolute https://www.rottentomatoes.com critic URL
+- **What:** Rotten Tomatoes reviews by one critic. Returns the movie reviews published by one critic, newest first. Each review carries a stable `id`, ISO `created_at`/`updated_at`, the publication, the original article URL and a `media` object naming the reviewed title (with its path, URL and poster). The list is pageable `limit` reviews at a time: pass `data.page_info.end_cursor` as `after` and keep `limit` the same while paging. It is read directly from Rotten Tomatoes' review feed (`data.transport` is `feed_api`, normally a second or two), with a slower browser fallback (`browser_render`, at most five pages) when the feed cannot be read. A critic with no reviews returns 200 with an empty `reviews` array; an unknown critic path returns 404. `data.subject.kind` is `critic` and `data.subject.title` is the reviewer's display name as Rotten Tomatoes prints it.
+- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response, with the same limit. Lists can be paged through the available reviews.; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk: the cursor is a page index times this value.; `path` (string, optional) — Rotten Tomatoes critic path: /critic/{slug}. /critics/{slug} (the form critics/authors returns) and /profiles/critic/{slug} are accepted too; `url` (string, optional) — Absolute https://www.rottentomatoes.com critic URL
 
 ### `rottentomatoes_critics_authors`
 
@@ -16853,8 +19624,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rottentomatoes_episode_reviews`
 
 - **HTTP:** `GET /rottentomatoes/episode/reviews`
-- **What:** Rotten Tomatoes TV episode critic reviews. Returns the critic reviews of one TV episode, newest first, read the same way as the season and movie feeds. Reviews carry a stable `id`, ISO `created_at`/`updated_at`, the critic identity and the original article URL. The list is pageable `limit` reviews at a time, up to 500 deep: pass `data.page_info.end_cursor` as `after` and keep `limit` the same while paging. It is read directly from Rotten Tomatoes' review feed (`data.transport` is `feed_api`, normally about a second), with a slower browser fallback (`browser_render`, at most five pages) when the feed cannot be read. Episode review lists are often small or empty: an episode nobody has reviewed yet returns 200 with an empty `reviews` array. `data.subject` identifies the episode.
-- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response, with the same limit. Critic cursors are base64 page indexes; audience cursors are opaque keyset values that should be passed back unchanged. The feed can serve up to 500 reviews; browser fallback is capped at five pages.; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk: the cursor is a page index times this value.; `path` (string, optional) — Rotten Tomatoes episode path; `type` (string, optional) — Review list: critics (default), top-critics or audience.; `url` (string, optional) — Absolute https://www.rottentomatoes.com episode URL
+- **What:** Rotten Tomatoes TV episode critic reviews. Returns the critic reviews of one TV episode, newest first, read the same way as the season and movie feeds. Reviews carry a stable `id`, ISO `created_at`/`updated_at`, the critic identity and the original article URL. The list is pageable `limit` reviews at a time: pass `data.page_info.end_cursor` as `after` and keep `limit` the same while paging. It is read directly from Rotten Tomatoes' review feed (`data.transport` is `feed_api`, normally about a second), with a slower browser fallback (`browser_render`, at most five pages) when the feed cannot be read. Episode review lists are often small or empty: an episode nobody has reviewed yet returns 200 with an empty `reviews` array. `data.subject` identifies the episode.
+- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response, with the same limit. Critic cursors are base64 page indexes; audience cursors are opaque keyset values that should be passed back unchanged. The feed has no 500-review ceiling; browser fallback is capped at five pages.; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk: the cursor is a page index times this value.; `path` (string, optional) — Rotten Tomatoes episode path; `type` (string, optional) — Review list: critics (default), top-critics or audience.; `url` (string, optional) — Absolute https://www.rottentomatoes.com episode URL
 
 ### `rottentomatoes_movie`
 
@@ -16866,7 +19637,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /rottentomatoes/movie/reviews`
 - **What:** Rotten Tomatoes movie reviews. Returns Rotten Tomatoes movie reviews, newest first. All four `type` values return the full review feed in one request: each review carries a stable `id`, ISO `created_at`/`updated_at` timestamps, the critic identity and the original article URL, and the list is pageable `limit` reviews at a time: pass `data.page_info.end_cursor` back as `after` for the next page and keep `limit` the same while paging. `data.transport` is `feed_api` for that path. A title with no reviews yet, or a top-critics or audience list that is still empty, returns 200 with an empty `reviews` array. If the feed cannot be read the service loads the movie's own review page the way a visitor's browser does and reads the list that page receives (`transport: browser_render`, slower, at most five pages); if that also fails for the first page, the movie page's embedded sample of about 6 reviews is served with `render_error` set (`transport: public_page`) and the call is not charged. `data.subject.kind` is `movie`, and `data.movie` remains present for compatibility. `data.fetched_at` and the `X-Cache` and `X-Availability-Last-Success-*` response headers show how fresh the data is. Pass exactly one of `path` or `url`. Supported `type` values are `critics`, `top-critics`, `audience`, and `verified-audience`.
-- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response. Critic cursors are base64 page indexes; audience cursors are opaque keyset values that should be passed back unchanged. The feed can serve up to 500 reviews; browser fallback is capped at five pages. Invalid cursors are rejected before upstream work.; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk: the critic cursor is a page index times this value.; `path` (string, optional) — Rotten Tomatoes movie path; `type` (string, optional) — Review type: critics, top-critics, audience, verified-audience; `url` (string, optional) — Absolute https://www.rottentomatoes.com movie URL
+- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response. Critic cursors are base64 page indexes; audience cursors are opaque keyset values that should be passed back unchanged. The feed has no 500-review ceiling; browser fallback is capped at five pages. Invalid cursors are rejected before upstream work.; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk: the critic cursor is a page index times this value.; `path` (string, optional) — Rotten Tomatoes movie path; `type` (string, optional) — Review type: critics, top-critics, audience, verified-audience; `url` (string, optional) — Absolute https://www.rottentomatoes.com movie URL
 
 ### `rottentomatoes_movie_videos`
 
@@ -16913,8 +19684,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `rottentomatoes_season_reviews`
 
 - **HTTP:** `GET /rottentomatoes/season/reviews`
-- **What:** Rotten Tomatoes TV season critic reviews. Returns the critic reviews of one TV season, newest first. Each review has a stable `id`, ISO `created_at`/`updated_at` timestamps, the critic identity and the original article URL. The list is pageable `limit` reviews at a time, up to 500 deep: pass `data.page_info.end_cursor` as `after` and keep `limit` the same while paging. It is read directly from Rotten Tomatoes' review feed (`data.transport` is `feed_api`, normally about a second); if the feed cannot be read, the service may fall back to loading the season's reviews page in a browser (`transport: browser_render`, much slower and at most five pages deep). A season with no critic reviews yet returns 200 with an empty `reviews` array. `data.subject` identifies the season. `data.fetched_at`, `X-Cache` and `X-Availability-Last-Success-*` describe freshness. Pass exactly one of `path` or `url`.
-- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response. Critic cursors are base64 page indexes; audience cursors are opaque keyset values that should be passed back unchanged. The feed can serve up to 500 reviews; browser fallback is capped at five pages.; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk: the cursor is a page index times this value.; `path` (string, optional) — Rotten Tomatoes season path; `type` (string, optional) — Review list: critics (default), top-critics or audience.; `url` (string, optional) — Absolute https://www.rottentomatoes.com season URL
+- **What:** Rotten Tomatoes TV season critic reviews. Returns the critic reviews of one TV season, newest first. Each review has a stable `id`, ISO `created_at`/`updated_at` timestamps, the critic identity and the original article URL. The list is pageable `limit` reviews at a time: pass `data.page_info.end_cursor` as `after` and keep `limit` the same while paging. It is read directly from Rotten Tomatoes' review feed (`data.transport` is `feed_api`, normally about a second); if the feed cannot be read, the service may fall back to loading the season's reviews page in a browser (`transport: browser_render`, much slower and at most five pages deep). A season with no critic reviews yet returns 200 with an empty `reviews` array. `data.subject` identifies the season. `data.fetched_at`, `X-Cache` and `X-Availability-Last-Success-*` describe freshness. Pass exactly one of `path` or `url`.
+- **Params:** `after` (string, optional) — Pagination cursor: pass data.page_info.end_cursor from the previous response. Critic cursors are base64 page indexes; audience cursors are opaque keyset values that should be passed back unchanged. The feed has no 500-review ceiling; browser fallback is capped at five pages.; `limit` (integer, optional) — Reviews per page, default 10, max 20. Keep it the same on every page of one walk: the cursor is a page index times this value.; `path` (string, optional) — Rotten Tomatoes season path; `type` (string, optional) — Review list: critics (default), top-critics or audience.; `url` (string, optional) — Absolute https://www.rottentomatoes.com season URL
 
 ### `rottentomatoes_series`
 
@@ -17395,6 +20166,98 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sephora/suggest`
 - **What:** Sephora search suggestions. Returns Sephora's own search-box type-ahead suggestions for a partial keyword: keyword-completion terms, matching products, and trending/related categories. Sephora's own upstream never returns a genuine zero-result state for a nonempty query -- a deliberately nonsense query still returns unrelated product suggestions.
 - **Params:** `query` (string, **required**) — Partial search keywords
+
+## Serebii (15)
+
+### `serebii_pokemongo_event_categories`
+
+- **HTTP:** `GET /serebii/pokemongo/event-categories`
+- **What:** List Serebii Pokémon GO event category pages. Returns the nine native event category pages linked from the Pokémon GO event index.
+- **Params:** _none_
+
+### `serebii_pokemongo_event_detail_community_day`
+
+- **HTTP:** `GET /serebii/pokemongo/communityday/{filename}`
+- **What:** Get a Serebii Pokémon GO Community Day page. Returns the public tables from one native Community Day detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Community Day list
+
+### `serebii_pokemongo_event_detail_global`
+
+- **HTTP:** `GET /serebii/pokemongo/events/{filename}`
+- **What:** Get a Serebii Pokémon GO global event page. Returns the public tables from one native Global Events detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Global Events list
+
+### `serebii_pokemongo_event_detail_hatch_day`
+
+- **HTTP:** `GET /serebii/pokemongo/hatchday/{filename}`
+- **What:** Get a Serebii Pokémon GO Hatch Day page. Returns the public tables from one native Hatch Day detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Hatch Day list
+
+### `serebii_pokemongo_event_detail_incense_day`
+
+- **HTTP:** `GET /serebii/pokemongo/incenseday/{filename}`
+- **What:** Get a Serebii Pokémon GO Incense Day page. Returns the public tables from one native Incense Day detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Incense Day list
+
+### `serebii_pokemongo_event_detail_max_battle_day`
+
+- **HTTP:** `GET /serebii/pokemongo/maxbattleday/{filename}`
+- **What:** Get a Serebii Pokémon GO Max Battle Day page. Returns the public tables from one native Max Battle Day detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Max Battle Day list
+
+### `serebii_pokemongo_event_detail_raid_day`
+
+- **HTTP:** `GET /serebii/pokemongo/raidday/{filename}`
+- **What:** Get a Serebii Pokémon GO Raid Day page. Returns the public tables from one native Raid Day detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Raid Day list
+
+### `serebii_pokemongo_event_detail_real_life`
+
+- **HTTP:** `GET /serebii/pokemongo/reallifeevents/{filename}`
+- **What:** Get a Serebii Pokémon GO real-life event page. Returns the public tables from one native Real Life Events detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Real Life Events list
+
+### `serebii_pokemongo_event_detail_research_day`
+
+- **HTTP:** `GET /serebii/pokemongo/limitedresearchday/{filename}`
+- **What:** Get a Serebii Pokémon GO Research Day page. Returns the public tables from one native Research Day detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Research Day list
+
+### `serebii_pokemongo_event_detail_ticket`
+
+- **HTTP:** `GET /serebii/pokemongo/ticketevents/{filename}`
+- **What:** Get a Serebii Pokémon GO ticket event page. Returns the public tables from one native Ticket Events detail page. Linked pages and media are not fetched.
+- **Params:** `filename` (string, **required**) — Native event page filename returned by the Ticket Events list
+
+### `serebii_pokemongo_event_only_moves`
+
+- **HTTP:** `GET /serebii/pokemongo/event-only-moves`
+- **What:** List Serebii Pokémon GO event-only move tables. Returns Serebii's Fast Attacks and Charge Attacks tables for moves identified as event-only.
+- **Params:** _none_
+
+### `serebii_pokemongo_event_only_research`
+
+- **HTTP:** `GET /serebii/pokemongo/event-only-research`
+- **What:** List Serebii Pokémon GO event-only field research. Returns the rows from Serebii's Event Only Field Research table.
+- **Params:** _none_
+
+### `serebii_pokemongo_events`
+
+- **HTTP:** `GET /serebii/pokemongo/events`
+- **What:** List events from a Serebii Pokémon GO category page. Returns the rows from one native Serebii Pokémon GO event category page, preserving source order and date labels.
+- **Params:** `category` (string, **required**) — Native event page filename from event-categories
+
+### `serebii_pokemongo_spotlight_hours`
+
+- **HTTP:** `GET /serebii/pokemongo/spotlight-hours`
+- **What:** List Serebii Pokémon GO Spotlight Hour archive rows. Returns rows from Serebii's historical Spotlight Hour table. The source dates are labels and do not represent a current or future schedule.
+- **Params:** _none_
+
+### `serebii_pokemongo_unown_events`
+
+- **HTTP:** `GET /serebii/pokemongo/unown-events`
+- **What:** List Serebii Pokémon GO Unown event locations. Returns the rows from Serebii's Unown Event Locations archive, including source date, event, locations, letters, and restrictions.
+- **Params:** _none_
 
 ## SFGate (5)
 
@@ -18056,7 +20919,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Slickdeals with real pagination, counts, and facets. Searches Slickdeals' modern search surface -- a richer alternative to GET /slickdeals/search's keyword-only search. Returns real pagination (page/total_pages/per_page/result_count), integer vote/comment/view counts (not parsed from free text), a fuller per-deal record (store id, discount percent, status flags), and facets -- Categories, Stores, and Brands available for the current query, each option carrying a value usable as category_id/brand_id/store_id. Facet values and counts are scoped to the current query, not a site-wide enumeration -- category_id/brand_id/store_id are passthrough filters (obtain a value from a prior response's own facets), not validated against a closed enum. sort defaults to relevance; other values are passed through unvalidated.
 - **Params:** `brand_id` (integer, optional) — Brand facet id, from a prior response's own facets; `category_id` (integer, optional) — Category facet id, from a prior response's own facets; `page` (integer, optional) — 1-based result page, default 1; `q` (string, **required**) — Free-text keyword query; `sort` (string, optional) — Sort order, default relevance; `store_id` (integer, optional) — Store facet id, from a prior response's own facets
 
-## SofaScore (109)
+## SofaScore (111)
 
 ### `sofascore_categories`
 
@@ -18184,6 +21047,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** SofaScore event odds. Returns one match's betting markets and choices. Returns 404 when SofaScore has no odds for the match.
 - **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id
 
+### `sofascore_event_player_actions`
+
+- **HTTP:** `GET /sofascore/event-player-actions`
+- **What:** SofaScore football player action maps. Returns the spatial actions SofaScore tracks for one football player in a match, grouped into passes, dribbles, defensive actions and ball carries. Includes pitch coordinates, end coordinates when reported, and optional outcome and key-pass flags. Get the player id from event-lineups. An uncovered match or player returns 404.
+- **Params:** `id` (string, **required**) — Numeric SofaScore event id; `player_id` (string, **required**) — Numeric SofaScore player id for that event
+
 ### `sofascore_event_player_heatmap`
 
 - **HTTP:** `GET /sofascore/event-player-heatmap`
@@ -18225,6 +21094,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sofascore/event-team-heatmap`
 - **What:** SofaScore event team heatmap. Returns one team's touch locations in a football match as `player_points` (outfield players) and `goalkeeper_points`, each point an `x` and `y` on SofaScore's 0-100 pitch scale. `team_id` must be the home or away team of the event; get both ids from the event endpoint. Returns 404 when SofaScore has no heatmap for that team in that match, which includes teams that did not play it, unstarted matches and sports other than football.
 - **Params:** `id` (string, **required**) — Numeric SofaScore event (match) id; `team_id` (string, **required**) — Numeric SofaScore team id of the home or away side
+
+### `sofascore_event_team_shotmap`
+
+- **HTTP:** `GET /sofascore/event-team-shotmap`
+- **What:** SofaScore basketball team shot chart. Returns one team's shot chart in a basketball game, with the made, missed and saved counts at each court location in SofaScore's coordinate units. Pass the home or away team id from the event. An uncovered team or event returns 404.
+- **Params:** `id` (string, **required**) — Numeric SofaScore basketball event id; `team_id` (string, **required**) — Numeric SofaScore team id for that event
 
 ### `sofascore_event_team_streaks`
 
@@ -18875,6 +21750,110 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /sparkfun/search`
 - **What:** Search SparkFun products. Searches public SparkFun product data with pagination and dynamic facet filters. Each filter must be `attribute:value`; use values from the response's filters array.
 - **Params:** `filter` (array, optional) — Repeatable dynamic facet in attribute:value form; `page` (integer, optional) — One-based result page (1-100); `per_page` (integer, optional) — Products per page (1-24); `q` (string, **required**) — Product search query
+
+## Speedrun.com (17)
+
+### `speedrun_catalog`
+
+- **HTTP:** `GET /speedrun/catalogs/{kind}`
+- **What:** Discover Speedrun.com filter catalogs. Reads anonymous Speedrun.com v1 metadata and preserves native opaque identifiers, run context and pagination. Source attribution: Speedrun.com.
+- **Params:** `kind` (string, **required**) — Native metadata collection; `max` (integer, optional) — Native page size from 1 to 200; `offset` (integer, optional) — Native zero-based result offset
+
+### `speedrun_categories`
+
+- **HTTP:** `GET /speedrun/games/{id}/categories`
+- **What:** Get native game categories. Reads anonymous Speedrun.com v1 metadata and preserves native opaque identifiers, run context and pagination. Source attribution: Speedrun.com.
+- **Params:** `direction` (string, optional) — Native order direction; `embed` (array, optional) — Metadata embeds; `id` (string, **required**) — Native opaque alphanumeric game ID; `miscellaneous` (boolean, optional) — Source miscellaneous selector; explicit false preserved; `orderby` (string, optional) — Native category order
+
+### `speedrun_category_detail`
+
+- **HTTP:** `GET /speedrun/categories/{id}`
+- **What:** Get Speedrun category detail. Returns complete native category detail and context. Use game/category/level discovery IDs, not mutable abbreviations. Metadata embeds preserve their native wrappers; account/profile embeds are excluded. Records count places and preserve ties, empty boards and native pagination. Variable resources return every applicable value and its source scope.
+- **Params:** `embed` (array, optional) — Native metadata embeds, comma-separated; `id` (string, **required**) — Native category ID, opaque alphanumeric
+
+### `speedrun_category_records`
+
+- **HTTP:** `GET /speedrun/categories/{id}/records`
+- **What:** Get Speedrun category records. Returns complete native category records and context. Use game/category/level discovery IDs, not mutable abbreviations. Metadata embeds preserve their native wrappers; account/profile embeds are excluded. Records count places and preserve ties, empty boards and native pagination. Variable resources return every applicable value and its source scope.
+- **Params:** `embed` (array, optional) — Native metadata embeds, comma-separated; `id` (string, **required**) — Native category ID, opaque alphanumeric; `max` (integer, optional) — Native page size 1–200; `offset` (integer, optional) — Native offset, nonnegative; `skip_empty` (boolean, optional) — Omit empty boards when true; explicit false is retained; `top` (integer, optional) — Top places, not runs; API budget 1–200; native default 3
+
+### `speedrun_category_variables`
+
+- **HTTP:** `GET /speedrun/categories/{id}/variables`
+- **What:** Get Speedrun category variables. Returns complete native category variables and context. Use game/category/level discovery IDs, not mutable abbreviations. Metadata embeds preserve their native wrappers; account/profile embeds are excluded. Records count places and preserve ties, empty boards and native pagination. Variable resources return every applicable value and its source scope.
+- **Params:** `direction` (string, optional) — Native order direction; `embed` (array, optional) — Native metadata embeds, comma-separated; `id` (string, **required**) — Native category ID, opaque alphanumeric; `orderby` (string, optional) — Native contextual order
+
+### `speedrun_game_detail`
+
+- **HTTP:** `GET /speedrun/games/{id}`
+- **What:** Get Speedrun game detail. Returns complete native game detail and context. Use game/category/level discovery IDs, not mutable abbreviations. Metadata embeds preserve their native wrappers; account/profile embeds are excluded. Records count places and preserve ties, empty boards and native pagination. Variable resources return every applicable value and its source scope.
+- **Params:** `embed` (array, optional) — Native metadata embeds, comma-separated; `id` (string, **required**) — Native game ID, opaque alphanumeric
+
+### `speedrun_game_leaderboard`
+
+- **HTTP:** `GET /speedrun/leaderboards/{game}/category/{category}`
+- **What:** Get a Speedrun full-game leaderboard. Returns native places, tied runs and game/category/level context. top counts places, not runs. IDs come from game/category/level discovery; platform/region use catalog discovery. Game variables expose value IDs and scope; requested variables are checked against this board's native applicable-variable embedding. No local ranking or synthetic pagination is performed.
+- **Params:** `category` (string, **required**) — Native category ID appropriate to this board; `date` (string, optional) — Run date cutoff YYYY-MM-DD; `embed` (array, optional) — Native metadata embeds; `emulators` (boolean, optional) — Omit for both; true for emulators, false for real devices; `game` (string, **required**) — Native game ID; `platform` (string, optional) — Native platform ID from catalogs; `region` (string, optional) — Native region ID from catalogs; `timing` (string, optional) — Native timing method; omission uses source default; `top` (integer, optional) — Top places, 1–200; API response-budget limit, ties can return more runs; `variables` (string, optional) — JSON object mapping native variable IDs to value IDs; `video_only` (boolean, optional) — Require a video when true; omission uses source default
+
+### `speedrun_games`
+
+- **HTTP:** `GET /speedrun/games`
+- **What:** Search Speedrun.com games. Reads anonymous Speedrun.com v1 metadata and preserves native opaque identifiers, run context and pagination. Source attribution: Speedrun.com.
+- **Params:** `_bulk` (boolean, optional) — Native compact page mode, max up to1000; disables embeds; `abbreviation` (string, optional) — Exact native abbreviation; `developer` (string, optional) — Native developer ID from catalog; `direction` (string, optional) — Native order direction; `embed` (array, optional) — Native metadata embeds; `engine` (string, optional) — Native engine ID from catalog; `gametype` (string, optional) — Game-type ID from the gametypes catalog; `genre` (string, optional) — Native genre ID from catalog; `max` (integer, optional) — Native page size1–200, or1–1000 with _bulk=true; `name` (string, optional) — Native game name search; `offset` (integer, optional) — Native zero-based result offset; `orderby` (string, optional) — Native game order; similarity requires name; `platform` (string, optional) — Platform ID from the platforms catalog; `publisher` (string, optional) — Native publisher ID from catalog; `region` (string, optional) — Region ID from the regions catalog; `released` (integer, optional) — Native release year, including0 for unknown; `romhack` (boolean, optional) — Legacy inclusion: true only typed games, false only untyped; omission includes both
+
+### `speedrun_level_categories`
+
+- **HTTP:** `GET /speedrun/levels/{id}/categories`
+- **What:** Get Speedrun level categories. Returns complete native level categories and context. Use game/category/level discovery IDs, not mutable abbreviations. Metadata embeds preserve their native wrappers; account/profile embeds are excluded. Records count places and preserve ties, empty boards and native pagination. Variable resources return every applicable value and its source scope.
+- **Params:** `direction` (string, optional) — Native order direction; `embed` (array, optional) — Native metadata embeds, comma-separated; `id` (string, **required**) — Native level ID, opaque alphanumeric; `miscellaneous` (boolean, optional) — Select source miscellaneous flag, preserving explicit false; `orderby` (string, optional) — Native contextual order
+
+### `speedrun_level_detail`
+
+- **HTTP:** `GET /speedrun/levels/{id}`
+- **What:** Get Speedrun level detail. Returns complete native level detail and context. Use game/category/level discovery IDs, not mutable abbreviations. Metadata embeds preserve their native wrappers; account/profile embeds are excluded. Records count places and preserve ties, empty boards and native pagination. Variable resources return every applicable value and its source scope.
+- **Params:** `embed` (array, optional) — Native metadata embeds, comma-separated; `id` (string, **required**) — Native level ID, opaque alphanumeric
+
+### `speedrun_level_leaderboard`
+
+- **HTTP:** `GET /speedrun/leaderboards/{game}/level/{level}/{category}`
+- **What:** Get a Speedrun individual-level leaderboard. Returns native places, tied runs and game/category/level context. top counts places, not runs. IDs come from game/category/level discovery; platform/region use catalog discovery. Game variables expose value IDs and scope; requested variables are checked against this board's native applicable-variable embedding. No local ranking or synthetic pagination is performed.
+- **Params:** `category` (string, **required**) — Native category ID appropriate to this board; `date` (string, optional) — Run date cutoff YYYY-MM-DD; `embed` (array, optional) — Native metadata embeds; `emulators` (boolean, optional) — Omit for both; true for emulators, false for real devices; `game` (string, **required**) — Native game ID; `level` (string, **required**) — Native level ID from game level discovery; `platform` (string, optional) — Native platform ID from catalogs; `region` (string, optional) — Native region ID from catalogs; `timing` (string, optional) — Native timing method; omission uses source default; `top` (integer, optional) — Top places, 1–200; API response-budget limit, ties can return more runs; `variables` (string, optional) — JSON object mapping native variable IDs to value IDs; `video_only` (boolean, optional) — Require a video when true; omission uses source default
+
+### `speedrun_level_records`
+
+- **HTTP:** `GET /speedrun/levels/{id}/records`
+- **What:** Get Speedrun level records. Returns complete native level records and context. Use game/category/level discovery IDs, not mutable abbreviations. Metadata embeds preserve their native wrappers; account/profile embeds are excluded. Records count places and preserve ties, empty boards and native pagination. Variable resources return every applicable value and its source scope.
+- **Params:** `embed` (array, optional) — Native metadata embeds, comma-separated; `id` (string, **required**) — Native level ID, opaque alphanumeric; `max` (integer, optional) — Native page size 1–200; `offset` (integer, optional) — Native offset, nonnegative; `skip_empty` (boolean, optional) — Omit empty boards when true; explicit false is retained; `top` (integer, optional) — Top places, not runs; API budget 1–200; native default 3
+
+### `speedrun_level_variables`
+
+- **HTTP:** `GET /speedrun/levels/{id}/variables`
+- **What:** Get Speedrun level variables. Returns complete native level variables and context. Use game/category/level discovery IDs, not mutable abbreviations. Metadata embeds preserve their native wrappers; account/profile embeds are excluded. Records count places and preserve ties, empty boards and native pagination. Variable resources return every applicable value and its source scope.
+- **Params:** `direction` (string, optional) — Native order direction; `embed` (array, optional) — Native metadata embeds, comma-separated; `id` (string, **required**) — Native level ID, opaque alphanumeric; `orderby` (string, optional) — Native contextual order
+
+### `speedrun_levels`
+
+- **HTTP:** `GET /speedrun/games/{id}/levels`
+- **What:** Get native game levels. Reads anonymous Speedrun.com v1 metadata and preserves native opaque identifiers, run context and pagination. Source attribution: Speedrun.com.
+- **Params:** `direction` (string, optional) — Native order direction; `embed` (array, optional) — Metadata embeds; `id` (string, **required**) — Native opaque alphanumeric game ID; `orderby` (string, optional) — Native level order
+
+### `speedrun_records`
+
+- **HTTP:** `GET /speedrun/games/{id}/records`
+- **What:** Get native top-one game record boards. Reads anonymous Speedrun.com v1 metadata and preserves native opaque identifiers, run context and pagination. Source attribution: Speedrun.com.
+- **Params:** `embed` (array, optional) — Metadata embeds; `id` (string, **required**) — Native opaque alphanumeric game ID; `max` (integer, optional) — Native page size from 1 to 200; `offset` (integer, optional) — Native zero-based result offset; `skip_empty` (boolean, optional) — Omit empty boards when true; explicit false preserved; `top` (integer, optional) — Top places, API budget1–200; compatibility default1
+
+### `speedrun_resource_options`
+
+- **HTTP:** `GET /speedrun/options`
+- **What:** Discover Speedrun contextual resource options. Lists supported metadata embeds, contextual ordering directions and global timing method names by resource path. Game detail supplies per-game timing support. No upstream collection or account request is made.
+- **Params:** _none_
+
+### `speedrun_variables`
+
+- **HTTP:** `GET /speedrun/games/{id}/variables`
+- **What:** Get native game variable definitions. Reads anonymous Speedrun.com v1 metadata and preserves native opaque identifiers, run context and pagination. Source attribution: Speedrun.com.
+- **Params:** `direction` (string, optional) — Native order direction; `embed` (array, optional) — Metadata embed; `id` (string, **required**) — Native opaque alphanumeric game ID; `orderby` (string, optional) — Native variable order
 
 ## Sporting News (5)
 
@@ -23376,6 +26355,44 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Discover Wccftech sections. Lists all non-empty public category and topic sections, plus the Reviews, Videos, How To, and Roundups archives. Use a returned slug with wccftech-headlines.
 - **Params:** _none_
 
+## WEBTOON (6)
+
+### `webtoon_genre`
+
+- **HTTP:** `GET /webtoon/genre`
+- **What:** List every series in one WEBTOON genre. Returns one WEBTOON (webtoons.com) genre listing: every series the site lists for that genre in one document, with each series' title number, title, genre label, authors when the card prints them, thumbnail, canonical URL, the site's own counter and the UP badge. The response carries the site's own series total for the genre when the page prints it. Genres come from webtoon-genres; sort is WEBTOON's own ordering control.
+- **Params:** `genre` (string, **required**) — Genre slug from webtoon-genres; `sort` (string, optional) — Result ordering
+
+### `webtoon_genres`
+
+- **HTTP:** `GET /webtoon/genres`
+- **What:** List WEBTOON's complete genre taxonomy. Returns the complete WEBTOON (webtoons.com) genre list: 17 genres, each with its slug (pass it to webtoon-genre), display label and listing URL. This is the discovery endpoint for the genre parameter, so a caller never has to hard-code the set.
+- **Params:** _none_
+
+### `webtoon_originals`
+
+- **HTTP:** `GET /webtoon/originals`
+- **What:** List one day of WEBTOON's release calendar. Returns one day of WEBTOON's (webtoons.com) Originals release calendar: every series updating that day, with each series' title number, title, genre, authors, thumbnail, canonical URL, the site's own counter and the UP badge. The complete day is one document, so there is no paging. Use the complete tab for finished series.
+- **Params:** `day` (string, **required**) — Release day tab; `sort` (string, optional) — Result ordering
+
+### `webtoon_rankings`
+
+- **HTTP:** `GET /webtoon/rankings`
+- **What:** List one WEBTOON chart. Returns one fixed WEBTOON (webtoons.com) chart: thirty ranked series with rank position, title number, title, genre, thumbnail, canonical URL and the site's own counter. Four tabs exist; the chart size is fixed and there is no paging.
+- **Params:** `tab` (string, optional) — Ranking tab, defaults to trending
+
+### `webtoon_search`
+
+- **HTTP:** `GET /webtoon/search`
+- **What:** Search WEBTOON series by keyword. Returns one page of WEBTOON (webtoons.com) search results, grouped into the page's own ORIGINALS and CANVAS sections. Each card carries its title number, title, authors, genre path segment, absolute URL, thumbnail, WEBTOON's own view counter, UP badge, adult flag and normalized webtoon_type; pass a card's title_no to webtoon-series for episode metadata. scope selects the site's own tab: all (the default) is a combined preview of at most 12 cards per section and cannot be paged, while originals and canvas serve up to 30 cards per page and return an empty sections list for a page past the end. A keyword that matches nothing is a valid 200 with no sections. Search cards carry no genre label, so genre is the hyphenated path segment from the card's own href (map it through webtoon-genres for webtoon-genre) and is empty for canvas cards.
+- **Params:** `keyword` (string, **required**) — Keyword to search series titles and creators for; `page` (integer, optional) — 1-based results page; page above 1 requires scope=originals or scope=canvas; `scope` (string, optional) — Search scope: the site's own ALL, ORIGINALS or CANVAS tab
+
+### `webtoon_series`
+
+- **HTTP:** `GET /webtoon/series`
+- **What:** Get a WEBTOON series with a page of its episode list. Returns one WEBTOON (webtoons.com) series: title, genre, authors, summary, cover, the site's own view and subscribe counters, the release-day line, and a ten-episode page window (episode number, title, release date, thumbnail, viewer URL, UP badge). Take title_no from any listing endpoint's card. The page window is fixed at ten episodes and WEBTOON publishes no total episode count, so has_next_page is a window-size signal, not an exact remaining count. An unknown title number is a 404. Panel images and Fast Pass state are never returned.
+- **Params:** `page` (integer, optional) — 1-based episode page, ten episodes per page; defaults to 1; `title_no` (integer, **required**) — WEBTOON title number from any listing card
+
 ## Wendys (10)
 
 ### `wendys_categories`
@@ -23635,6 +26652,68 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /wolt/search/filters`
 - **What:** Get Wolt's live search category catalog for a location. Returns the current, location-scoped catalog of every value /wolt/search's category parameter accepts, each with a live restaurant count when Wolt's own homepage currently features that category as one of its curated tiles -- the same data Wolt's own search page's cuisine tiles are populated from.
 - **Params:** `latitude` (number, **required**) — Search center latitude; `longitude` (number, **required**) — Search center longitude
+
+## WTA (10)
+
+### `wta_countries`
+
+- **HTTP:** `GET /wta/countries`
+- **What:** Discover WTA ranking country and region codes. Returns the source codes and labels used by player rankings. ALL omits the nationality filter. Team race rankings do not have a country selector.
+- **Params:** _none_
+
+### `wta_match_states`
+
+- **HTTP:** `GET /wta/match-states`
+- **What:** Discover WTA match-feed state selectors. Lists the accepted native state query values and labels. Query states U,L,C differ from raw response MatchState values; response values are retained unchanged.
+- **Params:** _none_
+
+### `wta_rankings`
+
+- **HTTP:** `GET /wta/rankings/{view}`
+- **What:** Get WTA player or team rankings. Returns native ranks, points, tournament counts, movement and player identity. Player views preserve the actual published rankedAt value. Team rows retain both players and do not fabricate a ranking date.
+- **Params:** `at` (string, optional) — Requested date YYYY-MM-DD; player views only; omission uses latest publication; `country` (string, optional) — WTA code from country discovery; player views only; ALL omits nationality; `page` (integer, optional) — Zero-based native page; `page_size` (integer, optional) — API page size, 1 to 50; `sort` (string, optional) — Sort direction; defaults to asc for players or desc for teams; `type` (string, optional) — Native sort key; supported values depend on view; `view` (string, **required**) — Native ranking view
+
+### `wta_tournament`
+
+- **HTTP:** `GET /wta/tournaments/{group_id}/{year}`
+- **What:** Read a WTA tournament season. Returns the tournament's native season metadata, live scoring identifier and published singles/doubles champions. Group and season-specific levels remain separate. Use the tournament calendar and season discovery for IDs and years.
+- **Params:** `group_id` (integer, **required**) — Native tournament group ID from the calendar; `year` (integer, **required**) — Native season from tournament season discovery
+
+### `wta_tournament_draws`
+
+- **HTTP:** `GET /wta/tournaments/{group_id}/{year}/draws`
+- **What:** Read a WTA tournament draw resource. Returns all event draws published in the native tournament resource, including available singles, doubles and qualifying draws. Decodes the native nested JSON into objects while preserving field case, cardinality, scores, seeds, byes, groups and source round data. Native null draw data remains null. UI tab/round choices do not add server filters or computed bracket advancement.
+- **Params:** `group_id` (integer, **required**) — Native tournament group ID from the calendar; `year` (integer, **required**) — Native season from tournament season discovery
+
+### `wta_tournament_matches`
+
+- **HTTP:** `GET /wta/tournaments/{group_id}/{year}/matches`
+- **What:** Read a WTA tournament match-feed snapshot. Returns all rows in the published native response with professional match, score, timing and participant fields. Optional states is a unique CSV of U,L,C from match-state discovery. No local date/type filtering, sorting, bracket updates or incremental cursor is added. Raw MatchState codes and padded EventID/MatchID strings are preserved.
+- **Params:** `group_id` (integer, **required**) — Native tournament group ID from the calendar; `states` (string, optional) — Unique comma-separated native query states U,L,C; omit for the source default; `year` (integer, **required**) — Native season from tournament season discovery
+
+### `wta_tournament_order_of_play`
+
+- **HTTP:** `GET /wta/tournaments/{group_id}/{year}/order-of-play`
+- **What:** Read a WTA tournament order of play. Decodes the whole native order-of-play resource into structured objects, preserving source days, courts, match order, participant structures, display/ISO dates and court UTC offsets. Native null schedules remain null. Personnel and unreviewed fields are excluded. No generated calendar, latest-day calculation or timezone conversion is performed.
+- **Params:** `group_id` (integer, **required**) — Native tournament group ID from the calendar; `year` (integer, **required**) — Native season from tournament season discovery
+
+### `wta_tournament_players`
+
+- **HTTP:** `GET /wta/tournaments/{group_id}/{year}/players`
+- **What:** Read a WTA tournament's published entry list. Returns every published event and entry in source order, preserving singles, doubles teams, qualifying entries, string seeds and native status flags. Only professional participant IDs/names/country codes are retained. The native tournament context is validated before accepting this context-less roster resource. No draw reconciliation, active-player filtering or inferred winner status is added.
+- **Params:** `group_id` (integer, **required**) — Native tournament group ID from the calendar; `year` (integer, **required**) — Native season from tournament season discovery
+
+### `wta_tournament_seasons`
+
+- **HTTP:** `GET /wta/tournament-seasons`
+- **What:** Discover WTA tournament calendar seasons. Returns every season currently offered by the tournament calendar, preserving source order. Historical calendar availability does not imply ranking-date availability.
+- **Params:** _none_
+
+### `wta_tournaments`
+
+- **HTTP:** `GET /wta/tournaments`
+- **What:** Get WTA tournament calendar events. Returns one native page of up to100 events for a discovered calendar season, including lower tiers when no level is supplied. Level and surface filter the upstream resource. Event levels can differ from tournament-group defaults. Raw pageInfo is preserved even when numPages is zero with additional entries. Winners, player biographies and match details are outside this metadata response.
+- **Params:** `from` (string, optional) — Inclusive YYYY-MM-DD start, required with to when season omitted; `level` (array, optional) — Native season-specific levels, comma-separated OR; `page` (integer, optional) — Zero-based native page; `page_size` (integer, optional) — Positive native page size, default100; source caps at100; `season` (integer, optional) — Season from discovery; mutually exclusive with from/to; `surface` (array, optional) — Native court surfaces, comma-separated OR; `to` (string, optional) — Inclusive YYYY-MM-DD end, required with from when season omitted
 
 ## X (3)
 
@@ -24140,7 +27219,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Yahoo video results. Returns Yahoo's video-search results for a query: title, destination page URL, source domain, description, thumbnail, and duration. Results are fetched from Yahoo's own server-rendered video-search page.
 - **Params:** `q` (string, **required**) — Search query
 
-## Yahoo Shopping (7)
+## Yahoo Shopping (13)
 
 ### `yahoo_shopping_article`
 
@@ -24148,17 +27227,35 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Yahoo Shopping article content. Returns a single Yahoo Shopping article's full content: title, description, author, publish/update time, section, image, keywords, original publisher, and body paragraphs. Accepts a canonical shopping.yahoo.com article URL, such as one returned by the home or category story streams.
 - **Params:** `url` (string, **required**) — Canonical shopping.yahoo.com article URL
 
+### `yahoo_shopping_author`
+
+- **HTTP:** `GET /yahoo-shopping/author`
+- **What:** Yahoo Shopping author profile and article archive. Fetches one Yahoo Shopping contributor profile and a page of the author's article archive. Use the author slug from author_url in /yahoo-shopping/article; page follows Yahoo's path-segment pagination. Article cards may link to sibling publishers such as AOL.
+- **Params:** `author` (string, **required**) — Yahoo Shopping author slug; use author_url from /yahoo-shopping/article; `page` (integer, optional) — 1-based article archive page, defaults to 1
+
+### `yahoo_shopping_categories`
+
+- **HTTP:** `GET /yahoo-shopping/categories`
+- **What:** Yahoo Shopping navigation and article shortcuts. Returns the live editorial sections and nested topics accepted by /yahoo-shopping/category, plus the current direct article shortcuts in the Gift Ideas and Shopping Guides menus. Those article links are not extra category or filter values. Stores and Shopping Lists have separate directory endpoints.
+- **Params:** _none_
+
 ### `yahoo_shopping_category`
 
 - **HTTP:** `GET /yahoo-shopping/category`
-- **What:** Yahoo Shopping section story stream. Returns a Yahoo Shopping section's editorial story feed: title, destination URL, category, and thumbnail image for each story, with page-based pagination. Sourced from Yahoo Shopping's own server-rendered section pages.
-- **Params:** `category` (string, **required**) — Yahoo Shopping section; `page` (integer, optional) — 1-based page number, defaults to 1
+- **What:** Yahoo Shopping section story stream. Returns the story cards displayed by a Yahoo Shopping section or nested topic, with page-based pagination. Some curated sections include cross-category or sibling Yahoo links. Use /yahoo-shopping/categories to discover the complete parent/topic taxonomy.
+- **Params:** `category` (string, **required**) — Yahoo Shopping section; `page` (integer, optional) — 1-based page number, defaults to 1; `subcategory` (string, optional) — Nested topic slug valid under its parent category; see /yahoo-shopping/categories
+
+### `yahoo_shopping_experts`
+
+- **HTTP:** `GET /yahoo-shopping/experts`
+- **What:** Yahoo Shopping featured expert roster. Returns the contributor cards in the public "More Yahoo experts" carousel on Yahoo Shopping's team profile. Use yahoo-shopping-author for one contributor's profile and paginated article archive.
+- **Params:** _none_
 
 ### `yahoo_shopping_home`
 
 - **HTTP:** `GET /yahoo-shopping/home`
-- **What:** Yahoo Shopping homepage story stream. Returns Yahoo Shopping's homepage editorial story feed: title, destination URL, category, and thumbnail image for each story. Sourced from Yahoo Shopping's own server-rendered homepage. This is Yahoo's shopping buying-guide/deals content site, not a product-search API -- shopping.yahoo.com no longer exposes a searchable product catalog.
-- **Params:** _none_
+- **What:** Yahoo Shopping homepage story stream. Returns Yahoo Shopping's homepage editorial story feed: title, destination URL, category, and thumbnail image for each story. Page follows Yahoo's own path-segment pagination. This is Yahoo's shopping buying-guide/deals content site, not a product-results API.
+- **Params:** `page` (integer, optional) — 1-based page number, defaults to 1
 
 ### `yahoo_shopping_shopping_list`
 
@@ -24170,6 +27267,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /yahoo-shopping/shopping-lists`
 - **What:** Yahoo Shopping curated shopping-lists directory. Returns Yahoo Shopping's curated shopping-lists directory: a slug, title, and image for each themed list (e.g. "Cooling Essentials", "Back to School"). Use a list's slug with GET /yahoo-shopping/shopping-list to read its items.
+- **Params:** _none_
+
+### `yahoo_shopping_sitemap`
+
+- **HTTP:** `GET /yahoo-shopping/sitemap`
+- **What:** Yahoo Shopping sitemap archive or date page. Reads a canonical Yahoo Shopping sitemap index, section archive, or date page. Responses contain section archives, monthly archive links, day links, or article links depending on the page. Yahoo's date pages currently have broken previous/next links; this endpoint reports observed links and does not synthesize continuation.
+- **Params:** `url` (string, **required**) — Canonical shopping.yahoo.com sitemap page URL from /yahoo-shopping/sitemaps or a prior response
+
+### `yahoo_shopping_sitemaps`
+
+- **HTTP:** `GET /yahoo-shopping/sitemaps`
+- **What:** Yahoo Shopping sitemap section index. Returns the public sitemap's full set of section and seasonal archive links. Use /yahoo-shopping/sitemap to read an archive or date page.
 - **Params:** _none_
 
 ### `yahoo_shopping_store`
@@ -24184,13 +27293,37 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Yahoo Shopping retailer store directory. Returns Yahoo Shopping's retailer store directory: a slug, display name, and logo image for each retailer with a dedicated store page (e.g. Amazon, Target, Best Buy). Use a store's slug with GET /yahoo-shopping/store to read its current deals.
 - **Params:** _none_
 
-## Yahoo Sports (18)
+### `yahoo_shopping_suggest`
+
+- **HTTP:** `GET /yahoo-shopping/suggest`
+- **What:** Yahoo Shopping autocomplete suggestions. Returns suggestions from the typeahead endpoint used by Yahoo Shopping's search box. Yahoo does not expose a working Shopping product-results grid or product filters; this route provides autocomplete only.
+- **Params:** `count` (integer, optional) — Upstream suggestion count; omitted defaults to 10, zero/negative values preserve Yahoo's empty-result behavior, and values above 20 are capped; `q` (string, **required**) — Partial search query
+
+## Yahoo Sports (53)
+
+### `yahoo_sports_college_rankings`
+
+- **HTTP:** `GET /yahoo-sports/college-rankings`
+- **What:** Yahoo Sports college football and basketball rankings. Returns rankings from Yahoo's public NCAAF, NCAAB, or NCAAW rankings page using the page's own public Graphite rankings operation. Poll Type and Poll Date are validated against the live filter catalog returned in this response. Conference filters are also returned, but are client-side on Yahoo's page and are not applied by this endpoint.
+- **Params:** `date` (string, optional) — Exact Poll Date selector value from the live catalog (college football only); `league` (string, **required**) — College ranking league; `poll_type` (string, optional) — Exact Poll Type value from the live rankings filter catalog; defaults to the page's current poll; `tz` (string, optional) — Optional IANA timezone for game times embedded in ranking rows; defaults to UTC
+
+### `yahoo_sports_draft`
+
+- **HTTP:** `GET /yahoo-sports/draft`
+- **What:** Yahoo Sports NFL and NBA Draft hub. Returns Yahoo's Drafted Players, Mock Draft, Big Board, or News tab for NFL or NBA, together with the live tab list and exact client-side round/team/position/school/attribute/board selectors shown by that page. The selectors filter data in the browser, so this endpoint returns the complete upstream page data and exposes filter values without applying server-side filters.
+- **Params:** `league` (string, **required**) — Yahoo draft league; use yahoo-sports-leagues (draft=true); `view` (string, optional) — Yahoo Draft page: results, mock, big-board, or news; defaults to results
+
+### `yahoo_sports_dropdown_catalog`
+
+- **HTTP:** `GET /yahoo-sports/dropdown-catalog`
+- **What:** Yahoo Sports team and category dropdown data. Returns Yahoo's full current menu data for NFL, NHL, NBA, MLB, WNBA, college rank polls, all soccer leagues exposed by the public dropdown operation, and sportsbook-legal states. Team and league objects retain Yahoo's IDs and links for use with matching Yahoo Sports endpoints.
+- **Params:** _none_
 
 ### `yahoo_sports_game`
 
 - **HTTP:** `GET /yahoo-sports/game`
-- **What:** Yahoo Sports game boxscore. Returns one game's boxscore (matchup, line score by period, and team stat totals) from sports.yahoo.com's own server-rendered game page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`. Get the `game` slug from a scoreboard or team-schedule response's game `url` (the last path segment), e.g. `cleveland-guardians-detroit-tigers-460811106`.
-- **Params:** `game` (string, **required**) — Yahoo Sports game slug from a scoreboard/team-schedule response's game url; `league` (string, **required**) — League key
+- **What:** Yahoo Sports game boxscore. Returns one source game boxscore with matchup, line score and team stat totals, plus Yahoo's play-by-play and win-probability timeline when available. Event objects retain Yahoo's sport-specific fields. Use league plus game for direct league pages, or league=soccer with the exact game_url from a soccer scoreboard for competitions whose game path is published per match.
+- **Params:** `game` (string, optional) — Yahoo game slug for direct league pages; supply game or game_url; `game_url` (string, optional) — Exact game.url from a soccer scoreboard; requires league=soccer and cannot be combined with game; `league` (string, **required**) — League key
 
 ### `yahoo_sports_golf_leaderboard`
 
@@ -24198,11 +27331,53 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Yahoo Sports golf tournament leaderboard. Returns one golf tournament's full leaderboard (every golfer's rank, to-par score, status, holes-completed-in-current-round, per-round strokes, and a fixed stat set: earnings, eagles, birdies, pars, bogeys, double bogeys), from Yahoo Sports' own public tournament-leaderboard JSON API. Get the `tournament` id from a golf-schedule response's `id` field, e.g. `golf.e.23`.
 - **Params:** `season` (integer, optional) — 4-digit season year (a tournament id is reused across years); defaults to the tournament's most recent season; `tournament` (string, **required**) — Yahoo Sports golf tournament id from a golf-schedule response's id field
 
+### `yahoo_sports_golf_player`
+
+- **HTTP:** `GET /yahoo-sports/golf-player`
+- **What:** Yahoo Sports golf player profile. Returns one golfer's profile, current-season stats, and tournament-by-tournament history from Yahoo's public player page. Supply the canonical player URL from golf-players or another Yahoo golf response.
+- **Params:** `player_url` (string, **required**) — Canonical Yahoo Golf player profile URL
+
+### `yahoo_sports_golf_player_news`
+
+- **HTTP:** `GET /yahoo-sports/golf-player-news`
+- **What:** Yahoo Sports golf player news. Returns the story and video edges in one golfer's News tab. Latest mode returns Yahoo's opaque cursor and supports the same upstream cursor POST for subsequent pages.
+- **Params:** `cursor` (string, optional) — Opaque next_cursor returned by a previous latest response; `mode` (string, optional) — Top News or Latest; `player_url` (string, **required**) — Canonical Yahoo Golf player URL
+
+### `yahoo_sports_golf_players`
+
+- **HTTP:** `GET /yahoo-sports/golf-players`
+- **What:** Yahoo Sports golf player directory. Returns Yahoo's full current-and-retired golfers directory, grouped by last-name initial. The site's A-Z buttons filter the already-loaded list in the browser, so this endpoint returns the complete source list.
+- **Params:** _none_
+
 ### `yahoo_sports_golf_schedule`
 
 - **HTTP:** `GET /yahoo-sports/golf-schedule`
-- **What:** Yahoo Sports golf tournament schedule. Returns a golf tour's tournament schedule for a season (name, dates, status, purse, and venue), from Yahoo Sports' own public tournament-schedule JSON API. The `tour` enum accepts `pga-tour`, `pga-european-tours`, `lpga-tour`, `champions-tour`, and `european-tour`. Each tournament's `id` feeds the golf-leaderboard endpoint's `tournament` parameter.
+- **What:** Yahoo Sports golf tournament schedule. Returns a golf tour's tournament schedule for a season (name, dates, status, purse, and venue), from Yahoo Sports' own public sources. The `tour` enum accepts `pga-tour`, `pga-european-tours`, `lpga-tour`, `champions-tour`, `european-tour`, and `korn-ferry-tour`. Korn Ferry Tour schedule data comes from the Golf page's own server-rendered schedule; the other tours use Yahoo's public tournament-schedule JSON API. Each tournament's `id` feeds the golf-leaderboard endpoint's `tournament` parameter.
 - **Params:** `season` (integer, optional) — 4-digit season year; defaults to the tour's current season; `tour` (string, **required**) — Golf tour key
+
+### `yahoo_sports_home`
+
+- **HTTP:** `GET /yahoo-sports/home`
+- **What:** Yahoo Sports home-page stories. Returns the article cards currently embedded on the Yahoo Sports home page, including each card's title, summary, publisher, publication time, canonical URL, and complete upstream tag list.
+- **Params:** _none_
+
+### `yahoo_sports_injury_report`
+
+- **HTTP:** `GET /yahoo-sports/injury-report`
+- **What:** Yahoo Sports injury report. Returns Yahoo's current injury table for NFL, NBA, MLB, or NHL. Omit team_id for the page's All Teams view, or provide a Yahoo team ID from yahoo-sports-dropdown-catalog. Each injury row preserves Yahoo's player, position, status, injury description, and start date.
+- **Params:** `league` (string, **required**) — League with an injury page; `team_id` (string, optional) — Optional Yahoo team ID from yahoo-sports-dropdown-catalog; omit for All Teams
+
+### `yahoo_sports_league_schedule`
+
+- **HTTP:** `GET /yahoo-sports/league-schedule`
+- **What:** Yahoo Sports league schedule games. Returns full game records for the selected date or week from Yahoo's league schedule page. Use yahoo-sports-schedule-catalog for the current seasons, week/phase pairs and NCAA conference/division filter values. The page's own leagueFilter query is applied by Yahoo before the response is parsed.
+- **Params:** `date` (string, optional) — Optional date filter in YYYY-MM-DD form; for schedule pages with date tabs; `league` (string, **required**) — Yahoo league key; `leagueFilter` (string, optional) — Exact leagueFilter value from the schedule catalog (NCAAF/NCAAB/NCAAW conference, division or Top 25 option); `season` (integer, optional) — Optional season year from yahoo-sports-schedule-catalog; `seasonPhase` (string, optional) — Optional week phase from the catalog; `week` (integer, optional) — Optional week value from yahoo-sports-schedule-catalog
+
+### `yahoo_sports_leagues`
+
+- **HTTP:** `GET /yahoo-sports/leagues`
+- **What:** Yahoo Sports league catalog. Returns all 24 core league keys, source namespaces, and feature flags, plus the complete supported value sets for player search, injuries, NFL/NBA Draft, college rankings, golf tours, tennis ranking types, and motorsports series. Use dedicated soccer scoreboard, rankings, stats, schedule, bracket, sportsbook, RSS, and dropdown catalogs for live filter values.
+- **Params:** _none_
 
 ### `yahoo_sports_mma_fight_card`
 
@@ -24216,6 +27391,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Yahoo Sports MMA event schedule. Returns the known UFC event calendar (name, date, status), from Yahoo Sports' own server-rendered MMA schedule page. This endpoint is UFC-only and takes no parameters -- Yahoo's own page does not expose Bellator, PFL, ONE Championship, or other promotions from this URL.
 - **Params:** _none_
 
+### `yahoo_sports_more_news`
+
+- **HTTP:** `GET /yahoo-sports/more-news`
+- **What:** Yahoo Sports More News feed. Returns one page from Yahoo Sports' public More News feed using its page-number routes. Story items preserve the source fields as raw objects. The page exposes no server-side tag, sort, or topic filter; use yahoo-sports-topic-news for a topic-specific page.
+- **Params:** `page` (integer, optional) — 1-based Yahoo More News page number; defaults to 1
+
 ### `yahoo_sports_motorsports_race`
 
 - **HTTP:** `GET /yahoo-sports/motorsports-race`
@@ -24228,11 +27409,59 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Yahoo Sports motorsports season schedule. Returns a series' season race list (name, date, status, laps, distance, pole/race winner, venue), from Yahoo Sports' own server-rendered motorsports schedule page. The `series` enum accepts `f1` and `nascar`.
 - **Params:** `season` (integer, optional) — 4-digit season year; defaults to the current season; `series` (string, **required**) — Motorsports series key
 
+### `yahoo_sports_navigation`
+
+- **HTTP:** `GET /yahoo-sports/navigation`
+- **What:** Yahoo Sports section navigation. Returns the exact navcat label and URL links Yahoo renders on the home page or one public sports section page. Use section_url from yahoo-sports-home or this response to discover sport-scoped topics and filters.
+- **Params:** `section_url` (string, optional) — Full Yahoo Sports page URL; leave blank for home navigation
+
+### `yahoo_sports_network_catalog`
+
+- **HTTP:** `GET /yahoo-sports/network-catalog`
+- **What:** Yahoo Sports Network and Watch catalog. Returns every current partner entry from the Yahoo Sports Network menu, including disabled entries, nested destinations and partner attribution, plus the homepage's featured Watch show cards. Each show's list_id is accepted by yahoo-sports-video-headlines.
+- **Params:** _none_
+
 ### `yahoo_sports_news`
 
 - **HTTP:** `GET /yahoo-sports/news`
-- **What:** Yahoo Sports league news. Returns recent news articles (title, summary, author, published time, and link) for a league from sports.yahoo.com's own server-rendered news page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`.
+- **What:** Yahoo Sports league news. Returns source news articles. For league=soccer, Yahoo exposes a shared cross-competition /soccer/news/ feed and no competition-specific news filter; article tags are preserved verbatim.
 - **Params:** `league` (string, **required**) — League key
+
+### `yahoo_sports_newsletter_archive`
+
+- **HTTP:** `GET /yahoo-sports/newsletter-archive`
+- **What:** Yahoo Sports newsletter article archive. Returns one page of articles from a newsletter's public archive. Discover current slugs with yahoo-sports-newsletters. The page number maps to Yahoo's own /page/{n}/ archive route; article tags are preserved from the source. Yahoo exposes no archive sort or tag filter. This endpoint does not submit the email subscription form.
+- **Params:** `newsletter` (string, **required**) — Newsletter slug from yahoo-sports-newsletters; `page` (integer, optional) — 1-based Yahoo archive page number; defaults to 1
+
+### `yahoo_sports_newsletters`
+
+- **HTTP:** `GET /yahoo-sports/newsletters`
+- **What:** Yahoo Sports newsletter catalog. Lists the current public Yahoo Sports newsletter cards, including each newsletter slug, archive URL, and the schedule/description text shown by the site. This is a read-only catalog; it does not subscribe an email address.
+- **Params:** _none_
+
+### `yahoo_sports_odds_featured`
+
+- **HTTP:** `GET /yahoo-sports/odds-featured`
+- **What:** Yahoo Sports featured odds games. Returns the current featured game cards from Yahoo's public Graphite featuredGameIds operation, including each source game ID for use with yahoo-sports-odds-game.
+- **Params:** _none_
+
+### `yahoo_sports_odds_game`
+
+- **HTTP:** `GET /yahoo-sports/odds-game`
+- **What:** Yahoo Sports game odds markets. Returns the available moneyline, spread and over/under markets and selections for one game using Yahoo's public Graphite playbookGame operation. Get game_id from yahoo-sports-odds-games, yahoo-sports-odds-trending, or yahoo-sports-odds-featured.
+- **Params:** `game_id` (string, **required**) — Yahoo game ID from an odds game list; `tz` (string, optional) — Optional IANA timezone for game time display; defaults to UTC
+
+### `yahoo_sports_odds_games`
+
+- **HTTP:** `GET /yahoo-sports/odds-games`
+- **What:** Yahoo Sports current game IDs for an odds league. Returns the current games and their Yahoo game IDs from the public Graphite leagueGameIds operation. A valid current league can return an empty games array during its off-season. Use the sportsbook catalog for the complete league value space.
+- **Params:** `league` (string, **required**) — Exact Graphite league value from yahoo-sports-sportsbook-catalog
+
+### `yahoo_sports_odds_trending`
+
+- **HTTP:** `GET /yahoo-sports/odds-trending`
+- **What:** Yahoo Sports trending odds games. Returns the current trending game cards from Yahoo's public Graphite trendingGameIds operation, including each source game ID for use with yahoo-sports-odds-game.
+- **Params:** _none_
 
 ### `yahoo_sports_olympics_medals`
 
@@ -24243,37 +27472,109 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `yahoo_sports_player`
 
 - **HTTP:** `GET /yahoo-sports/player`
-- **What:** Yahoo Sports player detail. Returns one player's bio/overview (position, jersey, status, injury, physicals, college, draft position) plus current-season stats by category, from sports.yahoo.com's own server-rendered player page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`. Get a numeric player id from a roster response's player `url` (the last path segment).
+- **What:** Yahoo Sports player detail. Returns one player bio and current-season stats. Use league=soccer for Yahoo's flat soccer player namespace, or a league key from yahoo-sports-leagues; get the numeric player id from a roster record.
 - **Params:** `league` (string, **required**) — League key; `player` (string, **required**) — Numeric Yahoo Sports player id
+
+### `yahoo_sports_player_search`
+
+- **HTTP:** `GET /yahoo-sports/player-search`
+- **What:** Yahoo Sports player search. Searches Yahoo's public playerSearch operation, as used by the NFL, NBA, MLB, and Golf player pages. Yahoo requires at least three characters and currently hard-codes onActiveRosterOnly=false in these search boxes.
+- **Params:** `league` (string, **required**) — Player-search page key; `name` (string, **required**) — Player name or prefix (at least three characters)
+
+### `yahoo_sports_playoff_bracket`
+
+- **HTTP:** `GET /yahoo-sports/playoff-bracket`
+- **What:** Yahoo Sports playoff bracket data. Returns Yahoo's public bracket slots, seeds, series and game records for NFL, NBA, MLB, WNBA, college football, men's college basketball or women's college basketball. NBA also includes the page's separate Play-In Tournament bracket. Use yahoo-sports-playoff-bracket-catalog to discover the current season values.
+- **Params:** `league` (string, **required**) — Yahoo league key; `season` (integer, optional) — Optional season year from yahoo-sports-playoff-bracket-catalog; defaults to Yahoo's current season
+
+### `yahoo_sports_playoff_bracket_catalog`
+
+- **HTTP:** `GET /yahoo-sports/playoff-bracket-catalog`
+- **What:** Yahoo Sports playoff bracket season options. Returns the season choices and any separate tournament selector published by the selected Yahoo playoff bracket page. The supported league set is NFL, NBA, MLB, WNBA, NCAAF, NCAAB and NCAAW.
+- **Params:** `league` (string, **required**) — Yahoo league key
+
+### `yahoo_sports_rss_catalog`
+
+- **HTTP:** `GET /yahoo-sports/rss-catalog`
+- **What:** Yahoo Sports RSS feed catalog. Returns the complete list of RSS feed keys currently listed on Yahoo Sports' syndication page. Use a key with yahoo-sports-rss-feed.
+- **Params:** _none_
+
+### `yahoo_sports_rss_feed`
+
+- **HTTP:** `GET /yahoo-sports/rss-feed`
+- **What:** Yahoo Sports RSS feed. Returns every item in one Yahoo Sports RSS feed, including full content:encoded HTML and creator/publisher metadata when present. Feed keys come from yahoo-sports-rss-catalog; no caller limit or date filter is added.
+- **Params:** `feed` (string, **required**) — Feed key from yahoo-sports-rss-catalog
+
+### `yahoo_sports_schedule_catalog`
+
+- **HTTP:** `GET /yahoo-sports/schedule-catalog`
+- **What:** Yahoo Sports league schedule filter catalog. Returns the current season choices, week/phase pairs and conference/division filters shown by one Yahoo league schedule page. League keys are NFL, NBA, MLB, NHL, WNBA, NCAAF, NCAAB and NCAAW.
+- **Params:** `league` (string, **required**) — Yahoo league key
 
 ### `yahoo_sports_scoreboard`
 
 - **HTTP:** `GET /yahoo-sports/scoreboard`
-- **What:** Yahoo Sports scoreboard. Returns games (teams, score, status, venue, and broadcast info) for a league on a date, from sports.yahoo.com's own server-rendered scoreboard page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`.
-- **Params:** `date` (string, optional) — Date as YYYY-MM-DD; defaults to Yahoo Sports' current scoreboard date; `league` (string, **required**) — League key
+- **What:** Yahoo Sports scoreboard. Returns games with teams, score, status, venue and broadcasts from Yahoo Sports. Use a direct league page key from yahoo-sports-leagues, or league=soccer with competition_id from yahoo-sports-soccer-scoreboard to mirror the root competition selector. Root mode supports date and month; direct competition pages support season.
+- **Params:** `competition_id` (string, optional) — Exact source competition id from yahoo-sports-soccer-scoreboard; only with league=soccer; `date` (string, optional) — Date as YYYY-MM-DD; defaults to Yahoo Sports' current scoreboard date; `league` (string, **required**) — League key; `month` (integer, optional) — Optional root soccer scoreboard month from 1 to 12; only with league=soccer; `season` (integer, optional) — Optional season year for a direct soccer competition page; discover values from yahoo-sports-soccer-scoreboard
+
+### `yahoo_sports_section_stream`
+
+- **HTTP:** `GET /yahoo-sports/section-stream`
+- **What:** Yahoo Sports public section article stream. Returns one page from the public article stream embedded by a Yahoo Sports section page. The service reads the page's current list ID and source parameters from Flight data, then mirrors Yahoo's POST /api/content/ request. Items remain raw AssetRef objects, preserving nested content, tags, provider metadata, and new upstream fields. Use a section_url discovered from yahoo-sports-navigation; current examples include /indycar/ and /motogp/. Pages without an article stream are rejected. The only exposed page selector is Yahoo's integer pageOffset; it defaults to the page's embedded initial offset. Use page_info.start + page_info.count to request the next page. No server-side tag, sort, or category filter is added because the page does not expose one on this stream.
+- **Params:** `page_offset` (integer, optional) — Exact upstream pageOffset. Defaults to the section page's initial offset; use page_info.start + page_info.count for the next page; `section_url` (string, **required**) — Full HTTPS Yahoo Sports article-list URL from yahoo-sports-navigation
+
+### `yahoo_sports_soccer_scoreboard`
+
+- **HTTP:** `GET /yahoo-sports/soccer-scoreboard`
+- **What:** Yahoo Sports all-competition soccer scoreboard. Returns games and the live competition/season selector from Yahoo's combined soccer scoreboard. The optional competition_id mirrors Yahoo's client-side competition dropdown over the preloaded game list; it is not sent upstream. Use the returned id values rather than inventing a competition filter.
+- **Params:** `competition_id` (string, optional) — Exact source competition id from this response's competitions catalog; mirrors the page's client-side selector; `date` (string, optional) — Date as YYYY-MM-DD; defaults to Yahoo Sports' current soccer scoreboard date; `month` (integer, optional) — Optional Yahoo soccer scoreboard month number (1–12); may be combined with date
+
+### `yahoo_sports_sportsbook_catalog`
+
+- **HTTP:** `GET /yahoo-sports/sportsbook-catalog`
+- **What:** Yahoo Sports odds page filter catalog. Returns every league option displayed by Yahoo's public odds page and distinguishes the page's client-side Trending/Soccer groups from the 15 Graphite leagueGameIds values. Use odds-games for one league's game IDs, odds-trending-games or odds-featured-games for those feeds, and odds-game for one game's available markets.
+- **Params:** _none_
 
 ### `yahoo_sports_standings`
 
 - **HTTP:** `GET /yahoo-sports/standings`
-- **What:** Yahoo Sports standings. Returns league standings (record, streak, games back, and clinch status) grouped by conference/division, from sports.yahoo.com's own server-rendered standings page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `world-cup`, and `champions-league` (not `college-womens-basketball`, whose standings page does not embed a full grouped table). Soccer leagues return a single ungrouped table (no conference/division) and each entry's `record.points` is populated (3 per win, 1 per draw).
-- **Params:** `league` (string, **required**) — League key
+- **What:** Yahoo Sports standings. Returns grouped standings from a Yahoo Sports standings page. Use a league whose standings flag is true in yahoo-sports-leagues. Soccer standings can use a season from yahoo-sports-soccer-scoreboard; competitions without a source table are excluded.
+- **Params:** `league` (string, **required**) — League key; `season` (integer, optional) — Optional soccer standings season from yahoo-sports-soccer-scoreboard
+
+### `yahoo_sports_stats`
+
+- **HTTP:** `GET /yahoo-sports/stats`
+- **What:** Yahoo Sports league stats table. Returns one complete Yahoo stats table (the embedded data can contain up to 200 rows), plus the live tabs, filters and sort-stat catalog. Pagination in Yahoo's table is client-side; no page or offset parameter is added.
+- **Params:** `cutTypeIds` (string, optional) — Split/situation id from stats-discovery, e.g. HOME; `league` (string, **required**) — Stats league key; `leagueStructure` (string, optional) — Structure id from stats-discovery, e.g. nba.struct.conf.1; `pageType` (string, optional) — Stats page type; defaults to individual; `positionIds` (string, optional) — Position id from stats-discovery, e.g. POINT_GUARD; `qualified` (boolean, optional) — Qualified leaders filter, when listed by stats-discovery; `selectedTable` (integer, optional) — Tab id from the response's tabs list; defaults to 0; `sortStatId` (string, optional) — Sort id from the response's sort_stat_ids, e.g. TOTAL_REBOUNDS_PER_GAME; `week` (integer, optional) — Week number from stats-discovery; pair with weekSeasonPhase; `weekSeasonPhase` (string, optional) — Phase value paired with week, e.g. REGULAR_SEASON or POSTSEASON
+
+### `yahoo_sports_stats_catalog`
+
+- **HTTP:** `GET /yahoo-sports/stats-catalog`
+- **What:** Yahoo Sports stats league catalog. Lists the exact league keys and stats page templates with current embedded stats data. Use this catalog before yahoo-sports-stats-discovery and yahoo-sports-stats.
+- **Params:** _none_
+
+### `yahoo_sports_stats_discovery`
+
+- **HTTP:** `GET /yahoo-sports/stats-discovery`
+- **What:** Yahoo Sports stats tabs and filters. Returns the live tab ids, filter parameters and values, and sort-stat ids for one Yahoo league stats page. This is the discovery surface for selectedTable, qualified, leagueStructure, positionIds, cutTypeIds, sortStatId, week, and weekSeasonPhase.
+- **Params:** `league` (string, **required**) — Stats league key; `pageType` (string, optional) — Stats page type; defaults to individual
 
 ### `yahoo_sports_team`
 
 - **HTTP:** `GET /yahoo-sports/team`
-- **What:** Yahoo Sports team detail. Returns one team's detail (identity, colors, conference/division, and current standing summary) from sports.yahoo.com's own server-rendered team page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`. Get a team slug from the scoreboard or standings response (e.g. `green-bay`, `la-lakers`).
+- **What:** Yahoo Sports team detail. Returns one team detail record. Use league=soccer for Yahoo's flat soccer team namespace, or a league key from yahoo-sports-leagues for its own team page. Team slugs come from scoreboard or standings records.
 - **Params:** `league` (string, **required**) — League key; `team` (string, **required**) — Yahoo Sports team slug
 
 ### `yahoo_sports_team_roster`
 
 - **HTTP:** `GET /yahoo-sports/team-roster`
-- **What:** Yahoo Sports team roster. Returns a team's full roster (position, jersey number, status, injury, physicals, college, and experience) from sports.yahoo.com's own server-rendered roster page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`. Get a team slug from the scoreboard or standings response (e.g. `green-bay`, `la-lakers`).
+- **What:** Yahoo Sports team roster. Returns one team roster. Use league=soccer for Yahoo's flat soccer team namespace, or a league key from yahoo-sports-leagues. Team slugs come from team or scoreboard records.
 - **Params:** `league` (string, **required**) — League key; `team` (string, **required**) — Yahoo Sports team slug
 
 ### `yahoo_sports_team_schedule`
 
 - **HTTP:** `GET /yahoo-sports/team-schedule`
-- **What:** Yahoo Sports team schedule. Returns a team's full schedule (regular season plus any already-played/scheduled playoff games), with the same per-game fields as the scoreboard, from sports.yahoo.com's own server-rendered team schedule page. The `league` enum accepts `nfl`, `nba`, `wnba`, `mlb`, `nhl`, `college-football`, `college-basketball`, `college-womens-basketball`, `mls`, `premier-league`, `la-liga`, `serie-a`, `bundesliga`, `ligue-1`, `nwsl`, `ligamx-apertura`, `ligamx-clausura`, `copa-america`, `club-world-cup`, `world-cup`, `concacaf-champions-cup`, `concacaf-gold-cup`, `concacaf-league`, and `champions-league`. Get a team slug from the scoreboard or standings response (e.g. `green-bay`, `la-lakers`).
+- **What:** Yahoo Sports team schedule. Returns one team schedule. Use league=soccer for Yahoo's flat soccer team namespace, or a league key from yahoo-sports-leagues. Team slugs come from team or scoreboard records.
 - **Params:** `league` (string, **required**) — League key; `team` (string, **required**) — Yahoo Sports team slug
 
 ### `yahoo_sports_tennis_rankings`
@@ -24292,6 +27593,30 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /yahoo-sports/tennis-scoreboard`
 - **What:** Yahoo Sports tennis scoreboard. Returns a snapshot of current/recently-completed tennis matches across the tour (tournament, round, players, per-set scores, winner, and status), from Yahoo Sports' own server-rendered tournaments page. This endpoint takes no parameters -- it is a fixed-size "what's happening right now" snapshot, not a by-date query.
+- **Params:** _none_
+
+### `yahoo_sports_topic_news`
+
+- **HTTP:** `GET /yahoo-sports/topic-news`
+- **What:** Yahoo Sports topic news. Returns the current article list for a public Yahoo Sports root or sport-scoped topic page. Topic slugs are open-ended; article tags are returned exactly as Yahoo embeds them.
+- **Params:** `topic` (string, optional) — Open-ended root topic slug; `topic_url` (string, optional) — Full Yahoo Sports topic URL, including sport-scoped topic pages such as /golf/topic/lpga-tour/
+
+### `yahoo_sports_video_headlines`
+
+- **HTTP:** `GET /yahoo-sports/video-headlines`
+- **What:** Yahoo Sports video headlines. Returns video cards from Yahoo's public storyheadlines list. Use a list_id from yahoo-sports-video-list-catalog or a Yahoo video-show page; count supports the page's observed values 1 and 6.
+- **Params:** `count` (integer, optional) — Yahoo page request count: 1 or 6. Defaults to 6.; `list_id` (string, **required**) — Yahoo video list UUID from a Watch or video-show page
+
+### `yahoo_sports_video_list_catalog`
+
+- **HTTP:** `GET /yahoo-sports/video-list-catalog`
+- **What:** Yahoo Sports video-list catalog. Lists the current video-list IDs embedded in Yahoo Sports' desktop Watch page. Use each list_id with yahoo-sports-video-headlines; IDs are discovered dynamically and may change.
+- **Params:** _none_
+
+### `yahoo_sports_watch_schedule`
+
+- **HTTP:** `GET /yahoo-sports/watch-schedule`
+- **What:** Yahoo Sports TV schedule. Returns the current program schedule exposed by Yahoo Sports' Watch page. The source request has no date, league, season, sort, or pagination parameter.
 - **Params:** _none_
 
 ## Yahoo Tech (3)

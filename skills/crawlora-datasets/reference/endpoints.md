@@ -6,15 +6,33 @@ Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**143 endpoints across 1 platform group(s).**
+**171 endpoints across 1 platform group(s).**
 
-## Datasets (143)
+## Datasets (171)
 
 ### `datasets_airbnb_facets`
 
 - **HTTP:** `GET /datasets/airbnb-markets/facets`
 - **What:** Facet the Airbnb markets dataset. Returns suppressed distribution counts over the Airbnb markets dataset, honoring the same filters as search. Facet enum: `country`, `market`, `currency`, `superhost`, `guest_favorite`, `rating_band`, `review_band`, `admin1` (top subdivision), `locality` (settlement), `room_type` (`entire_place`/`private_room`/`hotel`/`shared_room`), `property_type` (Airbnb's canonical listing type from the detail page), `amenities` (each amenity with the count of listings offering it). Enrichment-derived facets include a `coverage` object with the number and share of filtered listings carrying that dimension; buckets stay empty below the 20% minimum visibility gate. Coverage above the gate may still be partial. group_by enum: `country`, `market`, `admin1`, `locality`, `room_type`, `property_type`.
 - **Params:** `active_since` (string, optional) — Freshness filter, an ISO-8601 date (YYYY-MM-DD); `country` (string, optional) — Exact ISO-3166-1 alpha-2 country filter, e.g. FR; `facet` (string, **required**) — Facet enum: country, market, currency, superhost, guest_favorite, rating_band, review_band, admin1, locality, room_type, property_type, amenities; `group_by` (string, optional) — Aggregate cell dimension enum: country, market, admin1, locality, room_type, property_type. Defaults to country; `guest_favorite` (boolean, optional) — Count only Guest Favorite listings (an observed lower bound; the badge under-counts); `market` (string, optional) — Exact metro-market filter, max 128 characters; `min_listings` (integer, optional) — Minimum listings per bucket; raises the small-cell suppression floor; `min_rating` (number, optional) — Minimum listing rating, from 0 through 5; `min_review_count` (integer, optional) — Minimum listing review count, 0 or greater; `superhost` (boolean, optional) — Count only Superhost listings
+
+### `datasets_airbnb_hosts_facets`
+
+- **HTTP:** `GET /datasets/airbnb-hosts/facets`
+- **What:** Facet the Airbnb hosts dataset. Returns distribution counts over the Airbnb hosts dataset (dataset id enum value `airbnb-hosts`), honoring the same filters as search. Facet enum: `superhost`, `identity_verified`, `listing_count_band`, `hosting_years_band`, `interest`, `verification`, `location`.
+- **Params:** `facet` (string, **required**) — Facet enum: superhost, identity_verified, listing_count_band, hosting_years_band, interest, verification, location; `identity_verified` (boolean, optional) — true keeps only hosts whose identity is verified; `interest` (string, optional) — Exact interest as returned by the interest facet, max 128 characters; `is_home_host` (boolean, optional) — Filter on the home-host flag; `is_superhost` (boolean, optional) — true keeps only Superhosts, false keeps only hosts without the badge; `location` (string, optional) — Free-text match over the profile location, max 128 characters; `max_listings` (integer, optional) — Maximum number of listings the host manages, 0 or greater; `min_hosting_years` (integer, optional) — Minimum years of hosting, 0 or greater; `min_listings` (integer, optional) — Minimum number of listings the host manages, 0 or greater; `min_reviews` (integer, optional) — Minimum total guest reviews received, 0 or greater; `q` (string, optional) — Full-text query over host name and bio, max 256 characters; `verification` (string, optional) — Exact verification as returned by the verification facet, max 128 characters
+
+### `datasets_airbnb_hosts_item`
+
+- **HTTP:** `GET /datasets/airbnb-hosts/items/{id}`
+- **What:** Get an Airbnb host from the dataset. Returns one host by numeric Airbnb host id from dataset id enum value `airbnb-hosts`, with the full public profile: name, profile link, location, bio, Superhost, home-host and identity-verification flags, verifications, hosting and membership years, total guest reviews, number of listings and interests. Returns 404 when the host is not in the dataset yet.
+- **Params:** `id` (string, **required**) — Numeric Airbnb host id, e.g. 65056940
+
+### `datasets_airbnb_hosts_search`
+
+- **HTTP:** `GET /datasets/airbnb-hosts/search`
+- **What:** Search the Airbnb hosts dataset. Searches Airbnb hosts from the dataset id enum value `airbnb-hosts` — public host profiles with display name, location, bio, Superhost and identity-verification status, hosting tenure, total guest reviews, number of listings and interests. Each record is one host, not one listing. Sort enum: `review_count_desc`, `listing_count_desc`, `hosting_years_desc`, `relevance`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
+- **Params:** `identity_verified` (boolean, optional) — true keeps only hosts whose identity is verified; `interest` (string, optional) — Exact interest as returned by the interest facet, e.g. Architecture, max 128 characters; `is_home_host` (boolean, optional) — Filter on the home-host flag; `is_superhost` (boolean, optional) — true keeps only Superhosts, false keeps only hosts without the badge; `location` (string, optional) — Free-text match over the profile location, e.g. Portugal; every word must match, max 128 characters; `max_listings` (integer, optional) — Maximum number of listings the host manages, 0 or greater; `min_hosting_years` (integer, optional) — Minimum years of hosting, 0 or greater; `min_listings` (integer, optional) — Minimum number of listings the host manages, 0 or greater; `min_reviews` (integer, optional) — Minimum total guest reviews received, 0 or greater; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over host name and bio, max 256 characters; `sort` (string, optional) — Sort enum: review_count_desc, listing_count_desc, hosting_years_desc, relevance; `verification` (string, optional) — Exact verification as returned by the verification facet, e.g. Identity, max 128 characters
 
 ### `datasets_airbnb_item`
 
@@ -94,11 +112,47 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search Apple Podcasts shows dataset. Searches the crawled public Apple Podcasts show catalog stored in a search index. One row per show. Discovered from a country x genre x collection chart grid and a search-term sweep — not a full catalog of every Apple Podcasts show. Sort enum: `relevance`, `popularity`, `track_count_desc`, `release_desc`, `title_asc`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
 - **Params:** `country` (string, optional) — Exact storefront country filter (the crawl's discovery storefront, e.g. us, gb), max 128 characters; `explicitness` (string, optional) — Exact explicitness filter as reported by Apple (e.g. explicit, cleaned), max 128 characters; `genre` (string, optional) — Exact primary-genre filter (e.g. Comedy, True Crime), max 128 characters; `genre_id` (string, optional) — Exact Apple Podcasts genre id filter (e.g. 1303 for Comedy), max 128 characters; `min_track_count` (integer, optional) — Minimum episode count (track_count), 0 or greater; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over show title and artist name, max 256 characters; `run_id` (string, optional) — Exact crawl run-id filter, max 128 characters; `sort` (string, optional) — Sort enum: relevance, popularity, track_count_desc, release_desc, title_asc
 
+### `datasets_apps_charts_facets`
+
+- **HTTP:** `GET /datasets/apps-charts/facets`
+- **What:** Discover values in the app-charts dataset. Returns up to 50 chart-rank facet buckets ordered by count, using the same filters as `datasets_apps_charts_search`. Page and page_size do not change the aggregation. A snapshot_date facet without date spans all history; other facets use the search date scope, including the latest-snapshot default when applicable and full history for a single app or date_desc sort. Facet enum: `store`, `collection`, `chart_type`, `platform`, `category`, `country`, `app_id`, `snapshot_date`, `free`. Store enum: `ios`, `android`. Chart type enum: `top_free`, `top_paid`, `top_grossing`, `new`. Platform enum: `phone`, `pad`, `mac`.
+- **Params:** `app_id` (string, optional) — Exact store app id; `category` (string, optional) — Exact store category; `chart_type` (string, optional) — Chart type enum: top_free, top_paid, top_grossing, new; `collection` (string, optional) — Raw store collection id filter (e.g. topgrossingapplications, GROSSING), max 128 characters; `country` (string, optional) — Storefront country; `date` (string, optional) — Chart snapshot date, yyyy-MM-dd; `facet` (string, **required**) — Facet field; `free` (boolean, optional) — Filter by free/paid status; `page` (integer, optional) — Result page, 1-based; `page_size` (integer, optional) — Page size, default 20 and max 100; `platform` (string, optional) — Apple device platform enum (iOS charts only): phone, pad, mac; `q` (string, optional) — Full-text query; `sort` (string, optional) — Validated search sort; bucket order stays count-desc, and time-series date_desc keeps its search history scope; `store` (string, optional) — Store enum: ios, android
+
+### `datasets_apps_charts_item`
+
+- **HTTP:** `GET /datasets/apps-charts/items/{chart_uid}`
+- **What:** Get one stored app-chart ranking. Retrieves one daily App Store or Google Play chart row by `chart_uid` from `datasets_apps_charts_search`.
+- **Params:** `chart_uid` (string, **required**) — Exact chart_uid from a search result
+
 ### `datasets_apps_charts_search`
 
 - **HTTP:** `GET /datasets/apps-charts/search`
 - **What:** Search the app-charts dataset. Searches daily top-chart snapshots from the iOS App Store and Google Play (one document per chart × snapshot × rank). With no `date` the latest snapshot is returned (today's chart); pair `app_id` with `sort=date_desc` for an app's rank over time. Store enum: `ios`, `android`. Chart type enum: `top_free`, `top_paid`, `top_grossing`, `new`. Platform enum (Apple device platforms, ios charts only): `phone`, `pad`, `mac`. Sort enum: `rank`, `rank_desc`, `date_desc`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
 - **Params:** `app_id` (string, optional) — Exact app filter — iOS numeric track id or Android package; pair with sort=date_desc for rank history; `category` (string, optional) — Store category/genre filter, max 128 characters; empty for the overall charts; `chart_type` (string, optional) — Chart enum: top_free, top_paid, top_grossing, new; `collection` (string, optional) — Raw store collection id filter (e.g. topgrossingapplications, GROSSING), max 128 characters; `country` (string, optional) — Exact storefront country filter, max 128 characters; `date` (string, optional) — Snapshot date filter yyyy-MM-dd; defaults to the latest snapshot; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `platform` (string, optional) — Apple device-platform filter, iOS charts only; see platform enum above; `q` (string, optional) — Full-text query over chart-entry title and developer, max 256 characters; `sort` (string, optional) — Sort enum: rank, rank_desc, date_desc; `store` (string, optional) — Store enum: ios, android
+
+### `datasets_apps_facets`
+
+- **HTTP:** `GET /datasets/apps/facets`
+- **What:** Discover values in the apps dataset. Returns up to 50 allowlisted app-facet buckets ordered by count, using the same filters as `datasets_apps_search`. Page and page_size do not change the aggregation. Facet enum: `store`, `platforms`, `category`, `country`, `developer`, `free`. Store enum: `ios`, `android`, `both`. Platform enum: `phone`, `pad`, `tablet`, `mac`, `tv`, `chromebook`, `watch`, `vision`, `xr`, `car`, `windows`.
+- **Params:** `category` (string, optional) — Exact app-store category filter, max 128 characters; `country` (string, optional) — Exact storefront country filter, max 128 characters; `developer` (string, optional) — Exact developer/publisher name filter, max 128 characters; `facet` (string, **required**) — Facet field; `free` (boolean, optional) — Filter by free/paid status; `min_rating` (number, optional) — Minimum store rating, 0 through 5; `min_reviews` (integer, optional) — Minimum ratings/review count, 0 or greater; `page` (integer, optional) — Result page, 1-based; `page_size` (integer, optional) — Page size, default 20 and max 100; `platforms` (array, optional) — Repeatable device-platform filter; `q` (string, optional) — Full-text query over app title, developer and category, max 256 characters; `sort` (string, optional) — Validated search sort; bucket order stays count-desc, and time-series date_desc keeps its search history scope; `store` (string, optional) — Store filter: ios, android, both
+
+### `datasets_apps_item`
+
+- **HTTP:** `GET /datasets/apps/items/{app_uid}`
+- **What:** Get one stored app record. Retrieves one iOS App Store or Google Play app by its exact `app_uid`, as returned by `datasets_apps_search`.
+- **Params:** `app_uid` (string, **required**) — Exact app_uid from a search result, e.g. ios:123456789
+
+### `datasets_apps_reviews_facets`
+
+- **HTTP:** `GET /datasets/apps-reviews/facets`
+- **What:** Discover values in the app-reviews dataset. Returns up to 50 app-review facet buckets ordered by count, using the same filters as `datasets_apps_reviews_search`. Page and page_size do not change the aggregation. Facet enum: `store`, `app_id`, `country`, `score`.
+- **Params:** `app_id` (string, optional) — Exact store app id; `country` (string, optional) — Storefront country; `facet` (string, **required**) — Facet field; `min_score` (integer, optional) — Minimum star rating, 1 through 5; `page` (integer, optional) — Result page, 1-based; `page_size` (integer, optional) — Page size, default 20 and max 100; `q` (string, optional) — Full-text review query; `sort` (string, optional) — Validated search sort; bucket order stays count-desc, and time-series date_desc keeps its search history scope; `store` (string, optional) — Store filter: ios or android
+
+### `datasets_apps_reviews_item`
+
+- **HTTP:** `GET /datasets/apps-reviews/items/{review_uid}`
+- **What:** Get one stored app review. Retrieves one public App Store or Google Play review by `review_uid` from `datasets_apps_reviews_search`.
+- **Params:** `review_uid` (string, **required**) — Exact review_uid from a search result
 
 ### `datasets_apps_reviews_search`
 
@@ -109,8 +163,8 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 ### `datasets_apps_search`
 
 - **HTTP:** `GET /datasets/apps/search`
-- **What:** Search the apps-intelligence dataset. Searches resolved iOS App Store and Google Play apps stored in a search index. Store enum: `ios`, `android`, `both`. Platform enum (Apple device platforms, ios records only): `phone`, `pad`, `mac`, `tv`, `watch`, `vision`. Sort enum: `relevance`, `rating_desc`, `reviews_desc`, `installs_desc`, `updated_at_desc`, `popularity_desc`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
-- **Params:** `category` (string, optional) — Exact app-store category filter, max 128 characters; `country` (string, optional) — Exact storefront country filter, max 128 characters; `developer` (string, optional) — Exact developer/publisher name filter, max 128 characters; `free` (boolean, optional) — Filter by price; true keeps only free apps, false only paid; `min_rating` (number, optional) — Minimum store rating, 0 through 5; `min_reviews` (integer, optional) — Minimum ratings/review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `platforms` (array, optional) — Repeatable Apple device-platform filter (OR); see platform enum above; `q` (string, optional) — Full-text query over title, developer and category, max 256 characters; `sort` (string, optional) — Sort enum: relevance, rating_desc, reviews_desc, installs_desc, updated_at_desc, popularity_desc; `store` (string, optional) — Store enum: ios, android, both
+- **What:** Search the apps-intelligence dataset. Searches resolved iOS App Store and Google Play apps stored in a search index. Store enum: `ios`, `android`, `both`. Platform enum: `phone`, `pad`, `tablet`, `mac`, `tv`, `chromebook`, `watch`, `vision`, `xr`, `car`, `windows` (iOS device values: phone, pad, mac, tv, watch, vision; Android values: phone, tablet, tv, chromebook, watch, xr, car, windows). Sort enum: `relevance`, `rating_desc`, `reviews_desc`, `installs_desc`, `updated_at_desc`, `popularity_desc`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
+- **Params:** `category` (string, optional) — Exact app-store category filter, max 128 characters; `country` (string, optional) — Exact storefront country filter, max 128 characters; `developer` (string, optional) — Exact developer/publisher name filter, max 128 characters; `free` (boolean, optional) — Filter by price; true keeps only free apps, false only paid; `min_rating` (number, optional) — Minimum store rating, 0 through 5; `min_reviews` (integer, optional) — Minimum ratings/review count; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `platforms` (array, optional) — Repeatable device-platform filter (OR); iOS and Android use the values described above; `q` (string, optional) — Full-text query over title, developer and category, max 256 characters; `sort` (string, optional) — Sort enum: relevance, rating_desc, reviews_desc, installs_desc, updated_at_desc, popularity_desc; `store` (string, optional) — Store enum: ios, android, both
 
 ### `datasets_bbb_businesses_facets`
 
@@ -207,6 +261,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /datasets/chrome-extensions/trending`
 - **What:** Get trending Chrome Web Store items. Returns stored Chrome Web Store items ranked by the latest observed user and rating-count movement. Filters match the search endpoint; sort is fixed to `trending_desc`. Billing: this endpoint costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
 - **Params:** `category` (string, optional) — Exact category; `collects_data` (boolean, optional) — Data-collection filter; `developer` (string, optional) — Exact developer; `developer_email` (string, optional) — Exact developer email; `has_broad_host_access` (boolean, optional) — Broad-host-access filter; `item_type` (string, optional) — Item type enum: extension, theme, app, unknown; `manifest_version` (integer, optional) — Manifest version enum: 2, 3; `min_rating` (number, optional) — Minimum rating; `min_rating_count` (integer, optional) — Minimum rating count; `min_users` (integer, optional) — Minimum users; `page` (integer, optional) — Page number; `page_size` (integer, optional) — Page size, max 100; `permission` (string, optional) — Exact permission; `q` (string, optional) — Full-text query; `status` (string, optional) — Status enum: active, removed
+
+### `datasets_creators_facets`
+
+- **HTTP:** `GET /datasets/creators/facets`
+- **What:** Discover values in the creators dataset. Returns up to 50 creator-facet buckets ordered by count, using the same filters as `datasets_creators_search`. Page and page_size do not change the aggregation. Deleted/private accounts remain excluded unless include_inactive=true. Contact-email values are never returned. Facet enum: `niche`, `country`, `verified`.
+- **Params:** `country` (string, optional) — Exact creator country/region; `facet` (string, **required**) — Facet field; `handle` (string, optional) — Exact creator handle; `has_email` (boolean, optional) — Contact-email presence filter; `include_inactive` (boolean, optional) — Include deleted/private accounts; `min_followers` (integer, optional) — Minimum follower count; `niche` (string, optional) — Exact content niche; `page` (integer, optional) — Result page, 1-based; `page_size` (integer, optional) — Page size, default 20 and max 100; `q` (string, optional) — Full-text query over handle, nickname and bio; `sort` (string, optional) — Validated search sort; bucket order stays count-desc, and time-series date_desc keeps its search history scope; `verified` (boolean, optional) — Verified badge filter
+
+### `datasets_creators_item`
+
+- **HTTP:** `GET /datasets/creators/items/{creator_uid}`
+- **What:** Get one stored TikTok creator. Retrieves one public TikTok creator profile by `creator_uid`. Deleted/private accounts remain hidden unless `include_inactive=true`. Contact email stays redacted by default and `include_email=true` is honored only for entitled non-Free API keys.
+- **Params:** `creator_uid` (string, **required**) — Exact creator_uid from a search result, e.g. tiktok:@handle; `include_email` (boolean, optional) — Return stored contact email only for entitled non-Free API keys; `include_inactive` (boolean, optional) — Include deleted/private accounts for historical lookup
 
 ### `datasets_creators_search`
 
@@ -640,6 +706,18 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the Product Hunt trends dataset. Returns aggregate Product Hunt launch trends from the dataset id enum value `producthunt-trends`. Aggregate-only: each row is a category-over-time cell (a topic, optionally within a calendar period), reporting launch count, total and average upvotes, average rating and the top product — never an individual product record. Thin cells are suppressed. group_by enum: `topic_month`, `topic_year`, `topic`. Sort enum: `period_desc`, `period_asc`, `launch_count_desc`, `sum_votes_desc`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
 - **Params:** `group_by` (string, optional) — Aggregate cell dimension enum: topic_month, topic_year, topic. Defaults to topic_month; `launched_after` (string, optional) — Lower bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `launched_before` (string, optional) — Upper bound on first-launch date, an ISO-8601 date (YYYY-MM-DD); `min_launches` (integer, optional) — Minimum launches per cell; raises the small-cell suppression floor (never lowered below the built-in minimum); `min_votes` (integer, optional) — Minimum product upvotes, 0 or greater; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: period_desc, period_asc, launch_count_desc, sum_votes_desc; `topic` (string, optional) — Exact topic-slug filter, e.g. artificial-intelligence, max 128 characters
 
+### `datasets_reddit_trending_facets`
+
+- **HTTP:** `GET /datasets/reddit-trending/facets`
+- **What:** Discover values in the Reddit trending dataset. Returns up to 50 Reddit trending-facet buckets ordered by count, using the same filters as `datasets_reddit_trending_search`. Page and page_size do not change the aggregation. A snapshot_date facet without date spans all history; other facets use the search date scope, including the latest-snapshot default and full history for date_desc sort.
+- **Params:** `date` (string, optional) — Snapshot date, yyyy-MM-dd; `facet` (string, **required**) — Facet field; `page` (integer, optional) — Result page, 1-based; `page_size` (integer, optional) — Page size, default 20 and max 100; `q` (string, optional) — Full-text post-title query; `sort` (string, optional) — Validated search sort; bucket order stays count-desc, and time-series date_desc keeps its search history scope; `subreddit` (string, optional) — Exact subreddit name
+
+### `datasets_reddit_trending_item`
+
+- **HTTP:** `GET /datasets/reddit-trending/items/{post_uid}`
+- **What:** Get one Reddit trending-post record. Retrieves one stored subreddit-post ranking row by `post_uid`, the `subreddit:date:rank` key returned by `datasets_reddit_trending_search`.
+- **Params:** `post_uid` (string, **required**) — Exact post_uid from a search result
+
 ### `datasets_reddit_trending_search`
 
 - **HTTP:** `GET /datasets/reddit-trending/search`
@@ -712,11 +790,35 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the Starbucks store directory. Searches the worldwide Starbucks store directory (dataset id `starbucks-stores`), built by grid-tiling the store locator around its 50-result cap. Each store has its store number, name, phone, full address, coordinates, weekly hours, amenity codes, and pick-up options. Store discovery is global, but hours, amenities, and phone numbers are populated per market and are largely absent outside the US, Canada, Europe, and the Gulf; an empty schedule means "not published for this market", not "closed". `country` is the store's true country while `market` is crawl provenance (the US host geocodes worldwide). Supports full-text `q`, `country`/`state`/`city`/`market`/`amenity` filters, `lat`/`lon`/`radius_m` radius filtering, and `sort` (relevance, distance_asc). Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
 - **Params:** `amenity` (string, optional) — Amenity code filter, e.g. DT (Drive-Thru), XO (Mobile Order and Pay); `city` (string, optional) — Exact city filter; `country` (string, optional) — ISO-3166-1 alpha-2 country filter, e.g. US, GB, JP; `lat` (number, optional) — Latitude for radius filtering or distance sort, requires lon; `lon` (number, optional) — Longitude for radius filtering or distance sort, requires lat; `market` (string, optional) — Crawl-provenance market filter. One of: us, ca; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text search over store name, city, and address, max 256 characters; `radius_m` (integer, optional) — Radius in meters, 1 through 50000; requires lat and lon; `sort` (string, optional) — Sort enum: relevance, distance_asc; `state` (string, optional) — State/region code filter, e.g. WA
 
+### `datasets_steam_achievements_facets`
+
+- **HTTP:** `GET /datasets/steam-achievements/facets`
+- **What:** Discover Steam achievement app ids. Returns up to 50 Steam achievement app-id buckets ordered by count, using the same app_id filter as `datasets_steam_achievements_search`. Page and page_size do not change the aggregation.
+- **Params:** `app_id` (string, optional) — Exact Steam app id; `facet` (string, **required**) — Facet field; `page` (integer, optional) — Result page, 1-based; `page_size` (integer, optional) — Page size, default 20 and max 100; `sort` (string, optional) — Validated search sort; bucket order stays count-desc, and time-series date_desc keeps its search history scope
+
+### `datasets_steam_achievements_item`
+
+- **HTTP:** `GET /datasets/steam-achievements/items/{app_id}/{name}`
+- **What:** Get one stored Steam achievement. Retrieves one global achievement record by `appid` and `name` from `datasets_steam_achievements_search`.
+- **Params:** `app_id` (string, **required**) — Steam app id; `name` (string, **required**) — Achievement API name
+
 ### `datasets_steam_achievements_search`
 
 - **HTTP:** `GET /datasets/steam-achievements/search`
 - **What:** Search steam-achievements dataset. Searches per-game global achievement unlock percentages (one document per appid × achievement). Pass `app_id` to list a game's achievements. Sort enum: `percent_desc` (most-unlocked first, default), `percent_asc` (rarest first), `rank_asc`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
 - **Params:** `app_id` (string, optional) — Exact Steam app id filter; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: percent_desc, percent_asc, rank_asc
+
+### `datasets_steam_charts_facets`
+
+- **HTTP:** `GET /datasets/steam-charts/facets`
+- **What:** Discover values in the Steam charts dataset. Returns up to 50 Steam chart-facet buckets ordered by count, using the same filters as `datasets_steam_charts_search`. Page and page_size do not change the aggregation. A snapshot_date facet without date spans all history; other facets use the search date scope, including the latest-snapshot default when applicable and full history for app_id or date_desc sort.
+- **Params:** `app_id` (string, optional) — Exact Steam app id; `chart` (string, optional) — Chart enum: most_played, concurrent, top_sellers; `country` (string, optional) — Storefront country for top sellers; `date` (string, optional) — Snapshot date, yyyy-MM-dd; `facet` (string, **required**) — Facet field; `page` (integer, optional) — Result page, 1-based; `page_size` (integer, optional) — Page size, default 20 and max 100; `q` (string, optional) — Full-text app name query; `sort` (string, optional) — Validated search sort; bucket order stays count-desc, and time-series date_desc keeps its search history scope
+
+### `datasets_steam_charts_item`
+
+- **HTTP:** `GET /datasets/steam-charts/items/{chart_uid}`
+- **What:** Get one stored Steam chart row. Retrieves one Steam chart snapshot row by `chart_uid` from `datasets_steam_charts_search`.
+- **Params:** `chart_uid` (string, **required**) — Exact chart_uid from a search result
 
 ### `datasets_steam_charts_search`
 
@@ -742,11 +844,35 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search the Steam games dataset. Searches enriched public Steam catalog records stored in a search index. price_tier enum: `free`, `under5`, `5to15`, `15to30`, `30to60`, `over60`. review_tier enum: `overwhelmingly_positive`, `very_positive`, `positive`, `mostly_positive`, `mixed`, `mostly_negative`, `negative`, `very_negative`, `overwhelmingly_negative`, `insufficient`. Sort enum: `relevance`, `owners_desc`, `reviews_desc`, `review_score_desc`, `ccu_desc`, `metacritic_desc`, `price_asc`, `price_desc`, `release_desc`, `release_asc`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
 - **Params:** `category` (string, optional) — Exact store category filter (e.g. Single-player), max 128 characters; `developer` (string, optional) — Exact developer filter, max 128 characters; `genre` (string, optional) — Exact genre filter (e.g. Action, Indie), max 128 characters; `is_free` (boolean, optional) — Filter by free-to-play flag; `linux` (boolean, optional) — Filter by Linux support; `mac` (boolean, optional) — Filter by macOS support; `max_price_cents` (integer, optional) — Maximum current price in cents; `max_release_year` (integer, optional) — Maximum release year; `min_ccu` (integer, optional) — Minimum peak concurrent users yesterday; `min_metacritic` (integer, optional) — Minimum Metacritic score, 0 through 100; `min_owners` (integer, optional) — Minimum estimated owners (SteamSpy owners midpoint); `min_positive` (integer, optional) — Minimum positive review count; `min_price_cents` (integer, optional) — Minimum current price in cents; `min_release_year` (integer, optional) — Minimum release year; `min_review_score` (number, optional) — Minimum positive-review ratio, 0 through 1; `min_total_reviews` (integer, optional) — Minimum total review count; `on_sale` (boolean, optional) — Filter by titles currently discounted (discount_pct > 0); `owners_bucket` (string, optional) — Exact SteamSpy owners-range bucket filter, max 128 characters; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `price_tier` (string, optional) — Price-tier enum: free, under5, 5to15, 15to30, 30to60, over60; `publisher` (string, optional) — Exact publisher filter, max 128 characters; `q` (string, optional) — Full-text query over name, developer and publisher, max 256 characters; `review_tier` (string, optional) — Review-tier enum: overwhelmingly_positive, very_positive, positive, mostly_positive, mixed, mostly_negative, negative, very_negative, overwhelmingly_negative, insufficient; `run_id` (string, optional) — Exact crawl run-id filter, max 128 characters; `sort` (string, optional) — Sort enum: relevance, owners_desc, reviews_desc, review_score_desc, ccu_desc, metacritic_desc, price_asc, price_desc, release_desc, release_asc; `tag` (string, optional) — Exact community-tag filter (e.g. Roguelike, Metroidvania, Cozy), max 128 characters; `type` (string, optional) — Exact storefront type filter (e.g. game, dlc, demo), max 128 characters; `windows` (boolean, optional) — Filter by Windows support
 
+### `datasets_steam_news_facets`
+
+- **HTTP:** `GET /datasets/steam-news/facets`
+- **What:** Discover Steam news app ids. Returns up to 50 Steam news app-id buckets ordered by count, using the same full-text query and app_id filter as `datasets_steam_news_search`. Page and page_size do not change the aggregation.
+- **Params:** `app_id` (string, optional) — Exact Steam app id; `facet` (string, **required**) — Facet field; `page` (integer, optional) — Result page, 1-based; `page_size` (integer, optional) — Page size, default 20 and max 100; `q` (string, optional) — Full-text news-title/body query; `sort` (string, optional) — Validated search sort; bucket order stays count-desc, and time-series date_desc keeps its search history scope
+
+### `datasets_steam_news_item`
+
+- **HTTP:** `GET /datasets/steam-news/items/{app_id}/{gid}`
+- **What:** Get one stored Steam news item. Retrieves one Steam announcement by the `appid` and `gid` fields returned by `datasets_steam_news_search`.
+- **Params:** `app_id` (string, **required**) — Steam app id; `gid` (string, **required**) — Steam news gid
+
 ### `datasets_steam_news_search`
 
 - **HTTP:** `GET /datasets/steam-news/search`
 - **What:** Search the steam-news dataset. Searches Steam news + announcements for tracked apps (one document per appid × gid; the latest items per app are kept). Filter by `app_id` for a single game's news, or full-text `q` over the title + contents. Sort enum: `date_desc` (newest first, default), `date_asc`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
 - **Params:** `app_id` (string, optional) — Exact Steam app id filter; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over the news title + contents, max 256 characters; `sort` (string, optional) — Sort enum: date_desc, date_asc
+
+### `datasets_steam_playercounts_facets`
+
+- **HTTP:** `GET /datasets/steam-playercounts/facets`
+- **What:** Discover Steam player-count app and date values. Returns up to 50 Steam player-count facet buckets ordered by count, using the same filters as `datasets_steam_playercounts_search`. The search and snapshot_date facet cover stored history by default; supplying date scopes counts to that day. Page and page_size do not change the aggregation.
+- **Params:** `app_id` (string, optional) — Exact Steam app id; `date` (string, optional) — Snapshot date, yyyy-MM-dd; `facet` (string, **required**) — Facet field; `page` (integer, optional) — Result page, 1-based; `page_size` (integer, optional) — Page size, default 20 and max 100; `sort` (string, optional) — Validated search sort; bucket order stays count-desc, and time-series date_desc keeps its search history scope
+
+### `datasets_steam_playercounts_item`
+
+- **HTTP:** `GET /datasets/steam-playercounts/items/{app_id}/{snapshot_date}`
+- **What:** Get one stored Steam player-count point. Retrieves one daily concurrent-player record using `appid` and `snapshot_date` from `datasets_steam_playercounts_search`.
+- **Params:** `app_id` (string, **required**) — Steam app id; `snapshot_date` (string, **required**) — Snapshot date, yyyy-MM-dd
 
 ### `datasets_steam_playercounts_search`
 
@@ -754,17 +880,59 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Search steam-playercounts dataset. Searches the daily concurrent-player time series for tracked games (one document per appid × day). Pair `app_id` with `sort=date_desc` for a game's player-count history, or pass `date` for one day's snapshot. Sort enum: `date_desc` (default), `date_asc`, `players_desc`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
 - **Params:** `app_id` (string, optional) — Exact Steam app id filter; `date` (string, optional) — Snapshot date filter yyyy-MM-dd; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: date_desc, date_asc, players_desc
 
+### `datasets_steam_prices_facets`
+
+- **HTTP:** `GET /datasets/steam-prices/facets`
+- **What:** Discover Steam price snapshot values. Returns up to 50 Steam price-history facet buckets ordered by count, using the same filters as `datasets_steam_prices_search`. The search and snapshot_date facet cover stored history by default; supplying date scopes counts to that day. Page and page_size do not change the aggregation.
+- **Params:** `app_id` (string, optional) — Exact Steam app id; `date` (string, optional) — Snapshot date, yyyy-MM-dd; `facet` (string, **required**) — Facet field; `page` (integer, optional) — Result page, 1-based; `page_size` (integer, optional) — Page size, default 20 and max 100; `sort` (string, optional) — Validated search sort; bucket order stays count-desc, and time-series date_desc keeps its search history scope
+
+### `datasets_steam_prices_item`
+
+- **HTTP:** `GET /datasets/steam-prices/items/{app_id}/{snapshot_date}`
+- **What:** Get one stored Steam price record. Retrieves one daily price row using `appid` and `snapshot_date` from `datasets_steam_prices_search`.
+- **Params:** `app_id` (string, **required**) — Steam app id; `snapshot_date` (string, **required**) — Snapshot date, yyyy-MM-dd
+
 ### `datasets_steam_prices_search`
 
 - **HTTP:** `GET /datasets/steam-prices/search`
 - **What:** Search the steam-prices dataset. Searches the daily price time series for priced games (one document per appid × day; integer cents). Pair `app_id` with `sort=date_desc` for a game's price history, or pass `date` for one day's snapshot. Sort enum: `date_desc` (default), `date_asc`, `price_asc`, `price_desc`, `discount_desc`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
 - **Params:** `app_id` (string, optional) — Exact Steam app id filter; `date` (string, optional) — Snapshot date filter yyyy-MM-dd; `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `sort` (string, optional) — Sort enum: date_desc, date_asc, price_asc, price_desc, discount_desc
 
+### `datasets_steam_reviews_facets`
+
+- **HTTP:** `GET /datasets/steam-reviews/facets`
+- **What:** Discover Steam review values. Returns up to 50 Steam review facet buckets ordered by count, using the same filters as `datasets_steam_reviews_search`. Page and page_size do not change the aggregation.
+- **Params:** `app_id` (string, optional) — Exact Steam app id; `facet` (string, **required**) — Facet field; `language` (string, optional) — Review language; `page` (integer, optional) — Result page, 1-based; `page_size` (integer, optional) — Page size, default 20 and max 100; `q` (string, optional) — Full-text review query; `sort` (string, optional) — Validated search sort; bucket order stays count-desc, and time-series date_desc keeps its search history scope; `voted_up` (boolean, optional) — Recommendation filter
+
+### `datasets_steam_reviews_item`
+
+- **HTTP:** `GET /datasets/steam-reviews/items/{app_id}/{recommendation_id}`
+- **What:** Get one stored Steam review. Retrieves one stored recommendation review using `appid` and `recommendation_id` from `datasets_steam_reviews_search`.
+- **Params:** `app_id` (string, **required**) — Steam app id; `recommendation_id` (string, **required**) — Steam recommendation id
+
 ### `datasets_steam_reviews_search`
 
 - **HTTP:** `GET /datasets/steam-reviews/search`
 - **What:** Search the steam-reviews dataset. Searches the stored Steam review corpus (the most-helpful reviews per game; one document per appid × recommendation). Full-text `q` over the review body, filter by `app_id`, `language`, or `voted_up` (positive/negative). Sort enum: `votes_desc` (most-helpful first, default), `weighted_desc`, `date_desc`. Billing: this search costs 1 credit per record returned, with a minimum of 2 (an empty result costs 2, a full page of 100 costs 100).
 - **Params:** `app_id` (string, optional) — Exact Steam app id filter; `language` (string, optional) — Review language filter (e.g. english, schinese); `page` (integer, optional) — Page number, defaults to 1; `page_size` (integer, optional) — Page size, defaults to 20 and maxes at 100; page * page_size must be <= 10000; `q` (string, optional) — Full-text query over the review body, max 256 characters; `sort` (string, optional) — Sort enum: votes_desc, weighted_desc, date_desc; `voted_up` (string, optional) — Recommendation filter: true (positive) or false (negative)
+
+### `datasets_substack_facets`
+
+- **HTTP:** `GET /datasets/substack/facets`
+- **What:** Discover Substack dataset values. Returns up to 50 count-sorted buckets for a stored-field facet over the Substack dataset, honoring the same filters as `datasets_substack_search`. Facets cover the indexed discovery corpus, which is not a complete directory.
+- **Params:** `facet` (string, **required**) — Facet field; `identifier` (string, optional) — Exact public profile handle or publication host, max 253 characters; `kind` (string, optional) — Record kind; `language` (string, optional) — Exact publication language; `page` (integer, optional) — Accepted for contract parity; facets aggregate all matching records; `page_size` (integer, optional) — Accepted for contract parity; facets aggregate all matching records; `q` (string, optional) — Full-text query over profile/publication fields, max 256 characters; `sort` (string, optional) — Accepted for parity with search: relevance, name_asc, hydrated_at_desc, hydrated_at_asc
+
+### `datasets_substack_item`
+
+- **HTTP:** `GET /datasets/substack/items/{uid}`
+- **What:** Get one stored Substack profile or publication. Retrieves one profile or publication snapshot that passed public identity validation when hydrated. Use the exact `uid` returned by `datasets_substack_search`. Missing, partial, and unvalidated rows return 404. Snapshots can become stale; inspect `hydrated_at`.
+- **Params:** `uid` (string, **required**) — Dataset row UID: user:<handle> or publication:<host>, max 320 characters
+
+### `datasets_substack_search`
+
+- **HTTP:** `GET /datasets/substack/search`
+- **What:** Search the stored Substack dataset. Searches Substack writer profiles and publications that passed public identity validation when captured. Coverage is a growing discovery corpus, not a complete directory; snapshots are not periodically revalidated and do not trigger live lookups. Inspect hydrated_at for the last successful capture.
+- **Params:** `identifier` (string, optional) — Exact public profile handle or publication host, max 253 characters; `kind` (string, optional) — Record kind; `language` (string, optional) — Exact publication language; discover values with facet=language; `page` (integer, optional) — Result page, 1-based; `page_size` (integer, optional) — Page size, default 20 and max 100; `q` (string, optional) — Full-text query over profile/publication name, handle, bio, host, or hero text, max 256 characters; `sort` (string, optional) — Sort order: relevance, name_asc, hydrated_at_desc, hydrated_at_asc
 
 ### `datasets_techstack_facets`
 
