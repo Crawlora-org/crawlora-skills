@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Compare generated skill references to the catalog, optionally including an API snapshot.
-import { readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -14,6 +14,18 @@ export function referencesToCoverage(references) {
     }
   }
   return coverage;
+}
+
+export function readSkillReference(root, skill) {
+  const referenceRoot = join(root, "skills", skill, "reference");
+  const index = readFileSync(join(referenceRoot, "endpoints.md"), "utf8");
+  const splitDir = join(referenceRoot, "endpoints");
+  if (!existsSync(splitDir)) return index;
+  const parts = readdirSync(splitDir)
+    .filter((name) => name.endsWith(".md"))
+    .sort()
+    .map((name) => readFileSync(join(splitDir, name), "utf8"));
+  return [index, ...parts].join("\n");
 }
 
 export function summarizeCoverage(catalog, coverage) {
@@ -102,7 +114,7 @@ function main() {
   const references = {};
   for (const dir of readdirSync(join(root, "skills"), { withFileTypes: true })) {
     if (dir.isDirectory() && dir.name !== "crawlora") {
-      references[dir.name] = readFileSync(join(root, "skills", dir.name, "reference/endpoints.md"), "utf8");
+      references[dir.name] = readSkillReference(root, dir.name);
     }
   }
   const coverage = referencesToCoverage(references);

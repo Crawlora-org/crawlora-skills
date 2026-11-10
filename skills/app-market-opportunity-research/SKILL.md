@@ -1,9 +1,14 @@
 ---
 name: app-market-opportunity-research
 description: Research app-market opportunities using Crawlora app catalogs, historical charts, live store listings, release notes, reviews, and Google Trends. Use for app niche assessments, competitor maps, chart-movement analysis, and evidence-backed unmet-need hypotheses.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # App market opportunity research
+
+## Tool scope and data flow
+
+Use the bundled `scripts/crawlora.sh` helper only for this skill's documented routes in `reference/endpoints.md`; the helper enforces its exact route and method allowlist. It reads `CRAWLORA_API_KEY` from the environment and sends it as an `x-api-key` header over HTTPS to `api.crawlora.net`. It stores the key in a mode-600 curl config under `TMPDIR` and removes it when the command exits. It reads `TMPDIR` only to choose that temporary config location; it does not inspect other environment variables or enumerate files, install software, or run with elevated privileges.
 
 Assess a defined app niche using competing products, observed distribution
 signals, release activity, and customer evidence. Separate an opportunity

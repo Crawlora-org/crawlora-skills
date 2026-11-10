@@ -17,6 +17,7 @@ import { readFileSync, writeFileSync, mkdirSync, readdirSync, chmodSync, statSyn
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { selectTools } from "./select-tools.mjs";
+import { endpointReferenceFiles } from "./reference-files.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CHECK = process.argv.includes("--check");
@@ -78,15 +79,6 @@ const SKILLS = {
   "finance-markets-research": ["Yahoo Finance", "SEC EDGAR", "Congress", "CoinGecko", "PitchBook"],
   "prediction-markets-research": ["Polymarket", "Kalshi", "Metaculus", "DraftKings Predictions"],
   "german-amateur-football-research": ["FUSSBALL.DE"],
-  "movie-tv-research": [
-    "IMDb",
-    "TMDB",
-    "JustWatch",
-    "Letterboxd",
-    "Rotten Tomatoes",
-    "Metacritic",
-    "Box Office Mojo",
-  ],
   "job-market-research": [
     "Indeed",
     "Google Jobs",
@@ -491,7 +483,6 @@ const SKILLS = {
   "apk-teardown-research": ["AppInsights"],
   "app-store-research": ["AppStore", "GooglePlay", "ChromeWebStore"],
   "travel-accommodation-research": ["Airbnb", "Agoda", "Hotels.com", "Trip.com", "Vrbo"],
-  "entertainment-discovery-research": ["IMDb", "JustWatch", "TMDB", "Rotten Tomatoes", "Metacritic"],
   "crypto-market-research": ["CoinGecko"],
   "local-business-reputation-research": ["Yelp", "BBB", "Trustpilot", "OpenTable"],
   "news-briefing-research": ["GDELT", "BBC", "CNN", "Guardian", "Yahoo News"],
@@ -619,15 +610,14 @@ outputs.push([
 for (const [skill, groups] of Object.entries(SKILLS)) {
   const selectedTools = skillToolsFor(skill);
   const selectedCatalog = catalogForTools(selectedTools);
-  outputs.push([
-    `skills/${skill}/reference/endpoints.md`,
-    renderGroups(
-      groups.filter((group) => selectedCatalog.has(group)),
-      `${skill} — endpoint reference`,
-      `Endpoints this skill uses, grouped by platform. Call them via \`scripts/crawlora.sh\` (see SKILL.md).`,
-      selectedCatalog,
-    ),
-  ]);
+  outputs.push(...endpointReferenceFiles({
+    skill,
+    groupNames: groups.filter((group) => selectedCatalog.has(group)),
+    title: `${skill} — endpoint reference`,
+    intro: `Endpoints this skill uses, grouped by platform. Call them via \`scripts/crawlora.sh\` (see SKILL.md).`,
+    catalog: selectedCatalog,
+    renderGroups,
+  }));
 }
 
 // Task-oriented skills can select tools within mixed groups such as Google
@@ -635,15 +625,14 @@ for (const [skill, groups] of Object.entries(SKILLS)) {
 for (const [skill, names] of Object.entries(focusedSkills)) {
   if (skill in SKILLS) throw new Error(`Skill has both group and tool selections: ${skill}`);
   const selected = selectTools(all, names);
-  outputs.push([
-    `skills/${skill}/reference/endpoints.md`,
-    renderGroups(
-      [...selected.keys()],
-      `${skill} — endpoint reference`,
-      "Only the endpoints used by this workflow. Call them via `scripts/crawlora.sh` (see SKILL.md).",
-      selected,
-    ),
-  ]);
+  outputs.push(...endpointReferenceFiles({
+    skill,
+    groupNames: [...selected.keys()],
+    title: `${skill} — endpoint reference`,
+    intro: "Only the endpoints used by this workflow. Call them via `scripts/crawlora.sh` (see SKILL.md).",
+    catalog: selected,
+    renderGroups,
+  }));
 }
 
 // Sync the bundled helper into every skill folder.

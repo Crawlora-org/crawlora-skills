@@ -1,9 +1,14 @@
 ---
 name: yahoo-network-research
 description: Researches Yahoo's editorial content network — Autos, Entertainment, Health, Life, News, Shopping, Sports, and Tech — via the Crawlora API, returning clean JSON. Each vertical shares a home/category story-stream plus full-article-content pattern; Yahoo Sports adds deeper sports-data endpoints (scoreboards, standings, team/player/roster, golf, MMA, motorsports, tennis, Olympics). Use when the user wants a Yahoo section's story feed, a Yahoo article's full content, Yahoo News comments, Yahoo Shopping deals/lists, or Yahoo Sports scores/standings/schedules. Yahoo Finance and Yahoo Search are covered by their own separate skills, not this one.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Yahoo network research
+
+## Tool scope and data flow
+
+Use the bundled `scripts/crawlora.sh` helper only for this skill's documented routes in `reference/endpoints.md`; the helper enforces its exact route and method allowlist. It reads `CRAWLORA_API_KEY` from the environment and sends it as an `x-api-key` header over HTTPS to `api.crawlora.net`. It stores the key in a mode-600 curl config under `TMPDIR` and removes it when the command exits. It reads `TMPDIR` only to choose that temporary config location; it does not inspect other environment variables or enumerate files, install software, or run with elevated privileges.
 
 Pull story feeds and full article content across Yahoo's editorial content
 network — Autos, Entertainment, Health, Life, News, Shopping, Sports, and

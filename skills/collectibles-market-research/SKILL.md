@@ -1,9 +1,14 @@
 ---
 name: collectibles-market-research
 description: Researches public trading-card and sports-collectible markets through the Crawlora API — card identity, PSA certification and price-guide evidence, live listings, auctions, sold items, and market trends. Use when the user wants a sourced collector or buying brief, not authentication, appraisal guarantees, or a purchase action.
+allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
 # Collectibles market research
+
+## Tool scope and data flow
+
+Use the bundled `scripts/crawlora.sh` helper only for this skill's documented routes in `reference/endpoints.md`; the helper enforces its exact route and method allowlist. It reads `CRAWLORA_API_KEY` from the environment and sends it as an `x-api-key` header over HTTPS to `api.crawlora.net`. It stores the key in a mode-600 curl config under `TMPDIR` and removes it when the command exits. It reads `TMPDIR` only to choose that temporary config location; it does not inspect other environment variables or enumerate files, install software, or run with elevated privileges.
 
 Build evidence-backed briefs for trading cards and sports collectibles from
 public marketplace and PSA reference data. Keep identity, condition, grade,

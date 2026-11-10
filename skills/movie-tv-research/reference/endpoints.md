@@ -2,11 +2,139 @@
 
 > Generated from `scripts/tools.json` by `scripts/generate.mjs` — do not edit by hand.
 
-Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.sh` (see SKILL.md).
+Only the endpoints used by this workflow. Call them via `scripts/crawlora.sh` (see SKILL.md).
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**128 endpoints across 7 platform group(s).**
+**124 endpoints across 7 platform group(s).**
+
+## Box Office Mojo (21)
+
+### `boxofficemojo_brand`
+
+- **HTTP:** `GET /boxofficemojo/brand`
+- **What:** Box Office Mojo brand detail. Returns release rows from a Box Office Mojo brand page. Pass exactly one of `id`, `path`, or `url`.
+- **Params:** `id` (string, optional) — Box Office Mojo brand id; `offset` (integer, optional) — Row offset for pagination (page size 100); `path` (string, optional) — Box Office Mojo brand path; `sort` (string, optional) — Sort field; `sortDir` (string, optional) — Sort direction; `url` (string, optional) — Absolute https://www.boxofficemojo.com brand URL
+
+### `boxofficemojo_brands`
+
+- **HTTP:** `GET /boxofficemojo/brands`
+- **What:** Box Office Mojo brand chart. Returns Box Office Mojo's brand chart, ranked, with each brand's `name`, `id`, `path`, `url`, release count and lifetime gross (an integer in `lifetime_gross`, the displayed text in `lifetime_gross_raw`). Reorder with `sort` (`totalGross`, `numReleases` or `grossToDate`) and `sortDir` (`asc` or `desc`); they are echoed back only when applied.
+- **Params:** `sort` (string, optional) — Sort field; `sortDir` (string, optional) — Sort direction
+
+### `boxofficemojo_calendar`
+
+- **HTTP:** `GET /boxofficemojo/calendar`
+- **What:** Box Office Mojo domestic release schedule. Returns Box Office Mojo's domestic release schedule for one month, grouped by date. `year` (1921 to 2100) and `month` (1 to 12) are both required. Each release has its title, `release_url`, `distributor`, `scale`, `genres`, `cast` and poster image URLs when present.
+- **Params:** `month` (integer, **required**) — Calendar month, 1 through 12; `year` (integer, **required**) — Calendar year, from 1921 through 2100
+
+### `boxofficemojo_calendar_changes`
+
+- **HTTP:** `GET /boxofficemojo/calendar/changes`
+- **What:** Box Office Mojo domestic release schedule changes. Returns Box Office Mojo's list of changes to the domestic release schedule, grouped by change date. `offset` pages through the list in steps of 30, from 0 to 780. Each change has the release, `distributor`, `scale`, `old_date` and `new_date`, and `range` shows the position in the list.
+- **Params:** `offset` (integer, optional) — Changes page offset. Allowed values: 0, 30, 60, ... 780
+
+### `boxofficemojo_calendar_date`
+
+- **HTTP:** `GET /boxofficemojo/calendar/date`
+- **What:** Box Office Mojo domestic release schedule date. Returns the releases scheduled on one date in Box Office Mojo's domestic release schedule. `date` is required, in `YYYY-MM-DD` form. Each release has its title, `release_url`, `distributor`, `scale`, `genres`, `cast` and poster image URLs when present. A date with no scheduled releases returns a not-found error.
+- **Params:** `date` (string, **required**) — Calendar date in YYYY-MM-DD format
+
+### `boxofficemojo_date_domestic`
+
+- **HTTP:** `GET /boxofficemojo/date/domestic`
+- **What:** Box Office Mojo domestic daily box office. Returns rows from Box Office Mojo's domestic daily chart. Empty upstream daily pages return a typed not-found error rather than an empty success.
+- **Params:** `date` (string, **required**) — Domestic box office date in YYYY-MM-DD format
+
+### `boxofficemojo_franchise`
+
+- **HTTP:** `GET /boxofficemojo/franchise`
+- **What:** Box Office Mojo franchise detail. Returns release rows from a Box Office Mojo franchise page. Pass exactly one of `id`, `path`, or `url`.
+- **Params:** `id` (string, optional) — Box Office Mojo franchise id; `offset` (integer, optional) — Row offset for pagination (page size 100); `path` (string, optional) — Box Office Mojo franchise path; `sort` (string, optional) — Sort field; `sortDir` (string, optional) — Sort direction; `url` (string, optional) — Absolute https://www.boxofficemojo.com franchise URL
+
+### `boxofficemojo_franchises`
+
+- **HTTP:** `GET /boxofficemojo/franchises`
+- **What:** Box Office Mojo franchise chart. Returns Box Office Mojo's franchise chart, ranked, with each franchise's `name`, `id`, `path`, `url`, release count and lifetime gross (an integer in `lifetime_gross`, the displayed text in `lifetime_gross_raw`). Reorder with `sort` (`totalGross`, `numReleases` or `grossToDate`) and `sortDir` (`asc` or `desc`); they are echoed back only when applied.
+- **Params:** `sort` (string, optional) — Sort field; `sortDir` (string, optional) — Sort direction
+
+### `boxofficemojo_genre`
+
+- **HTTP:** `GET /boxofficemojo/genre`
+- **What:** Box Office Mojo genre detail. Returns release rows from a Box Office Mojo genre page. Pass exactly one of `id`, `path`, or `url`.
+- **Params:** `id` (string, optional) — Box Office Mojo genre id; `offset` (integer, optional) — Row offset for pagination (page size 100); `path` (string, optional) — Box Office Mojo genre path; `sort` (string, optional) — Sort field; `sortDir` (string, optional) — Sort direction; `url` (string, optional) — Absolute https://www.boxofficemojo.com genre URL
+
+### `boxofficemojo_genres`
+
+- **HTTP:** `GET /boxofficemojo/genres`
+- **What:** Box Office Mojo genre chart. Returns Box Office Mojo's genre chart, ranked, with each genre's `name`, `id`, `path`, `url`, release count and lifetime gross (an integer in `lifetime_gross`, the displayed text in `lifetime_gross_raw`). Reorder with `sort` (`totalGross`, `numTitles` or `grossToDate`) and `sortDir` (`asc` or `desc`); they are echoed back only when applied.
+- **Params:** `sort` (string, optional) — Sort field; `sortDir` (string, optional) — Sort direction
+
+### `boxofficemojo_lifetime_grosses`
+
+- **HTTP:** `GET /boxofficemojo/lifetime-grosses`
+- **What:** Box Office Mojo lifetime gross chart. Returns one page of Box Office Mojo's lifetime gross chart of movies. `area` is `worldwide` (default) or `domestic`, and `offset` pages in steps of 200 from 0 to 800. Each row has `rank`, `title`, `title_id`, `year` and `lifetime_gross` as an integer, with the displayed text in `lifetime_gross_raw`.
+- **Params:** `area` (string, optional) — Chart area. Allowed values: worldwide, domestic; `offset` (integer, optional) — Chart page offset. Allowed values: 0, 200, 400, 600, 800
+
+### `boxofficemojo_release`
+
+- **HTTP:** `GET /boxofficemojo/release`
+- **What:** Box Office Mojo release detail. Returns Box Office Mojo release summary fields and domestic daily rows from a release page. Pass exactly one of `id`, `path`, or `url`.
+- **Params:** `id` (string, optional) — Box Office Mojo release id; `path` (string, optional) — Box Office Mojo release path; `url` (string, optional) — Absolute https://www.boxofficemojo.com release URL
+
+### `boxofficemojo_release_group`
+
+- **HTTP:** `GET /boxofficemojo/release-group`
+- **What:** Box Office Mojo release group detail. Returns market release rows grouped by region from a Box Office Mojo release-group page. Pass exactly one of `id`, `path`, or `url`.
+- **Params:** `id` (string, optional) — Box Office Mojo release-group id; `path` (string, optional) — Box Office Mojo release-group path; `url` (string, optional) — Absolute https://www.boxofficemojo.com release-group URL
+
+### `boxofficemojo_showdown`
+
+- **HTTP:** `GET /boxofficemojo/showdown`
+- **What:** Box Office Mojo showdown detail. Returns release comparison metrics from a Box Office Mojo showdown page. Pass exactly one of `id`, `path`, or `url`.
+- **Params:** `id` (string, optional) — Box Office Mojo showdown id; `path` (string, optional) — Box Office Mojo showdown path; `url` (string, optional) — Absolute https://www.boxofficemojo.com showdown URL
+
+### `boxofficemojo_showdowns`
+
+- **HTTP:** `GET /boxofficemojo/showdowns`
+- **What:** Box Office Mojo showdowns. Returns Box Office Mojo's showdowns, which compare groups of movies. Each row has the showdown `name`, `showdown_id`, `path`, `url`, `num_releases`, `total_gross` and the `top_release` with its gross, when Box Office Mojo shows them. Takes no parameters.
+- **Params:** _none_
+
+### `boxofficemojo_title`
+
+- **HTTP:** `GET /boxofficemojo/title`
+- **What:** Box Office Mojo title detail. Returns Box Office Mojo title release-group and market-gross tables from a title page. Pass exactly one of `id`, `path`, or `url`.
+- **Params:** `id` (string, optional) — Box Office Mojo title id; `path` (string, optional) — Box Office Mojo title path; `url` (string, optional) — Absolute https://www.boxofficemojo.com title URL
+
+### `boxofficemojo_weekend_domestic`
+
+- **HTTP:** `GET /boxofficemojo/weekend/domestic`
+- **What:** Box Office Mojo domestic weekend box office. Returns rows from Box Office Mojo's domestic weekend chart. Empty upstream weekend pages return a typed not-found error rather than an empty success.
+- **Params:** `week` (integer, **required**) — Weekend number, 1 through 53; `year` (integer, **required**) — Domestic weekend year, from 1982 through 2100
+
+### `boxofficemojo_weekend_domestic_by_distributor`
+
+- **HTTP:** `GET /boxofficemojo/weekend/domestic/by-distributor`
+- **What:** Box Office Mojo domestic weekend by distributor. Returns distributor rows from Box Office Mojo's domestic weekend by-distributor chart. Empty upstream weekend pages return a typed not-found error rather than an empty success.
+- **Params:** `week` (integer, **required**) — Weekend number, 1 through 53; `year` (integer, **required**) — Domestic weekend year, from 1982 through 2100
+
+### `boxofficemojo_weekend_domestic_estimates`
+
+- **HTTP:** `GET /boxofficemojo/weekend/domestic/estimates`
+- **What:** Box Office Mojo domestic weekend estimates. Returns estimate-vs-actual rows from Box Office Mojo's domestic weekend estimates chart. Empty upstream weekend pages return a typed not-found error rather than an empty success.
+- **Params:** `week` (integer, **required**) — Weekend number, 1 through 53; `year` (integer, **required**) — Domestic weekend year, from 1982 through 2100
+
+### `boxofficemojo_year_domestic`
+
+- **HTTP:** `GET /boxofficemojo/year/domestic`
+- **What:** Box Office Mojo domestic yearly box office. Returns the Box Office Mojo domestic box office chart for one year. `year` is required and runs from 1977 to 2100. Each row has `rank`, `release`, `release_date`, `distributor`, `theaters`, `gross`, `total_gross` and `new_this_year`, each gross also with its displayed text in a `_raw` field.
+- **Params:** `year` (integer, **required**) — Domestic box office year, from 1977 through 2100
+
+### `boxofficemojo_year_worldwide`
+
+- **HTTP:** `GET /boxofficemojo/year/worldwide`
+- **What:** Box Office Mojo worldwide yearly box office. Returns the Box Office Mojo worldwide box office chart for one year. `year` is required and runs from 1977 to 2100. Each row is a release group with its `rank`, `worldwide`, `domestic` and `foreign` grosses, the domestic and foreign shares, and `title_id`; each gross also has its displayed text in a `_raw` field.
+- **Params:** `year` (integer, **required**) — Box office year, from 1977 through 2100
 
 ## IMDb (30)
 
@@ -190,62 +318,6 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** IMDb title video metadata. Returns public title video metadata and thumbnail URLs only; playback URLs and media manifests are never returned. IMDb server-truncates this connection and exposes no usable continuation cursor, so `total` can exceed returned rows and `has_more` reports that condition. Limit defaults to 50 and clamps to 100. Pass exactly one of `id` or `url`.
 - **Params:** `id` (string, optional) — IMDb title id; `limit` (integer, optional) — Rows to return, default 50, max 100; `url` (string, optional) — Absolute https://www.imdb.com/title/<id>/ URL
 
-## TMDB (9)
-
-### `tmdb_collection`
-
-- **HTTP:** `GET /tmdb/collection/{id}`
-- **What:** Get a TMDB collection. Returns a TMDB collection (a movie franchise grouping) by `id`, which can be the collection id or an id-slug. The response has the collection title, overview, `uri` and `source_url`, plus its member movies, each with id, title, overview, poster URL, release date and `uri`.
-- **Params:** `id` (string, **required**) — TMDB collection id or id-slug
-
-### `tmdb_genres`
-
-- **HTTP:** `GET /tmdb/genres`
-- **What:** List TMDB browse genres. Returns every genre ID for TMDB movie and TV browse pages. Use movie values only with movie list filters and TV values only with TV list filters.
-- **Params:** _none_
-
-### `tmdb_movie`
-
-- **HTTP:** `GET /tmdb/movie/{id}`
-- **What:** Get a TMDB movie. Returns a TMDB movie: overview, tagline, genres, countries, runtime, budget/revenue, top-billed cast, top crew (director/writer), and aggregate rating.
-- **Params:** `id` (string, **required**) — TMDB movie id
-
-### `tmdb_movie_list`
-
-- **HTTP:** `GET /tmdb/movie/list`
-- **What:** Get a TMDB movie chart. Returns a page of TMDB movies from the `category` chart (`popular` by default, or `top_rated`, `now_playing`, `upcoming`), optionally refined by `sort_by`, `with_genres`, `original_language`, release dates, rating, votes and runtime. `limit` defaults to 10 (max 20). Each movie has id, title, overview, poster, release date and `uri`; `has_next_page` signals more pages.
-- **Params:** `category` (string, optional) — Movie chart, default popular; `date_from` (string, optional) — Release date lower bound (YYYY-MM-DD); `date_to` (string, optional) — Release date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max movies, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated movie genre ids: 28,12,16,35,80,99,18,10751,14,36,27,10402,9648,10749,878,10770,53,10752,37
-
-### `tmdb_person`
-
-- **HTTP:** `GET /tmdb/person/{id}`
-- **What:** Get a TMDB person. Returns a TMDB person by `id`: name, biography, birth date, photo URL and a filmography of movie and TV credits, most prominent first. `limit` caps the credits (default 10, max 20). Each credit has its `type` (`movie` or `tv`), id, title and `uri`. The biography may include a Wikipedia CC-BY-SA attribution note.
-- **Params:** `id` (string, **required**) — TMDB person id; `limit` (integer, optional) — Max filmography credits, default 10, max 20
-
-### `tmdb_person_list`
-
-- **HTTP:** `GET /tmdb/person/list`
-- **What:** List popular people on TMDB. Returns one page from TMDB's Popular People directory, including each person's id, name, known-for titles, profile image, and detail URL.
-- **Params:** `limit` (integer, optional) — Max people, default 10, max 20; `page` (integer, optional) — 1-based page, default 1
-
-### `tmdb_search`
-
-- **HTTP:** `GET /tmdb/search`
-- **What:** Search TMDB. Searches TMDB movies, TV shows, people, and collections. An unscoped query interleaves results across all four types rather than returning whichever type happens to rank first.
-- **Params:** `limit` (integer, optional) — Max results, default 10, max 20; `page` (integer, optional) — 1-based results page, default 1; `query` (string, **required**) — Search query; `type` (string, optional) — Optional result type filter
-
-### `tmdb_tv`
-
-- **HTTP:** `GET /tmdb/tv/{id}`
-- **What:** Get a TMDB TV show. Returns a TMDB TV show: overview, tagline, genres, countries, episode count, first/last air year, top-billed cast, top crew (creator), and aggregate rating.
-- **Params:** `id` (string, **required**) — TMDB TV show id
-
-### `tmdb_tv_list`
-
-- **HTTP:** `GET /tmdb/tv/list`
-- **What:** Get a TMDB TV chart. Returns a page of TMDB TV shows from the `category` chart (`popular` by default, or `top_rated`, `airing_today`, `on_the_air`), optionally refined by `sort_by`, `with_genres`, `original_language`, first-air-date bounds `date_from` and `date_to`, rating, votes and runtime. `limit` defaults to 10 (max 20). A filtered page with no matches returns an empty `shows` array.
-- **Params:** `category` (string, optional) — TV chart, default popular; `date_from` (string, optional) — First-air date lower bound (YYYY-MM-DD); `date_to` (string, optional) — First-air date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max shows, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TV genre ids: 10759,16,35,80,99,18,10751,10762,9648,10763,10764,10765,10766,10767,10768,37
-
 ## JustWatch (21)
 
 ### `justwatch_age_certifications`
@@ -374,7 +446,7 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get similar JustWatch titles. Lists titles similar to a JustWatch movie or show `id` (`tm` or `ts` followed by digits). `limit` defaults to 10 and is capped at 25; `country` defaults to `US` and `language` to `en`. Each result has its id, type, title, year, path, poster, production countries and offers. An unknown id returns `404`.
 - **Params:** `country` (string, optional) — Two-letter country code; `id` (string, **required**) — Raw JustWatch movie/show id matching tm[0-9]+ or ts[0-9]+; `language` (string, optional) — Two-letter language code; `limit` (integer, optional) — Maximum results, defaults to 10 and clamps to 25
 
-## Letterboxd (8)
+## Letterboxd (7)
 
 ### `letterboxd_film`
 
@@ -400,12 +472,6 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get films similar to a Letterboxd film. Lists films Letterboxd recommends as similar to the film given by `slug`, up to `limit` (default 10, max 50). Each film has its `slug`, title and Letterboxd URL. Use the slug to look up that film's details.
 - **Params:** `limit` (integer, optional) — Max films, default 10, max 50; `slug` (string, **required**) — Letterboxd film slug
 
-### `letterboxd_member`
-
-- **HTTP:** `GET /letterboxd/member/{username}`
-- **What:** Get a Letterboxd member's public profile stats. Returns a member's public profile stats (films watched, lists, following/followers). No private data — everything is visible to a logged-out visitor.
-- **Params:** `username` (string, **required**) — Letterboxd username
-
 ### `letterboxd_person`
 
 - **HTTP:** `GET /letterboxd/person/{slug}`
@@ -423,6 +489,50 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **HTTP:** `GET /letterboxd/search`
 - **What:** Search Letterboxd. Searches Letterboxd for films, people, lists and tags by `q`, required. `type` can be set to `film` to return films only; `limit` defaults to 10 with a max of 50. Fields vary by result type: films carry `slug` and `year`, people carry `slug` and `role`, lists carry `owner`, and tags carry only a title and URL.
 - **Params:** `limit` (integer, optional) — Max results, default 10, max 50; `q` (string, **required**) — Search query; `type` (string, optional) — Optional result type filter
+
+## Metacritic (7)
+
+### `metacritic_browse`
+
+- **HTTP:** `GET /metacritic/browse`
+- **What:** Browse Metacritic titles. Browse Metacritic titles by content type, optionally filtered by genre and ordered by Metascore, popularity, or release date. Returns paginated title cards with Metascore and user score.
+- **Params:** `genre` (string, optional) — Genre filter (e.g. Action); `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 24, max 100); `sort` (string, optional) — Sort order; `type` (string, **required**) — Content type
+
+### `metacritic_movie`
+
+- **HTTP:** `GET /metacritic/movie/{slug}`
+- **What:** Get a Metacritic movie. Returns a Metacritic movie: Metascore (critic) and user score with sentiment and review counts, genres, cast/crew, rating, runtime, release date, IMDb id, and trailer.
+- **Params:** `slug` (string, **required**) — Metacritic movie slug
+
+### `metacritic_movie_critic_reviews`
+
+- **HTTP:** `GET /metacritic/movie/{slug}/critic-reviews`
+- **What:** List a Metacritic movie's critic reviews. Lists critic reviews for a Metacritic movie by `slug` (such as `oppenheimer`). Each review has the publication, score, quote, author, date and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic movie slug; `sort` (string, optional) — Sort order
+
+### `metacritic_movie_user_reviews`
+
+- **HTTP:** `GET /metacritic/movie/{slug}/user-reviews`
+- **What:** List a Metacritic movie's user reviews. Returns paginated user reviews for a movie: author, score (0-10), quote, date, helpfulness, and spoiler flag.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic movie slug; `sort` (string, optional) — Sort order
+
+### `metacritic_tv`
+
+- **HTTP:** `GET /metacritic/tv/{slug}`
+- **What:** Get a Metacritic TV show. Returns a Metacritic TV show: Metascore (critic) and user score with sentiment and review counts, genres, networks, season count, rating, release date, IMDb id, and trailer.
+- **Params:** `slug` (string, **required**) — Metacritic TV show slug
+
+### `metacritic_tv_critic_reviews`
+
+- **HTTP:** `GET /metacritic/tv/{slug}/critic-reviews`
+- **What:** List a Metacritic TV show's critic reviews. Lists critic reviews for a Metacritic TV show by `slug` (such as `breaking-bad`). Each review has the publication, score, quote, author, date and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic TV show slug; `sort` (string, optional) — Sort order
+
+### `metacritic_tv_user_reviews`
+
+- **HTTP:** `GET /metacritic/tv/{slug}/user-reviews`
+- **What:** List a Metacritic TV show's user reviews. Returns paginated user reviews for a TV show: author, score (0-10), quote, date, helpfulness, and spoiler flag.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic TV show slug; `sort` (string, optional) — Sort order
 
 ## Rotten Tomatoes (29)
 
@@ -600,192 +710,58 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Rotten Tomatoes sitemap discovery. Returns the live sitemap index and every named child sitemap, including movie, TV series, season, episode, person, critic, publication, browse-list, and static route inventories.
 - **Params:** _none_
 
-## Metacritic (10)
+## TMDB (9)
 
-### `metacritic_browse`
+### `tmdb_collection`
 
-- **HTTP:** `GET /metacritic/browse`
-- **What:** Browse Metacritic titles. Browse Metacritic titles by content type, optionally filtered by genre and ordered by Metascore, popularity, or release date. Returns paginated title cards with Metascore and user score.
-- **Params:** `genre` (string, optional) — Genre filter (e.g. Action); `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 24, max 100); `sort` (string, optional) — Sort order; `type` (string, **required**) — Content type
+- **HTTP:** `GET /tmdb/collection/{id}`
+- **What:** Get a TMDB collection. Returns a TMDB collection (a movie franchise grouping) by `id`, which can be the collection id or an id-slug. The response has the collection title, overview, `uri` and `source_url`, plus its member movies, each with id, title, overview, poster URL, release date and `uri`.
+- **Params:** `id` (string, **required**) — TMDB collection id or id-slug
 
-### `metacritic_game`
+### `tmdb_genres`
 
-- **HTTP:** `GET /metacritic/game/{slug}`
-- **What:** Get a Metacritic game. Returns a Metacritic game: Metascore (critic) and user score with sentiment and review counts, genres, per-platform scores, developer/publisher, rating, release date, and trailer.
-- **Params:** `slug` (string, **required**) — Metacritic game slug
-
-### `metacritic_game_critic_reviews`
-
-- **HTTP:** `GET /metacritic/game/{slug}/critic-reviews`
-- **What:** List a Metacritic game's critic reviews. Lists critic reviews for a Metacritic game by `slug` (such as `elden-ring`). Each review has the publication, score, quote, author, date, platform and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
-- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic game slug; `sort` (string, optional) — Sort order
-
-### `metacritic_game_user_reviews`
-
-- **HTTP:** `GET /metacritic/game/{slug}/user-reviews`
-- **What:** List a Metacritic game's user reviews. Returns paginated user reviews for a game: author, score (0-10), quote, date, platform, helpfulness, and spoiler flag.
-- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic game slug; `sort` (string, optional) — Sort order
-
-### `metacritic_movie`
-
-- **HTTP:** `GET /metacritic/movie/{slug}`
-- **What:** Get a Metacritic movie. Returns a Metacritic movie: Metascore (critic) and user score with sentiment and review counts, genres, cast/crew, rating, runtime, release date, IMDb id, and trailer.
-- **Params:** `slug` (string, **required**) — Metacritic movie slug
-
-### `metacritic_movie_critic_reviews`
-
-- **HTTP:** `GET /metacritic/movie/{slug}/critic-reviews`
-- **What:** List a Metacritic movie's critic reviews. Lists critic reviews for a Metacritic movie by `slug` (such as `oppenheimer`). Each review has the publication, score, quote, author, date and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
-- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic movie slug; `sort` (string, optional) — Sort order
-
-### `metacritic_movie_user_reviews`
-
-- **HTTP:** `GET /metacritic/movie/{slug}/user-reviews`
-- **What:** List a Metacritic movie's user reviews. Returns paginated user reviews for a movie: author, score (0-10), quote, date, helpfulness, and spoiler flag.
-- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic movie slug; `sort` (string, optional) — Sort order
-
-### `metacritic_tv`
-
-- **HTTP:** `GET /metacritic/tv/{slug}`
-- **What:** Get a Metacritic TV show. Returns a Metacritic TV show: Metascore (critic) and user score with sentiment and review counts, genres, networks, season count, rating, release date, IMDb id, and trailer.
-- **Params:** `slug` (string, **required**) — Metacritic TV show slug
-
-### `metacritic_tv_critic_reviews`
-
-- **HTTP:** `GET /metacritic/tv/{slug}/critic-reviews`
-- **What:** List a Metacritic TV show's critic reviews. Lists critic reviews for a Metacritic TV show by `slug` (such as `breaking-bad`). Each review has the publication, score, quote, author, date and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
-- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic TV show slug; `sort` (string, optional) — Sort order
-
-### `metacritic_tv_user_reviews`
-
-- **HTTP:** `GET /metacritic/tv/{slug}/user-reviews`
-- **What:** List a Metacritic TV show's user reviews. Returns paginated user reviews for a TV show: author, score (0-10), quote, date, helpfulness, and spoiler flag.
-- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic TV show slug; `sort` (string, optional) — Sort order
-
-## Box Office Mojo (21)
-
-### `boxofficemojo_brand`
-
-- **HTTP:** `GET /boxofficemojo/brand`
-- **What:** Box Office Mojo brand detail. Returns release rows from a Box Office Mojo brand page. Pass exactly one of `id`, `path`, or `url`.
-- **Params:** `id` (string, optional) — Box Office Mojo brand id; `offset` (integer, optional) — Row offset for pagination (page size 100); `path` (string, optional) — Box Office Mojo brand path; `sort` (string, optional) — Sort field; `sortDir` (string, optional) — Sort direction; `url` (string, optional) — Absolute https://www.boxofficemojo.com brand URL
-
-### `boxofficemojo_brands`
-
-- **HTTP:** `GET /boxofficemojo/brands`
-- **What:** Box Office Mojo brand chart. Returns Box Office Mojo's brand chart, ranked, with each brand's `name`, `id`, `path`, `url`, release count and lifetime gross (an integer in `lifetime_gross`, the displayed text in `lifetime_gross_raw`). Reorder with `sort` (`totalGross`, `numReleases` or `grossToDate`) and `sortDir` (`asc` or `desc`); they are echoed back only when applied.
-- **Params:** `sort` (string, optional) — Sort field; `sortDir` (string, optional) — Sort direction
-
-### `boxofficemojo_calendar`
-
-- **HTTP:** `GET /boxofficemojo/calendar`
-- **What:** Box Office Mojo domestic release schedule. Returns Box Office Mojo's domestic release schedule for one month, grouped by date. `year` (1921 to 2100) and `month` (1 to 12) are both required. Each release has its title, `release_url`, `distributor`, `scale`, `genres`, `cast` and poster image URLs when present.
-- **Params:** `month` (integer, **required**) — Calendar month, 1 through 12; `year` (integer, **required**) — Calendar year, from 1921 through 2100
-
-### `boxofficemojo_calendar_changes`
-
-- **HTTP:** `GET /boxofficemojo/calendar/changes`
-- **What:** Box Office Mojo domestic release schedule changes. Returns Box Office Mojo's list of changes to the domestic release schedule, grouped by change date. `offset` pages through the list in steps of 30, from 0 to 780. Each change has the release, `distributor`, `scale`, `old_date` and `new_date`, and `range` shows the position in the list.
-- **Params:** `offset` (integer, optional) — Changes page offset. Allowed values: 0, 30, 60, ... 780
-
-### `boxofficemojo_calendar_date`
-
-- **HTTP:** `GET /boxofficemojo/calendar/date`
-- **What:** Box Office Mojo domestic release schedule date. Returns the releases scheduled on one date in Box Office Mojo's domestic release schedule. `date` is required, in `YYYY-MM-DD` form. Each release has its title, `release_url`, `distributor`, `scale`, `genres`, `cast` and poster image URLs when present. A date with no scheduled releases returns a not-found error.
-- **Params:** `date` (string, **required**) — Calendar date in YYYY-MM-DD format
-
-### `boxofficemojo_date_domestic`
-
-- **HTTP:** `GET /boxofficemojo/date/domestic`
-- **What:** Box Office Mojo domestic daily box office. Returns rows from Box Office Mojo's domestic daily chart. Empty upstream daily pages return a typed not-found error rather than an empty success.
-- **Params:** `date` (string, **required**) — Domestic box office date in YYYY-MM-DD format
-
-### `boxofficemojo_franchise`
-
-- **HTTP:** `GET /boxofficemojo/franchise`
-- **What:** Box Office Mojo franchise detail. Returns release rows from a Box Office Mojo franchise page. Pass exactly one of `id`, `path`, or `url`.
-- **Params:** `id` (string, optional) — Box Office Mojo franchise id; `offset` (integer, optional) — Row offset for pagination (page size 100); `path` (string, optional) — Box Office Mojo franchise path; `sort` (string, optional) — Sort field; `sortDir` (string, optional) — Sort direction; `url` (string, optional) — Absolute https://www.boxofficemojo.com franchise URL
-
-### `boxofficemojo_franchises`
-
-- **HTTP:** `GET /boxofficemojo/franchises`
-- **What:** Box Office Mojo franchise chart. Returns Box Office Mojo's franchise chart, ranked, with each franchise's `name`, `id`, `path`, `url`, release count and lifetime gross (an integer in `lifetime_gross`, the displayed text in `lifetime_gross_raw`). Reorder with `sort` (`totalGross`, `numReleases` or `grossToDate`) and `sortDir` (`asc` or `desc`); they are echoed back only when applied.
-- **Params:** `sort` (string, optional) — Sort field; `sortDir` (string, optional) — Sort direction
-
-### `boxofficemojo_genre`
-
-- **HTTP:** `GET /boxofficemojo/genre`
-- **What:** Box Office Mojo genre detail. Returns release rows from a Box Office Mojo genre page. Pass exactly one of `id`, `path`, or `url`.
-- **Params:** `id` (string, optional) — Box Office Mojo genre id; `offset` (integer, optional) — Row offset for pagination (page size 100); `path` (string, optional) — Box Office Mojo genre path; `sort` (string, optional) — Sort field; `sortDir` (string, optional) — Sort direction; `url` (string, optional) — Absolute https://www.boxofficemojo.com genre URL
-
-### `boxofficemojo_genres`
-
-- **HTTP:** `GET /boxofficemojo/genres`
-- **What:** Box Office Mojo genre chart. Returns Box Office Mojo's genre chart, ranked, with each genre's `name`, `id`, `path`, `url`, release count and lifetime gross (an integer in `lifetime_gross`, the displayed text in `lifetime_gross_raw`). Reorder with `sort` (`totalGross`, `numTitles` or `grossToDate`) and `sortDir` (`asc` or `desc`); they are echoed back only when applied.
-- **Params:** `sort` (string, optional) — Sort field; `sortDir` (string, optional) — Sort direction
-
-### `boxofficemojo_lifetime_grosses`
-
-- **HTTP:** `GET /boxofficemojo/lifetime-grosses`
-- **What:** Box Office Mojo lifetime gross chart. Returns one page of Box Office Mojo's lifetime gross chart of movies. `area` is `worldwide` (default) or `domestic`, and `offset` pages in steps of 200 from 0 to 800. Each row has `rank`, `title`, `title_id`, `year` and `lifetime_gross` as an integer, with the displayed text in `lifetime_gross_raw`.
-- **Params:** `area` (string, optional) — Chart area. Allowed values: worldwide, domestic; `offset` (integer, optional) — Chart page offset. Allowed values: 0, 200, 400, 600, 800
-
-### `boxofficemojo_release`
-
-- **HTTP:** `GET /boxofficemojo/release`
-- **What:** Box Office Mojo release detail. Returns Box Office Mojo release summary fields and domestic daily rows from a release page. Pass exactly one of `id`, `path`, or `url`.
-- **Params:** `id` (string, optional) — Box Office Mojo release id; `path` (string, optional) — Box Office Mojo release path; `url` (string, optional) — Absolute https://www.boxofficemojo.com release URL
-
-### `boxofficemojo_release_group`
-
-- **HTTP:** `GET /boxofficemojo/release-group`
-- **What:** Box Office Mojo release group detail. Returns market release rows grouped by region from a Box Office Mojo release-group page. Pass exactly one of `id`, `path`, or `url`.
-- **Params:** `id` (string, optional) — Box Office Mojo release-group id; `path` (string, optional) — Box Office Mojo release-group path; `url` (string, optional) — Absolute https://www.boxofficemojo.com release-group URL
-
-### `boxofficemojo_showdown`
-
-- **HTTP:** `GET /boxofficemojo/showdown`
-- **What:** Box Office Mojo showdown detail. Returns release comparison metrics from a Box Office Mojo showdown page. Pass exactly one of `id`, `path`, or `url`.
-- **Params:** `id` (string, optional) — Box Office Mojo showdown id; `path` (string, optional) — Box Office Mojo showdown path; `url` (string, optional) — Absolute https://www.boxofficemojo.com showdown URL
-
-### `boxofficemojo_showdowns`
-
-- **HTTP:** `GET /boxofficemojo/showdowns`
-- **What:** Box Office Mojo showdowns. Returns Box Office Mojo's showdowns, which compare groups of movies. Each row has the showdown `name`, `showdown_id`, `path`, `url`, `num_releases`, `total_gross` and the `top_release` with its gross, when Box Office Mojo shows them. Takes no parameters.
+- **HTTP:** `GET /tmdb/genres`
+- **What:** List TMDB browse genres. Returns every genre ID for TMDB movie and TV browse pages. Use movie values only with movie list filters and TV values only with TV list filters.
 - **Params:** _none_
 
-### `boxofficemojo_title`
+### `tmdb_movie`
 
-- **HTTP:** `GET /boxofficemojo/title`
-- **What:** Box Office Mojo title detail. Returns Box Office Mojo title release-group and market-gross tables from a title page. Pass exactly one of `id`, `path`, or `url`.
-- **Params:** `id` (string, optional) — Box Office Mojo title id; `path` (string, optional) — Box Office Mojo title path; `url` (string, optional) — Absolute https://www.boxofficemojo.com title URL
+- **HTTP:** `GET /tmdb/movie/{id}`
+- **What:** Get a TMDB movie. Returns a TMDB movie: overview, tagline, genres, countries, runtime, budget/revenue, top-billed cast, top crew (director/writer), and aggregate rating.
+- **Params:** `id` (string, **required**) — TMDB movie id
 
-### `boxofficemojo_weekend_domestic`
+### `tmdb_movie_list`
 
-- **HTTP:** `GET /boxofficemojo/weekend/domestic`
-- **What:** Box Office Mojo domestic weekend box office. Returns rows from Box Office Mojo's domestic weekend chart. Empty upstream weekend pages return a typed not-found error rather than an empty success.
-- **Params:** `week` (integer, **required**) — Weekend number, 1 through 53; `year` (integer, **required**) — Domestic weekend year, from 1982 through 2100
+- **HTTP:** `GET /tmdb/movie/list`
+- **What:** Get a TMDB movie chart. Returns a page of TMDB movies from the `category` chart (`popular` by default, or `top_rated`, `now_playing`, `upcoming`), optionally refined by `sort_by`, `with_genres`, `original_language`, release dates, rating, votes and runtime. `limit` defaults to 10 (max 20). Each movie has id, title, overview, poster, release date and `uri`; `has_next_page` signals more pages.
+- **Params:** `category` (string, optional) — Movie chart, default popular; `date_from` (string, optional) — Release date lower bound (YYYY-MM-DD); `date_to` (string, optional) — Release date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max movies, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated movie genre ids: 28,12,16,35,80,99,18,10751,14,36,27,10402,9648,10749,878,10770,53,10752,37
 
-### `boxofficemojo_weekend_domestic_by_distributor`
+### `tmdb_person`
 
-- **HTTP:** `GET /boxofficemojo/weekend/domestic/by-distributor`
-- **What:** Box Office Mojo domestic weekend by distributor. Returns distributor rows from Box Office Mojo's domestic weekend by-distributor chart. Empty upstream weekend pages return a typed not-found error rather than an empty success.
-- **Params:** `week` (integer, **required**) — Weekend number, 1 through 53; `year` (integer, **required**) — Domestic weekend year, from 1982 through 2100
+- **HTTP:** `GET /tmdb/person/{id}`
+- **What:** Get a TMDB person. Returns a TMDB person by `id`: name, biography, birth date, photo URL and a filmography of movie and TV credits, most prominent first. `limit` caps the credits (default 10, max 20). Each credit has its `type` (`movie` or `tv`), id, title and `uri`. The biography may include a Wikipedia CC-BY-SA attribution note.
+- **Params:** `id` (string, **required**) — TMDB person id; `limit` (integer, optional) — Max filmography credits, default 10, max 20
 
-### `boxofficemojo_weekend_domestic_estimates`
+### `tmdb_person_list`
 
-- **HTTP:** `GET /boxofficemojo/weekend/domestic/estimates`
-- **What:** Box Office Mojo domestic weekend estimates. Returns estimate-vs-actual rows from Box Office Mojo's domestic weekend estimates chart. Empty upstream weekend pages return a typed not-found error rather than an empty success.
-- **Params:** `week` (integer, **required**) — Weekend number, 1 through 53; `year` (integer, **required**) — Domestic weekend year, from 1982 through 2100
+- **HTTP:** `GET /tmdb/person/list`
+- **What:** List popular people on TMDB. Returns one page from TMDB's Popular People directory, including each person's id, name, known-for titles, profile image, and detail URL.
+- **Params:** `limit` (integer, optional) — Max people, default 10, max 20; `page` (integer, optional) — 1-based page, default 1
 
-### `boxofficemojo_year_domestic`
+### `tmdb_search`
 
-- **HTTP:** `GET /boxofficemojo/year/domestic`
-- **What:** Box Office Mojo domestic yearly box office. Returns the Box Office Mojo domestic box office chart for one year. `year` is required and runs from 1977 to 2100. Each row has `rank`, `release`, `release_date`, `distributor`, `theaters`, `gross`, `total_gross` and `new_this_year`, each gross also with its displayed text in a `_raw` field.
-- **Params:** `year` (integer, **required**) — Domestic box office year, from 1977 through 2100
+- **HTTP:** `GET /tmdb/search`
+- **What:** Search TMDB. Searches TMDB movies, TV shows, people, and collections. An unscoped query interleaves results across all four types rather than returning whichever type happens to rank first.
+- **Params:** `limit` (integer, optional) — Max results, default 10, max 20; `page` (integer, optional) — 1-based results page, default 1; `query` (string, **required**) — Search query; `type` (string, optional) — Optional result type filter
 
-### `boxofficemojo_year_worldwide`
+### `tmdb_tv`
 
-- **HTTP:** `GET /boxofficemojo/year/worldwide`
-- **What:** Box Office Mojo worldwide yearly box office. Returns the Box Office Mojo worldwide box office chart for one year. `year` is required and runs from 1977 to 2100. Each row is a release group with its `rank`, `worldwide`, `domestic` and `foreign` grosses, the domestic and foreign shares, and `title_id`; each gross also has its displayed text in a `_raw` field.
-- **Params:** `year` (integer, **required**) — Box office year, from 1977 through 2100
+- **HTTP:** `GET /tmdb/tv/{id}`
+- **What:** Get a TMDB TV show. Returns a TMDB TV show: overview, tagline, genres, countries, episode count, first/last air year, top-billed cast, top crew (creator), and aggregate rating.
+- **Params:** `id` (string, **required**) — TMDB TV show id
+
+### `tmdb_tv_list`
+
+- **HTTP:** `GET /tmdb/tv/list`
+- **What:** Get a TMDB TV chart. Returns a page of TMDB TV shows from the `category` chart (`popular` by default, or `top_rated`, `airing_today`, `on_the_air`), optionally refined by `sort_by`, `with_genres`, `original_language`, first-air-date bounds `date_from` and `date_to`, rating, votes and runtime. `limit` defaults to 10 (max 20). A filtered page with no matches returns an empty `shows` array.
+- **Params:** `category` (string, optional) — TV chart, default popular; `date_from` (string, optional) — First-air date lower bound (YYYY-MM-DD); `date_to` (string, optional) — First-air date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max shows, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TV genre ids: 10759,16,35,80,99,18,10751,10762,9648,10763,10764,10765,10766,10767,10768,37

@@ -1,6 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { referencesToCoverage, summarizeCoverage, compareOperations } from "./audit-coverage.mjs";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { readSkillReference, referencesToCoverage, summarizeCoverage, compareOperations } from "./audit-coverage.mjs";
 
 const tool = (name, method, path, group = "Mixed") => ({ name, _http: { method, path, group } });
 
@@ -33,4 +36,20 @@ test("operation comparison preserves HTTP methods, aliases, pending routes, and 
   assert.equal(rows.find(row => row.path === "/admin/secret").status, "outside-exported-mcp");
   assert.equal(rows.find(row => row.path === "/admin/secret").deprecated, true);
   assert.throws(() => compareOperations({ paths: {} }, published, current, coverage), /absent from Swagger/);
+});
+
+test("coverage reads endpoint definitions from split platform reference files", () => {
+  const root = mkdtempSync(join(tmpdir(), "skills-reference-coverage-"));
+  try {
+    const reference = join(root, "skills", "sports-scores-research", "reference");
+    mkdirSync(join(reference, "endpoints"), { recursive: true });
+    writeFileSync(join(reference, "endpoints.md"), "# Index\n\n- [NBA](endpoints/01-nba.md)\n");
+    writeFileSync(join(reference, "endpoints", "01-nba.md"), "### `nba-standings`\n");
+
+    const text = readSkillReference(root, "sports-scores-research");
+    const coverage = referencesToCoverage({ "sports-scores-research": text });
+    assert.ok(coverage.has("nba-standings"));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });

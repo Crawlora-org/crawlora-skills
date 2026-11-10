@@ -75,6 +75,14 @@ for (const skill of skills) {
   const ref = skill === "crawlora" ? "reference/catalog.md" : "reference/endpoints.md";
   if (!existsSync(join(ROOT, `skills/${skill}/${ref}`)))
     errors.push(`${file}: missing ${ref} (run node scripts/generate.mjs)`);
+  if (skill !== "crawlora" && existsSync(join(ROOT, `skills/${skill}/${ref}`))) {
+    const referenceRoot = join(ROOT, `skills/${skill}/reference`);
+    const referenceText = readFileSync(join(ROOT, `skills/${skill}/${ref}`), "utf8");
+    for (const [, child] of referenceText.matchAll(/\]\((endpoints\/[^)]+\.md)\)/g)) {
+      if (!existsSync(join(referenceRoot, child)))
+        errors.push(`${file}: missing split endpoint reference ${child} (run node scripts/generate.mjs)`);
+    }
+  }
 }
 
 // Public counts and marketplace membership must agree with the actual package.

@@ -2,11 +2,11 @@
 
 > Generated from `scripts/tools.json` by `scripts/generate.mjs` — do not edit by hand.
 
-Endpoints this skill uses, grouped by platform. Call them via `scripts/crawlora.sh` (see SKILL.md).
+Only the endpoints used by this workflow. Call them via `scripts/crawlora.sh` (see SKILL.md).
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**99 endpoints across 5 platform group(s).**
+**96 endpoints across 5 platform group(s).**
 
 ## IMDb (30)
 
@@ -318,61 +318,49 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Get similar JustWatch titles. Lists titles similar to a JustWatch movie or show `id` (`tm` or `ts` followed by digits). `limit` defaults to 10 and is capped at 25; `country` defaults to `US` and `language` to `en`. Each result has its id, type, title, year, path, poster, production countries and offers. An unknown id returns `404`.
 - **Params:** `country` (string, optional) — Two-letter country code; `id` (string, **required**) — Raw JustWatch movie/show id matching tm[0-9]+ or ts[0-9]+; `language` (string, optional) — Two-letter language code; `limit` (integer, optional) — Maximum results, defaults to 10 and clamps to 25
 
-## TMDB (9)
+## Metacritic (7)
 
-### `tmdb_collection`
+### `metacritic_browse`
 
-- **HTTP:** `GET /tmdb/collection/{id}`
-- **What:** Get a TMDB collection. Returns a TMDB collection (a movie franchise grouping) by `id`, which can be the collection id or an id-slug. The response has the collection title, overview, `uri` and `source_url`, plus its member movies, each with id, title, overview, poster URL, release date and `uri`.
-- **Params:** `id` (string, **required**) — TMDB collection id or id-slug
+- **HTTP:** `GET /metacritic/browse`
+- **What:** Browse Metacritic titles. Browse Metacritic titles by content type, optionally filtered by genre and ordered by Metascore, popularity, or release date. Returns paginated title cards with Metascore and user score.
+- **Params:** `genre` (string, optional) — Genre filter (e.g. Action); `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 24, max 100); `sort` (string, optional) — Sort order; `type` (string, **required**) — Content type
 
-### `tmdb_genres`
+### `metacritic_movie`
 
-- **HTTP:** `GET /tmdb/genres`
-- **What:** List TMDB browse genres. Returns every genre ID for TMDB movie and TV browse pages. Use movie values only with movie list filters and TV values only with TV list filters.
-- **Params:** _none_
+- **HTTP:** `GET /metacritic/movie/{slug}`
+- **What:** Get a Metacritic movie. Returns a Metacritic movie: Metascore (critic) and user score with sentiment and review counts, genres, cast/crew, rating, runtime, release date, IMDb id, and trailer.
+- **Params:** `slug` (string, **required**) — Metacritic movie slug
 
-### `tmdb_movie`
+### `metacritic_movie_critic_reviews`
 
-- **HTTP:** `GET /tmdb/movie/{id}`
-- **What:** Get a TMDB movie. Returns a TMDB movie: overview, tagline, genres, countries, runtime, budget/revenue, top-billed cast, top crew (director/writer), and aggregate rating.
-- **Params:** `id` (string, **required**) — TMDB movie id
+- **HTTP:** `GET /metacritic/movie/{slug}/critic-reviews`
+- **What:** List a Metacritic movie's critic reviews. Lists critic reviews for a Metacritic movie by `slug` (such as `oppenheimer`). Each review has the publication, score, quote, author, date and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic movie slug; `sort` (string, optional) — Sort order
 
-### `tmdb_movie_list`
+### `metacritic_movie_user_reviews`
 
-- **HTTP:** `GET /tmdb/movie/list`
-- **What:** Get a TMDB movie chart. Returns a page of TMDB movies from the `category` chart (`popular` by default, or `top_rated`, `now_playing`, `upcoming`), optionally refined by `sort_by`, `with_genres`, `original_language`, release dates, rating, votes and runtime. `limit` defaults to 10 (max 20). Each movie has id, title, overview, poster, release date and `uri`; `has_next_page` signals more pages.
-- **Params:** `category` (string, optional) — Movie chart, default popular; `date_from` (string, optional) — Release date lower bound (YYYY-MM-DD); `date_to` (string, optional) — Release date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max movies, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated movie genre ids: 28,12,16,35,80,99,18,10751,14,36,27,10402,9648,10749,878,10770,53,10752,37
+- **HTTP:** `GET /metacritic/movie/{slug}/user-reviews`
+- **What:** List a Metacritic movie's user reviews. Returns paginated user reviews for a movie: author, score (0-10), quote, date, helpfulness, and spoiler flag.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic movie slug; `sort` (string, optional) — Sort order
 
-### `tmdb_person`
+### `metacritic_tv`
 
-- **HTTP:** `GET /tmdb/person/{id}`
-- **What:** Get a TMDB person. Returns a TMDB person by `id`: name, biography, birth date, photo URL and a filmography of movie and TV credits, most prominent first. `limit` caps the credits (default 10, max 20). Each credit has its `type` (`movie` or `tv`), id, title and `uri`. The biography may include a Wikipedia CC-BY-SA attribution note.
-- **Params:** `id` (string, **required**) — TMDB person id; `limit` (integer, optional) — Max filmography credits, default 10, max 20
+- **HTTP:** `GET /metacritic/tv/{slug}`
+- **What:** Get a Metacritic TV show. Returns a Metacritic TV show: Metascore (critic) and user score with sentiment and review counts, genres, networks, season count, rating, release date, IMDb id, and trailer.
+- **Params:** `slug` (string, **required**) — Metacritic TV show slug
 
-### `tmdb_person_list`
+### `metacritic_tv_critic_reviews`
 
-- **HTTP:** `GET /tmdb/person/list`
-- **What:** List popular people on TMDB. Returns one page from TMDB's Popular People directory, including each person's id, name, known-for titles, profile image, and detail URL.
-- **Params:** `limit` (integer, optional) — Max people, default 10, max 20; `page` (integer, optional) — 1-based page, default 1
+- **HTTP:** `GET /metacritic/tv/{slug}/critic-reviews`
+- **What:** List a Metacritic TV show's critic reviews. Lists critic reviews for a Metacritic TV show by `slug` (such as `breaking-bad`). Each review has the publication, score, quote, author, date and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic TV show slug; `sort` (string, optional) — Sort order
 
-### `tmdb_search`
+### `metacritic_tv_user_reviews`
 
-- **HTTP:** `GET /tmdb/search`
-- **What:** Search TMDB. Searches TMDB movies, TV shows, people, and collections. An unscoped query interleaves results across all four types rather than returning whichever type happens to rank first.
-- **Params:** `limit` (integer, optional) — Max results, default 10, max 20; `page` (integer, optional) — 1-based results page, default 1; `query` (string, **required**) — Search query; `type` (string, optional) — Optional result type filter
-
-### `tmdb_tv`
-
-- **HTTP:** `GET /tmdb/tv/{id}`
-- **What:** Get a TMDB TV show. Returns a TMDB TV show: overview, tagline, genres, countries, episode count, first/last air year, top-billed cast, top crew (creator), and aggregate rating.
-- **Params:** `id` (string, **required**) — TMDB TV show id
-
-### `tmdb_tv_list`
-
-- **HTTP:** `GET /tmdb/tv/list`
-- **What:** Get a TMDB TV chart. Returns a page of TMDB TV shows from the `category` chart (`popular` by default, or `top_rated`, `airing_today`, `on_the_air`), optionally refined by `sort_by`, `with_genres`, `original_language`, first-air-date bounds `date_from` and `date_to`, rating, votes and runtime. `limit` defaults to 10 (max 20). A filtered page with no matches returns an empty `shows` array.
-- **Params:** `category` (string, optional) — TV chart, default popular; `date_from` (string, optional) — First-air date lower bound (YYYY-MM-DD); `date_to` (string, optional) — First-air date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max shows, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TV genre ids: 10759,16,35,80,99,18,10751,10762,9648,10763,10764,10765,10766,10767,10768,37
+- **HTTP:** `GET /metacritic/tv/{slug}/user-reviews`
+- **What:** List a Metacritic TV show's user reviews. Returns paginated user reviews for a TV show: author, score (0-10), quote, date, helpfulness, and spoiler flag.
+- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic TV show slug; `sort` (string, optional) — Sort order
 
 ## Rotten Tomatoes (29)
 
@@ -550,64 +538,58 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 - **What:** Rotten Tomatoes sitemap discovery. Returns the live sitemap index and every named child sitemap, including movie, TV series, season, episode, person, critic, publication, browse-list, and static route inventories.
 - **Params:** _none_
 
-## Metacritic (10)
+## TMDB (9)
 
-### `metacritic_browse`
+### `tmdb_collection`
 
-- **HTTP:** `GET /metacritic/browse`
-- **What:** Browse Metacritic titles. Browse Metacritic titles by content type, optionally filtered by genre and ordered by Metascore, popularity, or release date. Returns paginated title cards with Metascore and user score.
-- **Params:** `genre` (string, optional) — Genre filter (e.g. Action); `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 24, max 100); `sort` (string, optional) — Sort order; `type` (string, **required**) — Content type
+- **HTTP:** `GET /tmdb/collection/{id}`
+- **What:** Get a TMDB collection. Returns a TMDB collection (a movie franchise grouping) by `id`, which can be the collection id or an id-slug. The response has the collection title, overview, `uri` and `source_url`, plus its member movies, each with id, title, overview, poster URL, release date and `uri`.
+- **Params:** `id` (string, **required**) — TMDB collection id or id-slug
 
-### `metacritic_game`
+### `tmdb_genres`
 
-- **HTTP:** `GET /metacritic/game/{slug}`
-- **What:** Get a Metacritic game. Returns a Metacritic game: Metascore (critic) and user score with sentiment and review counts, genres, per-platform scores, developer/publisher, rating, release date, and trailer.
-- **Params:** `slug` (string, **required**) — Metacritic game slug
+- **HTTP:** `GET /tmdb/genres`
+- **What:** List TMDB browse genres. Returns every genre ID for TMDB movie and TV browse pages. Use movie values only with movie list filters and TV values only with TV list filters.
+- **Params:** _none_
 
-### `metacritic_game_critic_reviews`
+### `tmdb_movie`
 
-- **HTTP:** `GET /metacritic/game/{slug}/critic-reviews`
-- **What:** List a Metacritic game's critic reviews. Lists critic reviews for a Metacritic game by `slug` (such as `elden-ring`). Each review has the publication, score, quote, author, date, platform and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
-- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic game slug; `sort` (string, optional) — Sort order
+- **HTTP:** `GET /tmdb/movie/{id}`
+- **What:** Get a TMDB movie. Returns a TMDB movie: overview, tagline, genres, countries, runtime, budget/revenue, top-billed cast, top crew (director/writer), and aggregate rating.
+- **Params:** `id` (string, **required**) — TMDB movie id
 
-### `metacritic_game_user_reviews`
+### `tmdb_movie_list`
 
-- **HTTP:** `GET /metacritic/game/{slug}/user-reviews`
-- **What:** List a Metacritic game's user reviews. Returns paginated user reviews for a game: author, score (0-10), quote, date, platform, helpfulness, and spoiler flag.
-- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic game slug; `sort` (string, optional) — Sort order
+- **HTTP:** `GET /tmdb/movie/list`
+- **What:** Get a TMDB movie chart. Returns a page of TMDB movies from the `category` chart (`popular` by default, or `top_rated`, `now_playing`, `upcoming`), optionally refined by `sort_by`, `with_genres`, `original_language`, release dates, rating, votes and runtime. `limit` defaults to 10 (max 20). Each movie has id, title, overview, poster, release date and `uri`; `has_next_page` signals more pages.
+- **Params:** `category` (string, optional) — Movie chart, default popular; `date_from` (string, optional) — Release date lower bound (YYYY-MM-DD); `date_to` (string, optional) — Release date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max movies, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated movie genre ids: 28,12,16,35,80,99,18,10751,14,36,27,10402,9648,10749,878,10770,53,10752,37
 
-### `metacritic_movie`
+### `tmdb_person`
 
-- **HTTP:** `GET /metacritic/movie/{slug}`
-- **What:** Get a Metacritic movie. Returns a Metacritic movie: Metascore (critic) and user score with sentiment and review counts, genres, cast/crew, rating, runtime, release date, IMDb id, and trailer.
-- **Params:** `slug` (string, **required**) — Metacritic movie slug
+- **HTTP:** `GET /tmdb/person/{id}`
+- **What:** Get a TMDB person. Returns a TMDB person by `id`: name, biography, birth date, photo URL and a filmography of movie and TV credits, most prominent first. `limit` caps the credits (default 10, max 20). Each credit has its `type` (`movie` or `tv`), id, title and `uri`. The biography may include a Wikipedia CC-BY-SA attribution note.
+- **Params:** `id` (string, **required**) — TMDB person id; `limit` (integer, optional) — Max filmography credits, default 10, max 20
 
-### `metacritic_movie_critic_reviews`
+### `tmdb_person_list`
 
-- **HTTP:** `GET /metacritic/movie/{slug}/critic-reviews`
-- **What:** List a Metacritic movie's critic reviews. Lists critic reviews for a Metacritic movie by `slug` (such as `oppenheimer`). Each review has the publication, score, quote, author, date and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
-- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic movie slug; `sort` (string, optional) — Sort order
+- **HTTP:** `GET /tmdb/person/list`
+- **What:** List popular people on TMDB. Returns one page from TMDB's Popular People directory, including each person's id, name, known-for titles, profile image, and detail URL.
+- **Params:** `limit` (integer, optional) — Max people, default 10, max 20; `page` (integer, optional) — 1-based page, default 1
 
-### `metacritic_movie_user_reviews`
+### `tmdb_search`
 
-- **HTTP:** `GET /metacritic/movie/{slug}/user-reviews`
-- **What:** List a Metacritic movie's user reviews. Returns paginated user reviews for a movie: author, score (0-10), quote, date, helpfulness, and spoiler flag.
-- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic movie slug; `sort` (string, optional) — Sort order
+- **HTTP:** `GET /tmdb/search`
+- **What:** Search TMDB. Searches TMDB movies, TV shows, people, and collections. An unscoped query interleaves results across all four types rather than returning whichever type happens to rank first.
+- **Params:** `limit` (integer, optional) — Max results, default 10, max 20; `page` (integer, optional) — 1-based results page, default 1; `query` (string, **required**) — Search query; `type` (string, optional) — Optional result type filter
 
-### `metacritic_tv`
+### `tmdb_tv`
 
-- **HTTP:** `GET /metacritic/tv/{slug}`
-- **What:** Get a Metacritic TV show. Returns a Metacritic TV show: Metascore (critic) and user score with sentiment and review counts, genres, networks, season count, rating, release date, IMDb id, and trailer.
-- **Params:** `slug` (string, **required**) — Metacritic TV show slug
+- **HTTP:** `GET /tmdb/tv/{id}`
+- **What:** Get a TMDB TV show. Returns a TMDB TV show: overview, tagline, genres, countries, episode count, first/last air year, top-billed cast, top crew (creator), and aggregate rating.
+- **Params:** `id` (string, **required**) — TMDB TV show id
 
-### `metacritic_tv_critic_reviews`
+### `tmdb_tv_list`
 
-- **HTTP:** `GET /metacritic/tv/{slug}/critic-reviews`
-- **What:** List a Metacritic TV show's critic reviews. Lists critic reviews for a Metacritic TV show by `slug` (such as `breaking-bad`). Each review has the publication, score, quote, author, date and source URL. `sort` is `date` (default), `score` or `publication`; `page` defaults to 1 and `per_page` to 20 with a max of 50. The response includes the `total` count.
-- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic TV show slug; `sort` (string, optional) — Sort order
-
-### `metacritic_tv_user_reviews`
-
-- **HTTP:** `GET /metacritic/tv/{slug}/user-reviews`
-- **What:** List a Metacritic TV show's user reviews. Returns paginated user reviews for a TV show: author, score (0-10), quote, date, helpfulness, and spoiler flag.
-- **Params:** `page` (integer, optional) — 1-based page number (default 1); `per_page` (integer, optional) — Results per page (default 20, max 50); `slug` (string, **required**) — Metacritic TV show slug; `sort` (string, optional) — Sort order
+- **HTTP:** `GET /tmdb/tv/list`
+- **What:** Get a TMDB TV chart. Returns a page of TMDB TV shows from the `category` chart (`popular` by default, or `top_rated`, `airing_today`, `on_the_air`), optionally refined by `sort_by`, `with_genres`, `original_language`, first-air-date bounds `date_from` and `date_to`, rating, votes and runtime. `limit` defaults to 10 (max 20). A filtered page with no matches returns an empty `shows` array.
+- **Params:** `category` (string, optional) — TV chart, default popular; `date_from` (string, optional) — First-air date lower bound (YYYY-MM-DD); `date_to` (string, optional) — First-air date upper bound (YYYY-MM-DD); `include_adult` (boolean, optional) — Include adult titles; `limit` (integer, optional) — Max shows, default 10, max 20; `max_rating` (number, optional) — Maximum rating, 0-10; `max_runtime` (integer, optional) — Maximum runtime in minutes; `min_rating` (number, optional) — Minimum rating, 0-10; `min_runtime` (integer, optional) — Minimum runtime in minutes; `min_votes` (integer, optional) — Minimum vote count; `original_language` (string, optional) — Two-letter original-language code; `page` (integer, optional) — 1-based page, default 1; `sort_by` (string, optional) — Sort order; `with_genres` (string, optional) — Comma- or pipe-separated TV genre ids: 10759,16,35,80,99,18,10751,10762,9648,10763,10764,10765,10766,10767,10768,37
