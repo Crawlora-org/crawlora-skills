@@ -97,7 +97,7 @@ self-contained and do not require the broader bundles to be installed.
 | Skill | What it delivers | Sources |
 |---|---|---|
 | [`cross-corpus-research`](skills/cross-corpus-research) | Bounded cited briefs across public web, papers, and indexed developer documentation with source revisions and partial-coverage reporting. | Public web, arXiv, Europe PMC, registered developer-document sources |
-| [`flashscore-match-analysis`](skills/flashscore-match-analysis) | Detailed match reports from covered Flashscore player statistics, lineups, sport-specific score feeds, and editorial evidence. | Flashscore |
+| [`flashscore-match-analysis`](skills/flashscore-match-analysis) | Detailed match reports from covered Flashscore team and player statistics, lineups, momentum, sport-specific score feeds, and editorial evidence. | Flashscore |
 | [`medication-information-research`](skills/medication-information-research) | GoodRx-based medication and health information with review dates; safety-critical claims remain explicitly unverified without official source text. | GoodRx |
 | [`sports-team-player-research`](skills/sports-team-player-research) | Player and team dossiers with roster, career, match-log, transfer, and injury-history evidence kept source-qualified. | Flashscore |
 | [`google-maps-research`](skills/google-maps-research) | Current place lookups and comparisons, review samples, and photos. | Google Maps (four live tools) |

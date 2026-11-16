@@ -1,6 +1,6 @@
 ---
 name: flashscore-match-analysis
-description: Build a sourced Flashscore match report from covered player statistics, lineups, absences, momentum, box scores, point-by-point or darts feeds, and editorial coverage. Use for detailed event analysis; use multi-sport-match-research for basic fixture and score checks.
+description: Build a sourced Flashscore match report from covered team and player statistics, lineups, absences, momentum, box scores, point-by-point or darts feeds, and editorial coverage. Use for detailed event analysis; use multi-sport-match-research for basic fixture and score checks.
 allowed-tools: Bash(scripts/crawlora.sh:*)
 ---
 
@@ -26,6 +26,13 @@ event; a missing surface does not mean the event or statistic was absent.
 
 ## Choose a covered detail surface
 
+- **Football team statistics:** `/flashscore/match-stats` returns the provider's
+  delimited team-stat feed, which may include expected goals, possession, shots,
+  chances, corners, and passes. Read the returned labels and values as supplied;
+  keep home/away, units, groups, and any period markers attached. The available
+  fields vary by event. Empty or not-found coverage is unknown, not zero. Use this
+  when the user asks for team totals or when those totals add useful context to a
+  detailed report; it is separate from the per-player feed below.
 - **Football player statistics:** `/flashscore/match-player-stats` is football
   only and exists only for matches with individual-stat coverage. Narrow large
   responses with `group` or `player_id`. Keep source labels, raw values,
@@ -62,6 +69,7 @@ for bookmaker markets; do not treat either as an access guarantee or prediction.
 ```sh
 scripts/crawlora.sh /flashscore/search q="Arsenal Manchester City"
 # Use a verified match ID from the exact returned event.
+scripts/crawlora.sh /flashscore/match-stats id=example-match-id
 scripts/crawlora.sh /flashscore/match-player-stats id=example-match-id group=shots
 scripts/crawlora.sh /flashscore/match-predicted-lineups id=example-match-id
 scripts/crawlora.sh /flashscore/match-report id=example-match-id
