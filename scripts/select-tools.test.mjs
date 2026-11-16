@@ -94,6 +94,7 @@ test("new workflows cover their intended surfaces without importing mixed-group 
 test("Flashscore match, team/player, odds, and viewing surfaces stay in distinct workflows", () => {
   const selections = JSON.parse(readFileSync(new URL("./skill-tools.json", import.meta.url)));
   const matchAnalysis = selections["flashscore-match-analysis"];
+  assert.ok(matchAnalysis.includes("flashscore_match_stats"));
   assert.ok(matchAnalysis.includes("flashscore_match_player_stats"));
   assert.ok(matchAnalysis.includes("flashscore_match_box_score"));
   assert.ok(matchAnalysis.includes("flashscore_match_report"));

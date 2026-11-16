@@ -64,6 +64,7 @@ case "$path" in
   /flashscore/match-point-by-point) route_allowed=true ;;
   /flashscore/match-predicted-lineups) route_allowed=true ;;
   /flashscore/match-report) route_allowed=true ;;
+  /flashscore/match-stats) route_allowed=true ;;
   /flashscore/news-article-body) route_allowed=true ;;
   /flashscore/news-most-read) route_allowed=true ;;
   /flashscore/search) route_allowed=true ;;

@@ -1148,6 +1148,7 @@
   ],
   "flashscore-match-analysis": [
     "flashscore_search",
+    "flashscore_match_stats",
     "flashscore_match_box_score",
     "flashscore_match_darts",
     "flashscore_match_missing_players",

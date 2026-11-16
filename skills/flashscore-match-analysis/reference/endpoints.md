@@ -6,9 +6,9 @@ Only the endpoints used by this workflow. Call them via `scripts/crawlora.sh` (s
 
 All paths are relative to the API base `https://api.crawlora.net/api/v1` and require the header `x-api-key: $CRAWLORA_API_KEY`. Path params like `{id}` are substituted into the URL; `GET` params go in the query string; `POST` params go in a JSON body.
 
-**12 endpoints across 1 platform group(s).**
+**13 endpoints across 1 platform group(s).**
 
-## Flashscore (12)
+## Flashscore (13)
 
 ### `flashscore_match_box_score`
 
@@ -56,6 +56,12 @@ All paths are relative to the API base `https://api.crawlora.net/api/v1` and req
 
 - **HTTP:** `GET /flashscore/match-report`
 - **What:** Flashscore editorial match report. Returns Flashscore's written match report: title, author, publication time, the full text as ordered paragraphs and inline images (with links to teams, players and competitions kept as structured data), and the credited photos. Only matches with editorial coverage have a report; every other match returns not found.
+- **Params:** `id` (string, **required**) — Eight-character Flashscore match id
+
+### `flashscore_match_stats`
+
+- **HTTP:** `GET /flashscore/match-stats`
+- **What:** Flashscore match statistics. Returns Flashscore's public delimited statistics feed for a match id copied from a Flashscore match URL. The raw upstream feed is preserved as text because its format is not JSON.
 - **Params:** `id` (string, **required**) — Eight-character Flashscore match id
 
 ### `flashscore_news_article_body`
