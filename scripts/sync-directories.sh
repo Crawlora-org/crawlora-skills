@@ -29,6 +29,7 @@ trap 'rm -rf "$SCRATCH"' EXIT
 cd "$SCRATCH"
 failed=0
 pending=0
+version_conflicts=0
 
 if [[ "$mode" == all || "$mode" == skills-sh ]]; then
   echo "skills.sh: install the public repository in disposable scratch space"
@@ -92,8 +93,16 @@ for name in "${(@ok)CATS}"; do
     echo "Identical content already stored (possibly pending); verify public visibility without republishing."
     continue
   fi
-  if ! "${CLAWHUB[@]}" skill publish "$REPO_ROOT/skills/$name"       --owner crawlora-org --categories "${CATS[$name]}"       --source-repo Crawlora-org/crawlora-skills --source-commit "$SOURCE_COMMIT"       --source-ref main --source-path "skills/$name"       --changelog "Sync skill instructions, references, and helper from GitHub $SOURCE_COMMIT"       --json > "$SCRATCH/result.json"; then
-    failed=1
+  publish_error="$SCRATCH/$name.publish.stderr"
+  if ! "${CLAWHUB[@]}" skill publish "$REPO_ROOT/skills/$name"       --owner crawlora-org --categories "${CATS[$name]}"       --source-repo Crawlora-org/crawlora-skills --source-commit "$SOURCE_COMMIT"       --source-ref main --source-path "skills/$name"       --changelog "Sync skill instructions, references, and helper from GitHub $SOURCE_COMMIT"       --json > "$SCRATCH/result.json" 2>"$publish_error"; then
+    if grep -Eqi 'Version [^ ]+ already exists' "$publish_error"; then
+      version_conflicts=$((version_conflicts + 1))
+      echo "$name: ClawHub reports an existing version; no version bump or retry was attempted. Inspect its public versions and moderation status." >&2
+      cat "$publish_error" >&2
+    else
+      cat "$publish_error" >&2
+      failed=1
+    fi
     continue
   fi
   result_status=$(node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")).status)' "$SCRATCH/result.json")
@@ -102,6 +111,8 @@ for name in "${(@ok)CATS}"; do
 done
 
 echo "ClawHub submissions pending publication: $pending. Submission is not proof of public visibility."
+echo "ClawHub existing-version conflicts requiring read-only review: $version_conflicts."
+[[ "$version_conflicts" -eq 0 ]] || failed=1
 echo "Verify live versions/file hashes and complete skillsdirectory.com,"
 echo "claudeskills.club, claudeskills.info, skills.pub, and the existing awesome-list PR separately."
 exit "$failed"
